@@ -3,7 +3,7 @@ import {
   InMemoryCache,
 } from "@apollo/client";
 const client = new ApolloClient({
-  uri: "https://flyby-gateway.herokuapp.com/",
+  uri: "https://api.lens.dev",
   cache: new InMemoryCache(),
 });
 export { client };
