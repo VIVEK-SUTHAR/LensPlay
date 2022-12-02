@@ -1,22 +1,31 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import * as React from 'react'
+import { Image, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { primary, secondary } from '../constants/Colors'
 
-const VideoCard = () => {
+type videoPageProp = {
+  navigation: any,
+}
+
+const VideoCard = ({ navigation }: videoPageProp) => {
   return (
-    <View style={{ paddingHorizontal: 10 , marginVertical: 10 }}>
+    <TouchableWithoutFeedback onPress={() => {
+      navigation.navigate('VideoPage')
+    }}>
+      <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
         <View style={{ height: 150 }}>
-            <Image source={require('../assets/images/test.png')} style={{height: '100%', width: '100%', borderTopLeftRadius: 10, borderTopRightRadius:10, resizeMode: 'contain' }} />
+          <Image source={require('../assets/images/test.png')} style={{ height: '100%', width: '100%', borderTopLeftRadius: 10, borderTopRightRadius: 10, resizeMode: 'contain' }} />
         </View>
-        <View style={{flex: 1, height: 80, padding: 10, flexDirection: 'row', justifyContent:'space-between', alignItems:'center', backgroundColor: '#bdbcf1', borderBottomLeftRadius: 10, borderBottomRightRadius: 10}}>
-            <View>
-                <Text style={{fontSize: 22}}>Video Title</Text>
-                <Text style={{fontSize: 18}}>Lens Handle</Text>
-            </View>
-            <View style={{height: 60, width: 60 }}>
-            <Image source={require('../assets/images/harshbhai.png')} style={{height: '100%', width: '100%' }} />
-            </View>
+        <View style={{ padding: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: primary, borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
+          <View style={{ flex: 0.95 }}>
+            <Text style={{ fontSize: 16, fontWeight: 'bold' }} numberOfLines={1}>How to use tailwind with svelte kansf ksnf </Text>
+            <Text style={{ fontSize: 12, color: 'gray' }}>By Someone on 23 June</Text>
+          </View>
+          <View style={{ height: 40, width: 40 }}>
+            <Image source={require('../assets/images/harshbhai.png')} style={{ height: '100%', width: '100%' }} />
+          </View>
         </View>
-    </View>
+      </View>
+    </TouchableWithoutFeedback>
   )
 }
 

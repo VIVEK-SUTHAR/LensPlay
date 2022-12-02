@@ -5,7 +5,6 @@
  */
 //@ts-ignore
 import { AntDesign, Feather, Ionicons } from '@expo/vector-icons';
-
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
