@@ -31,7 +31,7 @@ export default function TabOneScreen({
         method: "personal_sign",
         params: [connector.accounts[0], "UMANG IS IN LOVE WITH KRITI SENON"],
       });
-    
+
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
