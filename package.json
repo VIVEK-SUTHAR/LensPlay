@@ -14,6 +14,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.1",
     "@expo/vector-icons": "^13.0.0",
     "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-navigation/bottom-tabs": "^6.0.5",
@@ -30,6 +31,7 @@
     "expo-splash-screen": "~0.16.2",
     "expo-status-bar": "~1.4.0",
     "expo-web-browser": "~11.0.0",
+    "graphql": "^16.6.0",
     "https-browserify": "^1.0.0",
     "node-libs-react-native": "^1.2.1",
     "os-browserify": "^0.3.0",
