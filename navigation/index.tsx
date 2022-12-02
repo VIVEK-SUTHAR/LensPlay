@@ -22,6 +22,7 @@ import TabOneScreen from '../screens/TabOneScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
+import Profile from '../screens/Profile';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -39,9 +40,10 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function RootNavigator() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name='Login' component={Login} />
+      <Stack.Screen name='Login' component={Login} options={{ headerShown: false }} />
       <Stack.Screen name='Root' component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name='VideoPage' component={VideoPage} options={{ headerShown: true, presentation: "card" }} />
+      <Stack.Screen name='Profile' component={Profile} options={{ headerShown: true, presentation: "card" }} />
     </Stack.Navigator>
   );
 }
@@ -124,7 +126,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name='Account'
-        component={Feed}
+        component={Profile}
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ focused }) => {
