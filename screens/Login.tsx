@@ -15,6 +15,10 @@ import { primary, secondary } from "../constants/Colors";
 import { EvilIcons } from "@expo/vector-icons";
 import { stringifyForDisplay } from "@apollo/client/utilities";
 import { MaterialIcons } from "@expo/vector-icons";
+import { client } from "../apollo/client";
+import getProfile from "../apollo/Queries/getProfile";
+import getChallenge from "../apollo/Queries/getChallenge";
+import getAccessTokens from "../apollo/Queries/getAccessTokens";
 
 const Login = ({ navigation }: { navigation: any }) => {
   const connector = useWalletConnect();
@@ -25,7 +29,45 @@ const Login = ({ navigation }: { navigation: any }) => {
     });
   }, [connector]);
 
+  const logInWithLens = async () => {
+    // const data = await client.query({
+    //   query: getProfile,
+    //   variables: {
+    //     ethAddress: connector.accounts[0],
+    //   },
+    // });
+    // if (data.data.defaultProfile) {
+    const challengeText = await client.query({
+      query: getChallenge,
+      variables: {
+        ethAddress: connector.accounts[0],
+      },
+    });
+    try {
+      const data = await connector.sendCustomRequest({
+        method: "personal_sign",
+        params: [connector.accounts[0], challengeText.data.challenge.text],
+      });
+      const address = connector.accounts[0];
+      console.log(data);
+      const tokens = await client.mutate({
+        mutation: getAccessTokens,
+        variables: {
+          address: address,
+          signature:data
+        },
+      });
+      console.log(tokens);
+      alert("Your access token is"+tokens.data.authenticate.accessToken)
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  };
+
   const killSession = React.useCallback(() => {
+    console.log("lgging out");
     return connector.killSession();
   }, [connector]);
 
@@ -52,6 +94,7 @@ const Login = ({ navigation }: { navigation: any }) => {
               fontSize: 64,
               color: primary,
             }}
+            onPress={killSession}
           >
             LensPlay
           </Text>
@@ -127,8 +170,9 @@ const Login = ({ navigation }: { navigation: any }) => {
         )}
         {!!connector.connected ? (
           <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("Root");
+            onPress={async () => {
+              // navigation.navigate("Root");
+              await logInWithLens();
             }}
           >
             <View
