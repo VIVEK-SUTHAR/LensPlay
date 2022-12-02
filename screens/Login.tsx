@@ -1,22 +1,18 @@
 import {
-  ActivityIndicator,
-  Button,
   Image,
   StyleSheet,
   Text,
-  TouchableHighlight,
   TouchableOpacity,
+  Vibration,
   View,
 } from "react-native";
-import React, { useState } from "react";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import * as React from 'react';
+import { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { primary, secondary } from "../constants/Colors";
 import { EvilIcons } from "@expo/vector-icons";
-import { stringifyForDisplay } from "@apollo/client/utilities";
-import { MaterialIcons } from "@expo/vector-icons";
 import { client } from "../apollo/client";
-import getProfile from "../apollo/Queries/getProfile";
 import getChallenge from "../apollo/Queries/getChallenge";
 import getAccessTokens from "../apollo/Queries/getAccessTokens";
 
@@ -54,11 +50,15 @@ const Login = ({ navigation }: { navigation: any }) => {
         mutation: getAccessTokens,
         variables: {
           address: address,
-          signature:data
+          signature: data
         },
       });
       console.log(tokens);
-      alert("Your access token is"+tokens.data.authenticate.accessToken)
+      if (tokens.data.authenticate.accessToken) {
+        navigation.navigate("Root");
+      } else {
+        alert("something went wrong")
+      }
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
@@ -82,10 +82,9 @@ const Login = ({ navigation }: { navigation: any }) => {
       >
         <Text
           style={{
-            fontSize: 44,
-            fontWeight: "800",
+            fontSize: 32,
+            fontWeight: "bold",
             textAlign: "center",
-            // top: "20%",
           }}
         >
           Welcome to{" "}
@@ -94,120 +93,140 @@ const Login = ({ navigation }: { navigation: any }) => {
               fontSize: 64,
               color: primary,
             }}
-            onPress={killSession}
           >
             LensPlay
           </Text>
         </Text>
-        <View style={{ height: 350, width: 400, alignItems: "center" }}>
+        <View style={{ width: '100%', alignItems: "center", aspectRatio: 1.4 / 1 }}>
           <Image
             source={require("../assets/images/lensplay.png")}
             style={{
               height: "100%",
               width: "100%",
               resizeMode: "center",
-              // top: "20%",
             }}
           />
         </View>
-        {!!connector.connected && (
+        {!!connector.connected ? (
           <>
             <View
               style={{
-                height: 70,
-                padding: 1,
-                backgroundColor: primary,
-                borderRadius: 50,
+                backgroundColor: 'white',
+                borderRadius: 20,
                 display: "flex",
-                // flex: 0.9,
-                flexDirection: "row",
-                width: "80%",
-                justifyContent: "space-evenly",
                 alignItems: "center",
-              }}
-            >
-              <Image
-                source={require("../assets/images/test.png")}
+                paddingTop: 16,
+                margin: 16,
+                width: '90%',
+              }}>
+              <View style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                width: '100%',
+                justifyContent: 'center',
+              }}>
+                <Image
+                  source={require("../assets/images/test.png")}
+                  style={{
+                    width: 50,
+                    height: 50,
+                    borderRadius: 50,
+                    alignItems: "center",
+                    resizeMode: "contain",
+                  }}
+                />
+                <View
+                  style={{
+                    alignItems: "center",
+                    borderRadius: 50,
+                    marginLeft: 10,
+                  }}
+                >
+                  <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+                    @iamharsh.lens
+                  </Text>
+                  <Text
+                    style={{ fontSize: 12, color: "gray", width: '100%', fontWeight: '500' }}
+                  >
+                    {connector.accounts[0].substring(0, 5) +
+                      "..." +
+                      connector.accounts[0].substring(
+                        connector.accounts[0].length - 3,
+                        connector.accounts[0].length
+                      )}
+                  </Text>
+                </View>
+              </View>
+              <TouchableOpacity
                 style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 50,
-                  alignItems: "center",
-                  resizeMode: "contain",
+                  width: '100%'
                 }}
-              />
+                onPress={async () => {
+                  Vibration.vibrate(200, false);
+                  await logInWithLens();
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: '#abfe2c',
+                    borderBottomRightRadius: 20,
+                    borderBottomLeftRadius: 20,
+                    paddingVertical: 16,
+                    marginTop: 10,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "black",
+                      fontSize: 24,
+                      fontWeight: "bold",
+                      textAlign: "center",
+                    }}
+                  >
+                    Login with Lens
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={{ width: '90%' }}
+              onPress={killSession}
+            >
               <View
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  // borderWidth: 2,
+                  backgroundColor: '#FF1818',
                   borderRadius: 50,
-                  padding: 5,
-                  height: 40,
-                  flexDirection: "row",
+                  paddingVertical: 16,
+                  marginVertical: 10,
                 }}
               >
                 <Text
-                  style={{ fontSize: 23, marginHorizontal: 10, color: "black" }}
+                  style={{
+                    color: "black",
+                    fontSize: 24,
+                    fontWeight: "bold",
+                    textAlign: "center",
+                  }}
                 >
-                  {connector.accounts[0].substring(0, 5) +
-                    "..." +
-                    connector.accounts[0].substring(
-                      connector.accounts[0].length - 3,
-                      connector.accounts[0].length
-                    )}
+                  Disconnect Wallet
                 </Text>
-                {/* <MaterialIcons
-                  name="content-copy"
-                  size={24}
-                  color="black"
-                  style={{ marginHorizontal: 10 }}
-                /> */}
               </View>
-              <EvilIcons name="chevron-down" size={24} color="black" />
-            </View>
+            </TouchableOpacity>
           </>
-        )}
-        {!!connector.connected ? (
+        ) : (
           <TouchableOpacity
-            onPress={async () => {
-              // navigation.navigate("Root");
-              await logInWithLens();
+            style={{ width: '100%', paddingHorizontal: 10 }}
+            onPress={() => {
+              Vibration.vibrate(200, false);
+              connectWallet();
             }}
           >
             <View
               style={{
-                backgroundColor: "white",
+                backgroundColor: primary,
                 borderRadius: 50,
-                // padding: 15,
-                marginVertical: 40,
-                // marginTop:30,
-                height: 70,
-                width: 300,
-                // display: "flex",
-                alignItems: "center",
-                justifyContent: 'center'
-              }}
-            >
-              <Text
-                style={{
-                  color: "black",
-                  fontSize: 24,
-                  fontWeight: "600",
-                  textAlign: "center",
-                }}
-              >
-                Login with Lens
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity onPress={connectWallet}>
-            <View
-              style={{
-                backgroundColor: "white",
-                borderRadius: 50,
-                padding: 15,
+                paddingVertical: 16,
                 marginVertical: 10,
               }}
             >
@@ -226,7 +245,7 @@ const Login = ({ navigation }: { navigation: any }) => {
           </TouchableOpacity>
         )}
       </View>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 };
 
