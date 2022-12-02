@@ -27,7 +27,7 @@ const Login = ({ navigation }: { navigation: any }) => {
   }, [connector]);
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ marginTop: 50 }}>
+      <View>
         {/* <Image
           source={require("../assets/images/test.png")}
           style={{ width: "100%", height: "100%", resizeMode: "contain" }}

@@ -11,7 +11,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
 import { ColorSchemeName, Pressable, View } from 'react-native';
-import VideoPage from '../components/VideoPage';
+import VideoPage from '../screens/VideoPage';
 import { primary, secondary } from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import Feed from '../screens/Feed';

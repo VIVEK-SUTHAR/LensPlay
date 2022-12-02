@@ -5,17 +5,14 @@ import VideoCard from '../components/VideoCard'
 
 const Feed = ({navigation}:{navigation:any}) => {
   return (
-    <SafeAreaView>
         <ScrollView>
-            <VideoCard></VideoCard>
-            <VideoCard></VideoCard>
-            <VideoCard></VideoCard>
-            <VideoCard></VideoCard>
-            <VideoCard></VideoCard>
-            <VideoCard></VideoCard>
-
+            <VideoCard navigation={navigation}></VideoCard>
+            <VideoCard navigation={navigation}></VideoCard>
+            <VideoCard navigation={navigation}></VideoCard>
+            <VideoCard navigation={navigation}></VideoCard>
+            <VideoCard navigation={navigation}></VideoCard>
+            <VideoCard navigation={navigation}></VideoCard>
         </ScrollView>
-    </SafeAreaView>
   )
 }
 
