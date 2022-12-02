@@ -15,7 +15,8 @@ import VideoPage from '../screens/VideoPage';
 import { primary } from '../constants/Colors';
 import Feed from '../screens/Feed';
 import Login from '../screens/Login';
-import { RootStackParamList, RootTabParamList } from '../types';
+import { RootTabParamList } from '../types';
+import Profile from '../screens/Profile';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -33,9 +34,10 @@ const Stack = createNativeStackNavigator();
 function RootNavigator() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name='Login' component={Login} />
+      <Stack.Screen name='Login' component={Login} options={{ headerShown: false }} />
       <Stack.Screen name='Root' component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name='VideoPage' component={VideoPage} options={{ headerShown: true, presentation: "card" }} />
+      <Stack.Screen name='Profile' component={Profile} options={{ headerShown: true, presentation: "card" }} />
     </Stack.Navigator>
   );
 }
@@ -114,7 +116,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name='Account'
-        component={Feed}
+        component={Profile}
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ focused }) => {
