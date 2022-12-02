@@ -6,7 +6,7 @@ import {
   Vibration,
   View,
 } from "react-native";
-import * as React from 'react';
+import * as React from "react";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
@@ -14,8 +14,11 @@ import { primary, secondary } from "../constants/Colors";
 import { client } from "../apollo/client";
 import getChallenge from "../apollo/Queries/getChallenge";
 import getAccessTokens from "../apollo/Queries/getAccessTokens";
+import getProfile from "../apollo/Queries/getProfile";
+import useStore from "../store/Store";
 
 const Login = ({ navigation }: { navigation: any }) => {
+  const store=useStore()
   const connector = useWalletConnect();
   const [isconnected, setIsconnected] = useState<boolean>(false);
   const connectWallet = React.useCallback(() => {
@@ -25,13 +28,17 @@ const Login = ({ navigation }: { navigation: any }) => {
   }, [connector]);
 
   const logInWithLens = async () => {
-    // const data = await client.query({
-    //   query: getProfile,
-    //   variables: {
-    //     ethAddress: connector.accounts[0],
-    //   },
-    // });
-    // if (data.data.defaultProfile) {
+    const data = await client.query({
+      query: getProfile,
+      variables: {
+        ethAddress: connector.accounts[0],
+      },
+    });
+
+    if (!data.data.defaultProfile) {
+      return;
+    }
+    store.setProfileId(data.data.defaultProfile.id);
     const challengeText = await client.query({
       query: getChallenge,
       variables: {
@@ -49,14 +56,14 @@ const Login = ({ navigation }: { navigation: any }) => {
         mutation: getAccessTokens,
         variables: {
           address: address,
-          signature: data
+          signature: data,
         },
       });
       console.log(tokens);
       if (tokens.data.authenticate.accessToken) {
         navigation.navigate("Root");
       } else {
-        alert("something went wrong")
+        alert("something went wrong");
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -91,13 +98,15 @@ const Login = ({ navigation }: { navigation: any }) => {
             style={{
               fontSize: 68,
               color: primary,
-              fontWeight: '900'
+              fontWeight: "900",
             }}
           >
             LensPlay
           </Text>
         </Text>
-        <View style={{ width: '100%', alignItems: "center", aspectRatio: 1.4 / 1 }}>
+        <View
+          style={{ width: "100%", alignItems: "center", aspectRatio: 1.4 / 1 }}
+        >
           <Image
             source={require("../assets/images/lensplay.png")}
             style={{
@@ -111,21 +120,24 @@ const Login = ({ navigation }: { navigation: any }) => {
           <>
             <View
               style={{
-                backgroundColor: 'white',
+                backgroundColor: "white",
                 borderRadius: 20,
                 display: "flex",
                 alignItems: "center",
                 paddingTop: 16,
                 margin: 16,
-                width: '90%',
-              }}>
-              <View style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                width: '100%',
-                justifyContent: 'center',
-              }}>
+                width: "90%",
+              }}
+            >
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  width: "100%",
+                  justifyContent: "center",
+                }}
+              >
                 <Image
                   source={require("../assets/images/test.png")}
                   style={{
@@ -143,11 +155,16 @@ const Login = ({ navigation }: { navigation: any }) => {
                     marginLeft: 10,
                   }}
                 >
-                  <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+                  <Text style={{ fontSize: 16, fontWeight: "bold" }}>
                     @iamharsh.lens
                   </Text>
                   <Text
-                    style={{ fontSize: 12, color: "gray", width: '100%', fontWeight: '500' }}
+                    style={{
+                      fontSize: 12,
+                      color: "gray",
+                      width: "100%",
+                      fontWeight: "500",
+                    }}
                   >
                     {connector.accounts[0].substring(0, 5) +
                       "..." +
@@ -160,7 +177,7 @@ const Login = ({ navigation }: { navigation: any }) => {
               </View>
               <TouchableOpacity
                 style={{
-                  width: '100%'
+                  width: "100%",
                 }}
                 onPress={async () => {
                   Vibration.vibrate(200, false);
@@ -169,7 +186,7 @@ const Login = ({ navigation }: { navigation: any }) => {
               >
                 <View
                   style={{
-                    backgroundColor: '#abfe2c',
+                    backgroundColor: "#abfe2c",
                     borderBottomRightRadius: 20,
                     borderBottomLeftRadius: 20,
                     paddingVertical: 16,
@@ -189,13 +206,10 @@ const Login = ({ navigation }: { navigation: any }) => {
                 </View>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              style={{ width: '90%' }}
-              onPress={killSession}
-            >
+            <TouchableOpacity style={{ width: "90%" }} onPress={killSession}>
               <View
                 style={{
-                  backgroundColor: '#FF1818',
+                  backgroundColor: "#FF1818",
                   borderRadius: 50,
                   paddingVertical: 16,
                   marginVertical: 10,
@@ -216,7 +230,7 @@ const Login = ({ navigation }: { navigation: any }) => {
           </>
         ) : (
           <TouchableOpacity
-            style={{ width: '100%', paddingHorizontal: 10 }}
+            style={{ width: "100%", paddingHorizontal: 10 }}
             onPress={() => {
               Vibration.vibrate(200, false);
               connectWallet();
@@ -245,7 +259,7 @@ const Login = ({ navigation }: { navigation: any }) => {
           </TouchableOpacity>
         )}
       </View>
-    </SafeAreaView >
+    </SafeAreaView>
   );
 };
 
