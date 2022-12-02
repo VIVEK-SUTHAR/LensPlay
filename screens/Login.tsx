@@ -82,7 +82,7 @@ const Login = ({ navigation }: { navigation: any }) => {
       >
         <Text
           style={{
-            fontSize: 44,
+            fontSize: 40,
             fontWeight: "800",
             textAlign: "center",
             // top: "20%",
@@ -91,15 +91,16 @@ const Login = ({ navigation }: { navigation: any }) => {
           Welcome to{" "}
           <Text
             style={{
-              fontSize: 64,
+              fontSize: 68,
               color: primary,
+              fontWeight: '900'
             }}
             onPress={killSession}
           >
             LensPlay
           </Text>
         </Text>
-        <View style={{ height: 350, width: 400, alignItems: "center" }}>
+        <View style={{ height: 350, width: 350, alignItems: "center" }}>
           <Image
             source={require("../assets/images/lensplay.png")}
             style={{
