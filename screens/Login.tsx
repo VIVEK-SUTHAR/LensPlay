@@ -11,7 +11,6 @@ import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { primary, secondary } from "../constants/Colors";
-import { EvilIcons } from "@expo/vector-icons";
 import { client } from "../apollo/client";
 import getChallenge from "../apollo/Queries/getChallenge";
 import getAccessTokens from "../apollo/Queries/getAccessTokens";
@@ -90,8 +89,9 @@ const Login = ({ navigation }: { navigation: any }) => {
           Welcome to{" "}
           <Text
             style={{
-              fontSize: 64,
+              fontSize: 68,
               color: primary,
+              fontWeight: '900'
             }}
           >
             LensPlay
