@@ -36,6 +36,6 @@ const Feed = ({navigation}:{navigation:any}) => {
   )
 }
 
-export default Feed
+export default Feed;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
