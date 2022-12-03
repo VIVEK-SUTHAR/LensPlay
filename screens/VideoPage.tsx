@@ -1,9 +1,17 @@
+<<<<<<< HEAD
 import { StyleSheet, Text, View, Image } from 'react-native'
 import { Feather,AntDesign,Entypo } from '@expo/vector-icons';
 import React from 'react'
 import { primary } from '../constants/Colors';
 import useStore from '../store/Store';
 import { useState } from 'react';
+=======
+import { StyleSheet, Text, View, Image } from "react-native";
+import { Feather, AntDesign } from "@expo/vector-icons";
+import React from "react";
+import { primary } from "../constants/Colors";
+import { Video } from "expo-av";
+>>>>>>> 88c6237 (Video Player Added)
 
 const VideoPage = () => {
   const store = useStore();
@@ -15,11 +23,23 @@ const VideoPage = () => {
   // console.log(currentIndex)
   return (
     <View>
-      <View style={{ height: 200 }}>
-        <Image source={require('../assets/images/yt.webp')} style={{ height: '100%', width: '100%', borderRadius: 10, resizeMode: 'contain' }} />
-      </View>
+      <Video
+        source={{
+          uri: "http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
+        }}
+        resizeMode="contain"
+        useNativeControls={true}
+        isLooping={true}
+        style={styles.video}
+        usePoster={true}
+        posterSource={{
+          uri: "https://ipfs.io/ipfs/QmUohae5YN2QreKUDERZ34TozrXT2q84opPaNYUKVjk5qh",
+        }}
+      />
+
       <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
+<<<<<<< HEAD
           <Text style={{ flex: 0.98, fontSize: 20, fontWeight: "800" }}>{userFeed[currentIndex]?.root?.metadata?.name}</Text>
           <Feather name={`chevron-${descOpen?'up':'down'}`} size={34} color="black" onPress={()=>setDescOpen(!descOpen)} />
         </View>
@@ -34,6 +54,19 @@ const VideoPage = () => {
         </View>
         <View style={{marginTop: 20, flexDirection: 'row', justifyContent: 'space-around'}}>
           <View style={{backgroundColor: primary, width: 80,height: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderRadius: 15}}>
+=======
+          <Text style={{ flex: 0.98, fontSize: 18, fontWeight: "600" }}>
+            Why this BILLIONAIRE refuses to BUY a HOUSE ft. Nikhil Kamath
+          </Text>
+          <Feather name="chevron-down" size={34} color="black" />
+        </View>
+        <View style={{ flexDirection: "row", opacity: 0.5, marginTop: 8 }}>
+          <Text style={{ marginRight: 10 }}>3094505 views</Text>
+          <Text>May 16, 2019</Text>
+        </View>
+        <View>
+          <View style={{ backgroundColor: primary, width: 24 }}>
+>>>>>>> 88c6237 (Video Player Added)
             <AntDesign name="like2" size={24} color="black" />
             <Text style={{marginLeft: 4, fontSize: 15}}>{userFeed[currentIndex]?.root?.stats?.totalUpvotes}</Text>
           </View>
@@ -62,9 +95,15 @@ const VideoPage = () => {
         </View>
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default VideoPage
+export default VideoPage;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  video: {
+    alignSelf: "center",
+    width: 320,
+    height: 200,
+  },
+});
