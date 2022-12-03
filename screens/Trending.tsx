@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import * as React from 'react'
 import { useState } from 'react'
 import VideoCard from '../components/VideoCard'
@@ -7,7 +7,11 @@ import { client } from '../apollo/client'
 import getTrendingPublication from '../apollo/Queries/getTrendingPublication'
 import { useEffect } from 'react';
 
-const Trending = ({ navigation }) => {
+type TrendingPageProps = {
+    navigation: any;
+};
+
+const Trending = ({ navigation }: TrendingPageProps) => {
 
     const [TrendingItems, setTrendingItems] = useState([])
 
@@ -25,24 +29,25 @@ const Trending = ({ navigation }) => {
 
     return (
         <View>
-            <View style={{ marginTop: 10, paddingHorizontal: 10, flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                <View style={{ backgroundColor: primary, height: 45, width: 90, justifyContent: 'center', alignItems: 'center', borderRadius: 18, padding: 8 }}>
+            <View style={{ margin: 10, paddingHorizontal: 10, flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                <View style={{ backgroundColor: primary, paddingHorizontal: 16, paddingVertical: 8, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }}>
                     <Text style={{ fontSize: 14, fontWeight: '800', color: 'white' }}>Most Rated</Text>
                 </View>
-                <View style={{ backgroundColor: primary, height: 45, width: 90, justifyContent: 'center', alignItems: 'center', borderRadius: 18, padding: 8 }}>
+                <View style={{ backgroundColor: primary, paddingHorizontal: 16, paddingVertical: 8, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }}>
                     <Text style={{ fontSize: 14, fontWeight: '800', color: 'white' }}>Trending</Text>
                 </View>
-                <View style={{ backgroundColor: primary, height: 45, width: 90, justifyContent: 'center', alignItems: 'center', borderRadius: 18, padding: 8 }}>
+                <View style={{ backgroundColor: primary, paddingHorizontal: 16, paddingVertical: 8, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }}>
                     <Text style={{ fontSize: 14, fontWeight: '800', color: 'white' }}>Most liked</Text>
                 </View>
             </View>
-            <View style={{ marginTop: 10 }}>
-                {TrendingItems &&
-                    TrendingItems?.map((item, index) => {
-                        if (
-                            item?.appId?.includes("lenstube") ||
-                            item?.appId?.includes("lenstube-bytes")
-                        ) {
+            <ScrollView style={{ marginBottom: 60 }}>
+                <View style={{ marginTop: 10 }}>
+                    {TrendingItems &&
+                        TrendingItems?.map((item, index) => {
+                            // if (
+                            //     item?.appId?.includes("lenstube") ||
+                            //     item?.appId?.includes("lenstube-bytes")
+                            // ) {
                             return (
                                 <VideoCard
                                     key={index}
@@ -53,9 +58,10 @@ const Trending = ({ navigation }) => {
                                     uploadedBy={item?.profile?.handle}
                                 />
                             );
-                        }
-                    })}
-            </View>
+                            // }
+                        })}
+                </View>
+            </ScrollView>
         </View>
     )
 }

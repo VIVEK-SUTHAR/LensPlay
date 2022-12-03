@@ -10,7 +10,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
 import MyVideos from "../components/MyVideos";
@@ -19,7 +19,7 @@ import { primary, secondary } from "../constants/Colors";
 import useStore from "../store/Store";
 import getPublications from "../apollo/Queries/getPublications";
 
-const Profile = ({navigation}:{navigation:any}) => {
+const Profile = ({ navigation }: { navigation: any }) => {
   const [profile, setProfile] = useState<{}>({});
   const [allVideos, setallVideos] = useState({})
   const store = useStore();
@@ -27,25 +27,26 @@ const Profile = ({navigation}:{navigation:any}) => {
     getProfleInfo();
   }, []);
   const getProfleInfo = async () => {
-   try {
-     const profiledata = await client.query({
-       query: getUserProfile,
-       variables: {
-         id: store.profileId,
-       },
-     });
-     setProfile(profiledata.data);
-     const getUserVideos = await client.query({
-       query: getPublications,
-       variables: {
-         id: store.profileId,
-       },
-     });
-     console.log(getUserVideos.data.publications.items[0].appId);
-   } catch (error) {
-    console.log(error);
-    
-   }
+    try {
+      const profiledata = await client.query({
+        query: getUserProfile,
+        variables: {
+          id: store.profileId,
+        },
+      });
+      setProfile(profiledata.data);
+      console.log(profile?.profile?.coverPicture?.original?.url);
+      const getUserVideos = await client.query({
+        query: getPublications,
+        variables: {
+          id: store.profileId,
+        },
+      });
+      console.log(getUserVideos.data.publications.items[0].appId);
+    } catch (error) {
+      console.log(error);
+
+    }
   };
 
   return (
@@ -79,9 +80,8 @@ const Profile = ({navigation}:{navigation:any}) => {
             <View style={{ display: "flex", flexDirection: "row", flex: 1 }}>
               <Image
                 source={{
-                  uri: `https://ipfs.io/ipfs/${
-                    profile?.profile?.picture?.original?.url.split("//")[1]
-                  }`,
+                  uri: `https://ipfs.io/ipfs/${profile?.profile?.picture?.original?.url.split("//")[1]
+                    }`,
                 }}
                 style={{
                   height: 100,
@@ -110,7 +110,7 @@ const Profile = ({navigation}:{navigation:any}) => {
                 style={{
                   backgroundColor: primary,
                   borderRadius: 50,
-                  paddingHorizontal: 16,
+                  paddingHorizontal: 24,
                   paddingVertical: 8,
                   marginVertical: 10,
                 }}
@@ -119,12 +119,11 @@ const Profile = ({navigation}:{navigation:any}) => {
                   style={{
                     color: "black",
                     fontSize: 16,
-                    fontWeight: "600",
+                    fontWeight: "bold",
                     textAlign: "center",
-                    // width:'80%'
                   }}
                 >
-                  Follow
+                  Subscribe
                 </Text>
               </View>
             </TouchableOpacity>
@@ -135,7 +134,7 @@ const Profile = ({navigation}:{navigation:any}) => {
           style={{
             width: "100%",
             borderRadius: 15,
-            paddingVertical: 20,
+            paddingVertical: 5,
             backgroundColor: primary,
             marginTop: 50,
             display: "flex",
@@ -149,34 +148,35 @@ const Profile = ({navigation}:{navigation:any}) => {
               justifyContent: "center",
               alignItems: "center",
               borderRightWidth: 1,
+              display: 'flex',
+              flexDirection: 'row'
             }}
           >
-            <Text style={{ fontSize: 24 }}>{profile?.profile?.stats?.totalPosts}</Text>
-            <Text style={{ fontSize: 14 }}>Post</Text>
+            <Text style={{ fontSize: 20 }}>{profile?.profile?.stats?.totalPosts}</Text>
+            <Text style={{ fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>Post</Text>
           </View>
           <View
             style={{
               width: "50%",
               justifyContent: "center",
               alignItems: "center",
+              display: 'flex',
+              flexDirection: 'row',
             }}
           >
-            <Text style={{ fontSize: 24 }}>{profile?.profile?.stats?.totalFollowers}</Text>
-            <Text style={{ fontSize: 14 }}>Subscribers</Text>
+            <Text style={{ fontSize: 20 }}>{profile?.profile?.stats?.totalFollowers}</Text>
+            <Text style={{ fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>Subscribers</Text>
           </View>
         </View>
         <View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
-          <Text style={{ fontSize: 24, fontWeight: "700" }}>Videos</Text>
-          {
-
-          }
+          <Text style={{ fontSize: 20, fontWeight: "700", marginVertical: 20 }}>Videos</Text>
           <MyVideos navigation={navigation} />
           <MyVideos navigation={navigation} />
           <MyVideos navigation={navigation} />
           <MyVideos navigation={navigation} />
         </View>
       </View>
-    </ScrollView>
+    </ScrollView >
   );
 };
 
