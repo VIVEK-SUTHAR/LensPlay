@@ -12,10 +12,11 @@ type videoPageProp = {
   navigation: any;
   title: string;
   banner: string;
-  avatar:string
+  avatar: string
+  uploadedBy:string
 };
 
-const VideoCard = ({ navigation, banner, title, avatar }: videoPageProp) => {
+const VideoCard = ({ navigation, banner, title, avatar,uploadedBy }: videoPageProp) => {
   console.log(avatar);
   
   return (
@@ -58,7 +59,7 @@ const VideoCard = ({ navigation, banner, title, avatar }: videoPageProp) => {
               {title}{" "}
             </Text>
             <Text style={{ fontSize: 12, color: "gray" }}>
-              By Someone on 23 June
+              By {uploadedBy} on 23 June
             </Text>
           </View>
           <View style={{ height: 40, width: 40 }}>
@@ -66,7 +67,7 @@ const VideoCard = ({ navigation, banner, title, avatar }: videoPageProp) => {
               source={{
                 uri: `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`,
               }}
-              style={{ height: "100%", width: "100%" }}
+              style={{ height: "100%", width: "100%",borderRadius:500 }}
             />
           </View>
         </View>

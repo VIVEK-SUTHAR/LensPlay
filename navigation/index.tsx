@@ -78,7 +78,15 @@ function BottomTabNavigator() {
               </View>
             )
           },
-          // tabBarOnPress: () => { setIsOpen(true) },
+          headerRight: () => {
+            return <View
+              style={{
+                padding: 5,
+              }}
+            >
+              <Feather name="search" size={24} color="black" />
+            </View>;
+          }
         }}
       />
       <BottomTab.Screen
