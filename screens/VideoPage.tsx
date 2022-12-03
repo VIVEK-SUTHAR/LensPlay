@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image } from 'react-native'
-import { Feather, AntDesign } from '@expo/vector-icons';
+import { Feather,AntDesign,Entypo } from '@expo/vector-icons';
 import React from 'react'
 import { primary } from '../constants/Colors';
 import useStore from '../store/Store';
@@ -24,10 +24,18 @@ const VideoPage = () => {
           <Text style={{ marginRight: 10 }}>3094505 views</Text>
           <Text>May 16, 2019</Text>
         </View>
-        <View style={{marginTop: 10}}>
-          <View style={{ backgroundColor: primary, width: 70,height: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderRadius: 10}}>
+        <View style={{marginTop: 20, flexDirection: 'row', justifyContent: 'space-around'}}>
+          <View style={{backgroundColor: primary, width: 80,height: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderRadius: 15}}>
             <AntDesign name="like2" size={24} color="black" />
-            <Text style={{marginLeft: 4}}>51K</Text>
+            <Text style={{marginLeft: 4, fontSize: 15}}>51K</Text>
+          </View>
+          <View style={{backgroundColor: primary, width: 80,height: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderRadius: 15}}>
+            <AntDesign name="dislike2" size={24} color="black" />
+            <Text style={{marginLeft: 4, fontSize: 15}}>5k</Text>
+          </View>
+          <View style={{backgroundColor: primary, width: 80,height: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderRadius: 15}}>
+            <Entypo name="share" size={24} color="black" />
+            <Text style={{marginLeft: 4 , fontSize: 15}}>Share</Text>
           </View>
         </View>
       </View>
