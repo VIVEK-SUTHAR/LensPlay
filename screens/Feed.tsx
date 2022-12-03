@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useEffect, useState } from 'react'
 import * as  React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -14,7 +14,16 @@ const Feed = ({ navigation }: { navigation: any }) => {
   const [feedData, setfeedData] = useState([]);
   const profileId = store.profileId;
   const setUserFeed = store.setUserFeed;
-  console.log(profileId);
+  const [refreshing, setRefreshing] = useState(false);
+  const wait = (timeout) => {
+    return new Promise((resolve) => setTimeout(resolve, timeout));
+  };
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    getFeedData().then(() => {
+      setRefreshing(false)
+    });
+  }, []);
   useEffect(() => {
     getFeedData();
   }, []);
@@ -30,7 +39,11 @@ const Feed = ({ navigation }: { navigation: any }) => {
     console.log(feed.data.feed.items[1]);
   }
   return (
-    <ScrollView>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <StatusBar style="dark" />
       {feedData &&
         feedData.map((item, index) => {

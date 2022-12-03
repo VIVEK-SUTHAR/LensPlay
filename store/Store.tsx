@@ -46,14 +46,18 @@ export interface Stats {
 
 const useStore = create((set) => ({
   currentProfile: null,
+  accessToken: "",
+  refreshToken: "",
   profileId: "",
+  userFeed: [],
+  isOpen: false,
+  currentIndex: 0,
+  setAccessToken: (value: string) => set({ accessToken: value }),
+  setRefreshToken: (value: string) => set({ refreshToken: value }),
   setProfileId: (value: string) => set({ profileId: value }),
   setProfile: (value: Profile) => set({ currentProfile: value }),
-  userFeed: [],
   setUserFeed: (value: any) => set({ userFeed: value }),
-  isOpen: false,
   setIsOpen: (value: any) => set({ isOpen: value }),
-  currentIndex: 0,
   setCurrentIndex: (value: any) => set({ currentIndex: value }),
 }));
 

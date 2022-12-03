@@ -1,17 +1,46 @@
-import { StyleSheet, Text, View, Image, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Dimensions,
+  Share,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Feather, AntDesign, Entypo } from "@expo/vector-icons";
 import React from "react";
 import { primary } from "../constants/Colors";
 import useStore from "../store/Store";
 import { useState } from "react";
 import { Video } from "expo-av";
+import addLike from "../api/addReaction";
 
 const VideoPage = () => {
   const store = useStore();
   const currentIndex = store.currentIndex;
   const userFeed = store.userFeed;
   const [descOpen, setDescOpen] = useState(false);
-  console.log(userFeed[currentIndex]?.comments);
+  console.log(userFeed[currentIndex]?.root?.metadata?.media[0]?.original?.url);
+  const url = userFeed[currentIndex]?.root?.metadata?.media[0]?.original?.url
+  
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: userFeed[currentIndex]?.root?.metadata?.name,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
   return (
     <View>
       <View style={{ height: 200 }}>
@@ -19,7 +48,7 @@ const VideoPage = () => {
           style={styles.video}
           resizeMode="contain"
           source={{
-            uri: "http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
+            uri: `https://ipfs.io/ipfs/${url?.split("//")[1]}`,
           }}
           useNativeControls={true}
           isLooping={true}
@@ -55,22 +84,29 @@ const VideoPage = () => {
             justifyContent: "space-around",
           }}
         >
-          <View
-            style={{
-              backgroundColor: primary,
-              width: 80,
-              height: 48,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 15,
+          <TouchableWithoutFeedback
+            onPress={() => {
+              console.log(store.accessToken);
+              addLike(store.accessToken, store.profileId, "0x97fd-0x0e");
             }}
           >
-            <AntDesign name="like2" size={24} color="black" />
-            <Text style={{ marginLeft: 4, fontSize: 15 }}>
-              {userFeed[currentIndex]?.root?.stats?.totalUpvotes}
-            </Text>
-          </View>
+            <View
+              style={{
+                backgroundColor: primary,
+                width: 80,
+                height: 48,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 15,
+              }}
+            >
+              <AntDesign name="like2" size={24} color="black" />
+              <Text style={{ marginLeft: 4, fontSize: 15 }}>
+                {userFeed[currentIndex]?.root?.stats?.totalUpvotes}
+              </Text>
+            </View>
+          </TouchableWithoutFeedback>
           <View
             style={{
               backgroundColor: primary,
@@ -87,20 +123,23 @@ const VideoPage = () => {
               {userFeed[currentIndex]?.root?.stats?.totalDownvotes}
             </Text>
           </View>
-          <View
-            style={{
-              backgroundColor: primary,
-              width: 80,
-              height: 48,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 15,
-            }}
-          >
-            <Entypo name="share" size={24} color="black" />
-            <Text style={{ marginLeft: 4, fontSize: 15 }}>Share</Text>
-          </View>
+          <TouchableWithoutFeedback onPress={onShare}>
+            <View
+              style={{
+                backgroundColor: primary,
+                width: 80,
+                height: 48,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 15,
+              }}
+            >
+              <Entypo name="share" size={24} color="black" />
+
+              <Text style={{ marginLeft: 4, fontSize: 15 }}>Share</Text>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
         <View>
           <Text style={{ fontSize: 25, fontWeight: "800", marginTop: 20 }}>
@@ -142,7 +181,7 @@ export default VideoPage;
 const styles = StyleSheet.create({
   video: {
     alignSelf: "center",
-    width:Dimensions.get("screen").width,
+    width: Dimensions.get("screen").width,
     height: 280,
   },
 });

@@ -59,8 +59,8 @@ const Login = ({ navigation }: { navigation: any }) => {
         },
       });
       if (tokens.data.authenticate.accessToken) {
+        store.setAccessToken(tokens.data.authenticate.accessToken);
         console.log(tokens.data.authenticate.accessToken);
-        
         navigation.navigate("Root");
       } else {
         alert("something went wrong");
