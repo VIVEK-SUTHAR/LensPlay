@@ -219,7 +219,8 @@ const Login = ({ navigation }: { navigation: any }) => {
             style={{ width: '100%', paddingHorizontal: 10 }}
             onPress={() => {
               Vibration.vibrate(200, false);
-              connectWallet();
+              navigation.navigate("Root");
+              // connectWallet();
             }}
           >
             <View

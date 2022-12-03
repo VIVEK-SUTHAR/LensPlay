@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   Image,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -15,6 +16,7 @@ import { primary, secondary } from "../constants/Colors";
 
 const Profile = () => {
   return (
+    <ScrollView>
     <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
       <View
         style={{
@@ -103,8 +105,12 @@ const Profile = () => {
       <View style={{paddingHorizontal:10,paddingVertical:10}}>
         <Text style={{fontSize:24,fontWeight:'700'}}>Videos</Text>
         <MyVideos/>
+        <MyVideos/>
+        <MyVideos/>
+        <MyVideos/>
       </View>
     </View>
+    </ScrollView>
   );
 };
 
