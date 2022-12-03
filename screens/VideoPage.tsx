@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image } from 'react-native'
-import { Feather,AntDesign } from '@expo/vector-icons';
+import { Feather, AntDesign } from '@expo/vector-icons';
 import React from 'react'
 import { primary } from '../constants/Colors';
 
@@ -19,7 +19,7 @@ const VideoPage = () => {
           <Text>May 16, 2019</Text>
         </View>
         <View>
-          <View style={{backgroundColor: primary, width: 24}}>
+          <View style={{ backgroundColor: primary, width: 24 }}>
             <AntDesign name="like2" size={24} color="black" />
           </View>
         </View>

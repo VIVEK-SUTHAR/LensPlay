@@ -13,12 +13,10 @@ type videoPageProp = {
   title: string;
   banner: string;
   avatar: string
-  uploadedBy:string
+  uploadedBy: string
 };
 
-const VideoCard = ({ navigation, banner, title, avatar,uploadedBy }: videoPageProp) => {
-  console.log(avatar);
-  
+const VideoCard = ({ navigation, banner, title, avatar, uploadedBy }: videoPageProp) => {
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -67,7 +65,7 @@ const VideoCard = ({ navigation, banner, title, avatar,uploadedBy }: videoPagePr
               source={{
                 uri: `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`,
               }}
-              style={{ height: "100%", width: "100%",borderRadius:500 }}
+              style={{ height: "100%", width: "100%", borderRadius: 500 }}
             />
           </View>
         </View>
