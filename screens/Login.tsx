@@ -172,8 +172,8 @@ const Login = ({ navigation }: { navigation: any }) => {
         {!!connector.connected ? (
           <TouchableOpacity
             onPress={async () => {
-              // navigation.navigate("Root");
-              await logInWithLens();
+              navigation.navigate("Root");
+              // await logInWithLens();
             }}
           >
             <View

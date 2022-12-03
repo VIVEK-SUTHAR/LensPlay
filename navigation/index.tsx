@@ -10,7 +10,8 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
-import { ColorSchemeName, Pressable, View } from 'react-native';
+import { useState } from 'react';
+import { ColorSchemeName, Pressable, TouchableWithoutFeedback, View } from 'react-native';
 import VideoPage from '../screens/VideoPage';
 import { primary, secondary } from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -23,6 +24,8 @@ import TabTwoScreen from '../screens/TabTwoScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import Profile from '../screens/Profile';
+import Create from '../components/Create';
+import  useStore  from '../store/Store';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -44,6 +47,7 @@ function RootNavigator() {
       <Stack.Screen name='Root' component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name='VideoPage' component={VideoPage} options={{ headerShown: true, presentation: "card" }} />
       <Stack.Screen name='Profile' component={Profile} options={{ headerShown: true, presentation: "card" }} />
+      <Stack.Screen name='Create' component={Create} options={{ headerShown: true, presentation: "card" }} />
     </Stack.Navigator>
   );
 }
@@ -55,6 +59,9 @@ function RootNavigator() {
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
+  const state = useStore();
+  const setIsOpen = state.setIsOpen;
+  const isOpen = state.isOpen;
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
@@ -78,7 +85,8 @@ function BottomTabNavigator() {
                 <Feather name="home" size={24} color='black' />
               </View>
             )
-          }
+          },
+          // tabBarOnPress: () => { setIsOpen(true) },
         }}
       />
       <BottomTab.Screen
@@ -97,15 +105,18 @@ function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name='Add'
+        name='Create'
         component={Feed}
         options={{
           tabBarLabel: "",
+          // tabBarOnPress: () => { setIsOpen(true)},
           tabBarIcon: ({ focused }) => {
             return (
+              <TouchableWithoutFeedback onPress={()=> {setIsOpen(!isOpen);}}>
               <View style={{ padding: 5, borderTopWidth: focused ? 2 : 0, borderTopColor: focused ? primary : 'none', height: '100%' }}>
                 <AntDesign name="pluscircleo" size={24} color='black' />
               </View>
+              </TouchableWithoutFeedback>
             )
           }
         }}
