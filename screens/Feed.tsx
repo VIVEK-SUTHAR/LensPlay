@@ -12,6 +12,7 @@ const Feed = ({ navigation }: { navigation: any }) => {
   const store = useStore();
   const [feedData, setfeedData] = useState([]);
   const profileId = store.profileId;
+  const setUserFeed = store.setUserFeed;
   console.log(profileId);
   useEffect(() => {
     getFeedData();
@@ -25,6 +26,7 @@ const Feed = ({ navigation }: { navigation: any }) => {
     });
     console.log(feed.data);
     setfeedData(feed.data.feed.items);
+    setUserFeed(feed.data.feed.items);
   }
   return (
     <ScrollView>
@@ -39,6 +41,7 @@ const Feed = ({ navigation }: { navigation: any }) => {
             return (
               <VideoCard
                 key={index}
+                id={index}
                 navigation={navigation}
                 title={item?.root?.metadata?.name}
                 banner={item?.root?.metadata?.media[0]?.original?.url}
