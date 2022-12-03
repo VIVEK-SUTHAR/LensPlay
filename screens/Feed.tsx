@@ -10,14 +10,23 @@ const Feed = ({navigation}:{navigation:any}) => {
   const isOpen = state.isOpen;
   return (
         <View>
-          <ScrollView>
+          {
+            isOpen?<View>
             <VideoCard navigation={navigation}></VideoCard>
+            <VideoCard navigation={navigation}></VideoCard>
+            <VideoCard navigation={navigation}></VideoCard>
+            <VideoCard navigation={navigation}></VideoCard>
+            <VideoCard navigation={navigation}></VideoCard>
+            <VideoCard navigation={navigation}></VideoCard>
+        </View>:<ScrollView>
+        <VideoCard navigation={navigation}></VideoCard>
             <VideoCard navigation={navigation}></VideoCard>
             <VideoCard navigation={navigation}></VideoCard>
             <VideoCard navigation={navigation}></VideoCard>
             <VideoCard navigation={navigation}></VideoCard>
             <VideoCard navigation={navigation}></VideoCard>
         </ScrollView>
+          }
         {
           isOpen?<View style={{position: 'absolute', top: 640, left: 0, right: 0}}>
           <Create />

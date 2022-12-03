@@ -20,6 +20,7 @@ import { RootTabParamList } from '../types';
 import Profile from '../screens/Profile';
 import Create from '../components/Create';
 import  useStore  from '../store/Store';
+import Trending from '../screens/Trending';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -42,6 +43,7 @@ function RootNavigator() {
       <Stack.Screen name='VideoPage' component={VideoPage} options={{ headerShown: true, presentation: "card" }} />
       <Stack.Screen name='Profile' component={Profile} options={{ headerShown: true, presentation: "card" }} />
       <Stack.Screen name='Create' component={Create} options={{ headerShown: true, presentation: "card" }} />
+      <Stack.Screen name='Trending' component={Trending} options={{ headerShown: true, presentation: "card" }} />
     </Stack.Navigator>
   );
 }
@@ -81,7 +83,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name='Trending'
-        component={Feed}
+        component={Trending}
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ focused }) => {

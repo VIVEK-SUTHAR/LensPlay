@@ -40,7 +40,7 @@ const Create = () => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={async () => {
-              navigation.navigate("Root");
+              // navigation.navigate("Root");
               // await logInWithLens();
             }}
           >
