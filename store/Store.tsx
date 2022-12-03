@@ -51,6 +51,8 @@ const useStore = create((set) => ({
   setProfile: (value: Profile) => set({ currentProfile: value }),
   userFeed: [],
   setUserFeed: (value: any) => set({ userFeed: value }),
+  isOpen: false,
+  setIsOpen: (value: any) => set({ isOpen: value })
 }));
 
 export default useStore;
