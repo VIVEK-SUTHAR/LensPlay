@@ -55,7 +55,6 @@ const Profile = ({ navigation }: { navigation: any }) => {
         <View
           style={{
             height: 150,
-            display: "flex",
             alignItems: "flex-start",
             marginBottom: 30,
           }}
@@ -69,78 +68,68 @@ const Profile = ({ navigation }: { navigation: any }) => {
               resizeMode: "contain",
             }}
           />
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "100%",
-            }}
-          >
-            <View style={{ display: "flex", flexDirection: "row", flex: 1 }}>
-              <Image
-                source={{
-                  uri: `https://ipfs.io/ipfs/${
-                    profile?.profile?.picture?.original?.url.split("//")[1]
-                  }`,
-                }}
-                style={{
-                  height: 100,
-                  width: 100,
-                  marginTop: -30,
-                  borderRadius: 50,
-                  borderWidth: 5,
-                  borderColor: secondary,
-                }}
-              />
-              <View style={{ padding: 10 }}>
-                <Text
-                  style={{ fontSize: 16, fontWeight: "bold" }}
-                  numberOfLines={1}
-                >
-                  {profile?.profile?.name}
-                </Text>
-                <Text style={{ fontSize: 12, color: "gray" }}>
-                  {profile?.profile?.bio}
-                </Text>
-              </View>
-            </View>
+        </View>
 
-            <TouchableOpacity>
-              <View
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+          <Image
+            source={{
+              uri: `https://ipfs.io/ipfs/${profile?.profile?.picture?.original?.url.split("//")[1]
+                }`,
+            }}
+            style={{
+              height: 100,
+              width: 100,
+              marginTop: -30,
+              borderRadius: 50,
+              borderWidth: 5,
+              borderColor: secondary,
+            }}
+          />
+          <TouchableOpacity>
+            <View
+              style={{
+                backgroundColor: primary,
+                borderRadius: 50,
+                paddingHorizontal: 24,
+                paddingVertical: 8,
+                marginVertical: 10,
+              }}
+            >
+              <Text
                 style={{
-                  backgroundColor: primary,
-                  borderRadius: 50,
-                  paddingHorizontal: 24,
-                  paddingVertical: 8,
-                  marginVertical: 10,
+                  color: "black",
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  textAlign: "center",
                 }}
               >
-                <Text
-                  style={{
-                    color: "black",
-                    fontSize: 16,
-                    fontWeight: "bold",
-                    textAlign: "center",
-                  }}
-                >
-                  Subscribe
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          {/* <Text>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa ut delectus enim corporis. Quod libero laudantium sequi nihil neque quas iste cupiditate, nemo magni saepe vero! Debitis ratione officia sint corporis perspiciatis a facilis nihil inventore, dicta error. Esse obcaecati ut quam optio consequatur in repellat hic quas amet nobis?</Text> */}
+                Subscribe
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
+
+        <View style={{ padding: 4 }}>
+          <Text
+            style={{ fontSize: 20, fontWeight: "bold" }}
+            numberOfLines={1}
+          >
+            {profile?.profile?.name}
+          </Text>
+          <Text style={{ fontSize: 12, color: "gray" }}>
+            {profile?.profile?.bio}
+          </Text>
+        </View>
+
         <View
           style={{
             width: "100%",
-            borderRadius: 15,
+            borderRadius: 16,
             paddingVertical: 5,
             backgroundColor: primary,
-            marginTop: 50,
-            display: "flex",
             flexDirection: "row",
             justifyContent: "space-evenly",
+            marginTop: 10
           }}
         >
           <View
@@ -149,7 +138,6 @@ const Profile = ({ navigation }: { navigation: any }) => {
               justifyContent: "center",
               alignItems: "center",
               borderRightWidth: 1,
-              display: "flex",
               flexDirection: "row",
             }}
           >
@@ -165,7 +153,6 @@ const Profile = ({ navigation }: { navigation: any }) => {
               width: "50%",
               justifyContent: "center",
               alignItems: "center",
-              display: "flex",
               flexDirection: "row",
             }}
           >
@@ -177,7 +164,8 @@ const Profile = ({ navigation }: { navigation: any }) => {
             </Text>
           </View>
         </View>
-        <View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
+
+        <View style={{ paddingHorizontal: 4, paddingVertical: 10 }}>
           <Text style={{ fontSize: 20, fontWeight: "700", marginVertical: 20 }}>
             Videos
           </Text>
@@ -187,7 +175,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
           <MyVideos navigation={navigation} />
         </View>
       </View>
-    </ScrollView>
+    </ScrollView >
   );
 };
 

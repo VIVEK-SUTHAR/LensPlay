@@ -22,7 +22,7 @@ const VideoPage = () => {
   const [descOpen, setDescOpen] = useState(false);
   console.log(userFeed[currentIndex]?.root?.metadata?.media[0]?.original?.url);
   const url = userFeed[currentIndex]?.root?.metadata?.media[0]?.original?.url
-  
+
   const onShare = async () => {
     try {
       const result = await Share.share({
@@ -54,7 +54,7 @@ const VideoPage = () => {
           isLooping={true}
         />
       </View>
-      <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
+      <View style={{ paddingHorizontal: 10, paddingVertical: 8, marginTop: 90 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text style={{ flex: 0.98, fontSize: 20, fontWeight: "800" }}>
             {userFeed[currentIndex]?.root?.metadata?.name}
@@ -93,16 +93,16 @@ const VideoPage = () => {
             <View
               style={{
                 backgroundColor: primary,
-                width: 80,
-                height: 48,
+                paddingHorizontal: 16,
+                paddingVertical: 8,
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "center",
-                borderRadius: 15,
+                borderRadius: 16,
               }}
             >
               <AntDesign name="like2" size={24} color="black" />
-              <Text style={{ marginLeft: 4, fontSize: 15 }}>
+              <Text style={{ marginLeft: 4, fontSize: 16 }}>
                 {userFeed[currentIndex]?.root?.stats?.totalUpvotes}
               </Text>
             </View>
@@ -110,12 +110,12 @@ const VideoPage = () => {
           <View
             style={{
               backgroundColor: primary,
-              width: 80,
-              height: 48,
+              paddingHorizontal: 16,
+              paddingVertical: 8,
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              borderRadius: 15,
+              borderRadius: 16,
             }}
           >
             <AntDesign name="dislike2" size={24} color="black" />
@@ -127,17 +127,16 @@ const VideoPage = () => {
             <View
               style={{
                 backgroundColor: primary,
-                width: 80,
-                height: 48,
+                paddingHorizontal: 16,
+                paddingVertical: 8,
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "center",
-                borderRadius: 15,
+                borderRadius: 16,
               }}
             >
               <Entypo name="share" size={24} color="black" />
-
-              <Text style={{ marginLeft: 4, fontSize: 15 }}>Share</Text>
+              <Text style={{ marginLeft: 4, fontSize: 16 }}>Share</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>

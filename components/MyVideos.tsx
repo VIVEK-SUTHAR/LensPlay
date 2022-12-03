@@ -27,10 +27,10 @@ const VideoCard = ({ navigation }: videoPageProp) => {
             display: "flex",
             flexDirection: "row",
             backgroundColor: "white",
-            borderRadius: 20,
+            borderRadius: 16,
           }}
         >
-          <View style={{ height: 130, width: "50%" }}>
+          <View style={{ height: 100, width: "50%" }}>
             <Image
               source={require("../assets/images/yt.webp")}
               style={{
@@ -63,7 +63,7 @@ const VideoCard = ({ navigation }: videoPageProp) => {
               >
                 How to use tailwind with svelte kansf ksnf{" "}
               </Text>
-              <Text style={{ fontSize: 12, color: "gray" }}>By June</Text>
+              <Text style={{ fontSize: 12, color: "gray" }}>By Someone</Text>
             </View>
           </View>
         </View>

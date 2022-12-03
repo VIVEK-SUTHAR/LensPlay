@@ -44,21 +44,21 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                 <View style={{ marginTop: 10 }}>
                     {TrendingItems &&
                         TrendingItems?.map((item, index) => {
-                            // if (
-                            //     item?.appId?.includes("lenstube") ||
-                            //     item?.appId?.includes("lenstube-bytes")
-                            // ) {
-                            return (
-                                <VideoCard
-                                    key={index}
-                                    navigation={navigation}
-                                    title={item?.metadata?.name}
-                                    banner={item?.metadata?.media[0]?.original?.url}
-                                    avatar={item?.profile?.picture?.original?.url}
-                                    uploadedBy={item?.profile?.handle}
-                                />
-                            );
-                            // }
+                            if (
+                                item?.appId?.includes("lenstube") ||
+                                item?.appId?.includes("lenstube-bytes")
+                            ) {
+                                return (
+                                    <VideoCard
+                                        key={index}
+                                        navigation={navigation}
+                                        title={item?.metadata?.name}
+                                        banner={item?.metadata?.media[0]?.original?.url}
+                                        avatar={item?.profile?.picture?.original?.url}
+                                        uploadedBy={item?.profile?.handle}
+                                    />
+                                );
+                            }
                         })}
                 </View>
             </ScrollView>

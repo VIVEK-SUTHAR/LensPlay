@@ -19,7 +19,7 @@ import Login from '../screens/Login';
 import { RootTabParamList } from '../types';
 import Profile from '../screens/Profile';
 import Create from '../components/Create';
-import  useStore  from '../store/Store';
+import useStore from '../store/Store';
 import Trending from '../screens/Trending';
 import Notification from '../components/Notification'
 
@@ -114,10 +114,10 @@ function BottomTabNavigator() {
           // tabBarOnPress: () => { setIsOpen(true)},
           tabBarIcon: ({ focused }) => {
             return (
-              <TouchableWithoutFeedback onPress={()=> {setIsOpen(!isOpen);}}>
-              <View style={{ padding: 5, borderTopWidth: focused ? 2 : 0, borderTopColor: focused ? primary : 'none', height: '100%' }}>
-                <AntDesign name="pluscircleo" size={24} color='black' />
-              </View>
+              <TouchableWithoutFeedback onPress={() => { setIsOpen(!isOpen); }}>
+                <View style={{ padding: 5, borderTopWidth: focused ? 2 : 0, borderTopColor: focused ? primary : 'none', height: '100%' }}>
+                  <AntDesign name="pluscircleo" size={24} color='black' />
+                </View>
               </TouchableWithoutFeedback>
             )
           }
