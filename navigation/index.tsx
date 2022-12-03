@@ -21,6 +21,7 @@ import Profile from '../screens/Profile';
 import Create from '../components/Create';
 import  useStore  from '../store/Store';
 import Trending from '../screens/Trending';
+import Notification from '../components/Notification'
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -44,6 +45,7 @@ function RootNavigator() {
       <Stack.Screen name='Profile' component={Profile} options={{ headerShown: true, presentation: "card" }} />
       <Stack.Screen name='Create' component={Create} options={{ headerShown: true, presentation: "card" }} />
       <Stack.Screen name='Trending' component={Trending} options={{ headerShown: true, presentation: "card" }} />
+      <Stack.Screen name='Notification' component={Notification} options={{ headerShown: true, presentation: "card" }} />
     </Stack.Navigator>
   );
 }
@@ -123,7 +125,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name='Notifications'
-        component={Feed}
+        component={Notification}
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ focused }) => {
