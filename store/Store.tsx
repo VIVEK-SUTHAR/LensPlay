@@ -46,7 +46,9 @@ export interface Stats {
 
 const useStore = create((set) => ({
     currentProfile: null,
+    isOpen: false,
     setProfile: (value: Profile) => set({ currentProfile: value }),
+    setIsOpen: (value: any) => set({ isOpen: value })
 }));
 
 export default useStore;
