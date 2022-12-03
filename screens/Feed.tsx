@@ -1,5 +1,6 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import * as  React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import VideoCard from '../components/VideoCard'
 import Create from '../components/Create'
@@ -24,7 +25,6 @@ const Feed = ({ navigation }: { navigation: any }) => {
         id: profileId,
       },
     });
-    console.log(feed.data);
     setfeedData(feed.data.feed.items);
     setUserFeed(feed.data.feed.items);
   }
@@ -33,7 +33,6 @@ const Feed = ({ navigation }: { navigation: any }) => {
       <StatusBar style="dark" />
       {feedData &&
         feedData.map((item, index) => {
-          console.log(item?.root?.appId);
           if (
             item?.root?.appId?.includes("lenstube") ||
             item?.root?.appId?.includes("lenstube-bytes")

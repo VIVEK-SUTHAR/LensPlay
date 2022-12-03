@@ -37,8 +37,6 @@ export default function TabOneScreen({
         console.log(error.message);
       }
     }
-
-    // console.log(data);
   };
   return (
     <View style={styles.container}>

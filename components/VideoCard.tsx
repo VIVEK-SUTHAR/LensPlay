@@ -72,7 +72,7 @@ const VideoCard = ({ id, navigation, banner, title, avatar,uploadedBy }: videoPa
               source={{
                 uri: `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`,
               }}
-              style={{ height: "100%", width: "100%",borderRadius:500 }}
+              style={{ height: "100%", width: "100%", borderRadius: 500 }}
             />
           </View>
         </View>

@@ -18,7 +18,7 @@ import getProfile from "../apollo/Queries/getProfile";
 import useStore from "../store/Store";
 
 const Login = ({ navigation }: { navigation: any }) => {
-  const store=useStore()
+  const store = useStore()
   const connector = useWalletConnect();
   const [isconnected, setIsconnected] = useState<boolean>(false);
   const connectWallet = React.useCallback(() => {
@@ -51,7 +51,6 @@ const Login = ({ navigation }: { navigation: any }) => {
         params: [connector.accounts[0], challengeText.data.challenge.text],
       });
       const address = connector.accounts[0];
-      console.log(data);
       const tokens = await client.mutate({
         mutation: getAccessTokens,
         variables: {
@@ -59,7 +58,6 @@ const Login = ({ navigation }: { navigation: any }) => {
           signature: data,
         },
       });
-      console.log(tokens);
       if (tokens.data.authenticate.accessToken) {
         navigation.navigate("Root");
       } else {
@@ -73,7 +71,6 @@ const Login = ({ navigation }: { navigation: any }) => {
   };
 
   const killSession = React.useCallback(() => {
-    console.log("lgging out");
     return connector.killSession();
   }, [connector]);
 

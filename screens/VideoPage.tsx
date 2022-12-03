@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image } from 'react-native'
-import { Feather,AntDesign } from '@expo/vector-icons';
+import { Feather, AntDesign } from '@expo/vector-icons';
 import React from 'react'
 import { primary } from '../constants/Colors';
 import useStore from '../store/Store';
@@ -7,7 +7,7 @@ import useStore from '../store/Store';
 const VideoPage = () => {
   const store = useStore();
   const currentIndex = store.currentIndex;
-  const userFeed = store.userFeed;
+  const userFeed = +.userFeed;
   // console.log(userFeed)
   console.log(currentIndex)
   return (
@@ -25,7 +25,7 @@ const VideoPage = () => {
           <Text>May 16, 2019</Text>
         </View>
         <View style={{marginTop: 10}}>
-          <View style={{backgroundColor: primary, width: 70,height: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderRadius: 10}}>
+          <View style={{ backgroundColor: primary, width: 70,height: 4 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderRadius: 10}}>
             <AntDesign name="like2" size={24} color="black" />
             <Text style={{marginLeft: 4}}>51K</Text>
           </View>
