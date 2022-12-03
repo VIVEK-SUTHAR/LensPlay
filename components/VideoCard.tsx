@@ -7,20 +7,27 @@ import {
   View,
 } from "react-native";
 import { primary, secondary } from "../constants/Colors";
+import useStore from "../store/Store";
 
 type videoPageProp = {
   navigation: any;
   title: string;
   banner: string;
   avatar: string
-  uploadedBy: string
+  uploadedBy:string
+  id: number
 };
 
-const VideoCard = ({ navigation, banner, title, avatar, uploadedBy }: videoPageProp) => {
+const VideoCard = ({ id, navigation, banner, title, avatar,uploadedBy }: videoPageProp) => {
+  const store = useStore();
+  const setCurrentIndex = store.setCurrentIndex;
+  console.log('key is ', id)
+  
   return (
     <TouchableWithoutFeedback
       onPress={() => {
         navigation.navigate("VideoPage");
+        setCurrentIndex(id)
       }}
     >
       <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>

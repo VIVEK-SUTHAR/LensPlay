@@ -52,7 +52,9 @@ const useStore = create((set) => ({
   userFeed: [],
   setUserFeed: (value: any) => set({ userFeed: value }),
   isOpen: false,
-  setIsOpen: (value: any) => set({ isOpen: value })
+  setIsOpen: (value: any) => set({ isOpen: value }),
+  currentIndex: 0,
+  setCurrentIndex: (value: any) => set({ currentIndex: value }),
 }));
 
 export default useStore;
