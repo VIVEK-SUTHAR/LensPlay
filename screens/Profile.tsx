@@ -80,8 +80,9 @@ const Profile = ({ navigation }: { navigation: any }) => {
             <View style={{ display: "flex", flexDirection: "row", flex: 1 }}>
               <Image
                 source={{
-                  uri: `https://ipfs.io/ipfs/${profile?.profile?.picture?.original?.url.split("//")[1]
-                    }`,
+                  uri: `https://ipfs.io/ipfs/${
+                    profile?.profile?.picture?.original?.url.split("//")[1]
+                  }`,
                 }}
                 style={{
                   height: 100,
@@ -148,35 +149,45 @@ const Profile = ({ navigation }: { navigation: any }) => {
               justifyContent: "center",
               alignItems: "center",
               borderRightWidth: 1,
-              display: 'flex',
-              flexDirection: 'row'
+              display: "flex",
+              flexDirection: "row",
             }}
           >
-            <Text style={{ fontSize: 20 }}>{profile?.profile?.stats?.totalPosts}</Text>
-            <Text style={{ fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>Post</Text>
+            <Text style={{ fontSize: 20 }}>
+              {profile?.profile?.stats?.totalPosts}
+            </Text>
+            <Text style={{ fontSize: 16, marginLeft: 10, fontWeight: "bold" }}>
+              Post
+            </Text>
           </View>
           <View
             style={{
               width: "50%",
               justifyContent: "center",
               alignItems: "center",
-              display: 'flex',
-              flexDirection: 'row',
+              display: "flex",
+              flexDirection: "row",
             }}
           >
-            <Text style={{ fontSize: 20 }}>{profile?.profile?.stats?.totalFollowers}</Text>
-            <Text style={{ fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>Subscribers</Text>
+            <Text style={{ fontSize: 20 }}>
+              {profile?.profile?.stats?.totalFollowers}
+            </Text>
+            <Text style={{ fontSize: 16, marginLeft: 10, fontWeight: "bold" }}>
+              Subscribers
+            </Text>
           </View>
         </View>
         <View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
-          <Text style={{ fontSize: 20, fontWeight: "700", marginVertical: 20 }}>Videos</Text>
+          <Text style={{ fontSize: 20, fontWeight: "700", marginVertical: 20 }}>
+            Videos
+          </Text>
           <MyVideos navigation={navigation} />
           <MyVideos navigation={navigation} />
           <MyVideos navigation={navigation} />
           <MyVideos navigation={navigation} />
         </View>
       </View>
-    </ScrollView >
+    </ScrollView>
   );
 };
 
