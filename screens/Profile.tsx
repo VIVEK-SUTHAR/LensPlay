@@ -21,7 +21,8 @@ import getPublications from "../apollo/Queries/getPublications";
 
 const Profile = ({ navigation }: { navigation: any }) => {
   const [profile, setProfile] = useState<{}>({});
-  const [allVideos, setallVideos] = useState({})
+  const [allVideos, setallVideos] = useState([]);
+  const [isVideoAvilable, setIsVideoAvilable] = useState<boolean>(true);
   const store = useStore();
   useEffect(() => {
     getProfleInfo();
@@ -35,7 +36,6 @@ const Profile = ({ navigation }: { navigation: any }) => {
         },
       });
       setProfile(profiledata.data);
-      console.log(profile?.profile?.coverPicture?.original?.url);
       const getUserVideos = await client.query({
         query: getPublications,
         variables: {
@@ -43,9 +43,9 @@ const Profile = ({ navigation }: { navigation: any }) => {
         },
       });
       console.log(getUserVideos.data.publications.items[0].appId);
+      setallVideos(getUserVideos.data.publications.items);
     } catch (error) {
       console.log(error);
-
     }
   };
 
