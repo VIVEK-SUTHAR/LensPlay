@@ -27,6 +27,7 @@ const Feed = ({ navigation }: { navigation: any }) => {
     });
     setfeedData(feed.data.feed.items);
     setUserFeed(feed.data.feed.items);
+    console.log(feed.data.feed.items[1]);
   }
   return (
     <ScrollView>
