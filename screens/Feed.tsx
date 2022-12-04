@@ -44,25 +44,25 @@ const Feed = ({ navigation }: { navigation: any }) => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <StatusBar style="dark" />
+      <StatusBar style="light" backgroundColor='#1A202C' />
       {feedData &&
         feedData.map((item, index) => {
-          if (
-            item?.root?.appId?.includes("lenstube") ||
-            item?.root?.appId?.includes("lenstube-bytes")
-          ) {
-            return (
-              <VideoCard
-                key={index}
-                id={index}
-                navigation={navigation}
-                title={item?.root?.metadata?.name}
-                banner={item?.root?.metadata?.media[0]?.original?.url}
-                avatar={item?.root?.profile?.picture?.original?.url}
-                uploadedBy={item?.root?.profile?.handle}
-              />
-            );
-          }
+          // if (
+          //   item?.root?.appId?.includes("lenstube") ||
+          //   item?.root?.appId?.includes("lenstube-bytes")
+          // ) {
+          return (
+            <VideoCard
+              key={index}
+              id={index}
+              navigation={navigation}
+              title={item?.root?.metadata?.name}
+              banner={item?.root?.metadata?.media[0]?.original?.url}
+              avatar={item?.root?.profile?.picture?.original?.url}
+              uploadedBy={item?.root?.profile?.handle}
+            />
+          );
+          // }
         })}
       {/* <VideoCard navigation={navigation}></VideoCard>
       <VideoCard navigation={navigation}></VideoCard>

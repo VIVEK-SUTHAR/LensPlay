@@ -70,7 +70,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
           />
         </View>
 
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginTop: '-10%' }}>
           <Image
             source={{
               uri: `https://ipfs.io/ipfs/${profile?.profile?.picture?.original?.url.split("//")[1]
@@ -116,7 +116,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
           >
             {profile?.profile?.name}
           </Text>
-          <Text style={{ fontSize: 12, color: "gray" }}>
+          <Text style={{ fontSize: 16, color: "gray" }}>
             {profile?.profile?.bio}
           </Text>
         </View>

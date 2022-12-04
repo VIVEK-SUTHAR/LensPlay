@@ -29,7 +29,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
 
     return (
         <View>
-            <View style={{ margin: 10, paddingHorizontal: 10, flexDirection: 'row', justifyContent: 'space-evenly' }}>
+            {/* <View style={{ margin: 10, paddingHorizontal: 10, flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 <View style={{ backgroundColor: primary, paddingHorizontal: 16, paddingVertical: 8, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }}>
                     <Text style={{ fontSize: 14, fontWeight: '800', color: 'white' }}>Most Rated</Text>
                 </View>
@@ -39,26 +39,26 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                 <View style={{ backgroundColor: primary, paddingHorizontal: 16, paddingVertical: 8, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }}>
                     <Text style={{ fontSize: 14, fontWeight: '800', color: 'white' }}>Most liked</Text>
                 </View>
-            </View>
-            <ScrollView style={{ marginBottom: 60 }}>
+            </View> */}
+            <ScrollView>
                 <View style={{ marginTop: 10 }}>
                     {TrendingItems &&
                         TrendingItems?.map((item, index) => {
-                            if (
-                                item?.appId?.includes("lenstube") ||
-                                item?.appId?.includes("lenstube-bytes")
-                            ) {
-                                return (
-                                    <VideoCard
-                                        key={index}
-                                        navigation={navigation}
-                                        title={item?.metadata?.name}
-                                        banner={item?.metadata?.media[0]?.original?.url}
-                                        avatar={item?.profile?.picture?.original?.url}
-                                        uploadedBy={item?.profile?.handle}
-                                    />
-                                );
-                            }
+                            // if (
+                            //     item?.appId?.includes("lenstube") ||
+                            //     item?.appId?.includes("lenstube-bytes")
+                            // ) {
+                            return (
+                                <VideoCard
+                                    key={index}
+                                    navigation={navigation}
+                                    title={item?.metadata?.name}
+                                    banner={item?.metadata?.media[0]?.original?.url}
+                                    avatar={item?.profile?.picture?.original?.url}
+                                    uploadedBy={item?.profile?.handle}
+                                />
+                            );
+                            // }
                         })}
                 </View>
             </ScrollView>

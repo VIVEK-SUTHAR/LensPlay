@@ -11,7 +11,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
 import { useState } from 'react';
-import { ColorSchemeName, TouchableWithoutFeedback, View } from 'react-native';
+import { ColorSchemeName, Text, TouchableWithoutFeedback, View } from 'react-native';
 import VideoPage from '../screens/VideoPage';
 import { primary } from '../constants/Colors';
 import Feed from '../screens/Feed';
@@ -38,15 +38,17 @@ const Stack = createNativeStackNavigator();
 
 function RootNavigator() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name='Login' component={Login} options={{ headerShown: false }} />
-      <Stack.Screen name='Root' component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name='VideoPage' component={VideoPage} options={{ headerShown: true, presentation: "card" }} />
-      <Stack.Screen name='Profile' component={Profile} options={{ headerShown: true, presentation: "card" }} />
-      <Stack.Screen name='Create' component={Create} options={{ headerShown: true, presentation: "card" }} />
-      <Stack.Screen name='Trending' component={Trending} options={{ headerShown: true, presentation: "card" }} />
-      <Stack.Screen name='Notification' component={Notification} options={{ headerShown: true, presentation: "card" }} />
-    </Stack.Navigator>
+    <>
+      <Stack.Navigator screenOptions={{ headerTitle: 'LensPlay' }}>
+        <Stack.Screen name='Login' component={Login} options={{ headerShown: false }} />
+        <Stack.Screen name='Root' component={BottomTabNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name='VideoPage' component={VideoPage} options={{ headerShown: true, presentation: "card" }} />
+        <Stack.Screen name='Profile' component={Profile} options={{ headerShown: true, presentation: "card" }} />
+        <Stack.Screen name='Create' component={Create} options={{ headerShown: true, presentation: "card" }} />
+        <Stack.Screen name='Trending' component={Trending} options={{ headerShown: true, presentation: "card" }} />
+        <Stack.Screen name='Notification' component={Notification} options={{ headerShown: true, presentation: "card" }} />
+      </Stack.Navigator>
+    </>
   );
 }
 
@@ -60,6 +62,20 @@ function BottomTabNavigator() {
     <BottomTab.Navigator
       initialRouteName="Home"
       screenOptions={{
+        headerTitle: '',
+        headerLeft: () => {
+          return (
+            <View style={{
+              minWidth: "100%", height: "100%", justifyContent: "flex-start", alignItems: "center", paddingHorizontal: 15,
+              flexDirection: "row"
+            }}>
+              <Text style={{
+                fontSize: 24,
+                fontWeight: "700",
+              }}>LensPlay</Text>
+            </View>
+          )
+        },
         tabBarStyle: {
           height: 50,
           borderTopLeftRadius: 30,
@@ -86,7 +102,7 @@ function BottomTabNavigator() {
                 padding: 5,
               }}
             >
-              <Feather name="search" size={24} color="black" />
+              <Feather name="search" size={24} color='black' />
             </View>;
           }
         }}
