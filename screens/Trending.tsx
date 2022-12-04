@@ -1,8 +1,7 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, View } from 'react-native'
 import * as React from 'react'
 import { useState } from 'react'
 import VideoCard from '../components/VideoCard'
-import { primary } from '../constants/Colors'
 import { client } from '../apollo/client'
 import getTrendingPublication from '../apollo/Queries/getTrendingPublication'
 import { useEffect } from 'react';

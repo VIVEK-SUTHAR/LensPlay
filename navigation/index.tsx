@@ -122,7 +122,7 @@ function BottomTabNavigator() {
           }
         }}
       />
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name='Create'
         component={Feed}
         options={{
@@ -152,7 +152,7 @@ function BottomTabNavigator() {
             )
           }
         }}
-      />
+      /> */}
       <BottomTab.Screen
         name='Account'
         component={Profile}
