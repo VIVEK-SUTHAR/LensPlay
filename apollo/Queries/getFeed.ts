@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export default gql`
-  query Feed($id:ProfileId!) {
-    feed(request: { profileId: $id, limit: 50 }) {
+  query Feed($id: ProfileId!) {
+    feed(request: { profileId: $id, sources: ["lenstube"] }) {
       items {
         root {
           ... on Post {
@@ -179,6 +179,7 @@ export default gql`
     totalAmountOfComments
 
     totalUpvotes
+    
     totalDownvotes
   }
 
@@ -240,10 +241,6 @@ export default gql`
     }
 
     appId
-
-    collectedBy {
-      ...WalletFields
-    }
 
     hidden
 

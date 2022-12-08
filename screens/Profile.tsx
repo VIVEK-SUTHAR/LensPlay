@@ -169,10 +169,10 @@ const Profile = ({ navigation }: { navigation: any }) => {
           <Text style={{ fontSize: 20, fontWeight: "700", marginVertical: 20 }}>
             Videos
           </Text>
+          {/* <MyVideos navigation={navigation} />
           <MyVideos navigation={navigation} />
           <MyVideos navigation={navigation} />
-          <MyVideos navigation={navigation} />
-          <MyVideos navigation={navigation} />
+          <MyVideos navigation={navigation} /> */}
         </View>
       </View>
     </ScrollView >

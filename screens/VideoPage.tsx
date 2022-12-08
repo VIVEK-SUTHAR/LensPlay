@@ -6,6 +6,7 @@ import {
   Dimensions,
   Share,
   TouchableWithoutFeedback,
+  ScrollView,
 } from "react-native";
 import { Feather, AntDesign, Entypo } from "@expo/vector-icons";
 import React from "react";
@@ -14,47 +15,49 @@ import useStore from "../store/Store";
 import { useState } from "react";
 import { Video } from "expo-av";
 import addLike from "../api/addReaction";
+import CommentCard from "../components/CommentCard";
 
 const VideoPage = () => {
   const store = useStore();
   const currentIndex = store.currentIndex;
   const userFeed = store.userFeed;
+  const [likes, setLikes] = useState(
+    userFeed[currentIndex]?.root?.stats?.totalUpvotes
+  );
   const [descOpen, setDescOpen] = useState(false);
-  console.log(userFeed[currentIndex]?.root?.metadata?.media[0]?.original?.url);
-  const url = userFeed[currentIndex]?.root?.metadata?.media[0]?.original?.url
-
+  console.log(userFeed[currentIndex]?.root?.stats?.totalUpvotes);
+  const playbackId =
+    userFeed[currentIndex]?.root?.metadata?.media[0]?.original?.url;
+  console.log(playbackId);
+  const VIDEO_LINK = playbackId?.includes("https://arweave.net")
+    ? playbackId
+    : `https://ipfs.io/ipfs/${playbackId.split("//")[1]}`;
   const onShare = async () => {
     try {
       const result = await Share.share({
         message: userFeed[currentIndex]?.root?.metadata?.name,
       });
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          // shared with activity type of result.activityType
-        } else {
-          // shared
-        }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
-      }
     } catch (error) {
       alert(error.message);
     }
   };
   return (
-    <View>
-      <View style={{ height: 200 }}>
-        <Video
-          style={styles.video}
-          resizeMode="contain"
-          source={{
-            uri: `https://ipfs.io/ipfs/${url?.split("//")[1]}`,
-          }}
-          useNativeControls={true}
-          isLooping={true}
-        />
-      </View>
-      <View style={{ paddingHorizontal: 10, paddingVertical: 8, marginTop: 90 }}>
+    <ScrollView>
+      <Video
+        style={styles.video}
+        resizeMode="contain"
+        source={{
+          uri: VIDEO_LINK,
+        }}
+        shouldPlay={true}
+        useNativeControls={true}
+        usePoster={true}
+        posterSource={{
+          uri: "https://ipfs.io/ipfs/QmZGMkXhvxXNXPoPd8zCu5pXq6aV79wM7pbUVXny9B4VTb",
+        }}
+        isLooping={true}
+      />
+      <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text style={{ flex: 0.98, fontSize: 20, fontWeight: "800" }}>
             {userFeed[currentIndex]?.root?.metadata?.name}
@@ -87,6 +90,7 @@ const VideoPage = () => {
           <TouchableWithoutFeedback
             onPress={() => {
               console.log(store.accessToken);
+              setLikes((prev) => prev + 1);
               addLike(store.accessToken, store.profileId, "0x97fd-0x0e");
             }}
           >
@@ -102,27 +106,27 @@ const VideoPage = () => {
               }}
             >
               <AntDesign name="like2" size={24} color="black" />
-              <Text style={{ marginLeft: 4, fontSize: 16 }}>
-                {userFeed[currentIndex]?.root?.stats?.totalUpvotes}
+              <Text style={{ marginLeft: 4, fontSize: 16 }}>{likes}</Text>
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback>
+            <View
+              style={{
+                backgroundColor: primary,
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 16,
+              }}
+            >
+              <AntDesign name="dislike2" size={24} color="black" />
+              <Text style={{ marginLeft: 4, fontSize: 15 }}>
+                {userFeed[currentIndex]?.root?.stats?.totalDownvotes}
               </Text>
             </View>
           </TouchableWithoutFeedback>
-          <View
-            style={{
-              backgroundColor: primary,
-              paddingHorizontal: 16,
-              paddingVertical: 8,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 16,
-            }}
-          >
-            <AntDesign name="dislike2" size={24} color="black" />
-            <Text style={{ marginLeft: 4, fontSize: 15 }}>
-              {userFeed[currentIndex]?.root?.stats?.totalDownvotes}
-            </Text>
-          </View>
           <TouchableWithoutFeedback onPress={onShare}>
             <View
               style={{
@@ -149,29 +153,24 @@ const VideoPage = () => {
               There are no comments yet
             </Text>
           ) : (
-            <View style={{ flexDirection: "row" }}>
-              <View style={{ height: 60, width: 60 }}>
-                <Image
-                  style={{ height: "100%", width: "100%", borderRadius: 30 }}
-                  source={{
-                    uri: userFeed[currentIndex]?.comments[0]?.profile?.picture
-                      ?.original?.url,
-                  }}
-                />
-              </View>
-              <View>
-                <Text>
-                  {userFeed[currentIndex]?.comments[0]?.profile?.name}
-                </Text>
-                <Text>
-                  {userFeed[currentIndex]?.comments[0]?.metadata?.description}
-                </Text>
-              </View>
-            </View>
+            <>
+              {userFeed[currentIndex]?.comments?.map((item, index) => {
+                console.log(item?.metadata?.description);
+
+                return (
+                  <CommentCard
+                    key={index}
+                    username={item?.profile?.handle}
+                    avatar={item?.profile?.picture?.original?.url}
+                    commentText={item?.metadata?.description}
+                  />
+                );
+              })}
+            </>
           )}
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

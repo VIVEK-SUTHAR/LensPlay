@@ -13,12 +13,21 @@ type videoPageProp = {
   navigation: any;
   title: string;
   banner: string;
-  avatar: string
-  uploadedBy: string
-  id: number
+  avatar: string;
+  uploadedBy: string;
+  playbackId: string;
+  id: number;
 };
 
-const VideoCard = ({ id, navigation, banner, title, avatar, uploadedBy }: videoPageProp) => {
+const VideoCard = ({
+  id,
+  navigation,
+  banner,
+  title,
+  avatar,
+  uploadedBy,
+  playbackId,
+}: videoPageProp) => {
   const store = useStore();
   const setCurrentIndex = store.setCurrentIndex;
 
@@ -26,34 +35,24 @@ const VideoCard = ({ id, navigation, banner, title, avatar, uploadedBy }: videoP
     <TouchableWithoutFeedback
       onPress={() => {
         navigation.navigate("VideoPage");
-        setCurrentIndex(id)
+        setCurrentIndex(id);
       }}
     >
       <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
         <View style={{ height: 150 }}>
-          {banner ? (<Image
+          <Image
             source={{
-              uri: `https://ipfs.io/ipfs/${banner?.split("//")[1]}`
+              uri: "https://ipfs.io/ipfs/QmZGMkXhvxXNXPoPd8zCu5pXq6aV79wM7pbUVXny9B4VTb",
             }}
             style={{
               height: "100%",
               width: "100%",
+
               borderTopLeftRadius: 10,
               borderTopRightRadius: 10,
               resizeMode: "contain",
             }}
-          />) : (
-            <Image
-              source={require("../assets/images/lensplay.png")}
-              style={{
-                height: "100%",
-                width: "100%",
-                borderTopLeftRadius: 10,
-                borderTopRightRadius: 10,
-                resizeMode: "contain",
-              }}
-            />
-          )}
+          />
         </View>
         <View
           style={{
@@ -79,15 +78,21 @@ const VideoCard = ({ id, navigation, banner, title, avatar, uploadedBy }: videoP
           </View>
           <View style={{ height: 40, width: 40 }}>
             <Image
-              source={avatar ? {
-                uri: `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`,
-              } : { uri: 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1331&q=80' }}
+              source={
+                avatar
+                  ? {
+                      uri: `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`,
+                    }
+                  : {
+                      uri: "https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1331&q=80",
+                    }
+              }
               style={{ height: "100%", width: "100%", borderRadius: 500 }}
             />
           </View>
         </View>
       </View>
-    </TouchableWithoutFeedback >
+    </TouchableWithoutFeedback>
   );
 };
 

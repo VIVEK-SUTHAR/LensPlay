@@ -34,7 +34,6 @@ const Login = ({ navigation }: { navigation: any }) => {
         ethAddress: connector.accounts[0],
       },
     });
-
     if (!data.data.defaultProfile) {
       return;
     }
@@ -179,7 +178,6 @@ const Login = ({ navigation }: { navigation: any }) => {
                   width: "100%",
                 }}
                 onPress={async () => {
-                  Vibration.vibrate(200, false);
                   await logInWithLens();
                 }}
               >
@@ -231,7 +229,6 @@ const Login = ({ navigation }: { navigation: any }) => {
           <TouchableOpacity
             style={{ width: "100%", paddingHorizontal: 10 }}
             onPress={() => {
-              Vibration.vibrate(200, false);
               connectWallet();
             }}
           >
