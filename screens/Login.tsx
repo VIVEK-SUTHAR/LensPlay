@@ -18,7 +18,7 @@ import getProfile from "../apollo/Queries/getProfile";
 import useStore from "../store/Store";
 
 const Login = ({ navigation }: { navigation: any }) => {
-  const store = useStore()
+  const store = useStore();
   const connector = useWalletConnect();
   const [isconnected, setIsconnected] = useState<boolean>(false);
   const connectWallet = React.useCallback(() => {
@@ -60,6 +60,7 @@ const Login = ({ navigation }: { navigation: any }) => {
       if (tokens.data.authenticate.accessToken) {
         store.setAccessToken(tokens.data.authenticate.accessToken);
         console.log(tokens.data.authenticate.accessToken);
+        console.log(tokens.data.authenticate.refreshToken);
         navigation.navigate("Root");
       } else {
         alert("something went wrong");

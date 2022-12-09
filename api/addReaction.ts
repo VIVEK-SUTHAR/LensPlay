@@ -18,7 +18,7 @@ async function addLike(
 
   let bodyContent = JSON.stringify(gqlBody);
 
-  let response = await fetch("https://api.lens.dev", {
+  let response = await fetch("https://api-mumbai.lens.dev", {
     method: "POST",
     body: bodyContent,
     headers: headersList,

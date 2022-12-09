@@ -1,10 +1,4 @@
-import {
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 import * as React from "react";
 import VideoCard from "../components/VideoCard";
@@ -14,7 +8,7 @@ import { client } from "../apollo/client";
 import getFeed from "../apollo/Queries/getFeed";
 import Skleton from "../components/Skleton";
 
-const Feed = ({ navigation }: { navigation: any }) => {
+const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
   const store = useStore();
   const [feedData, setfeedData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -28,7 +22,7 @@ const Feed = ({ navigation }: { navigation: any }) => {
     });
   }, []);
   useEffect(() => {
-    getFeedData().then(res => {
+    getFeedData().then((res) => {
       setfeedData(res.data.feed.items);
       setUserFeed(res.data.feed.items);
       setIsLoading(false);
@@ -42,7 +36,6 @@ const Feed = ({ navigation }: { navigation: any }) => {
       },
     });
     return feed;
-    
   }
   return (
     <ScrollView

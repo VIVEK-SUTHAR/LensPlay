@@ -13,8 +13,6 @@ import {
 import { useEffect, useState } from "react";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
-import MyVideos from "../components/MyVideos";
-import VideoCard from "../components/VideoCard";
 import { primary, secondary } from "../constants/Colors";
 import useStore from "../store/Store";
 import getPublications from "../apollo/Queries/getPublications";
@@ -42,7 +40,8 @@ const Profile = ({ navigation }: { navigation: any }) => {
           id: store.profileId,
         },
       });
-      console.log(getUserVideos.data.publications.items[0].appId);
+      console.log(profiledata);
+      
       setallVideos(getUserVideos.data.publications.items);
     } catch (error) {
       console.log(error);

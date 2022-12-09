@@ -7,6 +7,7 @@ import {
   Share,
   TouchableWithoutFeedback,
   ScrollView,
+  Button,
 } from "react-native";
 import { Feather, AntDesign, Entypo } from "@expo/vector-icons";
 import React from "react";
@@ -16,19 +17,20 @@ import { useState } from "react";
 import { Video } from "expo-av";
 import addLike from "../api/addReaction";
 import CommentCard from "../components/CommentCard";
+import { useWalletConnect } from "@walletconnect/react-native-dapp";
 
 const VideoPage = () => {
   const store = useStore();
   const currentIndex = store.currentIndex;
   const userFeed = store.userFeed;
+  const wallet = useWalletConnect();
   const [likes, setLikes] = useState(
     userFeed[currentIndex]?.root?.stats?.totalUpvotes
   );
   const [descOpen, setDescOpen] = useState(false);
-  console.log(userFeed[currentIndex]?.root?.stats?.totalUpvotes);
   const playbackId =
     userFeed[currentIndex]?.root?.metadata?.media[0]?.original?.url;
-  console.log(playbackId);
+
   const VIDEO_LINK = playbackId?.includes("https://arweave.net")
     ? playbackId
     : `https://ipfs.io/ipfs/${playbackId.split("//")[1]}`;
@@ -41,6 +43,64 @@ const VideoPage = () => {
       alert(error.message);
     }
   };
+
+  const signdata = async () => {
+    try {
+      const sif = await wallet.signTypedData([
+        wallet.accounts[0],
+        JSON.stringify({
+          types: {
+            FollowWithSig: [
+              {
+                name: "profileIds",
+                type: "uint256[]",
+              },
+              {
+                name: "datas",
+                type: "bytes[]",
+              },
+              {
+                name: "nonce",
+                type: "uint256",
+              },
+              {
+                name: "deadline",
+                type: "uint256",
+              },
+            ],
+          },
+          primaryType: "datas",
+          domain: {
+            name: "Lens Protocol Profiles",
+            chainId: 80001,
+            version: "1",
+            verifyingContract: "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82",
+          },
+          value: {
+            nonce: 1,
+            deadline: 1670597490,
+            profileIds: ["0x5c5b"],
+            datas: ["0x"],
+          },
+          message: {
+            from: {
+              name: "Cow",
+              wallet: "0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826",
+            },
+            to: {
+              name: "Bob",
+              wallet: "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB",
+            },
+            contents: "Sigin",
+          },
+        }),
+      ]);
+      console.log(sif);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <ScrollView>
       <Video
@@ -91,7 +151,11 @@ const VideoPage = () => {
             onPress={() => {
               console.log(store.accessToken);
               setLikes((prev) => prev + 1);
-              addLike(store.accessToken, store.profileId, "0x97fd-0x0e");
+              addLike(
+                store.accessToken,
+                store.profileId,
+                userFeed[currentIndex]?.root?.id
+              );
             }}
           >
             <View
@@ -109,6 +173,7 @@ const VideoPage = () => {
               <Text style={{ marginLeft: 4, fontSize: 16 }}>{likes}</Text>
             </View>
           </TouchableWithoutFeedback>
+          <Button title="test" onPress={signdata} />
           <TouchableWithoutFeedback>
             <View
               style={{
