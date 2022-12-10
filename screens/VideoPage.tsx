@@ -8,16 +8,18 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
   Button,
+  SafeAreaView,
 } from "react-native";
 import { Feather, AntDesign, Entypo } from "@expo/vector-icons";
 import React from "react";
-import { primary } from "../constants/Colors";
+import { dark_primary, primary } from "../constants/Colors";
 import useStore from "../store/Store";
 import { useState } from "react";
 import { Video } from "expo-av";
 import addLike from "../api/addReaction";
 import CommentCard from "../components/CommentCard";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import { StatusBar } from "expo-status-bar";
 
 const VideoPage = () => {
   const store = useStore();
@@ -102,140 +104,154 @@ const VideoPage = () => {
   };
 
   return (
-    <ScrollView>
-      <Video
-        style={styles.video}
-        resizeMode="contain"
-        source={{
-          uri: VIDEO_LINK,
-        }}
-        shouldPlay={true}
-        useNativeControls={true}
-        usePoster={true}
-        posterSource={{
-          uri: "https://ipfs.io/ipfs/QmZGMkXhvxXNXPoPd8zCu5pXq6aV79wM7pbUVXny9B4VTb",
-        }}
-        isLooping={true}
-      />
-      <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ flex: 0.98, fontSize: 20, fontWeight: "800" }}>
-            {userFeed[currentIndex]?.root?.metadata?.name}
-          </Text>
-          <Feather
-            name={`chevron-${descOpen ? "up" : "down"}`}
-            size={34}
-            color="black"
-            onPress={() => setDescOpen(!descOpen)}
-          />
-        </View>
-        {descOpen ? (
-          <View>
-            <Text>{userFeed[currentIndex]?.root?.metadata?.description}</Text>
-          </View>
-        ) : (
-          <Text></Text>
-        )}
-        <View style={{ flexDirection: "row", opacity: 0.5, marginTop: 8 }}>
-          <Text style={{ marginRight: 10 }}>3094505 views</Text>
-          <Text>May 16, 2019</Text>
-        </View>
-        <View
-          style={{
-            marginTop: 20,
-            flexDirection: "row",
-            justifyContent: "space-around",
+    <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
+      <ScrollView>
+        <StatusBar style="light" backgroundColor={dark_primary} />
+        <Video
+          style={styles.video}
+          resizeMode="contain"
+          source={{
+            uri: VIDEO_LINK,
           }}
-        >
-          <TouchableWithoutFeedback
-            onPress={() => {
-              console.log(store.accessToken);
-              setLikes((prev) => prev + 1);
-              addLike(
-                store.accessToken,
-                store.profileId,
-                userFeed[currentIndex]?.root?.id
-              );
-            }}
-          >
-            <View
+          shouldPlay={true}
+          useNativeControls={true}
+          usePoster={true}
+          posterSource={{
+            uri: "https://ipfs.io/ipfs/QmZGMkXhvxXNXPoPd8zCu5pXq6aV79wM7pbUVXny9B4VTb",
+          }}
+          isLooping={true}
+        />
+        <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text
               style={{
-                backgroundColor: primary,
-                paddingHorizontal: 16,
-                paddingVertical: 8,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 16,
+                flex: 0.98,
+                fontSize: 20,
+                fontWeight: "800",
+                color: "white",
               }}
             >
-              <AntDesign name="like2" size={24} color="black" />
-              <Text style={{ marginLeft: 4, fontSize: 16 }}>{likes}</Text>
-            </View>
-          </TouchableWithoutFeedback>
-          <Button title="test" onPress={signdata} />
-          <TouchableWithoutFeedback>
-            <View
-              style={{
-                backgroundColor: primary,
-                paddingHorizontal: 16,
-                paddingVertical: 8,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 16,
-              }}
-            >
-              <AntDesign name="dislike2" size={24} color="black" />
-              <Text style={{ marginLeft: 4, fontSize: 15 }}>
-                {userFeed[currentIndex]?.root?.stats?.totalDownvotes}
+              {userFeed[currentIndex]?.root?.metadata?.name}
+            </Text>
+            <Feather
+              name={`chevron-${descOpen ? "up" : "down"}`}
+              size={34}
+              color="white"
+              onPress={() => setDescOpen(!descOpen)}
+            />
+          </View>
+          {descOpen ? (
+            <View>
+              <Text style={{ color: "white" }}>
+                {userFeed[currentIndex]?.root?.metadata?.description}
               </Text>
             </View>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={onShare}>
-            <View
-              style={{
-                backgroundColor: primary,
-                paddingHorizontal: 16,
-                paddingVertical: 8,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 16,
+          ) : (
+            <Text></Text>
+          )}
+          <View style={{ flexDirection: "row", opacity: 0.5, marginTop: 8 }}>
+            <Text style={{ marginRight: 10, color: "white" }}>
+              3094505 views
+            </Text>
+            <Text style={{ color: "white" }}>May 16, 2019</Text>
+          </View>
+          <View
+            style={{
+              marginTop: 20,
+              flexDirection: "row",
+              justifyContent: "space-around",
+            }}
+          >
+            <TouchableWithoutFeedback
+              onPress={() => {
+                console.log(store.accessToken);
+                setLikes((prev) => prev + 1);
+                addLike(
+                  store.accessToken,
+                  store.profileId,
+                  userFeed[currentIndex]?.root?.id
+                );
               }}
             >
-              <Entypo name="share" size={24} color="black" />
-              <Text style={{ marginLeft: 4, fontSize: 16 }}>Share</Text>
-            </View>
-          </TouchableWithoutFeedback>
-        </View>
-        <View>
-          <Text style={{ fontSize: 25, fontWeight: "800", marginTop: 20 }}>
-            Comments
-          </Text>
-          {userFeed[currentIndex]?.comments == 0 ? (
-            <Text style={{ fontSize: 16, marginTop: 10 }}>
-              There are no comments yet
+              <View
+                style={{
+                  backgroundColor: primary,
+                  paddingHorizontal: 16,
+                  paddingVertical: 8,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 16,
+                }}
+              >
+                <AntDesign name="like2" size={24} colot="white" />
+                <Text style={{ marginLeft: 4, fontSize: 16 }}>{likes}</Text>
+              </View>
+            </TouchableWithoutFeedback>
+            {/* <Button title="test" onPress={signdata} /> */}
+            <TouchableWithoutFeedback>
+              <View
+                style={{
+                  backgroundColor: primary,
+                  paddingHorizontal: 16,
+                  paddingVertical: 8,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 16,
+                }}
+              >
+                <AntDesign name="dislike2" size={24} colot="white" />
+                <Text style={{ marginLeft: 4, fontSize: 15 }}>
+                  {userFeed[currentIndex]?.root?.stats?.totalDownvotes}
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={onShare}>
+              <View
+                style={{
+                  backgroundColor: primary,
+                  paddingHorizontal: 16,
+                  paddingVertical: 8,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 16,
+                }}
+              >
+                <Entypo name="share" size={24} colot="white" />
+                <Text style={{ marginLeft: 4, fontSize: 16 }}>Share</Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+          <View>
+            <Text style={{ fontSize: 25, fontWeight: "800", marginTop: 20,color:"white" }}>
+              Comments
             </Text>
-          ) : (
-            <>
-              {userFeed[currentIndex]?.comments?.map((item, index) => {
-                console.log(item?.metadata?.description);
+            {userFeed[currentIndex]?.comments == 0 ? (
+              <Text style={{ fontSize: 16, marginTop: 10,color:"white" }}>
+                There are no comments yet
+              </Text>
+            ) : (
+              <>
+                {userFeed[currentIndex]?.comments?.map((item, index) => {
+                  console.log(item?.metadata?.description);
 
-                return (
-                  <CommentCard
-                    key={index}
-                    username={item?.profile?.handle}
-                    avatar={item?.profile?.picture?.original?.url}
-                    commentText={item?.metadata?.description}
-                  />
-                );
-              })}
-            </>
-          )}
+                  return (
+                    <CommentCard
+                      key={index}
+                      username={item?.profile?.handle}
+                      avatar={item?.profile?.picture?.original?.url}
+                      commentText={item?.metadata?.description}
+                    />
+                  );
+                })}
+              </>
+            )}
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

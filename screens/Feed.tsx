@@ -1,4 +1,10 @@
-import { RefreshControl, ScrollView, StyleSheet } from "react-native";
+import {
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { useEffect, useState } from "react";
 import * as React from "react";
 import VideoCard from "../components/VideoCard";
@@ -7,6 +13,8 @@ import { StatusBar } from "expo-status-bar";
 import { client } from "../apollo/client";
 import getFeed from "../apollo/Queries/getFeed";
 import Skleton from "../components/Skleton";
+import { dark_primary, dark_secondary, primary } from "../constants/Colors";
+import { Feather } from "@expo/vector-icons";
 
 const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
   const store = useStore();
@@ -14,6 +22,48 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
   const [isLoading, setIsLoading] = useState(true);
   const profileId = store.profileId;
   const setUserFeed = store.setUserFeed;
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      title: "LensPlay",
+      headerStyle: { backgroundColor: dark_secondary, elevation: 0 },
+      headerRight: () => (
+        <View
+          style={{
+            paddingHorizontal: 10,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Feather name="search" size={24} color="white" />
+        </View>
+      ),
+      headerLeft: () => (
+        <View
+          style={{
+            paddingHorizontal: 10,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ fontSize: 24, fontWeight: "600", color: "white" }}>
+            LensPlay
+          </Text>
+          <View
+            style={{
+              backgroundColor: "rgba(255,255,255,0.2)",
+              width: "auto",
+              height: 20,
+              marginHorizontal: 5,
+              paddingHorizontal: 5,
+              borderRadius: 10,
+            }}
+          >
+            <Text style={{ color: primary }}>Beta</Text>
+          </View>
+        </View>
+      ),
+    });
+  }, []);
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -42,22 +92,29 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
+      style={{
+        flex: 1,
+        backgroundColor: dark_primary,
+      }}
     >
-      <StatusBar style="light" backgroundColor="#1A202C" />
+      <StatusBar style="light" backgroundColor={dark_secondary} />
       {!isLoading ? (
         <>
           {feedData.map((item, index) => {
             return (
-              <VideoCard
-                key={index}
-                id={index}
-                navigation={navigation}
-                title={item?.root?.metadata?.name}
-                playbackId={item?.root?.metadata?.media[0]?.original?.url}
-                banner={item?.root?.metadata?.media[0]?.original?.url}
-                avatar={item?.root?.profile?.picture?.original?.url}
-                uploadedBy={item?.root?.profile?.handle}
-              />
+              <>
+                <VideoCard
+                  key={index}
+                  id={index}
+                  navigation={navigation}
+                  title={item?.root?.metadata?.name}
+                  playbackId={item?.root?.metadata?.media[0]?.original?.url}
+                  banner={item?.root?.metadata?.media[0]?.original?.url}
+                  avatar={item?.root?.profile?.picture?.original?.url}
+                  uploadedBy={item?.root?.profile?.handle}
+                />
+                
+              </>
             );
           })}
         </>

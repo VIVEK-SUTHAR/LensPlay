@@ -10,7 +10,12 @@ import * as React from "react";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import { primary, secondary } from "../constants/Colors";
+import {
+  dark_primary,
+  dark_secondary,
+  primary,
+  secondary,
+} from "../constants/Colors";
 import { client } from "../apollo/client";
 import getChallenge from "../apollo/Queries/getChallenge";
 import getAccessTokens from "../apollo/Queries/getAccessTokens";
@@ -90,6 +95,7 @@ const Login = ({ navigation }: { navigation: any }) => {
             fontSize: 32,
             fontWeight: "bold",
             textAlign: "center",
+            color: "white",
           }}
         >
           Welcome to{" "}
@@ -119,7 +125,7 @@ const Login = ({ navigation }: { navigation: any }) => {
           <>
             <View
               style={{
-                backgroundColor: "white",
+                backgroundColor: dark_secondary,
                 borderRadius: 20,
                 display: "flex",
                 alignItems: "center",
@@ -154,7 +160,9 @@ const Login = ({ navigation }: { navigation: any }) => {
                     marginLeft: 10,
                   }}
                 >
-                  <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                  <Text
+                    style={{ fontSize: 16, fontWeight: "bold", color: primary }}
+                  >
                     @iamharsh.lens
                   </Text>
                   <Text
@@ -207,7 +215,7 @@ const Login = ({ navigation }: { navigation: any }) => {
             <TouchableOpacity style={{ width: "90%" }} onPress={killSession}>
               <View
                 style={{
-                  backgroundColor: "#FF1818",
+                  backgroundColor: "white",
                   borderRadius: 50,
                   paddingVertical: 16,
                   marginVertical: 10,
@@ -265,5 +273,6 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: dark_primary,
   },
 });

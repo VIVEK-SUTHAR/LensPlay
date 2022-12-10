@@ -1,19 +1,31 @@
-import { StyleSheet, Text, View, TouchableOpacity, Animated } from 'react-native'
-import React from 'react'
-import { primary } from '../constants/Colors';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Animated,
+} from "react-native";
+import React from "react";
+import { primary } from "../constants/Colors";
 
 const Create = () => {
   return (
-    <Animated.View style={{ alignItems: 'center', backgroundColor: primary, borderTopLeftRadius: 20, borderTopRightRadius: 20, position: 'absolute', bottom: 0, left: 0, right: 0 }}>
-      <TouchableOpacity
-        onPress={async () => {
-          //   navigation.navigate("Root");
-          // await logInWithLens();
-        }}
-      >
+    <Animated.View
+      style={{
+        alignItems: "center",
+        backgroundColor: primary,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+      }}
+    >
+      <TouchableOpacity>
         <View
           style={{
-            backgroundColor: 'white',
+            backgroundColor: "white",
             borderRadius: 50,
             // padding: 15,
             marginVertical: 20,
@@ -22,7 +34,7 @@ const Create = () => {
             width: 300,
             // display: "flex",
             alignItems: "center",
-            justifyContent: 'center'
+            justifyContent: "center",
           }}
         >
           <Text
@@ -54,7 +66,7 @@ const Create = () => {
             width: 300,
             // display: "flex",
             alignItems: "center",
-            justifyContent: 'center'
+            justifyContent: "center",
           }}
         >
           <Text
@@ -70,9 +82,9 @@ const Create = () => {
         </View>
       </TouchableOpacity>
     </Animated.View>
-  )
-}
+  );
+};
 
-export default Create
+export default Create;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

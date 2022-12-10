@@ -34,11 +34,17 @@ const VideoCard = ({
   return (
     <TouchableWithoutFeedback
       onPress={() => {
-        navigation.navigate("VideoPage");
         setCurrentIndex(id);
+        navigation.navigate("VideoPage");
       }}
     >
-      <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
+      <View
+        style={{
+          marginTop: 1,
+          borderBottomColor: "rgba(255,255,255,0.08)",
+          borderBottomWidth: 1,
+        }}
+      >
         <View style={{ height: 150 }}>
           <Image
             source={{
@@ -47,7 +53,6 @@ const VideoCard = ({
             style={{
               height: "100%",
               width: "100%",
-
               borderTopLeftRadius: 10,
               borderTopRightRadius: 10,
               resizeMode: "contain",
@@ -60,14 +65,12 @@ const VideoCard = ({
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            backgroundColor: primary,
-            borderBottomLeftRadius: 10,
-            borderBottomRightRadius: 10,
+            // backgroundColor: primary,
           }}
         >
           <View style={{ flex: 0.95 }}>
             <Text
-              style={{ fontSize: 16, fontWeight: "bold" }}
+              style={{ fontSize: 16, fontWeight: "bold", color: "white" }}
               numberOfLines={1}
             >
               {title}{" "}
@@ -79,7 +82,7 @@ const VideoCard = ({
           <View style={{ height: 40, width: 40 }}>
             <Image
               source={
-                avatar
+                !avatar
                   ? {
                       uri: `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`,
                     }
