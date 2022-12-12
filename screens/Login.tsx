@@ -1,21 +1,9 @@
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Vibration,
-  View,
-} from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as React from "react";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import {
-  dark_primary,
-  dark_secondary,
-  primary,
-  secondary,
-} from "../constants/Colors";
+import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import { client } from "../apollo/client";
 import getChallenge from "../apollo/Queries/getChallenge";
 import getAccessTokens from "../apollo/Queries/getAccessTokens";

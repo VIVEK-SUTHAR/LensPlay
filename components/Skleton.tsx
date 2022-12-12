@@ -6,15 +6,15 @@ const Skleton = () => {
   return (
     <View
       style={{
-        paddingHorizontal: 10,
-        marginVertical: 10,
+        // paddingHorizontal: 10,
+        marginVertical: 1,
         borderTopLeftRadius: 10,
       }}
     >
       <View
         style={{
           height: 150,
-          backgroundColor: "lightgray",
+          backgroundColor: "rgba(255,255,255,0.02)",
           borderTopLeftRadius: 10,
           borderTopRightRadius: 10,
         }}
@@ -25,7 +25,7 @@ const Skleton = () => {
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          backgroundColor: primary,
+          backgroundColor: "rgba(255,255,255,0.02)",
           borderBottomLeftRadius: 10,
           borderBottomRightRadius: 10,
         }}

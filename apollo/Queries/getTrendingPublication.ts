@@ -5,6 +5,7 @@ export default gql`
     sortCriteria: TOP_COMMENTED,
     publicationTypes: [POST, COMMENT, MIRROR],
     limit: 10
+    sources:["lenstube"]
   }) {
     items {
       __typename 

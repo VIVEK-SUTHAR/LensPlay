@@ -56,9 +56,11 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
               marginHorizontal: 5,
               paddingHorizontal: 5,
               borderRadius: 10,
+              borderWidth: 1,
+              borderColor: "rgba(255,255,255,0.6)",
             }}
           >
-            <Text style={{ color: primary }}>Beta</Text>
+            <Text style={{ color: primary, fontSize: 12 }}>Beta</Text>
           </View>
         </View>
       ),
@@ -85,6 +87,8 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
         id: profileId,
       },
     });
+    console.log(feed.data);
+
     return feed;
   }
   return (
@@ -104,7 +108,7 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
             return (
               <>
                 <VideoCard
-                  key={index}
+                  key={item?.root?.id}
                   id={index}
                   navigation={navigation}
                   title={item?.root?.metadata?.name}
@@ -113,7 +117,6 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
                   avatar={item?.root?.profile?.picture?.original?.url}
                   uploadedBy={item?.root?.profile?.handle}
                 />
-                
               </>
             );
           })}

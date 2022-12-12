@@ -35,71 +35,16 @@ const VideoPage = () => {
 
   const VIDEO_LINK = playbackId?.includes("https://arweave.net")
     ? playbackId
-    : `https://ipfs.io/ipfs/${playbackId.split("//")[1]}`;
+    : `https://ipfs.io/ipfs/${playbackId?.split("//")[1]}`;
   const onShare = async () => {
     try {
       const result = await Share.share({
         message: userFeed[currentIndex]?.root?.metadata?.name,
       });
     } catch (error) {
-      alert(error.message);
-    }
-  };
-
-  const signdata = async () => {
-    try {
-      const sif = await wallet.signTypedData([
-        wallet.accounts[0],
-        JSON.stringify({
-          types: {
-            FollowWithSig: [
-              {
-                name: "profileIds",
-                type: "uint256[]",
-              },
-              {
-                name: "datas",
-                type: "bytes[]",
-              },
-              {
-                name: "nonce",
-                type: "uint256",
-              },
-              {
-                name: "deadline",
-                type: "uint256",
-              },
-            ],
-          },
-          primaryType: "datas",
-          domain: {
-            name: "Lens Protocol Profiles",
-            chainId: 80001,
-            version: "1",
-            verifyingContract: "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82",
-          },
-          value: {
-            nonce: 1,
-            deadline: 1670597490,
-            profileIds: ["0x5c5b"],
-            datas: ["0x"],
-          },
-          message: {
-            from: {
-              name: "Cow",
-              wallet: "0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826",
-            },
-            to: {
-              name: "Bob",
-              wallet: "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB",
-            },
-            contents: "Sigin",
-          },
-        }),
-      ]);
-      console.log(sif);
-    } catch (error) {
-      console.log(error);
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
     }
   };
 
@@ -175,34 +120,59 @@ const VideoPage = () => {
             >
               <View
                 style={{
-                  backgroundColor: primary,
-                  paddingHorizontal: 16,
-                  paddingVertical: 8,
+                  marginHorizontal: 8,
+                  backgroundColor: "rgba(255,255,255,0.01)",
+                  width: "auto",
+                  height: "auto",
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
                   flexDirection: "row",
-                  alignItems: "center",
                   justifyContent: "center",
-                  borderRadius: 16,
+                  alignItems: "center",
+                  borderRadius: 20,
+                  borderColor: primary,
+                  borderWidth: 1,
                 }}
               >
-                <AntDesign name="like2" size={24} colot="white" />
-                <Text style={{ marginLeft: 4, fontSize: 16 }}>{likes}</Text>
+                <AntDesign name="like2" size={24} color={primary} />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "500",
+                    color: "white",
+                    marginHorizontal: 4,
+                  }}
+                >
+                  <Text style={{ marginLeft: 4, fontSize: 16 }}>{likes}</Text>
+                </Text>
               </View>
             </TouchableWithoutFeedback>
-            {/* <Button title="test" onPress={signdata} /> */}
             <TouchableWithoutFeedback>
               <View
                 style={{
-                  backgroundColor: primary,
-                  paddingHorizontal: 16,
-                  paddingVertical: 8,
+                  marginHorizontal: 8,
+                  backgroundColor: "rgba(255,255,255,0.01)",
+                  width: "auto",
+                  height: "auto",
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
                   flexDirection: "row",
-                  alignItems: "center",
                   justifyContent: "center",
-                  borderRadius: 16,
+                  alignItems: "center",
+                  borderRadius: 20,
+                  borderColor: primary,
+                  borderWidth: 1,
                 }}
               >
-                <AntDesign name="dislike2" size={24} colot="white" />
-                <Text style={{ marginLeft: 4, fontSize: 15 }}>
+                <AntDesign name="dislike2" size={24} color={primary} />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "500",
+                    color: "white",
+                    marginHorizontal: 4,
+                  }}
+                >
                   {userFeed[currentIndex]?.root?.stats?.totalDownvotes}
                 </Text>
               </View>
@@ -210,26 +180,77 @@ const VideoPage = () => {
             <TouchableWithoutFeedback onPress={onShare}>
               <View
                 style={{
-                  backgroundColor: primary,
-                  paddingHorizontal: 16,
-                  paddingVertical: 8,
+                  marginHorizontal: 8,
+                  backgroundColor: "rgba(255,255,255,0.01)",
+                  width: "auto",
+                  height: "auto",
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
                   flexDirection: "row",
-                  alignItems: "center",
                   justifyContent: "center",
-                  borderRadius: 16,
+                  alignItems: "center",
+                  borderRadius: 20,
+                  borderColor: primary,
+                  borderWidth: 1,
                 }}
               >
-                <Entypo name="share" size={24} colot="white" />
-                <Text style={{ marginLeft: 4, fontSize: 16 }}>Share</Text>
+                <Entypo name="share" size={24} color={primary} />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "500",
+                    color: "white",
+                    marginHorizontal: 4,
+                  }}
+                >
+                  <Text style={{ marginLeft: 4, fontSize: 16 }}>Share</Text>
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={onShare}>
+              <View
+                style={{
+                  marginHorizontal: 8,
+                  backgroundColor: "rgba(255,255,255,0.01)",
+                  width: "auto",
+                  height: "auto",
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 20,
+                  borderColor: primary,
+                  borderWidth: 1,
+                }}
+              >
+                <Feather name="flag" size={24} color={primary} />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "500",
+                    color: "white",
+                    marginHorizontal: 4,
+                  }}
+                >
+                  <Text style={{ marginLeft: 4, fontSize: 16 }}>Report</Text>
+                </Text>
               </View>
             </TouchableWithoutFeedback>
           </View>
           <View>
-            <Text style={{ fontSize: 25, fontWeight: "800", marginTop: 20,color:"white" }}>
+            <Text
+              style={{
+                fontSize: 25,
+                fontWeight: "800",
+                marginTop: 20,
+                color: "white",
+              }}
+            >
               Comments
             </Text>
             {userFeed[currentIndex]?.comments == 0 ? (
-              <Text style={{ fontSize: 16, marginTop: 10,color:"white" }}>
+              <Text style={{ fontSize: 16, marginTop: 10, color: "white" }}>
                 There are no comments yet
               </Text>
             ) : (

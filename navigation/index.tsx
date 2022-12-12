@@ -16,6 +16,7 @@ import Create from "../components/Create";
 import useStore from "../store/Store";
 import Trending from "../screens/Trending";
 import Notification from "../components/Notification";
+import UploadVideo from "../screens/UploadVideo";
 
 export default function Navigation({
   colorScheme,
@@ -89,30 +90,6 @@ function BottomTabNavigator() {
       initialRouteName="Home"
       screenOptions={{
         headerTitle: "",
-        headerLeft: () => {
-          return (
-            <View
-              style={{
-                minWidth: "100%",
-                height: "100%",
-                justifyContent: "flex-start",
-                alignItems: "center",
-                paddingHorizontal: 15,
-                flexDirection: "row",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 24,
-                  fontWeight: "700",
-                  color: "white",
-                }}
-              >
-                LensPlay
-              </Text>
-            </View>
-          );
-        },
         tabBarStyle: {
           height: 55,
           backgroundColor: dark_secondary,
@@ -142,7 +119,7 @@ function BottomTabNavigator() {
               >
                 <Feather
                   name="home"
-                  size={24}
+                  size={26}
                   color={focused ? primary : "white"}
                 />
               </View>
@@ -155,7 +132,7 @@ function BottomTabNavigator() {
                   padding: 5,
                 }}
               >
-                <Feather name="search" size={24} color={"black"} />
+                <Feather name="search" size={26} color={"black"} />
               </View>
             );
           },
@@ -182,7 +159,7 @@ function BottomTabNavigator() {
               >
                 <Feather
                   name="trending-up"
-                  size={24}
+                  size={26}
                   color={focused ? primary : "white"}
                 />
               </View>
@@ -192,7 +169,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Create"
-        component={Profile}
+        component={UploadVideo}
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ focused }) => {
@@ -207,15 +184,16 @@ function BottomTabNavigator() {
                   // height: 40,
                   backgroundColor: primary,
                   borderRadius: 50,
-                  borderColor: primary,
-                  borderWidth:2
+                  borderColor: focused ? "white" : primary,
+                  borderWidth: 2,
+                  transform: [
+                    {
+                      scale: focused ? 1.2 : 1,
+                    },
+                  ],
                 }}
               >
-                <AntDesign
-                  name="pluscircleo"
-                  size={28}
-                  color={"black"}
-                />
+                <AntDesign name="pluscircleo" size={28} color={"black"} />
               </View>
             );
           },
@@ -242,7 +220,7 @@ function BottomTabNavigator() {
               >
                 <Ionicons
                   name="notifications-outline"
-                  size={24}
+                  size={26}
                   color={focused ? primary : "white"}
                 />
               </View>
@@ -269,7 +247,11 @@ function BottomTabNavigator() {
                   height: "100%",
                 }}
               >
-                <Feather name="user" size={24} color="white" />
+                <Feather
+                  name="user"
+                  size={26}
+                  color={focused ? primary : "white"}
+                />
               </View>
             );
           },

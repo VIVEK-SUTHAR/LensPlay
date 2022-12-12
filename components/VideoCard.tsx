@@ -28,9 +28,10 @@ const VideoCard = ({
   uploadedBy,
   playbackId,
 }: videoPageProp) => {
+  console.log(title);
+  
   const store = useStore();
   const setCurrentIndex = store.setCurrentIndex;
-
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -71,7 +72,6 @@ const VideoCard = ({
           <View style={{ flex: 0.95 }}>
             <Text
               style={{ fontSize: 16, fontWeight: "bold", color: "white" }}
-              numberOfLines={1}
             >
               {title}{" "}
             </Text>
@@ -82,7 +82,7 @@ const VideoCard = ({
           <View style={{ height: 40, width: 40 }}>
             <Image
               source={
-                !avatar
+                avatar
                   ? {
                       uri: `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`,
                     }
