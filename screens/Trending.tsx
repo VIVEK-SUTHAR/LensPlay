@@ -97,8 +97,9 @@ const Trending = ({ navigation }: TrendingPageProps) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <ScrollView
         style={{
-          height: 32,
+          height: 36,
           maxHeight: 36,
+          paddingVertical: 2,
         }}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -108,7 +109,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
             <View
               key={index}
               style={{
-                marginHorizontal:8,
+                marginHorizontal: 8,
                 backgroundColor: `${
                   item.active ? primary : "rgba(255,255,255,0.1)"
                 }`,
@@ -145,9 +146,10 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                   key={index}
                   navigation={navigation}
                   title={item?.metadata?.name}
-                  banner={item?.metadata?.media[0]?.original?.url}
+                  banner={item?.profile?.coverPicture?.original?.url}
                   avatar={item?.profile?.picture?.original?.url}
                   uploadedBy={item?.profile?.handle}
+                  playbackId={item?.metadata?.media[0]?.original?.url}
                 />
               );
               // }

@@ -52,6 +52,8 @@ const useStore = create((set) => ({
   userFeed: [],
   isOpen: false,
   currentIndex: 0,
+  profileData: null,
+  setProfiledata: (value: any) => set({ profileData: value }),
   setAccessToken: (value: string) => set({ accessToken: value }),
   setRefreshToken: (value: string) => set({ refreshToken: value }),
   setProfileId: (value: string) => set({ profileId: value }),

@@ -55,7 +55,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
           }}
         >
           <Text style={{ fontSize: 24, fontWeight: "600", color: "white" }}>
-            {profile?.profile?.name}
+            {profile?.profile?.name || "LensPlay"}
           </Text>
         </View>
       ),
@@ -72,6 +72,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
       console.log(store.profileId);
 
       setProfile(profiledata.data);
+      store.setProfiledata(profiledata.data);
       const getUserVideos = await client.query({
         query: getPublications,
         variables: {
@@ -251,6 +252,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
                     title={item?.metadata?.name}
                     avatar={item?.profile?.picture?.original?.url}
                     playbackId={item?.metadata?.media[0]?.original?.url}
+                    uploadedBy={item?.profile?.name}
                   />
                 );
               }

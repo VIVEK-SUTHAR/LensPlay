@@ -1,10 +1,12 @@
 import { gql } from "@apollo/client";
 export default gql`
-  query ExplorePublications {
+ query ExplorePublications {
   explorePublications(request: {
     sortCriteria: TOP_COMMENTED,
     publicationTypes: [POST, COMMENT, MIRROR],
-    limit: 10
+    metadata:{
+      mainContentFocus:VIDEO
+    }
     sources:["lenstube"]
   }) {
     items {
@@ -370,4 +372,4 @@ fragment ReferenceModuleFields on ReferenceModule {
     mirrorsRestricted
     degreesOfSeparation
   }
-}`
+}`;

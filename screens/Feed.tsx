@@ -3,6 +3,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { useEffect, useState } from "react";
@@ -27,15 +28,21 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
       title: "LensPlay",
       headerStyle: { backgroundColor: dark_secondary, elevation: 0 },
       headerRight: () => (
-        <View
-          style={{
-            paddingHorizontal: 10,
-            flexDirection: "row",
-            alignItems: "center",
+        <TouchableWithoutFeedback
+          onPress={() => {
+            navigation.navigate("Search");
           }}
         >
-          <Feather name="search" size={24} color="white" />
-        </View>
+          <View
+            style={{
+              paddingHorizontal: 10,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Feather name="search" size={24} color="white" />
+          </View>
+        </TouchableWithoutFeedback>
       ),
       headerLeft: () => (
         <View
@@ -87,7 +94,6 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
         id: profileId,
       },
     });
-    console.log(feed.data);
 
     return feed;
   }
@@ -113,7 +119,7 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
                   navigation={navigation}
                   title={item?.root?.metadata?.name}
                   playbackId={item?.root?.metadata?.media[0]?.original?.url}
-                  banner={item?.root?.metadata?.media[0]?.original?.url}
+                  banner={item?.root?.profile?.coverPicture?.original?.url}
                   avatar={item?.root?.profile?.picture?.original?.url}
                   uploadedBy={item?.root?.profile?.handle}
                 />

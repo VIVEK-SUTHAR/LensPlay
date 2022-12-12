@@ -21,7 +21,7 @@ import CommentCard from "../components/CommentCard";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
 
-const VideoPage = () => {
+const VideoPage = ({ route }) => {
   const store = useStore();
   const currentIndex = store.currentIndex;
   const userFeed = store.userFeed;
@@ -30,12 +30,14 @@ const VideoPage = () => {
     userFeed[currentIndex]?.root?.stats?.totalUpvotes
   );
   const [descOpen, setDescOpen] = useState(false);
-  const playbackId =
-    userFeed[currentIndex]?.root?.metadata?.media[0]?.original?.url;
+  const playbackId = route.params.playbackId;
 
   const VIDEO_LINK = playbackId?.includes("https://arweave.net")
     ? playbackId
-    : `https://ipfs.io/ipfs/${playbackId?.split("//")[1]}`;
+    : playbackId.includes("ipfs://")
+    ? `https://ipfs.io/ipfs/${playbackId?.split("//")[1]}`
+    : playbackId;
+
   const onShare = async () => {
     try {
       const result = await Share.share({
@@ -47,7 +49,6 @@ const VideoPage = () => {
       }
     }
   };
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <ScrollView>
@@ -62,7 +63,12 @@ const VideoPage = () => {
           useNativeControls={true}
           usePoster={true}
           posterSource={{
-            uri: "https://ipfs.io/ipfs/QmZGMkXhvxXNXPoPd8zCu5pXq6aV79wM7pbUVXny9B4VTb",
+            uri: route.params.banner,
+          }}
+          posterStyle={{
+            height: "100%",
+            width: "100%",
+            resizeMode: "stretch",
           }}
           isLooping={true}
         />
@@ -76,7 +82,7 @@ const VideoPage = () => {
                 color: "white",
               }}
             >
-              {userFeed[currentIndex]?.root?.metadata?.name}
+              {route.params.title}
             </Text>
             <Feather
               name={`chevron-${descOpen ? "up" : "down"}`}
@@ -121,7 +127,7 @@ const VideoPage = () => {
               <View
                 style={{
                   marginHorizontal: 8,
-                  backgroundColor: "rgba(255,255,255,0.01)",
+                  backgroundColor: "rgba(255,255,255,0.05)",
                   width: "auto",
                   height: "auto",
                   paddingHorizontal: 8,
@@ -151,7 +157,7 @@ const VideoPage = () => {
               <View
                 style={{
                   marginHorizontal: 8,
-                  backgroundColor: "rgba(255,255,255,0.01)",
+                  backgroundColor: "rgba(255,255,255,0.07)",
                   width: "auto",
                   height: "auto",
                   paddingHorizontal: 8,
@@ -181,7 +187,7 @@ const VideoPage = () => {
               <View
                 style={{
                   marginHorizontal: 8,
-                  backgroundColor: "rgba(255,255,255,0.01)",
+                  backgroundColor: "rgba(255,255,255,0.07)",
                   width: "auto",
                   height: "auto",
                   paddingHorizontal: 8,
@@ -207,11 +213,11 @@ const VideoPage = () => {
                 </Text>
               </View>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={onShare}>
+            <TouchableWithoutFeedback>
               <View
                 style={{
                   marginHorizontal: 8,
-                  backgroundColor: "rgba(255,255,255,0.01)",
+                  backgroundColor: "rgba(255,255,255,0.07)",
                   width: "auto",
                   height: "auto",
                   paddingHorizontal: 8,

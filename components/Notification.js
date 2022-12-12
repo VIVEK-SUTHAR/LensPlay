@@ -1,9 +1,14 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { dark_primary, dark_secondary } from "../constants/Colors";
 import { Feather } from "@expo/vector-icons";
+import { client } from "../apollo/client";
+import getNotifications from "../apollo/Queries/getUserNotifications";
+import fetchNotifications from "../api/fetchNotifications";
+import useStore from "../store/Store";
 
-const Navigation = ({navigation}) => {
+const Navigation = ({ navigation }) => {
+  const store = useStore();
   React.useLayoutEffect(() => {
     navigation.setOptions({
       title: "LensPlay",

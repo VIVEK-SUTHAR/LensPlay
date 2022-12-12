@@ -28,15 +28,34 @@ const VideoCard = ({
   uploadedBy,
   playbackId,
 }: videoPageProp) => {
-  console.log(title);
-  
   const store = useStore();
   const setCurrentIndex = store.setCurrentIndex;
+
+  const AVATAR_LINK = avatar?.includes("https://arweave.net")
+    ? avatar
+    : avatar?.includes("ipfs://")
+    ? `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`
+    : avatar;
+  console.log(AVATAR_LINK);
+
+  const BANNER_LINK = banner?.includes("https://arweave.net")
+    ? banner
+    : banner?.includes("ipfs://")
+    ? `https://ipfs.io/ipfs/${banner?.split("//")[1]}`
+    : banner;
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {
         setCurrentIndex(id);
-        navigation.navigate("VideoPage");
+        navigation.navigate("VideoPage", {
+          title: title,
+          id: id,
+          uploadedBy: uploadedBy,
+          playbackId: playbackId,
+          avatar: avatar,
+          banner: banner,
+        });
       }}
     >
       <View
@@ -49,7 +68,9 @@ const VideoCard = ({
         <View style={{ height: 150 }}>
           <Image
             source={{
-              uri: "https://ipfs.io/ipfs/QmZGMkXhvxXNXPoPd8zCu5pXq6aV79wM7pbUVXny9B4VTb",
+              uri:
+                BANNER_LINK ||
+                "https://assets.lenstube.xyz/images/coverGradient.jpeg",
             }}
             style={{
               height: "100%",
@@ -70,9 +91,7 @@ const VideoCard = ({
           }}
         >
           <View style={{ flex: 0.95 }}>
-            <Text
-              style={{ fontSize: 16, fontWeight: "bold", color: "white" }}
-            >
+            <Text style={{ fontSize: 16, fontWeight: "bold", color: "white" }}>
               {title}{" "}
             </Text>
             <Text style={{ fontSize: 12, color: "gray" }}>
@@ -81,15 +100,9 @@ const VideoCard = ({
           </View>
           <View style={{ height: 40, width: 40 }}>
             <Image
-              source={
-                avatar
-                  ? {
-                      uri: `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`,
-                    }
-                  : {
-                      uri: "https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1331&q=80",
-                    }
-              }
+              source={{
+                uri: AVATAR_LINK,
+              }}
               style={{ height: "100%", width: "100%", borderRadius: 500 }}
             />
           </View>

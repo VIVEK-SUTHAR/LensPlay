@@ -17,6 +17,7 @@ import useStore from "../store/Store";
 import Trending from "../screens/Trending";
 import Notification from "../components/Notification";
 import UploadVideo from "../screens/UploadVideo";
+import Search from "../screens/Search";
 
 export default function Navigation({
   colorScheme,
@@ -38,7 +39,7 @@ const Stack = createNativeStackNavigator();
 function RootNavigator() {
   return (
     <>
-      <Stack.Navigator screenOptions={{ headerTitle: "LensPlay" }}>
+      <Stack.Navigator>
         <Stack.Screen
           name="Login"
           component={Login}
@@ -73,6 +74,11 @@ function RootNavigator() {
           name="Notification"
           component={Notification}
           options={{ headerShown: true, presentation: "card" }}
+        />
+        <Stack.Screen
+          name="Search"
+          component={Search}
+          options={{ headerShown: true, presentation: "modal" }}
         />
       </Stack.Navigator>
     </>
@@ -204,6 +210,11 @@ function BottomTabNavigator() {
         component={Notification}
         options={{
           tabBarLabel: "",
+          tabBarBadge: 1,
+          tabBarBadgeStyle: {
+            backgroundColor: primary,
+            left: 0,
+          },
           tabBarIcon: ({ focused }) => {
             return (
               <View
