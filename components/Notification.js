@@ -1,4 +1,11 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useEffect } from "react";
 import { dark_primary, dark_secondary } from "../constants/Colors";
 import { Feather } from "@expo/vector-icons";
@@ -40,8 +47,37 @@ const Navigation = ({ navigation }) => {
     });
   }, []);
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
-      <ScrollView></ScrollView>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: dark_primary,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <View style={{ height: "50%" }}>
+        <Image source={require("../assets/images/no.png")} />
+        <Text
+          style={{
+            fontSize: 24,
+            textAlign: "center",
+            fontWeight: "700",
+            color: "white",
+          }}
+        >
+          No new notifications
+        </Text>
+        <Text
+          style={{
+            fontSize: 16,
+            textAlign: "center",
+            fontWeight: "400",
+            color: "white",
+          }}
+        >
+          Engage with posts and check again
+        </Text>
+      </View>
     </SafeAreaView>
   );
 };

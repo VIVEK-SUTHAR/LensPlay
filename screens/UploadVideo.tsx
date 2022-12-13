@@ -6,11 +6,17 @@ import {
   TextInput,
   StyleSheet,
   Dimensions,
+  Image,
+  TouchableWithoutFeedback,
 } from "react-native";
 import React from "react";
 import { Feather } from "@expo/vector-icons";
 import { dark_primary, dark_secondary, primary } from "../constants/Colors";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Uploadvideo from "../components/Uploadvideo";
+import GoLive from "../components/GoLive";
 
+const UploadStack = createNativeStackNavigator();
 const UploadVideo = ({ navigation }) => {
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -57,50 +63,133 @@ const UploadVideo = ({ navigation }) => {
     });
   }, []);
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: dark_primary,
+    <UploadStack.Navigator
+      screenOptions={{
+        headerShown: false,
       }}
+      initialRouteName="UploadIndex"
     >
-      <ScrollView>
-        <View>
-          <Text style={styles.title}>Upload Your Video</Text>
-        </View>
-        <View style={{ justifyContent: "center", alignItems: "center" }}>
-          <Text style={styles.title}>Title</Text>
-          <TextInput
-            placeholder="title that describes you video"
-            placeholderTextColor={"gray"}
-            style={{
-              borderWidth: 1,
-              borderColor: primary,
-              padding: 5,
-              borderRadius: 5,
-              color: "white",
-              width: "90%",
-            }}
-          />
-          <Text style={styles.title}>Description</Text>
-          <TextInput
-            placeholder="title that describes you video"
-            placeholderTextColor={"gray"}
-            style={{
-              borderWidth: 1,
-              borderColor: primary,
-              padding: 5,
-              borderRadius: 5,
-              color: "white",
-              width: "90%",
-            }}
-          />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      <UploadStack.Screen name="UploadIndex" component={Index} />
+      <UploadStack.Screen name="UploadScreen" component={Uploadvideo} />
+      <UploadStack.Screen name="GoLive" component={GoLive} />
+    </UploadStack.Navigator>
   );
 };
 
 export default UploadVideo;
+
+function Index({ navigation }) {
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
+      <View
+        style={{
+          flex: 0.5,
+          paddingHorizontal: 10,
+          paddingVertical: 10,
+        }}
+      >
+        <View
+          style={{
+            height: "100%",
+            backgroundColor: "rgba(255,255,255,0.08)",
+            borderRadius: 20,
+            paddingHorizontal: 10,
+          }}
+        >
+          <Image
+            source={require("../assets/images/upload.png")}
+            style={{
+              alignSelf: "center",
+              height: "80%",
+              width: "80%",
+              resizeMode: "contain",
+            }}
+          />
+          <TouchableWithoutFeedback
+            onPress={() => {
+              navigation.navigate("UploadScreen");
+            }}
+          >
+            <View
+              style={{
+                borderRadius: 50,
+                borderColor: primary,
+                borderWidth: 1,
+                paddingVertical: 5,
+                width: "auto",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 24,
+                  fontWeight: "600",
+                  color: "white",
+                  textAlign: "center",
+                }}
+              >
+                Upload your Video
+              </Text>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </View>
+      <View
+        style={{
+          flex: 0.5,
+          paddingHorizontal: 10,
+          marginVertical: 15,
+        }}
+      >
+        <View
+          style={{
+            height: "100%",
+            justifyContent: "space-between",
+            backgroundColor: "rgba(255,255,255,0.08)",
+            borderRadius: 20,
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+          }}
+        >
+          <Image
+            source={require("../assets/images/live.png")}
+            style={{
+              alignSelf: "center",
+              height: "70%",
+              width: "70%",
+              resizeMode: "contain",
+            }}
+          />
+          <TouchableWithoutFeedback
+            onPress={() => {
+              navigation.navigate("GoLive");
+            }}
+          >
+            <View
+              style={{
+                borderRadius: 50,
+                borderColor: primary,
+                borderWidth: 1,
+                paddingVertical: 5,
+                width: "auto",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 24,
+                  fontWeight: "600",
+                  color: "white",
+                  textAlign: "center",
+                }}
+              >
+                Go Live
+              </Text>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+}
 
 const styles = StyleSheet.create({
   title: {

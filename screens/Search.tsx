@@ -6,20 +6,20 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import { Feather } from "@expo/vector-icons";
 
 const Search = ({ navigation }) => {
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: { backgroundColor: dark_secondary, elevation: 0 },
       headerLeft: () => (
         <View style={{ width: "89%", padding: 4 }}>
           <TextInput
+            caretHidden={true}
             placeholder="Type something to search..."
             placeholderTextColor={"white"}
-            autoFocus={true}
             clearButtonMode={"while-editing"}
             style={{
               width: "100%",
