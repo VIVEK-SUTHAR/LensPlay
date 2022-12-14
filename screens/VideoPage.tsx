@@ -34,9 +34,10 @@ const VideoPage = ({ route }) => {
 
   const VIDEO_LINK = playbackId?.includes("https://arweave.net")
     ? playbackId
-    : playbackId.includes("ipfs://")
+    : playbackId?.includes("ipfs://")
     ? `https://ipfs.io/ipfs/${playbackId?.split("//")[1]}`
     : playbackId;
+  console.log(VIDEO_LINK);
 
   const onShare = async () => {
     try {

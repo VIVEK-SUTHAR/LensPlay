@@ -6,18 +6,34 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import { Feather } from "@expo/vector-icons";
-
+import { useFocusEffect } from "@react-navigation/native";
+import { text } from "stream/consumers";
 const Search = ({ navigation }) => {
+  const textRef = useRef(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      const focus = () => {
+        setTimeout(() => {
+          textRef?.current?.focus();
+        }, 1);
+      };
+      focus();
+      return focus;
+    }, [])
+  );
+
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: { backgroundColor: dark_secondary, elevation: 0 },
       headerLeft: () => (
         <View style={{ width: "89%", padding: 4 }}>
           <TextInput
-            caretHidden={true}
+            ref={textRef}
+            selectionColor={primary}
             placeholder="Type something to search..."
             placeholderTextColor={"white"}
             clearButtonMode={"while-editing"}

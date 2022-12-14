@@ -1,4 +1,11 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import * as React from "react";
 import { useState } from "react";
 import VideoCard from "../components/VideoCard";
@@ -137,8 +144,35 @@ const Trending = ({ navigation }: TrendingPageProps) => {
           );
         })}
       </ScrollView>
-      <ScrollView contentContainerStyle={{ justifyContent: "center" }}>
+      <ScrollView>
         <View style={{ marginTop: 10 }}>
+          {TrendingItems && TrendingItems.length === 0 ? (
+            <View style={{ height: "50%", alignItems: "center" }}>
+              <Image source={require("../assets/images/no.png")} />
+              <Text
+                style={{
+                  fontSize: 24,
+                  textAlign: "center",
+                  fontWeight: "700",
+                  color: "white",
+                }}
+              >
+                No Videos found
+              </Text>
+              <Text
+                style={{
+                  fontSize: 16,
+                  textAlign: "center",
+                  fontWeight: "400",
+                  color: "grey",
+                }}
+              >
+                Try again later
+              </Text>
+            </View>
+          ) : (
+            <></>
+          )}
           {TrendingItems &&
             TrendingItems?.map((item, index) => {
               return (

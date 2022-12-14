@@ -1,10 +1,10 @@
 import {
-    AndroidManifest,
-    ConfigPlugin,
-    withAndroidManifest,
-} from '@expo/config-plugins';
-import { ExpoConfig } from '@expo/config-types';
-import xml2js from 'xml2js';
+  AndroidManifest,
+  ConfigPlugin,
+  withAndroidManifest,
+} from "@expo/config-plugins";
+import { ExpoConfig } from "@expo/config-types";
+import xml2js from "xml2js";
 
 const queriesXml = `
 <queries>
@@ -25,12 +25,12 @@ const queriesXml = `
 type KeyValuePair = {
   $: {
     [key: string]: string | undefined;
-  }
+  };
 };
 
-type Intent = { 
-  action?: KeyValuePair[],
-  data?: KeyValuePair[]
+type Intent = {
+  action?: KeyValuePair[];
+  data?: KeyValuePair[];
 };
 
 type Queries = {
@@ -39,25 +39,24 @@ type Queries = {
 
 type ParseResult = {
   queries: Queries;
-}
+};
 
 type AndroidManifestWithQuery = AndroidManifest & {
   manifest: {
     $: {
-      ['queries']?: any;
-    }
-  }
+      ["queries"]?: any;
+    };
+  };
 };
-
 
 /**
  * Does not currently work as expected, need to run `expo prebuild`
  * to configure plugins, but this breaks the `Expo Go` app functionality
- * 
+ *
  * @param androidManifest A AndroidManifest file that has been updated
  *                        to accept queries as a parameter
  * @returns an updated AndroidManifest file
- * 
+ *
  * @see https://chafikgharbi.com/expo-android-manifest/
  * @see https://docs.expo.dev/workflow/customizing/
  * @see https://docs.expo.dev/workflow/configuration/
@@ -68,13 +67,13 @@ const addQueryToManifest = (androidManifest: AndroidManifestWithQuery) => {
   let packageQuery: Queries;
 
   xml2js.parseString(queriesXml, (err, result: ParseResult) => {
-    packageQuery = result.queries
+    packageQuery = result.queries;
 
-    if (!Array.isArray(manifest.$['queries'])) {
-      manifest.$['queries'] = [];
+    if (!Array.isArray(manifest.$["queries"])) {
+      manifest.$["queries"] = [];
     }
 
-    manifest.$['queries'].push(packageQuery);
+    manifest.$["queries"].push(packageQuery);
   });
 
   return androidManifest;
@@ -88,37 +87,35 @@ const withPackageVisibility: ConfigPlugin = (config) => {
 };
 
 const config: ExpoConfig = {
-  name: 'test-dapp',
-  slug: 'test-dapp',
+  name: "LensPlay",
+  slug: "LensPlay",
   version: "1.0.0",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
-  scheme: "myapp",
+  scheme: "lensplay",
   userInterfaceStyle: "automatic",
   splash: {
-    image: "./assets/images/splash.png",
+    image: "./assets/images/lensplay.png",
     resizeMode: "contain",
-    backgroundColor: "#ffffff"
+    backgroundColor: "#000000",
   },
   updates: {
-    fallbackToCacheTimeout: 0
+    fallbackToCacheTimeout: 0,
   },
-  assetBundlePatterns: [
-    "**/*"
-  ],
+  assetBundlePatterns: ["**/*"],
   ios: {
-    "supportsTablet": true
+    supportsTablet: true,
   },
   android: {
-    package: "com.clxyder.testdapp",
+    package: "com.clxyder.lensplay",
     adaptiveIcon: {
-      foregroundImage: "./assets/images/adaptive-icon.png",
-      backgroundColor: "#ffffff"
-    }
+      foregroundImage: "./assets/images/lensplay.png",
+      backgroundColor: "#000000",
+    },
   },
   web: {
-    favicon: "./assets/images/favicon.png"
-  }
+    favicon: "./assets/images/favicon.png",
+  },
 };
 
 export default withPackageVisibility(config);

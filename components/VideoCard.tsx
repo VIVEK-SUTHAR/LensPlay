@@ -36,7 +36,6 @@ const VideoCard = ({
     : avatar?.includes("ipfs://")
     ? `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`
     : avatar;
-  console.log(AVATAR_LINK);
 
   const BANNER_LINK = banner?.includes("https://arweave.net")
     ? banner
