@@ -99,7 +99,7 @@ function BottomTabNavigator() {
         tabBarStyle: {
           height: 55,
           backgroundColor: dark_secondary,
-          borderTopColor: "gray",
+          borderTopColor: "lightgray",
           paddingHorizontal: 10,
         },
       }}
@@ -109,6 +109,7 @@ function BottomTabNavigator() {
         component={Feed}
         options={{
           tabBarLabel: "",
+
           tabBarIcon: ({ focused }) => {
             return (
               <View
@@ -125,7 +126,7 @@ function BottomTabNavigator() {
               >
                 <Feather
                   name="home"
-                  size={26}
+                  size={28}
                   color={focused ? primary : "white"}
                 />
               </View>
@@ -165,7 +166,7 @@ function BottomTabNavigator() {
               >
                 <Feather
                   name="trending-up"
-                  size={26}
+                  size={28}
                   color={focused ? primary : "white"}
                 />
               </View>
@@ -194,12 +195,12 @@ function BottomTabNavigator() {
                   borderWidth: 2,
                   transform: [
                     {
-                      scale: focused ? 1.2 : 1,
+                      scale: focused ? 1.1 : 1,
                     },
                   ],
                 }}
               >
-                <AntDesign name="pluscircleo" size={28} color={"black"} />
+                <AntDesign name="pluscircleo" size={30} color={"black"} />
               </View>
             );
           },
@@ -231,7 +232,7 @@ function BottomTabNavigator() {
               >
                 <Ionicons
                   name="notifications-outline"
-                  size={26}
+                  size={28}
                   color={focused ? primary : "white"}
                 />
               </View>
@@ -260,7 +261,7 @@ function BottomTabNavigator() {
               >
                 <Feather
                   name="user"
-                  size={26}
+                  size={28}
                   color={focused ? primary : "white"}
                 />
               </View>
