@@ -10,7 +10,7 @@ import {
   Button,
   SafeAreaView,
 } from "react-native";
-import { Feather, AntDesign, Entypo } from "@expo/vector-icons";
+import { Feather, AntDesign, Entypo, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { dark_primary, primary } from "../constants/Colors";
 import useStore from "../store/Store";
@@ -68,45 +68,35 @@ const VideoPage = ({ route }) => {
           isLooping={true}
         />
         <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+
+          <View style={{}}>
             <Text
               style={{
-                flex: 0.98,
-                fontSize: 20,
-                fontWeight: "800",
+                fontSize: 16,
+                fontWeight: "700",
                 color: "white",
               }}
             >
               {route.params.title}
             </Text>
-            <Feather
-              name={`chevron-${descOpen ? "up" : "down"}`}
-              size={34}
-              color="white"
-              onPress={() => setDescOpen(!descOpen)}
-            />
+            <Text style={{ fontSize: 12, color: "gray" }}>
+              {userFeed[currentIndex]?.root?.metadata?.description}
+            </Text>
           </View>
-          {descOpen ? (
-            <View>
-              <Text style={{ color: "white" }}>
-                {userFeed[currentIndex]?.root?.metadata?.description}
-              </Text>
-            </View>
-          ) : (
-            <Text></Text>
-          )}
+
           <View style={{ flexDirection: "row", opacity: 0.5, marginTop: 8 }}>
             <Text style={{ marginRight: 10, color: "white" }}>
               3094505 views
             </Text>
             <Text style={{ color: "white" }}>May 16, 2019</Text>
           </View>
-          <View
+
+          <ScrollView
             style={{
-              marginTop: 20,
-              flexDirection: "row",
-              justifyContent: "space-around",
+              paddingVertical: 24
             }}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
           >
             <TouchableWithoutFeedback
               onPress={() => {
@@ -121,130 +111,146 @@ const VideoPage = ({ route }) => {
             >
               <View
                 style={{
-                  marginHorizontal: 8,
-                  backgroundColor: "rgba(255,255,255,0.05)",
-                  width: "auto",
-                  height: "auto",
-                  paddingHorizontal: 8,
+                  marginHorizontal: 4,
                   paddingVertical: 4,
+                  paddingHorizontal: 10,
                   flexDirection: "row",
-                  justifyContent: "center",
+                  justifyContent: "space-between",
                   alignItems: "center",
-                  borderRadius: 20,
-                  borderColor: primary,
+                  borderRadius: 16,
                   borderWidth: 1,
+                  borderColor: 'white',
+                  backgroundColor: "rgba(255, 255, 255, 0.08)",
                 }}
               >
-                <AntDesign name="like2" size={24} color={primary} />
+                <AntDesign name="like2" size={16} color={'white'} />
                 <Text
                   style={{
                     fontSize: 14,
                     fontWeight: "500",
                     color: "white",
-                    marginHorizontal: 4,
+                    marginLeft: 4
                   }}
                 >
-                  <Text style={{ marginLeft: 4, fontSize: 16 }}>{likes}</Text>
+                  {likes}
                 </Text>
               </View>
             </TouchableWithoutFeedback>
+
             <TouchableWithoutFeedback>
               <View
                 style={{
-                  marginHorizontal: 8,
-                  backgroundColor: "rgba(255,255,255,0.07)",
-                  width: "auto",
-                  height: "auto",
-                  paddingHorizontal: 8,
-                  paddingVertical: 4,
+                  marginHorizontal: 4,
+                  paddingHorizontal: 10,
                   flexDirection: "row",
-                  justifyContent: "center",
+                  justifyContent: "space-between",
                   alignItems: "center",
-                  borderRadius: 20,
-                  borderColor: primary,
+                  borderRadius: 16,
                   borderWidth: 1,
+                  borderColor: 'white',
                 }}
               >
-                <AntDesign name="dislike2" size={24} color={primary} />
+                <AntDesign name="dislike2" size={16} color={'white'} />
                 <Text
                   style={{
                     fontSize: 14,
                     fontWeight: "500",
                     color: "white",
-                    marginHorizontal: 4,
+                    marginLeft: 4,
                   }}
                 >
                   {userFeed[currentIndex]?.root?.stats?.totalDownvotes}
                 </Text>
               </View>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={onShare}>
-              <View
-                style={{
-                  marginHorizontal: 8,
-                  backgroundColor: "rgba(255,255,255,0.07)",
-                  width: "auto",
-                  height: "auto",
-                  paddingHorizontal: 8,
-                  paddingVertical: 4,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 20,
-                  borderColor: primary,
-                  borderWidth: 1,
-                }}
-              >
-                <Entypo name="share" size={24} color={primary} />
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "500",
-                    color: "white",
-                    marginHorizontal: 4,
-                  }}
-                >
-                  <Text style={{ marginLeft: 4, fontSize: 16 }}>Share</Text>
-                </Text>
-              </View>
-            </TouchableWithoutFeedback>
+
             <TouchableWithoutFeedback>
               <View
                 style={{
-                  marginHorizontal: 8,
-                  backgroundColor: "rgba(255,255,255,0.07)",
-                  width: "auto",
-                  height: "auto",
-                  paddingHorizontal: 8,
-                  paddingVertical: 4,
+                  marginHorizontal: 4,
+                  paddingHorizontal: 10,
                   flexDirection: "row",
-                  justifyContent: "center",
+                  justifyContent: "space-between",
                   alignItems: "center",
-                  borderRadius: 20,
-                  borderColor: primary,
+                  borderRadius: 16,
                   borderWidth: 1,
+                  borderColor: 'white',
                 }}
               >
-                <Feather name="flag" size={24} color={primary} />
+                <AntDesign name="switcher" size={16} color="white" />
                 <Text
                   style={{
                     fontSize: 14,
                     fontWeight: "500",
                     color: "white",
-                    marginHorizontal: 4,
+                    marginLeft: 8,
                   }}
                 >
-                  <Text style={{ marginLeft: 4, fontSize: 16 }}>Report</Text>
+                  collect
                 </Text>
               </View>
             </TouchableWithoutFeedback>
-          </View>
+
+            <TouchableWithoutFeedback onPress={onShare}>
+              <View
+                style={{
+                  marginHorizontal: 4,
+                  paddingHorizontal: 10,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderRadius: 16,
+                  borderWidth: 1,
+                  borderColor: 'white',
+                }}
+              >
+                <FontAwesome name="share" size={16} color="white" />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "500",
+                    color: "white",
+                    marginLeft: 8,
+                  }}
+                >
+                  Share
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+
+            <TouchableWithoutFeedback>
+              <View
+                style={{
+                  marginHorizontal: 4,
+                  paddingHorizontal: 10,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderRadius: 16,
+                  borderWidth: 1,
+                  borderColor: 'white',
+                }}
+              >
+                <MaterialIcons name="report" size={16} color="white" />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "500",
+                    color: "white",
+                    marginLeft: 8,
+                  }}
+                >
+                  Report
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </ScrollView>
+
           <View>
             <Text
               style={{
-                fontSize: 25,
-                fontWeight: "800",
-                marginTop: 20,
+                fontSize: 20,
+                fontWeight: "700",
                 color: "white",
               }}
             >
@@ -257,8 +263,6 @@ const VideoPage = ({ route }) => {
             ) : (
               <>
                 {userFeed[currentIndex]?.comments?.map((item, index) => {
-                  console.log(item?.metadata?.description);
-
                   return (
                     <CommentCard
                       key={index}

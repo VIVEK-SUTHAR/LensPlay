@@ -15,6 +15,7 @@ import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Uploadvideo from "../components/Uploadvideo";
 import GoLive from "../components/GoLive";
+import LottieView from "lottie-react-native";
 
 const UploadStack = createNativeStackNavigator();
 
@@ -127,6 +128,9 @@ function Index({ navigation }) {
             </View>
           </TouchableWithoutFeedback>
         </View> */}
+        <View>
+          <LottieView source='https://assets1.lottiefiles.com/packages/lf20_BP1Y8LyIGj.json' />
+        </View>
       </View>
       {/* <View
         style={{
