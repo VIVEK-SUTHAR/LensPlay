@@ -111,16 +111,16 @@ const Profile = ({ navigation }: { navigation: any }) => {
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "space-between",
+              justifyContent: "center",
               width: "100%",
               marginTop: "-10%",
+
             }}
           >
             <Image
               source={{
-                uri: `https://ipfs.io/ipfs/${
-                  profile?.profile?.picture?.original?.url.split("//")[1]
-                }`,
+                uri: `https://ipfs.io/ipfs/${profile?.profile?.picture?.original?.url.split("//")[1]
+                  }`,
               }}
               style={{
                 height: 100,
@@ -129,113 +129,53 @@ const Profile = ({ navigation }: { navigation: any }) => {
                 borderRadius: 50,
                 borderWidth: 3,
                 borderColor: dark_primary,
+                backgroundColor: primary
               }}
             />
-            <TouchableOpacity activeOpacity={0.8}>
-              <View
-                style={{
-                  // backgroundColor: primary,
-                  borderRadius: 50,
-                  borderColor: primary,
-                  borderWidth: 1,
-                  paddingHorizontal: 24,
-                  paddingVertical: 8,
-                  marginVertical: 10,
-                }}
-              >
-                <Text
-                  style={{
-                    color: primary,
-                    fontSize: 16,
-                    fontWeight: "bold",
-                    textAlign: "center",
-                  }}
-                >
-                  Subscribe
-                </Text>
-              </View>
-            </TouchableOpacity>
           </View>
 
-          <View style={{ padding: 4 }}>
+          <View style={{ padding: 4, alignItems: 'center' }}>
             <Text
               style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
               numberOfLines={1}
             >
               {profile?.profile?.name}
             </Text>
-            <Text style={{ fontSize: 16, color: "white" }}>
-              {profile?.profile?.bio}
+            <Text style={{ fontSize: 12, color: "white", marginTop: 2 }}>
+              iamharsh &middot; 23 subscribers &middot; 34 videos
+            </Text>
+            <Text style={{ fontSize: 14, color: "gray", textAlign: 'center' }}>
+              {profile?.profile?.bio}Doing nothing but doing something which is nothing
             </Text>
           </View>
 
-          <View
-            style={{
-              width: "100%",
-              borderRadius: 20,
-              paddingVertical: 5,
-              // backgroundColor: primary,
-              flexDirection: "row",
-              justifyContent: "space-evenly",
-              marginTop: 10,
-              borderWidth: 1,
-              borderColor: primary,
-            }}
-          >
+          <TouchableOpacity activeOpacity={0.8}>
             <View
               style={{
-                width: "50%",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRightWidth: 1,
-                borderRightColor: primary,
-                flexDirection: "row",
+                backgroundColor: 'white',
+                borderRadius: 50,
+                paddingVertical: 8,
+                marginVertical: 16,
               }}
             >
-              <Text style={{ fontSize: 20, color: primary }}>
-                {profile?.profile?.stats?.totalPosts}
-              </Text>
               <Text
                 style={{
+                  color: 'black',
                   fontSize: 16,
-                  marginLeft: 10,
                   fontWeight: "bold",
-                  color: primary,
+                  textAlign: "center",
                 }}
               >
-                Post
+                Subscribe
               </Text>
             </View>
-            <View
-              style={{
-                width: "50%",
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "row",
-              }}
-            >
-              <Text style={{ fontSize: 20, color: primary }}>
-                {profile?.profile?.stats?.totalFollowers}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 16,
-                  marginLeft: 10,
-                  fontWeight: "bold",
-                  color: primary,
-                }}
-              >
-                Subscribers
-              </Text>
-            </View>
-          </View>
+          </TouchableOpacity>
 
           <View style={{ paddingHorizontal: 4, paddingVertical: 10 }}>
             <Text
               style={{
                 fontSize: 20,
                 fontWeight: "700",
-                marginVertical: 20,
                 color: "white",
               }}
             >

@@ -23,6 +23,7 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
   const [isLoading, setIsLoading] = useState(true);
   const profileId = store.profileId;
   const setUserFeed = store.setUserFeed;
+
   React.useLayoutEffect(() => {
     navigation.setOptions({
       title: "LensPlay",
@@ -57,22 +58,21 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
           </Text>
           <View
             style={{
-              backgroundColor: "rgba(255,255,255,0.2)",
-              width: "auto",
-              height: 20,
-              marginHorizontal: 5,
-              paddingHorizontal: 5,
+              // backgroundColor: "rgba(255,255,255,0.2)",
+              backgroundColor: primary,
+              marginHorizontal: 4,
+              paddingHorizontal: 8,
+              paddingVertical: 2,
               borderRadius: 10,
-              borderWidth: 1,
-              borderColor: "rgba(255,255,255,0.6)",
             }}
           >
-            <Text style={{ color: primary, fontSize: 12 }}>Beta</Text>
+            <Text style={{ color: 'white', fontSize: 12, fontWeight: '600' }}>Beta</Text>
           </View>
         </View>
       ),
     });
   }, []);
+
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -87,6 +87,7 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
       setIsLoading(false);
     });
   }, []);
+
   async function getFeedData() {
     const feed = await client.query({
       query: getFeed,

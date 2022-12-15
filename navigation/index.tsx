@@ -88,16 +88,13 @@ function RootNavigator() {
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
-  const state = useStore();
-  const setIsOpen = state.setIsOpen;
-  const isOpen = state.isOpen;
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
       screenOptions={{
         headerTitle: "",
         tabBarStyle: {
-          height: 55,
+          height: 54,
           backgroundColor: dark_secondary,
           borderTopColor: "gray",
           paddingHorizontal: 10,
@@ -182,24 +179,17 @@ function BottomTabNavigator() {
             return (
               <View
                 style={{
-                  // width: 40,
+                  padding: 5,
+                  width: 45,
                   alignContent: "center",
-                  alignItems: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  // height: 40,
-                  backgroundColor: primary,
-                  borderRadius: 50,
-                  borderColor: focused ? "white" : primary,
-                  borderWidth: 2,
-                  transform: [
-                    {
-                      scale: focused ? 1.2 : 1,
-                    },
-                  ],
+                  borderTopWidth: focused ? 2 : 0,
+                  borderTopColor: focused ? primary : "none",
+                  height: "100%",
                 }}
               >
-                <AntDesign name="pluscircleo" size={28} color={"black"} />
+                <AntDesign name="pluscircleo" size={28} color={focused ? primary : "white"} />
               </View>
             );
           },

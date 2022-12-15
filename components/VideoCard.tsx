@@ -6,7 +6,6 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { primary, secondary } from "../constants/Colors";
 import useStore from "../store/Store";
 
 type videoPageProp = {
@@ -34,14 +33,14 @@ const VideoCard = ({
   const AVATAR_LINK = avatar?.includes("https://arweave.net")
     ? avatar
     : avatar?.includes("ipfs://")
-    ? `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`
-    : avatar;
+      ? `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`
+      : avatar;
 
   const BANNER_LINK = banner?.includes("https://arweave.net")
     ? banner
     : banner?.includes("ipfs://")
-    ? `https://ipfs.io/ipfs/${banner?.split("//")[1]}`
-    : banner;
+      ? `https://ipfs.io/ipfs/${banner?.split("//")[1]}`
+      : banner;
 
   return (
     <TouchableWithoutFeedback
@@ -59,12 +58,12 @@ const VideoCard = ({
     >
       <View
         style={{
-          marginTop: 1,
-          borderBottomColor: "rgba(255,255,255,0.08)",
-          borderBottomWidth: 1,
+          margin: 10,
+          backgroundColor: 'rgba(255, 255, 255, 0.08)',
+          borderRadius: 10,
         }}
       >
-        <View style={{ height: 150 }}>
+        <View style={{ height: 200 }}>
           <Image
             source={{
               uri:
@@ -74,8 +73,7 @@ const VideoCard = ({
             style={{
               height: "100%",
               width: "100%",
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
+              borderRadius: 10,
               resizeMode: "contain",
             }}
           />
@@ -85,13 +83,12 @@ const VideoCard = ({
             padding: 10,
             flexDirection: "row",
             justifyContent: "space-between",
-            alignItems: "center",
-            // backgroundColor: primary,
+            alignItems: "flex-start",
           }}
         >
           <View style={{ flex: 0.95 }}>
-            <Text style={{ fontSize: 16, fontWeight: "bold", color: "white" }}>
-              {title}{" "}
+            <Text style={{ fontSize: 16, fontWeight: "700", color: "white" }} numberOfLines={2}>
+              {title}
             </Text>
             <Text style={{ fontSize: 12, color: "gray" }}>
               By {uploadedBy} on 23 June

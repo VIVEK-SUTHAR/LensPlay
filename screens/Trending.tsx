@@ -107,6 +107,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
           height: 36,
           maxHeight: 36,
           paddingVertical: 2,
+          paddingHorizontal: 8
         }}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -116,14 +117,12 @@ const Trending = ({ navigation }: TrendingPageProps) => {
             <View
               key={index}
               style={{
-                marginHorizontal: 8,
-                backgroundColor: `${
-                  item.active ? primary : "rgba(255,255,255,0.1)"
-                }`,
+                marginHorizontal: 4,
+                backgroundColor: `${item.active ? primary : "rgba(255,255,255,0.1)"}`,
                 width: "auto",
                 height: "auto",
-                paddingHorizontal: 8,
-                // paddingVertical: 4,
+                paddingHorizontal: 16,
+                paddingVertical: 4,
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 20,

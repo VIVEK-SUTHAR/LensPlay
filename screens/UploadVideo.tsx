@@ -9,7 +9,7 @@ import {
   Image,
   TouchableWithoutFeedback,
 } from "react-native";
-import React from "react";
+import React, { useRef } from "react";
 import { Feather } from "@expo/vector-icons";
 import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -17,6 +17,7 @@ import Uploadvideo from "../components/Uploadvideo";
 import GoLive from "../components/GoLive";
 
 const UploadStack = createNativeStackNavigator();
+
 const UploadVideo = ({ navigation }) => {
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -81,14 +82,8 @@ export default UploadVideo;
 function Index({ navigation }) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
-      <View
-        style={{
-          flex: 0.5,
-          paddingHorizontal: 10,
-          paddingVertical: 10,
-        }}
-      >
-        <View
+      <View>
+        {/* <View
           style={{
             height: "100%",
             backgroundColor: "rgba(255,255,255,0.08)",
@@ -131,9 +126,9 @@ function Index({ navigation }) {
               </Text>
             </View>
           </TouchableWithoutFeedback>
-        </View>
+        </View> */}
       </View>
-      <View
+      {/* <View
         style={{
           flex: 0.5,
           paddingHorizontal: 10,
@@ -186,7 +181,7 @@ function Index({ navigation }) {
             </View>
           </TouchableWithoutFeedback>
         </View>
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 }
