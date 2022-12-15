@@ -14,6 +14,7 @@ import { text } from "stream/consumers";
 import { client } from "../apollo/client";
 import searchPublicationQuery from "../apollo/Queries/searchPublicationQuery";
 import VideoCard from "../components/VideoCard";
+import { useQuery } from "@apollo/client";
 const Search = ({ navigation }) => {
   const textRef = useRef(null);
   const [searchPostResult, setSearchPostResult] = useState([]);
@@ -32,16 +33,15 @@ const Search = ({ navigation }) => {
   useEffect(() => {
     return setSearchQuery("");
   }, []);
+
   async function getSearchResult() {
     try {
       const result = await client.query({
         query: searchPublicationQuery,
         variables: {
-          query: searchQuery,
+          query: searchQuery.toLowerCase(),
         },
       });
-      console.log(result.data.search);
-      
       setSearchPostResult(result?.data?.search?.items);
     } catch (error) {
       if (error instanceof Error) {
@@ -83,18 +83,20 @@ const Search = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_secondary }}>
       <ScrollView>
-        <Text style={{
-          paddingHorizontal:5,
-          fontSize: 20,
-          marginHorizontal:8,
-          fontWeight: "500",
-          color:"white"
-        }} >Here's what we found</Text>
+        <Text
+          style={{
+            paddingHorizontal: 5,
+            fontSize: 20,
+            marginHorizontal: 8,
+            fontWeight: "500",
+            color: "white",
+          }}
+        >
+          Here's what we found
+        </Text>
         {searchPostResult.length > 0 ? (
           <>
             {searchPostResult.map((item, index) => {
-              console.log(item?.metadata?.media[0]?.original?.url);
-              
               return (
                 <VideoCard
                   key={index}
