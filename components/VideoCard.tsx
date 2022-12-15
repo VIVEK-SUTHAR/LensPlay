@@ -7,6 +7,7 @@ import {
   View,
 } from "react-native";
 import useStore from "../store/Store";
+import getIPFSLink from "../utils/getIPFSLink";
 
 type videoPageProp = {
   navigation: any;
@@ -33,14 +34,14 @@ const VideoCard = ({
   const AVATAR_LINK = avatar?.includes("https://arweave.net")
     ? avatar
     : avatar?.includes("ipfs://")
-      ? `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`
-      : avatar;
+    ? `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`
+    : avatar;
 
   const BANNER_LINK = banner?.includes("https://arweave.net")
     ? banner
     : banner?.includes("ipfs://")
-      ? `https://ipfs.io/ipfs/${banner?.split("//")[1]}`
-      : banner;
+    ? `https://ipfs.io/ipfs/${banner?.split("//")[1]}`
+    : banner;
 
   return (
     <TouchableWithoutFeedback
@@ -59,7 +60,7 @@ const VideoCard = ({
       <View
         style={{
           margin: 10,
-          backgroundColor: 'rgba(255, 255, 255, 0.08)',
+          backgroundColor: "rgba(255, 255, 255, 0.08)",
           borderRadius: 10,
         }}
       >
@@ -67,7 +68,7 @@ const VideoCard = ({
           <Image
             source={{
               uri:
-                BANNER_LINK ||
+                getIPFSLink(banner) ||
                 "https://assets.lenstube.xyz/images/coverGradient.jpeg",
             }}
             style={{
@@ -87,7 +88,10 @@ const VideoCard = ({
           }}
         >
           <View style={{ flex: 0.95 }}>
-            <Text style={{ fontSize: 16, fontWeight: "700", color: "white" }} numberOfLines={2}>
+            <Text
+              style={{ fontSize: 16, fontWeight: "700", color: "white" }}
+              numberOfLines={2}
+            >
               {title}
             </Text>
             <Text style={{ fontSize: 12, color: "gray" }}>
@@ -97,7 +101,7 @@ const VideoCard = ({
           <View style={{ height: 40, width: 40 }}>
             <Image
               source={{
-                uri: AVATAR_LINK,
+                uri: getIPFSLink(avatar),
               }}
               style={{ height: "100%", width: "100%", borderRadius: 500 }}
             />

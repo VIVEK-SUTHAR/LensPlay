@@ -20,6 +20,7 @@ import addLike from "../api/addReaction";
 import CommentCard from "../components/CommentCard";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
+import getIPFSLink from "../utils/getIPFSLink";
 
 const VideoPage = ({ route }) => {
   const store = useStore();
@@ -31,13 +32,6 @@ const VideoPage = ({ route }) => {
   );
   const [descOpen, setDescOpen] = useState(false);
   const playbackId = route.params.playbackId;
-
-  const VIDEO_LINK = playbackId?.includes("https://arweave.net")
-    ? playbackId
-    : playbackId?.includes("ipfs://")
-    ? `https://ipfs.io/ipfs/${playbackId?.split("//")[1]}`
-    : playbackId;
-  console.log(VIDEO_LINK);
 
   const onShare = async () => {
     try {
@@ -58,7 +52,7 @@ const VideoPage = ({ route }) => {
           style={styles.video}
           resizeMode="contain"
           source={{
-            uri: VIDEO_LINK,
+            uri: getIPFSLink(playbackId),
           }}
           shouldPlay={true}
           useNativeControls={true}
