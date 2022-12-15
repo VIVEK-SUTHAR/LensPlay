@@ -14,6 +14,7 @@ import getTrendingPublication from "../apollo/Queries/getTrendingPublication";
 import { useEffect } from "react";
 import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import { Feather } from "@expo/vector-icons";
+import convertDate from "../utils/formateDate";
 
 type TrendingPageProps = {
   navigation: any;
@@ -179,6 +180,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                 <VideoCard
                   key={index}
                   navigation={navigation}
+                  date={convertDate(item?.createdAt)}
                   title={item?.metadata?.name}
                   banner={item?.profile?.coverPicture?.original?.url}
                   avatar={item?.profile?.picture?.original?.url}

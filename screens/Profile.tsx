@@ -22,6 +22,7 @@ import useStore from "../store/Store";
 import getPublications from "../apollo/Queries/getPublications";
 import { Feather } from "@expo/vector-icons";
 import VideoCard from "../components/VideoCard";
+import convertDate from "../utils/formateDate";
 
 const Profile = ({ navigation }: { navigation: any }) => {
   const [profile, setProfile] = useState<{}>({});
@@ -243,12 +244,12 @@ const Profile = ({ navigation }: { navigation: any }) => {
             </Text>
             {allVideos?.map((item, index) => {
               if (item.appId.includes("lenstube")) {
-                console.log(item);
-
                 return (
                   <VideoCard
                     navigation={navigation}
-                    key={index}
+                    key={item?.id}
+                    id={item?.id}
+                    date={convertDate(item?.createdAt)}
                     title={item?.metadata?.name}
                     avatar={item?.profile?.picture?.original?.url}
                     playbackId={item?.metadata?.media[0]?.original?.url}

@@ -105,7 +105,7 @@ const VideoPage = ({ route }) => {
             <Text style={{ marginRight: 10, color: "white" }}>
               3094505 views
             </Text>
-            <Text style={{ color: "white" }}>May 16, 2019</Text>
+            <Text style={{ color: "white" }}>{route.params.date}</Text>
           </View>
           <View
             style={{
