@@ -2,9 +2,6 @@ import {
   RefreshControl,
   ScrollView,
   StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
 } from "react-native";
 import { useEffect, useState } from "react";
 import * as React from "react";
@@ -14,8 +11,7 @@ import { StatusBar } from "expo-status-bar";
 import { client } from "../apollo/client";
 import getFeed from "../apollo/Queries/getFeed";
 import Skleton from "../components/Skleton";
-import { dark_primary, dark_secondary, primary } from "../constants/Colors";
-import { Feather } from "@expo/vector-icons";
+import { dark_primary, dark_secondary } from "../constants/Colors";
 import convertDate from "../utils/formateDate";
 
 const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
@@ -25,55 +21,6 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
   const profileId = store.profileId;
   const setUserFeed = store.setUserFeed;
 
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      title: "LensPlay",
-      headerStyle: { backgroundColor: dark_secondary, elevation: 0 },
-      headerRight: () => (
-        <TouchableWithoutFeedback
-          onPress={() => {
-            navigation.navigate("Search");
-          }}
-        >
-          <View
-            style={{
-              paddingHorizontal: 10,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Feather name="search" size={24} color="white" />
-          </View>
-        </TouchableWithoutFeedback>
-      ),
-      headerLeft: () => (
-        <View
-          style={{
-            paddingHorizontal: 10,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ fontSize: 24, fontWeight: "600", color: "white" }}>
-            LensPlay
-          </Text>
-          <View
-            style={{
-              // backgroundColor: "rgba(255,255,255,0.2)",
-              backgroundColor: primary,
-              marginHorizontal: 4,
-              paddingHorizontal: 8,
-              paddingVertical: 2,
-              borderRadius: 10,
-            }}
-          >
-            <Text style={{ color: 'white', fontSize: 12, fontWeight: '600' }}>Beta</Text>
-          </View>
-        </View>
-      ),
-    });
-  }, []);
-
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -81,6 +28,7 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
       setRefreshing(false);
     });
   }, []);
+
   useEffect(() => {
     getFeedData().then((res) => {
       setfeedData(res.data.feed.items);
@@ -96,9 +44,9 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
         id: profileId,
       },
     });
-
     return feed;
   }
+
   return (
     <ScrollView
       refreshControl={
@@ -114,7 +62,7 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
         <>
           {feedData.map((item, index) => {
             console.log(item?.root?.metadata?.cover);
-            
+
             return (
               <VideoCard
                 key={item?.root?.id}

@@ -5,7 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import { ColorSchemeName, Text, View } from "react-native";
+import { ColorSchemeName, Text, TouchableWithoutFeedback, View } from "react-native";
 import VideoPage from "../screens/VideoPage";
 import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import Feed from "../screens/Feed";
@@ -77,7 +77,44 @@ function BottomTabNavigator() {
     <BottomTab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        headerTitle: "",
+        headerStyle: { backgroundColor: dark_secondary },
+        headerRight: () => (
+          <TouchableWithoutFeedback>
+            <View
+              style={{
+                paddingHorizontal: 10,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Feather name="search" size={24} color="white" />
+            </View>
+          </TouchableWithoutFeedback>
+        ),
+        headerLeft: () => (
+          <View
+            style={{
+              paddingHorizontal: 10,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ fontSize: 24, fontWeight: "600", color: "white" }}>
+              LensPlay
+            </Text>
+            <View
+              style={{
+                backgroundColor: primary,
+                marginHorizontal: 4,
+                paddingHorizontal: 8,
+                paddingVertical: 2,
+                borderRadius: 10,
+              }}
+            >
+              <Text style={{ color: 'white', fontSize: 12, fontWeight: '600' }}>Beta</Text>
+            </View>
+          </View>
+        ),
         tabBarStyle: {
           height: 54,
           backgroundColor: dark_secondary,
@@ -244,6 +281,6 @@ function BottomTabNavigator() {
           },
         }}
       />
-    </BottomTab.Navigator>
+    </BottomTab.Navigator >
   );
 }

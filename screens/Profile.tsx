@@ -29,39 +29,11 @@ const Profile = ({ navigation }: { navigation: any }) => {
   const [allVideos, setallVideos] = useState([]);
   const [isVideoAvilable, setIsVideoAvilable] = useState<boolean>(true);
   const store = useStore();
+
   useEffect(() => {
     getProfleInfo();
   }, []);
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      title: "LensPlay",
-      headerStyle: { backgroundColor: dark_secondary, elevation: 0 },
-      headerRight: () => (
-        <View
-          style={{
-            paddingHorizontal: 10,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Feather name="search" size={24} color="white" />
-        </View>
-      ),
-      headerLeft: () => (
-        <View
-          style={{
-            paddingHorizontal: 10,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ fontSize: 24, fontWeight: "600", color: "white" }}>
-            {profile?.profile?.name || "LensPlay"}
-          </Text>
-        </View>
-      ),
-    });
-  }, []);
+
   const getProfleInfo = async () => {
     try {
       const profiledata = await client.query({
