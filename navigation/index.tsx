@@ -61,21 +61,6 @@ function RootNavigator() {
           options={{ headerShown: true, presentation: "card" }}
         />
         <Stack.Screen
-          name="Create"
-          component={Create}
-          options={{ headerShown: true, presentation: "card" }}
-        />
-        <Stack.Screen
-          name="Trending"
-          component={Trending}
-          options={{ headerShown: true, presentation: "card" }}
-        />
-        <Stack.Screen
-          name="Notification"
-          component={Notification}
-          options={{ headerShown: true, presentation: "card" }}
-        />
-        <Stack.Screen
           name="Search"
           component={Search}
           options={{ headerShown: true, presentation: "modal" }}
