@@ -16,6 +16,7 @@ import getFeed from "../apollo/Queries/getFeed";
 import Skleton from "../components/Skleton";
 import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import { Feather } from "@expo/vector-icons";
+import convertDate from "../utils/formateDate";
 
 const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
   const store = useStore();
@@ -112,19 +113,21 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
       {!isLoading ? (
         <>
           {feedData.map((item, index) => {
+            console.log(item?.root?.metadata?.cover);
+            
             return (
-              <>
-                <VideoCard
-                  key={item?.root?.id}
-                  id={index}
-                  navigation={navigation}
-                  title={item?.root?.metadata?.name}
-                  playbackId={item?.root?.metadata?.media[0]?.original?.url}
-                  banner={item?.root?.profile?.coverPicture?.original?.url}
-                  avatar={item?.root?.profile?.picture?.original?.url}
-                  uploadedBy={item?.root?.profile?.handle}
-                />
-              </>
+              <VideoCard
+                key={item?.root?.id}
+                id={item?.root?.id}
+                navigation={navigation}
+                title={item?.root?.metadata?.name}
+                date={convertDate(item?.root?.createdAt)}
+                playbackId={item?.root?.metadata?.media[0]?.original?.url}
+                banner={item?.root?.metadata?.cover}
+                avatar={item?.root?.profile?.picture?.original?.url}
+                uploadedBy={item?.root?.profile?.handle}
+                comments={item?.comments}
+              />
             );
           })}
         </>

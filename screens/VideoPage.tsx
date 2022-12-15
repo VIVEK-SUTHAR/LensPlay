@@ -11,27 +11,49 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Feather, AntDesign, Entypo, FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import React from "react";
+import React, { useEffect } from "react";
 import { dark_primary, primary } from "../constants/Colors";
 import useStore from "../store/Store";
 import { useState } from "react";
-import { Video } from "expo-av";
+import { ResizeMode, Video } from "expo-av";
 import addLike from "../api/addReaction";
 import CommentCard from "../components/CommentCard";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
 import getIPFSLink from "../utils/getIPFSLink";
+import { client } from "../apollo/client";
+import getComments from "../apollo/Queries/getComments";
+import convertDate from "../utils/formateDate";
 
 const VideoPage = ({ route }) => {
   const store = useStore();
   const currentIndex = store.currentIndex;
   const userFeed = store.userFeed;
-  const wallet = useWalletConnect();
+  const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState(
     userFeed[currentIndex]?.root?.stats?.totalUpvotes
   );
   const [descOpen, setDescOpen] = useState(false);
   const playbackId = route.params.playbackId;
+
+  const VIDEO_LINK = playbackId?.includes("https://arweave.net")
+    ? playbackId
+    : playbackId?.includes("ipfs://")
+      ? `https://ipfs.io/ipfs/${playbackId?.split("//")[1]}`
+      : playbackId;
+
+  useEffect(() => {
+    fetchComments();
+  }, []);
+  async function fetchComments() {
+    const data = await client.query({
+      query: getComments,
+      variables: {
+        postId: route.params.id,
+      },
+    });
+    setComments(data.data.publications.items);
+  }
 
   const onShare = async () => {
     try {
@@ -88,7 +110,7 @@ const VideoPage = ({ route }) => {
             <Text style={{ marginRight: 10, color: "white" }}>
               3094505 views
             </Text>
-            <Text style={{ color: "white" }}>May 16, 2019</Text>
+            <Text style={{ color: "white" }}>{route.params.date}</Text>
           </View>
 
           <ScrollView
@@ -262,13 +284,14 @@ const VideoPage = ({ route }) => {
               </Text>
             ) : (
               <>
-                {userFeed[currentIndex]?.comments?.map((item, index) => {
+                {comments?.map((item, index) => {
                   return (
                     <CommentCard
                       key={index}
                       username={item?.profile?.handle}
                       avatar={item?.profile?.picture?.original?.url}
                       commentText={item?.metadata?.description}
+                      commentTime={convertDate(item?.createdAt)}
                     />
                   );
                 })}

@@ -96,7 +96,7 @@ function BottomTabNavigator() {
         tabBarStyle: {
           height: 54,
           backgroundColor: dark_secondary,
-          borderTopColor: "gray",
+          borderTopColor: "lightgray",
           paddingHorizontal: 10,
         },
       }}
@@ -106,6 +106,7 @@ function BottomTabNavigator() {
         component={Feed}
         options={{
           tabBarLabel: "",
+
           tabBarIcon: ({ focused }) => {
             return (
               <View
@@ -122,7 +123,7 @@ function BottomTabNavigator() {
               >
                 <Feather
                   name="home"
-                  size={26}
+                  size={28}
                   color={focused ? primary : "white"}
                 />
               </View>
@@ -162,7 +163,7 @@ function BottomTabNavigator() {
               >
                 <Feather
                   name="trending-up"
-                  size={26}
+                  size={28}
                   color={focused ? primary : "white"}
                 />
               </View>
@@ -221,7 +222,7 @@ function BottomTabNavigator() {
               >
                 <Ionicons
                   name="notifications-outline"
-                  size={26}
+                  size={28}
                   color={focused ? primary : "white"}
                 />
               </View>
@@ -250,7 +251,7 @@ function BottomTabNavigator() {
               >
                 <Feather
                   name="user"
-                  size={26}
+                  size={28}
                   color={focused ? primary : "white"}
                 />
               </View>

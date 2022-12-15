@@ -11,9 +11,13 @@ import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import { Feather } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { text } from "stream/consumers";
+import { client } from "../apollo/client";
+import searchPublicationQuery from "../apollo/Queries/searchPublicationQuery";
+import VideoCard from "../components/VideoCard";
 const Search = ({ navigation }) => {
   const textRef = useRef(null);
-
+  const [searchPostResult, setSearchPostResult] = useState([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   useFocusEffect(
     useCallback(() => {
       const focus = () => {
@@ -25,6 +29,26 @@ const Search = ({ navigation }) => {
       return focus;
     }, [])
   );
+  useEffect(() => {
+    return setSearchQuery("");
+  }, []);
+  async function getSearchResult() {
+    try {
+      const result = await client.query({
+        query: searchPublicationQuery,
+        variables: {
+          query: searchQuery,
+        },
+      });
+      console.log(result.data.search);
+      
+      setSearchPostResult(result?.data?.search?.items);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error);
+      }
+    }
+  }
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -37,6 +61,10 @@ const Search = ({ navigation }) => {
             placeholder="Type something to search..."
             placeholderTextColor={"white"}
             clearButtonMode={"while-editing"}
+            onChangeText={(text) => {
+              setSearchQuery(text);
+            }}
+            onSubmitEditing={getSearchResult}
             style={{
               width: "100%",
               paddingHorizontal: 10,
@@ -54,7 +82,37 @@ const Search = ({ navigation }) => {
   }, []);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_secondary }}>
-      <ScrollView></ScrollView>
+      <ScrollView>
+        <Text style={{
+          paddingHorizontal:5,
+          fontSize: 20,
+          marginHorizontal:8,
+          fontWeight: "500",
+          color:"white"
+        }} >Here's what we found</Text>
+        {searchPostResult.length > 0 ? (
+          <>
+            {searchPostResult.map((item, index) => {
+              console.log(item?.metadata?.media[0]?.original?.url);
+              
+              return (
+                <VideoCard
+                  key={index}
+                  navigation={navigation}
+                  avatar={item?.profile?.picture?.original?.url}
+                  id={item?.id}
+                  banner={item?.profile?.coverPicture?.original?.url}
+                  uploadedBy={item?.profile?.handle}
+                  title={item?.metadata?.name}
+                  playbackId={item?.metadata?.media[0]?.original?.url}
+                />
+              );
+            })}
+          </>
+        ) : (
+          <></>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 };

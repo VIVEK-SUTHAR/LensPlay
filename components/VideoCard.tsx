@@ -13,10 +13,12 @@ type videoPageProp = {
   navigation: any;
   title: string;
   banner: string;
+  date: string;
   avatar: string;
   uploadedBy: string;
   playbackId: string;
   id: number;
+  comments: [];
 };
 
 const VideoCard = ({
@@ -27,6 +29,8 @@ const VideoCard = ({
   avatar,
   uploadedBy,
   playbackId,
+  date,
+  comments,
 }: videoPageProp) => {
   const store = useStore();
   const setCurrentIndex = store.setCurrentIndex;
@@ -54,6 +58,7 @@ const VideoCard = ({
           playbackId: playbackId,
           avatar: avatar,
           banner: banner,
+          date: date,
         });
       }}
     >
@@ -95,7 +100,7 @@ const VideoCard = ({
               {title}
             </Text>
             <Text style={{ fontSize: 12, color: "gray" }}>
-              By {uploadedBy} on 23 June
+              By {uploadedBy} on {date}
             </Text>
           </View>
           <View style={{ height: 40, width: 40 }}>
