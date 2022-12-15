@@ -16,6 +16,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Uploadvideo from "../components/Uploadvideo";
 import GoLive from "../components/GoLive";
 import LottieView from "lottie-react-native";
+import AnimatedLottieView from "lottie-react-native";
 
 const UploadStack = createNativeStackNavigator();
 
@@ -81,6 +82,7 @@ const UploadVideo = ({ navigation }) => {
 export default UploadVideo;
 
 function Index({ navigation }) {
+  const aniref = useRef(null);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <View>
@@ -128,8 +130,18 @@ function Index({ navigation }) {
             </View>
           </TouchableWithoutFeedback>
         </View> */}
-        <View>
-          <LottieView source='https://assets1.lottiefiles.com/packages/lf20_BP1Y8LyIGj.json' />
+        <View style={styles.animationContainer}>
+          <AnimatedLottieView
+            autoPlay
+            ref={aniref}
+            style={{
+              height: "auto",
+            }}
+            source={require("../assets/loader3.json")}
+          />
+          <View style={styles.buttonContainer}>
+            <Text style={styles.buttonContainer}>Getting Posts</Text>
+          </View>
         </View>
       </View>
       {/* <View
@@ -198,5 +210,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     fontWeight: "600",
     alignSelf: "flex-start",
+  },
+  animationContainer: {
+    height: 500,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonContainer: {
+    color: "white",
+    fontSize: 24,
+    fontWeight: "800",
   },
 });
