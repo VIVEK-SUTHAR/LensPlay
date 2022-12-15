@@ -4,7 +4,7 @@ export default gql`
 query Publications($id:ProfileId!) {
   publications(request: {
     profileId: $id,
-    publicationTypes: [POST, COMMENT, MIRROR],
+    publicationTypes: [POST],
     limit: 20
   }) {
     items {
@@ -109,6 +109,7 @@ fragment MetadataOutputFields on MetadataOutput {
       ...MediaFields
     }
   }
+  cover:image
   attributes {
     displayType
     traitType

@@ -112,6 +112,8 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
       {!isLoading ? (
         <>
           {feedData.map((item, index) => {
+            console.log(item?.root?.metadata?.cover);
+            
             return (
               <VideoCard
                 key={item?.root?.id}
@@ -120,7 +122,7 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
                 title={item?.root?.metadata?.name}
                 date={convertDate(item?.root?.createdAt)}
                 playbackId={item?.root?.metadata?.media[0]?.original?.url}
-                banner={item?.root?.profile?.coverPicture?.original?.url}
+                banner={item?.root?.metadata?.cover}
                 avatar={item?.root?.profile?.picture?.original?.url}
                 uploadedBy={item?.root?.profile?.handle}
                 comments={item?.comments}

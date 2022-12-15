@@ -179,10 +179,11 @@ const Trending = ({ navigation }: TrendingPageProps) => {
               return (
                 <VideoCard
                   key={index}
+                  id={item?.id}
                   navigation={navigation}
                   date={convertDate(item?.createdAt)}
                   title={item?.metadata?.name}
-                  banner={item?.profile?.coverPicture?.original?.url}
+                  banner={item?.metadata?.cover}
                   avatar={item?.profile?.picture?.original?.url}
                   uploadedBy={item?.profile?.handle}
                   playbackId={item?.metadata?.media[0]?.original?.url}

@@ -11,7 +11,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Feather, AntDesign, Entypo } from "@expo/vector-icons";
-import React from "react";
+import React, { useEffect } from "react";
 import { dark_primary, primary } from "../constants/Colors";
 import useStore from "../store/Store";
 import { useState } from "react";
@@ -20,12 +20,15 @@ import addLike from "../api/addReaction";
 import CommentCard from "../components/CommentCard";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
+import { client } from "../apollo/client";
+import getComments from "../apollo/Queries/getComments";
+import convertDate from "../utils/formateDate";
 
 const VideoPage = ({ route }) => {
   const store = useStore();
   const currentIndex = store.currentIndex;
   const userFeed = store.userFeed;
-  const wallet = useWalletConnect();
+  const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState(
     userFeed[currentIndex]?.root?.stats?.totalUpvotes
   );
@@ -37,7 +40,19 @@ const VideoPage = ({ route }) => {
     : playbackId?.includes("ipfs://")
     ? `https://ipfs.io/ipfs/${playbackId?.split("//")[1]}`
     : playbackId;
-  console.log(VIDEO_LINK);
+
+  useEffect(() => {
+    fetchComments();
+  }, []);
+  async function fetchComments() {
+    const data = await client.query({
+      query: getComments,
+      variables: {
+        postId: route.params.id,
+      },
+    });
+    setComments(data.data.publications.items);
+  }
 
   const onShare = async () => {
     try {
@@ -262,15 +277,14 @@ const VideoPage = ({ route }) => {
               </Text>
             ) : (
               <>
-                {userFeed[currentIndex]?.comments?.map((item, index) => {
-                  console.log(item?.metadata?.description);
-
+                {comments?.map((item, index) => {
                   return (
                     <CommentCard
                       key={index}
                       username={item?.profile?.handle}
                       avatar={item?.profile?.picture?.original?.url}
                       commentText={item?.metadata?.description}
+                      commentTime={convertDate(item?.createdAt)}
                     />
                   );
                 })}

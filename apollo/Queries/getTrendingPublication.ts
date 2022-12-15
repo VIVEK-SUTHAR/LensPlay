@@ -7,6 +7,7 @@ export default gql`
     metadata:{
       mainContentFocus:VIDEO
     }
+    timestamp:"10",
     sources:["lenstube"]
   }) {
     items {
@@ -129,6 +130,7 @@ fragment MetadataOutputFields on MetadataOutput {
       ...MediaFields
     }
   }
+  cover:image
   attributes {
     displayType
     traitType

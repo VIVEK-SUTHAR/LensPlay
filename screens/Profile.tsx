@@ -250,6 +250,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
                     key={item?.id}
                     id={item?.id}
                     date={convertDate(item?.createdAt)}
+                    banner={item?.metadata?.cover}
                     title={item?.metadata?.name}
                     avatar={item?.profile?.picture?.original?.url}
                     playbackId={item?.metadata?.media[0]?.original?.url}
