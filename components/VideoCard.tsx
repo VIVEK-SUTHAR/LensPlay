@@ -17,6 +17,7 @@ type videoPageProp = {
   uploadedBy: string;
   playbackId: string;
   id: number;
+  stats: {};
 };
 
 const VideoCard = ({
@@ -27,6 +28,7 @@ const VideoCard = ({
   avatar,
   uploadedBy,
   playbackId,
+  stats,
 }: videoPageProp) => {
   const store = useStore();
   const setCurrentIndex = store.setCurrentIndex;
@@ -34,14 +36,14 @@ const VideoCard = ({
   const AVATAR_LINK = avatar?.includes("https://arweave.net")
     ? avatar
     : avatar?.includes("ipfs://")
-      ? `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`
-      : avatar;
+    ? `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`
+    : avatar;
 
   const BANNER_LINK = banner?.includes("https://arweave.net")
     ? banner
     : banner?.includes("ipfs://")
-      ? `https://ipfs.io/ipfs/${banner?.split("//")[1]}`
-      : banner;
+    ? `https://ipfs.io/ipfs/${banner?.split("//")[1]}`
+    : banner;
 
   return (
     <TouchableWithoutFeedback
@@ -54,6 +56,7 @@ const VideoCard = ({
           playbackId: playbackId,
           avatar: avatar,
           banner: banner,
+          stats: stats,
         });
       }}
     >

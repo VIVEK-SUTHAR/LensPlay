@@ -38,15 +38,11 @@ const Trending = ({ navigation }: TrendingPageProps) => {
 
   const Tags = [
     {
-      name: "Top Liked",
+      name: "Top Collected",
       active: true,
     },
     {
       name: "Top Commented",
-      active: false,
-    },
-    {
-      name: "Top Collected",
       active: false,
     },
     {
@@ -104,11 +100,13 @@ const Trending = ({ navigation }: TrendingPageProps) => {
       <ScrollView>
         <View style={{ marginTop: 10 }}>
           {TrendingItems && TrendingItems.length === 0 ? (
-            <View style={{
-              height: 500,
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
+            <View
+              style={{
+                height: 500,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <AnimatedLottieView
                 autoPlay
                 style={{
@@ -116,17 +114,23 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                 }}
                 source={require("../assets/loader.json")}
               />
-              <View style={{
-                alignItems: 'center'
-              }}>
-                <Text style={{
-                  fontSize: 16,
-                  color: "white",
-                  marginVertical: 5,
-                  marginHorizontal: 15,
-                  fontWeight: "600",
-                  alignSelf: "flex-start",
-                }}>Getting videos</Text>
+              <View
+                style={{
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: "white",
+                    marginVertical: 5,
+                    marginHorizontal: 15,
+                    fontWeight: "600",
+                    alignSelf: "flex-start",
+                  }}
+                >
+                  Getting videos
+                </Text>
               </View>
             </View>
           ) : (

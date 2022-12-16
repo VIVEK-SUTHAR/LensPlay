@@ -69,6 +69,7 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
                 avatar={item?.root?.profile?.picture?.original?.url}
                 uploadedBy={item?.root?.profile?.handle}
                 comments={item?.comments}
+                stats={item?.root?.stats}
               />
             );
           })}

@@ -7,21 +7,14 @@ import {
   Share,
   TouchableWithoutFeedback,
   ScrollView,
-  Button,
   SafeAreaView,
 } from "react-native";
-import {
-  Feather,
-  AntDesign,
-  Entypo,
-  FontAwesome,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import { AntDesign, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect } from "react";
 import { dark_primary, primary } from "../constants/Colors";
 import useStore from "../store/Store";
 import { useState } from "react";
-import { ResizeMode, Video } from "expo-av";
+import { Video } from "expo-av";
 import addLike from "../api/addReaction";
 import CommentCard from "../components/CommentCard";
 import { StatusBar } from "expo-status-bar";
@@ -58,6 +51,8 @@ const VideoPage = ({ route }) => {
     });
     setComments(data.data.publications.items);
   }
+  console.log(route.params.stats);
+  const STATS = route.params.stats;
 
   const onShare = async () => {
     try {
@@ -211,7 +206,7 @@ const VideoPage = ({ route }) => {
                     marginLeft: 4,
                   }}
                 >
-                  {likes}
+                  {STATS?.totalUpvotes || 0}
                 </Text>
               </View>
             </TouchableWithoutFeedback>
@@ -237,9 +232,7 @@ const VideoPage = ({ route }) => {
                     color: "white",
                     marginLeft: 4,
                   }}
-                >
-                  {userFeed[currentIndex]?.root?.stats?.totalDownvotes}
-                </Text>
+                ></Text>
               </View>
             </TouchableWithoutFeedback>
 
@@ -265,7 +258,7 @@ const VideoPage = ({ route }) => {
                     marginLeft: 8,
                   }}
                 >
-                  collect
+                  {STATS?.totalAmountOfCollects || 0} Collects
                 </Text>
               </View>
             </TouchableWithoutFeedback>

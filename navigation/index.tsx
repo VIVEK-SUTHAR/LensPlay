@@ -83,7 +83,7 @@ function BottomTabNavigator({ navigation }) {
       initialRouteName="Home"
       screenOptions={{
         headerStyle: { backgroundColor: dark_secondary },
-        headerTitle:"",
+        headerTitle: "",
         headerRight: () => (
           <TouchableWithoutFeedback
             onPress={() => {
@@ -121,8 +121,8 @@ function BottomTabNavigator({ navigation }) {
                 borderRadius: 10,
               }}
             >
-              <Text style={{ color: "white", fontSize: 12, fontWeight: "600" }}>
-                Beta
+              <Text style={{ color: "white", fontSize: 11, fontWeight: "600" }}>
+                BETA
               </Text>
             </View>
           </View>

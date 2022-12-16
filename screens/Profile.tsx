@@ -87,13 +87,13 @@ const Profile = ({ navigation }: { navigation: any }) => {
               justifyContent: "center",
               width: "100%",
               marginTop: "-10%",
-
             }}
           >
             <Image
               source={{
-                uri: `https://ipfs.io/ipfs/${profile?.profile?.picture?.original?.url.split("//")[1]
-                  }`,
+                uri: `https://ipfs.io/ipfs/${
+                  profile?.profile?.picture?.original?.url.split("//")[1]
+                }`,
               }}
               style={{
                 height: 100,
@@ -102,12 +102,12 @@ const Profile = ({ navigation }: { navigation: any }) => {
                 borderRadius: 50,
                 borderWidth: 3,
                 borderColor: dark_primary,
-                backgroundColor: primary
+                backgroundColor: primary,
               }}
             />
           </View>
 
-          <View style={{ padding: 4, alignItems: 'center' }}>
+          <View style={{ padding: 4, alignItems: "center" }}>
             <Text
               style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
               numberOfLines={1}
@@ -115,32 +115,37 @@ const Profile = ({ navigation }: { navigation: any }) => {
               {profile?.profile?.name}
             </Text>
             <Text style={{ fontSize: 12, color: "white", marginTop: 2 }}>
-              iamharsh &middot; 23 subscribers &middot; 34 videos
+              {profile?.profile?.handle} &middot; 23 subscribers &middot; 34
+              videos
             </Text>
-            <Text style={{ fontSize: 14, color: "gray", textAlign: 'center' }}>
-              {profile?.profile?.bio}Doing nothing but doing something which is nothing
+            <Text style={{ fontSize: 14, color: "gray", textAlign: "center" }}>
+              {profile?.profile?.bio}
             </Text>
           </View>
 
           <TouchableOpacity activeOpacity={0.8}>
             <View
               style={{
-                backgroundColor: 'white',
+                backgroundColor: "white",
                 borderRadius: 50,
                 paddingVertical: 8,
                 marginVertical: 16,
+                flexDirection: "row",
+                justifyContent: "center",
               }}
             >
               <Text
                 style={{
-                  color: 'black',
+                  color: "black",
                   fontSize: 16,
                   fontWeight: "bold",
                   textAlign: "center",
+                  marginHorizontal: 4,
                 }}
               >
-                Subscribe
+                Edit Channel
               </Text>
+              <Feather name="edit-3" size={24} />
             </View>
           </TouchableOpacity>
 
