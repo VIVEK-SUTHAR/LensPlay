@@ -22,7 +22,7 @@ const CommentCard = ({
         alignItems: "center",
         backgroundColor: dark_secondary,
         padding: 5,
-        marginVertical:4,
+        marginVertical: 4,
         borderRadius: 12,
       }}
     >
@@ -42,7 +42,7 @@ const CommentCard = ({
       <View style={{ flex: 1 }}>
         <Text style={{ color: primary }}>
           {username}
-          <Text>{commentTime}</Text>
+          <Text style={{ fontSize: 10, color: "white" }}>~{commentTime}</Text>
         </Text>
         <Text style={{ fontSize: 12, color: "white" }}>{commentText}</Text>
       </View>

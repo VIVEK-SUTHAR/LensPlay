@@ -1,8 +1,4 @@
-import {
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
+import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 import * as React from "react";
 import VideoCard from "../components/VideoCard";
@@ -61,8 +57,6 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
       {!isLoading ? (
         <>
           {feedData.map((item, index) => {
-            console.log(item?.root?.metadata?.cover);
-
             return (
               <VideoCard
                 key={item?.root?.id}

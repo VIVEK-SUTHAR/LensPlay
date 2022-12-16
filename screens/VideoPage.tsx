@@ -10,7 +10,13 @@ import {
   Button,
   SafeAreaView,
 } from "react-native";
-import { Feather, AntDesign, Entypo, FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import {
+  Feather,
+  AntDesign,
+  Entypo,
+  FontAwesome,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import React, { useEffect } from "react";
 import { dark_primary, primary } from "../constants/Colors";
 import useStore from "../store/Store";
@@ -18,7 +24,6 @@ import { useState } from "react";
 import { ResizeMode, Video } from "expo-av";
 import addLike from "../api/addReaction";
 import CommentCard from "../components/CommentCard";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
 import getIPFSLink from "../utils/getIPFSLink";
 import { client } from "../apollo/client";
@@ -39,8 +44,8 @@ const VideoPage = ({ route }) => {
   const VIDEO_LINK = playbackId?.includes("https://arweave.net")
     ? playbackId
     : playbackId?.includes("ipfs://")
-      ? `https://ipfs.io/ipfs/${playbackId?.split("//")[1]}`
-      : playbackId;
+    ? `https://ipfs.io/ipfs/${playbackId?.split("//")[1]}`
+    : playbackId;
 
   useEffect(() => {
     fetchComments();
@@ -68,30 +73,29 @@ const VideoPage = ({ route }) => {
   };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
+      <StatusBar style="light" backgroundColor={dark_primary} />
+      <Video
+        style={styles.video}
+        resizeMode="contain"
+        source={{
+          uri: getIPFSLink(playbackId),
+        }}
+        shouldPlay={true}
+        useNativeControls={true}
+        usePoster={true}
+        posterSource={{
+          uri: route.params.banner,
+        }}
+        posterStyle={{
+          height: "100%",
+          width: "100%",
+          resizeMode: "stretch",
+        }}
+        isLooping={true}
+      />
       <ScrollView>
-        <StatusBar style="light" backgroundColor={dark_primary} />
-        <Video
-          style={styles.video}
-          resizeMode="contain"
-          source={{
-            uri: getIPFSLink(playbackId),
-          }}
-          shouldPlay={true}
-          useNativeControls={true}
-          usePoster={true}
-          posterSource={{
-            uri: route.params.banner,
-          }}
-          posterStyle={{
-            height: "100%",
-            width: "100%",
-            resizeMode: "stretch",
-          }}
-          isLooping={true}
-        />
         <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
-
-          <View style={{}}>
+          <View>
             <Text
               style={{
                 fontSize: 16,
@@ -105,17 +109,71 @@ const VideoPage = ({ route }) => {
               {userFeed[currentIndex]?.root?.metadata?.description}
             </Text>
           </View>
-
           <View style={{ flexDirection: "row", opacity: 0.5, marginTop: 8 }}>
             <Text style={{ marginRight: 10, color: "white" }}>
               3094505 views
             </Text>
             <Text style={{ color: "white" }}>{route.params.date}</Text>
           </View>
-
+          <View
+            style={{
+              width: "100%",
+              flexDirection: "row",
+              paddingVertical: 4,
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <View style={{ height: 40, width: 40 }}>
+                <Image
+                  source={{
+                    uri: getIPFSLink(route.params.avatar),
+                  }}
+                  style={{ height: "100%", width: "100%", borderRadius: 500 }}
+                />
+              </View>
+              <Text
+                style={{
+                  color: primary,
+                  fontSize: 16,
+                  fontWeight: "500",
+                  marginHorizontal: 4,
+                  alignSelf: "flex-start",
+                }}
+              >
+                {route.params.uploadedBy}
+              </Text>
+            </View>
+            <TouchableWithoutFeedback>
+              <View
+                style={{
+                  marginHorizontal: 4,
+                  paddingHorizontal: 10,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderRadius: 50,
+                  borderWidth: 1,
+                  borderColor: primary,
+                }}
+              >
+                <AntDesign name="adduser" size={16} color={primary} />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "500",
+                    color: "white",
+                    marginLeft: 8,
+                  }}
+                >
+                  Subscribe
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
           <ScrollView
             style={{
-              paddingVertical: 24
+              paddingVertical: 24,
             }}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
@@ -141,17 +199,17 @@ const VideoPage = ({ route }) => {
                   alignItems: "center",
                   borderRadius: 16,
                   borderWidth: 1,
-                  borderColor: 'white',
+                  borderColor: "white",
                   backgroundColor: "rgba(255, 255, 255, 0.08)",
                 }}
               >
-                <AntDesign name="like2" size={16} color={'white'} />
+                <AntDesign name="like2" size={16} color={"white"} />
                 <Text
                   style={{
                     fontSize: 14,
                     fontWeight: "500",
                     color: "white",
-                    marginLeft: 4
+                    marginLeft: 4,
                   }}
                 >
                   {likes}
@@ -169,10 +227,10 @@ const VideoPage = ({ route }) => {
                   alignItems: "center",
                   borderRadius: 16,
                   borderWidth: 1,
-                  borderColor: 'white',
+                  borderColor: "white",
                 }}
               >
-                <AntDesign name="dislike2" size={16} color={'white'} />
+                <AntDesign name="dislike2" size={16} color={"white"} />
                 <Text
                   style={{
                     fontSize: 14,
@@ -196,7 +254,7 @@ const VideoPage = ({ route }) => {
                   alignItems: "center",
                   borderRadius: 16,
                   borderWidth: 1,
-                  borderColor: 'white',
+                  borderColor: "white",
                 }}
               >
                 <AntDesign name="switcher" size={16} color="white" />
@@ -223,7 +281,7 @@ const VideoPage = ({ route }) => {
                   alignItems: "center",
                   borderRadius: 16,
                   borderWidth: 1,
-                  borderColor: 'white',
+                  borderColor: "white",
                 }}
               >
                 <FontAwesome name="share" size={16} color="white" />
@@ -250,7 +308,7 @@ const VideoPage = ({ route }) => {
                   alignItems: "center",
                   borderRadius: 16,
                   borderWidth: 1,
-                  borderColor: 'white',
+                  borderColor: "white",
                 }}
               >
                 <MaterialIcons name="report" size={16} color="white" />
@@ -267,7 +325,6 @@ const VideoPage = ({ route }) => {
               </View>
             </TouchableWithoutFeedback>
           </ScrollView>
-
           <View>
             <Text
               style={{

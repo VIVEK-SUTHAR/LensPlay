@@ -5,7 +5,12 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import { ColorSchemeName, Text, TouchableWithoutFeedback, View } from "react-native";
+import {
+  ColorSchemeName,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import VideoPage from "../screens/VideoPage";
 import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import Feed from "../screens/Feed";
@@ -48,7 +53,7 @@ function RootNavigator() {
         <Stack.Screen
           name="Root"
           component={BottomTabNavigator}
-          options={{ headerShown: false }}
+          options={{ headerShown: false, presentation: "card" }}
         />
         <Stack.Screen
           name="VideoPage"
@@ -72,14 +77,18 @@ function RootNavigator() {
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
-function BottomTabNavigator() {
+function BottomTabNavigator({ navigation }) {
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
       screenOptions={{
         headerStyle: { backgroundColor: dark_secondary },
         headerRight: () => (
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              navigation.navigate("Search");
+            }}
+          >
             <View
               style={{
                 paddingHorizontal: 10,
@@ -111,7 +120,9 @@ function BottomTabNavigator() {
                 borderRadius: 10,
               }}
             >
-              <Text style={{ color: 'white', fontSize: 12, fontWeight: '600' }}>Beta</Text>
+              <Text style={{ color: "white", fontSize: 12, fontWeight: "600" }}>
+                Beta
+              </Text>
             </View>
           </View>
         ),
@@ -128,7 +139,6 @@ function BottomTabNavigator() {
         component={Feed}
         options={{
           tabBarLabel: "",
-
           tabBarIcon: ({ focused }) => {
             return (
               <View
@@ -148,17 +158,6 @@ function BottomTabNavigator() {
                   size={28}
                   color={focused ? primary : "white"}
                 />
-              </View>
-            );
-          },
-          headerRight: () => {
-            return (
-              <View
-                style={{
-                  padding: 5,
-                }}
-              >
-                <Feather name="search" size={26} color={"black"} />
               </View>
             );
           },
@@ -212,7 +211,11 @@ function BottomTabNavigator() {
                   height: "100%",
                 }}
               >
-                <AntDesign name="pluscircleo" size={28} color={focused ? primary : "white"} />
+                <AntDesign
+                  name="pluscircleo"
+                  size={28}
+                  color={focused ? primary : "white"}
+                />
               </View>
             );
           },
@@ -281,6 +284,6 @@ function BottomTabNavigator() {
           },
         }}
       />
-    </BottomTab.Navigator >
+    </BottomTab.Navigator>
   );
 }
