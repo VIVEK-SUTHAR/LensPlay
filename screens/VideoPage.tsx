@@ -29,7 +29,6 @@ import getIPFSLink from "../utils/getIPFSLink";
 import { client } from "../apollo/client";
 import getComments from "../apollo/Queries/getComments";
 import convertDate from "../utils/formateDate";
-
 const VideoPage = ({ route }) => {
   const store = useStore();
   const currentIndex = store.currentIndex;

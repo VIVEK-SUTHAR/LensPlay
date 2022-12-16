@@ -83,6 +83,7 @@ function BottomTabNavigator({ navigation }) {
       initialRouteName="Home"
       screenOptions={{
         headerStyle: { backgroundColor: dark_secondary },
+        headerTitle:"",
         headerRight: () => (
           <TouchableWithoutFeedback
             onPress={() => {

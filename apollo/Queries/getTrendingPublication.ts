@@ -7,7 +7,6 @@ export default gql`
     metadata:{
       mainContentFocus:VIDEO
     }
-    timestamp:"10",
     sources:["lenstube"]
   }) {
     items {
