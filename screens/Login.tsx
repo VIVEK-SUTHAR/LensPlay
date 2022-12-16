@@ -75,28 +75,9 @@ const Login = ({ navigation }: { navigation: any }) => {
         style={{
           justifyContent: "center",
           alignItems: "center",
-          marginTop: "20%",
+          height: '100%'
         }}
       >
-        <Text
-          style={{
-            fontSize: 32,
-            fontWeight: "bold",
-            textAlign: "center",
-            color: "white",
-          }}
-        >
-          Welcome to{" "}
-          <Text
-            style={{
-              fontSize: 68,
-              color: primary,
-              fontWeight: "900",
-            }}
-          >
-            LensPlay
-          </Text>
-        </Text>
         <View
           style={{ width: "100%", alignItems: "center", aspectRatio: 1.4 / 1 }}
         >
@@ -111,95 +92,34 @@ const Login = ({ navigation }: { navigation: any }) => {
         </View>
         {!!connector.connected ? (
           <>
-            <View
+            <TouchableOpacity
               style={{
-                backgroundColor: dark_secondary,
-                borderRadius: 20,
-                display: "flex",
-                alignItems: "center",
-                paddingTop: 16,
-                margin: 16,
                 width: "90%",
+              }}
+              onPress={async () => {
+                await logInWithLens();
               }}
             >
               <View
                 style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  width: "100%",
-                  justifyContent: "center",
+                  backgroundColor: "#abfe2c",
+                  borderRadius: 50,
+                  paddingVertical: 16,
+                  marginVertical: 10,
                 }}
               >
-                <Image
-                  source={require("../assets/images/test.png")}
+                <Text
                   style={{
-                    width: 50,
-                    height: 50,
-                    borderRadius: 50,
-                    alignItems: "center",
-                    resizeMode: "contain",
-                  }}
-                />
-                <View
-                  style={{
-                    alignItems: "center",
-                    borderRadius: 50,
-                    marginLeft: 10,
+                    color: "black",
+                    fontSize: 24,
+                    fontWeight: "bold",
+                    textAlign: "center",
                   }}
                 >
-                  <Text
-                    style={{ fontSize: 16, fontWeight: "bold", color: primary }}
-                  >
-                    @iamharsh.lens
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: "gray",
-                      width: "100%",
-                      fontWeight: "500",
-                    }}
-                  >
-                    {connector.accounts[0].substring(0, 5) +
-                      "..." +
-                      connector.accounts[0].substring(
-                        connector.accounts[0].length - 3,
-                        connector.accounts[0].length
-                      )}
-                  </Text>
-                </View>
+                  Login with Lens
+                </Text>
               </View>
-              <TouchableOpacity
-                style={{
-                  width: "100%",
-                }}
-                onPress={async () => {
-                  await logInWithLens();
-                }}
-              >
-                <View
-                  style={{
-                    backgroundColor: "#abfe2c",
-                    borderBottomRightRadius: 20,
-                    borderBottomLeftRadius: 20,
-                    paddingVertical: 16,
-                    marginTop: 10,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "black",
-                      fontSize: 24,
-                      fontWeight: "bold",
-                      textAlign: "center",
-                    }}
-                  >
-                    Login with Lens
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
             <TouchableOpacity style={{ width: "90%" }} onPress={killSession}>
               <View
                 style={{
@@ -243,7 +163,6 @@ const Login = ({ navigation }: { navigation: any }) => {
                   fontSize: 24,
                   fontWeight: "600",
                   textAlign: "center",
-                  // width:'80%'
                 }}
               >
                 Connect Wallet
