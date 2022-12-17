@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Animated, Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as React from "react";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -9,6 +9,7 @@ import getChallenge from "../apollo/Queries/getChallenge";
 import getAccessTokens from "../apollo/Queries/getAccessTokens";
 import getProfile from "../apollo/Queries/getProfile";
 import useStore from "../store/Store";
+import { StatusBar } from "expo-status-bar";
 
 const Login = ({ navigation }: { navigation: any }) => {
   const store = useStore();
@@ -20,6 +21,14 @@ const Login = ({ navigation }: { navigation: any }) => {
     });
   }, [connector]);
 
+  const data=[
+    'https://images.pexels.com/photos/14354107/pexels-photo-14354107.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    'https://images.pexels.com/photos/2873486/pexels-photo-2873486.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    'https://images.pexels.com/photos/3379934/pexels-photo-3379934.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  ]
+  const {width,height}=Dimensions.get("screen");
+  const imageW=width*0.7;
+  const imageH=imageW*1.54;
   const logInWithLens = async () => {
     const data = await client.query({
       query: getProfile,
@@ -65,12 +74,14 @@ const Login = ({ navigation }: { navigation: any }) => {
     }
   };
 
+
   const killSession = React.useCallback(() => {
     return connector.killSession();
   }, [connector]);
-
+    const scrollX=React.useRef(new Animated.Value(0)).current;
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar hidden/>
       <View
         style={{
           justifyContent: "center",
@@ -78,19 +89,66 @@ const Login = ({ navigation }: { navigation: any }) => {
           height: '100%'
         }}
       >
-        <View
+        {/* <View
           style={{ width: "100%", alignItems: "center", aspectRatio: 1.4 / 1 }}
-        >
-          <Image
+        > */}
+          <View 
+            style={StyleSheet.absoluteFillObject}
+          >
+            {data.map((image,index)=>{
+              const inputRange=[
+                (index-1)*width,
+                index*width,
+                (index+1)*width
+              ]
+              const opacity=scrollX.interpolate({
+                inputRange,
+                outputRange:[0,1,0]
+              })
+              return <Animated.Image
+              key={`image-${index}`}
+              source={{uri:image}}
+              style={[
+                  StyleSheet.absoluteFillObject,
+                  {
+                    opacity
+                  }
+              ]}
+              blurRadius={10}
+              />
+            })}
+          </View>
+          <Animated.FlatList
+            data={data}
+            onScroll={Animated.event(
+              [{nativeEvent:{contentOffset:{x:scrollX}}}],
+              {useNativeDriver:true}
+            )}
+            keyExtractor={(_,index)=>index.toString()}
+            horizontal
+            pagingEnabled
+            renderItem={({item})=>{
+              return <View style={{width,justifyContent:'center',alignItems:'center'}}>
+                  <Image source={{uri:item}} style={{
+                    width:imageW,
+                    height:imageH,
+                    resizeMode:'cover',
+                    borderRadius:16
+                  }}/>
+                </View>
+            }}
+            />
+
+          {/* <Image
             source={require("../assets/images/lensplay.png")}
             style={{
               height: "100%",
               width: "100%",
               resizeMode: "center",
             }}
-          />
-        </View>
-        {!!connector.connected ? (
+          /> */}
+        {/* </View> */}
+        {/* {!!connector.connected ? (
           <>
             <TouchableOpacity
               style={{
@@ -169,7 +227,7 @@ const Login = ({ navigation }: { navigation: any }) => {
               </Text>
             </View>
           </TouchableOpacity>
-        )}
+        )} */}
       </View>
     </SafeAreaView>
   );
