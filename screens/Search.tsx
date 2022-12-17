@@ -43,7 +43,7 @@ const Search = ({ navigation }) => {
         },
       });
       console.log(result.data);
-      
+
       setSearchPostResult(result?.data?.search?.items);
     } catch (error) {
       if (error instanceof Error) {

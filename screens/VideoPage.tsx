@@ -8,6 +8,8 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
   SafeAreaView,
+  Modal,
+  TouchableOpacity,
 } from "react-native";
 import { AntDesign, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect } from "react";
@@ -65,6 +67,7 @@ const VideoPage = ({ route }) => {
       }
     }
   };
+  const [ismodalopen, setIsmodalopen] = useState(false);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <StatusBar style="light" backgroundColor={dark_primary} />
@@ -87,6 +90,102 @@ const VideoPage = ({ route }) => {
         }}
         isLooping={true}
       />
+      <Modal
+        animationType="fade"
+        visible={ismodalopen}
+        onRequestClose={() => {
+          setIsmodalopen(false);
+        }}
+        statusBarTranslucent={true}
+        transparent={true}
+      >
+        <StatusBar style="inverted" />
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "#rgba(0,0,0,0.7)",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <View
+            style={{
+              marginTop: 300,
+              flex: 1,
+              backgroundColor: "#1d1d1d",
+              width: "100%",
+              borderTopLeftRadius: 25,
+              borderTopRightRadius: 25,
+              paddingVertical:20
+            }}
+          >
+            <View
+              style={{
+                width: "100%",
+                height: "100%",
+                opacity: 1,
+                alignItems: "center",
+              }}
+            >
+              <Video
+                style={{
+                  alignSelf: "center",
+                  width: "90%",
+                  height: 280,
+                  borderRadius: 10,
+                }}
+                resizeMode="contain"
+                source={{
+                  uri: getIPFSLink(playbackId),
+                }}
+                useNativeControls={true}
+                usePoster={true}
+                posterSource={{
+                  uri: route.params.banner,
+                }}
+                posterStyle={{
+                  height: "100%",
+                  width: "100%",
+                  resizeMode: "contain",
+                  borderRadius: 12,
+                }}
+                isLooping={true}
+              />
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontSize: 22,
+                  color: "white",
+                  fontWeight: "600",
+                }}
+              >
+                {route.params.title} by {route.params.uploadedBy}
+              </Text>
+              <TouchableOpacity style={{ width: "90%",marginVertical:24 }}>
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: 100,
+                    paddingVertical: 8,
+                    marginVertical: 10,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "black",
+                      fontSize: 18,
+                      fontWeight: "500",
+                      textAlign: "center",
+                    }}
+                  >
+                    Collect for free
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <ScrollView>
         <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
           <View>
@@ -138,7 +237,11 @@ const VideoPage = ({ route }) => {
                 {route.params.uploadedBy}
               </Text>
             </View>
-            <TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                setIsmodalopen(true);
+              }}
+            >
               <View
                 style={{
                   marginHorizontal: 4,
@@ -317,6 +420,40 @@ const VideoPage = ({ route }) => {
               </View>
             </TouchableWithoutFeedback>
           </ScrollView>
+          <View
+            style={{
+              flexDirection: "row",
+              height: "auto",
+              justifyContent: "space-around",
+            }}
+          >
+            <View
+              style={{
+                marginHorizontal: 4,
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 16,
+                borderWidth: 1,
+                borderColor: "white",
+              }}
+            >
+              <MaterialIcons name="report" size={16} color="white" />
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: "500",
+                  color: "white",
+                  marginLeft: 8,
+                }}
+              >
+                Report
+              </Text>
+            </View>
+          </View>
+
           <View>
             <Text
               style={{
