@@ -10,10 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
-import {
-  dark_primary,
-  primary,
-} from "../constants/Colors";
+import { dark_primary, primary } from "../constants/Colors";
 import useStore from "../store/Store";
 import getPublications from "../apollo/Queries/getPublications";
 import VideoCard from "../components/VideoCard";
@@ -88,8 +85,9 @@ const Profile = ({ navigation }: { navigation: any }) => {
           >
             <Image
               source={{
-                uri: `https://ipfs.io/ipfs/${profile?.profile?.picture?.original?.url.split("//")[1]
-                  }`,
+                uri: `https://ipfs.io/ipfs/${
+                  profile?.profile?.picture?.original?.url.split("//")[1]
+                }`,
               }}
               style={{
                 height: 100,
@@ -111,7 +109,9 @@ const Profile = ({ navigation }: { navigation: any }) => {
               {profile?.profile?.name}
             </Text>
             <Text style={{ fontSize: 12, color: "white", marginTop: 2 }}>
-              @{profile?.profile?.handle} &middot; {profile?.profile?.stats?.totalFollowers} subscribers &middot; {profile?.profile?.stats?.totalPublications} videos
+              {profile?.profile?.handle} &middot;{" "}
+              {profile?.profile?.stats?.totalFollowers} Subscribers &middot;{" "}
+              {profile?.profile?.stats?.totalPosts} Videos
             </Text>
             <Text style={{ fontSize: 14, color: "gray", textAlign: "center" }}>
               {profile?.profile?.bio}

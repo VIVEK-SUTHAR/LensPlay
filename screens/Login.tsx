@@ -9,6 +9,9 @@ import getChallenge from "../apollo/Queries/getChallenge";
 import getAccessTokens from "../apollo/mutations/getAccessTokens";
 import getProfile from "../apollo/Queries/getProfile";
 import useStore from "../store/Store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import verifyToken from "../apollo/Queries/verifyToken";
+import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
 
 const Login = ({ navigation }: { navigation: any }) => {
   const store = useStore();
@@ -53,8 +56,11 @@ const Login = ({ navigation }: { navigation: any }) => {
       if (tokens.data.authenticate.accessToken) {
         store.setAccessToken(tokens.data.authenticate.accessToken);
         console.log(tokens.data.authenticate.accessToken);
-        console.log(tokens.data.authenticate.refreshToken);
-        navigation.navigate("Root");
+        storeData(
+          tokens.data.authenticate.accessToken,
+          tokens.data.authenticate.refreshToken
+        );
+        // navigation.navigate("Root");
       } else {
         alert("something went wrong");
       }
@@ -64,7 +70,64 @@ const Login = ({ navigation }: { navigation: any }) => {
       }
     }
   };
+  const getData = async () => {
+    try {
+      console.log("hi");
+      const jsonValue = await AsyncStorage.getItem("@storage_Key");
+      if (jsonValue) {
+        const tokens = JSON.parse(jsonValue);
+        const isvaild = await client.query({
+          query: verifyToken,
+          variables: {
+            token: tokens.accessToken,
+          },
+        });
+        console.log(isvaild.data);
+        if (isvaild.data.verify) {
+          console.log("valid token");
+          store.setAccessToken(tokens.accessToken);
+          navigation.navigate("Root");
+        }
+        if (isvaild.data.verify === false) {
+          const refreshToken = await client.mutate({
+            mutation: refreshCurrentToken,
+            variables: {
+              rtoken: tokens.refreshToken,
+            },
+          });
+          console.log("NEW VALIDATED TOKENS");
+          console.log(refreshToken);
+          storeData(
+            refreshToken.data.refresh.accessToken,
+            refreshToken.data.refresh.refreshToken
+          );
+        }
+      } else {
+        console.log("not found");
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        //yaha sb krna
+      }
+    }
+  };
+  React.useEffect(() => {
+    getData();
+  }, []);
 
+  const storeData = async (accessToken, refreshToken) => {
+    try {
+      const tokens = {
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      };
+      const jsonValue = JSON.stringify(tokens);
+      await AsyncStorage.setItem("@storage_Key", jsonValue);
+    } catch (e) {
+      // saving error
+      console.log(e);
+    }
+  };
   const killSession = React.useCallback(() => {
     return connector.killSession();
   }, [connector]);
@@ -79,7 +142,7 @@ const Login = ({ navigation }: { navigation: any }) => {
         }}
       >
         <View
-          style={{ width: "100%", alignItems: "center", aspectRatio: 1 / 1 }}
+          style={{ width: "100%", alignItems: "center", aspectRatio: 1.4 / 1 }}
         >
           <Image
             source={require("../assets/images/lensplay.png")}
@@ -111,7 +174,7 @@ const Login = ({ navigation }: { navigation: any }) => {
                   alignItems: "center",
                 }}
               >
-                {/* <Image
+                <Image
                   source={require("../assets/images/lens.png")}
                   style={{
                     height: 35,
@@ -119,7 +182,7 @@ const Login = ({ navigation }: { navigation: any }) => {
                     resizeMode: "contain",
                     marginHorizontal: 4,
                   }}
-                /> */}
+                />
                 <Text
                   style={{
                     color: "black",

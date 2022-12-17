@@ -91,7 +91,7 @@ const VideoPage = ({ route }) => {
         isLooping={true}
       />
       <Modal
-        animationType="fade"
+        animationType="slide"
         visible={ismodalopen}
         onRequestClose={() => {
           setIsmodalopen(false);
@@ -99,90 +99,98 @@ const VideoPage = ({ route }) => {
         statusBarTranslucent={true}
         transparent={true}
       >
-        <StatusBar style="inverted" />
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "#rgba(0,0,0,0.7)",
-            alignItems: "center",
-            justifyContent: "center",
+        <StatusBar style="auto" />
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setIsmodalopen(false);
           }}
         >
           <View
             style={{
-              marginTop: 300,
-              flex: 1,
-              backgroundColor: "#1d1d1d",
+              height: "100%",
+              backgroundColor: "rgba(0,0,0,0.8)",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          ></View>
+        </TouchableWithoutFeedback>
+        <View
+          style={{
+            marginTop: -450,
+            zIndex: 2,
+            backgroundColor: "#1d1d1d",
+            width: "100%",
+            borderTopLeftRadius: 15,
+            borderTopRightRadius: 15,
+            paddingVertical: 20,
+          }}
+        >
+          <View
+            style={{
               width: "100%",
-              borderTopLeftRadius: 25,
-              borderTopRightRadius: 25,
-              paddingVertical: 20
+              height: "100%",
+              opacity: 1,
+              alignItems: "center",
             }}
           >
-            <View
+            <Video
               style={{
-                width: "100%",
+                alignSelf: "center",
+                width: "90%",
+                height: 280,
+                borderRadius: 10,
+              }}
+              resizeMode="contain"
+              source={{
+                uri: getIPFSLink(playbackId),
+              }}
+              useNativeControls={true}
+              usePoster={true}
+              posterSource={{
+                uri: route.params.banner,
+              }}
+              posterStyle={{
                 height: "100%",
-                opacity: 1,
-                alignItems: "center",
+                width: "100%",
+                resizeMode: "contain",
+                borderRadius: 12,
+              }}
+              isLooping={true}
+            />
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: 22,
+                color: "white",
+                fontWeight: "600",
+                marginVertical: 8,
               }}
             >
-              <Video
+              {route.params.title} by {route.params.uploadedBy}
+            </Text>
+            <TouchableOpacity style={{ width: "90%", marginVertical: 0 }}>
+              <View
                 style={{
-                  alignSelf: "center",
-                  width: "90%",
-                  height: 280,
-                  borderRadius: 10,
-                }}
-                resizeMode="contain"
-                source={{
-                  uri: getIPFSLink(playbackId),
-                }}
-                useNativeControls={true}
-                usePoster={true}
-                posterSource={{
-                  uri: route.params.banner,
-                }}
-                posterStyle={{
-                  height: "100%",
-                  width: "100%",
-                  resizeMode: "contain",
-                  borderRadius: 12,
-                }}
-                isLooping={true}
-              />
-              <Text
-                style={{
-                  textAlign: "center",
-                  fontSize: 22,
-                  color: "white",
-                  fontWeight: "600",
+                  backgroundColor: "rgba(255,255,255,0.1)",
+                  borderRadius: 100,
+                  borderColor: primary,
+                  borderWidth:1,
+                  paddingVertical: 8,
+                  marginVertical: 4,
                 }}
               >
-                {route.params.title} by {route.params.uploadedBy}
-              </Text>
-              <TouchableOpacity style={{ width: "90%", marginVertical: 24 }}>
-                <View
+                <Text
                   style={{
-                    backgroundColor: "white",
-                    borderRadius: 100,
-                    paddingVertical: 8,
-                    marginVertical: 10,
+                    color: "white",
+                    fontSize: 18,
+                    fontWeight: "500",
+                    textAlign: "center",
                   }}
                 >
-                  <Text
-                    style={{
-                      color: "black",
-                      fontSize: 18,
-                      fontWeight: "500",
-                      textAlign: "center",
-                    }}
-                  >
-                    Collect for free
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
+                  Collect for free
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
