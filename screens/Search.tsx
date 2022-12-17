@@ -42,6 +42,8 @@ const Search = ({ navigation }) => {
           query: searchQuery.toLowerCase(),
         },
       });
+      console.log(result.data);
+      
       setSearchPostResult(result?.data?.search?.items);
     } catch (error) {
       if (error instanceof Error) {

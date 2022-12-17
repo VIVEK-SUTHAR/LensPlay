@@ -6,7 +6,7 @@ import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import { client } from "../apollo/client";
 import getChallenge from "../apollo/Queries/getChallenge";
-import getAccessTokens from "../apollo/Queries/getAccessTokens";
+import getAccessTokens from "../apollo/mutations/getAccessTokens";
 import getProfile from "../apollo/Queries/getProfile";
 import useStore from "../store/Store";
 
@@ -75,7 +75,7 @@ const Login = ({ navigation }: { navigation: any }) => {
         style={{
           justifyContent: "center",
           alignItems: "center",
-          height: '100%'
+          height: "100%",
         }}
       >
         <View
@@ -106,8 +106,20 @@ const Login = ({ navigation }: { navigation: any }) => {
                   borderRadius: 50,
                   paddingVertical: 16,
                   marginVertical: 10,
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
+                <Image
+                  source={require("../assets/images/lens.png")}
+                  style={{
+                    height: 35,
+                    width: 35,
+                    resizeMode: "contain",
+                    marginHorizontal: 4,
+                  }}
+                />
                 <Text
                   style={{
                     color: "black",
