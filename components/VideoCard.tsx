@@ -36,14 +36,14 @@ const VideoCard = ({
   const AVATAR_LINK = avatar?.includes("https://arweave.net")
     ? avatar
     : avatar?.includes("ipfs://")
-    ? `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`
-    : avatar;
+      ? `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`
+      : avatar;
 
   const BANNER_LINK = banner?.includes("https://arweave.net")
     ? banner
     : banner?.includes("ipfs://")
-    ? `https://ipfs.io/ipfs/${banner?.split("//")[1]}`
-    : banner;
+      ? `https://ipfs.io/ipfs/${banner?.split("//")[1]}`
+      : banner;
 
   return (
     <TouchableWithoutFeedback
