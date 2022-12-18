@@ -5,7 +5,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { useEffect, useState } from "react";
@@ -13,14 +12,10 @@ import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
 import {
   dark_primary,
-  dark_secondary,
   primary,
-  secondary,
 } from "../constants/Colors";
-import MyVideos from "../components/MyVideos";
 import useStore from "../store/Store";
 import getPublications from "../apollo/Queries/getPublications";
-import { Feather } from "@expo/vector-icons";
 import VideoCard from "../components/VideoCard";
 import convertDate from "../utils/formateDate";
 
@@ -29,6 +24,8 @@ const Profile = ({ navigation }: { navigation: any }) => {
   const [allVideos, setallVideos] = useState([]);
   const [isVideoAvilable, setIsVideoAvilable] = useState<boolean>(true);
   const store = useStore();
+
+  console.log(profile);
 
   useEffect(() => {
     getProfleInfo();
@@ -91,9 +88,8 @@ const Profile = ({ navigation }: { navigation: any }) => {
           >
             <Image
               source={{
-                uri: `https://ipfs.io/ipfs/${
-                  profile?.profile?.picture?.original?.url.split("//")[1]
-                }`,
+                uri: `https://ipfs.io/ipfs/${profile?.profile?.picture?.original?.url.split("//")[1]
+                  }`,
               }}
               style={{
                 height: 100,
@@ -115,15 +111,14 @@ const Profile = ({ navigation }: { navigation: any }) => {
               {profile?.profile?.name}
             </Text>
             <Text style={{ fontSize: 12, color: "white", marginTop: 2 }}>
-              {profile?.profile?.handle} &middot; 23 subscribers &middot; 34
-              videos
+              @{profile?.profile?.handle} &middot; {profile?.profile?.stats?.totalFollowers} subscribers &middot; {profile?.profile?.stats?.totalPublications} videos
             </Text>
             <Text style={{ fontSize: 14, color: "gray", textAlign: "center" }}>
               {profile?.profile?.bio}
             </Text>
           </View>
 
-          <TouchableOpacity activeOpacity={0.8}>
+          {/* <TouchableOpacity activeOpacity={0.8}>
             <View
               style={{
                 backgroundColor: "white",
@@ -147,7 +142,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
               </Text>
               <Feather name="edit-3" size={24} />
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View style={{ paddingHorizontal: 4, paddingVertical: 10 }}>
             <Text

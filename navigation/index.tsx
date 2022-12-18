@@ -12,13 +12,11 @@ import {
   View,
 } from "react-native";
 import VideoPage from "../screens/VideoPage";
-import { dark_primary, dark_secondary, primary } from "../constants/Colors";
+import { dark_secondary, primary } from "../constants/Colors";
 import Feed from "../screens/Feed";
 import Login from "../screens/Login";
 import { RootTabParamList } from "../types";
 import Profile from "../screens/Profile";
-import Create from "../components/Create";
-import useStore from "../store/Store";
 import Trending from "../screens/Trending";
 import Notification from "../components/Notification";
 import UploadVideo from "../screens/UploadVideo";
@@ -227,11 +225,11 @@ function BottomTabNavigator({ navigation }) {
         component={Notification}
         options={{
           tabBarLabel: "",
-          tabBarBadge: 1,
-          tabBarBadgeStyle: {
-            backgroundColor: primary,
-            left: 0,
-          },
+          // tabBarBadge: 2,
+          // tabBarBadgeStyle: {
+          //   backgroundColor: primary,
+          //   left: 0,
+          // },
           tabBarIcon: ({ focused }) => {
             return (
               <View
