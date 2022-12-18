@@ -34,13 +34,19 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
   }, []);
 
   async function getFeedData() {
-    const feed = await client.query({
-      query: getFeed,
-      variables: {
-        id: profileId,
-      },
-    });
-    return feed;
+    try {
+      const feed = await client.query({
+        query: getFeed,
+        variables: {
+          id: profileId,
+        },
+      });
+      return feed;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
   }
 
   return (
