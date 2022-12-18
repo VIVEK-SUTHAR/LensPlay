@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { AntDesign, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect } from "react";
-import { dark_primary, primary } from "../constants/Colors";
+import { dark_primary } from "../constants/Colors";
 import useStore from "../store/Store";
 import { useState } from "react";
 import { Video } from "expo-av";
@@ -38,8 +38,8 @@ const VideoPage = ({ route }) => {
   const VIDEO_LINK = playbackId?.includes("https://arweave.net")
     ? playbackId
     : playbackId?.includes("ipfs://")
-    ? `https://ipfs.io/ipfs/${playbackId?.split("//")[1]}`
-    : playbackId;
+      ? `https://ipfs.io/ipfs/${playbackId?.split("//")[1]}`
+      : playbackId;
 
   useEffect(() => {
     fetchComments();
@@ -116,7 +116,7 @@ const VideoPage = ({ route }) => {
               width: "100%",
               borderTopLeftRadius: 25,
               borderTopRightRadius: 25,
-              paddingVertical:20
+              paddingVertical: 20
             }}
           >
             <View
@@ -161,7 +161,7 @@ const VideoPage = ({ route }) => {
               >
                 {route.params.title} by {route.params.uploadedBy}
               </Text>
-              <TouchableOpacity style={{ width: "90%",marginVertical:24 }}>
+              <TouchableOpacity style={{ width: "90%", marginVertical: 24 }}>
                 <View
                   style={{
                     backgroundColor: "white",
@@ -208,12 +208,14 @@ const VideoPage = ({ route }) => {
             </Text>
             <Text style={{ color: "white" }}>{route.params.date}</Text>
           </View>
+
           <View
             style={{
               width: "100%",
               flexDirection: "row",
               paddingVertical: 4,
               justifyContent: "space-between",
+              marginTop: 8
             }}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -227,11 +229,10 @@ const VideoPage = ({ route }) => {
               </View>
               <Text
                 style={{
-                  color: primary,
+                  color: 'white',
                   fontSize: 16,
                   fontWeight: "500",
-                  marginHorizontal: 4,
-                  alignSelf: "flex-start",
+                  marginHorizontal: 8,
                 }}
               >
                 {route.params.uploadedBy}
@@ -245,22 +246,19 @@ const VideoPage = ({ route }) => {
               <View
                 style={{
                   marginHorizontal: 4,
-                  paddingHorizontal: 10,
+                  paddingHorizontal: 16,
+                  paddingVertical: 8,
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
                   borderRadius: 50,
-                  borderWidth: 1,
-                  borderColor: primary,
+                  backgroundColor: 'white'
                 }}
               >
-                <AntDesign name="adduser" size={16} color={primary} />
                 <Text
                   style={{
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: "500",
-                    color: "white",
-                    marginLeft: 8,
                   }}
                 >
                   Subscribe
@@ -268,6 +266,7 @@ const VideoPage = ({ route }) => {
               </View>
             </TouchableWithoutFeedback>
           </View>
+
           <ScrollView
             style={{
               paddingVertical: 24,
@@ -420,39 +419,6 @@ const VideoPage = ({ route }) => {
               </View>
             </TouchableWithoutFeedback>
           </ScrollView>
-          <View
-            style={{
-              flexDirection: "row",
-              height: "auto",
-              justifyContent: "space-around",
-            }}
-          >
-            <View
-              style={{
-                marginHorizontal: 4,
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 16,
-                borderWidth: 1,
-                borderColor: "white",
-              }}
-            >
-              <MaterialIcons name="report" size={16} color="white" />
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontWeight: "500",
-                  color: "white",
-                  marginLeft: 8,
-                }}
-              >
-                Report
-              </Text>
-            </View>
-          </View>
 
           <View>
             <Text
@@ -460,6 +426,7 @@ const VideoPage = ({ route }) => {
                 fontSize: 20,
                 fontWeight: "700",
                 color: "white",
+                marginBottom: 8
               }}
             >
               Comments
@@ -484,6 +451,7 @@ const VideoPage = ({ route }) => {
               </>
             )}
           </View>
+
         </View>
       </ScrollView>
     </SafeAreaView>
