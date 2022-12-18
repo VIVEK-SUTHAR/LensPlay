@@ -79,7 +79,7 @@ const Login = ({ navigation }: { navigation: any }) => {
         }}
       >
         <View
-          style={{ width: "100%", alignItems: "center", aspectRatio: 1.4 / 1 }}
+          style={{ width: "100%", alignItems: "center", aspectRatio: 1 / 1 }}
         >
           <Image
             source={require("../assets/images/lensplay.png")}
@@ -111,7 +111,7 @@ const Login = ({ navigation }: { navigation: any }) => {
                   alignItems: "center",
                 }}
               >
-                <Image
+                {/* <Image
                   source={require("../assets/images/lens.png")}
                   style={{
                     height: 35,
@@ -119,7 +119,7 @@ const Login = ({ navigation }: { navigation: any }) => {
                     resizeMode: "contain",
                     marginHorizontal: 4,
                   }}
-                />
+                /> */}
                 <Text
                   style={{
                     color: "black",
