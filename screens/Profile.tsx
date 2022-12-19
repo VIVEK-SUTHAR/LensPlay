@@ -85,9 +85,8 @@ const Profile = ({ navigation }: { navigation: any }) => {
           >
             <Image
               source={{
-                uri: `https://ipfs.io/ipfs/${
-                  profile?.profile?.picture?.original?.url.split("//")[1]
-                }`,
+                uri: `https://ipfs.io/ipfs/${profile?.profile?.picture?.original?.url.split("//")[1]
+                  }`,
               }}
               style={{
                 height: 100,
@@ -109,7 +108,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
               {profile?.profile?.name}
             </Text>
             <Text style={{ fontSize: 12, color: "white", marginTop: 2 }}>
-              {profile?.profile?.handle} &middot;{" "}
+              @{profile?.profile?.handle} &middot;{" "}
               {profile?.profile?.stats?.totalFollowers} Subscribers &middot;{" "}
               {profile?.profile?.stats?.totalPosts} Videos
             </Text>

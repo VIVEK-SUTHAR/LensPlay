@@ -4,12 +4,13 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { dark_primary, primary } from "../constants/Colors";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Uploadvideo from "../components/Uploadvideo";
 import GoLive from "../components/GoLive";
 import AnimatedLottieView from "lottie-react-native";
+import Drawer from "../components/UI/Drawer";
 
 const UploadStack = createNativeStackNavigator();
 
@@ -68,6 +69,6 @@ function Index({ navigation }) {
           </View>
         </TouchableWithoutFeedback>
       </View>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }

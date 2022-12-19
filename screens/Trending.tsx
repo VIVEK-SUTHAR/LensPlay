@@ -60,6 +60,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
       <ScrollView
         style={{
           height: 60,
+          maxHeight: 60,
           paddingVertical: 12,
           paddingHorizontal: 8,
         }}

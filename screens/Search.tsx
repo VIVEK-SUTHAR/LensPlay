@@ -14,6 +14,7 @@ import searchPublicationQuery from "../apollo/Queries/searchPublicationQuery";
 import VideoCard from "../components/VideoCard";
 import { useQuery } from "@apollo/client";
 import AnimatedLottieView from "lottie-react-native";
+import { EvilIcons } from "@expo/vector-icons";
 const Search = ({ navigation }) => {
   const textRef = useRef(null);
   const [searchPostResult, setSearchPostResult] = useState([]);

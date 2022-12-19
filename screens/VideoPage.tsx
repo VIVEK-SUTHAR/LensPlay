@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { AntDesign, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect } from "react";
-import { dark_primary } from "../constants/Colors";
+import { dark_primary, primary } from "../constants/Colors";
 import useStore from "../store/Store";
 import { useState } from "react";
 import { Video } from "expo-av";
@@ -24,6 +24,7 @@ import getIPFSLink from "../utils/getIPFSLink";
 import { client } from "../apollo/client";
 import getComments from "../apollo/Queries/getComments";
 import convertDate from "../utils/formateDate";
+
 const VideoPage = ({ route }) => {
   const store = useStore();
   const currentIndex = store.currentIndex;
@@ -90,6 +91,7 @@ const VideoPage = ({ route }) => {
         }}
         isLooping={true}
       />
+
       <Modal
         animationType="slide"
         visible={ismodalopen}
@@ -98,8 +100,11 @@ const VideoPage = ({ route }) => {
         }}
         statusBarTranslucent={true}
         transparent={true}
+        style={{
+        }}
       >
         <StatusBar style="auto" />
+
         <TouchableWithoutFeedback
           onPress={() => {
             setIsmodalopen(false);
@@ -114,14 +119,18 @@ const VideoPage = ({ route }) => {
             }}
           ></View>
         </TouchableWithoutFeedback>
+
         <View
           style={{
-            marginTop: -450,
+            // marginTop: -450,
+            position: 'absolute',
+            top: '40%',
             zIndex: 2,
             backgroundColor: "#1d1d1d",
+            height: '100%',
             width: "100%",
-            borderTopLeftRadius: 15,
-            borderTopRightRadius: 15,
+            borderTopLeftRadius: 16,
+            borderTopRightRadius: 16,
             paddingVertical: 20,
           }}
         >
@@ -168,13 +177,14 @@ const VideoPage = ({ route }) => {
             >
               {route.params.title} by {route.params.uploadedBy}
             </Text>
+
             <TouchableOpacity style={{ width: "90%", marginVertical: 0 }}>
               <View
                 style={{
                   backgroundColor: "rgba(255,255,255,0.1)",
                   borderRadius: 100,
                   borderColor: primary,
-                  borderWidth:1,
+                  borderWidth: 1,
                   paddingVertical: 8,
                   marginVertical: 4,
                 }}
@@ -193,7 +203,9 @@ const VideoPage = ({ route }) => {
             </TouchableOpacity>
           </View>
         </View>
+
       </Modal>
+
       <ScrollView>
         <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
           <View>

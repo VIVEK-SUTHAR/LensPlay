@@ -60,7 +60,7 @@ const Login = ({ navigation }: { navigation: any }) => {
           tokens.data.authenticate.accessToken,
           tokens.data.authenticate.refreshToken
         );
-        // navigation.navigate("Root");
+        navigation.navigate("Root");
       } else {
         alert("something went wrong");
       }
@@ -72,7 +72,6 @@ const Login = ({ navigation }: { navigation: any }) => {
   };
   const getData = async () => {
     try {
-      console.log("hi");
       const jsonValue = await AsyncStorage.getItem("@storage_Key");
       if (jsonValue) {
         const tokens = JSON.parse(jsonValue);
@@ -226,7 +225,7 @@ const Login = ({ navigation }: { navigation: any }) => {
           >
             <View
               style={{
-                backgroundColor: primary,
+                backgroundColor: 'white',
                 borderRadius: 50,
                 paddingVertical: 16,
                 marginVertical: 10,

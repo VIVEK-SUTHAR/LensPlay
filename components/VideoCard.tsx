@@ -8,6 +8,8 @@ import {
 } from "react-native";
 import useStore from "../store/Store";
 import getIPFSLink from "../utils/getIPFSLink";
+import Drawer from "./UI/Drawer";
+import { useState } from "react";
 
 type videoPageProp = {
   navigation: any;
