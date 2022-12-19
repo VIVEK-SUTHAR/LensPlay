@@ -20,6 +20,7 @@ type videoPageProp = {
   playbackId: string;
   id: number;
   stats: {};
+  date: string;
 };
 
 const VideoCard = ({
@@ -31,6 +32,7 @@ const VideoCard = ({
   uploadedBy,
   playbackId,
   stats,
+  date,
 }: videoPageProp) => {
   const store = useStore();
   const setCurrentIndex = store.setCurrentIndex;
@@ -38,14 +40,14 @@ const VideoCard = ({
   const AVATAR_LINK = avatar?.includes("https://arweave.net")
     ? avatar
     : avatar?.includes("ipfs://")
-      ? `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`
-      : avatar;
+    ? `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`
+    : avatar;
 
   const BANNER_LINK = banner?.includes("https://arweave.net")
     ? banner
     : banner?.includes("ipfs://")
-      ? `https://ipfs.io/ipfs/${banner?.split("//")[1]}`
-      : banner;
+    ? `https://ipfs.io/ipfs/${banner?.split("//")[1]}`
+    : banner;
 
   return (
     <TouchableWithoutFeedback
@@ -100,7 +102,7 @@ const VideoCard = ({
               {title}
             </Text>
             <Text style={{ fontSize: 12, color: "gray" }}>
-              By {uploadedBy} on 23 June
+              By {uploadedBy} on {date}
             </Text>
           </View>
           <View style={{ height: 40, width: 40 }}>
