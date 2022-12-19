@@ -1,4 +1,13 @@
-import { Animated, Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Animated,
+  Dimensions,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import * as React from "react";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -10,6 +19,7 @@ import getAccessTokens from "../apollo/Queries/getAccessTokens";
 import getProfile from "../apollo/Queries/getProfile";
 import useStore from "../store/Store";
 import { StatusBar } from "expo-status-bar";
+import Paginator from "../components/Paginator";
 
 const Login = ({ navigation }: { navigation: any }) => {
   const store = useStore();
@@ -21,14 +31,15 @@ const Login = ({ navigation }: { navigation: any }) => {
     });
   }, [connector]);
 
-  const data=[
-    'https://images.pexels.com/photos/14354107/pexels-photo-14354107.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    'https://images.pexels.com/photos/2873486/pexels-photo-2873486.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    'https://images.pexels.com/photos/3379934/pexels-photo-3379934.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  ]
-  const {width,height}=Dimensions.get("screen");
-  const imageW=width*0.7;
-  const imageH=imageW*1.54;
+  const data = [
+    "https://images.unsplash.com/photo-1625690303837-654c9666d2d0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+    "https://images.unsplash.com/photo-1630797160666-38e8c5ba44c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dmxvZ2dpbmd8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
+    "https://images.pexels.com/photos/3379934/pexels-photo-3379934.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "https://images.unsplash.com/photo-1627244714766-94dab62ed964?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTh8fHZpZGVvZ3JhcGh5fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+  ];
+  const { width, height } = Dimensions.get("screen");
+  const imageW = width * 0.7;
+  const imageH = imageW * 1.54;
   const logInWithLens = async () => {
     const data = await client.query({
       query: getProfile,
@@ -74,72 +85,90 @@ const Login = ({ navigation }: { navigation: any }) => {
     }
   };
 
-
   const killSession = React.useCallback(() => {
     return connector.killSession();
   }, [connector]);
-    const scrollX=React.useRef(new Animated.Value(0)).current;
+  const scrollX = React.useRef(new Animated.Value(0)).current;
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar hidden/>
+      <StatusBar hidden />
       <View
         style={{
           justifyContent: "center",
           alignItems: "center",
-          height: '100%'
+          height: "100%",
         }}
       >
         {/* <View
           style={{ width: "100%", alignItems: "center", aspectRatio: 1.4 / 1 }}
         > */}
-          <View 
-            style={StyleSheet.absoluteFillObject}
-          >
-            {data.map((image,index)=>{
-              const inputRange=[
-                (index-1)*width,
-                index*width,
-                (index+1)*width
-              ]
-              const opacity=scrollX.interpolate({
-                inputRange,
-                outputRange:[0,1,0]
-              })
-              return <Animated.Image
-              key={`image-${index}`}
-              source={{uri:image}}
-              style={[
+        <View style={StyleSheet.absoluteFillObject}>
+          {data.map((image, index) => {
+            const inputRange = [
+              (index - 1) * width,
+              index * width,
+              (index + 1) * width,
+            ];
+            const opacity = scrollX.interpolate({
+              inputRange,
+              outputRange: [0, 1, 0],
+            });
+            return (
+              <Animated.Image
+                key={`image-${index}`}
+                source={{ uri: image }}
+                style={[
                   StyleSheet.absoluteFillObject,
                   {
-                    opacity
-                  }
-              ]}
-              blurRadius={10}
+                    opacity,
+                  },
+                ]}
+                blurRadius={40}
               />
-            })}
-          </View>
-          <Animated.FlatList
-            data={data}
-            onScroll={Animated.event(
-              [{nativeEvent:{contentOffset:{x:scrollX}}}],
-              {useNativeDriver:true}
-            )}
-            keyExtractor={(_,index)=>index.toString()}
-            horizontal
-            pagingEnabled
-            renderItem={({item})=>{
-              return <View style={{width,justifyContent:'center',alignItems:'center'}}>
-                  <Image source={{uri:item}} style={{
-                    width:imageW,
-                    height:imageH,
-                    resizeMode:'cover',
-                    borderRadius:16
-                  }}/>
-                </View>
-            }}
-            />
+            );
+          })}
+        </View>
+        <Animated.FlatList
+          data={data}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+            { useNativeDriver: false }
+          )}
+          keyExtractor={(_, index) => index.toString()}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item }) => {
+            return (
+              <View
+                style={{
+                  width,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  shadowColor: "#000",
+                  shadowOffset: {
+                    width: 10,
+                    height: 10,
+                  },
+                  shadowRadius: 100,
+                }}
+              >
+                <Image
+                  source={{ uri: item }}
+                  style={{
+                    width: imageW,
+                    height: imageH,
+                    resizeMode: "cover",
+                    borderRadius: 16,
+                  }}
+                />
+              </View>
+            );
+          }}
+          />
+          <Paginator data={data} scrollX={scrollX}/>
 
-          {/* <Image
+        {/* <Image
             source={require("../assets/images/lensplay.png")}
             style={{
               height: "100%",
@@ -148,7 +177,8 @@ const Login = ({ navigation }: { navigation: any }) => {
             }}
           /> */}
         {/* </View> */}
-        {/* {!!connector.connected ? (
+
+        {!!connector.connected ? (
           <>
             <TouchableOpacity
               style={{
@@ -227,7 +257,7 @@ const Login = ({ navigation }: { navigation: any }) => {
               </Text>
             </View>
           </TouchableOpacity>
-        )} */}
+        )}
       </View>
     </SafeAreaView>
   );
