@@ -85,6 +85,16 @@ const Login = ({ navigation }: { navigation: any }) => {
         if (isvaild.data.verify) {
           console.log("valid token");
           store.setAccessToken(tokens.accessToken);
+          const data = await client.query({
+            query: getProfile,
+            variables: {
+              ethAddress: connector.accounts[0],
+            },
+          });
+          if (!data.data.defaultProfile) {
+            return;
+          }
+          store.setProfileId(data.data.defaultProfile.id);
           navigation.navigate("Root");
         }
         if (isvaild.data.verify === false) {
@@ -100,6 +110,17 @@ const Login = ({ navigation }: { navigation: any }) => {
             refreshToken.data.refresh.accessToken,
             refreshToken.data.refresh.refreshToken
           );
+          const data = await client.query({
+            query: getProfile,
+            variables: {
+              ethAddress: connector.accounts[0],
+            },
+          });
+          if (!data.data.defaultProfile) {
+            return;
+          }
+          store.setProfileId(data.data.defaultProfile.id);
+          navigation.navigate("Root");
         }
       } else {
         console.log("not found");

@@ -56,7 +56,6 @@ const VideoPage = ({ route }) => {
   }
   console.log(route.params.stats);
   const STATS = route.params.stats;
-
   const onShare = async () => {
     try {
       const result = await Share.share({
@@ -235,7 +234,7 @@ const VideoPage = ({ route }) => {
               flexDirection: "row",
               paddingVertical: 4,
               justifyContent: "space-between",
-              marginTop: 8
+              marginTop: 8,
             }}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -249,7 +248,7 @@ const VideoPage = ({ route }) => {
               </View>
               <Text
                 style={{
-                  color: 'white',
+                  color: "white",
                   fontSize: 16,
                   fontWeight: "500",
                   marginHorizontal: 8,
@@ -272,7 +271,7 @@ const VideoPage = ({ route }) => {
                   justifyContent: "space-between",
                   alignItems: "center",
                   borderRadius: 50,
-                  backgroundColor: 'white'
+                  backgroundColor: "white",
                 }}
               >
                 <Text
@@ -446,7 +445,7 @@ const VideoPage = ({ route }) => {
                 fontSize: 20,
                 fontWeight: "700",
                 color: "white",
-                marginBottom: 8
+                marginBottom: 8,
               }}
             >
               Comments
@@ -471,7 +470,6 @@ const VideoPage = ({ route }) => {
               </>
             )}
           </View>
-
         </View>
       </ScrollView>
     </SafeAreaView>
