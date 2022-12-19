@@ -6,6 +6,7 @@ export default gql`
         sortCriteria: TOP_COLLECTED
         publicationTypes: [POST, MIRROR]
         metadata: { mainContentFocus: VIDEO }
+        timestamp:"1"
         sources: ["lenstube"]
       }
     ) {

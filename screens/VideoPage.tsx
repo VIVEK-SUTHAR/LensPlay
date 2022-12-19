@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { AntDesign, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect } from "react";
-import { dark_primary } from "../constants/Colors";
+import { dark_primary, primary } from "../constants/Colors";
 import useStore from "../store/Store";
 import { useState } from "react";
 import { Video } from "expo-av";
@@ -38,8 +38,8 @@ const VideoPage = ({ route }) => {
   const VIDEO_LINK = playbackId?.includes("https://arweave.net")
     ? playbackId
     : playbackId?.includes("ipfs://")
-      ? `https://ipfs.io/ipfs/${playbackId?.split("//")[1]}`
-      : playbackId;
+    ? `https://ipfs.io/ipfs/${playbackId?.split("//")[1]}`
+    : playbackId;
 
   useEffect(() => {
     fetchComments();
@@ -55,7 +55,6 @@ const VideoPage = ({ route }) => {
   }
   console.log(route.params.stats);
   const STATS = route.params.stats;
-
   const onShare = async () => {
     try {
       const result = await Share.share({
@@ -173,8 +172,9 @@ const VideoPage = ({ route }) => {
                 style={{
                   backgroundColor: "rgba(255,255,255,0.1)",
                   borderRadius: 100,
-                  borderColor: primary,
-                  borderWidth:1,
+                  borderColor: primary
+                  ,
+                  borderWidth: 1,
                   paddingVertical: 8,
                   marginVertical: 4,
                 }}
@@ -223,7 +223,7 @@ const VideoPage = ({ route }) => {
               flexDirection: "row",
               paddingVertical: 4,
               justifyContent: "space-between",
-              marginTop: 8
+              marginTop: 8,
             }}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -237,7 +237,7 @@ const VideoPage = ({ route }) => {
               </View>
               <Text
                 style={{
-                  color: 'white',
+                  color: "white",
                   fontSize: 16,
                   fontWeight: "500",
                   marginHorizontal: 8,
@@ -260,7 +260,7 @@ const VideoPage = ({ route }) => {
                   justifyContent: "space-between",
                   alignItems: "center",
                   borderRadius: 50,
-                  backgroundColor: 'white'
+                  backgroundColor: "white",
                 }}
               >
                 <Text
@@ -434,7 +434,7 @@ const VideoPage = ({ route }) => {
                 fontSize: 20,
                 fontWeight: "700",
                 color: "white",
-                marginBottom: 8
+                marginBottom: 8,
               }}
             >
               Comments
@@ -459,7 +459,6 @@ const VideoPage = ({ route }) => {
               </>
             )}
           </View>
-
         </View>
       </ScrollView>
     </SafeAreaView>
