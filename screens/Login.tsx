@@ -38,7 +38,7 @@ const Login = ({ navigation }: { navigation: any }) => {
     "https://images.unsplash.com/photo-1627244714766-94dab62ed964?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTh8fHZpZGVvZ3JhcGh5fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
   ];
   const { width, height } = Dimensions.get("screen");
-  const imageW = width * 0.7;
+  const imageW = width * 0.8;
   const imageH = imageW * 1.54;
   const logInWithLens = async () => {
     const data = await client.query({
@@ -242,7 +242,7 @@ const Login = ({ navigation }: { navigation: any }) => {
                 backgroundColor: primary,
                 borderRadius: 50,
                 paddingVertical: 16,
-                marginVertical: 10,
+                marginVertical: 30,
               }}
             >
               <Text
