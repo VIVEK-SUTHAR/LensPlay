@@ -1,4 +1,10 @@
-import { AntDesign, Feather } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Feather,
+  Ionicons,
+  MaterialIcons,
+  SimpleLineIcons,
+} from "@expo/vector-icons";
 import React, { FC } from "react";
 import { Text, TextStyle, View } from "react-native";
 import { dark_secondary, primary } from "../constants/Colors";
@@ -15,25 +21,19 @@ const NotificationCard: FC<NotificationsProps> = ({
   type,
   ...rest
 }) => {
-  console.log(type);
-
-  const getNotificationIcon = (EnumType: string) => {
-    let iconName = "";
+  const getNotificationIcon = () => {
     switch (type) {
       case "NewReactionNotification":
-        iconName = "heart";
-        break;
+        return <AntDesign name="heart" size={26} color={primary} />;
       case "NewFollowerNotification":
-        iconName = "adduser";
-        break;
+        return <SimpleLineIcons name="user-follow" size={26} color={primary} />;
       case "NewCollectNotification":
-        iconName = "addfile";
-        break;
+        return (
+          <MaterialIcons name="video-collection" size={26} color={primary} />
+        );
       case "NewMirrorNotification":
-        iconName = "retweet";
-        break;
+        return <Ionicons name="ios-repeat" size={26} color={primary} />;
     }
-    return iconName;
   };
 
   return (
@@ -47,8 +47,16 @@ const NotificationCard: FC<NotificationsProps> = ({
         borderRadius: 8,
       }}
     >
-      <View style={{ height: 40, width: 40, marginRight: 8 }}>
-        <AntDesign name={getNotificationIcon(type)} size={26} color={primary} />
+      <View
+        style={{
+          height: 40,
+          width: 40,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {getNotificationIcon(type)}
+        {/* <AntDesign name={getNotificationIcon(type)} size={26} color={primary} /> */}
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>

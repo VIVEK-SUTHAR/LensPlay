@@ -25,10 +25,10 @@ const Navigation = ({ navigation }) => {
     >
       <ScrollView>
         {allNotifications &&
-          allNotifications.map((item) => {
-            return <NotificationCard type={item.__typename} />;
+          allNotifications.map((item, index) => {
+            return <NotificationCard key={index} type={item.__typename} />;
           })}
-        {allNotifications.length === 0 && (
+        {allNotifications?.length === 0 && (
           <View
             style={{
               height: 500,
