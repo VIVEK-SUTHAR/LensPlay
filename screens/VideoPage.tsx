@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   Modal,
   TouchableOpacity,
+  ToastAndroid,
 } from "react-native";
 import { AntDesign, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect } from "react";
@@ -24,23 +25,18 @@ import getIPFSLink from "../utils/getIPFSLink";
 import { client } from "../apollo/client";
 import getComments from "../apollo/Queries/getComments";
 import convertDate from "../utils/formateDate";
+import freeCollectPublication from "../api/freeCollect";
+import getProxyActionStatus from "../api/getProxyActionStatus";
 
 const VideoPage = ({ route }) => {
   const store = useStore();
   const currentIndex = store.currentIndex;
   const userFeed = store.userFeed;
   const [comments, setComments] = useState([]);
-  const [likes, setLikes] = useState(
-    userFeed[currentIndex]?.root?.stats?.totalUpvotes
-  );
+  const [isLiked, setIsLiked] = useState(false);
+  const [likes, setLikes] = useState(route.params.stats?.totalUpvotes);
   const [descOpen, setDescOpen] = useState(false);
   const playbackId = route.params.playbackId;
-
-  const VIDEO_LINK = playbackId?.includes("https://arweave.net")
-    ? playbackId
-    : playbackId?.includes("ipfs://")
-      ? `https://ipfs.io/ipfs/${playbackId?.split("//")[1]}`
-      : playbackId;
 
   useEffect(() => {
     fetchComments();
@@ -54,12 +50,12 @@ const VideoPage = ({ route }) => {
     });
     setComments(data.data.publications.items);
   }
-  console.log(route.params.stats);
+  console.log(route.params.id);
   const STATS = route.params.stats;
   const onShare = async () => {
     try {
       const result = await Share.share({
-        message: userFeed[currentIndex]?.root?.metadata?.name,
+        message: `Let's watch ${route.params.title} by ${route.params.uploadedBy} on LensPlay`,
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -90,20 +86,17 @@ const VideoPage = ({ route }) => {
         }}
         isLooping={true}
       />
-
       <Modal
         animationType="slide"
         visible={ismodalopen}
         onRequestClose={() => {
           setIsmodalopen(false);
         }}
-        statusBarTranslucent={true}
+        // statusBarTranslucent={true}
         transparent={true}
-        style={{
-        }}
+        style={{}}
       >
-        <StatusBar style="auto" />
-
+        <StatusBar backgroundColor="black" />
         <TouchableWithoutFeedback
           onPress={() => {
             setIsmodalopen(false);
@@ -122,11 +115,11 @@ const VideoPage = ({ route }) => {
         <View
           style={{
             // marginTop: -450,
-            position: 'absolute',
-            top: '40%',
+            position: "absolute",
+            top: "40%",
             zIndex: 2,
             backgroundColor: "#1d1d1d",
-            height: '100%',
+            height: "100%",
             width: "100%",
             borderTopLeftRadius: 16,
             borderTopRightRadius: 16,
@@ -177,7 +170,23 @@ const VideoPage = ({ route }) => {
               {route.params.title} by {route.params.uploadedBy}
             </Text>
 
-            <TouchableOpacity style={{ width: "90%", marginVertical: 0 }}>
+            <TouchableOpacity
+              style={{ width: "90%", marginVertical: 0 }}
+              onPress={async () => {
+                // const res = await freeCollectPublication(
+                //   route.params.id,
+                //   store.accessToken
+                // );
+                // console.log(res);
+                // if (res?.proxyAction) {
+                //   console.log(res?.proxyAction);
+                //   const status = await getProxyActionStatus(
+                //     res?.proxyAction,
+                //     store.accessToken
+                //   );
+                // }
+              }}
+            >
               <View
                 style={{
                   backgroundColor: "rgba(255,255,255,0.1)",
@@ -202,7 +211,6 @@ const VideoPage = ({ route }) => {
             </TouchableOpacity>
           </View>
         </View>
-
       </Modal>
 
       <ScrollView>
@@ -227,7 +235,6 @@ const VideoPage = ({ route }) => {
             </Text>
             <Text style={{ color: "white" }}>{route.params.date}</Text>
           </View>
-
           <View
             style={{
               width: "100%",
@@ -295,13 +302,17 @@ const VideoPage = ({ route }) => {
           >
             <TouchableWithoutFeedback
               onPress={() => {
-                console.log(store.accessToken);
                 setLikes((prev) => prev + 1);
+                setIsLiked(true);
                 addLike(
                   store.accessToken,
                   store.profileId,
-                  userFeed[currentIndex]?.root?.id
-                );
+                  route.params.id
+                ).then((res) => {
+                  if (res.addReaction === null) {
+                    console.log("liked");
+                  }
+                });
               }}
             >
               <View
@@ -314,24 +325,27 @@ const VideoPage = ({ route }) => {
                   alignItems: "center",
                   borderRadius: 16,
                   borderWidth: 1,
-                  borderColor: "white",
+                  borderColor: isLiked ? primary : "white",
                   backgroundColor: "rgba(255, 255, 255, 0.08)",
                 }}
               >
-                <AntDesign name="like2" size={16} color={"white"} />
+                <AntDesign
+                  name="like2"
+                  size={16}
+                  color={isLiked ? primary : "white"}
+                />
                 <Text
                   style={{
                     fontSize: 14,
                     fontWeight: "500",
-                    color: "white",
+                    color: isLiked ? primary : "white",
                     marginLeft: 4,
                   }}
                 >
-                  {STATS?.totalUpvotes || 0}
+                  {likes || 0}
                 </Text>
               </View>
             </TouchableWithoutFeedback>
-
             <TouchableWithoutFeedback>
               <View
                 style={{

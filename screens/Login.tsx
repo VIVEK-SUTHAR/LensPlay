@@ -106,6 +106,7 @@ const Login = ({ navigation }: { navigation: any }) => {
           });
           console.log("NEW VALIDATED TOKENS");
           console.log(refreshToken);
+          store.setAccessToken(refreshToken.data.refresh.accessToken);
           storeData(
             refreshToken.data.refresh.accessToken,
             refreshToken.data.refresh.refreshToken
@@ -246,7 +247,7 @@ const Login = ({ navigation }: { navigation: any }) => {
           >
             <View
               style={{
-                backgroundColor: 'white',
+                backgroundColor: "white",
                 borderRadius: 50,
                 paddingVertical: 16,
                 marginVertical: 10,
