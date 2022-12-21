@@ -12,12 +12,12 @@ import {
   TouchableOpacity,
   ToastAndroid,
 } from "react-native";
-import { AntDesign, FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, Feather, FontAwesome, MaterialCommunityIcons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import React, { useEffect } from "react";
 import { dark_primary, primary } from "../constants/Colors";
 import useStore from "../store/Store";
 import { useState } from "react";
-import { Video } from "expo-av";
+import { ResizeMode, Video } from "expo-av";
 import addLike from "../api/addReaction";
 import CommentCard from "../components/CommentCard";
 import { StatusBar } from "expo-status-bar";
@@ -27,6 +27,9 @@ import getComments from "../apollo/Queries/getComments";
 import convertDate from "../utils/formateDate";
 import freeCollectPublication from "../api/freeCollect";
 import getProxyActionStatus from "../api/getProxyActionStatus";
+import VideoPlayer from "expo-video-player";
+
+
 
 const VideoPage = ({ route }) => {
   const store = useStore();
@@ -67,24 +70,51 @@ const VideoPage = ({ route }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <StatusBar style="light" backgroundColor={dark_primary} />
-      <Video
-        style={styles.video}
-        resizeMode="contain"
-        source={{
-          uri: getIPFSLink(playbackId),
+      <VideoPlayer
+        style={{
+          width: Dimensions.get("screen").width,
+          height: 300,
+          videoBackgroundColor: "transparent",
+          controlsBackgroundColor: "transparent",
         }}
-        shouldPlay={true}
-        useNativeControls={true}
-        usePoster={true}
-        posterSource={{
-          uri: getIPFSLink(route.params.banner),
+        textStyle={{
+          fontSize: 18,
+          fontWeight: "600",
         }}
-        posterStyle={{
-          height: "100%",
-          width: "100%",
-          resizeMode: "contain",
+        activityIndicator={{
+          size: "large",
+          color: primary,
         }}
-        isLooping={true}
+        slider={{
+          visible: true,
+          thumbTintColor: "white",
+          maximumTrackTintColor: "white",
+          minimumTrackTintColor: primary,
+        }}
+        icon={{
+          play: <Feather name="play" size={28} color={primary} />,
+          pause: <AntDesign name="pause" size={28} color={primary} />,
+          replay: (
+            <MaterialCommunityIcons name="replay" size={28} color={primary} />
+          ),
+          mute: <Octicons name="mute" size={28} color={primary} />,
+        }}
+        videoProps={{
+          posterSource: {
+            uri: getIPFSLink(route.params.banner),
+          },
+          posterStyle: {
+            height: "100%",
+            width: "100%",
+            resizeMode: "contain",
+          },
+          isMuted: false,
+          shouldPlay: true,
+          resizeMode: ResizeMode.CONTAIN,
+          source: {
+            uri: getIPFSLink(playbackId),
+          },
+        }}
       />
       <Modal
         animationType="slide"

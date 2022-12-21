@@ -175,7 +175,7 @@ const Login = ({ navigation }: { navigation: any }) => {
   const scrollX = React.useRef(new Animated.Value(0)).current;
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar hidden />
+      <StatusBar />
       <View
         style={{
           justifyContent: "center",

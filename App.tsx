@@ -19,7 +19,7 @@ export default function App() {
       <SafeAreaProvider>
         <ApolloProvider client={client}>
           <Navigation colorScheme={colorScheme} />
-          <StatusBar/>
+          <StatusBar style="auto"/>
         </ApolloProvider>
       </SafeAreaProvider>
     );
