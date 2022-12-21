@@ -1,7 +1,4 @@
-import {
-  AntDesign,
-  Entypo,
-} from "@expo/vector-icons";
+import { AntDesign, Entypo } from "@expo/vector-icons";
 import React, { FC } from "react";
 import { Image, Text, View } from "react-native";
 import { dark_secondary } from "../constants/Colors";
@@ -42,12 +39,16 @@ const NotificationCard: FC<NotificationsProps> = ({
       case "NewFollowerNotification":
         return (
           <View>
-            <Avatar src={getIPFSLink(
-                    notification?.wallet?.defaultProfile?.picture?.original?.url
-                  )} height={35} width={35}/>
+            <Avatar
+              src={getIPFSLink(
+                notification?.wallet?.defaultProfile?.picture?.original?.url
+              )}
+              height={35}
+              width={35}
+            />
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "500" }}>
-                {notification?.wallet?.defaultProfile?.handle ||
+                {notification?.wallet?.defaultProfile?.handle?.split(".")[0] ||
                   formatAddress(notification?.wallet?.address)}{" "}
               </Text>
               followed you
@@ -61,12 +62,16 @@ const NotificationCard: FC<NotificationsProps> = ({
       case "NewCollectNotification":
         return (
           <View>
-            <Avatar src={getIPFSLink(
-                    notification?.wallet?.defaultProfile?.picture?.original?.url
-                  )} height={35} width={35}/>
+            <Avatar
+              src={getIPFSLink(
+                notification?.wallet?.defaultProfile?.picture?.original?.url
+              )}
+              height={35}
+              width={35}
+            />
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "500" }}>
-                {notification?.wallet?.defaultProfile?.handle ||
+                {notification?.wallet?.defaultProfile?.handle?.split(".")[0] ||
                   formatAddress(notification?.wallet?.address)}{" "}
               </Text>
               collected your post
@@ -80,9 +85,11 @@ const NotificationCard: FC<NotificationsProps> = ({
       case "NewMirrorNotification":
         return (
           <View>
-            <Avatar src={getIPFSLink(
-                    notification?.wallet?.defaultProfile?.picture?.original?.url
-                  )} height={35} width={35}/>
+            <Avatar
+              src={notification?.profile?.picture?.original?.url}
+              height={35}
+              width={35}
+            />
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "600" }}>
                 {notification?.profile?.handle?.split(".")[0] ||
@@ -104,12 +111,14 @@ const NotificationCard: FC<NotificationsProps> = ({
       case "NewReactionNotification":
         return (
           <View>
-            <Avatar src={getIPFSLink(
-                    notification?.wallet?.defaultProfile?.picture?.original?.url
-                  )} height={35} width={35}/>
+            <Avatar
+              src={notification?.profile?.picture?.original?.url}
+              height={35}
+              width={35}
+            />
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "600" }}>
-                {notification?.profile?.handle ||
+                {notification?.profile?.handle?.split(".")[0] ||
                   formatAddress(notification?.wallet?.address)}{" "}
               </Text>
               liked your{" "}
@@ -117,8 +126,8 @@ const NotificationCard: FC<NotificationsProps> = ({
                 ? "post"
                 : notification?.publication?.__typename == "Comment"
                 ? "comment"
-                : "mirror"}
-              <Text style={{ fontSize: 10, color: "gray" }}>
+                : "mirrored post"}
+              <Text style={{ fontSize: 10, color: "gray", }}>
                 {" "}
                 {getDifference(notification?.createdAt)}
               </Text>

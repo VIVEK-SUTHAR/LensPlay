@@ -65,7 +65,12 @@ const Profile = ({ navigation }: { navigation: any }) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={refreshing} colors={[primary]} progressBackgroundColor={dark_secondary} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            colors={[primary]}
+            progressBackgroundColor={dark_secondary}
+            onRefresh={onRefresh}
+          />
         }
       >
         <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
@@ -93,15 +98,28 @@ const Profile = ({ navigation }: { navigation: any }) => {
               flexDirection: "row",
               justifyContent: "center",
               width: "100%",
-              marginTop: "-10%",
+              marginTop: "-20%",
             }}
           >
-            <Avatar src={getIPFSLink(profile?.profile?.picture?.original?.url)} height={100} width={100} />
+            <Avatar
+              src={getIPFSLink(profile?.profile?.picture?.original?.url)}
+              height={100}
+              width={100}
+            />
           </View>
           <View style={{ padding: 4, alignItems: "center" }}>
-            <Heading title={profile?.profile?.name} style={{ fontSize: 20, fontWeight: "bold", color: "white" }}/>
-            <SubHeading title={`@${profile?.profile?.handle} · ${profile?.profile?.stats?.totalFollowers} Subscribers · ${profile?.profile?.stats?.totalPosts} Videos`} style={{ fontSize: 12, color: "white", marginTop: 2 }}/>
-            <SubHeading title={profile?.profile?.bio} style={{ fontSize: 14, color: "gray", textAlign: "center" }}/>
+            <Heading
+              title={profile?.profile?.name}
+              style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
+            />
+            <SubHeading
+              title={`@${profile?.profile?.handle} · ${profile?.profile?.stats?.totalFollowers} Subscribers · ${profile?.profile?.stats?.totalPosts} Videos`}
+              style={{ fontSize: 12, color: "white", marginTop: 2 }}
+            />
+            <SubHeading
+              title={profile?.profile?.bio}
+              style={{ fontSize: 14, color: "gray", textAlign: "center" }}
+            />
           </View>
           {/* <TouchableOpacity activeOpacity={0.8}>
             <View
@@ -130,11 +148,14 @@ const Profile = ({ navigation }: { navigation: any }) => {
           </TouchableOpacity> */}
 
           <View style={{ paddingVertical: 10 }}>
-            <Heading title="Videos" style={{
+            <Heading
+              title="Videos"
+              style={{
                 fontSize: 20,
                 fontWeight: "700",
                 color: "white",
-              }}/>
+              }}
+            />
             {allVideos?.map((item, index) => {
               if (item.appId.includes("lenstube")) {
                 return (
