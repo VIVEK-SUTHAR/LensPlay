@@ -57,7 +57,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
-      <ScrollView
+      {/* <ScrollView
         style={{
           height: 60,
           maxHeight: 60,
@@ -97,7 +97,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
             </View>
           );
         })}
-      </ScrollView>
+      </ScrollView> */}
       <ScrollView>
         <View style={{ marginTop: 10 }}>
           {TrendingItems && TrendingItems.length === 0 ? (

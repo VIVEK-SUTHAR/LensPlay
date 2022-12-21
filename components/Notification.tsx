@@ -16,8 +16,6 @@ const Navigation = ({ navigation }) => {
     });
   }, []);
 
-  console.log(allNotifications);
-
   return (
     <SafeAreaView
       style={{

@@ -204,10 +204,10 @@ const VideoPage = ({ route }) => {
             <Text
               style={{
                 textAlign: "center",
-                fontSize: 22,
+                fontSize: 16,
                 color: "white",
                 fontWeight: "600",
-                marginVertical: 8,
+                marginVertical: 12,
               }}
             >
               {route.params.title} by {route.params.uploadedBy}
@@ -232,10 +232,8 @@ const VideoPage = ({ route }) => {
             >
               <View
                 style={{
-                  backgroundColor: "rgba(255,255,255,0.1)",
+                  backgroundColor: primary,
                   borderRadius: 100,
-                  borderColor: primary,
-                  borderWidth: 1,
                   paddingVertical: 8,
                   marginVertical: 4,
                 }}
@@ -244,7 +242,7 @@ const VideoPage = ({ route }) => {
                   style={{
                     color: "white",
                     fontSize: 18,
-                    fontWeight: "500",
+                    fontWeight: "600",
                     textAlign: "center",
                   }}
                 >
@@ -287,7 +285,7 @@ const VideoPage = ({ route }) => {
             }}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Avatar src={getIPFSLink(route.params.avatar)} width={40} height={40} />
+              <Avatar src={route.params.avatar} width={40} height={40} />
               <View style={{ marginHorizontal: 8 }}>
                 <Text
                   style={{

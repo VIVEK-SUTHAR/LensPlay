@@ -1,5 +1,6 @@
 import React from 'react'
 import { Image } from 'react-native'
+import getIPFSLink from '../../utils/getIPFSLink'
 
 type AvatarProps = {
     src: string,
@@ -11,7 +12,7 @@ export default function Avatar({ src, height, width }: AvatarProps) {
     return (
         <Image
             source={{
-                uri: src
+                uri: getIPFSLink(src)
             }}
             style={{ height: height, width: width, borderRadius: 500 }}
         />
