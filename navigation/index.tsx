@@ -41,35 +41,33 @@ const Stack = createNativeStackNavigator();
 
 function RootNavigator() {
   return (
-    <>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Root"
-          component={BottomTabNavigator}
-          options={{ headerShown: false, presentation: "card" }}
-        />
-        <Stack.Screen
-          name="VideoPage"
-          component={VideoPage}
-          options={{ headerShown: false, presentation: "containedModal" }}
-        />
-        <Stack.Screen
-          name="Profile"
-          component={Profile}
-          options={{ headerShown: true, presentation: "card" }}
-        />
-        <Stack.Screen
-          name="Search"
-          component={Search}
-          options={{ headerShown: true, presentation: "modal" }}
-        />
-      </Stack.Navigator>
-    </>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Root"
+        component={BottomTabNavigator}
+        options={{ headerShown: false, presentation: "card" }}
+      />
+      <Stack.Screen
+        name="VideoPage"
+        component={VideoPage}
+        options={{ headerShown: false, presentation: "containedModal" }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{ headerShown: true, presentation: "card" }}
+      />
+      <Stack.Screen
+        name="Search"
+        component={Search}
+        options={{ headerShown: true, presentation: "modal" }}
+      />
+    </Stack.Navigator>
   );
 }
 
@@ -80,7 +78,7 @@ function BottomTabNavigator({ navigation }) {
     <BottomTab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        headerStyle: { backgroundColor: dark_secondary },
+        headerStyle: { backgroundColor: dark_secondary,elevation:0 },
         headerTitle: "",
         headerRight: () => (
           <TouchableWithoutFeedback
