@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import useStore from "../store/Store";
 import getIPFSLink from "../utils/getIPFSLink";
+import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
 import SubHeading from "./UI/SubHeading";
 
@@ -98,14 +99,7 @@ const VideoCard = ({
             <Heading title={title} style={{ fontSize: 16, fontWeight: "700", color: "white" }}/>
             <SubHeading title={`By ${uploadedBy} on ${date}`} style={{ fontSize: 12, color: "gray" }}/>
           </View>
-          <View style={{ height: 40, width: 40 }}>
-            <Image
-              source={{
-                uri: getIPFSLink(avatar),
-              }}
-              style={{ height: "100%", width: "100%", borderRadius: 500 }}
-            />
-          </View>
+          <Avatar src={getIPFSLink(avatar)} height={40} width={40}/> 
         </View>
       </View>
     </TouchableWithoutFeedback>

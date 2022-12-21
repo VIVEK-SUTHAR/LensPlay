@@ -19,6 +19,7 @@ import convertDate from "../utils/formateDate";
 import getIPFSLink from "../utils/getIPFSLink";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
+import Avatar from "../components/UI/Avatar";
 
 const Profile = ({ navigation }: { navigation: any }) => {
   const [profile, setProfile] = useState<{}>({});
@@ -95,20 +96,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
               marginTop: "-10%",
             }}
           >
-            <Image
-              source={{
-                uri: getIPFSLink(profile?.profile?.picture?.original?.url),
-              }}
-              style={{
-                height: 100,
-                width: 100,
-                marginTop: -30,
-                borderRadius: 50,
-                borderWidth: 3,
-                borderColor: dark_primary,
-                backgroundColor: primary,
-              }}
-            />
+            <Avatar src={getIPFSLink(profile?.profile?.picture?.original?.url)} height={100} width={100} />
           </View>
           <View style={{ padding: 4, alignItems: "center" }}>
             <Heading title={profile?.profile?.name} style={{ fontSize: 20, fontWeight: "bold", color: "white" }}/>

@@ -8,6 +8,7 @@ import { dark_secondary } from "../constants/Colors";
 import formatAddress from "../utils/formatAddress";
 import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
+import Avatar from "./UI/Avatar";
 
 interface NotificationsProps {
   title: string;
@@ -41,21 +42,9 @@ const NotificationCard: FC<NotificationsProps> = ({
       case "NewFollowerNotification":
         return (
           <View>
-            <View style={{ height: 35, width: 35 }}>
-              <Image
-                source={{
-                  uri: getIPFSLink(
+            <Avatar src={getIPFSLink(
                     notification?.wallet?.defaultProfile?.picture?.original?.url
-                  ),
-                }}
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  borderRadius: 50,
-                  resizeMode: "contain",
-                }}
-              />
-            </View>
+                  )} height={35} width={35}/>
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "500" }}>
                 {notification?.wallet?.defaultProfile?.handle ||
@@ -72,16 +61,9 @@ const NotificationCard: FC<NotificationsProps> = ({
       case "NewCollectNotification":
         return (
           <View>
-            <View style={{ height: 35, width: 35 }}>
-              <Image
-                source={{
-                  uri: getIPFSLink(
+            <Avatar src={getIPFSLink(
                     notification?.wallet?.defaultProfile?.picture?.original?.url
-                  ),
-                }}
-                style={{ height: "100%", width: "100%", borderRadius: 500 }}
-              />
-            </View>
+                  )} height={35} width={35}/>
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "500" }}>
                 {notification?.wallet?.defaultProfile?.handle ||
@@ -98,16 +80,9 @@ const NotificationCard: FC<NotificationsProps> = ({
       case "NewMirrorNotification":
         return (
           <View>
-            <View style={{ height: 35, width: 35 }}>
-              <Image
-                source={{
-                  uri: getIPFSLink(
-                    notification?.profile?.picture?.original?.url
-                  ),
-                }}
-                style={{ height: "100%", width: "100%", borderRadius: 500 }}
-              />
-            </View>
+            <Avatar src={getIPFSLink(
+                    notification?.wallet?.defaultProfile?.picture?.original?.url
+                  )} height={35} width={35}/>
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "600" }}>
                 {notification?.profile?.handle?.split(".")[0] ||
@@ -129,16 +104,9 @@ const NotificationCard: FC<NotificationsProps> = ({
       case "NewReactionNotification":
         return (
           <View>
-            <View style={{ height: 35, width: 35 }}>
-              <Image
-                source={{
-                  uri: getIPFSLink(
-                    notification?.profile?.picture?.original?.url
-                  ),
-                }}
-                style={{ height: "100%", width: "100%", borderRadius: 500 }}
-              />
-            </View>
+            <Avatar src={getIPFSLink(
+                    notification?.wallet?.defaultProfile?.picture?.original?.url
+                  )} height={35} width={35}/>
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "600" }}>
                 {notification?.profile?.handle ||
