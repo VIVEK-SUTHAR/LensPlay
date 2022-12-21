@@ -476,7 +476,7 @@ const VideoPage = ({ route }) => {
                       username={item?.profile?.handle}
                       avatar={item?.profile?.picture?.original?.url}
                       commentText={item?.metadata?.description}
-                      commentTime={convertDate(item?.createdAt)}
+                      commentTime={item?.createdAt}
                     />
                   );
                 })}

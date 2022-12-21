@@ -11,6 +11,7 @@ import { Image, Text, TextStyle, View } from "react-native";
 import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import formatAddress from "../utils/formatAddress";
 import convertDate from "../utils/formateDate";
+import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
 
 interface NotificationsProps {
@@ -69,7 +70,7 @@ const NotificationCard: FC<NotificationsProps> = ({
               followed you
               <Text style={{ fontSize: 10, color: "gray" }}>
                 {" "}
-                &middot; {convertDate(notification?.createdAt)}
+                &middot; {getDifference(notification?.createdAt)}
               </Text>
             </Text>
           </View>
@@ -93,7 +94,7 @@ const NotificationCard: FC<NotificationsProps> = ({
               collected your post
               <Text style={{ fontSize: 10, color: "gray" }}>
                 {" "}
-                &middot; {convertDate(notification?.createdAt)}
+                &middot; {getDifference(notification?.createdAt)}
               </Text>
             </Text>
           </View>
@@ -117,7 +118,7 @@ const NotificationCard: FC<NotificationsProps> = ({
               mirrored your post
               <Text style={{ fontSize: 10, color: "gray" }}>
                 {" "}
-                &middot; {convertDate(notification?.createdAt)}
+                &middot; {getDifference(notification?.createdAt)}
               </Text>
             </Text>
             <View>
@@ -151,7 +152,7 @@ const NotificationCard: FC<NotificationsProps> = ({
                 : "mirror"}
               <Text style={{ fontSize: 10, color: "gray" }}>
                 {" "}
-                &middot; {convertDate(notification?.createdAt)}
+                &middot; {getDifference(notification?.createdAt)}
               </Text>
             </Text>
             <View>

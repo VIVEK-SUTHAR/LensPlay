@@ -1,6 +1,7 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { dark_secondary, primary } from "../constants/Colors";
+import getDifference from "../utils/getDifference";
 
 type CommentCardProps = {
   avatar: string;
@@ -41,7 +42,7 @@ const CommentCard = ({
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Text style={{ fontSize: 12, color: 'gray' }}>{username}&middot;</Text>
-          <Text style={{ fontSize: 10, color: "gray" }}>{commentTime}</Text>
+          <Text style={{ fontSize: 10, color: "gray" }}>{getDifference(commentTime)}</Text>
         </View>
         <Text style={{ fontSize: 12, color: "white", fontWeight: '600' }}>{commentText}</Text>
       </View>

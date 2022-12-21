@@ -46,7 +46,8 @@ const Search = ({ navigation }) => {
           query: searchQuery.toLowerCase().trim(),
         },
       });
-      console.log(result.data);
+      console.log(result);
+      
       setSearchPostResult(result?.data?.search?.items);
       if (searchPostResult.length === 0) {
         setIsfound(false);
