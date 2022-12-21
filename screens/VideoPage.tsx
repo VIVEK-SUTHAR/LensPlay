@@ -12,8 +12,15 @@ import {
   TouchableOpacity,
   ToastAndroid,
 } from "react-native";
-import { AntDesign, Feather, FontAwesome, MaterialCommunityIcons, MaterialIcons, Octicons } from "@expo/vector-icons";
-import React, { useEffect, useRef } from "react";
+import {
+  AntDesign,
+  Feather,
+  FontAwesome,
+  MaterialCommunityIcons,
+  MaterialIcons,
+  Octicons,
+} from "@expo/vector-icons";
+import React, { useEffect } from "react";
 import { dark_primary, primary } from "../constants/Colors";
 import useStore from "../store/Store";
 import { useState } from "react";
@@ -70,7 +77,7 @@ const VideoPage = ({ route }) => {
   };
 
   const [ismodalopen, setIsmodalopen] = useState(false);
-
+  const [isFullScreen, setIsFullScreen] = useState(false);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <StatusBar style="light" backgroundColor={dark_primary} />
@@ -81,17 +88,15 @@ const VideoPage = ({ route }) => {
           videoBackgroundColor: "transparent",
           controlsBackgroundColor: "transparent",
         }}
-        // fullscreen={{
-        //   enterFullscreen: () => {
-        //     setInFullsreen(!inFullscreen)
-        //   },
-        //   exitFullscreen: () => {
-        //     setInFullsreen(!inFullscreen)
-        //   },
-        //   inFullscreen,
-        // }}
+        mute={{
+          visible: true,
+        }}
+        fullscreen={{
+          
+          visible: true
+        }}
         textStyle={{
-          fontSize: 12,
+          fontSize: 14,
           fontWeight: "600",
         }}
         activityIndicator={{
@@ -105,10 +110,10 @@ const VideoPage = ({ route }) => {
           minimumTrackTintColor: primary,
         }}
         icon={{
-          play: <Feather name="play" size={28} color={primary} />,
-          pause: <AntDesign name="pause" size={28} color={primary} />,
+          play: <Feather name="play" size={36} color={primary} />,
+          pause: <AntDesign name="pause" size={36} color={primary} />,
           replay: (
-            <MaterialCommunityIcons name="replay" size={28} color={primary} />
+            <MaterialCommunityIcons name="replay" size={36} color={primary} />
           ),
           mute: <Octicons name="mute" size={28} color={primary} />,
         }}
@@ -122,7 +127,7 @@ const VideoPage = ({ route }) => {
             resizeMode: "contain",
           },
           isMuted: false,
-          shouldPlay: true,
+          shouldPlay: false,
           resizeMode: ResizeMode.CONTAIN,
           source: {
             uri: getIPFSLink(playbackId),

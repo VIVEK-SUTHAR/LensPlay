@@ -1,4 +1,9 @@
-import { RefreshControl, ScrollView, StyleSheet } from "react-native";
+import {
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  ToastAndroid,
+} from "react-native";
 import { useEffect, useState } from "react";
 import * as React from "react";
 import VideoCard from "../components/VideoCard";
@@ -7,7 +12,7 @@ import { StatusBar } from "expo-status-bar";
 import { client } from "../apollo/client";
 import getFeed from "../apollo/Queries/getFeed";
 import Skleton from "../components/Skleton";
-import { dark_primary, dark_secondary } from "../constants/Colors";
+import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import convertDate from "../utils/formateDate";
 
 const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
@@ -22,6 +27,9 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
     setRefreshing(true);
     getFeedData().then(() => {
       setRefreshing(false);
+      if (feedData == feedData) {
+        ToastAndroid.show("Feed is up-to date", ToastAndroid.SHORT);
+      }
     });
   }, []);
 
@@ -52,7 +60,12 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
   return (
     <ScrollView
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={[primary]}
+          progressBackgroundColor={dark_secondary}
+        />
       }
       style={{
         flex: 1,
