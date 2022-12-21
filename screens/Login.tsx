@@ -36,10 +36,9 @@ const Login = ({ navigation }: { navigation: any }) => {
   }, [connector]);
 
   const data = [
-    "https://images.unsplash.com/photo-1625690303837-654c9666d2d0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-    "https://images.unsplash.com/photo-1630797160666-38e8c5ba44c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dmxvZ2dpbmd8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
-    "https://images.pexels.com/photos/3379934/pexels-photo-3379934.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    "https://images.unsplash.com/photo-1627244714766-94dab62ed964?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTh8fHZpZGVvZ3JhcGh5fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+    "https://ipfs.io/ipfs/QmfY1JJanP2cZyrcf2WBka6dzoHFjT9sH2gYcEaJJiDwfK",
+    "https://ipfs.io/ipfs/QmQgwri9TtoCYWdxB9kkpC5NKwaSWHJw3MHon6Rt3oVQP7",
+    "https://ipfs.io/ipfs/Qmawvbo2VvS6aF6bL1bchAXtLEwkZurbbEtMu7PxfHFoQ1",
   ];
   const { width, height } = Dimensions.get("screen");
   const imageW = width * 0.8;
@@ -150,7 +149,7 @@ const Login = ({ navigation }: { navigation: any }) => {
     } catch (e) {
       if (e instanceof Error) {
         //yaha sb krna
-      }
+      } 
     }
   };
   React.useEffect(() => {
