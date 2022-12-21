@@ -11,6 +11,7 @@ import Uploadvideo from "../components/Uploadvideo";
 import GoLive from "../components/GoLive";
 import AnimatedLottieView from "lottie-react-native";
 import Drawer from "../components/UI/Drawer";
+import Heading from "../components/UI/Heading";
 
 const UploadStack = createNativeStackNavigator();
 
@@ -58,14 +59,14 @@ function Index({ navigation }) {
             paddingVertical: 4,
             borderRadius: 10,
           }}>
-            <Text style={{
+            <Heading title="Upload a video" style={{
               fontSize: 20,
               color: "white",
               marginVertical: 5,
               marginHorizontal: 15,
               fontWeight: "600",
               alignSelf: "flex-start",
-            }}>Upload a video</Text>
+            }}/>
           </View>
         </TouchableWithoutFeedback>
       </View>

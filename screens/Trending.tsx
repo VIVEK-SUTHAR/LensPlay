@@ -16,6 +16,7 @@ import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import { Feather } from "@expo/vector-icons";
 import convertDate from "../utils/formateDate";
 import AnimatedLottieView from "lottie-react-native";
+import Heading from "../components/UI/Heading";
 
 type TrendingPageProps = {
   navigation: any;
@@ -120,18 +121,14 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                   alignItems: "center",
                 }}
               >
-                <Text
-                  style={{
+                <Heading title="Getting videos" style={{
                     fontSize: 16,
                     color: "white",
                     marginVertical: 5,
                     marginHorizontal: 15,
                     fontWeight: "600",
                     alignSelf: "flex-start",
-                  }}
-                >
-                  Getting videos
-                </Text>
+                  }}/>
               </View>
             </View>
           ) : (

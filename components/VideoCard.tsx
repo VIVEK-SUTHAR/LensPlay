@@ -8,6 +8,8 @@ import {
 } from "react-native";
 import useStore from "../store/Store";
 import getIPFSLink from "../utils/getIPFSLink";
+import Heading from "./UI/Heading";
+import SubHeading from "./UI/SubHeading";
 
 type videoPageProp = {
   navigation: any;
@@ -93,15 +95,8 @@ const VideoCard = ({
           }}
         >
           <View style={{ flex: 0.95 }}>
-            <Text
-              style={{ fontSize: 16, fontWeight: "700", color: "white" }}
-              numberOfLines={2}
-            >
-              {title}
-            </Text>
-            <Text style={{ fontSize: 12, color: "gray" }}>
-              By {uploadedBy} on {date}
-            </Text>
+            <Heading title={title} style={{ fontSize: 16, fontWeight: "700", color: "white" }}/>
+            <SubHeading title={`By ${uploadedBy} on ${date}`} style={{ fontSize: 12, color: "gray" }}/>
           </View>
           <View style={{ height: 40, width: 40 }}>
             <Image

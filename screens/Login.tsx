@@ -23,6 +23,7 @@ import verifyToken from "../apollo/Queries/verifyToken";
 import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
 import { StatusBar } from "expo-status-bar";
 import Paginator from "../components/Paginator";
+import SubHeading from "../components/UI/SubHeading";
 
 const Login = ({ navigation }: { navigation: any }) => {
   const store = useStore();
@@ -282,16 +283,13 @@ const Login = ({ navigation }: { navigation: any }) => {
                   alignItems: "center",
                 }}
               >
-                <Text
-                  style={{
+                <SubHeading  title="Login with Lens" style={{
                     color: "black",
                     fontSize: 20,
                     fontWeight: "bold",
                     textAlign: "center",
                   }}
-                >
-                  Login with Lens
-                </Text>
+                 />
               </View>
             </TouchableOpacity>
             <TouchableOpacity style={{ width: "80%" }} onPress={killSession}>
@@ -303,16 +301,12 @@ const Login = ({ navigation }: { navigation: any }) => {
                   marginVertical: 10,
                 }}
               >
-                <Text
-                  style={{
+                <SubHeading title="Disconnect Wallet" style={{
                     color: "black",
                     fontSize: 20,
                     fontWeight: "bold",
                     textAlign: "center",
-                  }}
-                >
-                  Disconnect Wallet
-                </Text>
+                  }} />
               </View>
             </TouchableOpacity>
           </>
@@ -331,16 +325,12 @@ const Login = ({ navigation }: { navigation: any }) => {
                 marginVertical: 30,
               }}
             >
-              <Text
-                style={{
+              <SubHeading title="Connect Wallet" style={{
                   color: "black",
                   fontSize: 24,
                   fontWeight: "600",
                   textAlign: "center",
-                }}
-              >
-                Connect Wallet
-              </Text>
+                }}/>
             </View>
           </TouchableOpacity>
         )}

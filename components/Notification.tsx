@@ -5,6 +5,7 @@ import AnimatedLottieView from "lottie-react-native";
 import fetchNotifications from "../api/fetchNotifications";
 import useStore from "../store/Store";
 import NotificationCard from "./NotificationCard";
+import Heading from "./UI/Heading";
 
 const Navigation = ({ navigation }) => {
   const store = useStore();
@@ -34,7 +35,7 @@ const Navigation = ({ navigation }) => {
               />
             );
           })}
-        {allNotifications === undefined && (
+        {allNotifications?.length === 0 && (
           <View
             style={{
               height: 500,
@@ -54,18 +55,14 @@ const Navigation = ({ navigation }) => {
                 alignItems: "center",
               }}
             >
-              <Text
-                style={{
+              <Heading title="No new notifications" style={{
                   fontSize: 16,
                   color: "white",
                   marginVertical: 5,
                   marginHorizontal: 15,
                   fontWeight: "600",
                   alignSelf: "flex-start",
-                }}
-              >
-                No new notifications
-              </Text>
+                }}/>
             </View>
           </View>
         )}

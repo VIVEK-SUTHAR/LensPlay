@@ -21,6 +21,8 @@ import Trending from "../screens/Trending";
 import Notification from "../components/Notification";
 import UploadVideo from "../screens/UploadVideo";
 import Search from "../screens/Search";
+import Heading from "../components/UI/Heading";
+import SubHeading from "../components/UI/SubHeading";
 
 export default function Navigation({
   colorScheme,
@@ -105,9 +107,7 @@ function BottomTabNavigator({ navigation }) {
               alignItems: "center",
             }}
           >
-            <Text style={{ fontSize: 24, fontWeight: "600", color: "white" }}>
-              LensPlay
-            </Text>
+            <Heading title="LensPlay" style={{ fontSize: 24, fontWeight: "600", color: "white" }}/>
             <View
               style={{
                 backgroundColor: primary,
@@ -117,9 +117,7 @@ function BottomTabNavigator({ navigation }) {
                 borderRadius: 10,
               }}
             >
-              <Text style={{ color: "white", fontSize: 11, fontWeight: "600" }}>
-                BETA
-              </Text>
+              <SubHeading title="BETA" style={{ color: "white", fontSize: 11, fontWeight: "600" }}/>
             </View>
           </View>
         ),

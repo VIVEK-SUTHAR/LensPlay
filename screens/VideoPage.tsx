@@ -36,6 +36,8 @@ import freeCollectPublication from "../api/freeCollect";
 import getProxyActionStatus from "../api/getProxyActionStatus";
 import VideoPlayer from "expo-video-player";
 import Avatar from "../components/UI/Avatar";
+import Heading from "../components/UI/Heading";
+import SubHeading from "../components/UI/SubHeading";
 
 const VideoPage = ({ route }) => {
   const store = useStore();
@@ -206,18 +208,13 @@ const VideoPage = ({ route }) => {
               }}
               isLooping={true}
             />
-            <Text
-              style={{
+            <Heading title={`${route.params.title} by ${route.params.uploadedBy}`} style={{
                 textAlign: "center",
                 fontSize: 16,
                 color: "white",
                 fontWeight: "600",
                 marginVertical: 12,
-              }}
-            >
-              {route.params.title} by {route.params.uploadedBy}
-            </Text>
-
+              }}/>
             <TouchableOpacity
               style={{ width: "90%", marginVertical: 0 }}
               onPress={async () => {
@@ -243,16 +240,12 @@ const VideoPage = ({ route }) => {
                   marginVertical: 4,
                 }}
               >
-                <Text
-                  style={{
+                <Heading title="Collect for free" style={{
                     color: "white",
                     fontSize: 18,
                     fontWeight: "600",
                     textAlign: "center",
-                  }}
-                >
-                  Collect for free
-                </Text>
+                  }}/>
               </View>
             </TouchableOpacity>
           </View>
@@ -261,24 +254,16 @@ const VideoPage = ({ route }) => {
       <ScrollView>
         <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
           <View>
-            <Text
-              style={{
+            <Heading title={route.params.title} style={{
                 fontSize: 16,
                 fontWeight: "700",
                 color: "white",
-              }}
-            >
-              {route.params.title}
-            </Text>
-            <Text style={{ fontSize: 12, color: "gray" }}>
-              {userFeed[currentIndex]?.root?.metadata?.description}
-            </Text>
+              }}/>
+              <SubHeading title={userFeed[currentIndex]?.root?.metadata?.description} style={{ fontSize: 12, color: "gray" }}/>
           </View>
           <View style={{ flexDirection: "row", opacity: 0.5, marginTop: 8 }}>
-            <Text style={{ marginRight: 10, color: "white" }}>
-              3094505 views
-            </Text>
-            <Text style={{ color: "white" }}>{route.params.date}</Text>
+          <SubHeading title="3094505 views" style={{ marginRight: 10, color: "white" }}/>
+          <SubHeading title={route.params.date} style={{ color: "white" }}/>
           </View>
           <View
             style={{
@@ -292,24 +277,16 @@ const VideoPage = ({ route }) => {
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Avatar src={route.params.avatar} width={40} height={40} />
               <View style={{ marginHorizontal: 8 }}>
-                <Text
-                  style={{
+                <Heading title={route.params.uploadedBy} style={{
                     color: "white",
                     fontSize: 16,
                     fontWeight: "500",
-                  }}
-                >
-                  {route.params.uploadedBy}
-                </Text>
-                <Text
-                  style={{
+                  }}/>
+                  <SubHeading title={`@${route.params.uploadedBy}`} style={{
                     color: "gray",
                     fontSize: 12,
                     fontWeight: "500",
-                  }}
-                >
-                  @{route.params.uploadedBy}
-                </Text>
+                  }}/>
               </View>
             </View>
             <TouchableWithoutFeedback
@@ -328,14 +305,10 @@ const VideoPage = ({ route }) => {
                   backgroundColor: "white",
                 }}
               >
-                <Text
-                  style={{
+                <Heading title="Subscribe" style={{
                     fontSize: 16,
                     fontWeight: "700",
-                  }}
-                >
-                  Subscribe
-                </Text>
+                  }}/>
               </View>
             </TouchableWithoutFeedback>
           </View>
@@ -381,16 +354,12 @@ const VideoPage = ({ route }) => {
                   size={16}
                   color={isLiked ? primary : "white"}
                 />
-                <Text
-                  style={{
+                <SubHeading title={likes || 0} style={{
                     fontSize: 14,
                     fontWeight: "500",
                     color: isLiked ? primary : "white",
                     marginLeft: 4,
-                  }}
-                >
-                  {likes || 0}
-                </Text>
+                  }}/>
               </View>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback>
@@ -407,14 +376,12 @@ const VideoPage = ({ route }) => {
                 }}
               >
                 <AntDesign name="dislike2" size={16} color={"white"} />
-                <Text
-                  style={{
+                <SubHeading title="" style={{
                     fontSize: 14,
                     fontWeight: "500",
                     color: "white",
                     marginLeft: 4,
-                  }}
-                ></Text>
+                  }}/>
               </View>
             </TouchableWithoutFeedback>
 
@@ -432,16 +399,12 @@ const VideoPage = ({ route }) => {
                 }}
               >
                 <AntDesign name="switcher" size={16} color="white" />
-                <Text
-                  style={{
+                <SubHeading title={`${STATS?.totalAmountOfCollects || 0} Collects`} style={{
                     fontSize: 14,
                     fontWeight: "500",
                     color: "white",
                     marginLeft: 8,
-                  }}
-                >
-                  {STATS?.totalAmountOfCollects || 0} Collects
-                </Text>
+                  }}/>
               </View>
             </TouchableWithoutFeedback>
 
@@ -459,16 +422,12 @@ const VideoPage = ({ route }) => {
                 }}
               >
                 <FontAwesome name="share" size={16} color="white" />
-                <Text
-                  style={{
+                <SubHeading title="Share" style={{
                     fontSize: 14,
                     fontWeight: "500",
                     color: "white",
                     marginLeft: 8,
-                  }}
-                >
-                  Share
-                </Text>
+                  }}/>
               </View>
             </TouchableWithoutFeedback>
 
@@ -486,35 +445,26 @@ const VideoPage = ({ route }) => {
                 }}
               >
                 <MaterialIcons name="report" size={16} color="white" />
-                <Text
-                  style={{
+                <SubHeading title="Report" style={{
                     fontSize: 14,
                     fontWeight: "500",
                     color: "white",
                     marginLeft: 8,
-                  }}
-                >
-                  Report
-                </Text>
+                  }}/>
               </View>
             </TouchableWithoutFeedback>
           </ScrollView>
 
           <View>
-            <Text
-              style={{
+            <SubHeading title="Comments" style={{
                 fontSize: 20,
                 fontWeight: "700",
                 color: "white",
                 marginBottom: 8,
-              }}
-            >
-              Comments
-            </Text>
+              }}/>
+
             {userFeed[currentIndex]?.comments == 0 ? (
-              <Text style={{ fontSize: 16, marginTop: 10, color: "white" }}>
-                There are no comments yet
-              </Text>
+              <SubHeading title="There are no comments yet" style={{ fontSize: 16, marginTop: 10, color: "white" }}/>
             ) : (
               <>
                 {comments?.map((item, index) => {
