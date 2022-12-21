@@ -77,12 +77,12 @@ const VideoPage = ({ route }) => {
         useNativeControls={true}
         usePoster={true}
         posterSource={{
-          uri: route.params.banner,
+          uri: getIPFSLink(route.params.banner),
         }}
         posterStyle={{
           height: "100%",
           width: "100%",
-          resizeMode: "stretch",
+          resizeMode: "contain",
         }}
         isLooping={true}
       />
@@ -212,7 +212,6 @@ const VideoPage = ({ route }) => {
           </View>
         </View>
       </Modal>
-
       <ScrollView>
         <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
           <View>

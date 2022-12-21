@@ -1,32 +1,31 @@
 import * as React from "react";
 import {
   Image,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
-  StyleSheet,
   Text,
+  ToastAndroid,
   View,
 } from "react-native";
 import { useEffect, useState } from "react";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
-import { dark_primary, primary } from "../constants/Colors";
+import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import useStore from "../store/Store";
 import getPublications from "../apollo/Queries/getPublications";
 import VideoCard from "../components/VideoCard";
 import convertDate from "../utils/formateDate";
+import getIPFSLink from "../utils/getIPFSLink";
 
 const Profile = ({ navigation }: { navigation: any }) => {
   const [profile, setProfile] = useState<{}>({});
   const [allVideos, setallVideos] = useState([]);
   const [isVideoAvilable, setIsVideoAvilable] = useState<boolean>(true);
   const store = useStore();
-
-  console.log(profile);
-
   useEffect(() => {
     getProfleInfo();
-  }, []);
+  }, [navigation]);
 
   const getProfleInfo = async () => {
     try {
@@ -36,8 +35,6 @@ const Profile = ({ navigation }: { navigation: any }) => {
           id: store.profileId,
         },
       });
-      console.log(store.profileId);
-
       setProfile(profiledata.data);
       store.setProfiledata(profiledata.data);
       const getUserVideos = await client.query({
@@ -46,16 +43,28 @@ const Profile = ({ navigation }: { navigation: any }) => {
           id: store.profileId,
         },
       });
-
       setallVideos(getUserVideos.data.publications.items);
     } catch (error) {
       console.log(error);
     }
   };
-
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    getProfleInfo().then(() => {
+      if (profile == profile) {
+        ToastAndroid.show("Profile is Up-to date", ToastAndroid.SHORT);
+      }
+      setRefreshing(false);
+    });
+  }, []);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} colors={[primary]} progressBackgroundColor={dark_secondary} onRefresh={onRefresh} />
+        }
+      >
         <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
           <View
             style={{
@@ -65,7 +74,9 @@ const Profile = ({ navigation }: { navigation: any }) => {
             }}
           >
             <Image
-              source={{ uri: profile?.profile?.coverPicture?.original?.url }}
+              source={{
+                uri: getIPFSLink(profile?.profile?.coverPicture?.original?.url),
+              }}
               style={{
                 height: "100%",
                 width: "100%",
@@ -74,7 +85,6 @@ const Profile = ({ navigation }: { navigation: any }) => {
               }}
             />
           </View>
-
           <View
             style={{
               flexDirection: "row",
@@ -85,8 +95,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
           >
             <Image
               source={{
-                uri: `https://ipfs.io/ipfs/${profile?.profile?.picture?.original?.url.split("//")[1]
-                  }`,
+                uri: getIPFSLink(profile?.profile?.picture?.original?.url),
               }}
               style={{
                 height: 100,
@@ -99,7 +108,6 @@ const Profile = ({ navigation }: { navigation: any }) => {
               }}
             />
           </View>
-
           <View style={{ padding: 4, alignItems: "center" }}>
             <Text
               style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
@@ -116,7 +124,6 @@ const Profile = ({ navigation }: { navigation: any }) => {
               {profile?.profile?.bio}
             </Text>
           </View>
-
           {/* <TouchableOpacity activeOpacity={0.8}>
             <View
               style={{
@@ -143,7 +150,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
             </View>
           </TouchableOpacity> */}
 
-          <View style={{ paddingHorizontal: 4, paddingVertical: 10 }}>
+          <View style={{ paddingVertical: 10 }}>
             <Text
               style={{
                 fontSize: 20,
@@ -170,17 +177,10 @@ const Profile = ({ navigation }: { navigation: any }) => {
                 );
               }
             })}
-            {/* <MyVideos navigation={navigation} />
-          <MyVideos navigation={navigation} />
-          <MyVideos navigation={navigation} />
-          <MyVideos navigation={navigation} /> */}
           </View>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
-
 export default Profile;
-
-const styles = StyleSheet.create({});

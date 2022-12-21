@@ -165,12 +165,15 @@ const NOTIFICATIONS_QUERY = `
     reaction
     publication {
       ... on Post {
+        __typename
         ...CompactPost
       }
       ... on Mirror {
+        __typename
         ...CompactMirror
       }
       ... on Comment {
+        __typename
         ...CompactComment
       }
     }

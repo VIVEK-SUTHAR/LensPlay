@@ -3,10 +3,10 @@ export default gql`
   query ExplorePublications {
     explorePublications(
       request: {
-        sortCriteria: TOP_COLLECTED
         publicationTypes: [POST, MIRROR]
-        metadata: { mainContentFocus: VIDEO }
         sources: ["lenstube"]
+        sortCriteria: LATEST
+        metadata: { mainContentFocus: VIDEO }
       }
     ) {
       items {
@@ -93,6 +93,7 @@ export default gql`
     ownedBy
     dispatcher {
       address
+      canUseRelay
     }
     stats {
       totalFollowers

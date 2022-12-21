@@ -26,7 +26,13 @@ const Navigation = ({ navigation }) => {
       <ScrollView>
         {allNotifications &&
           allNotifications.map((item, index) => {
-            return <NotificationCard key={index} type={item.__typename} />;
+            return (
+              <NotificationCard
+                key={index}
+                type={item.__typename}
+                notification={item}
+              />
+            );
           })}
         {allNotifications?.length === 0 && (
           <View
