@@ -7,10 +7,12 @@ import {
   Share,
   TouchableWithoutFeedback,
   ScrollView,
-  Button,
   SafeAreaView,
+  Modal,
+  TouchableOpacity,
+  ToastAndroid,
 } from "react-native";
-import { Feather, AntDesign, Entypo } from "@expo/vector-icons";
+import { AntDesign, Feather, FontAwesome, MaterialCommunityIcons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import React, { useEffect } from "react";
 import { dark_primary, primary } from "../constants/Colors";
 import useStore from "../store/Store";
@@ -18,28 +20,26 @@ import { useState } from "react";
 import { ResizeMode, Video } from "expo-av";
 import addLike from "../api/addReaction";
 import CommentCard from "../components/CommentCard";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
+import getIPFSLink from "../utils/getIPFSLink";
 import { client } from "../apollo/client";
 import getComments from "../apollo/Queries/getComments";
 import convertDate from "../utils/formateDate";
+import freeCollectPublication from "../api/freeCollect";
+import getProxyActionStatus from "../api/getProxyActionStatus";
+import VideoPlayer from "expo-video-player";
+
+
 
 const VideoPage = ({ route }) => {
   const store = useStore();
   const currentIndex = store.currentIndex;
   const userFeed = store.userFeed;
   const [comments, setComments] = useState([]);
-  const [likes, setLikes] = useState(
-    userFeed[currentIndex]?.root?.stats?.totalUpvotes
-  );
+  const [isLiked, setIsLiked] = useState(false);
+  const [likes, setLikes] = useState(route.params.stats?.totalUpvotes);
   const [descOpen, setDescOpen] = useState(false);
   const playbackId = route.params.playbackId;
-
-  const VIDEO_LINK = playbackId?.includes("https://arweave.net")
-    ? playbackId
-    : playbackId?.includes("ipfs://")
-    ? `https://ipfs.io/ipfs/${playbackId?.split("//")[1]}`
-    : playbackId;
 
   useEffect(() => {
     fetchComments();
@@ -53,11 +53,12 @@ const VideoPage = ({ route }) => {
     });
     setComments(data.data.publications.items);
   }
-
+  console.log(route.params.id);
+  const STATS = route.params.stats;
   const onShare = async () => {
     try {
       const result = await Share.share({
-        message: userFeed[currentIndex]?.root?.metadata?.name,
+        message: `Let's watch ${route.params.title} by ${route.params.uploadedBy} on LensPlay`,
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -65,57 +66,198 @@ const VideoPage = ({ route }) => {
       }
     }
   };
+  const [ismodalopen, setIsmodalopen] = useState(false);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
-      <ScrollView>
-        <StatusBar style="light" backgroundColor={dark_primary} />
-        <Video
-          style={styles.video}
-          resizeMode="contain"
-          source={{
-            uri: VIDEO_LINK,
-          }}
-          shouldPlay={true}
-          useNativeControls={true}
-          usePoster={true}
-          posterSource={{
-            uri: route.params.banner,
-          }}
-          posterStyle={{
+      <StatusBar style="light" backgroundColor={dark_primary} />
+      <VideoPlayer
+        style={{
+          width: Dimensions.get("screen").width,
+          height: 300,
+          videoBackgroundColor: "transparent",
+          controlsBackgroundColor: "transparent",
+        }}
+        textStyle={{
+          fontSize: 18,
+          fontWeight: "600",
+        }}
+        activityIndicator={{
+          size: "large",
+          color: primary,
+        }}
+        slider={{
+          visible: true,
+          thumbTintColor: "white",
+          maximumTrackTintColor: "white",
+          minimumTrackTintColor: primary,
+        }}
+        icon={{
+          play: <Feather name="play" size={28} color={primary} />,
+          pause: <AntDesign name="pause" size={28} color={primary} />,
+          replay: (
+            <MaterialCommunityIcons name="replay" size={28} color={primary} />
+          ),
+          mute: <Octicons name="mute" size={28} color={primary} />,
+        }}
+        videoProps={{
+          posterSource: {
+            uri: getIPFSLink(route.params.banner),
+          },
+          posterStyle: {
             height: "100%",
             width: "100%",
-            resizeMode: "stretch",
+            resizeMode: "contain",
+          },
+          isMuted: false,
+          shouldPlay: true,
+          resizeMode: ResizeMode.CONTAIN,
+          source: {
+            uri: getIPFSLink(playbackId),
+          },
+        }}
+      />
+      <Modal
+        animationType="slide"
+        visible={ismodalopen}
+        onRequestClose={() => {
+          setIsmodalopen(false);
+        }}
+        // statusBarTranslucent={true}
+        transparent={true}
+        style={{}}
+      >
+        <StatusBar backgroundColor="black" />
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setIsmodalopen(false);
           }}
-          isLooping={true}
-        />
-        <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+        >
+          <View
+            style={{
+              height: "100%",
+              backgroundColor: "rgba(0,0,0,0.8)",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          ></View>
+        </TouchableWithoutFeedback>
+
+        <View
+          style={{
+            // marginTop: -450,
+            position: "absolute",
+            top: "40%",
+            zIndex: 2,
+            backgroundColor: "#1d1d1d",
+            height: "100%",
+            width: "100%",
+            borderTopLeftRadius: 16,
+            borderTopRightRadius: 16,
+            paddingVertical: 20,
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              opacity: 1,
+              alignItems: "center",
+            }}
+          >
+            <Video
+              style={{
+                alignSelf: "center",
+                width: "90%",
+                height: 280,
+                borderRadius: 10,
+              }}
+              resizeMode="contain"
+              source={{
+                uri: getIPFSLink(playbackId),
+              }}
+              useNativeControls={true}
+              usePoster={true}
+              posterSource={{
+                uri: route.params.banner,
+              }}
+              posterStyle={{
+                height: "100%",
+                width: "100%",
+                resizeMode: "contain",
+                borderRadius: 12,
+              }}
+              isLooping={true}
+            />
             <Text
               style={{
-                flex: 0.98,
-                fontSize: 20,
-                fontWeight: "800",
+                textAlign: "center",
+                fontSize: 22,
+                color: "white",
+                fontWeight: "600",
+                marginVertical: 8,
+              }}
+            >
+              {route.params.title} by {route.params.uploadedBy}
+            </Text>
+
+            <TouchableOpacity
+              style={{ width: "90%", marginVertical: 0 }}
+              onPress={async () => {
+                // const res = await freeCollectPublication(
+                //   route.params.id,
+                //   store.accessToken
+                // );
+                // console.log(res);
+                // if (res?.proxyAction) {
+                //   console.log(res?.proxyAction);
+                //   const status = await getProxyActionStatus(
+                //     res?.proxyAction,
+                //     store.accessToken
+                //   );
+                // }
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.1)",
+                  borderRadius: 100,
+                  borderColor: primary,
+                  borderWidth: 1,
+                  paddingVertical: 8,
+                  marginVertical: 4,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "white",
+                    fontSize: 18,
+                    fontWeight: "500",
+                    textAlign: "center",
+                  }}
+                >
+                  Collect for free
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <ScrollView>
+        <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
+          <View>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "700",
                 color: "white",
               }}
             >
               {route.params.title}
             </Text>
-            <Feather
-              name={`chevron-${descOpen ? "up" : "down"}`}
-              size={34}
-              color="white"
-              onPress={() => setDescOpen(!descOpen)}
-            />
+            <Text style={{ fontSize: 12, color: "gray" }}>
+              {userFeed[currentIndex]?.root?.metadata?.description}
+            </Text>
           </View>
-          {descOpen ? (
-            <View>
-              <Text style={{ color: "white" }}>
-                {userFeed[currentIndex]?.root?.metadata?.description}
-              </Text>
-            </View>
-          ) : (
-            <Text></Text>
-          )}
           <View style={{ flexDirection: "row", opacity: 0.5, marginTop: 8 }}>
             <Text style={{ marginRight: 10, color: "white" }}>
               3094505 views
@@ -124,149 +266,229 @@ const VideoPage = ({ route }) => {
           </View>
           <View
             style={{
-              marginTop: 20,
+              width: "100%",
               flexDirection: "row",
-              justifyContent: "space-around",
+              paddingVertical: 4,
+              justifyContent: "space-between",
+              marginTop: 8,
             }}
           >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <View style={{ height: 40, width: 40 }}>
+                <Image
+                  source={{
+                    uri: getIPFSLink(route.params.avatar),
+                  }}
+                  style={{ height: "100%", width: "100%", borderRadius: 500 }}
+                />
+              </View>
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 16,
+                  fontWeight: "500",
+                  marginHorizontal: 8,
+                }}
+              >
+                {route.params.uploadedBy}
+              </Text>
+            </View>
             <TouchableWithoutFeedback
               onPress={() => {
-                console.log(store.accessToken);
-                setLikes((prev) => prev + 1);
-                addLike(
-                  store.accessToken,
-                  store.profileId,
-                  userFeed[currentIndex]?.root?.id
-                );
+                setIsmodalopen(true);
               }}
             >
               <View
                 style={{
-                  marginHorizontal: 8,
-                  backgroundColor: "rgba(255,255,255,0.05)",
-                  width: "auto",
-                  height: "auto",
-                  paddingHorizontal: 8,
-                  paddingVertical: 4,
+                  marginHorizontal: 4,
+                  paddingHorizontal: 16,
+                  paddingVertical: 8,
                   flexDirection: "row",
-                  justifyContent: "center",
+                  justifyContent: "space-between",
                   alignItems: "center",
-                  borderRadius: 20,
-                  borderColor: primary,
-                  borderWidth: 1,
+                  borderRadius: 50,
+                  backgroundColor: "white",
                 }}
               >
-                <AntDesign name="like2" size={24} color={primary} />
                 <Text
                   style={{
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: "500",
-                    color: "white",
-                    marginHorizontal: 4,
                   }}
                 >
-                  <Text style={{ marginLeft: 4, fontSize: 16 }}>{likes}</Text>
-                </Text>
-              </View>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback>
-              <View
-                style={{
-                  marginHorizontal: 8,
-                  backgroundColor: "rgba(255,255,255,0.07)",
-                  width: "auto",
-                  height: "auto",
-                  paddingHorizontal: 8,
-                  paddingVertical: 4,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 20,
-                  borderColor: primary,
-                  borderWidth: 1,
-                }}
-              >
-                <AntDesign name="dislike2" size={24} color={primary} />
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "500",
-                    color: "white",
-                    marginHorizontal: 4,
-                  }}
-                >
-                  {userFeed[currentIndex]?.root?.stats?.totalDownvotes}
-                </Text>
-              </View>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={onShare}>
-              <View
-                style={{
-                  marginHorizontal: 8,
-                  backgroundColor: "rgba(255,255,255,0.07)",
-                  width: "auto",
-                  height: "auto",
-                  paddingHorizontal: 8,
-                  paddingVertical: 4,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 20,
-                  borderColor: primary,
-                  borderWidth: 1,
-                }}
-              >
-                <Entypo name="share" size={24} color={primary} />
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "500",
-                    color: "white",
-                    marginHorizontal: 4,
-                  }}
-                >
-                  <Text style={{ marginLeft: 4, fontSize: 16 }}>Share</Text>
-                </Text>
-              </View>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback>
-              <View
-                style={{
-                  marginHorizontal: 8,
-                  backgroundColor: "rgba(255,255,255,0.07)",
-                  width: "auto",
-                  height: "auto",
-                  paddingHorizontal: 8,
-                  paddingVertical: 4,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 20,
-                  borderColor: primary,
-                  borderWidth: 1,
-                }}
-              >
-                <Feather name="flag" size={24} color={primary} />
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "500",
-                    color: "white",
-                    marginHorizontal: 4,
-                  }}
-                >
-                  <Text style={{ marginLeft: 4, fontSize: 16 }}>Report</Text>
+                  Subscribe
                 </Text>
               </View>
             </TouchableWithoutFeedback>
           </View>
+
+          <ScrollView
+            style={{
+              paddingVertical: 24,
+            }}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+          >
+            <TouchableWithoutFeedback
+              onPress={() => {
+                setLikes((prev) => prev + 1);
+                setIsLiked(true);
+                addLike(
+                  store.accessToken,
+                  store.profileId,
+                  route.params.id
+                ).then((res) => {
+                  if (res.addReaction === null) {
+                    console.log("liked");
+                  }
+                });
+              }}
+            >
+              <View
+                style={{
+                  marginHorizontal: 4,
+                  paddingVertical: 4,
+                  paddingHorizontal: 10,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderRadius: 16,
+                  borderWidth: 1,
+                  borderColor: isLiked ? primary : "white",
+                  backgroundColor: "rgba(255, 255, 255, 0.08)",
+                }}
+              >
+                <AntDesign
+                  name="like2"
+                  size={16}
+                  color={isLiked ? primary : "white"}
+                />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "500",
+                    color: isLiked ? primary : "white",
+                    marginLeft: 4,
+                  }}
+                >
+                  {likes || 0}
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback>
+              <View
+                style={{
+                  marginHorizontal: 4,
+                  paddingHorizontal: 10,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderRadius: 16,
+                  borderWidth: 1,
+                  borderColor: "white",
+                }}
+              >
+                <AntDesign name="dislike2" size={16} color={"white"} />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "500",
+                    color: "white",
+                    marginLeft: 4,
+                  }}
+                ></Text>
+              </View>
+            </TouchableWithoutFeedback>
+
+            <TouchableWithoutFeedback>
+              <View
+                style={{
+                  marginHorizontal: 4,
+                  paddingHorizontal: 10,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderRadius: 16,
+                  borderWidth: 1,
+                  borderColor: "white",
+                }}
+              >
+                <AntDesign name="switcher" size={16} color="white" />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "500",
+                    color: "white",
+                    marginLeft: 8,
+                  }}
+                >
+                  {STATS?.totalAmountOfCollects || 0} Collects
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+
+            <TouchableWithoutFeedback onPress={onShare}>
+              <View
+                style={{
+                  marginHorizontal: 4,
+                  paddingHorizontal: 10,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderRadius: 16,
+                  borderWidth: 1,
+                  borderColor: "white",
+                }}
+              >
+                <FontAwesome name="share" size={16} color="white" />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "500",
+                    color: "white",
+                    marginLeft: 8,
+                  }}
+                >
+                  Share
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+
+            <TouchableWithoutFeedback>
+              <View
+                style={{
+                  marginHorizontal: 4,
+                  paddingHorizontal: 10,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderRadius: 16,
+                  borderWidth: 1,
+                  borderColor: "white",
+                }}
+              >
+                <MaterialIcons name="report" size={16} color="white" />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "500",
+                    color: "white",
+                    marginLeft: 8,
+                  }}
+                >
+                  Report
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </ScrollView>
+
           <View>
             <Text
               style={{
-                fontSize: 25,
-                fontWeight: "800",
-                marginTop: 20,
+                fontSize: 20,
+                fontWeight: "700",
                 color: "white",
+                marginBottom: 8,
               }}
             >
               Comments
@@ -284,7 +506,7 @@ const VideoPage = ({ route }) => {
                       username={item?.profile?.handle}
                       avatar={item?.profile?.picture?.original?.url}
                       commentText={item?.metadata?.description}
-                      commentTime={convertDate(item?.createdAt)}
+                      commentTime={item?.createdAt}
                     />
                   );
                 })}

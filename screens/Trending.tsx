@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import { Feather } from "@expo/vector-icons";
 import convertDate from "../utils/formateDate";
+import AnimatedLottieView from "lottie-react-native";
 
 type TrendingPageProps = {
   navigation: any;
@@ -22,50 +23,7 @@ type TrendingPageProps = {
 
 const Trending = ({ navigation }: TrendingPageProps) => {
   const [TrendingItems, setTrendingItems] = useState([]);
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      title: "LensPlay",
-      headerStyle: { backgroundColor: dark_secondary, elevation: 0 },
-      headerRight: () => (
-        <View
-          style={{
-            paddingHorizontal: 10,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Feather name="search" size={24} color="white" />
-        </View>
-      ),
-      headerLeft: () => (
-        <View
-          style={{
-            paddingHorizontal: 10,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ fontSize: 24, fontWeight: "600", color: "white" }}>
-            LensPlay
-          </Text>
-          <View
-            style={{
-              backgroundColor: "rgba(255,255,255,0.2)",
-              width: "auto",
-              height: 20,
-              marginHorizontal: 5,
-              paddingHorizontal: 5,
-              borderRadius: 10,
-              borderWidth: 1,
-              borderColor: "rgba(255,255,255,0.6)",
-            }}
-          >
-            <Text style={{ color: primary, fontSize: 12 }}>Beta</Text>
-          </View>
-        </View>
-      ),
-    });
-  }, []);
+
   async function getTrendingData() {
     const trendingData = await client.query({
       query: getTrendingPublication,
@@ -80,15 +38,11 @@ const Trending = ({ navigation }: TrendingPageProps) => {
 
   const Tags = [
     {
-      name: "Top Liked",
+      name: "Top Collected",
       active: true,
     },
     {
       name: "Top Commented",
-      active: false,
-    },
-    {
-      name: "Top Collected",
       active: false,
     },
     {
@@ -105,9 +59,10 @@ const Trending = ({ navigation }: TrendingPageProps) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <ScrollView
         style={{
-          height: 36,
-          maxHeight: 36,
-          paddingVertical: 2,
+          height: 60,
+          maxHeight: 60,
+          paddingVertical: 12,
+          paddingHorizontal: 8,
         }}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -117,18 +72,16 @@ const Trending = ({ navigation }: TrendingPageProps) => {
             <View
               key={index}
               style={{
-                marginHorizontal: 8,
-                backgroundColor: `${
-                  item.active ? primary : "rgba(255,255,255,0.1)"
-                }`,
+                marginHorizontal: 4,
+                backgroundColor: `${item.active ? primary : "transparent"}`,
                 width: "auto",
                 height: "auto",
-                paddingHorizontal: 8,
-                // paddingVertical: 4,
+                paddingHorizontal: 16,
+                paddingVertical: 4,
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 20,
-                borderColor: primary,
+                borderColor: `${item.active ? primary : "white"}`,
                 borderWidth: 1,
               }}
             >
@@ -148,28 +101,38 @@ const Trending = ({ navigation }: TrendingPageProps) => {
       <ScrollView>
         <View style={{ marginTop: 10 }}>
           {TrendingItems && TrendingItems.length === 0 ? (
-            <View style={{ height: "50%", alignItems: "center" }}>
-              <Image source={require("../assets/images/no.png")} />
-              <Text
+            <View
+              style={{
+                height: 500,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <AnimatedLottieView
+                autoPlay
                 style={{
-                  fontSize: 24,
-                  textAlign: "center",
-                  fontWeight: "700",
-                  color: "white",
+                  height: "auto",
+                }}
+                source={require("../assets/loader.json")}
+              />
+              <View
+                style={{
+                  alignItems: "center",
                 }}
               >
-                No Videos found
-              </Text>
-              <Text
-                style={{
-                  fontSize: 16,
-                  textAlign: "center",
-                  fontWeight: "400",
-                  color: "grey",
-                }}
-              >
-                Try again later
-              </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: "white",
+                    marginVertical: 5,
+                    marginHorizontal: 15,
+                    fontWeight: "600",
+                    alignSelf: "flex-start",
+                  }}
+                >
+                  Getting videos
+                </Text>
+              </View>
             </View>
           ) : (
             <></>

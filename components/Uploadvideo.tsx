@@ -1,8 +1,20 @@
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { dark_primary } from "../constants/Colors";
+import { launchImageLibrary } from "react-native-image-picker";
 
 const Uploadvideo = () => {
+  async function getimage() {
+    try {
+      const result = await launchImageLibrary({
+        mediaType: "video",
+      });
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <SafeAreaView
       style={{
@@ -13,6 +25,7 @@ const Uploadvideo = () => {
       }}
     >
       <Text
+        onPress={getimage}
         style={{
           fontSize: 24,
           textAlign: "center",

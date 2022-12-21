@@ -7,17 +7,20 @@ import {
   View,
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { dark_primary, dark_secondary, primary } from "../constants/Colors";
-import { Feather } from "@expo/vector-icons";
+import { dark_secondary, primary } from "../constants/Colors";
 import { useFocusEffect } from "@react-navigation/native";
-import { text } from "stream/consumers";
 import { client } from "../apollo/client";
 import searchPublicationQuery from "../apollo/Queries/searchPublicationQuery";
 import VideoCard from "../components/VideoCard";
+import { useQuery } from "@apollo/client";
+import AnimatedLottieView from "lottie-react-native";
+import { EvilIcons } from "@expo/vector-icons";
 const Search = ({ navigation }) => {
   const textRef = useRef(null);
   const [searchPostResult, setSearchPostResult] = useState([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [isfound, setIsfound] = useState(true);
   useFocusEffect(
     useCallback(() => {
       const focus = () => {
@@ -29,24 +32,32 @@ const Search = ({ navigation }) => {
       return focus;
     }, [])
   );
+
   useEffect(() => {
     return setSearchQuery("");
   }, []);
+
   async function getSearchResult() {
+    setIsSearching(true);
     try {
       const result = await client.query({
         query: searchPublicationQuery,
         variables: {
-          query: searchQuery,
+          query: searchQuery.toLowerCase().trim(),
         },
       });
-      console.log(result.data.search);
+      console.log(result);
       
       setSearchPostResult(result?.data?.search?.items);
+      if (searchPostResult.length === 0) {
+        setIsfound(false);
+      }
     } catch (error) {
       if (error instanceof Error) {
         console.log(error);
       }
+    } finally {
+      setIsSearching(false);
     }
   }
 
@@ -54,26 +65,33 @@ const Search = ({ navigation }) => {
     navigation.setOptions({
       headerStyle: { backgroundColor: dark_secondary, elevation: 0 },
       headerLeft: () => (
-        <View style={{ width: "89%", padding: 4 }}>
+        <View
+          style={{
+            width: "88%",
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 4,
+            borderRadius: 20,
+            borderColor: "white",
+            borderWidth: 1,
+            backgroundColor: "rgba(255,255,255,0.04)",
+          }}
+        >
+          <EvilIcons name="search" size={24} color="white" />
           <TextInput
             ref={textRef}
             selectionColor={primary}
             placeholder="Type something to search..."
             placeholderTextColor={"white"}
-            clearButtonMode={"while-editing"}
+            clearButtonMode={"always"}
             onChangeText={(text) => {
               setSearchQuery(text);
             }}
             onSubmitEditing={getSearchResult}
             style={{
               width: "100%",
-              paddingHorizontal: 10,
-              paddingVertical: 4,
-              borderRadius: 20,
+              marginLeft: 4,
               color: "white",
-              borderColor: primary,
-              borderWidth: 1,
-              backgroundColor: "rgba(255,255,255,0.04)",
             }}
           />
         </View>
@@ -83,18 +101,49 @@ const Search = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_secondary }}>
       <ScrollView>
-        <Text style={{
-          paddingHorizontal:5,
-          fontSize: 20,
-          marginHorizontal:8,
-          fontWeight: "500",
-          color:"white"
-        }} >Here's what we found</Text>
+        {!!isSearching && (
+          <>
+            <AnimatedLottieView
+              autoPlay
+              style={{
+                height: "auto",
+              }}
+              source={require("../assets/loader.json")}
+            />
+            <View
+              style={{
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: "white",
+                  marginVertical: 5,
+                  marginHorizontal: 15,
+                  fontWeight: "600",
+                  alignSelf: "flex-start",
+                }}
+              >
+                Getting videos
+              </Text>
+            </View>
+          </>
+        )}
         {searchPostResult.length > 0 ? (
           <>
+            <Text
+              style={{
+                paddingHorizontal: 5,
+                fontSize: 20,
+                marginHorizontal: 8,
+                fontWeight: "500",
+                color: "white",
+              }}
+            >
+              Here's what we found
+            </Text>
             {searchPostResult.map((item, index) => {
-              console.log(item?.metadata?.media[0]?.original?.url);
-              
               return (
                 <VideoCard
                   key={index}
@@ -110,7 +159,37 @@ const Search = ({ navigation }) => {
             })}
           </>
         ) : (
-          <></>
+          <>
+            {!!!isfound && (
+              <>
+                <AnimatedLottieView
+                  autoPlay
+                  style={{
+                    height: "auto",
+                  }}
+                  source={require("../assets/notfound.json")}
+                />
+                <View
+                  style={{
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      color: "white",
+                      marginVertical: 5,
+                      marginHorizontal: 15,
+                      fontWeight: "600",
+                      textAlign: "center",
+                    }}
+                  >
+                    No videos found 😔
+                  </Text>
+                </View>
+              </>
+            )}
+          </>
         )}
       </ScrollView>
     </SafeAreaView>

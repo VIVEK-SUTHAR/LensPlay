@@ -1,28 +1,22 @@
 import * as React from "react";
 import {
   Image,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
-  StyleSheet,
   Text,
-  TouchableOpacity,
+  ToastAndroid,
   View,
 } from "react-native";
 import { useEffect, useState } from "react";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
-import {
-  dark_primary,
-  dark_secondary,
-  primary,
-  secondary,
-} from "../constants/Colors";
-import MyVideos from "../components/MyVideos";
+import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import useStore from "../store/Store";
 import getPublications from "../apollo/Queries/getPublications";
-import { Feather } from "@expo/vector-icons";
 import VideoCard from "../components/VideoCard";
 import convertDate from "../utils/formateDate";
+import getIPFSLink from "../utils/getIPFSLink";
 
 const Profile = ({ navigation }: { navigation: any }) => {
   const [profile, setProfile] = useState<{}>({});
@@ -31,37 +25,8 @@ const Profile = ({ navigation }: { navigation: any }) => {
   const store = useStore();
   useEffect(() => {
     getProfleInfo();
-  }, []);
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      title: "LensPlay",
-      headerStyle: { backgroundColor: dark_secondary, elevation: 0 },
-      headerRight: () => (
-        <View
-          style={{
-            paddingHorizontal: 10,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Feather name="search" size={24} color="white" />
-        </View>
-      ),
-      headerLeft: () => (
-        <View
-          style={{
-            paddingHorizontal: 10,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ fontSize: 24, fontWeight: "600", color: "white" }}>
-            {profile?.profile?.name || "LensPlay"}
-          </Text>
-        </View>
-      ),
-    });
-  }, []);
+  }, [navigation]);
+
   const getProfleInfo = async () => {
     try {
       const profiledata = await client.query({
@@ -70,8 +35,6 @@ const Profile = ({ navigation }: { navigation: any }) => {
           id: store.profileId,
         },
       });
-      console.log(store.profileId);
-
       setProfile(profiledata.data);
       store.setProfiledata(profiledata.data);
       const getUserVideos = await client.query({
@@ -80,16 +43,28 @@ const Profile = ({ navigation }: { navigation: any }) => {
           id: store.profileId,
         },
       });
-
       setallVideos(getUserVideos.data.publications.items);
     } catch (error) {
       console.log(error);
     }
   };
-
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    getProfleInfo().then(() => {
+      if (profile == profile) {
+        ToastAndroid.show("Profile is Up-to date", ToastAndroid.SHORT);
+      }
+      setRefreshing(false);
+    });
+  }, []);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} colors={[primary]} progressBackgroundColor={dark_secondary} onRefresh={onRefresh} />
+        }
+      >
         <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
           <View
             style={{
@@ -99,7 +74,9 @@ const Profile = ({ navigation }: { navigation: any }) => {
             }}
           >
             <Image
-              source={{ uri: profile?.profile?.coverPicture?.original?.url }}
+              source={{
+                uri: getIPFSLink(profile?.profile?.coverPicture?.original?.url),
+              }}
               style={{
                 height: "100%",
                 width: "100%",
@@ -108,20 +85,17 @@ const Profile = ({ navigation }: { navigation: any }) => {
               }}
             />
           </View>
-
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "space-between",
+              justifyContent: "center",
               width: "100%",
               marginTop: "-10%",
             }}
           >
             <Image
               source={{
-                uri: `https://ipfs.io/ipfs/${
-                  profile?.profile?.picture?.original?.url.split("//")[1]
-                }`,
+                uri: getIPFSLink(profile?.profile?.picture?.original?.url),
               }}
               style={{
                 height: 100,
@@ -130,113 +104,57 @@ const Profile = ({ navigation }: { navigation: any }) => {
                 borderRadius: 50,
                 borderWidth: 3,
                 borderColor: dark_primary,
+                backgroundColor: primary,
               }}
             />
-            <TouchableOpacity activeOpacity={0.8}>
-              <View
-                style={{
-                  // backgroundColor: primary,
-                  borderRadius: 50,
-                  borderColor: primary,
-                  borderWidth: 1,
-                  paddingHorizontal: 24,
-                  paddingVertical: 8,
-                  marginVertical: 10,
-                }}
-              >
-                <Text
-                  style={{
-                    color: primary,
-                    fontSize: 16,
-                    fontWeight: "bold",
-                    textAlign: "center",
-                  }}
-                >
-                  Subscribe
-                </Text>
-              </View>
-            </TouchableOpacity>
           </View>
-
-          <View style={{ padding: 4 }}>
+          <View style={{ padding: 4, alignItems: "center" }}>
             <Text
               style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
               numberOfLines={1}
             >
               {profile?.profile?.name}
             </Text>
-            <Text style={{ fontSize: 16, color: "white" }}>
+            <Text style={{ fontSize: 12, color: "white", marginTop: 2 }}>
+              @{profile?.profile?.handle} &middot;{" "}
+              {profile?.profile?.stats?.totalFollowers} Subscribers &middot;{" "}
+              {profile?.profile?.stats?.totalPosts} Videos
+            </Text>
+            <Text style={{ fontSize: 14, color: "gray", textAlign: "center" }}>
               {profile?.profile?.bio}
             </Text>
           </View>
-
-          <View
-            style={{
-              width: "100%",
-              borderRadius: 20,
-              paddingVertical: 5,
-              // backgroundColor: primary,
-              flexDirection: "row",
-              justifyContent: "space-evenly",
-              marginTop: 10,
-              borderWidth: 1,
-              borderColor: primary,
-            }}
-          >
+          {/* <TouchableOpacity activeOpacity={0.8}>
             <View
               style={{
-                width: "50%",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRightWidth: 1,
-                borderRightColor: primary,
+                backgroundColor: "white",
+                borderRadius: 50,
+                paddingVertical: 8,
+                marginVertical: 16,
                 flexDirection: "row",
+                justifyContent: "center",
               }}
             >
-              <Text style={{ fontSize: 20, color: primary }}>
-                {profile?.profile?.stats?.totalPosts}
-              </Text>
               <Text
                 style={{
+                  color: "black",
                   fontSize: 16,
-                  marginLeft: 10,
                   fontWeight: "bold",
-                  color: primary,
+                  textAlign: "center",
+                  marginHorizontal: 4,
                 }}
               >
-                Post
+                Edit Channel
               </Text>
+              <Feather name="edit-3" size={24} />
             </View>
-            <View
-              style={{
-                width: "50%",
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "row",
-              }}
-            >
-              <Text style={{ fontSize: 20, color: primary }}>
-                {profile?.profile?.stats?.totalFollowers}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 16,
-                  marginLeft: 10,
-                  fontWeight: "bold",
-                  color: primary,
-                }}
-              >
-                Subscribers
-              </Text>
-            </View>
-          </View>
+          </TouchableOpacity> */}
 
-          <View style={{ paddingHorizontal: 4, paddingVertical: 10 }}>
+          <View style={{ paddingVertical: 10 }}>
             <Text
               style={{
                 fontSize: 20,
                 fontWeight: "700",
-                marginVertical: 20,
                 color: "white",
               }}
             >
@@ -259,17 +177,10 @@ const Profile = ({ navigation }: { navigation: any }) => {
                 );
               }
             })}
-            {/* <MyVideos navigation={navigation} />
-          <MyVideos navigation={navigation} />
-          <MyVideos navigation={navigation} />
-          <MyVideos navigation={navigation} /> */}
           </View>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
-
 export default Profile;
-
-const styles = StyleSheet.create({});

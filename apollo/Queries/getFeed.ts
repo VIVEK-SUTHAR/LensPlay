@@ -2,7 +2,14 @@ import { gql } from "@apollo/client";
 
 export default gql`
   query Feed($id: ProfileId!) {
-    feed(request: { profileId: $id, metadata: { mainContentFocus: VIDEO } }) {
+    feed(
+      request: {
+        profileId: $id
+        metadata: { mainContentFocus: VIDEO }
+        limit: 50
+        sources:["lenstube"]
+      }
+    ) {
       items {
         root {
           ... on Post {

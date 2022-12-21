@@ -6,19 +6,21 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { primary, secondary } from "../constants/Colors";
 import useStore from "../store/Store";
+import getIPFSLink from "../utils/getIPFSLink";
+import Drawer from "./UI/Drawer";
+import { useState } from "react";
 
 type videoPageProp = {
   navigation: any;
   title: string;
   banner: string;
-  date: string;
   avatar: string;
   uploadedBy: string;
   playbackId: string;
   id: number;
-  comments: [];
+  stats: {};
+  date: string;
 };
 
 const VideoCard = ({
@@ -29,8 +31,8 @@ const VideoCard = ({
   avatar,
   uploadedBy,
   playbackId,
+  stats,
   date,
-  comments,
 }: videoPageProp) => {
   const store = useStore();
   const setCurrentIndex = store.setCurrentIndex;
@@ -58,29 +60,28 @@ const VideoCard = ({
           playbackId: playbackId,
           avatar: avatar,
           banner: banner,
-          date: date,
+          stats: stats,
         });
       }}
     >
       <View
         style={{
-          marginTop: 1,
-          borderBottomColor: "rgba(255,255,255,0.08)",
-          borderBottomWidth: 1,
+          margin: 10,
+          backgroundColor: "rgba(255, 255, 255, 0.08)",
+          borderRadius: 10,
         }}
       >
-        <View style={{ height: 150 }}>
+        <View style={{ height: 200 }}>
           <Image
             source={{
               uri:
-                BANNER_LINK ||
+                getIPFSLink(banner) ||
                 "https://assets.lenstube.xyz/images/coverGradient.jpeg",
             }}
             style={{
               height: "100%",
               width: "100%",
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
+              borderRadius: 10,
               resizeMode: "contain",
             }}
           />
@@ -90,13 +91,15 @@ const VideoCard = ({
             padding: 10,
             flexDirection: "row",
             justifyContent: "space-between",
-            alignItems: "center",
-            // backgroundColor: primary,
+            alignItems: "flex-start",
           }}
         >
           <View style={{ flex: 0.95 }}>
-            <Text style={{ fontSize: 16, fontWeight: "bold", color: "white" }}>
-              {title}{" "}
+            <Text
+              style={{ fontSize: 16, fontWeight: "700", color: "white" }}
+              numberOfLines={2}
+            >
+              {title}
             </Text>
             <Text style={{ fontSize: 12, color: "gray" }}>
               By {uploadedBy} on {date}
@@ -105,7 +108,7 @@ const VideoCard = ({
           <View style={{ height: 40, width: 40 }}>
             <Image
               source={{
-                uri: AVATAR_LINK,
+                uri: getIPFSLink(avatar),
               }}
               style={{ height: "100%", width: "100%", borderRadius: 500 }}
             />
