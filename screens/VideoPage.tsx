@@ -13,7 +13,7 @@ import {
   ToastAndroid,
 } from "react-native";
 import { AntDesign, Feather, FontAwesome, MaterialCommunityIcons, MaterialIcons, Octicons } from "@expo/vector-icons";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { dark_primary, primary } from "../constants/Colors";
 import useStore from "../store/Store";
 import { useState } from "react";
@@ -28,8 +28,7 @@ import convertDate from "../utils/formateDate";
 import freeCollectPublication from "../api/freeCollect";
 import getProxyActionStatus from "../api/getProxyActionStatus";
 import VideoPlayer from "expo-video-player";
-
-
+import Avatar from "../components/UI/Avatar";
 
 const VideoPage = ({ route }) => {
   const store = useStore();
@@ -39,11 +38,14 @@ const VideoPage = ({ route }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [likes, setLikes] = useState(route.params.stats?.totalUpvotes);
   const [descOpen, setDescOpen] = useState(false);
+  const [inFullscreen, setInFullsreen] = useState(false)
+
   const playbackId = route.params.playbackId;
 
   useEffect(() => {
     fetchComments();
   }, []);
+
   async function fetchComments() {
     const data = await client.query({
       query: getComments,
@@ -53,7 +55,7 @@ const VideoPage = ({ route }) => {
     });
     setComments(data.data.publications.items);
   }
-  console.log(route.params.id);
+
   const STATS = route.params.stats;
   const onShare = async () => {
     try {
@@ -66,7 +68,9 @@ const VideoPage = ({ route }) => {
       }
     }
   };
+
   const [ismodalopen, setIsmodalopen] = useState(false);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <StatusBar style="light" backgroundColor={dark_primary} />
@@ -77,8 +81,17 @@ const VideoPage = ({ route }) => {
           videoBackgroundColor: "transparent",
           controlsBackgroundColor: "transparent",
         }}
+        // fullscreen={{
+        //   enterFullscreen: () => {
+        //     setInFullsreen(!inFullscreen)
+        //   },
+        //   exitFullscreen: () => {
+        //     setInFullsreen(!inFullscreen)
+        //   },
+        //   inFullscreen,
+        // }}
         textStyle={{
-          fontSize: 18,
+          fontSize: 12,
           fontWeight: "600",
         }}
         activityIndicator={{
@@ -274,24 +287,27 @@ const VideoPage = ({ route }) => {
             }}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <View style={{ height: 40, width: 40 }}>
-                <Image
-                  source={{
-                    uri: getIPFSLink(route.params.avatar),
+              <Avatar src={getIPFSLink(route.params.avatar)} width={40} height={40} />
+              <View style={{ marginHorizontal: 8 }}>
+                <Text
+                  style={{
+                    color: "white",
+                    fontSize: 16,
+                    fontWeight: "500",
                   }}
-                  style={{ height: "100%", width: "100%", borderRadius: 500 }}
-                />
+                >
+                  {route.params.uploadedBy}
+                </Text>
+                <Text
+                  style={{
+                    color: "gray",
+                    fontSize: 12,
+                    fontWeight: "500",
+                  }}
+                >
+                  @{route.params.uploadedBy}
+                </Text>
               </View>
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 16,
-                  fontWeight: "500",
-                  marginHorizontal: 8,
-                }}
-              >
-                {route.params.uploadedBy}
-              </Text>
             </View>
             <TouchableWithoutFeedback
               onPress={() => {
@@ -301,8 +317,7 @@ const VideoPage = ({ route }) => {
               <View
                 style={{
                   marginHorizontal: 4,
-                  paddingHorizontal: 16,
-                  paddingVertical: 8,
+                  paddingHorizontal: 24,
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
@@ -313,7 +328,7 @@ const VideoPage = ({ route }) => {
                 <Text
                   style={{
                     fontSize: 16,
-                    fontWeight: "500",
+                    fontWeight: "700",
                   }}
                 >
                   Subscribe

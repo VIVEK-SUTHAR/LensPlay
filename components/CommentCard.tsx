@@ -40,11 +40,11 @@ const CommentCard = ({
         />
       </View>
       <View style={{ flex: 1 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={{ fontSize: 12, color: 'gray' }}>{username}&middot;</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Text style={{ fontSize: 12, color: 'gray' }}>{username}</Text>
           <Text style={{ fontSize: 10, color: "gray" }}>{getDifference(commentTime)}</Text>
         </View>
-        <Text style={{ fontSize: 12, color: "white", fontWeight: '600' }}>{commentText}</Text>
+        <Text style={{ fontSize: 14, color: "white", fontWeight: '600' }}>{commentText}</Text>
       </View>
     </View>
   );

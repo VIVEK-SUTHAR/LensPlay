@@ -250,9 +250,7 @@ const Login = ({ navigation }: { navigation: any }) => {
               </View>
             );
           }}
-          />
-          <Paginator data={data} scrollX={scrollX}/>
-
+        />
         {/* <Image
             source={require("../assets/images/lensplay.png")}
             style={{
@@ -267,7 +265,7 @@ const Login = ({ navigation }: { navigation: any }) => {
           <>
             <TouchableOpacity
               style={{
-                width: "90%",
+                width: "80%",
               }}
               onPress={async () => {
                 await logInWithLens();
@@ -284,19 +282,10 @@ const Login = ({ navigation }: { navigation: any }) => {
                   alignItems: "center",
                 }}
               >
-                <Image
-                  source={require("../assets/images/lens.png")}
-                  style={{
-                    height: 35,
-                    width: 35,
-                    resizeMode: "contain",
-                    marginHorizontal: 4,
-                  }}
-                />
                 <Text
                   style={{
                     color: "black",
-                    fontSize: 24,
+                    fontSize: 20,
                     fontWeight: "bold",
                     textAlign: "center",
                   }}
@@ -305,7 +294,7 @@ const Login = ({ navigation }: { navigation: any }) => {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={{ width: "90%" }} onPress={killSession}>
+            <TouchableOpacity style={{ width: "80%" }} onPress={killSession}>
               <View
                 style={{
                   backgroundColor: "white",
@@ -317,7 +306,7 @@ const Login = ({ navigation }: { navigation: any }) => {
                 <Text
                   style={{
                     color: "black",
-                    fontSize: 24,
+                    fontSize: 20,
                     fontWeight: "bold",
                     textAlign: "center",
                   }}
@@ -355,6 +344,8 @@ const Login = ({ navigation }: { navigation: any }) => {
             </View>
           </TouchableOpacity>
         )}
+
+        <Paginator data={data} scrollX={scrollX} />
       </View>
     </SafeAreaView>
   );
