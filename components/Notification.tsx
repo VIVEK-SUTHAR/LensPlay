@@ -16,6 +16,8 @@ const Navigation = ({ navigation }) => {
     });
   }, []);
 
+  console.log(allNotifications);
+
   return (
     <SafeAreaView
       style={{
@@ -34,7 +36,7 @@ const Navigation = ({ navigation }) => {
               />
             );
           })}
-        {allNotifications?.length === 0 && (
+        {allNotifications === undefined && (
           <View
             style={{
               height: 500,
