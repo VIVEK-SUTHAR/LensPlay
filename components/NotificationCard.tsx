@@ -1,16 +1,11 @@
 import {
   AntDesign,
   Entypo,
-  Feather,
-  Ionicons,
-  MaterialIcons,
-  SimpleLineIcons,
 } from "@expo/vector-icons";
 import React, { FC } from "react";
-import { Image, Text, TextStyle, View } from "react-native";
-import { dark_primary, dark_secondary, primary } from "../constants/Colors";
+import { Image, Text, View } from "react-native";
+import { dark_secondary } from "../constants/Colors";
 import formatAddress from "../utils/formatAddress";
-import convertDate from "../utils/formateDate";
 import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
 
@@ -28,19 +23,16 @@ const NotificationCard: FC<NotificationsProps> = ({
   type,
   ...rest
 }) => {
-  console.log(notification);
   const getNotificationIcon = () => {
     switch (type) {
       case "NewReactionNotification":
-        return <AntDesign name="heart" size={26} color={primary} />;
+        return <AntDesign name="heart" size={24} color={"#E60073"} />;
       case "NewFollowerNotification":
-        return <AntDesign name="adduser" size={26} color={primary} />;
+        return <AntDesign name="adduser" size={24} color={"#9a76e0"} />;
       case "NewCollectNotification":
-        return (
-          <MaterialIcons name="video-collection" size={26} color={primary} />
-        );
+        return <Entypo name="folder-video" size={24} color={"coral"} />;
       case "NewMirrorNotification":
-        return <AntDesign name="retweet" size={26} color={primary} />;
+        return <AntDesign name="retweet" size={24} color={"#6bd841"} />;
     }
   };
 
@@ -64,13 +56,15 @@ const NotificationCard: FC<NotificationsProps> = ({
                 }}
               />
             </View>
-            <Text style={{ color: "white", fontSize: 14 }}>
-              {notification?.wallet?.defaultProfile?.handle ||
-                formatAddress(notification?.wallet?.address)}{" "}
+            <Text style={{ color: "gray", fontSize: 14 }}>
+              <Text style={{ color: "white", fontWeight: "500" }}>
+                {notification?.wallet?.defaultProfile?.handle ||
+                  formatAddress(notification?.wallet?.address)}{" "}
+              </Text>
               followed you
               <Text style={{ fontSize: 10, color: "gray" }}>
                 {" "}
-                &middot; {getDifference(notification?.createdAt)}
+                {getDifference(notification?.createdAt)}
               </Text>
             </Text>
           </View>
@@ -88,13 +82,15 @@ const NotificationCard: FC<NotificationsProps> = ({
                 style={{ height: "100%", width: "100%", borderRadius: 500 }}
               />
             </View>
-            <Text style={{ color: "white", fontSize: 14 }}>
-              {notification?.wallet?.defaultProfile?.handle ||
-                formatAddress(notification?.wallet?.address)}{" "}
+            <Text style={{ color: "gray", fontSize: 14 }}>
+              <Text style={{ color: "white", fontWeight: "500" }}>
+                {notification?.wallet?.defaultProfile?.handle ||
+                  formatAddress(notification?.wallet?.address)}{" "}
+              </Text>
               collected your post
               <Text style={{ fontSize: 10, color: "gray" }}>
                 {" "}
-                &middot; {getDifference(notification?.createdAt)}
+                {getDifference(notification?.createdAt)}
               </Text>
             </Text>
           </View>
@@ -112,13 +108,15 @@ const NotificationCard: FC<NotificationsProps> = ({
                 style={{ height: "100%", width: "100%", borderRadius: 500 }}
               />
             </View>
-            <Text style={{ color: "white", fontSize: 14 }}>
-              {notification?.profile?.handle ||
-                formatAddress(notification?.wallet?.address)}{" "}
+            <Text style={{ color: "gray", fontSize: 14 }}>
+              <Text style={{ color: "white", fontWeight: "600" }}>
+                {notification?.profile?.handle?.split(".")[0] ||
+                  formatAddress(notification?.wallet?.address)}{" "}
+              </Text>
               mirrored your post
               <Text style={{ fontSize: 10, color: "gray" }}>
                 {" "}
-                &middot; {getDifference(notification?.createdAt)}
+                {getDifference(notification?.createdAt)}
               </Text>
             </Text>
             <View>
@@ -141,9 +139,11 @@ const NotificationCard: FC<NotificationsProps> = ({
                 style={{ height: "100%", width: "100%", borderRadius: 500 }}
               />
             </View>
-            <Text style={{ color: "white", fontSize: 14 }}>
-              {notification?.profile?.handle ||
-                formatAddress(notification?.wallet?.address)}{" "}
+            <Text style={{ color: "gray", fontSize: 14 }}>
+              <Text style={{ color: "white", fontWeight: "600" }}>
+                {notification?.profile?.handle ||
+                  formatAddress(notification?.wallet?.address)}{" "}
+              </Text>
               liked your{" "}
               {notification?.publication?.__typename == "Post"
                 ? "post"
@@ -152,7 +152,7 @@ const NotificationCard: FC<NotificationsProps> = ({
                 : "mirror"}
               <Text style={{ fontSize: 10, color: "gray" }}>
                 {" "}
-                &middot; {getDifference(notification?.createdAt)}
+                {getDifference(notification?.createdAt)}
               </Text>
             </Text>
             <View>
