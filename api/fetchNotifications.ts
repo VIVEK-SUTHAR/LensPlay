@@ -73,6 +73,7 @@ const NOTIFICATIONS_QUERY = `
   fragment CommentWithCommentedPublicationFields on Comment {
     ...CompactComment
     commentOn {
+      __typename
       ... on Post {
         ...CompactPost
       }

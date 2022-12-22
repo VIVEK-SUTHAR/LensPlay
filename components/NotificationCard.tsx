@@ -1,4 +1,4 @@
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { AntDesign, Entypo, EvilIcons } from "@expo/vector-icons";
 import React, { FC } from "react";
 import { Image, Text, View } from "react-native";
 import { dark_secondary } from "../constants/Colors";
@@ -31,6 +31,8 @@ const NotificationCard: FC<NotificationsProps> = ({
         return <Entypo name="folder-video" size={24} color={"coral"} />;
       case "NewMirrorNotification":
         return <AntDesign name="retweet" size={24} color={"#6bd841"} />;
+      case "NewCommentNotification":
+        return <EvilIcons name="comment" size={28} color={"#1d9bf0"} />;
     }
   };
 
@@ -127,7 +129,7 @@ const NotificationCard: FC<NotificationsProps> = ({
                 : notification?.publication?.__typename == "Comment"
                 ? "comment"
                 : "mirrored post"}
-              <Text style={{ fontSize: 10, color: "gray", }}>
+              <Text style={{ fontSize: 10, color: "gray" }}>
                 {" "}
                 {getDifference(notification?.createdAt)}
               </Text>
@@ -135,6 +137,38 @@ const NotificationCard: FC<NotificationsProps> = ({
             <View>
               <Text style={{ color: "grey", fontSize: 12 }}>
                 {notification?.publication?.metadata?.description}
+              </Text>
+            </View>
+          </View>
+        );
+      case "NewCommentNotification":
+        console.log(notification?.comment?.commentOn?.__typename);
+        return (
+          <View>
+            <Avatar
+              src={notification?.profile?.picture?.original?.url}
+              height={35}
+              width={35}
+            />
+            <Text style={{ color: "gray", fontSize: 14 }}>
+              <Text style={{ color: "white", fontWeight: "600" }}>
+                {notification?.profile?.handle?.split(".")[0] ||
+                  formatAddress(notification?.wallet?.address)}{" "}
+              </Text>
+              commented on your{" "}
+              {notification?.comment?.commentOn?.__typename === "Post"
+                ? "post"
+                : notification?.comment?.commentOn?.__typename === "Comment"
+                ? "comment"
+                : "mirror"}
+              <Text style={{ fontSize: 10, color: "gray" }}>
+                {" "}
+                {getDifference(notification?.createdAt)}
+              </Text>
+            </Text>
+            <View>
+              <Text style={{ color: "grey", fontSize: 12 }}>
+                {notification?.comment?.metadata?.description}
               </Text>
             </View>
           </View>

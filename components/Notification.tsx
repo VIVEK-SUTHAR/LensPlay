@@ -21,6 +21,8 @@ const Navigation = () => {
     setRefreshing(true);
     try {
       const data = await fetchNotifications(store.profileId, store.accessToken);
+      console.log(data);
+      
       if (data == allNotifications) {
         ToastAndroid.show("No new notifications", ToastAndroid.SHORT);
       } else {

@@ -52,6 +52,7 @@ const VideoPage = ({ route }) => {
   const [inFullscreen, setInFullsreen] = useState(false);
 
   const playbackId = route.params.playbackId;
+  console.log(store.accessToken);
 
   useEffect(() => {
     fetchComments();
@@ -226,18 +227,20 @@ const VideoPage = ({ route }) => {
             <TouchableOpacity
               style={{ width: "90%", marginVertical: 0 }}
               onPress={async () => {
-                // const res = await freeCollectPublication(
-                //   route.params.id,
-                //   store.accessToken
-                // );
-                // console.log(res);
-                // if (res?.proxyAction) {
-                //   console.log(res?.proxyAction);
-                //   const status = await getProxyActionStatus(
-                //     res?.proxyAction,
-                //     store.accessToken
-                //   );
-                // }
+                const res = await freeCollectPublication(
+                  route.params.id,
+                  store.accessToken
+                );
+                console.log(res);
+                if (res?.proxyAction) {
+                  setIsmodalopen(false);
+                  console.log(res?.proxyAction);
+                  ToastAndroid.show("Video collected",ToastAndroid.SHORT)
+                  const status = await getProxyActionStatus(
+                    res?.proxyAction,
+                    store.accessToken
+                    );
+                }
               }}
             >
               <View

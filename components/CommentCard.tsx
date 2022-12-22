@@ -22,7 +22,7 @@ const CommentCard = ({
     <View
       style={{
         flexDirection: "row",
-        backgroundColor: 'black',
+        backgroundColor: "black",
         padding: 8,
         marginVertical: 4,
         borderRadius: 8,
@@ -42,11 +42,23 @@ const CommentCard = ({
         />
       </View>
       <View style={{ flex: 1 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Heading title={username} style={{ fontSize: 12, color: 'gray' }}/>
-          <SubHeading title={getDifference(commentTime)} style={{ fontSize: 10, color: "gray" }}/>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Heading title={username} style={{ fontSize: 12, color: "gray" }} />
+          <SubHeading
+            title={getDifference(commentTime)}
+            style={{ fontSize: 10, color: "gray" }}
+          />
         </View>
-        <SubHeading title={commentText} style={{ fontSize: 14, color: "white", fontWeight: '600' }}/>
+        <SubHeading
+          title={commentText}
+          style={{ fontSize: 14, color: "white", fontWeight: "600" }}
+        />
       </View>
     </View>
   );
