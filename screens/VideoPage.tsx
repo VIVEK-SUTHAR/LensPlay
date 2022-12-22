@@ -40,6 +40,7 @@ import VideoPlayer from "expo-video-player";
 import Avatar from "../components/UI/Avatar";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
+import createSubScribe from "../api/freeSubScribe";
 
 const VideoPage = ({ route }) => {
   const store = useStore();
@@ -52,7 +53,8 @@ const VideoPage = ({ route }) => {
   const [inFullscreen, setInFullsreen] = useState(false);
 
   const playbackId = route.params.playbackId;
-  console.log(store.accessToken);
+  // console.log(store.accessToken);
+  console.log(route.params.id.split("-")[0]);
 
   useEffect(() => {
     fetchComments();
@@ -235,11 +237,11 @@ const VideoPage = ({ route }) => {
                 if (res?.proxyAction) {
                   setIsmodalopen(false);
                   console.log(res?.proxyAction);
-                  ToastAndroid.show("Video collected",ToastAndroid.SHORT)
+                  ToastAndroid.show("Video collected", ToastAndroid.SHORT);
                   const status = await getProxyActionStatus(
                     res?.proxyAction,
                     store.accessToken
-                    );
+                  );
                 }
               }}
             >
@@ -319,8 +321,31 @@ const VideoPage = ({ route }) => {
               </View>
             </View>
             <TouchableWithoutFeedback
-              onPress={() => {
-                setIsmodalopen(true);
+              onPress={async () => {
+                // setIsmodalopen(true);
+                try {
+                  const data = await createSubScribe(
+                    route.params.id.split("-")[0],
+                    store.accessToken
+                  );
+                  if (data.data === null) {
+                    console.log(data.errors[0].message);
+
+                    ToastAndroid.show(
+                      data.errors[0].message,
+                      ToastAndroid.SHORT
+                    );
+                  }
+                  if (data.data.proxyAction) {
+                    ToastAndroid.show(
+                      "Subscribed Successfully",
+                      ToastAndroid.SHORT
+                    );
+                  }
+                } catch (error) {
+                  if (error instanceof Error) {
+                  }
+                }
               }}
             >
               <View

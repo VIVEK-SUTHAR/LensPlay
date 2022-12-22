@@ -149,7 +149,7 @@ const Login = ({ navigation }: { navigation: any }) => {
     } catch (e) {
       if (e instanceof Error) {
         //yaha sb krna
-      } 
+      }
     }
   };
   React.useEffect(() => {
@@ -282,13 +282,15 @@ const Login = ({ navigation }: { navigation: any }) => {
                   alignItems: "center",
                 }}
               >
-                <SubHeading  title="Login with Lens" style={{
+                <SubHeading
+                  title="Login with Lens"
+                  style={{
                     color: "black",
                     fontSize: 20,
                     fontWeight: "bold",
                     textAlign: "center",
                   }}
-                 />
+                />
               </View>
             </TouchableOpacity>
             <TouchableOpacity style={{ width: "80%" }} onPress={killSession}>
@@ -300,12 +302,15 @@ const Login = ({ navigation }: { navigation: any }) => {
                   marginVertical: 10,
                 }}
               >
-                <SubHeading title="Disconnect Wallet" style={{
+                <SubHeading
+                  title="Disconnect Wallet"
+                  style={{
                     color: "black",
                     fontSize: 20,
                     fontWeight: "bold",
                     textAlign: "center",
-                  }} />
+                  }}
+                />
               </View>
             </TouchableOpacity>
           </>
@@ -324,12 +329,15 @@ const Login = ({ navigation }: { navigation: any }) => {
                 marginVertical: 30,
               }}
             >
-              <SubHeading title="Connect Wallet" style={{
+              <SubHeading
+                title="Connect Wallet"
+                style={{
                   color: "black",
                   fontSize: 24,
                   fontWeight: "600",
                   textAlign: "center",
-                }}/>
+                }}
+              />
             </View>
           </TouchableOpacity>
         )}

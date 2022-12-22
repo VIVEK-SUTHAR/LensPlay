@@ -47,7 +47,7 @@ const Search = ({ navigation }) => {
         },
       });
       console.log(result);
-      
+
       setSearchPostResult(result?.data?.search?.items);
       if (searchPostResult.length === 0) {
         setIsfound(false);
