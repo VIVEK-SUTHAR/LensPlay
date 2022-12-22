@@ -41,38 +41,38 @@ const VideoCard = ({
   const AVATAR_LINK = avatar?.includes("https://arweave.net")
     ? avatar
     : avatar?.includes("ipfs://")
-      ? `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`
-      : avatar;
+    ? `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`
+    : avatar;
 
   const BANNER_LINK = banner?.includes("https://arweave.net")
     ? banner
     : banner?.includes("ipfs://")
-      ? `https://ipfs.io/ipfs/${banner?.split("//")[1]}`
-      : banner;
+    ? `https://ipfs.io/ipfs/${banner?.split("//")[1]}`
+    : banner;
 
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        setCurrentIndex(id);
-        navigation.navigate("VideoPage", {
-          title: title,
-          id: id,
-          uploadedBy: uploadedBy,
-          playbackId: playbackId,
-          avatar: avatar,
-          banner: banner,
-          stats: stats,
-        });
+    <View
+      style={{
+        margin: 10,
+        backgroundColor: "rgba(255, 255, 255, 0.08)",
+        borderRadius: 10,
       }}
     >
-      <View
-        style={{
-          margin: 10,
-          backgroundColor: "rgba(255, 255, 255, 0.08)",
-          borderRadius: 10,
-        }}
-      >
-        <View style={{ height: 200 }}>
+      <View style={{ height: 200 }}>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setCurrentIndex(id);
+            navigation.navigate("VideoPage", {
+              title: title,
+              id: id,
+              uploadedBy: uploadedBy,
+              playbackId: playbackId,
+              avatar: avatar,
+              banner: banner,
+              stats: stats,
+            });
+          }}
+        >
           <Image
             source={{
               uri:
@@ -86,7 +86,17 @@ const VideoCard = ({
               resizeMode: "contain",
             }}
           />
-        </View>
+        </TouchableWithoutFeedback>
+      </View>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          console.log();
+
+          navigation.navigate("Channel", {
+            profileId: id,
+          });
+        }}
+      >
         <View
           style={{
             padding: 10,
@@ -96,13 +106,20 @@ const VideoCard = ({
           }}
         >
           <View style={{ flex: 0.95 }}>
-            <Heading title={title} style={{ fontSize: 16, fontWeight: "700", color: "white" }}/>
-            <SubHeading title={`By ${uploadedBy} on ${date}`} style={{ fontSize: 12, color: "gray" }}/>
+            <Heading
+              title={title}
+              style={{ fontSize: 16, fontWeight: "700", color: "white" }}
+            />
+            <SubHeading
+              title={`By ${uploadedBy} on ${date}`}
+              style={{ fontSize: 12, color: "gray" }}
+            />
           </View>
-          <Avatar src={getIPFSLink(avatar)} height={40} width={40}/> 
+
+          <Avatar src={getIPFSLink(avatar)} height={40} width={40} />
         </View>
-      </View>
-    </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
+    </View>
   );
 };
 
