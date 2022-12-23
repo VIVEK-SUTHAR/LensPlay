@@ -183,6 +183,8 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
                     avatar={item?.profile?.picture?.original?.url}
                     playbackId={item?.metadata?.media[0]?.original?.url}
                     uploadedBy={item?.profile?.name}
+                    profileId={item?.profile?.id}
+                    stats={item?.stats}
                   />
                 );
               }
