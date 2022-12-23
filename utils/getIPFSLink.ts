@@ -5,7 +5,6 @@ function getIPFSLink(url: string): string {
     : url?.includes("ipfs://")
     ? `https://ipfs.io/ipfs/${url?.split("//")[1]}`
     : url;
-
   return LINK;
 }
 export default getIPFSLink;

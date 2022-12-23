@@ -24,6 +24,7 @@ import getPublications from "../apollo/Queries/getPublications";
 import Avatar from "../components/UI/Avatar";
 import convertDate from "../utils/formateDate";
 import { STATIC_ASSET } from "../constants";
+import AnimatedLottieView from "lottie-react-native";
 
 interface ChannelScreenProps {
   navigation: any;
@@ -34,8 +35,7 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
   const [profile, setProfile] = useState<{}>({});
   const [allVideos, setallVideos] = useState([]);
   const [isVideoAvilable, setIsVideoAvilable] = useState<boolean>(true);
-  console.log(route.params.profileId);
-  const PROFILE_ID = route.params.profileId.split("-")[0];
+  const [isLoading, setIsLoading] = useState(true);
   const store = useStore();
   useEffect(() => {
     getProfleInfo();
@@ -43,22 +43,25 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
 
   const getProfleInfo = async () => {
     try {
+      setIsLoading(true);
       const profiledata = await client.query({
         query: getUserProfile,
         variables: {
-          id: PROFILE_ID,
+          id: route.params.profileId,
         },
       });
       setProfile(profiledata.data);
-      store.setProfiledata(profiledata.data);
+      console.log(profile?.profile?.picture?.original?.url);
       const getUserVideos = await client.query({
         query: getPublications,
         variables: {
-          id: PROFILE_ID,
+          id: route.params.profileId,
         },
       });
       setallVideos(getUserVideos.data.publications.items);
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   };
@@ -67,7 +70,7 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
     setRefreshing(true);
     getProfleInfo().then(() => {
       if (profile == profile) {
-        ToastAndroid.show("Profile is Up-to date", ToastAndroid.SHORT);
+        ToastAndroid.show("Channel is Up-to date", ToastAndroid.SHORT);
       }
       setRefreshing(false);
     });
@@ -85,57 +88,59 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
           />
         }
       >
-        <View style={{ paddingHorizontal: 10 }}>
-          <View
-            style={{
-              height: 150,
-              alignItems: "flex-start",
-              marginBottom: 30,
-            }}
-          >
-            <Image
-              source={{
-                uri:
-                  getIPFSLink(profile?.profile?.coverPicture?.original?.url) ||
-                  STATIC_ASSET,
-              }}
+        {Boolean(!isLoading) && (
+          <View style={{ paddingHorizontal: 10 }}>
+            <View
               style={{
-                height: "100%",
-                width: "100%",
-                borderRadius: 10,
-                resizeMode: "contain",
+                height: 150,
+                alignItems: "flex-start",
+                marginBottom: 30,
               }}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              width: "100%",
-              marginTop: "-20%",
-            }}
-          >
-            <Avatar
-              src={getIPFSLink(profile?.profile?.picture?.original?.url)}
-              height={100}
-              width={100}
-            />
-          </View>
-          <View style={{ padding: 4, alignItems: "center" }}>
-            <Heading
-              title={profile?.profile?.name}
-              style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
-            />
-            <SubHeading
-              title={`@${profile?.profile?.handle} · ${profile?.profile?.stats?.totalFollowers} Subscribers · ${profile?.profile?.stats?.totalPosts} Videos`}
-              style={{ fontSize: 12, color: "white", marginTop: 2 }}
-            />
-            <SubHeading
-              title={profile?.profile?.bio}
-              style={{ fontSize: 14, color: "gray", textAlign: "center" }}
-            />
-          </View>
-          {/* <TouchableOpacity activeOpacity={0.8}>
+            >
+              <Image
+                source={{
+                  uri:
+                    getIPFSLink(
+                      profile?.profile?.coverPicture?.original?.url
+                    ) || STATIC_ASSET,
+                }}
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  borderRadius: 10,
+                  resizeMode: "contain",
+                }}
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                width: "100%",
+                marginTop: "-20%",
+              }}
+            >
+              <Avatar
+                src={getIPFSLink(profile?.profile?.picture?.original?.url)}
+                height={100}
+                width={100}
+              />
+            </View>
+            <View style={{ padding: 4, alignItems: "center" }}>
+              <Heading
+                title={profile?.profile?.name}
+                style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
+              />
+              <SubHeading
+                title={`@${profile?.profile?.handle} · ${profile?.profile?.stats?.totalFollowers} Subscribers · ${allVideos.length} Videos`}
+                style={{ fontSize: 12, color: "white", marginTop: 2 }}
+              />
+              <SubHeading
+                title={profile?.profile?.bio}
+                style={{ fontSize: 14, color: "gray", textAlign: "center" }}
+              />
+            </View>
+            {/* <TouchableOpacity activeOpacity={0.8}>
             <View
               style={{
                 backgroundColor: "white",
@@ -161,36 +166,71 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
             </View>
           </TouchableOpacity> */}
 
-          <View style={{ paddingVertical: 10 }}>
-            <Heading
-              title="Videos"
-              style={{
-                fontSize: 20,
-                fontWeight: "700",
-                color: "white",
-              }}
-            />
-            {allVideos?.map((item, index) => {
-              if (item.appId.includes("lenstube")) {
-                return (
-                  <VideoCard
-                    navigation={navigation}
-                    key={item?.id}
-                    id={item?.id}
-                    date={convertDate(item?.createdAt)}
-                    banner={item?.metadata?.cover}
-                    title={item?.metadata?.name}
-                    avatar={item?.profile?.picture?.original?.url}
-                    playbackId={item?.metadata?.media[0]?.original?.url}
-                    uploadedBy={item?.profile?.name}
-                    profileId={item?.profile?.id}
-                    stats={item?.stats}
-                  />
-                );
-              }
-            })}
+            <View style={{ paddingVertical: 10 }}>
+              <Heading
+                title="Videos"
+                style={{
+                  fontSize: 20,
+                  fontWeight: "700",
+                  color: "white",
+                }}
+              />
+              {allVideos?.map((item, index) => {
+                if (item.appId.includes("lenstube")) {
+                  return (
+                    <VideoCard
+                      navigation={navigation}
+                      key={item?.id}
+                      id={item?.id}
+                      date={convertDate(item?.createdAt)}
+                      banner={item?.metadata?.cover}
+                      title={item?.metadata?.name}
+                      avatar={item?.profile?.picture?.original?.url}
+                      playbackId={item?.metadata?.media[0]?.original?.url}
+                      uploadedBy={item?.profile?.name || item?.profile?.handle}
+                      profileId={item?.profile?.id}
+                      stats={item?.stats}
+                    />
+                  );
+                }
+              })}
+            </View>
           </View>
-        </View>
+        )}
+        {Boolean(isLoading) && (
+          <View
+            style={{
+              height: 500,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <AnimatedLottieView
+              autoPlay
+              style={{
+                height: "auto",
+              }}
+              source={require("../assets/skeleton.json")}
+            />
+            <View
+              style={{
+                alignItems: "center",
+              }}
+            >
+              <Heading
+                title="preparing for you"
+                style={{
+                  fontSize: 16,
+                  color: "white",
+                  marginVertical: 5,
+                  marginHorizontal: 15,
+                  fontWeight: "600",
+                  alignSelf: "flex-start",
+                }}
+              />
+            </View>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

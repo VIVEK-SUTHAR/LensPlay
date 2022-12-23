@@ -39,8 +39,6 @@ const VideoCard = ({
 }: videoPageProp) => {
   const store = useStore();
   const setCurrentIndex = store.setCurrentIndex;
-
- 
   return (
     <View
       style={{
@@ -82,10 +80,8 @@ const VideoCard = ({
       </View>
       <TouchableWithoutFeedback
         onPress={() => {
-          console.log();
-
           navigation.navigate("Channel", {
-            profileId: id,
+            profileId: profileId,
           });
         }}
       >

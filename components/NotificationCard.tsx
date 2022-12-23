@@ -1,6 +1,13 @@
 import { AntDesign, Entypo, EvilIcons } from "@expo/vector-icons";
 import React, { FC } from "react";
-import { Image, Text, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  Text,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import { dark_secondary } from "../constants/Colors";
 import formatAddress from "../utils/formatAddress";
 import getDifference from "../utils/getDifference";
@@ -12,6 +19,7 @@ interface NotificationsProps {
   subtitle: string;
   type: string;
   notification: any;
+  navigation: any;
 }
 
 const NotificationCard: FC<NotificationsProps> = ({
@@ -19,6 +27,7 @@ const NotificationCard: FC<NotificationsProps> = ({
   subtitle,
   notification,
   type,
+  navigation,
   ...rest
 }) => {
   const getNotificationIcon = () => {
@@ -41,13 +50,21 @@ const NotificationCard: FC<NotificationsProps> = ({
       case "NewFollowerNotification":
         return (
           <View>
-            <Avatar
-              src={getIPFSLink(
-                notification?.wallet?.defaultProfile?.picture?.original?.url
-              )}
-              height={35}
-              width={35}
-            />
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Channel", {
+                  profileId: notification?.wallet?.defaultProfile?.id,
+                });
+              }}
+            >
+              <Avatar
+                src={getIPFSLink(
+                  notification?.wallet?.defaultProfile?.picture?.original?.url
+                )}
+                height={35}
+                width={35}
+              />
+            </Pressable>
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "500" }}>
                 {notification?.wallet?.defaultProfile?.handle?.split(".")[0] ||
@@ -64,13 +81,21 @@ const NotificationCard: FC<NotificationsProps> = ({
       case "NewCollectNotification":
         return (
           <View>
-            <Avatar
-              src={getIPFSLink(
-                notification?.wallet?.defaultProfile?.picture?.original?.url
-              )}
-              height={35}
-              width={35}
-            />
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Channel", {
+                  profileId: notification?.wallet?.defaultProfile?.id,
+                });
+              }}
+            >
+              <Avatar
+                src={getIPFSLink(
+                  notification?.wallet?.defaultProfile?.picture?.original?.url
+                )}
+                height={35}
+                width={35}
+              />
+            </Pressable>
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "500" }}>
                 {notification?.wallet?.defaultProfile?.handle?.split(".")[0] ||
@@ -113,11 +138,19 @@ const NotificationCard: FC<NotificationsProps> = ({
       case "NewReactionNotification":
         return (
           <View>
-            <Avatar
-              src={notification?.profile?.picture?.original?.url}
-              height={35}
-              width={35}
-            />
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Channel", {
+                  profileId: notification?.profile.id,
+                });
+              }}
+            >
+              <Avatar
+                src={notification?.profile?.picture?.original?.url}
+                height={35}
+                width={35}
+              />
+            </Pressable>
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "600" }}>
                 {notification?.profile?.handle?.split(".")[0] ||
@@ -142,14 +175,21 @@ const NotificationCard: FC<NotificationsProps> = ({
           </View>
         );
       case "NewCommentNotification":
-        console.log(notification?.comment?.commentOn?.__typename);
         return (
           <View>
-            <Avatar
-              src={notification?.profile?.picture?.original?.url}
-              height={35}
-              width={35}
-            />
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Channel", {
+                  profileId: notification?.profile.id,
+                });
+              }}
+            >
+              <Avatar
+                src={notification?.profile?.picture?.original?.url}
+                height={35}
+                width={35}
+              />
+            </Pressable>
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "600" }}>
                 {notification?.profile?.handle?.split(".")[0] ||

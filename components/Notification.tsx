@@ -13,7 +13,7 @@ import useStore from "../store/Store";
 import NotificationCard from "./NotificationCard";
 import Heading from "./UI/Heading";
 
-const Navigation = () => {
+const Navigation = ({ navigation }: { navigation: any }) => {
   const store = useStore();
   const [allNotifications, setAllNotifications] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -22,7 +22,7 @@ const Navigation = () => {
     try {
       const data = await fetchNotifications(store.profileId, store.accessToken);
       console.log(data);
-      
+
       if (data == allNotifications) {
         ToastAndroid.show("No new notifications", ToastAndroid.SHORT);
       } else {
@@ -67,6 +67,7 @@ const Navigation = () => {
                 key={index}
                 type={item.__typename}
                 notification={item}
+                navigation={navigation}
               />
             );
           })}
