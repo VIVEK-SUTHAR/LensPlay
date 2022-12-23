@@ -112,11 +112,19 @@ const NotificationCard: FC<NotificationsProps> = ({
       case "NewMirrorNotification":
         return (
           <View>
-            <Avatar
-              src={notification?.profile?.picture?.original?.url}
-              height={35}
-              width={35}
-            />
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Channel", {
+                  profileId: notification?.profile.id,
+                });
+              }}
+            >
+              <Avatar
+                src={notification?.profile?.picture?.original?.url}
+                height={35}
+                width={35}
+              />
+            </Pressable>
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "600" }}>
                 {notification?.profile?.handle?.split(".")[0] ||
