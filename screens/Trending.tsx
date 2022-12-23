@@ -121,14 +121,17 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                   alignItems: "center",
                 }}
               >
-                <Heading title="Getting videos" style={{
+                <Heading
+                  title="Getting videos"
+                  style={{
                     fontSize: 16,
                     color: "white",
                     marginVertical: 5,
                     marginHorizontal: 15,
                     fontWeight: "600",
                     alignSelf: "flex-start",
-                  }}/>
+                  }}
+                />
               </View>
             </View>
           ) : (
@@ -146,6 +149,8 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                   banner={item?.metadata?.cover}
                   avatar={item?.profile?.picture?.original?.url}
                   uploadedBy={item?.profile?.handle}
+                  profileId={item?.profile?.id}
+                  stats={item?.stats}
                   playbackId={item?.metadata?.media[0]?.original?.url}
                 />
               );

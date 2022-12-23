@@ -17,6 +17,7 @@ type videoPageProp = {
   title: string;
   banner: string;
   avatar: string;
+  profileId: string;
   uploadedBy: string;
   playbackId: string;
   id: number;
@@ -30,6 +31,7 @@ const VideoCard = ({
   banner,
   title,
   avatar,
+  profileId,
   uploadedBy,
   playbackId,
   stats,
@@ -38,18 +40,7 @@ const VideoCard = ({
   const store = useStore();
   const setCurrentIndex = store.setCurrentIndex;
 
-  const AVATAR_LINK = avatar?.includes("https://arweave.net")
-    ? avatar
-    : avatar?.includes("ipfs://")
-    ? `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`
-    : avatar;
-
-  const BANNER_LINK = banner?.includes("https://arweave.net")
-    ? banner
-    : banner?.includes("ipfs://")
-    ? `https://ipfs.io/ipfs/${banner?.split("//")[1]}`
-    : banner;
-
+ 
   return (
     <View
       style={{
@@ -67,6 +58,7 @@ const VideoCard = ({
               id: id,
               uploadedBy: uploadedBy,
               playbackId: playbackId,
+              profileId: profileId,
               avatar: avatar,
               banner: banner,
               stats: stats,

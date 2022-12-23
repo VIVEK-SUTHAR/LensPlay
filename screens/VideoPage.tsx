@@ -2,7 +2,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
   Dimensions,
   Share,
   TouchableWithoutFeedback,
@@ -11,8 +10,6 @@ import {
   Modal,
   TouchableOpacity,
   ToastAndroid,
-  ImageBackground,
-  Animated,
 } from "react-native";
 import {
   AntDesign,
@@ -20,7 +17,6 @@ import {
   FontAwesome,
   MaterialCommunityIcons,
   MaterialIcons,
-  Octicons,
 } from "@expo/vector-icons";
 import React, { useEffect } from "react";
 import { dark_primary, primary } from "../constants/Colors";
@@ -33,7 +29,6 @@ import { StatusBar } from "expo-status-bar";
 import getIPFSLink from "../utils/getIPFSLink";
 import { client } from "../apollo/client";
 import getComments from "../apollo/Queries/getComments";
-import convertDate from "../utils/formateDate";
 import freeCollectPublication from "../api/freeCollect";
 import getProxyActionStatus from "../api/getProxyActionStatus";
 import VideoPlayer from "expo-video-player";
@@ -41,6 +36,7 @@ import Avatar from "../components/UI/Avatar";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import createSubScribe from "../api/freeSubScribe";
+import isFollowedByMe from "../api/isFollowedByMe";
 
 const VideoPage = ({ route }) => {
   const store = useStore();
@@ -49,17 +45,28 @@ const VideoPage = ({ route }) => {
   const [comments, setComments] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
   const [likes, setLikes] = useState(route.params.stats?.totalUpvotes);
-  const [descOpen, setDescOpen] = useState(false);
   const [inFullscreen, setInFullsreen] = useState(false);
+  const [alreadyFollowing, setAlreadyFollowing] = useState(false);
 
   const playbackId = route.params.playbackId;
-  // console.log(store.accessToken);
-  console.log(route.params.id.split("-")[0]);
 
   useEffect(() => {
+    checkFollowed();
     fetchComments();
   }, []);
 
+  async function checkFollowed() {
+    const data = await isFollowedByMe(
+      route.params.profileId,
+      store.accessToken
+    );
+    console.log(data.data.profile.isFollowedByMe);
+
+    if (data.data.profile.isFollowedByMe) {
+      setAlreadyFollowing(true);
+      return;
+    }
+  }
   async function fetchComments() {
     const data = await client.query({
       query: getComments,
@@ -325,7 +332,7 @@ const VideoPage = ({ route }) => {
                 // setIsmodalopen(true);
                 try {
                   const data = await createSubScribe(
-                    route.params.id.split("-")[0],
+                    route.params.profileId,
                     store.accessToken
                   );
                   if (data.data === null) {
@@ -356,14 +363,17 @@ const VideoPage = ({ route }) => {
                   justifyContent: "space-between",
                   alignItems: "center",
                   borderRadius: 50,
-                  backgroundColor: "white",
+                  borderColor: alreadyFollowing ? "white" : undefined,
+                  borderWidth: alreadyFollowing ? 1 : undefined,
+                  backgroundColor: alreadyFollowing ? "transparent" : "white",
                 }}
               >
                 <Heading
-                  title="Subscribe"
+                  title={alreadyFollowing ? "Subscribed" : "Subscribe"}
                   style={{
                     fontSize: 16,
                     fontWeight: "700",
+                    color: alreadyFollowing ? "white" : "black",
                   }}
                 />
               </View>

@@ -89,6 +89,7 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
                 uploadedBy={item?.root?.profile?.handle}
                 comments={item?.comments}
                 stats={item?.root?.stats}
+                profileId={item?.root?.profile?.id}
               />
             );
           })}

@@ -23,6 +23,7 @@ import getUserProfile from "../apollo/Queries/getUserProfile";
 import getPublications from "../apollo/Queries/getPublications";
 import Avatar from "../components/UI/Avatar";
 import convertDate from "../utils/formateDate";
+import { STATIC_ASSET } from "../constants";
 
 interface ChannelScreenProps {
   navigation: any;
@@ -48,6 +49,7 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
           id: PROFILE_ID,
         },
       });
+
       setProfile(profiledata.data);
       store.setProfiledata(profiledata.data);
       const getUserVideos = await client.query({
@@ -94,7 +96,9 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
           >
             <Image
               source={{
-                uri: getIPFSLink(profile?.profile?.coverPicture?.original?.url),
+                uri:
+                  getIPFSLink(profile?.profile?.coverPicture?.original?.url) ||
+                  STATIC_ASSET,
               }}
               style={{
                 height: "100%",
