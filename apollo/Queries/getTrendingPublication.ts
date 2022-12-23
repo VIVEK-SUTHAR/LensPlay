@@ -113,6 +113,8 @@ export default gql`
     totalAmountOfMirrors
     totalAmountOfCollects
     totalAmountOfComments
+    totalUpvotes
+    totalDownvotes
   }
 
   fragment MetadataOutputFields on MetadataOutput {
