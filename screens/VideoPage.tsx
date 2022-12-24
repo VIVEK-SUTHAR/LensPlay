@@ -58,8 +58,13 @@ const VideoPage = ({ route, navigation }) => {
   console.log("liked" + isalreadyLiked);
 
   useEffect(() => {
-    checkFollowed();
     fetchComments();
+    console.log("i am changed");
+    
+  }, [playbackId]);
+
+  useEffect(() => {
+    checkFollowed();
   }, []);
 
   async function checkFollowed() {
@@ -79,6 +84,7 @@ const VideoPage = ({ route, navigation }) => {
         postId: route.params.id,
       },
     });
+    setComments([]);
     setComments(data.data.publications.items);
   }
 

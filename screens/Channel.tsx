@@ -38,9 +38,10 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
   const [isVideoAvilable, setIsVideoAvilable] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState(true);
   const store = useStore();
+
   useEffect(() => {
     getProfleInfo();
-  }, []);
+  }, [navigation, route.params.profileId]);
 
   const getProfleInfo = async () => {
     try {
@@ -191,6 +192,7 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
                       uploadedBy={item?.profile?.name || item?.profile?.handle}
                       profileId={item?.profile?.id}
                       stats={item?.stats}
+                      reaction={item?.reaction}
                     />
                   );
                 }

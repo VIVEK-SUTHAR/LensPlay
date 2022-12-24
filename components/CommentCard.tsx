@@ -1,10 +1,16 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React from "react";
 import { dark_secondary, primary } from "../constants/Colors";
 import getDifference from "../utils/getDifference";
 import Heading from "./UI/Heading";
 import SubHeading from "./UI/SubHeading";
-import Hyperlink from 'react-native-hyperlink'
 
 type CommentCardProps = {
   avatar: string;
@@ -23,6 +29,28 @@ const CommentCard = ({
   id,
   navigation,
 }: CommentCardProps) => {
+  function extractURLs(txt: string) {
+    const URL_REGEX =
+      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
+    const renderText = (txt) =>
+      txt?.split(" ").map((part, index) =>
+        URL_REGEX.test(part) ? (
+          <Text
+            key={index}
+            style={{ color: primary }}
+            onPress={() => {
+              Linking.openURL(part);
+            }}
+          >
+            {part}{" "}
+          </Text>
+        ) : (
+          part + " "
+        )
+      );
+    return renderText(txt);
+  }
+
   return (
     <View
       style={{
@@ -68,10 +96,12 @@ const CommentCard = ({
             style={{ fontSize: 10, color: "gray" }}
           />
         </View>
-       
-        <Hyperlink linkDefault={true} linkStyle={ { color: '#2980b9' } }>
-        <Text style={{ fontSize: 14, color: "white", fontWeight: "600" }}>{commentText}</Text>
-        </Hyperlink>
+
+        {/* <Hyperlink linkDefault={true} linkStyle={ { color: '#2980b9' } }> */}
+        <Text style={{ fontSize: 14, color: "white", fontWeight: "600" }}>
+          {extractURLs(commentText)}
+        </Text>
+        {/* </Hyperlink> */}
       </View>
     </View>
   );
