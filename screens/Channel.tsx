@@ -25,6 +25,7 @@ import Avatar from "../components/UI/Avatar";
 import convertDate from "../utils/formateDate";
 import { STATIC_ASSET } from "../constants";
 import AnimatedLottieView from "lottie-react-native";
+import Skleton from "../components/Skleton";
 
 interface ChannelScreenProps {
   navigation: any;
@@ -200,7 +201,7 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
         {Boolean(isLoading) && (
           <View
             style={{
-              height: 500,
+              height: "auto",
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -212,23 +213,10 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
               }}
               source={require("../assets/skeleton.json")}
             />
-            <View
-              style={{
-                alignItems: "center",
-              }}
-            >
-              <Heading
-                title="preparing for you"
-                style={{
-                  fontSize: 16,
-                  color: "white",
-                  marginVertical: 5,
-                  marginHorizontal: 15,
-                  fontWeight: "600",
-                  alignSelf: "flex-start",
-                }}
-              />
-            </View>
+
+            <Skleton />
+            <Skleton />
+            <Skleton />
           </View>
         )}
       </ScrollView>

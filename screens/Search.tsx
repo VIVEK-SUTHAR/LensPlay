@@ -125,7 +125,7 @@ const Search = ({ navigation }) => {
                   alignSelf: "flex-start",
                 }}
               >
-                Getting videos
+                Getting videos...
               </Text>
             </View>
           </>
