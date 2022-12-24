@@ -369,7 +369,7 @@ const VideoPage = ({ route, navigation }) => {
               <View
                 style={{
                   marginHorizontal: 4,
-                  paddingHorizontal: 24,
+                  paddingHorizontal: 12,
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
@@ -380,9 +380,9 @@ const VideoPage = ({ route, navigation }) => {
                 }}
               >
                 <Heading
-                  title={alreadyFollowing ? "Subscribed" : "Subscribe"}
+                  title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
                   style={{
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: "700",
                     color: alreadyFollowing ? "white" : "black",
                   }}

@@ -1,6 +1,7 @@
 import * as React from "react";
 import {
   Image,
+  Linking,
   RefreshControl,
   SafeAreaView,
   ScrollView,
@@ -61,6 +62,28 @@ const Profile = ({ navigation }: { navigation: any }) => {
       setRefreshing(false);
     });
   }, []);
+  function extractURLs(txt: string) {
+    const URL_REGEX =
+      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
+    const renderText = (txt) =>
+      txt?.split(" ").map((part, index) =>
+        URL_REGEX.test(part) ? (
+          <Text
+            key={index}
+            style={{ color: primary }}
+            onPress={() => {
+              Linking.openURL(part);
+            }}
+          >
+            {part}{" "}
+          </Text>
+        ) : (
+          part + " "
+        )
+      );
+    return renderText(txt);
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <ScrollView
@@ -117,7 +140,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
               style={{ fontSize: 12, color: "white", marginTop: 2 }}
             />
             <SubHeading
-              title={profile?.profile?.bio}
+              title={extractURLs(profile?.profile?.bio)}
               style={{ fontSize: 14, color: "gray", textAlign: "center" }}
             />
           </View>
