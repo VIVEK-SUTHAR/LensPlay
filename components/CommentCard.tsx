@@ -2,6 +2,8 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { dark_secondary, primary } from "../constants/Colors";
 import getDifference from "../utils/getDifference";
+import Heading from "./UI/Heading";
+import SubHeading from "./UI/SubHeading";
 
 type CommentCardProps = {
   avatar: string;
@@ -20,7 +22,7 @@ const CommentCard = ({
     <View
       style={{
         flexDirection: "row",
-        backgroundColor: 'black',
+        backgroundColor: "black",
         padding: 8,
         marginVertical: 4,
         borderRadius: 8,
@@ -40,11 +42,23 @@ const CommentCard = ({
         />
       </View>
       <View style={{ flex: 1 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Text style={{ fontSize: 12, color: 'gray' }}>{username}</Text>
-          <Text style={{ fontSize: 10, color: "gray" }}>{getDifference(commentTime)}</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Heading title={username} style={{ fontSize: 12, color: "gray" }} />
+          <SubHeading
+            title={getDifference(commentTime)}
+            style={{ fontSize: 10, color: "gray" }}
+          />
         </View>
-        <Text style={{ fontSize: 14, color: "white", fontWeight: '600' }}>{commentText}</Text>
+        <SubHeading
+          title={commentText}
+          style={{ fontSize: 14, color: "white", fontWeight: "600" }}
+        />
       </View>
     </View>
   );

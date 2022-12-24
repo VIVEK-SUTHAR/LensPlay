@@ -1,14 +1,41 @@
-import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import {
+  RefreshControl,
+  SafeAreaView,
+  ScrollView,
+  ToastAndroid,
+  View,
+} from "react-native";
 import React, { useEffect, useState } from "react";
-import { dark_primary } from "../constants/Colors";
+import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import AnimatedLottieView from "lottie-react-native";
 import fetchNotifications from "../api/fetchNotifications";
 import useStore from "../store/Store";
 import NotificationCard from "./NotificationCard";
+import Heading from "./UI/Heading";
 
-const Navigation = ({ navigation }) => {
+const Navigation = ({ navigation }: { navigation: any }) => {
   const store = useStore();
   const [allNotifications, setAllNotifications] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const data = await fetchNotifications(store.profileId, store.accessToken);
+      console.log(data);
+
+      if (data == allNotifications) {
+        ToastAndroid.show("No new notifications", ToastAndroid.SHORT);
+      } else {
+        setAllNotifications(data);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    } finally {
+      setRefreshing(false);
+    }
+  };
   useEffect(() => {
     //@ts-expect-error
     fetchNotifications(store.profileId, store.accessToken).then((res) => {
@@ -23,7 +50,16 @@ const Navigation = ({ navigation }) => {
         backgroundColor: dark_primary,
       }}
     >
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            colors={[primary]}
+            progressBackgroundColor={dark_secondary}
+            onRefresh={onRefresh}
+          />
+        }
+      >
         {allNotifications &&
           allNotifications.map((item, index) => {
             return (
@@ -31,10 +67,11 @@ const Navigation = ({ navigation }) => {
                 key={index}
                 type={item.__typename}
                 notification={item}
+                navigation={navigation}
               />
             );
           })}
-        {allNotifications === undefined && (
+        {allNotifications?.length === 0 && (
           <View
             style={{
               height: 500,
@@ -54,7 +91,8 @@ const Navigation = ({ navigation }) => {
                 alignItems: "center",
               }}
             >
-              <Text
+              <Heading
+                title="No new notifications"
                 style={{
                   fontSize: 16,
                   color: "white",
@@ -63,9 +101,7 @@ const Navigation = ({ navigation }) => {
                   fontWeight: "600",
                   alignSelf: "flex-start",
                 }}
-              >
-                No new notifications
-              </Text>
+              />
             </View>
           </View>
         )}

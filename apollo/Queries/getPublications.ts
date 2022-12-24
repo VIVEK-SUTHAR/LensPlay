@@ -6,6 +6,7 @@ query Publications($id:ProfileId!) {
     profileId: $id,
     publicationTypes: [POST],
     limit: 20
+    sources:["lenstube"]
   }) {
     items {
       __typename 

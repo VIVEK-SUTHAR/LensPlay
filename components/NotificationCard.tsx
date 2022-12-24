@@ -1,19 +1,25 @@
-import {
-  AntDesign,
-  Entypo,
-} from "@expo/vector-icons";
+import { AntDesign, Entypo, EvilIcons } from "@expo/vector-icons";
 import React, { FC } from "react";
-import { Image, Text, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  Text,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import { dark_secondary } from "../constants/Colors";
 import formatAddress from "../utils/formatAddress";
 import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
+import Avatar from "./UI/Avatar";
 
 interface NotificationsProps {
   title: string;
   subtitle: string;
   type: string;
   notification: any;
+  navigation: any;
 }
 
 const NotificationCard: FC<NotificationsProps> = ({
@@ -21,6 +27,7 @@ const NotificationCard: FC<NotificationsProps> = ({
   subtitle,
   notification,
   type,
+  navigation,
   ...rest
 }) => {
   const getNotificationIcon = () => {
@@ -33,6 +40,8 @@ const NotificationCard: FC<NotificationsProps> = ({
         return <Entypo name="folder-video" size={24} color={"coral"} />;
       case "NewMirrorNotification":
         return <AntDesign name="retweet" size={24} color={"#6bd841"} />;
+      case "NewCommentNotification":
+        return <EvilIcons name="comment" size={28} color={"#1d9bf0"} />;
     }
   };
 
@@ -41,24 +50,24 @@ const NotificationCard: FC<NotificationsProps> = ({
       case "NewFollowerNotification":
         return (
           <View>
-            <View style={{ height: 35, width: 35 }}>
-              <Image
-                source={{
-                  uri: getIPFSLink(
-                    notification?.wallet?.defaultProfile?.picture?.original?.url
-                  ),
-                }}
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  borderRadius: 50,
-                  resizeMode: "contain",
-                }}
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Channel", {
+                  profileId: notification?.wallet?.defaultProfile?.id,
+                });
+              }}
+            >
+              <Avatar
+                src={getIPFSLink(
+                  notification?.wallet?.defaultProfile?.picture?.original?.url
+                )}
+                height={35}
+                width={35}
               />
-            </View>
+            </Pressable>
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "500" }}>
-                {notification?.wallet?.defaultProfile?.handle ||
+                {notification?.wallet?.defaultProfile?.handle?.split(".")[0] ||
                   formatAddress(notification?.wallet?.address)}{" "}
               </Text>
               followed you
@@ -72,19 +81,24 @@ const NotificationCard: FC<NotificationsProps> = ({
       case "NewCollectNotification":
         return (
           <View>
-            <View style={{ height: 35, width: 35 }}>
-              <Image
-                source={{
-                  uri: getIPFSLink(
-                    notification?.wallet?.defaultProfile?.picture?.original?.url
-                  ),
-                }}
-                style={{ height: "100%", width: "100%", borderRadius: 500 }}
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Channel", {
+                  profileId: notification?.wallet?.defaultProfile?.id,
+                });
+              }}
+            >
+              <Avatar
+                src={getIPFSLink(
+                  notification?.wallet?.defaultProfile?.picture?.original?.url
+                )}
+                height={35}
+                width={35}
               />
-            </View>
+            </Pressable>
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "500" }}>
-                {notification?.wallet?.defaultProfile?.handle ||
+                {notification?.wallet?.defaultProfile?.handle?.split(".")[0] ||
                   formatAddress(notification?.wallet?.address)}{" "}
               </Text>
               collected your post
@@ -98,16 +112,19 @@ const NotificationCard: FC<NotificationsProps> = ({
       case "NewMirrorNotification":
         return (
           <View>
-            <View style={{ height: 35, width: 35 }}>
-              <Image
-                source={{
-                  uri: getIPFSLink(
-                    notification?.profile?.picture?.original?.url
-                  ),
-                }}
-                style={{ height: "100%", width: "100%", borderRadius: 500 }}
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Channel", {
+                  profileId: notification?.profile.id,
+                });
+              }}
+            >
+              <Avatar
+                src={notification?.profile?.picture?.original?.url}
+                height={35}
+                width={35}
               />
-            </View>
+            </Pressable>
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "600" }}>
                 {notification?.profile?.handle?.split(".")[0] ||
@@ -129,25 +146,67 @@ const NotificationCard: FC<NotificationsProps> = ({
       case "NewReactionNotification":
         return (
           <View>
-            <View style={{ height: 35, width: 35 }}>
-              <Image
-                source={{
-                  uri: getIPFSLink(
-                    notification?.profile?.picture?.original?.url
-                  ),
-                }}
-                style={{ height: "100%", width: "100%", borderRadius: 500 }}
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Channel", {
+                  profileId: notification?.profile.id,
+                });
+              }}
+            >
+              <Avatar
+                src={notification?.profile?.picture?.original?.url}
+                height={35}
+                width={35}
               />
-            </View>
+            </Pressable>
             <Text style={{ color: "gray", fontSize: 14 }}>
               <Text style={{ color: "white", fontWeight: "600" }}>
-                {notification?.profile?.handle ||
+                {notification?.profile?.handle?.split(".")[0] ||
                   formatAddress(notification?.wallet?.address)}{" "}
               </Text>
               liked your{" "}
               {notification?.publication?.__typename == "Post"
                 ? "post"
                 : notification?.publication?.__typename == "Comment"
+                ? "comment"
+                : "mirrored post"}
+              <Text style={{ fontSize: 10, color: "gray" }}>
+                {" "}
+                {getDifference(notification?.createdAt)}
+              </Text>
+            </Text>
+            <View>
+              <Text style={{ color: "grey", fontSize: 12 }}>
+                {notification?.publication?.metadata?.description}
+              </Text>
+            </View>
+          </View>
+        );
+      case "NewCommentNotification":
+        return (
+          <View>
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Channel", {
+                  profileId: notification?.profile.id,
+                });
+              }}
+            >
+              <Avatar
+                src={notification?.profile?.picture?.original?.url}
+                height={35}
+                width={35}
+              />
+            </Pressable>
+            <Text style={{ color: "gray", fontSize: 14 }}>
+              <Text style={{ color: "white", fontWeight: "600" }}>
+                {notification?.profile?.handle?.split(".")[0] ||
+                  formatAddress(notification?.wallet?.address)}{" "}
+              </Text>
+              commented on your{" "}
+              {notification?.comment?.commentOn?.__typename === "Post"
+                ? "post"
+                : notification?.comment?.commentOn?.__typename === "Comment"
                 ? "comment"
                 : "mirror"}
               <Text style={{ fontSize: 10, color: "gray" }}>
@@ -157,7 +216,7 @@ const NotificationCard: FC<NotificationsProps> = ({
             </Text>
             <View>
               <Text style={{ color: "grey", fontSize: 12 }}>
-                {notification?.publication?.metadata?.description}
+                {notification?.comment?.metadata?.description}
               </Text>
             </View>
           </View>

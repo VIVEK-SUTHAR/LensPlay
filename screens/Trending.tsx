@@ -12,10 +12,10 @@ import VideoCard from "../components/VideoCard";
 import { client } from "../apollo/client";
 import getTrendingPublication from "../apollo/Queries/getTrendingPublication";
 import { useEffect } from "react";
-import { dark_primary, dark_secondary, primary } from "../constants/Colors";
-import { Feather } from "@expo/vector-icons";
+import { dark_primary } from "../constants/Colors";
 import convertDate from "../utils/formateDate";
 import AnimatedLottieView from "lottie-react-native";
+import Heading from "../components/UI/Heading";
 
 type TrendingPageProps = {
   navigation: any;
@@ -120,7 +120,8 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                   alignItems: "center",
                 }}
               >
-                <Text
+                <Heading
+                  title="Getting videos"
                   style={{
                     fontSize: 16,
                     color: "white",
@@ -129,9 +130,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                     fontWeight: "600",
                     alignSelf: "flex-start",
                   }}
-                >
-                  Getting videos
-                </Text>
+                />
               </View>
             </View>
           ) : (
@@ -149,6 +148,8 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                   banner={item?.metadata?.cover}
                   avatar={item?.profile?.picture?.original?.url}
                   uploadedBy={item?.profile?.handle}
+                  profileId={item?.profile?.id}
+                  stats={item?.stats}
                   playbackId={item?.metadata?.media[0]?.original?.url}
                 />
               );

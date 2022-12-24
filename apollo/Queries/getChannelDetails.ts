@@ -1,14 +1,11 @@
 import { gql } from "@apollo/client";
+
 export default gql`
-  query ExplorePublications {
-    explorePublications(
-      request: {
-        publicationTypes: [POST, MIRROR]
-        sources: ["lenstube"]
-        sortCriteria: LATEST
-        metadata: { mainContentFocus: VIDEO }
-      }
-    ) {
+  query (
+    $request: SingleProfileQueryRequest!
+    $publicationsRequest: PublicationsQueryRequest!
+  ) {
+    publications(request: $publicationsRequest) {
       items {
         __typename
         ... on Post {
@@ -27,12 +24,90 @@ export default gql`
         totalCount
       }
     }
+    profile(request: $request) {
+      id
+      name
+      bio
+      attributes {
+        displayType
+        traitType
+        key
+        value
+      }
+      followNftAddress
+      metadata
+      isDefault
+      picture {
+        ... on NftImage {
+          contractAddress
+          tokenId
+          uri
+          verified
+        }
+        ... on MediaSet {
+          original {
+            url
+            mimeType
+          }
+        }
+        __typename
+      }
+      handle
+      coverPicture {
+        ... on NftImage {
+          contractAddress
+          tokenId
+          uri
+          verified
+        }
+        ... on MediaSet {
+          original {
+            url
+            mimeType
+          }
+        }
+        __typename
+      }
+      ownedBy
+      dispatcher {
+        address
+        canUseRelay
+      }
+      stats {
+        totalFollowers
+        totalFollowing
+        totalPosts
+        totalComments
+        totalMirrors
+        totalPublications
+        totalCollects
+      }
+      followModule {
+        ... on FeeFollowModuleSettings {
+          type
+          amount {
+            asset {
+              symbol
+              name
+              decimals
+              address
+            }
+            value
+          }
+          recipient
+        }
+        ... on ProfileFollowModuleSettings {
+          type
+        }
+        ... on RevertFollowModuleSettings {
+          type
+        }
+      }
+    }
   }
 
   fragment MediaFields on Media {
     url
-    width
-    height
     mimeType
   }
 
@@ -63,12 +138,6 @@ export default gql`
         original {
           ...MediaFields
         }
-        small {
-          ...MediaFields
-        }
-        medium {
-          ...MediaFields
-        }
       }
     }
     coverPicture {
@@ -82,18 +151,11 @@ export default gql`
         original {
           ...MediaFields
         }
-        small {
-          ...MediaFields
-        }
-        medium {
-          ...MediaFields
-        }
       }
     }
     ownedBy
     dispatcher {
       address
-      canUseRelay
     }
     stats {
       totalFollowers
@@ -105,7 +167,25 @@ export default gql`
       totalCollects
     }
     followModule {
-      ...FollowModuleFields
+      ... on FeeFollowModuleSettings {
+        type
+        amount {
+          asset {
+            name
+            symbol
+            decimals
+            address
+          }
+          value
+        }
+        recipient
+      }
+      ... on ProfileFollowModuleSettings {
+        type
+      }
+      ... on RevertFollowModuleSettings {
+        type
+      }
     }
   }
 
@@ -113,8 +193,6 @@ export default gql`
     totalAmountOfMirrors
     totalAmountOfCollects
     totalAmountOfComments
-    totalUpvotes
-    totalDownvotes
   }
 
   fragment MetadataOutputFields on MetadataOutput {
@@ -125,14 +203,7 @@ export default gql`
       original {
         ...MediaFields
       }
-      small {
-        ...MediaFields
-      }
-      medium {
-        ...MediaFields
-      }
     }
-    cover: image
     attributes {
       displayType
       traitType
@@ -145,153 +216,6 @@ export default gql`
     symbol
     decimals
     address
-  }
-
-  fragment PostFields on Post {
-    id
-    profile {
-      ...ProfileFields
-    }
-    stats {
-      ...PublicationStatsFields
-    }
-    metadata {
-      ...MetadataOutputFields
-    }
-    createdAt
-    collectModule {
-      ...CollectModuleFields
-    }
-    referenceModule {
-      ...ReferenceModuleFields
-    }
-    appId
-    hidden
-    reaction(request: null)
-    mirrors(by: null)
-    hasCollectedByMe
-  }
-
-  fragment MirrorBaseFields on Mirror {
-    id
-    profile {
-      ...ProfileFields
-    }
-    stats {
-      ...PublicationStatsFields
-    }
-    metadata {
-      ...MetadataOutputFields
-    }
-    createdAt
-    collectModule {
-      ...CollectModuleFields
-    }
-    referenceModule {
-      ...ReferenceModuleFields
-    }
-    appId
-    hidden
-    reaction(request: null)
-    hasCollectedByMe
-  }
-
-  fragment MirrorFields on Mirror {
-    ...MirrorBaseFields
-    mirrorOf {
-      ... on Post {
-        ...PostFields
-      }
-      ... on Comment {
-        ...CommentFields
-      }
-    }
-  }
-
-  fragment CommentBaseFields on Comment {
-    id
-    profile {
-      ...ProfileFields
-    }
-    stats {
-      ...PublicationStatsFields
-    }
-    metadata {
-      ...MetadataOutputFields
-    }
-    createdAt
-    collectModule {
-      ...CollectModuleFields
-    }
-    referenceModule {
-      ...ReferenceModuleFields
-    }
-    appId
-    hidden
-    reaction(request: null)
-    mirrors(by: null)
-    hasCollectedByMe
-  }
-
-  fragment CommentFields on Comment {
-    ...CommentBaseFields
-    mainPost {
-      ... on Post {
-        ...PostFields
-      }
-      ... on Mirror {
-        ...MirrorBaseFields
-        mirrorOf {
-          ... on Post {
-            ...PostFields
-          }
-          ... on Comment {
-            ...CommentMirrorOfFields
-          }
-        }
-      }
-    }
-  }
-
-  fragment CommentMirrorOfFields on Comment {
-    ...CommentBaseFields
-    mainPost {
-      ... on Post {
-        ...PostFields
-      }
-      ... on Mirror {
-        ...MirrorBaseFields
-      }
-    }
-  }
-
-  fragment FollowModuleFields on FollowModule {
-    ... on FeeFollowModuleSettings {
-      type
-      amount {
-        asset {
-          name
-          symbol
-          decimals
-          address
-        }
-        value
-      }
-      recipient
-    }
-    ... on ProfileFollowModuleSettings {
-      type
-      contractAddress
-    }
-    ... on RevertFollowModuleSettings {
-      type
-      contractAddress
-    }
-    ... on UnknownFollowModuleSettings {
-      type
-      contractAddress
-      followModuleReturnData
-    }
   }
 
   fragment CollectModuleFields on CollectModule {
@@ -352,29 +276,126 @@ export default gql`
       referralFee
       endTimestamp
     }
-    ... on UnknownCollectModuleSettings {
-      type
-      contractAddress
-      collectModuleReturnData
+  }
+
+  fragment PostFields on Post {
+    id
+    profile {
+      ...ProfileFields
+    }
+    stats {
+      ...PublicationStatsFields
+    }
+    metadata {
+      ...MetadataOutputFields
+    }
+    createdAt
+    collectModule {
+      ...CollectModuleFields
+    }
+    referenceModule {
+      ... on FollowOnlyReferenceModuleSettings {
+        type
+      }
+    }
+    appId
+    hidden
+    mirrors(by: null)
+    hasCollectedByMe
+  }
+
+  fragment MirrorBaseFields on Mirror {
+    id
+    profile {
+      ...ProfileFields
+    }
+    stats {
+      ...PublicationStatsFields
+    }
+    metadata {
+      ...MetadataOutputFields
+    }
+    createdAt
+    collectModule {
+      ...CollectModuleFields
+    }
+    referenceModule {
+      ... on FollowOnlyReferenceModuleSettings {
+        type
+      }
+    }
+    appId
+    hidden
+    hasCollectedByMe
+  }
+
+  fragment MirrorFields on Mirror {
+    ...MirrorBaseFields
+    mirrorOf {
+      ... on Post {
+        ...PostFields
+      }
+      ... on Comment {
+        ...CommentFields
+      }
     }
   }
 
-  fragment ReferenceModuleFields on ReferenceModule {
-    ... on FollowOnlyReferenceModuleSettings {
-      type
-      contractAddress
+  fragment CommentBaseFields on Comment {
+    id
+    profile {
+      ...ProfileFields
     }
-    ... on UnknownReferenceModuleSettings {
-      type
-      contractAddress
-      referenceModuleReturnData
+    stats {
+      ...PublicationStatsFields
     }
-    ... on DegreesOfSeparationReferenceModuleSettings {
-      type
-      contractAddress
-      commentsRestricted
-      mirrorsRestricted
-      degreesOfSeparation
+    metadata {
+      ...MetadataOutputFields
+    }
+    createdAt
+    collectModule {
+      ...CollectModuleFields
+    }
+    referenceModule {
+      ... on FollowOnlyReferenceModuleSettings {
+        type
+      }
+    }
+    appId
+    hidden
+    mirrors(by: null)
+    hasCollectedByMe
+  }
+
+  fragment CommentFields on Comment {
+    ...CommentBaseFields
+    mainPost {
+      ... on Post {
+        ...PostFields
+      }
+      ... on Mirror {
+        ...MirrorBaseFields
+        mirrorOf {
+          ... on Post {
+            ...PostFields
+          }
+          ... on Comment {
+            ...CommentMirrorOfFields
+          }
+        }
+      }
+    }
+  }
+
+  fragment CommentMirrorOfFields on Comment {
+    ...CommentBaseFields
+    mainPost {
+      ... on Post {
+        ...PostFields
+      }
+      ... on Mirror {
+        ...MirrorBaseFields
+      }
     }
   }
 `;

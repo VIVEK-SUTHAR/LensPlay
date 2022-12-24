@@ -8,12 +8,16 @@ import {
 } from "react-native";
 import useStore from "../store/Store";
 import getIPFSLink from "../utils/getIPFSLink";
+import Avatar from "./UI/Avatar";
+import Heading from "./UI/Heading";
+import SubHeading from "./UI/SubHeading";
 
 type videoPageProp = {
   navigation: any;
   title: string;
   banner: string;
   avatar: string;
+  profileId: string;
   uploadedBy: string;
   playbackId: string;
   id: number;
@@ -27,6 +31,7 @@ const VideoCard = ({
   banner,
   title,
   avatar,
+  profileId,
   uploadedBy,
   playbackId,
   stats,
@@ -34,42 +39,30 @@ const VideoCard = ({
 }: videoPageProp) => {
   const store = useStore();
   const setCurrentIndex = store.setCurrentIndex;
-
-  const AVATAR_LINK = avatar?.includes("https://arweave.net")
-    ? avatar
-    : avatar?.includes("ipfs://")
-      ? `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`
-      : avatar;
-
-  const BANNER_LINK = banner?.includes("https://arweave.net")
-    ? banner
-    : banner?.includes("ipfs://")
-      ? `https://ipfs.io/ipfs/${banner?.split("//")[1]}`
-      : banner;
-
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        setCurrentIndex(id);
-        navigation.navigate("VideoPage", {
-          title: title,
-          id: id,
-          uploadedBy: uploadedBy,
-          playbackId: playbackId,
-          avatar: avatar,
-          banner: banner,
-          stats: stats,
-        });
+    <View
+      style={{
+        margin: 10,
+        backgroundColor: "rgba(255, 255, 255, 0.08)",
+        borderRadius: 10,
       }}
     >
-      <View
-        style={{
-          margin: 10,
-          backgroundColor: "rgba(255, 255, 255, 0.08)",
-          borderRadius: 10,
-        }}
-      >
-        <View style={{ height: 200 }}>
+      <View style={{ height: 200 }}>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setCurrentIndex(id);
+            navigation.navigate("VideoPage", {
+              title: title,
+              id: id,
+              uploadedBy: uploadedBy,
+              playbackId: playbackId,
+              profileId: profileId,
+              avatar: avatar,
+              banner: banner,
+              stats: stats,
+            });
+          }}
+        >
           <Image
             source={{
               uri:
@@ -83,7 +76,15 @@ const VideoCard = ({
               resizeMode: "contain",
             }}
           />
-        </View>
+        </TouchableWithoutFeedback>
+      </View>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          navigation.navigate("Channel", {
+            profileId: profileId,
+          });
+        }}
+      >
         <View
           style={{
             padding: 10,
@@ -93,27 +94,20 @@ const VideoCard = ({
           }}
         >
           <View style={{ flex: 0.95 }}>
-            <Text
+            <Heading
+              title={title}
               style={{ fontSize: 16, fontWeight: "700", color: "white" }}
-              numberOfLines={2}
-            >
-              {title}
-            </Text>
-            <Text style={{ fontSize: 12, color: "gray" }}>
-              By {uploadedBy} on {date}
-            </Text>
-          </View>
-          <View style={{ height: 40, width: 40 }}>
-            <Image
-              source={{
-                uri: getIPFSLink(avatar),
-              }}
-              style={{ height: "100%", width: "100%", borderRadius: 500 }}
+            />
+            <SubHeading
+              title={`By ${uploadedBy} on ${date}`}
+              style={{ fontSize: 12, color: "gray" }}
             />
           </View>
+
+          <Avatar src={getIPFSLink(avatar)} height={40} width={40} />
         </View>
-      </View>
-    </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
+    </View>
   );
 };
 

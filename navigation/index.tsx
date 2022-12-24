@@ -21,6 +21,9 @@ import Trending from "../screens/Trending";
 import Notification from "../components/Notification";
 import UploadVideo from "../screens/UploadVideo";
 import Search from "../screens/Search";
+import Heading from "../components/UI/Heading";
+import SubHeading from "../components/UI/SubHeading";
+import Channel from "../screens/Channel";
 
 export default function Navigation({
   colorScheme,
@@ -67,6 +70,18 @@ function RootNavigator() {
         component={Search}
         options={{ headerShown: true, presentation: "modal" }}
       />
+      <Stack.Screen
+        name="Channel"
+        component={Channel}
+        options={{
+          headerShown: true,
+          presentation: "card",
+          headerStyle: {
+            backgroundColor: dark_secondary,
+          },
+          headerTintColor: primary,
+        }}
+      />
     </Stack.Navigator>
   );
 }
@@ -78,7 +93,7 @@ function BottomTabNavigator({ navigation }) {
     <BottomTab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        headerStyle: { backgroundColor: dark_secondary,elevation:0 },
+        headerStyle: { backgroundColor: dark_secondary, elevation: 0 },
         headerTitle: "",
         headerRight: () => (
           <TouchableWithoutFeedback
@@ -105,9 +120,10 @@ function BottomTabNavigator({ navigation }) {
               alignItems: "center",
             }}
           >
-            <Text style={{ fontSize: 24, fontWeight: "600", color: "white" }}>
-              LensPlay
-            </Text>
+            <Heading
+              title="LensPlay"
+              style={{ fontSize: 24, fontWeight: "600", color: "white" }}
+            />
             <View
               style={{
                 backgroundColor: primary,
@@ -117,9 +133,10 @@ function BottomTabNavigator({ navigation }) {
                 borderRadius: 10,
               }}
             >
-              <Text style={{ color: "white", fontSize: 11, fontWeight: "600" }}>
-                BETA
-              </Text>
+              <SubHeading
+                title="BETA"
+                style={{ color: "white", fontSize: 11, fontWeight: "600" }}
+              />
             </View>
           </View>
         ),

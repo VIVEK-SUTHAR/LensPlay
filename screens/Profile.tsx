@@ -17,6 +17,9 @@ import getPublications from "../apollo/Queries/getPublications";
 import VideoCard from "../components/VideoCard";
 import convertDate from "../utils/formateDate";
 import getIPFSLink from "../utils/getIPFSLink";
+import Heading from "../components/UI/Heading";
+import SubHeading from "../components/UI/SubHeading";
+import Avatar from "../components/UI/Avatar";
 
 const Profile = ({ navigation }: { navigation: any }) => {
   const [profile, setProfile] = useState<{}>({});
@@ -62,7 +65,12 @@ const Profile = ({ navigation }: { navigation: any }) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={refreshing} colors={[primary]} progressBackgroundColor={dark_secondary} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            colors={[primary]}
+            progressBackgroundColor={dark_secondary}
+            onRefresh={onRefresh}
+          />
         }
       >
         <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
@@ -81,7 +89,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
                 height: "100%",
                 width: "100%",
                 borderRadius: 10,
-                resizeMode: "contain",
+                resizeMode: "cover",
               }}
             />
           </View>
@@ -90,39 +98,28 @@ const Profile = ({ navigation }: { navigation: any }) => {
               flexDirection: "row",
               justifyContent: "center",
               width: "100%",
-              marginTop: "-10%",
+              marginTop: "-20%",
             }}
           >
-            <Image
-              source={{
-                uri: getIPFSLink(profile?.profile?.picture?.original?.url),
-              }}
-              style={{
-                height: 100,
-                width: 100,
-                marginTop: -30,
-                borderRadius: 50,
-                borderWidth: 3,
-                borderColor: dark_primary,
-                backgroundColor: primary,
-              }}
+            <Avatar
+              src={getIPFSLink(profile?.profile?.picture?.original?.url)}
+              height={100}
+              width={100}
             />
           </View>
           <View style={{ padding: 4, alignItems: "center" }}>
-            <Text
+            <Heading
+              title={profile?.profile?.name}
               style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
-              numberOfLines={1}
-            >
-              {profile?.profile?.name}
-            </Text>
-            <Text style={{ fontSize: 12, color: "white", marginTop: 2 }}>
-              @{profile?.profile?.handle} &middot;{" "}
-              {profile?.profile?.stats?.totalFollowers} Subscribers &middot;{" "}
-              {profile?.profile?.stats?.totalPosts} Videos
-            </Text>
-            <Text style={{ fontSize: 14, color: "gray", textAlign: "center" }}>
-              {profile?.profile?.bio}
-            </Text>
+            />
+            <SubHeading
+              title={`@${profile?.profile?.handle} · ${profile?.profile?.stats?.totalFollowers} Subscribers · ${profile?.profile?.stats?.totalPosts} Videos`}
+              style={{ fontSize: 12, color: "white", marginTop: 2 }}
+            />
+            <SubHeading
+              title={profile?.profile?.bio}
+              style={{ fontSize: 14, color: "gray", textAlign: "center" }}
+            />
           </View>
           {/* <TouchableOpacity activeOpacity={0.8}>
             <View
@@ -151,15 +148,14 @@ const Profile = ({ navigation }: { navigation: any }) => {
           </TouchableOpacity> */}
 
           <View style={{ paddingVertical: 10 }}>
-            <Text
+            <Heading
+              title="Videos"
               style={{
                 fontSize: 20,
                 fontWeight: "700",
                 color: "white",
               }}
-            >
-              Videos
-            </Text>
+            />
             {allVideos?.map((item, index) => {
               if (item.appId.includes("lenstube")) {
                 return (
@@ -173,6 +169,8 @@ const Profile = ({ navigation }: { navigation: any }) => {
                     avatar={item?.profile?.picture?.original?.url}
                     playbackId={item?.metadata?.media[0]?.original?.url}
                     uploadedBy={item?.profile?.name}
+                    profileId={item?.profile?.id}
+                    stats={item?.stats}
                   />
                 );
               }
