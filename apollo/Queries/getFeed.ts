@@ -7,7 +7,7 @@ export default gql`
         profileId: $id
         metadata: { mainContentFocus: VIDEO }
         limit: 50
-        sources:["lenstube"]
+        sources: ["lenstube"]
       }
     ) {
       items {
@@ -251,7 +251,7 @@ export default gql`
 
     hidden
 
-    reaction(request: null)
+    reaction(request: { profileId: $id })
 
     mirrors(by: null)
 

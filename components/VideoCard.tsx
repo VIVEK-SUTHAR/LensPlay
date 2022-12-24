@@ -23,6 +23,7 @@ type videoPageProp = {
   id: number;
   stats: {};
   date: string;
+  reaction: string;
 };
 
 const VideoCard = ({
@@ -36,6 +37,7 @@ const VideoCard = ({
   playbackId,
   stats,
   date,
+  reaction
 }: videoPageProp) => {
   const store = useStore();
   const setCurrentIndex = store.setCurrentIndex;
@@ -60,6 +62,7 @@ const VideoCard = ({
               avatar: avatar,
               banner: banner,
               stats: stats,
+              reaction:reaction,
             });
           }}
         >

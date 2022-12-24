@@ -171,6 +171,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
                     uploadedBy={item?.profile?.name}
                     profileId={item?.profile?.id}
                     stats={item?.stats}
+                    reaction={item?.reaction}
                   />
                 );
               }

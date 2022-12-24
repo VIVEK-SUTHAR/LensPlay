@@ -50,6 +50,11 @@ const VideoPage = ({ route }) => {
 
   const playbackId = route.params.playbackId;
 
+  const [isalreadyLiked, setisalreadyLiked] = useState(
+    route.params.reaction === "UPVOTE" ? true : false
+  );
+  console.log("liked" + isalreadyLiked);
+
   useEffect(() => {
     checkFollowed();
     fetchComments();
@@ -60,8 +65,6 @@ const VideoPage = ({ route }) => {
       route.params.profileId,
       store.accessToken
     );
-    console.log(data.data.profile.isFollowedByMe);
-
     if (data.data.profile.isFollowedByMe) {
       setAlreadyFollowing(true);
       return;
@@ -389,17 +392,19 @@ const VideoPage = ({ route }) => {
           >
             <TouchableWithoutFeedback
               onPress={() => {
-                setLikes((prev) => prev + 1);
-                setIsLiked(true);
-                addLike(
-                  store.accessToken,
-                  store.profileId,
-                  route.params.id
-                ).then((res) => {
-                  if (res.addReaction === null) {
-                    console.log("liked");
-                  }
-                });
+                if (!isalreadyLiked && !isLiked) {
+                  setLikes((prev) => prev + 1);
+                  setIsLiked(true);
+                  addLike(
+                    store.accessToken,
+                    store.profileId,
+                    route.params.id
+                  ).then((res) => {
+                    if (res.addReaction === null) {
+                      console.log("liked");
+                    }
+                  });
+                }
               }}
             >
               <View
@@ -412,21 +417,29 @@ const VideoPage = ({ route }) => {
                   alignItems: "center",
                   borderRadius: 16,
                   borderWidth: 1,
-                  borderColor: isLiked ? primary : "white",
+                  borderColor: isalreadyLiked
+                    ? primary
+                    : isLiked
+                    ? primary
+                    : "white",
                   backgroundColor: "rgba(255, 255, 255, 0.08)",
                 }}
               >
                 <AntDesign
                   name="like2"
                   size={16}
-                  color={isLiked ? primary : "white"}
+                  color={isalreadyLiked ? primary : isLiked ? primary : "white"}
                 />
                 <SubHeading
                   title={likes || 0}
                   style={{
                     fontSize: 14,
                     fontWeight: "500",
-                    color: isLiked ? primary : "white",
+                    color: isalreadyLiked
+                      ? primary
+                      : isLiked
+                      ? primary
+                      : "white",
                     marginLeft: 4,
                   }}
                 />
