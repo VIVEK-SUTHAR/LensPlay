@@ -4,6 +4,7 @@ import { dark_secondary, primary } from "../constants/Colors";
 import getDifference from "../utils/getDifference";
 import Heading from "./UI/Heading";
 import SubHeading from "./UI/SubHeading";
+import Hyperlink from 'react-native-hyperlink'
 
 type CommentCardProps = {
   avatar: string;
@@ -67,10 +68,10 @@ const CommentCard = ({
             style={{ fontSize: 10, color: "gray" }}
           />
         </View>
-        <SubHeading
-          title={commentText}
-          style={{ fontSize: 14, color: "white", fontWeight: "600" }}
-        />
+       
+        <Hyperlink linkDefault={true} linkStyle={ { color: '#2980b9' } }>
+        <Text style={{ fontSize: 14, color: "white", fontWeight: "600" }}>{commentText}</Text>
+        </Hyperlink>
       </View>
     </View>
   );
