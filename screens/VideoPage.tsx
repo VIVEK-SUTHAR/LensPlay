@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import {
   AntDesign,
+  Entypo,
   Feather,
   FontAwesome,
   MaterialCommunityIcons,
@@ -37,8 +38,9 @@ import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import createSubScribe from "../api/freeSubScribe";
 import isFollowedByMe from "../api/isFollowedByMe";
+import AnimatedLottieView from "lottie-react-native";
 
-const VideoPage = ({ route }) => {
+const VideoPage = ({ route, navigation }) => {
   const store = useStore();
   const currentIndex = store.currentIndex;
   const userFeed = store.userFeed;
@@ -484,7 +486,7 @@ const VideoPage = ({ route }) => {
                   borderColor: "white",
                 }}
               >
-                <AntDesign name="switcher" size={16} color="white" />
+                <Entypo name="folder-video" size={18} color={"white"} />
                 <SubHeading
                   title={`${STATS?.totalAmountOfCollects || 0} Collects`}
                   style={{
@@ -561,25 +563,38 @@ const VideoPage = ({ route }) => {
               }}
             />
 
-            {userFeed[currentIndex]?.comments == 0 ? (
-              <SubHeading
-                title="There are no comments yet"
-                style={{ fontSize: 16, marginTop: 10, color: "white" }}
-              />
-            ) : (
-              <>
-                {comments?.map((item, index) => {
-                  return (
-                    <CommentCard
-                      key={index}
-                      username={item?.profile?.handle}
-                      avatar={item?.profile?.picture?.original?.url}
-                      commentText={item?.metadata?.description}
-                      commentTime={item?.createdAt}
-                    />
-                  );
-                })}
-              </>
+            {comments?.map((item, index) => {
+              return (
+                <CommentCard
+                  key={index}
+                  username={item?.profile?.handle}
+                  avatar={item?.profile?.picture?.original?.url}
+                  commentText={item?.metadata?.description}
+                  commentTime={item?.createdAt}
+                  id={item?.profile?.id}
+                  navigation={navigation}
+                />
+              );
+            })}
+            {comments.length === 0 && (
+              <View style={{ maxHeight: 200 }}>
+                <AnimatedLottieView
+                  autoPlay
+                  style={{
+                    height: "90%",
+                    alignSelf: "center",
+                  }}
+                  source={require("../assets/nocomments.json")}
+                />
+                <Heading
+                  title="There are no comments yet"
+                  style={{
+                    color: "white",
+                    fontSize: 20,
+                    textAlign: "center",
+                  }}
+                ></Heading>
+              </View>
             )}
           </View>
         </View>

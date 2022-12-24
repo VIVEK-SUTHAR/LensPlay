@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { dark_secondary, primary } from "../constants/Colors";
 import getDifference from "../utils/getDifference";
@@ -10,6 +10,8 @@ type CommentCardProps = {
   username: string;
   commentText: string;
   commentTime: string;
+  id: string;
+  navigation: any;
 };
 
 const CommentCard = ({
@@ -17,6 +19,8 @@ const CommentCard = ({
   username,
   commentText,
   commentTime,
+  id,
+  navigation,
 }: CommentCardProps) => {
   return (
     <View
@@ -29,17 +33,25 @@ const CommentCard = ({
       }}
     >
       <View style={{ height: 40, width: 40, marginRight: 8 }}>
-        <Image
-          style={{
-            height: "100%",
-            width: "100%",
-            borderRadius: 50,
-            resizeMode: "contain",
+        <Pressable
+          onPress={() => {
+            navigation.navigate("Channel", {
+              profileId: id,
+            });
           }}
-          source={{
-            uri: `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`,
-          }}
-        />
+        >
+          <Image
+            style={{
+              height: "100%",
+              width: "100%",
+              borderRadius: 50,
+              resizeMode: "contain",
+            }}
+            source={{
+              uri: `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`,
+            }}
+          />
+        </Pressable>
       </View>
       <View style={{ flex: 1 }}>
         <View
