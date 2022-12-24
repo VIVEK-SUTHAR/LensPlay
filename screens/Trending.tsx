@@ -16,6 +16,7 @@ import { dark_primary } from "../constants/Colors";
 import convertDate from "../utils/formateDate";
 import AnimatedLottieView from "lottie-react-native";
 import Heading from "../components/UI/Heading";
+import useStore from "../store/Store";
 
 type TrendingPageProps = {
   navigation: any;
@@ -23,15 +24,16 @@ type TrendingPageProps = {
 
 const Trending = ({ navigation }: TrendingPageProps) => {
   const [TrendingItems, setTrendingItems] = useState([]);
-
+  const store = useStore();
   async function getTrendingData() {
     const trendingData = await client.query({
       query: getTrendingPublication,
+      variables: {
+        id: store.profileId,
+      },
     });
     setTrendingItems(trendingData.data.explorePublications.items);
-    console.log(TrendingItems);
   }
-
   useEffect(() => {
     getTrendingData();
   }, []);
@@ -138,6 +140,9 @@ const Trending = ({ navigation }: TrendingPageProps) => {
           )}
           {TrendingItems &&
             TrendingItems?.map((item, index) => {
+              if (item?.profile?.id === "0x5c59") {
+                console.log(item?.reaction);
+              }
               return (
                 <VideoCard
                   key={index}
@@ -151,6 +156,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                   profileId={item?.profile?.id}
                   stats={item?.stats}
                   playbackId={item?.metadata?.media[0]?.original?.url}
+                  reaction={item?.reaction}
                 />
               );
               // }

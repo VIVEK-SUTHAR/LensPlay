@@ -90,6 +90,7 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
                 comments={item?.comments}
                 stats={item?.root?.stats}
                 profileId={item?.root?.profile?.id}
+                reaction={item?.root?.reaction}
               />
             );
           })}
