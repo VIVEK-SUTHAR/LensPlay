@@ -166,7 +166,7 @@ const VideoPage = ({ route, navigation }) => {
           enterMute: () => setIsMute(!isMute),
           exitMute: () => setIsMute(!isMute),
           isMute,
-          visible: true
+          visible: false
         }}
       />
 
