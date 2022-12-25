@@ -117,15 +117,15 @@ const VideoPage = ({ route, navigation }) => {
   };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
-      <StatusBar style="light" backgroundColor={dark_primary} />
-      <ImageBackground
+      <StatusBar style="light" backgroundColor={dark_primary} translucent={true} />
+      {/* <ImageBackground
         source={{ uri: getIPFSLink(route.params.banner) }}
         style={{
-          height: 280,
-          zIndex: 5,
+          width: "100%",
+          height: inFullscreen ? Dimensions.get("screen").width * 0.95 : 280,
         }}
-        blurRadius={10}
-      >
+        blurRadius={8}
+      > */}
         <VideoPlayer
           style={{
             width: inFullscreen
@@ -163,6 +163,7 @@ const VideoPage = ({ route, navigation }) => {
                 color: "white",
                 paddingHorizontal: 20,
                 fontSize: 18,
+                fontWeight: "600",
                 paddingVertical: 8,
               }}
             >
@@ -185,6 +186,7 @@ const VideoPage = ({ route, navigation }) => {
             source: {
               uri: getIPFSLink(playbackId),
             },
+            
           }}
           fullscreen={{
             inFullscreen: inFullscreen,
@@ -210,7 +212,7 @@ const VideoPage = ({ route, navigation }) => {
             visible: false,
           }}
         />
-      </ImageBackground>
+      {/* </ImageBackground> */}
 
       <Modal
         animationType="slide"
