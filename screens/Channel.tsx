@@ -6,6 +6,7 @@ import {
   Text,
   ToastAndroid,
   View,
+  TouchableWithoutFeedback
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import getIPFSLink from "../utils/getIPFSLink";
@@ -27,6 +28,8 @@ import { STATIC_ASSET } from "../constants";
 import AnimatedLottieView from "lottie-react-native";
 import Skleton from "../components/Skleton";
 import extractURLs from "../utils/extractURL";
+import isFollowedByMe from "../api/isFollowedByMe";
+import createSubScribe from "../api/freeSubScribe";
 
 interface ChannelScreenProps {
   navigation: any;
@@ -37,12 +40,26 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
   const [profile, setProfile] = useState<{}>({});
   const [allVideos, setallVideos] = useState([]);
   const [isVideoAvilable, setIsVideoAvilable] = useState<boolean>(true);
+  const [alreadyFollowing, setAlreadyFollowing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const store = useStore();
+  
 
   useEffect(() => {
     getProfleInfo();
+    checkFollowed();
   }, [navigation, route.params.profileId]);
+
+  async function checkFollowed() {
+    const data = await isFollowedByMe(
+      route.params.profileId,
+      store.accessToken
+    );
+    if (data.data.profile.isFollowedByMe) {
+      setAlreadyFollowing(true);
+      return;
+    }
+  }
 
   const getProfleInfo = async () => {
     try {
@@ -143,6 +160,63 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
                 style={{ fontSize: 14, color: "gray", textAlign: "center" }}
               />
             </View>
+            <TouchableWithoutFeedback
+              onPress={async () => {
+                try {
+                  const data = await createSubScribe(
+                    route.params.profileId,
+                    store.accessToken
+                  );
+                  if (data.data === null) {
+                    console.log(data.errors[0].message);
+
+                    ToastAndroid.show(
+                      data.errors[0].message,
+                      ToastAndroid.SHORT
+                    );
+                  }
+                  if (data.data.proxyAction) {
+                    ToastAndroid.show(
+                      "Subscribed Successfully",
+                      ToastAndroid.SHORT
+                    );
+                  }
+                } catch (error) {
+                  if (error instanceof Error) {
+                  }
+                }
+              }}
+            >
+              <View style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 8
+              }}>
+              <View
+                style={{
+                  paddingHorizontal: 10,
+                  paddingVertical: 8,
+                  width: '40%',
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 50,
+                  backgroundColor: alreadyFollowing ? "#7400B8" : "white",
+                }}
+              >
+                <Heading
+                  title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "700",
+                    textAlign: 'center',
+                    color: alreadyFollowing ? "white" : "black",
+                  }}
+                />
+              </View>
+              </View>
+            </TouchableWithoutFeedback>
             {/* <TouchableOpacity activeOpacity={0.8}>
             <View
               style={{
