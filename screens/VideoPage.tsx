@@ -50,6 +50,7 @@ const VideoPage = ({ route, navigation }) => {
   const [inFullscreen, setInFullsreen] = useState(false);
   const [alreadyFollowing, setAlreadyFollowing] = useState(false);
   const [ismodalopen, setIsmodalopen] = useState(false);
+  const [isMute, setIsMute] = useState(false)
 
   const playbackId = route.params.playbackId;
 
@@ -110,9 +111,6 @@ const VideoPage = ({ route, navigation }) => {
           videoBackgroundColor: "transparent",
           controlsBackgroundColor: "transparent",
         }}
-        mute={{
-          visible: true,
-        }}
         textStyle={{
           fontSize: 14,
           fontWeight: "600",
@@ -146,7 +144,7 @@ const VideoPage = ({ route, navigation }) => {
             width: "100%",
             resizeMode: "contain",
           },
-          isMuted: false,
+          isMuted: isMute,
           shouldPlay: true,
           resizeMode: ResizeMode.CONTAIN,
           source: {
@@ -165,6 +163,12 @@ const VideoPage = ({ route, navigation }) => {
             setInFullsreen(!inFullscreen)
             await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT)
           },
+        }}
+        mute={{
+          enterMute: () => setIsMute(!isMute),
+          exitMute: () => setIsMute(!isMute),
+          isMute,
+          visible: false
         }}
       />
 
