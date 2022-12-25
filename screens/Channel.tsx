@@ -6,7 +6,7 @@ import {
   Text,
   ToastAndroid,
   View,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import getIPFSLink from "../utils/getIPFSLink";
@@ -43,7 +43,6 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
   const [alreadyFollowing, setAlreadyFollowing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const store = useStore();
-  
 
   useEffect(() => {
     getProfleInfo();
@@ -162,6 +161,7 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
             </View>
             <TouchableWithoutFeedback
               onPress={async () => {
+                if (alreadyFollowing) return;
                 try {
                   const data = await createSubScribe(
                     route.params.profileId,
@@ -187,62 +187,38 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
                 }
               }}
             >
-              <View style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 8
-              }}>
               <View
                 style={{
-                  paddingHorizontal: 10,
-                  paddingVertical: 8,
-                  width: '40%',
                   flexDirection: "row",
                   justifyContent: "center",
                   alignItems: "center",
-                  borderRadius: 50,
-                  backgroundColor: alreadyFollowing ? "#7400B8" : "white",
+                  marginTop: 8,
                 }}
               >
-                <Heading
-                  title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
+                <View
                   style={{
-                    fontSize: 16,
-                    fontWeight: "700",
-                    textAlign: 'center',
-                    color: alreadyFollowing ? "white" : "black",
+                    paddingHorizontal: 10,
+                    paddingVertical: 8,
+                    width: "40%",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 50,
+                    backgroundColor: alreadyFollowing ? "#7400B8" : "white",
                   }}
-                />
-              </View>
+                >
+                  <Heading
+                    title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "700",
+                      textAlign: "center",
+                      color: alreadyFollowing ? "white" : "black",
+                    }}
+                  />
+                </View>
               </View>
             </TouchableWithoutFeedback>
-            {/* <TouchableOpacity activeOpacity={0.8}>
-            <View
-              style={{
-                backgroundColor: "white",
-                borderRadius: 50,
-                paddingVertical: 8,
-                marginVertical: 16,
-                flexDirection: "row",
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                style={{
-                  color: "black",
-                  fontSize: 16,
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  marginHorizontal: 4,
-                }}
-              >
-                Edit Channel
-              </Text>
-              <Feather name="edit-3" size={24} />
-            </View>
-          </TouchableOpacity> */}
-
             <View style={{ paddingVertical: 10 }}>
               <Heading
                 title="Videos"
@@ -294,6 +270,30 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
             <Skleton />
             <Skleton />
             <Skleton />
+          </View>
+        )}
+        {allVideos.length === 0 && (
+          <View style={{ maxHeight: 250 }}>
+            <AnimatedLottieView
+              autoPlay
+              hardwareAccelerationAndroid={true}
+              style={{
+                height: "90%",
+                alignSelf: "center",
+              }}
+              source={require("../assets/notfound.json")}
+            />
+            <Heading
+              title={`Seems like ${
+                profile?.profile?.name ||
+                profile?.profile?.handle?.split(".")[0]
+              } has not uploaded any video`}
+              style={{
+                color: "gray",
+                fontSize: 12,
+                textAlign: "center",
+              }}
+            ></Heading>
           </View>
         )}
       </ScrollView>

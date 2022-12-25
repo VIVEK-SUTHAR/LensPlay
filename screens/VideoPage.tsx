@@ -11,6 +11,8 @@ import {
   TouchableOpacity,
   ToastAndroid,
   BackHandler,
+  Image,
+  ImageBackground,
 } from "react-native";
 import {
   AntDesign,
@@ -39,7 +41,7 @@ import SubHeading from "../components/UI/SubHeading";
 import createSubScribe from "../api/freeSubScribe";
 import isFollowedByMe from "../api/isFollowedByMe";
 import AnimatedLottieView from "lottie-react-native";
-import * as ScreenOrientation from 'expo-screen-orientation';
+import * as ScreenOrientation from "expo-screen-orientation";
 
 const VideoPage = ({ route, navigation }) => {
   const store = useStore();
@@ -51,7 +53,7 @@ const VideoPage = ({ route, navigation }) => {
   const [inFullscreen, setInFullsreen] = useState(false);
   const [alreadyFollowing, setAlreadyFollowing] = useState(false);
   const [ismodalopen, setIsmodalopen] = useState(false);
-  const [isMute, setIsMute] = useState(false)
+  const [isMute, setIsMute] = useState(false);
 
   const playbackId = route.params.playbackId;
 
@@ -90,10 +92,10 @@ const VideoPage = ({ route, navigation }) => {
   }
 
   function handleBackButtonClick() {
-    setStatusBarHidden(false, 'fade')
-    setInFullsreen(!inFullscreen)
-    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT)
-    navigation.goBack();
+    setStatusBarHidden(false, "fade");
+    setInFullsreen(!inFullscreen);
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+    if (!inFullscreen) navigation.goBack();
     return true;
   }
 
@@ -116,71 +118,99 @@ const VideoPage = ({ route, navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <StatusBar style="light" backgroundColor={dark_primary} />
-      <VideoPlayer
+      <ImageBackground
+        source={{ uri: getIPFSLink(route.params.banner) }}
         style={{
-          width: inFullscreen ? Dimensions.get("screen").height : Dimensions.get("screen").width,
-          height: inFullscreen ? Dimensions.get("screen").width : 280,
-          videoBackgroundColor: "transparent",
-          controlsBackgroundColor: "transparent",
+          height: 280,
+          zIndex: 5,
         }}
-        textStyle={{
-          fontSize: 14,
-          fontWeight: "600",
-        }}
-        activityIndicator={{
-          size: "large",
-          color: primary,
-        }}
-        slider={{
-          visible: true,
-          thumbTintColor: "white",
-          maximumTrackTintColor: "white",
-          minimumTrackTintColor: primary,
-        }}
-        icon={{
-          size: 48,
-          play: <AntDesign name="play" color={primary} size={36} />,
-          pause: <AntDesign name="pause" color={primary} size={36} />,
-          replay: <MaterialCommunityIcons name="replay" size={48} color={primary} />
-        }}
-        header={<Text style={{ color: "white", paddingHorizontal: 20 }}>{route.params.title}</Text>}
-        videoProps={{
-          usePoster: true,
-          posterSource: {
-            uri: getIPFSLink(route.params.banner),
-          },
-          posterStyle: {
-            height: "100%",
-            width: "100%",
-            resizeMode: "contain",
-          },
-          isMuted: isMute,
-          shouldPlay: true,
-          resizeMode: ResizeMode.CONTAIN,
-          source: {
-            uri: getIPFSLink(playbackId),
-          },
-        }}
-        fullscreen={{
-          inFullscreen: inFullscreen,
-          enterFullscreen: async () => {
-            setStatusBarHidden(true, 'fade')
-            setInFullsreen(!inFullscreen)
-            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE)
-          },
-          exitFullscreen: async () => {
-            setStatusBarHidden(false, 'fade')
-            setInFullsreen(!inFullscreen)
-            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT)
-          },
-        }}
-        mute={{
-          enterMute: () => setIsMute(!isMute),
-          exitMute: () => setIsMute(!isMute),
-          isMute,
-          visible: false
-        }}
-      />
+        blurRadius={10}
+      >
+        <VideoPlayer
+          style={{
+            width: inFullscreen
+              ? Dimensions.get("screen").height
+              : Dimensions.get("screen").width,
+            height: inFullscreen ? Dimensions.get("screen").width * 0.95 : 280,
+            videoBackgroundColor: "",
+            controlsBackgroundColor: "transparent",
+          }}
+          textStyle={{
+            fontSize: 14,
+            fontWeight: "600",
+          }}
+          activityIndicator={{
+            size: "large",
+            color: primary,
+          }}
+          slider={{
+            visible: true,
+            thumbTintColor: "white",
+            maximumTrackTintColor: "white",
+            minimumTrackTintColor: primary,
+          }}
+          icon={{
+            size: 48,
+            play: <AntDesign name="play" color={primary} size={36} />,
+            pause: <AntDesign name="pause" color={primary} size={36} />,
+            replay: (
+              <MaterialCommunityIcons name="replay" size={48} color={primary} />
+            ),
+          }}
+          header={
+            <Text
+              style={{
+                color: "white",
+                paddingHorizontal: 20,
+                fontSize: 18,
+                paddingVertical: 8,
+              }}
+            >
+              {route.params.title}
+            </Text>
+          }
+          videoProps={{
+            usePoster: true,
+            posterSource: {
+              uri: getIPFSLink(route.params.banner),
+            },
+            posterStyle: {
+              height: "100%",
+              width: "100%",
+              resizeMode: "contain",
+            },
+            isMuted: isMute,
+            shouldPlay: true,
+            resizeMode: ResizeMode.CONTAIN,
+            source: {
+              uri: getIPFSLink(playbackId),
+            },
+          }}
+          fullscreen={{
+            inFullscreen: inFullscreen,
+            enterFullscreen: async () => {
+              setStatusBarHidden(true, "fade");
+              setInFullsreen(!inFullscreen);
+              await ScreenOrientation.lockAsync(
+                ScreenOrientation.OrientationLock.LANDSCAPE
+              );
+            },
+            exitFullscreen: async () => {
+              setStatusBarHidden(false, "fade");
+              setInFullsreen(!inFullscreen);
+              await ScreenOrientation.lockAsync(
+                ScreenOrientation.OrientationLock.PORTRAIT
+              );
+            },
+          }}
+          mute={{
+            enterMute: () => setIsMute(!isMute),
+            exitMute: () => setIsMute(!isMute),
+            isMute,
+            visible: false,
+          }}
+        />
+      </ImageBackground>
 
       <Modal
         animationType="slide"
@@ -316,10 +346,10 @@ const VideoPage = ({ route, navigation }) => {
                 color: "white",
               }}
             />
-            <SubHeading
+            {/* <SubHeading
               title={userFeed[currentIndex]?.root?.metadata?.description}
               style={{ fontSize: 12, color: "gray" }}
-            />
+            /> */}
           </View>
           <View style={{ flexDirection: "row", opacity: 0.5, marginTop: 8 }}>
             <SubHeading
@@ -448,8 +478,8 @@ const VideoPage = ({ route, navigation }) => {
                   borderColor: isalreadyLiked
                     ? primary
                     : isLiked
-                      ? primary
-                      : "white",
+                    ? primary
+                    : "white",
                   backgroundColor: "rgba(255, 255, 255, 0.08)",
                 }}
               >
@@ -466,8 +496,8 @@ const VideoPage = ({ route, navigation }) => {
                     color: isalreadyLiked
                       ? primary
                       : isLiked
-                        ? primary
-                        : "white",
+                      ? primary
+                      : "white",
                     marginLeft: 4,
                   }}
                 />

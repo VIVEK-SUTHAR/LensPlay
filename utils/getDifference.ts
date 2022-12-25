@@ -1,3 +1,10 @@
+/**
+ *
+ * @param timestamp Unix timestamp  162548142
+ * @returns Difference from current time ex: 6d ago
+ *
+ */
+
 function getDifference(timestamp: string) {
   const date = new Date();
   const currentDate = date.getDate();
@@ -22,10 +29,10 @@ function getDifference(timestamp: string) {
     return `~${difference} m ago`;
   } else if (currentDate != notificationDate) {
     const difference = currentDate - notificationDate;
-    return `~${difference}d ago`;
+    return `~${difference} d ago`;
   } else if (currentHour != notificationHour) {
     const difference = currentHour - notificationHour;
-    return `~${difference}h ago`;
+    return `~${difference} h ago`;
   } else if (currentMinute != notificationMinute) {
     const difference = currentMinute - notificationMinute;
     return `~${difference} min ago`;
@@ -33,7 +40,6 @@ function getDifference(timestamp: string) {
     const difference = currentSecond - notificationSecond;
     return `~${difference} sec ago`;
   }
-
 }
 
 export default getDifference;
