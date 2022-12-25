@@ -50,10 +50,6 @@ const VideoPage = ({ route, navigation }) => {
   const [inFullscreen, setInFullsreen] = useState(false);
   const [alreadyFollowing, setAlreadyFollowing] = useState(false);
   const [ismodalopen, setIsmodalopen] = useState(false);
-  const [currentWidth, setCurrentWidth] = useState<number>(Dimensions.get("screen").width);
-
-  console.log(currentWidth);
-
 
   const playbackId = route.params.playbackId;
 
@@ -89,10 +85,6 @@ const VideoPage = ({ route, navigation }) => {
     });
     setComments([]);
     setComments(data.data.publications.items);
-  }
-
-  function getCurrentWidth() {
-    setCurrentWidth(Dimensions.get("screen").width);
   }
 
   const STATS = route.params.stats;
