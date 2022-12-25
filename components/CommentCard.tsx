@@ -11,6 +11,7 @@ import { dark_secondary, primary } from "../constants/Colors";
 import getDifference from "../utils/getDifference";
 import Heading from "./UI/Heading";
 import SubHeading from "./UI/SubHeading";
+import extractURLs from "../utils/extractURL";
 
 type CommentCardProps = {
   avatar: string;
@@ -29,28 +30,6 @@ const CommentCard = ({
   id,
   navigation,
 }: CommentCardProps) => {
-  function extractURLs(txt: string) {
-    const URL_REGEX =
-      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
-    const renderText = (txt) =>
-      txt?.split(" ").map((part, index) =>
-        URL_REGEX.test(part) ? (
-          <Text
-            key={index}
-            style={{ color: primary }}
-            onPress={() => {
-              Linking.openURL(part);
-            }}
-          >
-            {part}{" "}
-          </Text>
-        ) : (
-          part + " "
-        )
-      );
-    return renderText(txt);
-  }
-
   return (
     <View
       style={{

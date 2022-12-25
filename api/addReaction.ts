@@ -2,7 +2,7 @@ async function addLike(
   token: string,
   profileId: string,
   publicationId: string
-) {
+): Promise<any> {
   let headersList = {
     "Content-Type": "application/json",
     Authorization: "Bearer " + token,

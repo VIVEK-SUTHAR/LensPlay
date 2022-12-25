@@ -1,9 +1,43 @@
-# Lens-Play: The Native decentralized mobile app built on top of Lens Protocol
+# LensPlay
 
-## Follow below Steps:
+## LensPlay is a decentralized mobile-first video-sharing application built on top of Lens Protocol
 
-### Go to testnet.lenstube.xyz
+## v0.0.1 is coming..
 
-### create your account and setup dispatcher
+## Features of LensPlay
 
-### then yarn start and continute
+- Personalized Feed
+
+- Explore whats Tranding
+
+- Like + Collect + Mirror Video
+
+- Dedicated Notifications
+
+- Search Videos
+
+- Send Tip to your favorite creators
+
+## Roadmap for upcoming versions:
+
+- Improve UI/UX
+
+- Add Upload Video feature
+
+- Support Paid Collect and Super Follow
+
+- Implement Push Notifications
+
+- Add Edit Channel Option
+
+- Add an Option of Add to Playlist
+
+- Enable Live-Streaming With the Help of Livepeer
+
+- Improve Search results
+
+## Want to help us: support us and show your love at 0x0119DDF85FEC9aC83bB92B27b2b10cCec715D12E(Ethereum,Polygon)
+
+## Follow the Devs of LensPlay: iamvivek.lens iamharsh.lens devumang.lens somewhatsahil.lens
+
+### Found a Bug: report to contactweb3devs@gmail.com

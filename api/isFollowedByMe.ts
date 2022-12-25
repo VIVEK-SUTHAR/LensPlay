@@ -1,4 +1,4 @@
-async function isFollowedByMe(profileId: string, accessToken: string) {
+async function isFollowedByMe(profileId: string, accessToken: string): Promise<any> {
   let headersList = {
     Accept: "*/*",
     Authorization: "Bearer " + accessToken,

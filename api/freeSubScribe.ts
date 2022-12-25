@@ -1,7 +1,7 @@
 export default async function createSubScribe(
   profileId: string,
   accessToken: string
-) {
+): Promise<any> {
   try {
     console.log(profileId);
 

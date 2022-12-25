@@ -1,6 +1,6 @@
 import { LENS_API_ENDPOINT } from "../constants";
 
-async function fetchNotifications(profileId: string, accesToken: string) {
+async function fetchNotifications(profileId: string, accesToken: string): Promise<any> {
   try {
     let headersList = {
       Authorization: "Bearer " + accesToken,

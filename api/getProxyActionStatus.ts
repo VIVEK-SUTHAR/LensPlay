@@ -1,4 +1,7 @@
-async function getProxyActionStatus(proxyId: string, accessToken: string) {
+async function getProxyActionStatus(
+  proxyId: string,
+  accessToken: string
+): Promise<void> {
   let headersList = {
     "Content-Type": "application/json",
     Authorization: "Bearer " + accessToken,
@@ -19,6 +22,7 @@ async function getProxyActionStatus(proxyId: string, accessToken: string) {
   console.log(data?.data?.result);
 }
 export default getProxyActionStatus;
+
 const PROXY_ACTION_STATUS_QUERY = `
 query ProxyActionStatus($proxyId:ProxyActionId!) {
   proxyActionStatus(proxyActionId: $proxyId) {

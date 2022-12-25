@@ -11,8 +11,6 @@ import {
   TouchableOpacity,
   ToastAndroid,
   BackHandler,
-  Image,
-  ImageBackground,
 } from "react-native";
 import {
   AntDesign,
@@ -69,7 +67,7 @@ const VideoPage = ({ route, navigation }) => {
     checkFollowed();
   }, []);
 
-  async function checkFollowed() {
+  async function checkFollowed(): Promise<void> {
     const data = await isFollowedByMe(
       route.params.profileId,
       store.accessToken
@@ -80,7 +78,7 @@ const VideoPage = ({ route, navigation }) => {
     }
   }
 
-  async function fetchComments() {
+  async function fetchComments(): Promise<void> {
     const data = await client.query({
       query: getComments,
       variables: {
@@ -117,7 +115,11 @@ const VideoPage = ({ route, navigation }) => {
   };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
-      <StatusBar style="light" backgroundColor={dark_primary} translucent={true} />
+      <StatusBar
+        style="light"
+        backgroundColor={dark_primary}
+        translucent={true}
+      />
       {/* <ImageBackground
         source={{ uri: getIPFSLink(route.params.banner) }}
         style={{
@@ -126,92 +128,91 @@ const VideoPage = ({ route, navigation }) => {
         }}
         blurRadius={8}
       > */}
-        <VideoPlayer
-          style={{
-            width: inFullscreen
-              ? Dimensions.get("screen").height
-              : Dimensions.get("screen").width,
-            height: inFullscreen ? Dimensions.get("screen").width * 0.95 : 280,
-            videoBackgroundColor: "",
-            controlsBackgroundColor: "transparent",
-          }}
-          textStyle={{
-            fontSize: 14,
-            fontWeight: "600",
-          }}
-          activityIndicator={{
-            size: "large",
-            color: primary,
-          }}
-          slider={{
-            visible: true,
-            thumbTintColor: "white",
-            maximumTrackTintColor: "white",
-            minimumTrackTintColor: primary,
-          }}
-          icon={{
-            size: 48,
-            play: <AntDesign name="play" color={primary} size={36} />,
-            pause: <AntDesign name="pause" color={primary} size={36} />,
-            replay: (
-              <MaterialCommunityIcons name="replay" size={48} color={primary} />
-            ),
-          }}
-          header={
-            <Text
-              style={{
-                color: "white",
-                paddingHorizontal: 20,
-                fontSize: 18,
-                fontWeight: "600",
-                paddingVertical: 8,
-              }}
-            >
-              {route.params.title}
-            </Text>
-          }
-          videoProps={{
-            usePoster: true,
-            posterSource: {
-              uri: getIPFSLink(route.params.banner),
-            },
-            posterStyle: {
-              height: "100%",
-              width: "100%",
-              resizeMode: "contain",
-            },
-            isMuted: isMute,
-            shouldPlay: true,
-            resizeMode: ResizeMode.CONTAIN,
-            source: {
-              uri: getIPFSLink(playbackId),
-            },
-            
-          }}
-          fullscreen={{
-            inFullscreen: inFullscreen,
-            enterFullscreen: async () => {
-              setStatusBarHidden(true, "fade");
-              setInFullsreen(!inFullscreen);
-              await ScreenOrientation.lockAsync(
-                ScreenOrientation.OrientationLock.LANDSCAPE
-              );
-            },
-            exitFullscreen: async () => {
-              setStatusBarHidden(false, "fade");
-              setInFullsreen(!inFullscreen);
-              await ScreenOrientation.lockAsync(
-                ScreenOrientation.OrientationLock.PORTRAIT
-              );
-            },
-          }}
-          mute={{
-            enterMute: () => setIsMute(!isMute),
-            exitMute: () => setIsMute(!isMute),
-            isMute,
-            visible: false,
-          }}
-        />
+      <VideoPlayer
+        style={{
+          width: inFullscreen
+            ? Dimensions.get("screen").height
+            : Dimensions.get("screen").width,
+          height: inFullscreen ? Dimensions.get("screen").width * 0.95 : 280,
+          videoBackgroundColor: "",
+          controlsBackgroundColor: "transparent",
+        }}
+        textStyle={{
+          fontSize: 14,
+          fontWeight: "600",
+        }}
+        activityIndicator={{
+          size: "large",
+          color: primary,
+        }}
+        slider={{
+          visible: true,
+          thumbTintColor: "white",
+          maximumTrackTintColor: "white",
+          minimumTrackTintColor: primary,
+        }}
+        icon={{
+          size: 48,
+          play: <AntDesign name="play" color={primary} size={36} />,
+          pause: <AntDesign name="pause" color={primary} size={36} />,
+          replay: (
+            <MaterialCommunityIcons name="replay" size={48} color={primary} />
+          ),
+        }}
+        header={
+          <Text
+            style={{
+              color: "white",
+              paddingHorizontal: 20,
+              fontSize: 18,
+              fontWeight: "600",
+              paddingVertical: 8,
+            }}
+          >
+            {route.params.title}
+          </Text>
+        }
+        videoProps={{
+          usePoster: true,
+          posterSource: {
+            uri: getIPFSLink(route.params.banner),
+          },
+          posterStyle: {
+            height: "100%",
+            width: "100%",
+            resizeMode: "contain",
+          },
+          isMuted: isMute,
+          shouldPlay: true,
+          resizeMode: ResizeMode.CONTAIN,
+          source: {
+            uri: getIPFSLink(playbackId),
+          },
+        }}
+        fullscreen={{
+          inFullscreen: inFullscreen,
+          enterFullscreen: async () => {
+            setStatusBarHidden(true, "fade");
+            setInFullsreen(!inFullscreen);
+            await ScreenOrientation.lockAsync(
+              ScreenOrientation.OrientationLock.LANDSCAPE
+            );
+          },
+          exitFullscreen: async () => {
+            setStatusBarHidden(false, "fade");
+            setInFullsreen(!inFullscreen);
+            await ScreenOrientation.lockAsync(
+              ScreenOrientation.OrientationLock.PORTRAIT
+            );
+          },
+        }}
+        mute={{
+          enterMute: () => setIsMute(!isMute),
+          exitMute: () => setIsMute(!isMute),
+          isMute,
+          visible: false,
+        }}
+      />
       {/* </ImageBackground> */}
 
       <Modal

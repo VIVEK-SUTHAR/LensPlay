@@ -1,7 +1,7 @@
 async function freeCollectPublication(
   publicationId: string,
   accessToken: string
-) {
+): Promise<any> {
   try {
     console.log(accessToken);
     let headersList = {
