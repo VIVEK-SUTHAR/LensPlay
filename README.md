@@ -38,6 +38,11 @@
 
 ## Want to help us: support us and show your love at 0x0119DDF85FEC9aC83bB92B27b2b10cCec715D12E(Ethereum,Polygon)
 
-## Follow the Devs of LensPlay: iamvivek.lens iamharsh.lens devumang.lens somewhatsahil.lens
+## Follow the Devs of LensPlay: 
+
+- iamvivek.lens twitter:@theviveksuthar 
+- iamharsh.lens twitter:@hrs_2220
+- devumang.lens twitter:@devumang
+- somewhatsahil.lens twitter:@somewhatsahil
 
 ### Found a Bug: report to contactweb3devs@gmail.com
