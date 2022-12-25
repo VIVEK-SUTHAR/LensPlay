@@ -10,6 +10,7 @@ import {
   Modal,
   TouchableOpacity,
   ToastAndroid,
+  BackHandler,
 } from "react-native";
 import {
   AntDesign,
@@ -60,7 +61,6 @@ const VideoPage = ({ route, navigation }) => {
 
   useEffect(() => {
     fetchComments();
-    console.log("i am changed");
   }, [playbackId]);
 
   useEffect(() => {
@@ -77,6 +77,7 @@ const VideoPage = ({ route, navigation }) => {
       return;
     }
   }
+
   async function fetchComments() {
     const data = await client.query({
       query: getComments,
@@ -87,6 +88,18 @@ const VideoPage = ({ route, navigation }) => {
     setComments([]);
     setComments(data.data.publications.items);
   }
+
+  function handleBackButtonClick() {
+    setStatusBarHidden(false, 'fade')
+    setInFullsreen(!inFullscreen)
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT)
+    navigation.goBack();
+    return true;
+  }
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+  }, []);
 
   const STATS = route.params.stats;
   const onShare = async () => {
@@ -103,7 +116,6 @@ const VideoPage = ({ route, navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <StatusBar style="light" backgroundColor={dark_primary} />
-
       <VideoPlayer
         style={{
           width: inFullscreen ? Dimensions.get("screen").height : Dimensions.get("screen").width,
@@ -131,7 +143,7 @@ const VideoPage = ({ route, navigation }) => {
           pause: <AntDesign name="pause" color={primary} size={36} />,
           replay: <MaterialCommunityIcons name="replay" size={48} color={primary} />
         }}
-        header={<Text style={{ color: "#FFF" }}>Custom title</Text>}
+        header={<Text style={{ color: "white", paddingHorizontal: 20 }}>{route.params.title}</Text>}
         videoProps={{
           usePoster: true,
           posterSource: {
@@ -154,12 +166,12 @@ const VideoPage = ({ route, navigation }) => {
           enterFullscreen: async () => {
             setStatusBarHidden(true, 'fade')
             setInFullsreen(!inFullscreen)
-            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_LEFT)
+            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE)
           },
           exitFullscreen: async () => {
             setStatusBarHidden(false, 'fade')
             setInFullsreen(!inFullscreen)
-            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT)
+            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT)
           },
         }}
         mute={{
