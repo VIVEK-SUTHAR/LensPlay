@@ -129,9 +129,7 @@ const VideoPage = ({ route, navigation }) => {
           size: 48,
           play: <AntDesign name="play" color={primary} size={36} />,
           pause: <AntDesign name="pause" color={primary} size={36} />,
-          replay: (
-            <MaterialCommunityIcons name="replay" size={48} color={primary} />
-          ),
+          replay: <MaterialCommunityIcons name="replay" size={48} color={primary} />
         }}
         header={<Text style={{ color: "#FFF" }}>Custom title</Text>}
         videoProps={{
@@ -168,7 +166,7 @@ const VideoPage = ({ route, navigation }) => {
           enterMute: () => setIsMute(!isMute),
           exitMute: () => setIsMute(!isMute),
           isMute,
-          visible: false
+          visible: true
         }}
       />
 
