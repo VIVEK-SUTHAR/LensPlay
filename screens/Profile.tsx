@@ -120,7 +120,6 @@ const Profile = ({ navigation }: { navigation: any }) => {
               justifyContent: "center",
               width: "100%",
               marginTop: "-20%",
-              backgroundColor: 'cyan'
             }}
           >
             <Avatar
