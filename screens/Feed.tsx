@@ -4,8 +4,7 @@ import {
   StyleSheet,
   ToastAndroid,
 } from "react-native";
-import { useEffect, useState } from "react";
-import * as React from "react";
+import { useCallback, useEffect, useState } from "react";
 import VideoCard from "../components/VideoCard";
 import useStore from "../store/Store";
 import { StatusBar } from "expo-status-bar";
@@ -23,7 +22,7 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
   const setUserFeed = store.setUserFeed;
 
   const [refreshing, setRefreshing] = useState(false);
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = useCallback(() => {
     setRefreshing(true);
     getFeedData().then(() => {
       setRefreshing(false);

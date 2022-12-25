@@ -26,6 +26,7 @@ import convertDate from "../utils/formateDate";
 import { STATIC_ASSET } from "../constants";
 import AnimatedLottieView from "lottie-react-native";
 import Skleton from "../components/Skleton";
+import extractURLs from "../utils/extractURL";
 
 interface ChannelScreenProps {
   navigation: any;
@@ -138,7 +139,7 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
                 style={{ fontSize: 12, color: "white", marginTop: 2 }}
               />
               <SubHeading
-                title={profile?.profile?.bio}
+                title={extractURLs(profile?.profile?.bio)}
                 style={{ fontSize: 14, color: "gray", textAlign: "center" }}
               />
             </View>

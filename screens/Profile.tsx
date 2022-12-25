@@ -21,7 +21,6 @@ import getIPFSLink from "../utils/getIPFSLink";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import Avatar from "../components/UI/Avatar";
-
 const Profile = ({ navigation }: { navigation: any }) => {
   const [profile, setProfile] = useState<{}>({});
   const [allVideos, setallVideos] = useState([]);
@@ -30,7 +29,6 @@ const Profile = ({ navigation }: { navigation: any }) => {
   useEffect(() => {
     getProfleInfo();
   }, [navigation]);
-
   const getProfleInfo = async () => {
     try {
       const profiledata = await client.query({
