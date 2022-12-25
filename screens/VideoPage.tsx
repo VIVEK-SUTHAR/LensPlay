@@ -14,7 +14,6 @@ import {
 import {
   AntDesign,
   Entypo,
-  Feather,
   FontAwesome,
   MaterialCommunityIcons,
   MaterialIcons,
@@ -26,7 +25,7 @@ import { useState } from "react";
 import { ResizeMode, Video } from "expo-av";
 import addLike from "../api/addReaction";
 import CommentCard from "../components/CommentCard";
-import { StatusBar } from "expo-status-bar";
+import { setStatusBarHidden, StatusBar } from "expo-status-bar";
 import getIPFSLink from "../utils/getIPFSLink";
 import { client } from "../apollo/client";
 import getComments from "../apollo/Queries/getComments";
@@ -39,6 +38,7 @@ import SubHeading from "../components/UI/SubHeading";
 import createSubScribe from "../api/freeSubScribe";
 import isFollowedByMe from "../api/isFollowedByMe";
 import AnimatedLottieView from "lottie-react-native";
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 const VideoPage = ({ route, navigation }) => {
   const store = useStore();
@@ -49,18 +49,21 @@ const VideoPage = ({ route, navigation }) => {
   const [likes, setLikes] = useState(route.params.stats?.totalUpvotes);
   const [inFullscreen, setInFullsreen] = useState(false);
   const [alreadyFollowing, setAlreadyFollowing] = useState(false);
+  const [ismodalopen, setIsmodalopen] = useState(false);
+  const [currentWidth, setCurrentWidth] = useState<number>(Dimensions.get("screen").width);
+
+  console.log(currentWidth);
+
 
   const playbackId = route.params.playbackId;
 
   const [isalreadyLiked, setisalreadyLiked] = useState(
     route.params.reaction === "UPVOTE" ? true : false
   );
-  console.log("liked" + isalreadyLiked);
 
   useEffect(() => {
     fetchComments();
     console.log("i am changed");
-    
   }, [playbackId]);
 
   useEffect(() => {
@@ -88,6 +91,10 @@ const VideoPage = ({ route, navigation }) => {
     setComments(data.data.publications.items);
   }
 
+  function getCurrentWidth() {
+    setCurrentWidth(Dimensions.get("screen").width);
+  }
+
   const STATS = route.params.stats;
   const onShare = async () => {
     try {
@@ -100,24 +107,18 @@ const VideoPage = ({ route, navigation }) => {
       }
     }
   };
-
-  const [ismodalopen, setIsmodalopen] = useState(false);
-  const [isFullScreen, setIsFullScreen] = useState(false);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <StatusBar style="light" backgroundColor={dark_primary} />
 
       <VideoPlayer
         style={{
-          width: Dimensions.get("screen").width,
-          height: 280,
+          width: inFullscreen ? Dimensions.get("screen").height : Dimensions.get("screen").width,
+          height: inFullscreen ? Dimensions.get("screen").width : 280,
           videoBackgroundColor: "transparent",
           controlsBackgroundColor: "transparent",
         }}
         mute={{
-          visible: true,
-        }}
-        fullscreen={{
           visible: true,
         }}
         textStyle={{
@@ -136,7 +137,7 @@ const VideoPage = ({ route, navigation }) => {
         }}
         icon={{
           size: 48,
-          play: <Feather name="play" color={primary} size={36} />,
+          play: <AntDesign name="play" color={primary} size={36} />,
           pause: <AntDesign name="pause" color={primary} size={36} />,
           replay: (
             <MaterialCommunityIcons name="replay" size={48} color={primary} />
@@ -158,6 +159,19 @@ const VideoPage = ({ route, navigation }) => {
           resizeMode: ResizeMode.CONTAIN,
           source: {
             uri: getIPFSLink(playbackId),
+          },
+        }}
+        fullscreen={{
+          inFullscreen: inFullscreen,
+          enterFullscreen: async () => {
+            setStatusBarHidden(true, 'fade')
+            setInFullsreen(!inFullscreen)
+            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_LEFT)
+          },
+          exitFullscreen: async () => {
+            setStatusBarHidden(false, 'fade')
+            setInFullsreen(!inFullscreen)
+            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT)
           },
         }}
       />
@@ -428,8 +442,8 @@ const VideoPage = ({ route, navigation }) => {
                   borderColor: isalreadyLiked
                     ? primary
                     : isLiked
-                    ? primary
-                    : "white",
+                      ? primary
+                      : "white",
                   backgroundColor: "rgba(255, 255, 255, 0.08)",
                 }}
               >
@@ -446,8 +460,8 @@ const VideoPage = ({ route, navigation }) => {
                     color: isalreadyLiked
                       ? primary
                       : isLiked
-                      ? primary
-                      : "white",
+                        ? primary
+                        : "white",
                     marginLeft: 4,
                   }}
                 />

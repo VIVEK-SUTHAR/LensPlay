@@ -120,10 +120,11 @@ const Profile = ({ navigation }: { navigation: any }) => {
               justifyContent: "center",
               width: "100%",
               marginTop: "-20%",
+              backgroundColor: 'cyan'
             }}
           >
             <Avatar
-              src={getIPFSLink(profile?.profile?.picture?.original?.url)}
+              src={profile?.profile?.picture?.original?.url}
               height={100}
               width={100}
             />
