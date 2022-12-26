@@ -22,15 +22,18 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
   const setUserFeed = store.setUserFeed;
 
   const [refreshing, setRefreshing] = useState(false);
-  const onRefresh = useCallback(() => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    getFeedData().then(() => {
-      setRefreshing(false);
-      if (feedData == feedData) {
-        ToastAndroid.show("Feed is up-to date", ToastAndroid.SHORT);
-      }
+    const updatedFeedData = await getFeedData();
+    setfeedData(updatedFeedData?.data.feed.items);
+    setRefreshing(false);
+  };
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", async () => {
+      const updatedFeedData = await getFeedData();
+      setfeedData(updatedFeedData?.data.feed.items);
     });
-  }, []);
+  }, [navigation]);
 
   useEffect(() => {
     getFeedData().then((res) => {
