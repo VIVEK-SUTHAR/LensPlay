@@ -1,10 +1,16 @@
+/**
+ *
+ * @param profileId profile-id of user ex: 0x5c59
+ * @param accessToken accesstoken of Signed-in Lens user
+ * @returns `onfullfilled`:Proxyid that can be tracked to check if txn has been mined
+ * `onrejected`: error message with valid reason
+ */
+
 export default async function createSubScribe(
   profileId: string,
   accessToken: string
 ): Promise<any> {
   try {
-    console.log(profileId);
-
     let headersList = {
       "Content-Type": "application/json",
       Authorization: "Bearer " + accessToken,
@@ -16,18 +22,19 @@ export default async function createSubScribe(
             `,
       variables: { id: profileId },
     };
-    console.log(gqlBody);
     let bodyContent = JSON.stringify(gqlBody);
     let response = await fetch("https://api-mumbai.lens.dev", {
       method: "POST",
       body: bodyContent,
       headers: headersList,
     });
-    // console.log(response);
     let data = await response.json();
     console.log(data);
     return data;
   } catch (error) {
-    console.log(error);
+    if (error instanceof Error) {
+      console.log(error);
+      throw new Error(error.message);
+    }
   }
 }

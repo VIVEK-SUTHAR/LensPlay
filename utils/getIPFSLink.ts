@@ -7,7 +7,7 @@
 
 import { ARWEAVE_GATEWAY, IPFS_GATEWAY } from "../constants";
 
-function getIPFSLink(url: string): string {
+const getIPFSLink = (url: string): string => {
   if (!url) return url;
   const LINK = url?.includes(ARWEAVE_GATEWAY)
     ? url
@@ -15,5 +15,5 @@ function getIPFSLink(url: string): string {
     ? `${IPFS_GATEWAY}${url?.split("//")[1]}`
     : url;
   return LINK;
-}
+};
 export default getIPFSLink;

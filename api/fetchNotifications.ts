@@ -1,6 +1,14 @@
 import { LENS_API_ENDPOINT } from "../constants";
-
-async function fetchNotifications(profileId: string, accesToken: string): Promise<any> {
+/**
+ *
+ * @param profileId profile-id of user ex: 0x5c59
+ * @param accesToken Accesstoken of Signed-in Lens user
+ * @returns `onfullfilled`:All notificatons of user in Array Format `onrejected`:error message with valid reason
+ */
+async function fetchNotifications(
+  profileId: string,
+  accesToken: string
+): Promise<any> {
   try {
     let headersList = {
       Authorization: "Bearer " + accesToken,
@@ -26,7 +34,6 @@ async function fetchNotifications(profileId: string, accesToken: string): Promis
       console.log(error.message);
       throw new Error(error.message);
     }
-  } finally {
   }
 }
 export default fetchNotifications;

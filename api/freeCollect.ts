@@ -1,9 +1,17 @@
+/**
+ *
+ * @param publicationId publication-id of post ex:0x5c59-0x1
+ * @param accessToken accesstoken of Signed-in Lens user
+ * @returns `onfullfilled`:Proxyid that can be tracked to check if txn has been mined
+ * `onrejected`: error message with valid reason
+ *
+ */
+
 async function freeCollectPublication(
   publicationId: string,
   accessToken: string
 ): Promise<any> {
   try {
-    console.log(accessToken);
     let headersList = {
       "Content-Type": "application/json",
       Authorization: "Bearer " + accessToken,
@@ -22,18 +30,18 @@ async function freeCollectPublication(
     };
     console.log(gqlBody);
     let bodyContent = JSON.stringify(gqlBody);
-
     let response = await fetch("https://api-mumbai.lens.dev", {
       method: "POST",
       body: bodyContent,
       headers: headersList,
     });
-    console.log(response);
     let data = await response.json();
     console.log(data.data);
     return data;
   } catch (error) {
-    console.log(error);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
   }
 }
 export default freeCollectPublication;
