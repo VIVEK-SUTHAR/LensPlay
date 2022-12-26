@@ -75,23 +75,25 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
       {!isLoading ? (
         <>
           {feedData.map((item, index) => {
-            return (
-              <VideoCard
-                key={item?.root?.id}
-                id={item?.root?.id}
-                navigation={navigation}
-                title={item?.root?.metadata?.name}
-                date={convertDate(item?.root?.createdAt)}
-                playbackId={item?.root?.metadata?.media[0]?.original?.url}
-                banner={item?.root?.metadata?.cover}
-                avatar={item?.root?.profile?.picture?.original?.url}
-                uploadedBy={item?.root?.profile?.handle}
-                comments={item?.comments}
-                stats={item?.root?.stats}
-                profileId={item?.root?.profile?.id}
-                reaction={item?.root?.reaction}
-              />
-            );
+            if (!item?.root?.hidden) {
+              return (
+                <VideoCard
+                  key={item?.root?.id}
+                  id={item?.root?.id}
+                  navigation={navigation}
+                  title={item?.root?.metadata?.name}
+                  date={convertDate(item?.root?.createdAt)}
+                  playbackId={item?.root?.metadata?.media[0]?.original?.url}
+                  banner={item?.root?.metadata?.cover}
+                  avatar={item?.root?.profile?.picture?.original?.url}
+                  uploadedBy={item?.root?.profile?.handle}
+                  comments={item?.comments}
+                  stats={item?.root?.stats}
+                  profileId={item?.root?.profile?.id}
+                  reaction={item?.root?.reaction}
+                />
+              );
+            }
           })}
         </>
       ) : (
