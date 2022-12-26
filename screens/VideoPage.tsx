@@ -25,6 +25,7 @@ import useStore from "../store/Store";
 import { useState } from "react";
 import { ResizeMode, Video } from "expo-av";
 import addLike from "../api/addReaction";
+import removeLike from "../api/removeReaction";
 import CommentCard from "../components/CommentCard";
 import { setStatusBarHidden, StatusBar } from "expo-status-bar";
 import getIPFSLink from "../utils/getIPFSLink";
@@ -52,11 +53,16 @@ const VideoPage = ({ route, navigation }) => {
   const [alreadyFollowing, setAlreadyFollowing] = useState(false);
   const [ismodalopen, setIsmodalopen] = useState(false);
   const [isMute, setIsMute] = useState(false);
+  console.log(route.params.reaction);
 
   const playbackId = route.params.playbackId;
 
   const [isalreadyLiked, setisalreadyLiked] = useState(
     route.params.reaction === "UPVOTE" ? true : false
+  );
+
+  const [isalreadyDisLiked, setisalreadyDisLiked] = useState(
+    route.params.reaction === "DOWNVOTE" ? true : false
   );
 
   useEffect(() => {
@@ -456,10 +462,12 @@ const VideoPage = ({ route, navigation }) => {
                 if (!isalreadyLiked && !isLiked) {
                   setLikes((prev) => prev + 1);
                   setIsLiked(true);
+                  setisalreadyDisLiked(false);
                   addLike(
                     store.accessToken,
                     store.profileId,
-                    route.params.id
+                    route.params.id,
+                    "UPVOTE"
                   ).then((res) => {
                     if (res.addReaction === null) {
                       console.log("liked");
@@ -481,8 +489,8 @@ const VideoPage = ({ route, navigation }) => {
                   borderColor: isalreadyLiked
                     ? primary
                     : isLiked
-                    ? primary
-                    : "white",
+                      ? primary
+                      : "white",
                   backgroundColor: "rgba(255, 255, 255, 0.08)",
                 }}
               >
@@ -499,14 +507,46 @@ const VideoPage = ({ route, navigation }) => {
                     color: isalreadyLiked
                       ? primary
                       : isLiked
-                      ? primary
-                      : "white",
+                        ? primary
+                        : "white",
                     marginLeft: 4,
                   }}
                 />
               </View>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                if (!isalreadyDisLiked) {
+                  if (isalreadyLiked) {
+                    setLikes((prev) => prev - 1);
+                    setIsLiked(false);
+                    setisalreadyLiked(false);
+                  }
+                  setisalreadyDisLiked(true);
+                  console.log('dissliked');
+                  addLike(
+                    store.accessToken,
+                    store.profileId,
+                    route.params.id,
+                    "DOWNVOTE"
+                  ).then((res) => {
+                    if (res) {
+                      if (res.addReaction === null) {
+                        console.log("added disliked");
+                      }
+                    }
+                  });
+                  removeLike(
+                    store.accessToken,
+                    store.profileId,
+                    route.params.id
+                  ).then((res) => {
+                    if (res) {
+                      console.log('tt')
+                    }
+                  });
+                }
+              }}>
               <View
                 style={{
                   marginHorizontal: 4,
@@ -516,7 +556,9 @@ const VideoPage = ({ route, navigation }) => {
                   alignItems: "center",
                   borderRadius: 16,
                   borderWidth: 1,
-                  borderColor: "white",
+                  borderColor: isalreadyDisLiked
+                    ? primary
+                    : "white",
                 }}
               >
                 <AntDesign name="dislike2" size={16} color={"white"} />
