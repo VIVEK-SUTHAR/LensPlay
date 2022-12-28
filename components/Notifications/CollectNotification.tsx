@@ -51,7 +51,7 @@ const CollectNotification: React.FC<NotificationCardProps> = ({
               collected your post
               <Text style={{ fontSize: 10, color: "gray" }}>
                 {" "}
-                {getDifference(notification?.createdAt.toString())}
+                {getDifference(notification?.createdAt)}
               </Text>
             </Text>
           </View>

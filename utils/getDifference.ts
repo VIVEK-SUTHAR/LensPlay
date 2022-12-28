@@ -5,7 +5,7 @@
  *
  */
 
-function getDifference(timestamp: string) {
+function getDifference(timestamp: Date) {
   const date = new Date();
   const currentDate = date.getDate();
   const currentMonth = date.getMonth();
