@@ -10,14 +10,14 @@ const NotificationCard = ({
 }: NotificationCardProps) => {
   const getNotification = () => {
     switch (notification.__typename) {
-      case NotificationTypes.NewCollectNotification:
+      case NotificationTypes.COLLECT_NOTIFICATION:
         return (
           <CollectNotification
             navigation={navigation}
             notification={notification}
           />
         );
-      case NotificationTypes.NewMirrorNotification:
+      case NotificationTypes.MIRROR_NOTIFICATION:
         return (
           <MirrorNotification
             navigation={navigation}

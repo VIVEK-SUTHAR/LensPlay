@@ -69,9 +69,9 @@ export interface PageInfo {
   totalCount: number;
 }
 export enum NotificationTypes {
-  NewCommentNotification = "NewCommentNotification",
-  NewReactionNotification = "NewReactionNotification",
-  NewFollowerNotification = "NewFollowerNotification",
-  NewMirrorNotification = "NewMirrorNotification",
-  NewCollectNotification = "NewCollectNotification",
+  COMMENT_NOTIFICATION = "NewCommentNotification",
+  REACTION_NOTIFICATION = "NewReactionNotification",
+  FOLLOW_NOTIFICATION = "NewFollowerNotification",
+  MIRROR_NOTIFICATION = "NewMirrorNotification",
+  COLLECT_NOTIFICATION = "NewCollectNotification",
 }
