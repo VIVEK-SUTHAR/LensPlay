@@ -10,8 +10,8 @@ import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import AnimatedLottieView from "lottie-react-native";
 import fetchNotifications from "../api/fetchNotifications";
 import useStore from "../store/Store";
-import NotificationCard from "./NotificationCard";
-import Heading from "./UI/Heading";
+import Heading from "../components/UI/Heading";
+import NotificationCard from "../components/Notifications";
 
 const Navigation = ({ navigation }: { navigation: any }) => {
   const store = useStore();
@@ -65,7 +65,6 @@ const Navigation = ({ navigation }: { navigation: any }) => {
             return (
               <NotificationCard
                 key={index}
-                type={item.__typename}
                 notification={item}
                 navigation={navigation}
               />

@@ -232,8 +232,6 @@ const NotificationCard: FC<NotificationsProps> = ({
         padding: 8,
         marginVertical: 4,
         marginHorizontal: 8,
-        // borderBottomColor: "gray",
-        // borderBottomWidth:1,
         borderRadius: 8,
       }}
     >

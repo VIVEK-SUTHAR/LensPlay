@@ -40,6 +40,8 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
       setfeedData(res.data.feed.items);
       setUserFeed(res.data.feed.items);
       setIsLoading(false);
+      console.log(store.accessToken);
+      
     });
   }, []);
 

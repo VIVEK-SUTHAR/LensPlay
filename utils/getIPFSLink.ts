@@ -7,8 +7,8 @@
 
 import { ARWEAVE_GATEWAY, IPFS_GATEWAY } from "../constants";
 
-const getIPFSLink = (url: string): string => {
-  if (!url) return url;
+const getIPFSLink = (url: string | undefined): string => {
+  if (!url) return "";
   const LINK = url?.includes(ARWEAVE_GATEWAY)
     ? url
     : url?.includes("ipfs://")

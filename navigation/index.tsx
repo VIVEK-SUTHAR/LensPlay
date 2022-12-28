@@ -18,7 +18,7 @@ import Login from "../screens/Login";
 import { RootTabParamList } from "../types";
 import Profile from "../screens/Profile";
 import Trending from "../screens/Trending";
-import Notification from "../components/Notification";
+import Notification from "../screens/Notification";
 import UploadVideo from "../screens/UploadVideo";
 import Search from "../screens/Search";
 import Heading from "../components/UI/Heading";
@@ -300,3 +300,4 @@ function BottomTabNavigator({ navigation }) {
     </BottomTab.Navigator>
   );
 }
+  
