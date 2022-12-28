@@ -13,16 +13,7 @@ const CollectNotification: React.FC<NotificationCardProps> = ({
   notification,
 }) => {
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        backgroundColor: dark_secondary,
-        padding: 8,
-        marginVertical: 4,
-        marginHorizontal: 8,
-        borderRadius: 8,
-      }}
-    >
+    <>
       <View
         style={{
           height: 35,
@@ -66,7 +57,7 @@ const CollectNotification: React.FC<NotificationCardProps> = ({
           </View>
         </View>
       </View>
-    </View>
+    </>
   );
 };
 

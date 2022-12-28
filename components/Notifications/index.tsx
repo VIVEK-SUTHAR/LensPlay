@@ -1,6 +1,9 @@
 import React from "react";
 import NotificationCardProps, { NotificationTypes } from "./index.d";
 import CollectNotification from "./CollectNotification";
+import MirrorNotification from "./MirrorNotification";
+import { dark_secondary } from "../../constants/Colors";
+import { View } from "react-native";
 const NotificationCard = ({
   navigation,
   notification,
@@ -14,10 +17,30 @@ const NotificationCard = ({
             notification={notification}
           />
         );
+      case NotificationTypes.NewMirrorNotification:
+        return (
+          <MirrorNotification
+            navigation={navigation}
+            notification={notification}
+          />
+        );
     }
   };
 
-  return <>{getNotification()}</>;
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        backgroundColor: dark_secondary,
+        padding: 8,
+        marginVertical: 4,
+        marginHorizontal: 8,
+        borderRadius: 8,
+      }}
+    >
+      {getNotification()}
+    </View>
+  );
 };
 
 export default NotificationCard;
