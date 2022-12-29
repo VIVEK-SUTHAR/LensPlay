@@ -16,7 +16,7 @@ import { client } from "../apollo/client";
 import getChallenge from "../apollo/Queries/getChallenge";
 import getAccessTokens from "../apollo/mutations/getAccessTokens";
 import getProfile from "../apollo/Queries/getProfile";
-import useStore from "../store/Store";
+import useStore, { useAuthStore } from "../store/Store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import verifyToken from "../apollo/Queries/verifyToken";
 import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
@@ -26,6 +26,7 @@ import SubHeading from "../components/UI/SubHeading";
 
 const Login = ({ navigation }: { navigation: any }) => {
   const store = useStore();
+  const authStore = useAuthStore();
   const connector = useWalletConnect();
   const [isconnected, setIsconnected] = useState<boolean>(false);
   const connectWallet = React.useCallback(async () => {
@@ -112,6 +113,8 @@ const Login = ({ navigation }: { navigation: any }) => {
             return;
           }
           store.setProfileId(data.data.defaultProfile.id);
+          console.log(store.accessToken);
+          
           navigation.navigate("Root");
         }
         if (isvaild.data.verify === false) {

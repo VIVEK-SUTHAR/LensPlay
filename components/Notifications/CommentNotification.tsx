@@ -1,16 +1,16 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { EvilIcons } from '@expo/vector-icons'
-import formatAddress from '../../utils/formatAddress'
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { EvilIcons } from "@expo/vector-icons";
+import formatAddress from "../../utils/formatAddress";
 import NotificationCardProps from "./index.d";
-import Avatar from '../UI/Avatar';
-import getDifference from '../../utils/getDifference';
-import getIPFSLink from '../../utils/getIPFSLink';
+import Avatar from "../UI/Avatar";
+import getDifference from "../../utils/getDifference";
+import getIPFSLink from "../../utils/getIPFSLink";
 
-
-
-
-const CommentNotification: React.FC<NotificationCardProps> = ({navigation, notification}) => {
+const CommentNotification: React.FC<NotificationCardProps> = ({
+  navigation,
+  notification,
+}) => {
   return (
     <>
       <View
@@ -26,7 +26,7 @@ const CommentNotification: React.FC<NotificationCardProps> = ({navigation, notif
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <View>
+          <View>
             <Pressable
               onPress={() => {
                 navigation.navigate("Channel", {
@@ -35,9 +35,7 @@ const CommentNotification: React.FC<NotificationCardProps> = ({navigation, notif
               }}
             >
               <Avatar
-                src={getIPFSLink(
-                  notification?.wallet?.defaultProfile?.picture?.original?.url
-                )}
+                src={getIPFSLink(notification.profile?.picture.original.url)}
                 height={35}
                 width={35}
               />
@@ -48,9 +46,9 @@ const CommentNotification: React.FC<NotificationCardProps> = ({navigation, notif
                   formatAddress(notification?.wallet?.address)}{" "}
               </Text>
               commented on your{" "}
-              {notification?.comment?.commentOn?.typename === "Post"
+              {notification?.comment?.commentOn?.__typename === "Post"
                 ? "post"
-                : notification?.comment?.commentOn?.typename === "Comment"
+                : notification?.comment?.commentOn?.__typename === "Comment"
                 ? "comment"
                 : "mirror"}
               <Text style={{ fontSize: 10, color: "gray" }}>
@@ -67,9 +65,6 @@ const CommentNotification: React.FC<NotificationCardProps> = ({navigation, notif
         </View>
       </View>
     </>
-  )
-}
-
-export default CommentNotification
-
-const styles = StyleSheet.create({})
+  );
+};
+export default CommentNotification;

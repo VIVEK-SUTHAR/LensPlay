@@ -4,7 +4,6 @@ import NotificationCardProps from "./index.d";
 import getDifference from "../../utils/getDifference";
 import formatAddress from "../../utils/formatAddress";
 import Avatar from "../UI/Avatar";
-import { dark_secondary } from "../../constants/Colors";
 import { AntDesign } from "@expo/vector-icons";
 
 const MirrorNotification = ({

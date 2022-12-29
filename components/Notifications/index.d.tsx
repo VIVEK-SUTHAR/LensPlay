@@ -15,7 +15,7 @@ export interface Item {
 }
 
 export interface CollectedPublication {
-  typename?: string;
+  __typename?: string;
   id: string;
   stats: Stats;
   metadata: Metadata;
@@ -69,9 +69,9 @@ export interface PageInfo {
   totalCount: number;
 }
 export enum NotificationTypes {
-  COMMENT_NOTIFICATION = "NewCommentNotification",
-  REACTION_NOTIFICATION = "NewReactionNotification",
-  FOLLOW_NOTIFICATION = "NewFollowerNotification",
-  MIRROR_NOTIFICATION = "NewMirrorNotification",
-  COLLECT_NOTIFICATION = "NewCollectNotification",
+  COMMENT_NOTIFICATION = 'NewCommentNotification',
+  REACTION_NOTIFICATION = 'NewReactionNotification',
+  FOLLOW_NOTIFICATION = 'NewFollowerNotification',
+  MIRROR_NOTIFICATION = 'NewMirrorNotification',
+  COLLECT_NOTIFICATION = 'NewCollectNotification'
 }

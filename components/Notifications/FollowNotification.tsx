@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import React from "react";
 import { AntDesign } from "@expo/vector-icons";
 import getDifference from "../../utils/getDifference";
@@ -7,8 +7,10 @@ import NotificationCardProps from "./index.d";
 import Avatar from "../UI/Avatar";
 import getIPFSLink from "../../utils/getIPFSLink";
 
-const FollowNotification: React.FC<NotificationCardProps> = ({navigation,
-  notification}) => {
+const FollowNotification: React.FC<NotificationCardProps> = ({
+  navigation,
+  notification,
+}) => {
   return (
     <>
       <View
@@ -24,7 +26,7 @@ const FollowNotification: React.FC<NotificationCardProps> = ({navigation,
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <View>
+          <View>
             <Pressable
               onPress={() => {
                 navigation.navigate("Channel", {
@@ -59,5 +61,3 @@ const FollowNotification: React.FC<NotificationCardProps> = ({navigation,
 };
 
 export default FollowNotification;
-
-const styles = StyleSheet.create({});

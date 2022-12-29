@@ -1,14 +1,16 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { Pressable, Text, View } from "react-native";
+import React from "react";
 import NotificationCardProps from "./index.d";
-import { AntDesign } from '@expo/vector-icons'
-import Avatar from '../UI/Avatar';
-import getIPFSLink from '../../utils/getIPFSLink';
-import formatAddress from '../../utils/formatAddress';
-import getDifference from '../../utils/getDifference';
+import { AntDesign } from "@expo/vector-icons";
+import Avatar from "../UI/Avatar";
+import getIPFSLink from "../../utils/getIPFSLink";
+import formatAddress from "../../utils/formatAddress";
+import getDifference from "../../utils/getDifference";
 
-
-const ReactionNotification: React.FC<NotificationCardProps> = ({ navigation, notification }) => {
+const ReactionNotification: React.FC<NotificationCardProps> = ({
+  navigation,
+  notification,
+}) => {
   return (
     <>
       <View
@@ -24,7 +26,7 @@ const ReactionNotification: React.FC<NotificationCardProps> = ({ navigation, not
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <View>
+          <View>
             <Pressable
               onPress={() => {
                 navigation.navigate("Channel", {
@@ -44,9 +46,9 @@ const ReactionNotification: React.FC<NotificationCardProps> = ({ navigation, not
                   formatAddress(notification?.wallet?.address)}{" "}
               </Text>
               liked your{" "}
-              {notification?.publication?.typename == "Post"
+              {notification?.publication?.__typename == "Post"
                 ? "post"
-                : notification?.publication?.typename == "Comment"
+                : notification?.publication?.__typename == "Comment"
                 ? "comment"
                 : "mirrored post"}
               <Text style={{ fontSize: 10, color: "gray" }}>
@@ -63,9 +65,6 @@ const ReactionNotification: React.FC<NotificationCardProps> = ({ navigation, not
         </View>
       </View>
     </>
-  )
-}
-
-export default ReactionNotification
-
-const styles = StyleSheet.create({})
+  );
+};
+export default ReactionNotification;

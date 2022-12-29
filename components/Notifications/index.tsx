@@ -6,6 +6,7 @@ import FollowNotification from "./FollowNotification";
 import ReactionNotification from "./ReactionNotification";
 import { dark_secondary } from "../../constants/Colors";
 import { View } from "react-native";
+import CommentNotification from "./CommentNotification";
 
 const NotificationCard = ({
   navigation,
@@ -31,7 +32,7 @@ const NotificationCard = ({
         return (
           <FollowNotification
             navigation={navigation}
-            notification={notification} 
+            notification={notification}
           />
         );
       case NotificationTypes.REACTION_NOTIFICATION:
@@ -39,11 +40,17 @@ const NotificationCard = ({
           <ReactionNotification
             navigation={navigation}
             notification={notification}
-            />
-        )
+          />
+        );
+      case NotificationTypes.COMMENT_NOTIFICATION:
+        return (
+          <CommentNotification
+            navigation={navigation}
+            notification={notification}
+          />
+        );
     }
   };
-
   return (
     <View
       style={{
@@ -59,5 +66,4 @@ const NotificationCard = ({
     </View>
   );
 };
-
 export default NotificationCard;
