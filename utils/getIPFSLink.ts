@@ -5,10 +5,10 @@
  * @supports Filecoin,IPFS,Arweave CID
  */
 
-import { ARWEAVE_GATEWAY, IPFS_GATEWAY } from "../constants";
+import { ARWEAVE_GATEWAY, IPFS_GATEWAY, STATIC_ASSET } from "../constants";
 
 const getIPFSLink = (url: string | undefined): string => {
-  if (!url) return "";
+  if (!url) return STATIC_ASSET;
   const LINK = url?.includes(ARWEAVE_GATEWAY)
     ? url
     : url?.includes("ipfs://")
