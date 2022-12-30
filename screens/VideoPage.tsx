@@ -45,13 +45,13 @@ import Drawer from "../components/UI/Drawer";
 
 const VideoPage = ({ route, navigation }) => {
   const store = useStore();
-  const currentIndex = store.currentIndex;
-  const userFeed = store.userFeed;
   const [comments, setComments] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
   const [likes, setLikes] = useState(route.params.stats?.totalUpvotes);
   const [inFullscreen, setInFullsreen] = useState(false);
-  const [alreadyFollowing, setAlreadyFollowing] = useState(false);
+  const [alreadyFollowing, setAlreadyFollowing] = useState(
+    route?.params?.isFollowdByMe || false
+  );
   const [ismodalopen, setIsmodalopen] = useState(false);
   const [isMute, setIsMute] = useState(false);
   console.log(route.params.reaction);

@@ -14,6 +14,7 @@ export default gql`
       }
       followNftAddress
       metadata
+      isFollowedByMe
       isDefault
       picture {
         ... on NftImage {

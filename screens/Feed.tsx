@@ -9,16 +9,15 @@ import VideoCard from "../components/VideoCard";
 import useStore from "../store/Store";
 import { StatusBar } from "expo-status-bar";
 import { client } from "../apollo/client";
-import getFeed from "../apollo/Queries/getFeed";
 import Skleton from "../components/Skleton";
 import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import convertDate from "../utils/formateDate";
+import getFeed from "../apollo/Queries/getFeed";
 
 const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
   const store = useStore();
   const [feedData, setfeedData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const profileId = store.profileId;
   const setUserFeed = store.setUserFeed;
 
   const [refreshing, setRefreshing] = useState(false);
@@ -33,6 +32,7 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
       const updatedFeedData = await getFeedData();
       setfeedData(updatedFeedData?.data.feed.items);
     });
+    return unsubscribe;
   }, [navigation]);
 
   useEffect(() => {
@@ -41,7 +41,6 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
       setUserFeed(res.data.feed.items);
       setIsLoading(false);
       console.log(store.accessToken);
-      
     });
   }, []);
 
@@ -50,7 +49,12 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
       const feed = await client.query({
         query: getFeed,
         variables: {
-          id: profileId,
+          id: store.profileId,
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${store.accessToken}`,
+          },
         },
       });
       return feed;
@@ -94,6 +98,7 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
                   uploadedBy={item?.root?.profile?.handle}
                   comments={item?.comments}
                   stats={item?.root?.stats}
+                  isFollowdByMe={item.root.profile.isFollowedByMe}
                   profileId={item?.root?.profile?.id}
                   reaction={item?.root?.reaction}
                 />

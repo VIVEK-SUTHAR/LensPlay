@@ -15,9 +15,6 @@ import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import VideoCard from "../components/VideoCard";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import getChannelDetails from "../apollo/Queries/getChannelDetails";
-import { useQuery } from "@apollo/client";
 import useStore from "../store/Store";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
@@ -46,19 +43,7 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
 
   useEffect(() => {
     getProfleInfo();
-    checkFollowed();
   }, [navigation, route.params.profileId]);
-
-  async function checkFollowed() {
-    const data = await isFollowedByMe(
-      route.params.profileId,
-      store.accessToken
-    );
-    if (data.data.profile.isFollowedByMe) {
-      setAlreadyFollowing(true);
-      return;
-    }
-  }
 
   const getProfleInfo = async () => {
     try {
@@ -70,7 +55,6 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
         },
       });
       setProfile(profiledata.data);
-      console.log(profile?.profile?.picture?.original?.url);
       const getUserVideos = await client.query({
         query: getPublications,
         variables: {
@@ -243,6 +227,7 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
                       uploadedBy={item?.profile?.name || item?.profile?.handle}
                       profileId={item?.profile?.id}
                       stats={item?.stats}
+                      isFollowdByMe={item?.profile.isFollowedByMe}
                       reaction={item?.reaction}
                     />
                   );

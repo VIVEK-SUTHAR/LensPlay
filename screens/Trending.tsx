@@ -31,7 +31,14 @@ const Trending = ({ navigation }: TrendingPageProps) => {
       variables: {
         id: store.profileId,
       },
+      context: {
+        headers: {
+          "x-access-token": `Bearer ${store.accessToken}`,
+        },
+      },
     });
+    console.log(trendingData.data.explorePublications.items[0].profile.isFollowedByMe);
+
     setTrendingItems(trendingData.data.explorePublications.items);
   }
   useEffect(() => {
@@ -140,9 +147,6 @@ const Trending = ({ navigation }: TrendingPageProps) => {
           )}
           {TrendingItems &&
             TrendingItems?.map((item, index) => {
-              if (item?.profile?.id === "0x5c59") {
-                console.log(item?.reaction);
-              }
               return (
                 <VideoCard
                   key={index}
@@ -150,6 +154,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                   navigation={navigation}
                   date={convertDate(item?.createdAt)}
                   title={item?.metadata?.name}
+                  isFollowdByMe={item?.profile?.isFollowedByMe}
                   banner={item?.metadata?.cover}
                   avatar={item?.profile?.picture?.original?.url}
                   uploadedBy={item?.profile?.handle}
@@ -168,5 +173,3 @@ const Trending = ({ navigation }: TrendingPageProps) => {
 };
 
 export default Trending;
-
-const styles = StyleSheet.create({});

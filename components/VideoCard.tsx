@@ -24,6 +24,7 @@ type videoPageProp = {
   stats: {};
   date: string;
   reaction: string;
+  isFollowdByMe?: boolean;
 };
 
 const VideoCard = ({
@@ -37,7 +38,8 @@ const VideoCard = ({
   playbackId,
   stats,
   date,
-  reaction
+  reaction,
+  isFollowdByMe
 }: videoPageProp) => {
   const store = useStore();
   const setCurrentIndex = store.setCurrentIndex;
@@ -62,7 +64,8 @@ const VideoCard = ({
               avatar: avatar,
               banner: banner,
               stats: stats,
-              reaction:reaction,
+              reaction: reaction,
+              isFollowdByMe:isFollowdByMe || false
             });
           }}
         >
