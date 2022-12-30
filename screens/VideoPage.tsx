@@ -41,6 +41,7 @@ import createSubScribe from "../api/freeSubScribe";
 import isFollowedByMe from "../api/isFollowedByMe";
 import AnimatedLottieView from "lottie-react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
+import Drawer from "../components/UI/Drawer";
 
 const VideoPage = ({ route, navigation }) => {
   const store = useStore();
@@ -220,48 +221,8 @@ const VideoPage = ({ route, navigation }) => {
         }}
       />
       {/* </ImageBackground> */}
-
-      <Modal
-        animationType="slide"
-        visible={ismodalopen}
-        onRequestClose={() => {
-          setIsmodalopen(false);
-        }}
-        // statusBarTranslucent={true}
-        transparent={true}
-        style={{}}
-      >
-        <StatusBar backgroundColor="black" />
-        <TouchableWithoutFeedback
-          onPress={() => {
-            setIsmodalopen(false);
-          }}
-        >
-          <View
-            style={{
-              height: "100%",
-              backgroundColor: "rgba(0,0,0,0.8)",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          ></View>
-        </TouchableWithoutFeedback>
-
-        <View
-          style={{
-            // marginTop: -450,
-            position: "absolute",
-            top: "40%",
-            zIndex: 2,
-            backgroundColor: "#1d1d1d",
-            height: "100%",
-            width: "100%",
-            borderTopLeftRadius: 16,
-            borderTopRightRadius: 16,
-            paddingVertical: 20,
-          }}
-        >
-          <View
+      <Drawer isOpen={ismodalopen} setIsOpen={setIsmodalopen}>
+      <View
             style={{
               width: "100%",
               height: "100%",
@@ -342,8 +303,8 @@ const VideoPage = ({ route, navigation }) => {
               </View>
             </TouchableOpacity>
           </View>
-        </View>
-      </Modal>
+      </Drawer>
+
       <ScrollView>
         <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
           <View>
@@ -574,7 +535,9 @@ const VideoPage = ({ route, navigation }) => {
               </View>
             </TouchableWithoutFeedback>
 
-            <TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+            onPress={()=>{setIsmodalopen(true)}}
+            >
               <View
                 style={{
                   marginHorizontal: 4,

@@ -9,17 +9,23 @@ import React, { useState } from "react";
 import { dark_primary } from "../../constants/Colors";
 import { StatusBar } from "expo-status-bar";
 
-const [ismodalopen, setIsmodalopen] = useState<boolean>(false);
+interface DrawerProps {
+    children: React.ReactNode;
+    isOpen: boolean,
+    setIsOpen: any
+}
 
-const Drawer = ({ children }) => {
+
+
+const Drawer = ({ children, isOpen, setIsOpen }:DrawerProps) => {
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
+        <SafeAreaView style={{ backgroundColor: dark_primary }}>
             <Modal
                 animationType="slide"
-                visible={ismodalopen}
+                visible={isOpen}
                 onRequestClose={() => {
-                    setIsmodalopen(false);
+                    setIsOpen(false);
                 }}
                 statusBarTranslucent={true}
                 transparent={true}
@@ -28,7 +34,7 @@ const Drawer = ({ children }) => {
 
                 <TouchableWithoutFeedback
                     onPress={() => {
-                        setIsmodalopen(false);
+                        setIsOpen(false);
                     }}
                 >
                     <View
