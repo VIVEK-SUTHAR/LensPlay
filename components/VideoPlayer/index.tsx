@@ -10,7 +10,7 @@ import getIPFSLink from "../../utils/getIPFSLink";
 
 interface VideoPlayerProps {
   url: string;
-  poster: string;
+  poster?: string;
   inFullscreen?: boolean;
   title: string;
   isMute: boolean;
@@ -77,6 +77,7 @@ function Player({
         posterSource: {
           uri: getIPFSLink(poster),
         },
+
         posterStyle: {
           height: "100%",
           width: "100%",
@@ -93,14 +94,14 @@ function Player({
         inFullscreen: inFullscreen,
         enterFullscreen: async () => {
           setStatusBarHidden(true, "fade");
-          setInFullscreen(!inFullscreen);
+          setInFullscreen ? setInFullscreen(!inFullscreen) : null;
           await ScreenOrientation.lockAsync(
             ScreenOrientation.OrientationLock.LANDSCAPE
           );
         },
         exitFullscreen: async () => {
           setStatusBarHidden(false, "fade");
-          setInFullscreen(!inFullscreen);
+          setInFullscreen ? setInFullscreen(!inFullscreen) : null;
           await ScreenOrientation.lockAsync(
             ScreenOrientation.OrientationLock.PORTRAIT
           );

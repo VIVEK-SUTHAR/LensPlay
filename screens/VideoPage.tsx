@@ -35,6 +35,7 @@ import AnimatedLottieView from "lottie-react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
 import Drawer from "../components/UI/Drawer";
 import Player from "../components/VideoPlayer";
+import Button from "../components/UI/Button";
 
 type VideoPageProps = {
   navigation: any;

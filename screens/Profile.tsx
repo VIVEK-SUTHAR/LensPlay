@@ -1,11 +1,10 @@
 import * as React from "react";
 import {
+  FlatList,
   Image,
-  Linking,
   RefreshControl,
   SafeAreaView,
   ScrollView,
-  Text,
   ToastAndroid,
   View,
 } from "react-native";
@@ -21,10 +20,10 @@ import getIPFSLink from "../utils/getIPFSLink";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import Avatar from "../components/UI/Avatar";
+import extractURLs from "../utils/extractURL";
 const Profile = ({ navigation }: { navigation: any }) => {
   const [profile, setProfile] = useState<{}>({});
   const [allVideos, setallVideos] = useState([]);
-  const [isVideoAvilable, setIsVideoAvilable] = useState<boolean>(true);
   const store = useStore();
   useEffect(() => {
     getProfleInfo();
@@ -60,28 +59,6 @@ const Profile = ({ navigation }: { navigation: any }) => {
       setRefreshing(false);
     });
   }, []);
-  function extractURLs(txt: string) {
-    const URL_REGEX =
-      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
-    const renderText = (txt) =>
-      txt?.split(" ").map((part, index) =>
-        URL_REGEX.test(part) ? (
-          <Text
-            key={index}
-            style={{ color: primary }}
-            onPress={() => {
-              Linking.openURL(part);
-            }}
-          >
-            {part}{" "}
-          </Text>
-        ) : (
-          part + " "
-        )
-      );
-    return renderText(txt);
-  }
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <ScrollView
@@ -142,32 +119,6 @@ const Profile = ({ navigation }: { navigation: any }) => {
               style={{ fontSize: 14, color: "gray", textAlign: "center" }}
             />
           </View>
-          {/* <TouchableOpacity activeOpacity={0.8}>
-            <View
-              style={{
-                backgroundColor: "white",
-                borderRadius: 50,
-                paddingVertical: 8,
-                marginVertical: 16,
-                flexDirection: "row",
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                style={{
-                  color: "black",
-                  fontSize: 16,
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  marginHorizontal: 4,
-                }}
-              >
-                Edit Channel
-              </Text>
-              <Feather name="edit-3" size={24} />
-            </View>
-          </TouchableOpacity> */}
-
           <View style={{ paddingVertical: 10 }}>
             <Heading
               title="Videos"
@@ -177,7 +128,28 @@ const Profile = ({ navigation }: { navigation: any }) => {
                 color: "white",
               }}
             />
-            {allVideos?.map((item, index) => {
+            <FlatList
+              data={allVideos}
+              renderItem={({ item }) => {
+                return (
+                  <VideoCard
+                    navigation={navigation}
+                    key={item?.id}
+                    id={item?.id}
+                    date={convertDate(item?.createdAt)}
+                    banner={item?.metadata?.cover}
+                    title={item?.metadata?.name}
+                    avatar={item?.profile?.picture?.original?.url}
+                    playbackId={item?.metadata?.media[0]?.original?.url}
+                    uploadedBy={item?.profile?.name}
+                    profileId={item?.profile?.id}
+                    stats={item?.stats}
+                    reaction={item?.reaction}
+                  />
+                );
+              }}
+            />
+            {allVideos?.map((item: any, index) => {
               if (item.appId.includes("lenstube")) {
                 return (
                   <VideoCard

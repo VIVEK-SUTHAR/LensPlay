@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { StyleProp, StyleSheetProperties, Text, TextStyle } from "react-native";
+import { StyleProp, Text, TextStyle } from "react-native";
 
 interface HeadingProps {
   title: string;
