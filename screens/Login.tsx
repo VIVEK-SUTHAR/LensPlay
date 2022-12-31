@@ -1,10 +1,9 @@
 import {
+  Alert,
   Animated,
   Dimensions,
-  FlatList,
   Image,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -29,10 +28,9 @@ const Login = ({ navigation }: { navigation: any }) => {
   const store = useStore();
   const connector = useWalletConnect();
   const [isconnected, setIsconnected] = useState<boolean>(false);
-  const connectWallet = React.useCallback(() => {
-    return connector.connect().then(() => {
-      setIsconnected(true);
-    });
+  const connectWallet = React.useCallback(async () => {
+    await connector.connect();
+    setIsconnected(true);
   }, [connector]);
 
   const data = [
@@ -82,7 +80,7 @@ const Login = ({ navigation }: { navigation: any }) => {
         );
         navigation.navigate("Root");
       } else {
-        alert("something went wrong");
+        Alert.alert("Something went wrong");
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -101,9 +99,8 @@ const Login = ({ navigation }: { navigation: any }) => {
             token: tokens.accessToken,
           },
         });
-        console.log(isvaild.data);
         if (isvaild.data.verify) {
-          console.log("valid token");
+          console.log("Tokens are valid,getting you in");
           store.setAccessToken(tokens.accessToken);
           const data = await client.query({
             query: getProfile,
@@ -124,8 +121,7 @@ const Login = ({ navigation }: { navigation: any }) => {
               rtoken: tokens.refreshToken,
             },
           });
-          console.log("NEW VALIDATED TOKENS");
-          console.log(refreshToken);
+          console.log("Tokens are invalid,generating new tokens...");
           store.setAccessToken(refreshToken.data.refresh.accessToken);
           storeData(
             refreshToken.data.refresh.accessToken,
@@ -156,7 +152,7 @@ const Login = ({ navigation }: { navigation: any }) => {
     getData();
   }, []);
 
-  const storeData = async (accessToken, refreshToken) => {
+  const storeData = async (accessToken: string, refreshToken: string) => {
     try {
       const tokens = {
         accessToken: accessToken,
@@ -341,7 +337,6 @@ const Login = ({ navigation }: { navigation: any }) => {
             </View>
           </TouchableOpacity>
         )}
-
         <Paginator data={data} scrollX={scrollX} />
       </View>
     </SafeAreaView>

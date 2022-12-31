@@ -67,6 +67,7 @@ const VideoCard = ({
           }}
         >
           <Image
+            progressiveRenderingEnabled={true}
             source={{
               uri:
                 getIPFSLink(banner) ||

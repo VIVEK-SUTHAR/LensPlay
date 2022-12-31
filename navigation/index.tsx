@@ -75,7 +75,6 @@ function RootNavigator() {
         component={Channel}
         options={{
           headerShown: true,
-          presentation: "card",
           headerStyle: {
             backgroundColor: dark_secondary,
           },

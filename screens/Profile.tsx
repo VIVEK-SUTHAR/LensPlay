@@ -1,6 +1,7 @@
 import * as React from "react";
 import {
   Image,
+  Linking,
   RefreshControl,
   SafeAreaView,
   ScrollView,
@@ -20,7 +21,6 @@ import getIPFSLink from "../utils/getIPFSLink";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import Avatar from "../components/UI/Avatar";
-
 const Profile = ({ navigation }: { navigation: any }) => {
   const [profile, setProfile] = useState<{}>({});
   const [allVideos, setallVideos] = useState([]);
@@ -29,7 +29,6 @@ const Profile = ({ navigation }: { navigation: any }) => {
   useEffect(() => {
     getProfleInfo();
   }, [navigation]);
-
   const getProfleInfo = async () => {
     try {
       const profiledata = await client.query({
@@ -61,6 +60,28 @@ const Profile = ({ navigation }: { navigation: any }) => {
       setRefreshing(false);
     });
   }, []);
+  function extractURLs(txt: string) {
+    const URL_REGEX =
+      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
+    const renderText = (txt) =>
+      txt?.split(" ").map((part, index) =>
+        URL_REGEX.test(part) ? (
+          <Text
+            key={index}
+            style={{ color: primary }}
+            onPress={() => {
+              Linking.openURL(part);
+            }}
+          >
+            {part}{" "}
+          </Text>
+        ) : (
+          part + " "
+        )
+      );
+    return renderText(txt);
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <ScrollView
@@ -102,7 +123,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
             }}
           >
             <Avatar
-              src={getIPFSLink(profile?.profile?.picture?.original?.url)}
+              src={profile?.profile?.picture?.original?.url}
               height={100}
               width={100}
             />
@@ -117,7 +138,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
               style={{ fontSize: 12, color: "white", marginTop: 2 }}
             />
             <SubHeading
-              title={profile?.profile?.bio}
+              title={extractURLs(profile?.profile?.bio)}
               style={{ fontSize: 14, color: "gray", textAlign: "center" }}
             />
           </View>

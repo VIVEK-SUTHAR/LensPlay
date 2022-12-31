@@ -4,8 +4,7 @@ import {
   StyleSheet,
   ToastAndroid,
 } from "react-native";
-import { useEffect, useState } from "react";
-import * as React from "react";
+import { useCallback, useEffect, useState } from "react";
 import VideoCard from "../components/VideoCard";
 import useStore from "../store/Store";
 import { StatusBar } from "expo-status-bar";
@@ -23,15 +22,18 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
   const setUserFeed = store.setUserFeed;
 
   const [refreshing, setRefreshing] = useState(false);
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    getFeedData().then(() => {
-      setRefreshing(false);
-      if (feedData == feedData) {
-        ToastAndroid.show("Feed is up-to date", ToastAndroid.SHORT);
-      }
+    const updatedFeedData = await getFeedData();
+    setfeedData(updatedFeedData?.data.feed.items);
+    setRefreshing(false);
+  };
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", async () => {
+      const updatedFeedData = await getFeedData();
+      setfeedData(updatedFeedData?.data.feed.items);
     });
-  }, []);
+  }, [navigation]);
 
   useEffect(() => {
     getFeedData().then((res) => {
@@ -76,23 +78,25 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
       {!isLoading ? (
         <>
           {feedData.map((item, index) => {
-            return (
-              <VideoCard
-                key={item?.root?.id}
-                id={item?.root?.id}
-                navigation={navigation}
-                title={item?.root?.metadata?.name}
-                date={convertDate(item?.root?.createdAt)}
-                playbackId={item?.root?.metadata?.media[0]?.original?.url}
-                banner={item?.root?.metadata?.cover}
-                avatar={item?.root?.profile?.picture?.original?.url}
-                uploadedBy={item?.root?.profile?.handle}
-                comments={item?.comments}
-                stats={item?.root?.stats}
-                profileId={item?.root?.profile?.id}
-                reaction={item?.root?.reaction}
-              />
-            );
+            if (!item?.root?.hidden) {
+              return (
+                <VideoCard
+                  key={item?.root?.id}
+                  id={item?.root?.id}
+                  navigation={navigation}
+                  title={item?.root?.metadata?.name}
+                  date={convertDate(item?.root?.createdAt)}
+                  playbackId={item?.root?.metadata?.media[0]?.original?.url}
+                  banner={item?.root?.metadata?.cover}
+                  avatar={item?.root?.profile?.picture?.original?.url}
+                  uploadedBy={item?.root?.profile?.handle}
+                  comments={item?.comments}
+                  stats={item?.root?.stats}
+                  profileId={item?.root?.profile?.id}
+                  reaction={item?.root?.reaction}
+                />
+              );
+            }
           })}
         </>
       ) : (

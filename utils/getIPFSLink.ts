@@ -1,10 +1,19 @@
-function getIPFSLink(url: string): string {
+/**
+ *
+ * @param url unformatted url containing ipfs hash
+ * @returns https accessable URL
+ * @supports Filecoin,IPFS,Arweave CID
+ */
+
+import { ARWEAVE_GATEWAY, IPFS_GATEWAY } from "../constants";
+
+const getIPFSLink = (url: string): string => {
   if (!url) return url;
-  const LINK = url?.includes("https://arweave.net")
+  const LINK = url?.includes(ARWEAVE_GATEWAY)
     ? url
     : url?.includes("ipfs://")
-    ? `https://ipfs.io/ipfs/${url?.split("//")[1]}`
+    ? `${IPFS_GATEWAY}${url?.split("//")[1]}`
     : url;
   return LINK;
-}
+};
 export default getIPFSLink;

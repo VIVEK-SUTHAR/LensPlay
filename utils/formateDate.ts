@@ -1,3 +1,9 @@
+/**
+ * 
+ * @param timestamp Unix TimeStamp 164585412
+ * @returns Date in format 12-dec-2051
+ */
+
 function convertDate(timestamp: string) {
   const months = [
     "Jan",
