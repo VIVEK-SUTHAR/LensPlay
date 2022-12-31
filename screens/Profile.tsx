@@ -128,27 +128,7 @@ const Profile = ({ navigation }: { navigation: any }) => {
                 color: "white",
               }}
             />
-            <FlatList
-              data={allVideos}
-              renderItem={({ item }) => {
-                return (
-                  <VideoCard
-                    navigation={navigation}
-                    key={item?.id}
-                    id={item?.id}
-                    date={convertDate(item?.createdAt)}
-                    banner={item?.metadata?.cover}
-                    title={item?.metadata?.name}
-                    avatar={item?.profile?.picture?.original?.url}
-                    playbackId={item?.metadata?.media[0]?.original?.url}
-                    uploadedBy={item?.profile?.name}
-                    profileId={item?.profile?.id}
-                    stats={item?.stats}
-                    reaction={item?.reaction}
-                  />
-                );
-              }}
-            />
+
             {allVideos?.map((item: any, index) => {
               if (item.appId.includes("lenstube")) {
                 return (
