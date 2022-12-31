@@ -39,7 +39,7 @@ const VideoCard = ({
   stats,
   date,
   reaction,
-  isFollowdByMe
+  isFollowdByMe,
 }: videoPageProp) => {
   const store = useStore();
   const setCurrentIndex = store.setCurrentIndex;
@@ -65,7 +65,7 @@ const VideoCard = ({
               banner: banner,
               stats: stats,
               reaction: reaction,
-              isFollowdByMe:isFollowdByMe || false
+              isFollowdByMe: isFollowdByMe || false,
             });
           }}
         >

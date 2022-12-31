@@ -1,13 +1,9 @@
 import {
-  StyleSheet,
-  Text,
   View,
-  Dimensions,
   Share,
   TouchableWithoutFeedback,
   ScrollView,
   SafeAreaView,
-  Modal,
   TouchableOpacity,
   ToastAndroid,
   BackHandler,
@@ -16,24 +12,20 @@ import {
   AntDesign,
   Entypo,
   FontAwesome,
-  MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
 import React, { useEffect } from "react";
 import { dark_primary, primary } from "../constants/Colors";
 import useStore from "../store/Store";
 import { useState } from "react";
-import { ResizeMode, Video } from "expo-av";
 import addLike from "../api/addReaction";
 import removeLike from "../api/removeReaction";
 import CommentCard from "../components/CommentCard";
 import { setStatusBarHidden, StatusBar } from "expo-status-bar";
-import getIPFSLink from "../utils/getIPFSLink";
 import { client } from "../apollo/client";
 import getComments from "../apollo/Queries/getComments";
 import freeCollectPublication from "../api/freeCollect";
 import getProxyActionStatus from "../api/getProxyActionStatus";
-import VideoPlayer from "expo-video-player";
 import Avatar from "../components/UI/Avatar";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
@@ -42,8 +34,14 @@ import isFollowedByMe from "../api/isFollowedByMe";
 import AnimatedLottieView from "lottie-react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
 import Drawer from "../components/UI/Drawer";
+import Player from "../components/VideoPlayer";
 
-const VideoPage = ({ route, navigation }) => {
+type VideoPageProps = {
+  navigation: any;
+  route: any;
+};
+
+const VideoPage = ({ route, navigation }: VideoPageProps) => {
   const store = useStore();
   const [comments, setComments] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
@@ -127,184 +125,83 @@ const VideoPage = ({ route, navigation }) => {
         backgroundColor={dark_primary}
         translucent={true}
       />
-      {/* <ImageBackground
-        source={{ uri: getIPFSLink(route.params.banner) }}
-        style={{
-          width: "100%",
-          height: inFullscreen ? Dimensions.get("screen").width * 0.95 : 280,
-        }}
-        blurRadius={8}
-      > */}
-      <VideoPlayer
-        style={{
-          width: inFullscreen
-            ? Dimensions.get("screen").height
-            : Dimensions.get("screen").width,
-          height: inFullscreen ? Dimensions.get("screen").width * 0.95 : 280,
-          videoBackgroundColor: "",
-          controlsBackgroundColor: "transparent",
-        }}
-        textStyle={{
-          fontSize: 14,
-          fontWeight: "600",
-        }}
-        activityIndicator={{
-          size: "large",
-          color: primary,
-        }}
-        slider={{
-          visible: true,
-          thumbTintColor: "white",
-          maximumTrackTintColor: "white",
-          minimumTrackTintColor: primary,
-        }}
-        icon={{
-          size: 48,
-          play: <AntDesign name="play" color={primary} size={36} />,
-          pause: <AntDesign name="pause" color={primary} size={36} />,
-          replay: (
-            <MaterialCommunityIcons name="replay" size={48} color={primary} />
-          ),
-        }}
-        header={
-          <Text
-            style={{
-              color: "white",
-              paddingHorizontal: 20,
-              fontSize: 18,
-              fontWeight: "600",
-              paddingVertical: 8,
-            }}
-          >
-            {route.params.title}
-          </Text>
-        }
-        videoProps={{
-          usePoster: true,
-          posterSource: {
-            uri: getIPFSLink(route.params.banner),
-          },
-          posterStyle: {
-            height: "100%",
-            width: "100%",
-            resizeMode: "contain",
-          },
-          isMuted: isMute,
-          shouldPlay: true,
-          resizeMode: ResizeMode.CONTAIN,
-          source: {
-            uri: getIPFSLink(playbackId),
-          },
-        }}
-        fullscreen={{
-          inFullscreen: inFullscreen,
-          enterFullscreen: async () => {
-            setStatusBarHidden(true, "fade");
-            setInFullsreen(!inFullscreen);
-            await ScreenOrientation.lockAsync(
-              ScreenOrientation.OrientationLock.LANDSCAPE
-            );
-          },
-          exitFullscreen: async () => {
-            setStatusBarHidden(false, "fade");
-            setInFullsreen(!inFullscreen);
-            await ScreenOrientation.lockAsync(
-              ScreenOrientation.OrientationLock.PORTRAIT
-            );
-          },
-        }}
-        mute={{
-          enterMute: () => setIsMute(!isMute),
-          exitMute: () => setIsMute(!isMute),
-          isMute,
-          visible: false,
-        }}
+      <Player
+        poster={route.params.banner}
+        title={route.params.title}
+        url={route.params.playbackId}
+        inFullscreen={inFullscreen}
+        isMute={isMute}
+        setInFullscreen={setInFullsreen}
+        setIsMute={setIsMute}
       />
-      {/* </ImageBackground> */}
       <Drawer isOpen={ismodalopen} setIsOpen={setIsmodalopen}>
-      <View
+        <View
+          style={{
+            width: "100%",
+            height: "100%",
+            opacity: 1,
+            alignItems: "center",
+          }}
+        >
+          <View style={{ maxWidth: "90%" }}>
+            <Player
+              title={route.params.title}
+              url={route.params.playbackId}
+              poster={route.params.banner}
+              isMute={isMute}
+              setIsMute={setIsMute}
+            />
+          </View>
+          <Heading
+            title={`${route.params.title} by ${route.params.uploadedBy}`}
             style={{
-              width: "100%",
-              height: "100%",
-              opacity: 1,
-              alignItems: "center",
+              textAlign: "center",
+              fontSize: 16,
+              color: "white",
+              fontWeight: "600",
+              marginVertical: 12,
             }}
-          >
-            <Video
-              style={{
-                alignSelf: "center",
-                width: "90%",
-                height: 280,
-                borderRadius: 10,
-              }}
-              resizeMode="contain"
-              source={{
-                uri: getIPFSLink(playbackId),
-              }}
-              useNativeControls={true}
-              usePoster={true}
-              posterSource={{
-                uri: route.params.banner,
-              }}
-              posterStyle={{
-                height: "100%",
-                width: "100%",
-                resizeMode: "contain",
-                borderRadius: 12,
-              }}
-              isLooping={true}
-            />
-            <Heading
-              title={`${route.params.title} by ${route.params.uploadedBy}`}
-              style={{
-                textAlign: "center",
-                fontSize: 16,
-                color: "white",
-                fontWeight: "600",
-                marginVertical: 12,
-              }}
-            />
-            <TouchableOpacity
-              style={{ width: "90%", marginVertical: 0 }}
-              onPress={async () => {
-                const res = await freeCollectPublication(
-                  route.params.id,
+          />
+          <TouchableOpacity
+            style={{ width: "90%", marginVertical: 0 }}
+            onPress={async () => {
+              const res = await freeCollectPublication(
+                route.params.id,
+                store.accessToken
+              );
+              console.log(res);
+              if (res?.proxyAction) {
+                setIsmodalopen(false);
+                console.log(res?.proxyAction);
+                ToastAndroid.show("Video collected", ToastAndroid.SHORT);
+                const status = await getProxyActionStatus(
+                  res?.proxyAction,
                   store.accessToken
                 );
-                console.log(res);
-                if (res?.proxyAction) {
-                  setIsmodalopen(false);
-                  console.log(res?.proxyAction);
-                  ToastAndroid.show("Video collected", ToastAndroid.SHORT);
-                  const status = await getProxyActionStatus(
-                    res?.proxyAction,
-                    store.accessToken
-                  );
-                }
+              }
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: primary,
+                borderRadius: 100,
+                paddingVertical: 8,
+                marginVertical: 4,
               }}
             >
-              <View
+              <Heading
+                title="Collect for free"
                 style={{
-                  backgroundColor: primary,
-                  borderRadius: 100,
-                  paddingVertical: 8,
-                  marginVertical: 4,
+                  color: "white",
+                  fontSize: 18,
+                  fontWeight: "600",
+                  textAlign: "center",
                 }}
-              >
-                <Heading
-                  title="Collect for free"
-                  style={{
-                    color: "white",
-                    fontSize: 18,
-                    fontWeight: "600",
-                    textAlign: "center",
-                  }}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
       </Drawer>
-
       <ScrollView>
         <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
           <View>
@@ -316,17 +213,6 @@ const VideoPage = ({ route, navigation }) => {
                 color: "white",
               }}
             />
-            {/* <SubHeading
-              title={userFeed[currentIndex]?.root?.metadata?.description}
-              style={{ fontSize: 12, color: "gray" }}
-            /> */}
-          </View>
-          <View style={{ flexDirection: "row", opacity: 0.5, marginTop: 8 }}>
-            <SubHeading
-              title="3094505 views"
-              style={{ marginRight: 10, color: "white" }}
-            />
-            <SubHeading title={route.params.date} style={{ color: "white" }} />
           </View>
           <View
             style={{
@@ -410,7 +296,6 @@ const VideoPage = ({ route, navigation }) => {
               </View>
             </TouchableWithoutFeedback>
           </View>
-
           <ScrollView
             style={{
               paddingVertical: 24,
@@ -450,8 +335,8 @@ const VideoPage = ({ route, navigation }) => {
                   borderColor: isalreadyLiked
                     ? primary
                     : isLiked
-                      ? primary
-                      : "white",
+                    ? primary
+                    : "white",
                   backgroundColor: "rgba(255, 255, 255, 0.08)",
                 }}
               >
@@ -468,8 +353,8 @@ const VideoPage = ({ route, navigation }) => {
                     color: isalreadyLiked
                       ? primary
                       : isLiked
-                        ? primary
-                        : "white",
+                      ? primary
+                      : "white",
                     marginLeft: 4,
                   }}
                 />
@@ -484,7 +369,7 @@ const VideoPage = ({ route, navigation }) => {
                     setisalreadyLiked(false);
                   }
                   setisalreadyDisLiked(true);
-                  console.log('dissliked');
+                  console.log("dissliked");
                   addLike(
                     store.accessToken,
                     store.profileId,
@@ -503,11 +388,12 @@ const VideoPage = ({ route, navigation }) => {
                     route.params.id
                   ).then((res) => {
                     if (res) {
-                      console.log('tt')
+                      console.log("tt");
                     }
                   });
                 }
-              }}>
+              }}
+            >
               <View
                 style={{
                   marginHorizontal: 4,
@@ -517,9 +403,7 @@ const VideoPage = ({ route, navigation }) => {
                   alignItems: "center",
                   borderRadius: 16,
                   borderWidth: 1,
-                  borderColor: isalreadyDisLiked
-                    ? primary
-                    : "white",
+                  borderColor: isalreadyDisLiked ? primary : "white",
                 }}
               >
                 <AntDesign name="dislike2" size={16} color={"white"} />
@@ -536,7 +420,9 @@ const VideoPage = ({ route, navigation }) => {
             </TouchableWithoutFeedback>
 
             <TouchableWithoutFeedback
-            onPress={()=>{setIsmodalopen(true)}}
+              onPress={() => {
+                setIsmodalopen(true);
+              }}
             >
               <View
                 style={{
@@ -588,7 +474,6 @@ const VideoPage = ({ route, navigation }) => {
                 />
               </View>
             </TouchableWithoutFeedback>
-
             <TouchableWithoutFeedback>
               <View
                 style={{
@@ -668,11 +553,3 @@ const VideoPage = ({ route, navigation }) => {
 };
 
 export default VideoPage;
-
-const styles = StyleSheet.create({
-  video: {
-    alignSelf: "center",
-    width: Dimensions.get("screen").width,
-    height: 280,
-  },
-});
