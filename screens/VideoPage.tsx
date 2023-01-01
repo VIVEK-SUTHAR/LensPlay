@@ -358,7 +358,6 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
                     route.params.id
                   ).then((res) => {
                     if (res) {
-                      console.log("tt");
                     }
                   });
                 }
