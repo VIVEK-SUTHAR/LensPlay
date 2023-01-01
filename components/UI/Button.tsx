@@ -10,6 +10,7 @@ import {
 import React from "react";
 import SubHeading from "./SubHeading";
 import { primary } from "../../constants/Colors";
+import { IconType } from "react-icons";
 interface ButtonProps {
   title: string;
   type?: "outline" | "filled";
@@ -22,7 +23,9 @@ interface ButtonProps {
   bg?: ColorValue;
   style?: StyleProp<ViewProps>;
   textStyle?: StyleProp<TextStyle>;
+  borderColor?: ColorValue;
   onPress?: () => void;
+  icon?: any;
 }
 
 const Button = (props: ButtonProps): JSX.Element => {
@@ -39,11 +42,13 @@ const Button = (props: ButtonProps): JSX.Element => {
     textStyle,
     bg = primary,
     onPress,
+    borderColor="white",
+    icon,
     ...rest
   } = props;
   return (
     <TouchableOpacity
-      style={{ width: width }}
+      style={[style,{width:width}]}
       {...rest}
       onPress={
         onPress
@@ -55,9 +60,13 @@ const Button = (props: ButtonProps): JSX.Element => {
     >
       <View
         style={{
-          backgroundColor: type === "filled" ? bg : "rgba(255,255,255,0.08)",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: textStyle? "center":"space-between",
+          backgroundColor: type === "filled" ? bg : "transparent",
           borderRadius: 50,
-          borderColor: type === "outline" ? "white" : undefined,
+          borderColor: type === "outline" ? borderColor : "transparent",
           borderWidth: type === "outline" ? 1 : 0,
           paddingVertical: py,
           paddingHorizontal: px,
@@ -68,16 +77,20 @@ const Button = (props: ButtonProps): JSX.Element => {
         {isLoading ? (
           <ActivityIndicator size={"small"} color={"black"} />
         ) : (
-          <SubHeading
-            title={title}
-            style={[
-              textStyle,
-              {
-                textAlign: "center",
-                color: bg === "white" ? "black" : "white",
-              },
-            ]}
-          />
+          <>
+            {icon}
+            <SubHeading
+              title={title}
+              style={[
+                textStyle,
+                {
+                  textAlign: "center",
+                  marginHorizontal: 4,
+                  color: bg === "white" ? "black" : "white",
+                },
+              ]}
+            />
+          </>
         )}
       </View>
     </TouchableOpacity>

@@ -163,44 +163,13 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
               marginVertical: 12,
             }}
           />
-          <TouchableOpacity
-            style={{ width: "90%", marginVertical: 0 }}
-            onPress={async () => {
-              const res = await freeCollectPublication(
-                route.params.id,
-                store.accessToken
-              );
-              console.log(res);
-              if (res?.proxyAction) {
-                setIsmodalopen(false);
-                console.log(res?.proxyAction);
-                ToastAndroid.show("Video collected", ToastAndroid.SHORT);
-                const status = await getProxyActionStatus(
-                  res?.proxyAction,
-                  store.accessToken
-                );
-              }
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: primary,
-                borderRadius: 100,
-                paddingVertical: 8,
-                marginVertical: 4,
-              }}
-            >
-              <Heading
-                title="Collect for free"
-                style={{
-                  color: "white",
-                  fontSize: 18,
-                  fontWeight: "600",
-                  textAlign: "center",
-                }}
-              />
-            </View>
-          </TouchableOpacity>
+          <Button
+            title="Collect for free"
+            width={"90%"}
+            py={8}
+            my={4}
+            textStyle={{ fontSize: 18, fontWeight: "600", textAlign: "center" }}
+          />
         </View>
       </Drawer>
       <ScrollView>
@@ -419,89 +388,36 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
                 />
               </View>
             </TouchableWithoutFeedback>
-
-            <TouchableWithoutFeedback
+            <Button
+              title={`${STATS?.totalAmountOfCollects || 0} Collects`}
+              mx={4}
+              px={10}
+              width={"auto"}
+              type={"outline"}
+              icon={<Entypo name="folder-video" size={18} color={"white"} />}
               onPress={() => {
                 setIsmodalopen(true);
               }}
-            >
-              <View
-                style={{
-                  marginHorizontal: 4,
-                  paddingHorizontal: 10,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderRadius: 16,
-                  borderWidth: 1,
-                  borderColor: "white",
-                }}
-              >
-                <Entypo name="folder-video" size={18} color={"white"} />
-                <SubHeading
-                  title={`${STATS?.totalAmountOfCollects || 0} Collects`}
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "500",
-                    color: "white",
-                    marginLeft: 8,
-                  }}
-                />
-              </View>
-            </TouchableWithoutFeedback>
-
-            <TouchableWithoutFeedback onPress={onShare}>
-              <View
-                style={{
-                  marginHorizontal: 4,
-                  paddingHorizontal: 10,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderRadius: 16,
-                  borderWidth: 1,
-                  borderColor: "white",
-                }}
-              >
-                <FontAwesome name="share" size={16} color="white" />
-                <SubHeading
-                  title="Share"
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "500",
-                    color: "white",
-                    marginLeft: 8,
-                  }}
-                />
-              </View>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback>
-              <View
-                style={{
-                  marginHorizontal: 4,
-                  paddingHorizontal: 10,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderRadius: 16,
-                  borderWidth: 1,
-                  borderColor: "white",
-                }}
-              >
-                <MaterialIcons name="report" size={16} color="white" />
-                <SubHeading
-                  title="Report"
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "500",
-                    color: "white",
-                    marginLeft: 8,
-                  }}
-                />
-              </View>
-            </TouchableWithoutFeedback>
+            />
+            <Button
+              title={"Share"}
+              mx={4}
+              px={10}
+              width={"auto"}
+              type={"outline"}
+              icon={<FontAwesome name="share" size={16} color="white" />}
+              onPress={onShare}
+            />
+            <Button
+              title={"Share"}
+              mx={4}
+              px={10}
+              width={"auto"}
+              type={"outline"}
+              icon={<MaterialIcons name="report" size={16} color="white" />}
+              onPress={onShare}
+            />
           </ScrollView>
-
           <View>
             <SubHeading
               title="Comments"
