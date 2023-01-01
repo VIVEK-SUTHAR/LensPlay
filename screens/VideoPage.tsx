@@ -115,6 +115,57 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
       }
     }
   };
+
+  const onLike = async () => {
+    if (!isalreadyLiked && !isLiked) {
+      setLikes((prev) => prev + 1);
+      setIsLiked(true);
+      setisalreadyDisLiked(false);
+      addLike(
+        store.accessToken,
+        store.profileId,
+        route.params.id,
+        "UPVOTE"
+      ).then((res) => {
+        if (res.addReaction === null) {
+          console.log("liked");
+        }
+      });
+    }
+  }
+
+  const onDislike = async () => {
+    if (!isalreadyDisLiked) {
+      if (isalreadyLiked || isLiked) {
+        setLikes((prev) => prev - 1);
+        setIsLiked(false);
+        setisalreadyLiked(false);
+      }
+      // setIsLiked(false);
+      setisalreadyDisLiked(true);
+      console.log("dissliked");
+      addLike(
+        store.accessToken,
+        store.profileId,
+        route.params.id,
+        "DOWNVOTE"
+      ).then((res) => {
+        if (res) {
+          if (res.addReaction === null) {
+            console.log("added disliked");
+          }
+        }
+      });
+      removeLike(
+        store.accessToken,
+        store.profileId,
+        route.params.id
+      ).then((res) => {
+        if (res) {
+        }
+      });
+    }
+  }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <StatusBar
@@ -269,120 +320,46 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
             horizontal={true}
             showsHorizontalScrollIndicator={false}
           >
-            <TouchableWithoutFeedback
-              onPress={() => {
-                if (!isalreadyLiked && !isLiked) {
-                  setLikes((prev) => prev + 1);
-                  setIsLiked(true);
-                  setisalreadyDisLiked(false);
-                  addLike(
-                    store.accessToken,
-                    store.profileId,
-                    route.params.id,
-                    "UPVOTE"
-                  ).then((res) => {
-                    if (res.addReaction === null) {
-                      console.log("liked");
-                    }
-                  });
-                }
+            <Button 
+              title={likes || 0}
+              mx={4}
+              px={10}
+              width={"auto"}
+              type={"outline"}
+              textStyle={{
+                fontSize: 14,
+                fontWeight: "500",
+                color: isalreadyLiked
+                  ? primary
+                  : isLiked
+                  ? primary
+                  : "white",
+                marginLeft: 4,
               }}
-            >
-              <View
-                style={{
-                  marginHorizontal: 4,
-                  paddingVertical: 4,
-                  paddingHorizontal: 10,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderRadius: 16,
-                  borderWidth: 1,
-                  borderColor: isalreadyLiked
-                    ? primary
-                    : isLiked
-                    ? primary
-                    : "white",
-                  backgroundColor: "rgba(255, 255, 255, 0.08)",
-                }}
-              >
-                <AntDesign
-                  name="like2"
-                  size={16}
-                  color={isalreadyLiked ? primary : isLiked ? primary : "white"}
-                />
-                <SubHeading
-                  title={likes || 0}
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "500",
-                    color: isalreadyLiked
-                      ? primary
-                      : isLiked
-                      ? primary
-                      : "white",
-                    marginLeft: 4,
-                  }}
-                />
-              </View>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback
-              onPress={() => {
-                if (!isalreadyDisLiked) {
-                  if (isalreadyLiked) {
-                    setLikes((prev) => prev - 1);
-                    setIsLiked(false);
-                    setisalreadyLiked(false);
-                  }
-                  setisalreadyDisLiked(true);
-                  console.log("dissliked");
-                  addLike(
-                    store.accessToken,
-                    store.profileId,
-                    route.params.id,
-                    "DOWNVOTE"
-                  ).then((res) => {
-                    if (res) {
-                      if (res.addReaction === null) {
-                        console.log("added disliked");
-                      }
-                    }
-                  });
-                  removeLike(
-                    store.accessToken,
-                    store.profileId,
-                    route.params.id
-                  ).then((res) => {
-                    if (res) {
-                    }
-                  });
-                }
-              }}
-            >
-              <View
-                style={{
-                  marginHorizontal: 4,
-                  paddingHorizontal: 10,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderRadius: 16,
-                  borderWidth: 1,
-                  borderColor: isalreadyDisLiked ? primary : "white",
-                }}
-              >
-                <AntDesign name="dislike2" size={16} color={"white"} />
-                <SubHeading
-                  title=""
-                  style={{
-                    fontSize: 14,
+              borderColor={isalreadyLiked
+                ? primary
+                : isLiked
+                ? primary
+                : "white"}
+              onPress={onLike}
+              icon={<AntDesign name="like2" size={16} color={isalreadyLiked ? primary : isLiked ? primary : "white"} />}
+            />
+            <Button
+              title=""
+              onPress={onDislike}
+              mx={4}
+              px={10}
+              width={"auto"}
+              type={"outline"}
+              textStyle={{
+                fontSize: 14,
                     fontWeight: "500",
                     color: "white",
                     marginLeft: 4,
-                  }}
-                />
-              </View>
-            </TouchableWithoutFeedback>
+              }}
+              borderColor={isalreadyDisLiked ? primary : "white"}
+              icon={<AntDesign name="dislike2" size={16} color={isalreadyDisLiked? primary :"white"} />}
+              />
             <Button
               title={`${STATS?.totalAmountOfCollects || 0} Collects`}
               mx={4}
@@ -393,6 +370,7 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
               onPress={() => {
                 setIsmodalopen(true);
               }}
+              textStyle={{color: 'white'}}
             />
             <Button
               title={"Share"}
@@ -402,6 +380,7 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
               type={"outline"}
               icon={<FontAwesome name="share" size={16} color="white" />}
               onPress={onShare}
+              textStyle={{color: 'white'}}
             />
             <Button
               title={"Share"}
@@ -411,6 +390,7 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
               type={"outline"}
               icon={<MaterialIcons name="report" size={16} color="white" />}
               onPress={onShare}
+              textStyle={{color: 'white'}}
             />
           </ScrollView>
           <View>

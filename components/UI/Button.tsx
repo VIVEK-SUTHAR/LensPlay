@@ -86,7 +86,7 @@ const Button = (props: ButtonProps): JSX.Element => {
                 {
                   textAlign: "center",
                   marginHorizontal: 4,
-                  color: bg === "white" ? "black" : "white",
+                  // color: bg === "white" ? "black" : "white",
                 },
               ]}
             />
