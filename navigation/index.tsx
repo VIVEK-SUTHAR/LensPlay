@@ -1,5 +1,5 @@
 //@ts-ignore
-import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -166,10 +166,10 @@ function BottomTabNavigator({ navigation }) {
                   height: "100%",
                 }}
               >
-                <Feather
-                  name="home"
-                  size={28}
+                <Ionicons
+                  name={focused ? "home" : "home-outline"}
                   color={focused ? primary : "white"}
+                  size={26}
                 />
               </View>
             );
@@ -225,7 +225,7 @@ function BottomTabNavigator({ navigation }) {
                 }}
               >
                 <AntDesign
-                  name="pluscircleo"
+                  name={focused ? "pluscircle" : "pluscircleo"}
                   size={28}
                   color={focused ? primary : "white"}
                 />
@@ -259,7 +259,9 @@ function BottomTabNavigator({ navigation }) {
                 }}
               >
                 <Ionicons
-                  name="notifications-outline"
+                  name={
+                    focused ? "ios-notifications" : "ios-notifications-outline"
+                  }
                   size={28}
                   color={focused ? primary : "white"}
                 />
@@ -287,10 +289,10 @@ function BottomTabNavigator({ navigation }) {
                   height: "100%",
                 }}
               >
-                <Feather
-                  name="user"
-                  size={28}
+                <FontAwesome
+                  name={focused ? "user" : "user-o"}
                   color={focused ? primary : "white"}
+                  size={26}
                 />
               </View>
             );
@@ -300,4 +302,3 @@ function BottomTabNavigator({ navigation }) {
     </BottomTab.Navigator>
   );
 }
-  

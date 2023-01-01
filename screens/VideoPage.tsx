@@ -53,14 +53,10 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
   );
   const [ismodalopen, setIsmodalopen] = useState(false);
   const [isMute, setIsMute] = useState(false);
-  console.log(route.params.reaction);
-
   const playbackId = route.params.playbackId;
-
   const [isalreadyLiked, setisalreadyLiked] = useState(
     route.params.reaction === "UPVOTE" ? true : false
   );
-
   const [isalreadyDisLiked, setisalreadyDisLiked] = useState(
     route.params.reaction === "DOWNVOTE" ? true : false
   );

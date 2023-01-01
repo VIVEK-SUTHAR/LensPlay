@@ -111,7 +111,11 @@ const Profile = ({ navigation }: { navigation: any }) => {
               style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
             />
             <SubHeading
-              title={`@${profile?.profile?.handle} · ${profile?.profile?.stats?.totalFollowers} Subscribers · ${profile?.profile?.stats?.totalPosts} Videos`}
+              title={`@${profile?.profile?.handle} · ${
+                profile?.profile?.stats?.totalFollowers
+              } Subscribers · ${allVideos?.length} Video${
+                allVideos.length > 1 ? "s" : ""
+              } `}
               style={{ fontSize: 12, color: "white", marginTop: 2 }}
             />
             <SubHeading
