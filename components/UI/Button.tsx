@@ -10,7 +10,6 @@ import {
 import React from "react";
 import SubHeading from "./SubHeading";
 import { primary } from "../../constants/Colors";
-import { IconType } from "react-icons";
 interface ButtonProps {
   title: string;
   type?: "outline" | "filled";

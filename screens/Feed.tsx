@@ -1,10 +1,6 @@
-import {
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  ToastAndroid,
-} from "react-native";
-import { useCallback, useEffect, useState } from "react";
+import React from "react";
+import { RefreshControl, ScrollView, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
 import VideoCard from "../components/VideoCard";
 import useStore from "../store/Store";
 import { StatusBar } from "expo-status-bar";
@@ -18,7 +14,6 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
   const store = useStore();
   const [feedData, setfeedData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const setUserFeed = store.setUserFeed;
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = async () => {
@@ -38,9 +33,7 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
   useEffect(() => {
     getFeedData().then((res) => {
       setfeedData(res.data.feed.items);
-      setUserFeed(res.data.feed.items);
       setIsLoading(false);
-      console.log(store.accessToken);
     });
   }, []);
 
@@ -60,11 +53,10 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
       return feed;
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
+        throw new Error("Something went wrong", { cause: error });
       }
     }
   }
-
   return (
     <ScrollView
       refreshControl={
@@ -77,7 +69,7 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
       }
       style={{
         flex: 1,
-        backgroundColor: dark_primary,
+        backgroundColor:"black",
       }}
     >
       <StatusBar style="light" backgroundColor={dark_secondary} />
@@ -118,7 +110,4 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
     </ScrollView>
   );
 };
-
 export default Feed;
-
-const styles = StyleSheet.create({});

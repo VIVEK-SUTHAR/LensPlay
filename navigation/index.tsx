@@ -58,7 +58,7 @@ function RootNavigator() {
       <Stack.Screen
         name="VideoPage"
         component={VideoPage}
-        options={{ headerShown: false, presentation: "containedModal" }}
+        options={{ headerShown: false, presentation: "containedModal",animation:"slide_from_right" }}
       />
       <Stack.Screen
         name="Profile"
@@ -74,6 +74,7 @@ function RootNavigator() {
         name="Channel"
         component={Channel}
         options={{
+          animation: "slide_from_left",
           headerShown: true,
           headerStyle: {
             backgroundColor: dark_secondary,
@@ -92,7 +93,7 @@ function BottomTabNavigator({ navigation }) {
     <BottomTab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        headerStyle: { backgroundColor: dark_secondary, elevation: 0 },
+        headerStyle: { backgroundColor:"black", elevation: 0 },
         headerTitle: "",
         headerRight: () => (
           <TouchableWithoutFeedback
@@ -239,7 +240,7 @@ function BottomTabNavigator({ navigation }) {
         component={Notification}
         options={{
           tabBarLabel: "",
-          // tabBarBadge: 2,
+          // tabBarBadge: 2,z
           // tabBarBadgeStyle: {
           //   backgroundColor: primary,
           //   left: 0,
