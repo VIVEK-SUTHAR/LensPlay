@@ -37,6 +37,23 @@ declare global {
  *
  */
 
+/**
+ * RootStackParamList defines our Main Stack Screen and The parameters of this screens
+ *
+ * Screen under Stack include
+ * -Root
+ * -Login
+ * -VideoPage
+ * -Profile
+ * -Search
+ *
+ * Here undefined means the screen is not receiving any data throught route
+ * Ex:We are not passing any data in Login Screen,so it is defined as undefined
+ * As We are passing data in VideoPage like banner,title,publicationId we are defing types
+ * and it can be accessed in Screen by navigation.route.params.KEY_NAME;
+ *
+ */
+
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
   Modal: undefined;
@@ -45,16 +62,30 @@ export type RootStackParamList = {
   VideoPage: {
     publicationId: string;
   };
-  Profile: undefined;
+  Channel: undefined;
   Search: undefined;
 };
+
+/**
+ *
+ * RootStackScreenProps defines the props received by Evey screen in Stack
+ * They will be type of Native Screen props
+ */
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
   NativeStackScreenProps<RootStackParamList, Screen>;
 
+/**
+ * RootTabParamList defins the parameters recived by Screen which will be
+ * rendered by Bottom Tab Navigator
+ */
+
 export type RootTabParamList = {
-  TabOne: undefined;
-  TabTwo: undefined;
+  Home: undefined;
+  Trending: undefined;
+  Create: undefined;
+  Notifications: undefined;
+  Account: undefined;
 };
 
 /**

@@ -36,13 +36,12 @@ import * as ScreenOrientation from "expo-screen-orientation";
 import Drawer from "../components/UI/Drawer";
 import Player from "../components/VideoPlayer";
 import Button from "../components/UI/Button";
+import {RootStackScreenProps } from "../types";
 
-type VideoPageProps = {
-  navigation: any;
-  route: any;
-};
-
-const VideoPage = ({ route, navigation }: VideoPageProps) => {
+const VideoPage = ({
+  navigation,
+  route,
+}: RootStackScreenProps<"VideoPage">) => {
   const store = useStore();
   const [comments, setComments] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
@@ -132,7 +131,7 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
         }
       });
     }
-  }
+  };
 
   const onDislike = async () => {
     if (!isalreadyDisLiked) {
@@ -156,16 +155,14 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
           }
         }
       });
-      removeLike(
-        store.accessToken,
-        store.profileId,
-        route.params.id
-      ).then((res) => {
-        if (res) {
+      removeLike(store.accessToken, store.profileId, route.params.id).then(
+        (res) => {
+          if (res) {
+          }
         }
-      });
+      );
     }
-  }
+  };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
       <StatusBar
@@ -320,7 +317,7 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
             horizontal={true}
             showsHorizontalScrollIndicator={false}
           >
-            <Button 
+            <Button
               title={likes || 0}
               mx={4}
               px={10}
@@ -329,20 +326,20 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
               textStyle={{
                 fontSize: 14,
                 fontWeight: "500",
-                color: isalreadyLiked
-                  ? primary
-                  : isLiked
-                  ? primary
-                  : "white",
+                color: isalreadyLiked ? primary : isLiked ? primary : "white",
                 marginLeft: 4,
               }}
-              borderColor={isalreadyLiked
-                ? primary
-                : isLiked
-                ? primary
-                : "white"}
+              borderColor={
+                isalreadyLiked ? primary : isLiked ? primary : "white"
+              }
               onPress={onLike}
-              icon={<AntDesign name="like2" size={16} color={isalreadyLiked ? primary : isLiked ? primary : "white"} />}
+              icon={
+                <AntDesign
+                  name="like2"
+                  size={16}
+                  color={isalreadyLiked ? primary : isLiked ? primary : "white"}
+                />
+              }
             />
             <Button
               title=""
@@ -353,13 +350,19 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
               type={"outline"}
               textStyle={{
                 fontSize: 14,
-                    fontWeight: "500",
-                    color: "white",
-                    marginLeft: 4,
+                fontWeight: "500",
+                color: "white",
+                marginLeft: 4,
               }}
               borderColor={isalreadyDisLiked ? primary : "white"}
-              icon={<AntDesign name="dislike2" size={16} color={isalreadyDisLiked? primary :"white"} />}
-              />
+              icon={
+                <AntDesign
+                  name="dislike2"
+                  size={16}
+                  color={isalreadyDisLiked ? primary : "white"}
+                />
+              }
+            />
             <Button
               title={`${STATS?.totalAmountOfCollects || 0} Collects`}
               mx={4}
@@ -370,7 +373,7 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
               onPress={() => {
                 setIsmodalopen(true);
               }}
-              textStyle={{color: 'white'}}
+              textStyle={{ color: "white" }}
             />
             <Button
               title={"Share"}
@@ -380,7 +383,7 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
               type={"outline"}
               icon={<FontAwesome name="share" size={16} color="white" />}
               onPress={onShare}
-              textStyle={{color: 'white'}}
+              textStyle={{ color: "white" }}
             />
             <Button
               title={"Share"}
@@ -390,7 +393,7 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
               type={"outline"}
               icon={<MaterialIcons name="report" size={16} color="white" />}
               onPress={onShare}
-              textStyle={{color: 'white'}}
+              textStyle={{ color: "white" }}
             />
           </ScrollView>
           <View>

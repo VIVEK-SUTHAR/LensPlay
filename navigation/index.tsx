@@ -15,7 +15,7 @@ import VideoPage from "../screens/VideoPage";
 import { dark_secondary, primary } from "../constants/Colors";
 import Feed from "../screens/Feed";
 import Login from "../screens/Login";
-import { RootTabParamList } from "../types";
+import { RootStackParamList, RootTabParamList } from "../types";
 import Profile from "../screens/Profile";
 import Trending from "../screens/Trending";
 import Notification from "../screens/Notification";
@@ -40,7 +40,7 @@ export default function Navigation({
   );
 }
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
   return (
@@ -58,7 +58,11 @@ function RootNavigator() {
       <Stack.Screen
         name="VideoPage"
         component={VideoPage}
-        options={{ headerShown: false, presentation: "containedModal",animation:"slide_from_right" }}
+        options={{
+          headerShown: false,
+          presentation: "containedModal",
+          animation: "slide_from_right",
+        }}
       />
       <Stack.Screen
         name="Profile"
@@ -93,7 +97,7 @@ function BottomTabNavigator({ navigation }) {
     <BottomTab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        headerStyle: { backgroundColor:"black", elevation: 0 },
+        headerStyle: { backgroundColor: "black", elevation: 0 },
         headerTitle: "",
         headerRight: () => (
           <TouchableWithoutFeedback

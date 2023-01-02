@@ -23,8 +23,9 @@ import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
 import { StatusBar } from "expo-status-bar";
 import Paginator from "../components/Paginator";
 import SubHeading from "../components/UI/SubHeading";
+import { RootStackScreenProps } from "../types";
 
-const Login = ({ navigation }: { navigation: any }) => {
+const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const store = useStore();
   const authStore = useAuthStore();
   const connector = useWalletConnect();
@@ -114,7 +115,7 @@ const Login = ({ navigation }: { navigation: any }) => {
           }
           store.setProfileId(data.data.defaultProfile.id);
           console.log(store.accessToken);
-          
+
           navigation.navigate("Root");
         }
         if (isvaild.data.verify === false) {
