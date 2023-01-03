@@ -22,8 +22,30 @@ function getDifference(timestamp: Date) {
   const notificationHour = notificationStamp.getHours();
 
   if (currentYear != notificationYear) {
-    const difference = notificationYear - currentYear;
+    if (currentYear - notificationYear == 1) {
+      if (notificationMonth - currentMonth != 0){
+        if (currentMonth == 0 && notificationMonth == 11) {
+          if (currentDate > notificationDate) {
+            return `1m ago`
+          }
+          else {''
+            const difference = 31 - (notificationDate - currentDate);
+            return `${difference} d ago`;
+          }
+        }
+        else {
+          const difference = notificationMonth - currentMonth;
+          return `${difference} m ago`
+        }
+      }
+      else {
+        return `1 y ago`
+      }
+    }
+    else{
+      const difference = notificationYear - currentYear;
     return `~${difference} y ago`;
+    }
   } else if (currentMonth != notificationMonth) {
     const difference = notificationMonth - currentMonth;
     return `~${difference} m ago`;
