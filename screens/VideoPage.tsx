@@ -167,7 +167,7 @@ const VideoPage = ({
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <StatusBar
         style="light"
-        backgroundColor={dark_primary}
+        backgroundColor={"black"}
         translucent={true}
       />
       <Player

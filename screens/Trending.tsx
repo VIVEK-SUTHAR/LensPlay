@@ -12,7 +12,7 @@ import VideoCard from "../components/VideoCard";
 import { client } from "../apollo/client";
 import getTrendingPublication from "../apollo/Queries/getTrendingPublication";
 import { useEffect } from "react";
-import { dark_primary } from "../constants/Colors";
+import { dark_primary, primary } from "../constants/Colors";
 import convertDate from "../utils/formateDate";
 import AnimatedLottieView from "lottie-react-native";
 import Heading from "../components/UI/Heading";
@@ -37,7 +37,9 @@ const Trending = ({ navigation }: TrendingPageProps) => {
         },
       },
     });
-    console.log(trendingData.data.explorePublications.items[0].profile.isFollowedByMe);
+    console.log(
+      trendingData.data.explorePublications.items[0].profile.isFollowedByMe
+    );
 
     setTrendingItems(trendingData.data.explorePublications.items);
   }
@@ -55,7 +57,11 @@ const Trending = ({ navigation }: TrendingPageProps) => {
       active: false,
     },
     {
-      name: "Art",
+      name: "Latest",
+      active: false,
+    },
+    {
+      name: "Curated",
       active: false,
     },
     {
@@ -66,12 +72,13 @@ const Trending = ({ navigation }: TrendingPageProps) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-      {/* <ScrollView
+      <ScrollView
         style={{
           height: 60,
+          paddingVertical: 8,
+
           maxHeight: 60,
-          paddingVertical: 12,
-          paddingHorizontal: 8,
+          paddingStart:2,
         }}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -85,8 +92,8 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                 backgroundColor: `${item.active ? primary : "transparent"}`,
                 width: "auto",
                 height: "auto",
-                paddingHorizontal: 16,
-                paddingVertical: 4,
+                paddingHorizontal: 12,
+                paddingVertical: 6,
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 20,
@@ -97,7 +104,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
               <Text
                 style={{
                   fontSize: 12,
-                  fontWeight: "500",
+                  fontWeight: "600",
                   color: "white",
                 }}
               >
@@ -106,9 +113,9 @@ const Trending = ({ navigation }: TrendingPageProps) => {
             </View>
           );
         })}
-      </ScrollView> */}
+      </ScrollView>
       <ScrollView>
-        <View style={{ marginTop: 10 }}>
+        <View>
           {TrendingItems && TrendingItems.length === 0 ? (
             <View
               style={{

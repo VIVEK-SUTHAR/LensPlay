@@ -103,7 +103,7 @@ function BottomTabNavigator({ navigation }) {
     <BottomTab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        headerStyle: { backgroundColor: "black", elevation: 0 },
+        headerStyle: { backgroundColor: "black", elevation: 2 },
         headerTitle: "",
         headerRight: () => (
           <TouchableWithoutFeedback

@@ -23,6 +23,7 @@ interface ButtonProps {
   style?: StyleProp<ViewProps>;
   textStyle?: StyleProp<TextStyle>;
   borderColor?: ColorValue;
+  borderRadius?: number;
   onPress?: () => void;
   icon?: any;
 }
@@ -39,6 +40,7 @@ const Button = (props: ButtonProps): JSX.Element => {
     px = 4,
     py = 8,
     textStyle,
+    borderRadius=50,
     bg = primary,
     onPress,
     borderColor="white",
@@ -64,7 +66,7 @@ const Button = (props: ButtonProps): JSX.Element => {
           alignItems: "center",
           justifyContent: textStyle? "center":"space-between",
           backgroundColor: type === "filled" ? bg : "transparent",
-          borderRadius: 50,
+          borderRadius: borderRadius,
           borderColor: type === "outline" ? borderColor : "transparent",
           borderWidth: type === "outline" ? 1 : 0,
           paddingVertical: py,

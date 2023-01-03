@@ -12,6 +12,7 @@ import GoLive from "../components/GoLive";
 import AnimatedLottieView from "lottie-react-native";
 import Drawer from "../components/UI/Drawer";
 import Heading from "../components/UI/Heading";
+import Button from "../components/UI/Button";
 
 const UploadStack = createNativeStackNavigator();
 
@@ -24,7 +25,11 @@ const UploadVideo = ({ navigation }) => {
       initialRouteName="UploadIndex"
     >
       <UploadStack.Screen name="UploadIndex" component={Index} />
-      <UploadStack.Screen name="UploadScreen" component={Uploadvideo} />
+      <UploadStack.Screen
+        name="UploadScreen"
+        component={Uploadvideo}
+        options={{ animation: "slide_from_right",animationDuration:100 }}
+      />
       <UploadStack.Screen name="GoLive" component={GoLive} />
     </UploadStack.Navigator>
   );
@@ -35,11 +40,13 @@ export default UploadVideo;
 function Index({ navigation }) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-      <View style={{
-        height: 500,
-        justifyContent: "center",
-        alignItems: "center",
-      }}>
+      <View
+        style={{
+          height: 500,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <AnimatedLottieView
           autoPlay
           style={{
@@ -47,29 +54,18 @@ function Index({ navigation }) {
           }}
           source={require("../assets/upload.json")}
         />
-        <TouchableWithoutFeedback
-          onPress={() => {
-            navigation.navigate("UploadScreen");
-          }}
-        >
-          <View style={{
-            alignItems: 'center',
-            backgroundColor: primary,
-            paddingHorizontal: 24,
-            paddingVertical: 4,
-            borderRadius: 10,
-          }}>
-            <Heading title="Upload a video" style={{
-              fontSize: 20,
-              color: "white",
-              marginVertical: 5,
-              marginHorizontal: 15,
-              fontWeight: "600",
-              alignSelf: "flex-start",
-            }}/>
-          </View>
-        </TouchableWithoutFeedback>
+        <Button
+          type="outline"
+          title="Upload Video"
+          width={"auto"}
+          px={24}
+          borderColor={primary}
+          borderRadius={10}
+          textStyle={{ color: "white", fontWeight: "700", fontSize: 20 }}
+          onPress={()=>{navigation.navigate("UploadScreen");}}
+        />
       </View>
-    </SafeAreaView >
+      
+    </SafeAreaView>
   );
 }

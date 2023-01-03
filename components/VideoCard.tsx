@@ -47,7 +47,7 @@ const VideoCard = ({
     <View
       style={{
         margin: 10,
-        backgroundColor: "rgba(255, 255, 255, 0.08)",
+        backgroundColor: "#111111",
         borderRadius: 10,
       }}
     >
