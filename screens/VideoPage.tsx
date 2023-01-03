@@ -280,7 +280,7 @@ const VideoPage = ({
                     console.log(data.errors[0].message);
 
                     ToastAndroid.show(
-                      data.errors[0].message,
+                      "Currenctly not supported",
                       ToastAndroid.SHORT
                     );
                   }
