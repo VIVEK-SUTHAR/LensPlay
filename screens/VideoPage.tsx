@@ -36,7 +36,7 @@ import * as ScreenOrientation from "expo-screen-orientation";
 import Drawer from "../components/UI/Drawer";
 import Player from "../components/VideoPlayer";
 import Button from "../components/UI/Button";
-import {RootStackScreenProps } from "../types/navigation/types";
+import { RootStackScreenProps } from "../types/navigation/types";
 
 const VideoPage = ({
   navigation,
@@ -258,9 +258,19 @@ const VideoPage = ({
                 />
               </View>
             </View>
-            <TouchableWithoutFeedback
+            <Button
+              title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
+              width={"auto"}
+              px={12}
+              my={4}
+              type={alreadyFollowing ? "outline" : "filled"}
+              bg={alreadyFollowing ? "transparent" : "white"}
+              textStyle={{
+                fontSize: 14,
+                fontWeight: "700",
+                color: alreadyFollowing ? "white" : "black",
+              }}
               onPress={async () => {
-                // setIsmodalopen(true);
                 try {
                   const data = await createSubScribe(
                     route.params.profileId,
@@ -285,30 +295,7 @@ const VideoPage = ({
                   }
                 }
               }}
-            >
-              <View
-                style={{
-                  marginHorizontal: 4,
-                  paddingHorizontal: 12,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderRadius: 50,
-                  borderColor: alreadyFollowing ? "white" : undefined,
-                  borderWidth: alreadyFollowing ? 1 : undefined,
-                  backgroundColor: alreadyFollowing ? "transparent" : "white",
-                }}
-              >
-                <Heading
-                  title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "700",
-                    color: alreadyFollowing ? "white" : "black",
-                  }}
-                />
-              </View>
-            </TouchableWithoutFeedback>
+            />
           </View>
           <ScrollView
             style={{
@@ -406,7 +393,6 @@ const VideoPage = ({
                 marginBottom: 8,
               }}
             />
-
             {comments?.map((item, index) => {
               return (
                 <CommentCard
