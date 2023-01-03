@@ -21,12 +21,15 @@ import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import Avatar from "../components/UI/Avatar";
 import extractURLs from "../utils/extractURL";
-const Profile = ({ navigation }: { navigation: any }) => {
+import { RootTabScreenProps } from "../types/navigation/types";
+const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
+
   const [profile, setProfile] = useState<{}>({});
   const [allVideos, setallVideos] = useState([]);
   const store = useStore();
   useEffect(() => {
     getProfleInfo();
+   
   }, [navigation]);
   const getProfleInfo = async () => {
     try {

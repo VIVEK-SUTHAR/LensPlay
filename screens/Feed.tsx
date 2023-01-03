@@ -9,8 +9,11 @@ import Skleton from "../components/Skleton";
 import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import convertDate from "../utils/formateDate";
 import getFeed from "../apollo/Queries/getFeed";
+import { RootTabScreenProps } from "../types/navigation/types";
 
-const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
+const Feed = ({
+  navigation,
+}: RootTabScreenProps<"Home">): React.ReactElement => {
   const store = useStore();
   const [feedData, setfeedData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -69,10 +72,10 @@ const Feed = ({ navigation }: { navigation: any }): React.ReactElement => {
       }
       style={{
         flex: 1,
-        backgroundColor:"black",
+        backgroundColor: "black",
       }}
     >
-      <StatusBar style="light" backgroundColor={dark_secondary} />
+      <StatusBar style="light" backgroundColor={"black"} />
       {!isLoading ? (
         <>
           {feedData.map((item, index) => {

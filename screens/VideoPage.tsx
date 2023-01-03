@@ -36,7 +36,7 @@ import * as ScreenOrientation from "expo-screen-orientation";
 import Drawer from "../components/UI/Drawer";
 import Player from "../components/VideoPlayer";
 import Button from "../components/UI/Button";
-import {RootStackScreenProps } from "../types";
+import {RootStackScreenProps } from "../types/navigation/types";
 
 const VideoPage = ({
   navigation,

@@ -15,7 +15,7 @@ import VideoPage from "../screens/VideoPage";
 import { dark_secondary, primary } from "../constants/Colors";
 import Feed from "../screens/Feed";
 import Login from "../screens/Login";
-import { RootStackParamList, RootTabParamList } from "../types";
+import { RootStackParamList, RootTabParamList } from "../types/navigation/types";
 import Profile from "../screens/Profile";
 import Trending from "../screens/Trending";
 import Notification from "../screens/Notification";

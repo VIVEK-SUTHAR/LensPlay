@@ -23,7 +23,7 @@ import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
 import { StatusBar } from "expo-status-bar";
 import Paginator from "../components/Paginator";
 import SubHeading from "../components/UI/SubHeading";
-import { RootStackScreenProps } from "../types";
+import { RootStackScreenProps } from "../types/navigation/types";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const store = useStore();

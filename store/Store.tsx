@@ -1,11 +1,5 @@
 import create from "zustand";
-
-export interface IAuthStore {
-  accessToken: string;
-  refreshToken: string;
-  setAccessToken: (newToken: string) => void;
-  setRefreshToken: (newToken: string) => void;
-}
+import { IAuthStore, IUserProfile } from "../types/Store";
 
 export const useAuthStore = create<IAuthStore>((set) => ({
   accessToken: "",
@@ -14,6 +8,18 @@ export const useAuthStore = create<IAuthStore>((set) => ({
   refreshToken: "",
   setRefreshToken: (newRefreshToken: string) =>
     set({ accessToken: newRefreshToken }),
+}));
+
+export const useProfile = create<IUserProfile>((set) => ({
+  profileId: "",
+  dispatcher: "",
+  name: "",
+  handle: "",
+  avatar: "",
+  bio: "",
+  cover: "",
+  totalFollowers: 0,
+  totalFollowing: 0,
 }));
 
 const useStore = create((set) => ({
