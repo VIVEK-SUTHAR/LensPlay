@@ -209,10 +209,10 @@ function BottomTabNavigator({ navigation }) {
                   height: "100%",
                 }}
               >
-                <Feather
-                  name="trending-up"
+                <Ionicons
+                  name={focused ? "ios-compass" : "ios-compass-outline"}
                   size={28}
-                  color={focused ? primary : "white"}
+                  color={focused?primary:"white"}
                 />
               </View>
             );
