@@ -81,7 +81,7 @@ function RootNavigator() {
       <Stack.Screen
         name="Search"
         component={Search}
-        options={{ headerShown: true, presentation: "modal" }}
+        options={{ headerShown: true, presentation: "card",animation:"default" }}
       />
       <Stack.Screen
         name="Channel"
@@ -176,7 +176,7 @@ function BottomTabNavigator({ navigation }) {
                   justifyContent: "center",
                   flexDirection: "row",
                   borderTopWidth: focused ? 2 : 0,
-                  borderTopColor: focused ? primary : "none",
+                  borderTopColor: focused ? primary : "transparent",
                   height: "100%",
                 }}
               >
@@ -204,8 +204,8 @@ function BottomTabNavigator({ navigation }) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: focused ? 2 : 0,
-                  borderTopColor: focused ? primary : "none",
+                  borderTopWidth: 2,
+                  borderTopColor: focused ? primary : "transparent",
                   height: "100%",
                 }}
               >
@@ -233,8 +233,9 @@ function BottomTabNavigator({ navigation }) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: focused ? 2 : 0,
-                  borderTopColor: focused ? primary : "none",
+                  borderTopWidth: 2,
+
+                  borderTopColor: focused ? primary : "transparent",
                   height: "100%",
                 }}
               >
@@ -267,8 +268,8 @@ function BottomTabNavigator({ navigation }) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: focused ? 2 : 0,
-                  borderTopColor: focused ? primary : "none",
+                  borderTopWidth: 2,
+                  borderTopColor: focused ? primary : "transparent",
                   height: "100%",
                 }}
               >
@@ -298,15 +299,15 @@ function BottomTabNavigator({ navigation }) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: focused ? 2 : 0,
-                  borderTopColor: focused ? primary : "none",
+                  borderTopWidth: 2,
+                  borderTopColor: focused ? primary : "transparent",
                   height: "100%",
                 }}
               >
                 <FontAwesome
                   name={focused ? "user" : "user-o"}
                   color={focused ? primary : "white"}
-                  size={26}
+                  size={28}
                 />
               </View>
             );

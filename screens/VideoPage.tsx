@@ -319,11 +319,10 @@ const VideoPage = ({
               borderColor={
                 isalreadyLiked ? primary : isLiked ? primary : "white"
               }
-              bg={isalreadyLiked ? "#6fff98" : "#6fff98"}
               onPress={onLike}
               icon={
                 <AntDesign
-                  name={isalreadyLiked?"like1":"like2"}
+                  name={isalreadyLiked ? "like1" : "like2"}
                   size={16}
                   color={isalreadyLiked ? primary : isLiked ? primary : "white"}
                 />
@@ -345,7 +344,7 @@ const VideoPage = ({
               borderColor={isalreadyDisLiked ? primary : "white"}
               icon={
                 <AntDesign
-                  name={isalreadyDisLiked?"dislike1":"dislike2"}
+                  name={isalreadyDisLiked ? "dislike1" : "dislike2"}
                   size={16}
                   color={isalreadyDisLiked ? primary : "white"}
                 />

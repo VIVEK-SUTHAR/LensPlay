@@ -34,7 +34,7 @@ export default UploadVideo;
 
 function Index({ navigation }) {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <View style={{
         height: 500,
         justifyContent: "center",

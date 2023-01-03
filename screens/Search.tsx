@@ -15,7 +15,9 @@ import VideoCard from "../components/VideoCard";
 import { useQuery } from "@apollo/client";
 import AnimatedLottieView from "lottie-react-native";
 import { EvilIcons } from "@expo/vector-icons";
-const Search = ({ navigation }) => {
+import { RootStackScreenProps } from "../types/navigation/types";
+import Button from "../components/UI/Button";
+const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const textRef = useRef(null);
   const [searchPostResult, setSearchPostResult] = useState([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -63,7 +65,7 @@ const Search = ({ navigation }) => {
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerStyle: { backgroundColor: dark_secondary, elevation: 0 },
+      headerStyle: { backgroundColor: "black", elevation: 0 },
       headerLeft: () => (
         <View
           style={{
@@ -99,7 +101,7 @@ const Search = ({ navigation }) => {
     });
   }, []);
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: dark_secondary }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <ScrollView>
         {!!isSearching && (
           <>
@@ -186,6 +188,21 @@ const Search = ({ navigation }) => {
                   >
                     No videos found 😔
                   </Text>
+                  <Button
+                    title="Continue browsing..."
+                    width={"auto"}
+                      type="outline"
+                      borderColor={primary}
+                    px={16}
+                    textStyle={{
+                      color: "white",
+                      fontSize: 20,
+                      fontWeight: "600",
+                    }}
+                      onPress={() => {
+                        navigation.navigate("Root")
+                      }}
+                  />
                 </View>
               </>
             )}

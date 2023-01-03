@@ -15,7 +15,7 @@ const Uploadvideo = () => {
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: dark_primary,
+        backgroundColor:"black",
         justifyContent: "center",
         alignItems: "center",
       }}
