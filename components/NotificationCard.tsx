@@ -228,7 +228,7 @@ const NotificationCard: FC<NotificationsProps> = ({
     <View
       style={{
         flexDirection: "row",
-        backgroundColor: dark_secondary,
+        backgroundColor: "#1a1a1a",
         padding: 8,
         marginVertical: 4,
         marginHorizontal: 8,

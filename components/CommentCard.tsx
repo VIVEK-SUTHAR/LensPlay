@@ -34,7 +34,7 @@ const CommentCard = ({
     <View
       style={{
         flexDirection: "row",
-        backgroundColor: "black",
+        backgroundColor: "#111111",
         padding: 8,
         marginVertical: 4,
         borderRadius: 8,

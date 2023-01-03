@@ -29,12 +29,13 @@ function Player({
 }: VideoPlayerProps) {
   return (
     <VideoPlayer
+
       style={{
         width: inFullscreen
           ? Dimensions.get("screen").height
           : Dimensions.get("screen").width,
         height: inFullscreen ? Dimensions.get("screen").width * 0.95 : 280,
-        videoBackgroundColor: "",
+        videoBackgroundColor: "transparent",
         controlsBackgroundColor: "transparent",
       }}
       textStyle={{
@@ -77,7 +78,6 @@ function Player({
         posterSource: {
           uri: getIPFSLink(poster),
         },
-
         posterStyle: {
           height: "100%",
           width: "100%",

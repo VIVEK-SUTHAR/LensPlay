@@ -47,7 +47,7 @@ const Navigation = ({ navigation }: { navigation: any }) => {
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: dark_primary,
+        backgroundColor: "black",
       }}
     >
       <ScrollView

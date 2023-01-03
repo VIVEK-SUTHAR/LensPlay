@@ -15,7 +15,10 @@ import VideoPage from "../screens/VideoPage";
 import { dark_secondary, primary } from "../constants/Colors";
 import Feed from "../screens/Feed";
 import Login from "../screens/Login";
-import { RootStackParamList, RootTabParamList } from "../types/navigation/types";
+import {
+  RootStackParamList,
+  RootTabParamList,
+} from "../types/navigation/types";
 import Profile from "../screens/Profile";
 import Trending from "../screens/Trending";
 import Notification from "../screens/Notification";
@@ -44,7 +47,13 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "black",
+        },
+      }}
+    >
       <Stack.Screen
         name="Login"
         component={Login}
@@ -80,9 +89,6 @@ function RootNavigator() {
         options={{
           animation: "slide_from_left",
           headerShown: true,
-          headerStyle: {
-            backgroundColor: dark_secondary,
-          },
           headerTintColor: primary,
         }}
       />
@@ -139,15 +145,18 @@ function BottomTabNavigator({ navigation }) {
             >
               <SubHeading
                 title="BETA"
-                style={{ color: "white", fontSize: 11, fontWeight: "600" }}
+                style={{ color: "white", fontSize: 8, fontWeight: "600" }}
               />
             </View>
           </View>
         ),
         tabBarStyle: {
+          position: "absolute",
+          borderTopLeftRadius: 25,
+          borderTopRightRadius:25,
           height: 54,
           backgroundColor: dark_secondary,
-          borderTopColor: "lightgray",
+          borderTopColor: dark_secondary,
           paddingHorizontal: 10,
         },
       }}

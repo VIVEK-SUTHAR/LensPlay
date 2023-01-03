@@ -80,7 +80,7 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor:"black" }}>
       <ScrollView
         refreshControl={
           <RefreshControl

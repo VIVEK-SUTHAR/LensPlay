@@ -45,7 +45,7 @@ const VideoPage = ({
   const store = useStore();
   const [comments, setComments] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
-  const [likes, setLikes] = useState(route.params.stats?.totalUpvotes);
+  const [likes, setLikes] = useState<number>(route.params.stats?.totalUpvotes);
   const [inFullscreen, setInFullsreen] = useState(false);
   const [alreadyFollowing, setAlreadyFollowing] = useState(
     route?.params?.isFollowdByMe || false
@@ -164,7 +164,7 @@ const VideoPage = ({
     }
   };
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <StatusBar
         style="light"
         backgroundColor={dark_primary}
@@ -319,10 +319,11 @@ const VideoPage = ({
               borderColor={
                 isalreadyLiked ? primary : isLiked ? primary : "white"
               }
+              bg={isalreadyLiked ? "#6fff98" : "#6fff98"}
               onPress={onLike}
               icon={
                 <AntDesign
-                  name="like2"
+                  name={isalreadyLiked?"like1":"like2"}
                   size={16}
                   color={isalreadyLiked ? primary : isLiked ? primary : "white"}
                 />
@@ -344,7 +345,7 @@ const VideoPage = ({
               borderColor={isalreadyDisLiked ? primary : "white"}
               icon={
                 <AntDesign
-                  name="dislike2"
+                  name={isalreadyDisLiked?"dislike1":"dislike2"}
                   size={16}
                   color={isalreadyDisLiked ? primary : "white"}
                 />

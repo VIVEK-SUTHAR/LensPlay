@@ -55,10 +55,10 @@ const NotificationCard = ({
     <View
       style={{
         flexDirection: "row",
-        backgroundColor: dark_secondary,
+        backgroundColor: "#111111",
         padding: 8,
-        marginVertical: 4,
-        marginHorizontal: 8,
+        marginVertical: 2,
+        marginHorizontal: 4,
         borderRadius: 8,
       }}
     >
