@@ -27,22 +27,21 @@ import Skleton from "../components/Skleton";
 import extractURLs from "../utils/extractURL";
 import isFollowedByMe from "../api/isFollowedByMe";
 import createSubScribe from "../api/freeSubScribe";
+import { RootStackScreenProps } from "../types/navigation/types";
 
-interface ChannelScreenProps {
-  navigation: any;
-  route: any;
-}
-
-const Channel = ({ navigation, route }: ChannelScreenProps) => {
+const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [profile, setProfile] = useState<{}>({});
   const [allVideos, setallVideos] = useState([]);
   const [isVideoAvilable, setIsVideoAvilable] = useState<boolean>(true);
-  const [alreadyFollowing, setAlreadyFollowing] = useState(false);
+  const [alreadyFollowing, setAlreadyFollowing] = useState<boolean | undefined>(
+    false
+  );
   const [isLoading, setIsLoading] = useState(true);
   const store = useStore();
 
   useEffect(() => {
     getProfleInfo();
+    setAlreadyFollowing(route.params.isFollowdByMe);
   }, [navigation, route.params.profileId]);
 
   const getProfleInfo = async () => {
@@ -80,7 +79,7 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor:"black" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <ScrollView
         refreshControl={
           <RefreshControl

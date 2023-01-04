@@ -62,7 +62,10 @@ export type RootStackParamList = {
   VideoPage: {
     publicationId: string;
   };
-  Channel: undefined;
+  Channel: {
+    profileId: string;
+    isFollowdByMe?: boolean;
+  };
   Search: undefined;
 };
 

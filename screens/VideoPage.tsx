@@ -85,6 +85,11 @@ const VideoPage = ({
       variables: {
         postId: route.params.id,
       },
+      context: {
+        headers: {
+          "x-access-token":`Bearer ${store.accessToken}`
+        }
+      }
     });
     setComments([]);
     setComments(data.data.publications.items);
@@ -165,11 +170,7 @@ const VideoPage = ({
   };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-      <StatusBar
-        style="light"
-        backgroundColor={"black"}
-        translucent={true}
-      />
+      <StatusBar style="light" backgroundColor={"black"} translucent={true} />
       <Player
         poster={route.params.banner}
         title={route.params.title}
@@ -402,7 +403,7 @@ const VideoPage = ({
                   commentText={item?.metadata?.description}
                   commentTime={item?.createdAt}
                   id={item?.profile?.id}
-                  navigation={navigation}
+                  isFollowdByMe={item.profile.isFollowedByMe}
                 />
               );
             })}

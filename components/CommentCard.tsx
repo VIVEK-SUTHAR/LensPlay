@@ -12,6 +12,7 @@ import getDifference from "../utils/getDifference";
 import Heading from "./UI/Heading";
 import SubHeading from "./UI/SubHeading";
 import extractURLs from "../utils/extractURL";
+import { useNavigation } from "@react-navigation/native";
 
 type CommentCardProps = {
   avatar: string;
@@ -19,7 +20,7 @@ type CommentCardProps = {
   commentText: string;
   commentTime: string;
   id: string;
-  navigation: any;
+  isFollowdByMe: boolean;
 };
 
 const CommentCard = ({
@@ -28,8 +29,9 @@ const CommentCard = ({
   commentText,
   commentTime,
   id,
-  navigation,
+  isFollowdByMe
 }: CommentCardProps) => {
+  const navigation = useNavigation();
   return (
     <View
       style={{
@@ -45,6 +47,7 @@ const CommentCard = ({
           onPress={() => {
             navigation.navigate("Channel", {
               profileId: id,
+              isFollowdByMe:isFollowdByMe
             });
           }}
         >

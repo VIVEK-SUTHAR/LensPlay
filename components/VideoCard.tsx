@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import * as React from "react";
 import {
   Image,
@@ -13,7 +14,6 @@ import Heading from "./UI/Heading";
 import SubHeading from "./UI/SubHeading";
 
 type videoPageProp = {
-  navigation: any;
   title: string;
   banner: string;
   avatar: string;
@@ -29,7 +29,6 @@ type videoPageProp = {
 
 const VideoCard = ({
   id,
-  navigation,
   banner,
   title,
   avatar,
@@ -42,6 +41,7 @@ const VideoCard = ({
   isFollowdByMe,
 }: videoPageProp) => {
   const store = useStore();
+  const navigation = useNavigation();
   const setCurrentIndex = store.setCurrentIndex;
   return (
     <View
@@ -89,6 +89,7 @@ const VideoCard = ({
         onPress={() => {
           navigation.navigate("Channel", {
             profileId: profileId,
+            isFollowdByMe: isFollowdByMe,
           });
         }}
       >
