@@ -28,6 +28,8 @@ import extractURLs from "../utils/extractURL";
 import isFollowedByMe from "../api/isFollowedByMe";
 import createSubScribe from "../api/freeSubScribe";
 import { RootStackScreenProps } from "../types/navigation/types";
+import Button from "../components/UI/Button";
+import { ResizeMode } from "expo-av";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [profile, setProfile] = useState<{}>({});
@@ -41,8 +43,19 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
 
   useEffect(() => {
     getProfleInfo();
-    setAlreadyFollowing(route.params.isFollowdByMe);
+    console.log(route.params.isFollowdByMe);
+    setAlreadyFollowing(route.params.isFollowdByMe)
   }, [navigation, route.params.profileId]);
+  async function checkFollowed(): Promise<void> {
+    const data = await isFollowedByMe(
+      route.params.profileId,
+      store.accessToken
+    );
+    if (data.data.profile.isFollowedByMe) {
+      setAlreadyFollowing(true);
+      return;
+    }
+  }
 
   const getProfleInfo = async () => {
     try {
@@ -110,7 +123,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                   height: "100%",
                   width: "100%",
                   borderRadius: 10,
-                  resizeMode: "contain",
+                  resizeMode: ResizeMode.STRETCH,
                 }}
               />
             </View>
@@ -142,9 +155,20 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                 style={{ fontSize: 14, color: "gray", textAlign: "center" }}
               />
             </View>
-            <TouchableWithoutFeedback
+            <Button
+              title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
+              width={"auto"}
+              px={12}
+              my={4}
+              type={alreadyFollowing ? "outline" : "filled"}
+              bg={alreadyFollowing ? "transparent" : "white"}
+              textStyle={{
+                fontSize: 16,
+                fontWeight: "700",
+                color: alreadyFollowing ? "white" : "black",
+              }}
+              borderColor={alreadyFollowing ? primary : "white"}
               onPress={async () => {
-                if (alreadyFollowing) return;
                 try {
                   const data = await createSubScribe(
                     route.params.profileId,
@@ -154,7 +178,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     console.log(data.errors[0].message);
 
                     ToastAndroid.show(
-                      data.errors[0].message,
+                      "Currenctly not supported",
                       ToastAndroid.SHORT
                     );
                   }
@@ -169,39 +193,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                   }
                 }
               }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: 8,
-                }}
-              >
-                <View
-                  style={{
-                    paddingHorizontal: 10,
-                    paddingVertical: 8,
-                    width: "40%",
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: 50,
-                    backgroundColor: alreadyFollowing ? "#7400B8" : "white",
-                  }}
-                >
-                  <Heading
-                    title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "700",
-                      textAlign: "center",
-                      color: alreadyFollowing ? "white" : "black",
-                    }}
-                  />
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
+            />
             <View style={{ paddingVertical: 10 }}>
               <Heading
                 title="Videos"

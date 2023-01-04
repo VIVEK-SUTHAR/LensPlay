@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { primary } from "../constants/Colors";
 import useStore from "../store/Store";
 import getIPFSLink from "../utils/getIPFSLink";
 import Avatar from "./UI/Avatar";
@@ -65,7 +66,7 @@ const VideoCard = ({
               banner: banner,
               stats: stats,
               reaction: reaction,
-              isFollowdByMe: isFollowdByMe || false,
+              isFollowdByMe: isFollowdByMe,
             });
           }}
         >

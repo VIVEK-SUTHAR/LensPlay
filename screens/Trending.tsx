@@ -4,6 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableHighlight,
   View,
 } from "react-native";
 import * as React from "react";
@@ -24,30 +25,7 @@ type TrendingPageProps = {
 
 const Trending = ({ navigation }: TrendingPageProps) => {
   const [TrendingItems, setTrendingItems] = useState([]);
-  const store = useStore();
-  async function getTrendingData() {
-    const trendingData = await client.query({
-      query: getTrendingPublication,
-      variables: {
-        id: store.profileId,
-      },
-      context: {
-        headers: {
-          "x-access-token": `Bearer ${store.accessToken}`,
-        },
-      },
-    });
-    console.log(
-      trendingData.data.explorePublications.items[0].profile.isFollowedByMe
-    );
-
-    setTrendingItems(trendingData.data.explorePublications.items);
-  }
-  useEffect(() => {
-    getTrendingData();
-  }, []);
-
-  const Tags = [
+  const [tags, setTags] = useState([
     {
       name: "Top Collected",
       active: true,
@@ -68,7 +46,26 @@ const Trending = ({ navigation }: TrendingPageProps) => {
       name: "Technology",
       active: false,
     },
-  ];
+  ]);
+  const [currentTag, setCurrentTag] = useState(tags[0]);
+  const store = useStore();
+  async function getTrendingData() {
+    const trendingData = await client.query({
+      query: getTrendingPublication,
+      variables: {
+        id: store.profileId,
+      },
+      context: {
+        headers: {
+          "x-access-token": `Bearer ${store.accessToken}`,
+        },
+      },
+    });
+    setTrendingItems(trendingData.data.explorePublications.items);
+  }
+  useEffect(() => {
+    getTrendingData();
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -76,20 +73,24 @@ const Trending = ({ navigation }: TrendingPageProps) => {
         style={{
           height: 60,
           paddingVertical: 8,
-
           maxHeight: 60,
-          paddingStart:2,
+          paddingStart: 2,
         }}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
       >
-        {Tags.map((item, index) => {
+        {tags.map((item, index) => {
           return (
             <View
+              onTouchEndCapture={() => {
+                setCurrentTag(tags[index]);
+              }}
               key={index}
               style={{
                 marginHorizontal: 4,
-                backgroundColor: `${item.active ? primary : "transparent"}`,
+                backgroundColor: `${
+                  currentTag.name === item.name ? primary : "transparent"
+                }`,
                 width: "auto",
                 height: "auto",
                 paddingHorizontal: 12,
@@ -97,7 +98,9 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 20,
-                borderColor: `${item.active ? primary : "white"}`,
+                borderColor: `${
+                  currentTag.name === item.name ? primary : "white"
+                }`,
                 borderWidth: 1,
               }}
             >
