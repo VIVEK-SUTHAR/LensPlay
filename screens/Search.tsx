@@ -48,7 +48,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
           query: searchQuery.toLowerCase().trim(),
         },
       });
-      console.log(result);
+      console.log(result.data.search.items);
 
       setSearchPostResult(result?.data?.search?.items);
       if (searchPostResult.length === 0) {
@@ -65,7 +65,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerStyle: { backgroundColor: "black", elevation: 0 },
+      headerStyle: { backgroundColor: "black" },
       headerLeft: () => (
         <View
           style={{
@@ -146,18 +146,21 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
               Here's what we found
             </Text>
             {searchPostResult.map((item, index) => {
-              return (
-                <VideoCard
-                  key={index}
-                  navigation={navigation}
-                  avatar={item?.profile?.picture?.original?.url}
-                  id={item?.id}
-                  banner={item?.profile?.coverPicture?.original?.url}
-                  uploadedBy={item?.profile?.handle}
-                  title={item?.metadata?.name}
-                  playbackId={item?.metadata?.media[0]?.original?.url}
-                />
-              );
+              if (!item.hidden) {
+                
+                return (
+                  <VideoCard
+                    key={index}
+                    navigation={navigation}
+                    avatar={item?.profile?.picture?.original?.url}
+                    id={item?.id}
+                    banner={item?.profile?.coverPicture?.original?.url}
+                    uploadedBy={item?.profile?.handle}
+                    title={item?.metadata?.name}
+                    playbackId={item?.metadata?.media[0]?.original?.url}
+                  />
+                );
+              }
             })}
           </>
         ) : (

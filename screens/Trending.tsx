@@ -1,5 +1,6 @@
 import {
   Image,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -81,7 +82,12 @@ const Trending = ({ navigation }: TrendingPageProps) => {
       >
         {tags.map((item, index) => {
           return (
-            <View
+            <Pressable
+              android_ripple={{
+                color: primary,
+                radius: 25,
+              }}
+
               onTouchEndCapture={() => {
                 setCurrentTag(tags[index]);
               }}
@@ -113,14 +119,14 @@ const Trending = ({ navigation }: TrendingPageProps) => {
               >
                 {item.name}
               </Text>
-            </View>
+            </Pressable>
           );
         })}
       </ScrollView>
       <ScrollView>
         <View>
           {TrendingItems && TrendingItems.length === 0 ? (
-            <View
+            <Pressable
               style={{
                 height: 500,
                 justifyContent: "center",
@@ -151,7 +157,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                   }}
                 />
               </View>
-            </View>
+            </Pressable>
           ) : (
             <></>
           )}

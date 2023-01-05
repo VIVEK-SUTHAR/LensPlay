@@ -91,6 +91,15 @@ export type RootTabParamList = {
   Account: undefined;
 };
 
+export type UploadTabParamsList = {
+  Index: undefined;
+  UploadScreen: undefined;
+  GoLive: undefined;
+};
+
+export type UploadScreenProps<Screen extends keyof UploadTabParamsList> =
+  NativeStackScreenProps<UploadTabParamsList, Screen>;
+
 /**
  * RootTabScreenProps Means the Every Screen which is going to rendered by bottom tabs will receive
  * -The Props Of Bottom Tab Screen

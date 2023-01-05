@@ -13,6 +13,7 @@ import AnimatedLottieView from "lottie-react-native";
 import Drawer from "../components/UI/Drawer";
 import Heading from "../components/UI/Heading";
 import Button from "../components/UI/Button";
+import { UploadScreenProps } from "../types/navigation/types";
 
 const UploadStack = createNativeStackNavigator();
 
@@ -28,7 +29,7 @@ const UploadVideo = ({ navigation }) => {
       <UploadStack.Screen
         name="UploadScreen"
         component={Uploadvideo}
-        options={{ animation: "slide_from_right",animationDuration:100 }}
+        options={{ animation: "slide_from_right", animationDuration: 100 }}
       />
       <UploadStack.Screen name="GoLive" component={GoLive} />
     </UploadStack.Navigator>
@@ -37,7 +38,7 @@ const UploadVideo = ({ navigation }) => {
 
 export default UploadVideo;
 
-function Index({ navigation }) {
+function Index({ navigation }: UploadScreenProps<"Index">) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <View
@@ -62,10 +63,11 @@ function Index({ navigation }) {
           borderColor={primary}
           borderRadius={10}
           textStyle={{ color: "white", fontWeight: "700", fontSize: 20 }}
-          onPress={()=>{navigation.navigate("UploadScreen");}}
+          onPress={() => {
+            navigation.navigate("UploadScreen");
+          }}
         />
       </View>
-      
     </SafeAreaView>
   );
 }

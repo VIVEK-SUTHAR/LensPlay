@@ -35,7 +35,7 @@ export default function Navigation({
 }) {
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style="dark"  />
       <NavigationContainer>
         <RootNavigator />
       </NavigationContainer>
@@ -72,11 +72,6 @@ function RootNavigator() {
           presentation: "containedModal",
           animation: "slide_from_right",
         }}
-      />
-      <Stack.Screen
-        name="Profile"
-        component={Profile}
-        options={{ headerShown: true, presentation: "card" }}
       />
       <Stack.Screen
         name="Search"
@@ -155,7 +150,7 @@ function BottomTabNavigator({ navigation }) {
           borderTopLeftRadius: 25,
           borderTopRightRadius:25,
           height: 54,
-          backgroundColor: dark_secondary,
+          backgroundColor: "black",
           borderTopColor: dark_secondary,
           paddingHorizontal: 10,
         },
@@ -181,7 +176,7 @@ function BottomTabNavigator({ navigation }) {
                 }}
               >
                 <Ionicons
-                  name={focused ? "home" : "home-outline"}
+                  name={focused ? "ios-home" : "home-outline"}
                   color={focused ? primary : "white"}
                   size={26}
                 />
