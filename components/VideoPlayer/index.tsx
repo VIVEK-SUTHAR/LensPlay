@@ -1,8 +1,8 @@
 import React from "react";
 import { setStatusBarHidden } from "expo-status-bar";
-import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ResizeMode } from "expo-av";
-import { Dimensions, Text } from "react-native";
+import { Dimensions, Text, View } from "react-native";
 import { primary } from "../../constants/Colors";
 import * as ScreenOrientation from "expo-screen-orientation";
 import VideoPlayer from "expo-video-player";
@@ -29,7 +29,6 @@ function Player({
 }: VideoPlayerProps) {
   return (
     <VideoPlayer
-
       style={{
         width: inFullscreen
           ? Dimensions.get("screen").height
@@ -61,17 +60,32 @@ function Player({
         ),
       }}
       header={
-        <Text
+        <View
           style={{
-            color: "white",
-            paddingHorizontal: 20,
-            fontSize: 18,
-            fontWeight: "600",
-            paddingVertical: 8,
+            marginTop: 30,
+            flexDirection: "row",
+            width: "100%",
+            justifyContent: "space-between",
           }}
         >
-          {title}
-        </Text>
+          <Text
+            style={{
+              color: "white",
+              paddingHorizontal: 20,
+              fontSize: 18,
+              fontWeight: "600",
+              paddingVertical: 8,
+            }}
+          >
+            {inFullscreen ? title : ""}
+          </Text>
+          <Feather
+            name="settings"
+            size={26}
+            color={"white"}
+            style={{ alignSelf: "flex-end",marginHorizontal:8, }}
+          />
+        </View>
       }
       videoProps={{
         usePoster: true,
