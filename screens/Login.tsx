@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { dark_primary, dark_secondary, primary } from "../constants/Colors";
@@ -24,16 +24,22 @@ import { StatusBar } from "expo-status-bar";
 import Paginator from "../components/Paginator";
 import SubHeading from "../components/UI/SubHeading";
 import { RootStackScreenProps } from "../types/navigation/types";
+import Button from "../components/UI/Button";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const store = useStore();
   const authStore = useAuthStore();
+  const [isloading, setIsloading] = useState<boolean>(false);
   const connector = useWalletConnect();
   const [isconnected, setIsconnected] = useState<boolean>(false);
   const connectWallet = React.useCallback(async () => {
     await connector.connect();
     setIsconnected(true);
   }, [connector]);
+
+  useEffect(() => {
+    navigation.addListener("focus", getData);
+  }, []);
 
   const data = [
     "https://ipfs.io/ipfs/QmfY1JJanP2cZyrcf2WBka6dzoHFjT9sH2gYcEaJJiDwfK",
@@ -91,6 +97,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
     }
   };
   const getData = async () => {
+    setIsloading(true);
     try {
       const jsonValue = await AsyncStorage.getItem("@storage_Key");
       if (jsonValue) {
@@ -114,8 +121,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
             return;
           }
           store.setProfileId(data.data.defaultProfile.id);
-          console.log(store.accessToken);
-
+          setIsloading(false);
           navigation.navigate("Root");
         }
         if (isvaild.data.verify === false) {
@@ -184,9 +190,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           height: "100%",
         }}
       >
-        {/* <View
-          style={{ width: "100%", alignItems: "center", aspectRatio: 1.4 / 1 }}
-        > */}
         <View style={StyleSheet.absoluteFillObject}>
           {data.map((image, index) => {
             const inputRange = [
@@ -263,36 +266,23 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
 
         {!!connector.connected ? (
           <>
-            <TouchableOpacity
-              style={{
-                width: "80%",
+            <Button
+              title="Login With Lens"
+              bg={"#abfe2c"}
+              my={10}
+              py={16}
+              textStyle={{
+                color: "black",
+                fontSize: 20,
+                fontWeight: "bold",
+                textAlign: "center",
               }}
+              width={"80%"}
               onPress={async () => {
                 await logInWithLens();
               }}
-            >
-              <View
-                style={{
-                  backgroundColor: "#abfe2c",
-                  borderRadius: 50,
-                  paddingVertical: 16,
-                  marginVertical: 10,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <SubHeading
-                  title="Login with Lens"
-                  style={{
-                    color: "black",
-                    fontSize: 20,
-                    fontWeight: "bold",
-                    textAlign: "center",
-                  }}
-                />
-              </View>
-            </TouchableOpacity>
+              isLoading={isloading}
+            />
             <TouchableOpacity style={{ width: "80%" }} onPress={killSession}>
               <View
                 style={{

@@ -6,6 +6,7 @@ import {
   TextStyle,
   ActivityIndicator,
   ColorValue,
+  Pressable,
 } from "react-native";
 import React from "react";
 import SubHeading from "./SubHeading";
@@ -40,16 +41,21 @@ const Button = (props: ButtonProps): JSX.Element => {
     px = 4,
     py = 8,
     textStyle,
-    borderRadius=50,
+    borderRadius = 50,
     bg = primary,
     onPress,
-    borderColor="white",
+    borderColor = "white",
     icon,
     ...rest
   } = props;
   return (
-    <TouchableOpacity
-      style={[style,{width:width}]}
+    <Pressable
+      style={[
+        style,
+        {
+          width: width,
+        },
+      ]}
       {...rest}
       onPress={
         onPress
@@ -59,14 +65,18 @@ const Button = (props: ButtonProps): JSX.Element => {
             }
       }
     >
-      <View
+      <Pressable
+        android_ripple={{
+          color: type === "outline" ? primary : "rgba(255,255,255,0.08)",
+          radius: borderRadius * 0.5,
+        }}
         style={{
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: textStyle? "center":"space-between",
-          backgroundColor: type === "filled" ? bg : "transparent",
           borderRadius: borderRadius,
+          justifyContent: textStyle ? "center" : "space-between",
+          backgroundColor: type === "filled" ? bg : "transparent",
           borderColor: type === "outline" ? borderColor : "transparent",
           borderWidth: type === "outline" ? 1 : 0,
           paddingVertical: py,
@@ -93,8 +103,8 @@ const Button = (props: ButtonProps): JSX.Element => {
             />
           </>
         )}
-      </View>
-    </TouchableOpacity>
+      </Pressable>
+    </Pressable>
   );
 };
 

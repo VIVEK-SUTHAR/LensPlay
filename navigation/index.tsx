@@ -5,19 +5,16 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import {
-  ColorSchemeName,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { ColorSchemeName, TouchableWithoutFeedback, View } from "react-native";
 import VideoPage from "../screens/VideoPage";
 import { dark_secondary, primary } from "../constants/Colors";
 import Feed from "../screens/Feed";
 import Login from "../screens/Login";
 import {
   RootStackParamList,
+  RootStackScreenProps,
   RootTabParamList,
+  RootTabScreenProps,
 } from "../types/navigation/types";
 import Profile from "../screens/Profile";
 import Trending from "../screens/Trending";
@@ -35,7 +32,7 @@ export default function Navigation({
 }) {
   return (
     <>
-      <StatusBar style="dark"  />
+      <StatusBar style="dark" />
       <NavigationContainer>
         <RootNavigator />
       </NavigationContainer>
@@ -62,7 +59,11 @@ function RootNavigator() {
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}
-        options={{ headerShown: false, presentation: "card" }}
+        options={{
+          headerShown: false,
+          animation: "slide_from_right",
+          gestureEnabled: false,
+        }}
       />
       <Stack.Screen
         name="VideoPage"
@@ -76,7 +77,11 @@ function RootNavigator() {
       <Stack.Screen
         name="Search"
         component={Search}
-        options={{ headerShown: true, presentation: "card",animation:"default" }}
+        options={{
+          headerShown: true,
+          presentation: "card",
+          animation: "default",
+        }}
       />
       <Stack.Screen
         name="Channel"
@@ -93,7 +98,7 @@ function RootNavigator() {
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
-function BottomTabNavigator({ navigation }) {
+function BottomTabNavigator({navigation}:RootStackScreenProps<"Root">) {
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
@@ -148,12 +153,13 @@ function BottomTabNavigator({ navigation }) {
         tabBarStyle: {
           position: "absolute",
           borderTopLeftRadius: 25,
-          borderTopRightRadius:25,
+          borderTopRightRadius: 25,
           height: 54,
           backgroundColor: "black",
           borderTopColor: dark_secondary,
           paddingHorizontal: 10,
         },
+        headerShadowVisible: true,
       }}
     >
       <BottomTab.Screen
@@ -207,7 +213,7 @@ function BottomTabNavigator({ navigation }) {
                 <Ionicons
                   name={focused ? "ios-compass" : "ios-compass-outline"}
                   size={28}
-                  color={focused?primary:"white"}
+                  color={focused ? primary : "white"}
                 />
               </View>
             );

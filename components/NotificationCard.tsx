@@ -1,14 +1,6 @@
 import { AntDesign, Entypo, EvilIcons } from "@expo/vector-icons";
 import React, { FC } from "react";
-import {
-  Image,
-  Pressable,
-  Text,
-  TouchableHighlight,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
-import { dark_secondary } from "../constants/Colors";
+import { Pressable, Text, View } from "react-native";
 import formatAddress from "../utils/formatAddress";
 import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";

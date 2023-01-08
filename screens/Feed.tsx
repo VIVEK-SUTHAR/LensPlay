@@ -31,6 +31,7 @@ const Feed = ({
       setfeedData(updatedFeedData?.data.feed.items);
     });
     return unsubscribe;
+
   }, [navigation]);
 
   useEffect(() => {
