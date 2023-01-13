@@ -98,7 +98,7 @@ function RootNavigator() {
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
-function BottomTabNavigator({navigation}:RootStackScreenProps<"Root">) {
+function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
@@ -151,9 +151,6 @@ function BottomTabNavigator({navigation}:RootStackScreenProps<"Root">) {
           </View>
         ),
         tabBarStyle: {
-          position: "absolute",
-          borderTopLeftRadius: 25,
-          borderTopRightRadius: 25,
           height: 54,
           backgroundColor: "black",
           borderTopColor: dark_secondary,

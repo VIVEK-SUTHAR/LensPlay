@@ -1,6 +1,6 @@
 import React from 'react'
 import { Image } from 'react-native'
-import { primary } from '../../constants/Colors'
+import { dark_primary } from '../../constants/Colors'
 import getIPFSLink from '../../utils/getIPFSLink'
 
 type AvatarProps = {
@@ -15,7 +15,7 @@ export default function Avatar({ src, height, width }: AvatarProps) {
             source={{
                 uri: getIPFSLink(src)
             }}
-            style={{ height: height, width: width, borderRadius: 500, backgroundColor: primary }}
+            style={{ height: height, width: width, borderRadius: 500, backgroundColor: dark_primary }}
         />
     )
 }
