@@ -6,6 +6,7 @@ import MirrorNotification from "./MirrorNotification";
 import FollowNotification from "./FollowNotification";
 import ReactionNotification from "./ReactionNotification";
 import CommentNotification from "./CommentNotification";
+import Skleton from "./Skleton";
 
 const NotificationCard = ({
   navigation,
@@ -51,18 +52,20 @@ const NotificationCard = ({
     }
   };
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        backgroundColor: "#111111",
-        padding: 8,
-        marginVertical: 2,
-        marginHorizontal: 4,
-        borderRadius: 8,
-      }}
-    >
-      {getNotification()}
-    </View>
+    <>
+      <View
+        style={{
+          flexDirection: "row",
+          backgroundColor: "#111111",
+          padding: 8,
+          marginVertical: 2,
+          marginHorizontal: 4,
+          borderRadius: 8,
+        }}
+      >
+        {getNotification()}
+      </View>
+    </>
   );
 };
 export default NotificationCard;
