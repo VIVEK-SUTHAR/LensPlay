@@ -1,5 +1,5 @@
 import React from "react";
-import { RefreshControl, ScrollView, StyleSheet } from "react-native";
+import { RefreshControl, ScrollView, StyleSheet,Text } from "react-native";
 import { useEffect, useState } from "react";
 import VideoCard from "../components/VideoCard";
 import useStore from "../store/Store";
@@ -10,6 +10,7 @@ import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import convertDate from "../utils/formateDate";
 import getFeed from "../apollo/Queries/getFeed";
 import { RootTabScreenProps } from "../types/navigation/types";
+import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
 
 const Feed = ({
   navigation,
@@ -104,11 +105,10 @@ const Feed = ({
         </>
       ) : (
         <>
-          <Skleton />
-          <Skleton />
-          <Skleton />
-          <Skleton />
-          <Skleton />
+        <VideoCardSkeleton />
+        <VideoCardSkeleton />
+        <VideoCardSkeleton />
+        <VideoCardSkeleton />
         </>
       )}
     </ScrollView>
