@@ -19,6 +19,7 @@ import convertDate from "../utils/formateDate";
 import AnimatedLottieView from "lottie-react-native";
 import Heading from "../components/UI/Heading";
 import useStore from "../store/Store";
+import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
 
 type TrendingPageProps = {
   navigation: any;
@@ -26,6 +27,7 @@ type TrendingPageProps = {
 
 const Trending = ({ navigation }: TrendingPageProps) => {
   const [TrendingItems, setTrendingItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [tags, setTags] = useState([
     {
       name: "Top Collected",
@@ -63,6 +65,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
       },
     });
     setTrendingItems(trendingData.data.explorePublications.items);
+    setIsLoading(false);
   }
   useEffect(() => {
     getTrendingData();
@@ -125,7 +128,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
       </ScrollView>
       <ScrollView>
         <View>
-          {TrendingItems && TrendingItems.length === 0 ? (
+          {!isLoading && TrendingItems.length === 0 ? (
             <Pressable
               style={{
                 height: 500,
@@ -159,7 +162,12 @@ const Trending = ({ navigation }: TrendingPageProps) => {
               </View>
             </Pressable>
           ) : (
-            <></>
+            isLoading?(<>
+            <VideoCardSkeleton />
+            <VideoCardSkeleton />
+            <VideoCardSkeleton />
+            <VideoCardSkeleton />
+            <VideoCardSkeleton /></>):<></>
           )}
           {TrendingItems &&
             TrendingItems?.map((item, index) => {
