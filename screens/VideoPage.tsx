@@ -37,6 +37,7 @@ import Drawer from "../components/UI/Drawer";
 import Player from "../components/VideoPlayer";
 import Button from "../components/UI/Button";
 import { RootStackScreenProps } from "../types/navigation/types";
+import formatInteraction from "../utils/formatInteraction";
 
 const VideoPage = ({
   navigation,
@@ -306,7 +307,7 @@ const VideoPage = ({
             showsHorizontalScrollIndicator={false}
           >
             <Button
-              title={likes || 0}
+              title={formatInteraction(likes) || 0}
               mx={4}
               px={10}
               width={"auto"}
