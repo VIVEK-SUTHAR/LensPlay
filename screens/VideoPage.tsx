@@ -37,6 +37,7 @@ import Drawer from "../components/UI/Drawer";
 import Player from "../components/VideoPlayer";
 import Button from "../components/UI/Button";
 import { RootStackScreenProps } from "../types/navigation/types";
+import CommentSkeleton from "../components/UI/CommentSkeleton";
 
 const VideoPage = ({
   navigation,
@@ -45,6 +46,7 @@ const VideoPage = ({
   const store = useStore();
   const [comments, setComments] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [likes, setLikes] = useState<number>(route.params.stats?.totalUpvotes);
   const [inFullscreen, setInFullsreen] = useState(false);
   const [alreadyFollowing, setAlreadyFollowing] = useState(
@@ -87,12 +89,13 @@ const VideoPage = ({
       },
       context: {
         headers: {
-          "x-access-token":`Bearer ${store.accessToken}`
-        }
-      }
+          "x-access-token": `Bearer ${store.accessToken}`,
+        },
+      },
     });
     setComments([]);
     setComments(data.data.publications.items);
+    setIsLoading(false);
   }
 
   function handleBackButtonClick() {
@@ -394,20 +397,20 @@ const VideoPage = ({
                 marginBottom: 8,
               }}
             />
-            {comments?.map((item, index) => {
-              return (
-                <CommentCard
-                  key={index}
-                  username={item?.profile?.handle}
-                  avatar={item?.profile?.picture?.original?.url}
-                  commentText={item?.metadata?.description}
-                  commentTime={item?.createdAt}
-                  id={item?.profile?.id}
-                  isFollowdByMe={item.profile.isFollowedByMe}
-                />
-              );
-            })}
-            {comments.length === 0 && (
+            {isLoading ? (
+              <ScrollView>
+                <CommentSkeleton />
+                <CommentSkeleton />
+                <CommentSkeleton />
+                <CommentSkeleton />
+                <CommentSkeleton />
+                <CommentSkeleton />
+                <CommentSkeleton />
+              </ScrollView>
+            ) : (
+              <></>
+            )}
+            {!isLoading && comments.length == 0 ? (
               <View style={{ maxHeight: 200 }}>
                 <AnimatedLottieView
                   autoPlay
@@ -426,6 +429,20 @@ const VideoPage = ({
                   }}
                 ></Heading>
               </View>
+            ) : (
+              comments?.map((item, index) => {
+                return (
+                  <CommentCard
+                    key={index}
+                    username={item?.profile?.handle}
+                    avatar={item?.profile?.picture?.original?.url}
+                    commentText={item?.metadata?.description}
+                    commentTime={item?.createdAt}
+                    id={item?.profile?.id}
+                    isFollowdByMe={item.profile.isFollowedByMe}
+                  />
+                );
+              })
             )}
           </View>
         </View>
