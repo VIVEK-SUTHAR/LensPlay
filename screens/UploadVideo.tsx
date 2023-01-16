@@ -1,23 +1,19 @@
-import {
-  View,
-  Text,
-  SafeAreaView,
-  TouchableWithoutFeedback,
-} from "react-native";
-import React, { useState } from "react";
-import { dark_primary, primary } from "../constants/Colors";
+import { View, SafeAreaView } from "react-native";
+import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Uploadvideo from "../components/Uploadvideo";
 import GoLive from "../components/GoLive";
 import AnimatedLottieView from "lottie-react-native";
-import Drawer from "../components/UI/Drawer";
-import Heading from "../components/UI/Heading";
 import Button from "../components/UI/Button";
-import { UploadScreenProps } from "../types/navigation/types";
+import {
+  UploadScreenProps,
+  UploadTabParamsList,
+} from "../types/navigation/types";
+import { useThemeStore } from "../store/Store";
 
 const UploadStack = createNativeStackNavigator();
 
-const UploadVideo = ({ navigation }) => {
+const UploadVideo = ({}: UploadTabParamsList) => {
   return (
     <UploadStack.Navigator
       screenOptions={{
@@ -25,7 +21,7 @@ const UploadVideo = ({ navigation }) => {
       }}
       initialRouteName="UploadIndex"
     >
-      <UploadStack.Screen name="UploadIndex" component={Index} />
+      <UploadStack.Screen name="Index" component={Index} />
       <UploadStack.Screen
         name="UploadScreen"
         component={Uploadvideo}
@@ -39,6 +35,7 @@ const UploadVideo = ({ navigation }) => {
 export default UploadVideo;
 
 function Index({ navigation }: UploadScreenProps<"Index">) {
+  const theme = useThemeStore();
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <View
@@ -60,7 +57,7 @@ function Index({ navigation }: UploadScreenProps<"Index">) {
           title="Upload Video"
           width={"auto"}
           px={24}
-          borderColor={primary}
+          borderColor={theme.PRIMARY}
           borderRadius={10}
           textStyle={{ color: "white", fontWeight: "700", fontSize: 20 }}
           onPress={() => {

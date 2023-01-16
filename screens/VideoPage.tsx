@@ -15,8 +15,7 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import React, { useEffect } from "react";
-import { dark_primary, primary } from "../constants/Colors";
-import useStore from "../store/Store";
+import useStore, { useThemeStore } from "../store/Store";
 import { useState } from "react";
 import addLike from "../api/addReaction";
 import removeLike from "../api/removeReaction";
@@ -45,6 +44,7 @@ const VideoPage = ({
   route,
 }: RootStackScreenProps<"VideoPage">) => {
   const store = useStore();
+  const theme = useThemeStore();
   const [comments, setComments] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -318,18 +318,32 @@ const VideoPage = ({
               textStyle={{
                 fontSize: 14,
                 fontWeight: "500",
-                color: isalreadyLiked ? primary : isLiked ? primary : "white",
+                color: isalreadyLiked
+                  ? theme.PRIMARY
+                  : isLiked
+                  ? theme.PRIMARY
+                  : "white",
                 marginLeft: 4,
               }}
               borderColor={
-                isalreadyLiked ? primary : isLiked ? primary : "white"
+                isalreadyLiked
+                  ? theme.PRIMARY
+                  : isLiked
+                  ? theme.PRIMARY
+                  : "white"
               }
               onPress={onLike}
               icon={
                 <AntDesign
                   name={isalreadyLiked ? "like1" : "like2"}
                   size={16}
-                  color={isalreadyLiked ? primary : isLiked ? primary : "white"}
+                  color={
+                    isalreadyLiked
+                      ? theme.PRIMARY
+                      : isLiked
+                      ? theme.PRIMARY
+                      : "white"
+                  }
                 />
               }
             />
@@ -346,12 +360,12 @@ const VideoPage = ({
                 color: "white",
                 marginLeft: 4,
               }}
-              borderColor={isalreadyDisLiked ? primary : "white"}
+              borderColor={isalreadyDisLiked ? theme.PRIMARY : "white"}
               icon={
                 <AntDesign
                   name={isalreadyDisLiked ? "dislike1" : "dislike2"}
                   size={16}
-                  color={isalreadyDisLiked ? primary : "white"}
+                  color={isalreadyDisLiked ? theme.PRIMARY : "white"}
                 />
               }
             />
@@ -378,13 +392,13 @@ const VideoPage = ({
               textStyle={{ color: "white" }}
             />
             <Button
-              title={"Share"}
+              title={"Report"}
               mx={4}
               px={10}
               width={"auto"}
               type={"outline"}
               icon={<MaterialIcons name="report" size={16} color="white" />}
-              onPress={onShare}
+              onPress={() => {}}
               textStyle={{ color: "white" }}
             />
           </ScrollView>

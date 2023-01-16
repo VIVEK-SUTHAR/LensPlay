@@ -7,14 +7,12 @@ import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { ColorSchemeName, TouchableWithoutFeedback, View } from "react-native";
 import VideoPage from "../screens/VideoPage";
-import { dark_secondary, primary } from "../constants/Colors";
 import Feed from "../screens/Feed";
 import Login from "../screens/Login";
 import {
   RootStackParamList,
   RootStackScreenProps,
   RootTabParamList,
-  RootTabScreenProps,
 } from "../types/navigation/types";
 import Profile from "../screens/Profile";
 import Trending from "../screens/Trending";
@@ -24,6 +22,7 @@ import Search from "../screens/Search";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import Channel from "../screens/Channel";
+import { useThemeStore } from "../store/Store";
 
 export default function Navigation({
   colorScheme,
@@ -43,6 +42,7 @@ export default function Navigation({
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
+  const theme = useThemeStore();
   return (
     <Stack.Navigator
       screenOptions={{
@@ -70,7 +70,7 @@ function RootNavigator() {
         component={VideoPage}
         options={{
           headerShown: false,
-          presentation: "containedModal",
+          presentation: "card",
           animation: "slide_from_right",
         }}
       />
@@ -89,7 +89,7 @@ function RootNavigator() {
         options={{
           animation: "slide_from_left",
           headerShown: true,
-          headerTintColor: primary,
+          headerTintColor: theme.PRIMARY,
         }}
       />
     </Stack.Navigator>
@@ -99,6 +99,8 @@ function RootNavigator() {
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
+  const theme = useThemeStore();
+
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
@@ -136,7 +138,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
             />
             <View
               style={{
-                backgroundColor: primary,
+                backgroundColor: theme.PRIMARY,
                 marginHorizontal: 4,
                 paddingHorizontal: 8,
                 paddingVertical: 2,
@@ -153,7 +155,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
         tabBarStyle: {
           height: 54,
           backgroundColor: "black",
-          borderTopColor: dark_secondary,
+          borderTopColor: "transparent",
           paddingHorizontal: 10,
         },
         headerShadowVisible: true,
@@ -174,13 +176,13 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   justifyContent: "center",
                   flexDirection: "row",
                   borderTopWidth: focused ? 2 : 0,
-                  borderTopColor: focused ? primary : "transparent",
+                  borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
                 <Ionicons
                   name={focused ? "ios-home" : "home-outline"}
-                  color={focused ? primary : "white"}
+                  color={focused ? theme.PRIMARY : "white"}
                   size={26}
                 />
               </View>
@@ -203,14 +205,14 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   justifyContent: "center",
                   flexDirection: "row",
                   borderTopWidth: 2,
-                  borderTopColor: focused ? primary : "transparent",
+                  borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
                 <Ionicons
                   name={focused ? "ios-compass" : "ios-compass-outline"}
                   size={28}
-                  color={focused ? primary : "white"}
+                  color={focused ? theme.PRIMARY : "white"}
                 />
               </View>
             );
@@ -233,14 +235,14 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   flexDirection: "row",
                   borderTopWidth: 2,
 
-                  borderTopColor: focused ? primary : "transparent",
+                  borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
                 <AntDesign
                   name={focused ? "pluscircle" : "pluscircleo"}
                   size={28}
-                  color={focused ? primary : "white"}
+                  color={focused ? theme.PRIMARY : "white"}
                 />
               </View>
             );
@@ -252,11 +254,6 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
         component={Notification}
         options={{
           tabBarLabel: "",
-          // tabBarBadge: 2,z
-          // tabBarBadgeStyle: {
-          //   backgroundColor: primary,
-          //   left: 0,
-          // },
           tabBarIcon: ({ focused }) => {
             return (
               <View
@@ -267,7 +264,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   justifyContent: "center",
                   flexDirection: "row",
                   borderTopWidth: 2,
-                  borderTopColor: focused ? primary : "transparent",
+                  borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
@@ -276,7 +273,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                     focused ? "ios-notifications" : "ios-notifications-outline"
                   }
                   size={28}
-                  color={focused ? primary : "white"}
+                  color={focused ? theme.PRIMARY : "white"}
                 />
               </View>
             );
@@ -298,13 +295,13 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   justifyContent: "center",
                   flexDirection: "row",
                   borderTopWidth: 2,
-                  borderTopColor: focused ? primary : "transparent",
+                  borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
                 <FontAwesome
                   name={focused ? "user" : "user-o"}
-                  color={focused ? primary : "white"}
+                  color={focused ? theme.PRIMARY : "white"}
                   size={28}
                 />
               </View>

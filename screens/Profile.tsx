@@ -11,8 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
-import { dark_primary, dark_secondary, primary } from "../constants/Colors";
-import useStore from "../store/Store";
+import useStore, { useThemeStore } from "../store/Store";
 import getPublications from "../apollo/Queries/getPublications";
 import VideoCard from "../components/VideoCard";
 import convertDate from "../utils/formateDate";
@@ -29,6 +28,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [allVideos, setallVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const store = useStore();
+  const theme = useThemeStore();
   useEffect(() => {
     getProfleInfo();
   }, [navigation]);
@@ -77,8 +77,8 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
-            colors={[primary]}
-            progressBackgroundColor={dark_secondary}
+            colors={[theme.PRIMARY]}
+            progressBackgroundColor={"black"}
             onRefresh={onRefresh}
           />
         }

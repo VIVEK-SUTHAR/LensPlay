@@ -29,6 +29,7 @@ import Button from "../components/UI/Button";
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const store = useStore();
   const authStore = useAuthStore();
+
   const [isloading, setIsloading] = useState<boolean>(false);
   const connector = useWalletConnect();
   const [isconnected, setIsconnected] = useState<boolean>(false);
@@ -46,7 +47,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
     "https://ipfs.io/ipfs/QmQgwri9TtoCYWdxB9kkpC5NKwaSWHJw3MHon6Rt3oVQP7",
     "https://ipfs.io/ipfs/Qmawvbo2VvS6aF6bL1bchAXtLEwkZurbbEtMu7PxfHFoQ1",
   ];
-  const { width, height } = Dimensions.get("screen");
+  const { width } = Dimensions.get("screen");
   const imageW = width * 0.8;
   const imageH = imageW * 1.54;
   const logInWithLens = async () => {
@@ -254,16 +255,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
             );
           }}
         />
-        {/* <Image
-            source={require("../assets/images/lensplay.png")}
-            style={{
-              height: "100%",
-              width: "100%",
-              resizeMode: "center",
-            }}
-          /> */}
-        {/* </View> */}
-
         {!!connector.connected ? (
           <>
             <Button
@@ -342,6 +333,6 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: dark_primary,
+    backgroundColor: "black",
   },
 });

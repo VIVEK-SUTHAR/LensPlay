@@ -15,3 +15,7 @@ export interface IUserProfile {
   totalFollowing: number;
   dispatcher: string;
 }
+export interface IThemeStore {
+  PRIMARY: string;
+  setPrimaryColor: (newPrimaryColor: string) => void;
+}

@@ -14,11 +14,10 @@ import VideoCard from "../components/VideoCard";
 import { client } from "../apollo/client";
 import getTrendingPublication from "../apollo/Queries/getTrendingPublication";
 import { useEffect } from "react";
-import { dark_primary, primary } from "../constants/Colors";
 import convertDate from "../utils/formateDate";
 import AnimatedLottieView from "lottie-react-native";
 import Heading from "../components/UI/Heading";
-import useStore from "../store/Store";
+import useStore, { useThemeStore } from "../store/Store";
 import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
 
 type TrendingPageProps = {
@@ -26,6 +25,7 @@ type TrendingPageProps = {
 };
 
 const Trending = ({ navigation }: TrendingPageProps) => {
+  const theme = useThemeStore();
   const [TrendingItems, setTrendingItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [tags, setTags] = useState([
@@ -87,10 +87,9 @@ const Trending = ({ navigation }: TrendingPageProps) => {
           return (
             <Pressable
               android_ripple={{
-                color: primary,
+                color: theme.PRIMARY,
                 radius: 25,
               }}
-
               onTouchEndCapture={() => {
                 setCurrentTag(tags[index]);
               }}
@@ -98,7 +97,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
               style={{
                 marginHorizontal: 4,
                 backgroundColor: `${
-                  currentTag.name === item.name ? primary : "transparent"
+                  currentTag.name === item.name ? theme.PRIMARY : "transparent"
                 }`,
                 width: "auto",
                 height: "auto",
@@ -108,7 +107,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                 alignItems: "center",
                 borderRadius: 20,
                 borderColor: `${
-                  currentTag.name === item.name ? primary : "white"
+                  currentTag.name === item.name ? theme.PRIMARY : "white"
                 }`,
                 borderWidth: 1,
               }}
@@ -161,13 +160,16 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                 />
               </View>
             </Pressable>
+          ) : isLoading ? (
+            <>
+              <VideoCardSkeleton />
+              <VideoCardSkeleton />
+              <VideoCardSkeleton />
+              <VideoCardSkeleton />
+              <VideoCardSkeleton />
+            </>
           ) : (
-            isLoading?(<>
-            <VideoCardSkeleton />
-            <VideoCardSkeleton />
-            <VideoCardSkeleton />
-            <VideoCardSkeleton />
-            <VideoCardSkeleton /></>):<></>
+            <></>
           )}
           {TrendingItems &&
             TrendingItems?.map((item, index) => {
@@ -188,7 +190,6 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                   reaction={item?.reaction}
                 />
               );
-              // }
             })}
         </View>
       </ScrollView>

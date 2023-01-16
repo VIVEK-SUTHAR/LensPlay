@@ -1,17 +1,15 @@
 import {
   View,
-  TouchableOpacity,
   StyleProp,
   ViewProps,
   TextStyle,
   ActivityIndicator,
   ColorValue,
   Pressable,
-  TouchableWithoutFeedback,
 } from "react-native";
 import React from "react";
 import SubHeading from "./SubHeading";
-import { primary } from "../../constants/Colors";
+import { useThemeStore } from "../../store/Store";
 interface ButtonProps {
   title: string;
   type?: "outline" | "filled";
@@ -31,6 +29,7 @@ interface ButtonProps {
 }
 
 const Button = (props: ButtonProps): JSX.Element => {
+  const theme = useThemeStore();
   const {
     title,
     type = "filled",
@@ -43,7 +42,7 @@ const Button = (props: ButtonProps): JSX.Element => {
     py = 8,
     textStyle,
     borderRadius = 50,
-    bg = primary,
+    bg = theme.PRIMARY.toString(),
     onPress,
     borderColor = "white",
     icon,
@@ -52,7 +51,7 @@ const Button = (props: ButtonProps): JSX.Element => {
   return (
     <Pressable
       android_ripple={{
-        color: type === "outline" ? primary : "rgba(255,255,255,0.08)",
+        color: type === "outline" ? theme.PRIMARY : "rgba(255,255,255,0.08)",
         radius: borderRadius * 0.5,
       }}
       style={[

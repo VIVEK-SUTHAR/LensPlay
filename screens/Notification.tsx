@@ -7,7 +7,6 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import AnimatedLottieView from "lottie-react-native";
 import fetchNotifications from "../api/fetchNotifications";
 import useStore from "../store/Store";

@@ -1,12 +1,10 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React from "react";
-import { primary } from "../constants/Colors";
 
 const Skleton = () => {
   return (
     <View
       style={{
-        // paddingHorizontal: 10,
         marginVertical: 1,
         borderTopLeftRadius: 10,
       }}

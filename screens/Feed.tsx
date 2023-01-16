@@ -1,12 +1,11 @@
 import React from "react";
-import { RefreshControl, ScrollView, StyleSheet,Text } from "react-native";
+import { RefreshControl, ScrollView, StyleSheet, Text } from "react-native";
 import { useEffect, useState } from "react";
 import VideoCard from "../components/VideoCard";
-import useStore from "../store/Store";
+import useStore, { useThemeStore } from "../store/Store";
 import { StatusBar } from "expo-status-bar";
 import { client } from "../apollo/client";
 import Skleton from "../components/Skleton";
-import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import convertDate from "../utils/formateDate";
 import getFeed from "../apollo/Queries/getFeed";
 import { RootTabScreenProps } from "../types/navigation/types";
@@ -16,6 +15,7 @@ const Feed = ({
   navigation,
 }: RootTabScreenProps<"Home">): React.ReactElement => {
   const store = useStore();
+  const theme = useThemeStore();
   const [feedData, setfeedData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -32,7 +32,6 @@ const Feed = ({
       setfeedData(updatedFeedData?.data.feed.items);
     });
     return unsubscribe;
-
   }, [navigation]);
 
   useEffect(() => {
@@ -68,8 +67,8 @@ const Feed = ({
         <RefreshControl
           refreshing={refreshing}
           onRefresh={onRefresh}
-          colors={[primary]}
-          progressBackgroundColor={dark_secondary}
+          colors={[theme.PRIMARY]}
+          progressBackgroundColor={"black"}
         />
       }
       style={{
@@ -105,10 +104,10 @@ const Feed = ({
         </>
       ) : (
         <>
-        <VideoCardSkeleton />
-        <VideoCardSkeleton />
-        <VideoCardSkeleton />
-        <VideoCardSkeleton />
+          <VideoCardSkeleton />
+          <VideoCardSkeleton />
+          <VideoCardSkeleton />
+          <VideoCardSkeleton />
         </>
       )}
     </ScrollView>

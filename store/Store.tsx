@@ -1,5 +1,5 @@
 import create from "zustand";
-import { IAuthStore, IUserProfile } from "../types/Store";
+import { IAuthStore, IThemeStore, IUserProfile } from "../types/Store";
 
 export const useAuthStore = create<IAuthStore>((set) => ({
   accessToken: "",
@@ -20,6 +20,12 @@ export const useProfile = create<IUserProfile>((set) => ({
   cover: "",
   totalFollowers: 0,
   totalFollowing: 0,
+}));
+
+export const useThemeStore = create<IThemeStore>((set) => ({
+  PRIMARY: "#2AD95C",
+  setPrimaryColor: (newPrimaryColor: string) =>
+    set({ PRIMARY: newPrimaryColor }),
 }));
 
 const useStore = create((set) => ({
