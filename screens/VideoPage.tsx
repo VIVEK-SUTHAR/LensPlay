@@ -98,6 +98,8 @@ const VideoPage = ({
     setComments([]);
     setComments(data.data.publications.items);
     setIsLoading(false);
+    // console.log(comments[0].profile);
+    
   }
 
   function handleBackButtonClick() {
@@ -355,14 +357,13 @@ const VideoPage = ({
               title=""
               onPress={onDislike}
               mx={4}
-              px={10}
+              px={16}
               width={"auto"}
               type={"outline"}
               textStyle={{
                 fontSize: 14,
                 fontWeight: "500",
                 color: "white",
-                marginLeft: 4,
               }}
               borderColor={isalreadyDisLiked ? theme.PRIMARY : "white"}
               icon={
@@ -383,7 +384,7 @@ const VideoPage = ({
               onPress={() => {
                 setIsmodalopen(true);
               }}
-              textStyle={{ color: "white" }}
+              textStyle={{ color: "white", marginHorizontal: 4 }}
             />
             <Button
               title={"Share"}
@@ -393,7 +394,7 @@ const VideoPage = ({
               type={"outline"}
               icon={<FontAwesome name="share" size={16} color="white" />}
               onPress={onShare}
-              textStyle={{ color: "white" }}
+              textStyle={{ color: "white", marginHorizontal: 4 }}
             />
             <Button
               title={"Report"}
@@ -402,8 +403,8 @@ const VideoPage = ({
               width={"auto"}
               type={"outline"}
               icon={<MaterialIcons name="report" size={16} color="white" />}
-              onPress={() => {}}
-              textStyle={{ color: "white" }}
+              onPress={onShare}
+              textStyle={{ color: "white", marginHorizontal:4 }}
             />
           </ScrollView>
           <View>
@@ -459,6 +460,7 @@ const VideoPage = ({
                     commentTime={item?.createdAt}
                     id={item?.profile?.id}
                     isFollowdByMe={item.profile.isFollowedByMe}
+                    name={item.profile?.name}
                   />
                 );
               })
