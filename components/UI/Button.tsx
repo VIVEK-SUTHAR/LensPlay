@@ -20,6 +20,7 @@ interface ButtonProps {
   px?: number;
   py?: number;
   bg?: ColorValue;
+  ripple_radius?: number;
   style?: StyleProp<ViewProps>;
   textStyle?: StyleProp<TextStyle>;
   borderColor?: ColorValue;
@@ -42,6 +43,7 @@ const Button = (props: ButtonProps): JSX.Element => {
     py = 8,
     textStyle,
     borderRadius = 50,
+    ripple_radius = 0.5,
     bg = theme.PRIMARY.toString(),
     onPress,
     borderColor = "white",
@@ -52,7 +54,7 @@ const Button = (props: ButtonProps): JSX.Element => {
     <Pressable
       android_ripple={{
         color: type === "outline" ? theme.PRIMARY : "rgba(255,255,255,0.08)",
-        radius: borderRadius * 0.5,
+        radius: borderRadius * ripple_radius,
       }}
       style={[
         style,

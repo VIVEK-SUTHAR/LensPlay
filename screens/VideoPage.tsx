@@ -461,6 +461,7 @@ const VideoPage = ({
                     id={item?.profile?.id}
                     isFollowdByMe={item.profile.isFollowedByMe}
                     name={item.profile?.name}
+                    stats={item?.stats}
                   />
                 );
               })
