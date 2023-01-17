@@ -23,6 +23,7 @@ import extractURLs from "../utils/extractURL";
 import { RootTabScreenProps } from "../types/navigation/types";
 import AnimatedLottieView from "lottie-react-native";
 import Skleton from "../components/Skleton";
+import ProfileSkeleton from "../components/UI/ProfileSkeleton";
 const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [profile, setProfile] = useState<{}>({});
   const [allVideos, setallVideos] = useState([]);
@@ -34,7 +35,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
     getProfleInfo();
   }, [navigation]);
   const getProfleInfo = async () => {
-    setIsLoading(true);
+    // setIsLoading(true);
     try {
       const profiledata = await client.query({
         query: getUserProfile,
@@ -86,6 +87,8 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
           />
         }
       >
+        {isLoading?<><ProfileSkeleton/></>:
+        <>
         {Boolean(!isLoading) && (
           <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
             <View
@@ -174,6 +177,8 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
             </View>
           </View>
         )}
+        </>}
+        
         {Boolean(isLoading) && (
           <View
             style={{
@@ -189,9 +194,9 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
               }}
               source={require("../assets/skeleton.json")}
             />
+            {/* <Skleton />
             <Skleton />
-            <Skleton />
-            <Skleton />
+            <Skleton /> */}
           </View>
         )}
         {!allVideos && (
@@ -218,6 +223,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
             ></Heading>
           </View>
         )}
+      {/* <ProfileSkeleton/> */}
       </ScrollView>
     </SafeAreaView>
   );
