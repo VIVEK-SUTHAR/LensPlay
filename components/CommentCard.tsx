@@ -41,7 +41,9 @@ const CommentCard = ({
     <View
       style={{
         flexDirection: "row",
-        backgroundColor: "#111111",
+        backgroundColor: "black",
+        borderColor:'#232323',
+        borderWidth:1,
         padding: 8,
         marginVertical: 4,
         borderRadius: 8,
@@ -94,7 +96,7 @@ const CommentCard = ({
           flexDirection: "row",
           alignItems: "center",
           marginTop: 8,
-          // justifyContent: "space-between"
+          // justifyContent: "space-around"
         }}>
         <Button
               title=""
@@ -107,14 +109,17 @@ const CommentCard = ({
                 fontSize: 14,
                 fontWeight: "500",
                 color: "white",
+                
                 // marginLeft: 4,
               }}
-              borderColor={isalreadyDisLiked ? primary : "white"}
+              // borderColor={isalreadyDisLiked ? primary : "white"}
+              borderColor='#232323'
               icon={
                 <AntDesign
                   name={isalreadyDisLiked ? "like1" : "like2"}
                   size={16}
                   color={isalreadyDisLiked ? primary : "white"}
+                  
                 />
               }
             />
@@ -127,6 +132,7 @@ const CommentCard = ({
               width={"auto"}
               type={"outline"}
               icon={<Entypo name="folder-video" size={16} color={"white"} />}
+              borderColor='#232323'
               onPress={() => {
                 // setIsmodalopen(true);
               }}
@@ -140,6 +146,7 @@ const CommentCard = ({
               width={"auto"}
               type={"outline"}
               icon={<MaterialIcons name="report" size={16} color="white" />}
+              borderColor='#232323'
               onPress={() => {
                 // setIsmodalopen(true);
               }}
