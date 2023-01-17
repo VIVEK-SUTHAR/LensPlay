@@ -2,7 +2,7 @@ import React from "react";
 import { RefreshControl, ScrollView, StyleSheet, Text } from "react-native";
 import { useEffect, useState } from "react";
 import VideoCard from "../components/VideoCard";
-import useStore, { useThemeStore } from "../store/Store";
+import useStore, { useAuthStore, useThemeStore } from "../store/Store";
 import { StatusBar } from "expo-status-bar";
 import { client } from "../apollo/client";
 import Skleton from "../components/Skleton";
@@ -16,6 +16,8 @@ const Feed = ({
 }: RootTabScreenProps<"Home">): React.ReactElement => {
   const store = useStore();
   const theme = useThemeStore();
+  const authStore = useAuthStore();
+  
   const [feedData, setfeedData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -50,7 +52,7 @@ const Feed = ({
         },
         context: {
           headers: {
-            "x-access-token": `Bearer ${store.accessToken}`,
+            "x-access-token": `Bearer ${authStore.accessToken}`,
           },
         },
       });

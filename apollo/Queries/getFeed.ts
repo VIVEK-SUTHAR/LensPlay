@@ -155,6 +155,7 @@ export default gql`
 
     dispatcher {
       address
+      canUseRelay
     }
 
     stats {

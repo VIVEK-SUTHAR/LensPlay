@@ -7,18 +7,20 @@ import {
   View,
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { dark_secondary, primary } from "../constants/Colors";
 import { useFocusEffect } from "@react-navigation/native";
 import { client } from "../apollo/client";
 import searchPublicationQuery from "../apollo/Queries/searchPublicationQuery";
 import VideoCard from "../components/VideoCard";
-import { useQuery } from "@apollo/client";
 import AnimatedLottieView from "lottie-react-native";
 import { EvilIcons } from "@expo/vector-icons";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Button from "../components/UI/Button";
+import { useAuthStore, useThemeStore } from "../store/Store";
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
-  const textRef = useRef(null);
+  const theme = useThemeStore();
+  const authStore = useAuthStore();
+  const textRef = useRef<HTMLInputElement>(null);
+
   const [searchPostResult, setSearchPostResult] = useState([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isSearching, setIsSearching] = useState(false);
@@ -47,9 +49,12 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
         variables: {
           query: searchQuery.toLowerCase().trim(),
         },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${authStore.accessToken}`,
+          },
+        },
       });
-      console.log(result.data.search.items);
-
       setSearchPostResult(result?.data?.search?.items);
       if (searchPostResult.length === 0) {
         setIsfound(false);
@@ -82,7 +87,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
           <EvilIcons name="search" size={24} color="white" />
           <TextInput
             ref={textRef}
-            selectionColor={primary}
+            selectionColor={theme.PRIMARY}
             placeholder="Type something to search..."
             placeholderTextColor={"white"}
             clearButtonMode={"always"}
@@ -147,7 +152,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
             </Text>
             {searchPostResult.map((item, index) => {
               if (!item.hidden) {
-                
                 return (
                   <VideoCard
                     key={index}
@@ -194,17 +198,17 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                   <Button
                     title="Continue browsing..."
                     width={"auto"}
-                      type="outline"
-                      borderColor={primary}
+                    type="outline"
+                    borderColor={theme.PRIMARY}
                     px={16}
                     textStyle={{
                       color: "white",
                       fontSize: 20,
                       fontWeight: "600",
                     }}
-                      onPress={() => {
-                        navigation.navigate("Root")
-                      }}
+                    onPress={() => {
+                      navigation.navigate("Root");
+                    }}
                   />
                 </View>
               </>

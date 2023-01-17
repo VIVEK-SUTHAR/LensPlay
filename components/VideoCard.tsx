@@ -88,9 +88,11 @@ const VideoCard = ({
       </View>
       <TouchableWithoutFeedback
         onPress={() => {
+          console.log(isFollowdByMe);
           navigation.navigate("Channel", {
             profileId: profileId,
             isFollowdByMe: isFollowdByMe,
+            name: uploadedBy,
           });
         }}
       >

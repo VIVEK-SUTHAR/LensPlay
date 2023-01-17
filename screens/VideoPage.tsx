@@ -15,7 +15,7 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import React, { useEffect } from "react";
-import useStore, { useThemeStore } from "../store/Store";
+import useStore, { useAuthStore, useThemeStore } from "../store/Store";
 import { useState } from "react";
 import addLike from "../api/addReaction";
 import removeLike from "../api/removeReaction";
@@ -45,6 +45,7 @@ const VideoPage = ({
 }: RootStackScreenProps<"VideoPage">) => {
   const store = useStore();
   const theme = useThemeStore();
+  const authStore = useAuthStore();
   const [comments, setComments] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -74,7 +75,7 @@ const VideoPage = ({
   async function checkFollowed(): Promise<void> {
     const data = await isFollowedByMe(
       route.params.profileId,
-      store.accessToken
+      authStore.accessToken
     );
     if (data.data.profile.isFollowedByMe) {
       setAlreadyFollowing(true);
@@ -90,7 +91,7 @@ const VideoPage = ({
       },
       context: {
         headers: {
-          "x-access-token": `Bearer ${store.accessToken}`,
+          "x-access-token": `Bearer ${authStore.accessToken}`,
         },
       },
     });
@@ -130,7 +131,7 @@ const VideoPage = ({
       setIsLiked(true);
       setisalreadyDisLiked(false);
       addLike(
-        store.accessToken,
+        authStore.accessToken,
         store.profileId,
         route.params.id,
         "UPVOTE"
@@ -153,7 +154,7 @@ const VideoPage = ({
       setisalreadyDisLiked(true);
       console.log("dissliked");
       addLike(
-        store.accessToken,
+        authStore.accessToken,
         store.profileId,
         route.params.id,
         "DOWNVOTE"
@@ -164,12 +165,16 @@ const VideoPage = ({
           }
         }
       });
-      removeLike(store.accessToken, store.profileId, route.params.id).then(
-        (res) => {
+      removeLike(authStore.accessToken, store.profileId, route.params.id)
+        .then((res) => {
           if (res) {
           }
-        }
-      );
+        })
+        .catch((error) => {
+          if (error instanceof Error) {
+            ToastAndroid.show("Can't react to post", ToastAndroid.SHORT);
+          }
+        });
     }
   };
   return (
@@ -279,11 +284,10 @@ const VideoPage = ({
                 try {
                   const data = await createSubScribe(
                     route.params.profileId,
-                    store.accessToken
+                    authStore.accessToken
                   );
                   if (data.data === null) {
                     console.log(data.errors[0].message);
-
                     ToastAndroid.show(
                       "Currenctly not supported",
                       ToastAndroid.SHORT

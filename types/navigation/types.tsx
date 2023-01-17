@@ -65,6 +65,7 @@ export type RootStackParamList = {
   Channel: {
     profileId: string;
     isFollowdByMe?: boolean;
+    name?: string;
   };
   Search: undefined;
 };

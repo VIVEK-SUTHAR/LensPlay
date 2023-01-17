@@ -17,7 +17,7 @@ import { useEffect } from "react";
 import convertDate from "../utils/formateDate";
 import AnimatedLottieView from "lottie-react-native";
 import Heading from "../components/UI/Heading";
-import useStore, { useThemeStore } from "../store/Store";
+import useStore, { useAuthStore, useThemeStore } from "../store/Store";
 import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
 
 type TrendingPageProps = {
@@ -26,6 +26,8 @@ type TrendingPageProps = {
 
 const Trending = ({ navigation }: TrendingPageProps) => {
   const theme = useThemeStore();
+  const authStore = useAuthStore();
+
   const [TrendingItems, setTrendingItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [tags, setTags] = useState([
@@ -60,7 +62,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
       },
       context: {
         headers: {
-          "x-access-token": `Bearer ${store.accessToken}`,
+          "x-access-token": `Bearer ${authStore.accessToken}`,
         },
       },
     });

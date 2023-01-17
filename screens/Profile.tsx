@@ -11,7 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
-import useStore, { useThemeStore } from "../store/Store";
+import useStore, { useAuthStore, useThemeStore } from "../store/Store";
 import getPublications from "../apollo/Queries/getPublications";
 import VideoCard from "../components/VideoCard";
 import convertDate from "../utils/formateDate";
@@ -29,6 +29,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [isLoading, setIsLoading] = useState(true);
   const store = useStore();
   const theme = useThemeStore();
+  const authStore = useAuthStore();
   useEffect(() => {
     getProfleInfo();
   }, [navigation]);
@@ -50,13 +51,15 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
         },
         context: {
           headers: {
-            "x-access-token": `Bearer ${store.accessToken}`,
+            "x-access-token": `Bearer ${authStore.accessToken}`,
           },
         },
       });
       setallVideos(getUserVideos.data.publications.items);
     } catch (error) {
-      console.log(error);
+      if (error instanceof Error) {
+        console.log(error);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -148,9 +151,8 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                 }}
               />
               {Boolean(allVideos) &&
-                allVideos.map((item: any, index) => {
+                allVideos.map((item: any) => {
                   if (item?.appId?.includes("lenstube")) {
-                    console.log(item.profile.isFollowedByMe);
                     return (
                       <VideoCard
                         key={item?.id}

@@ -2,26 +2,30 @@ import {
   FlatList,
   RefreshControl,
   SafeAreaView,
-  ScrollView,
   ToastAndroid,
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import AnimatedLottieView from "lottie-react-native";
 import fetchNotifications from "../api/fetchNotifications";
-import useStore from "../store/Store";
+import useStore, { useAuthStore, useThemeStore } from "../store/Store";
 import Heading from "../components/UI/Heading";
 import NotificationCard from "../components/Notifications";
 import Skleton from "../components/Notifications/Skleton";
 const Navigation = ({ navigation }: { navigation: any }) => {
   const store = useStore();
+  const authStore = useAuthStore();
+  const theme = useThemeStore();
   const [allNotifications, setAllNotifications] = useState([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      const data = await fetchNotifications(store.profileId, store.accessToken);
+      const data = await fetchNotifications(
+        store.profileId,
+        authStore.accessToken
+      );
       if (data == allNotifications) {
         ToastAndroid.show("No new notifications", ToastAndroid.SHORT);
       } else {
@@ -37,12 +41,22 @@ const Navigation = ({ navigation }: { navigation: any }) => {
   };
   useEffect(() => {
     setIsLoading(true);
-    fetchNotifications(store.profileId, store.accessToken).then((res) => {
-      console.log(res);
-
-      setAllNotifications(res);
-      setIsLoading(false);
-    });
+    fetchNotifications(store.profileId, authStore.accessToken)
+      .then((allNotification) => {
+        setAllNotifications(allNotification);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        if (error instanceof Error) {
+          throw new Error(
+            "Some thing Went wrong while fetching notifications",
+            { cause: error.cause }
+          );
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   return (
@@ -56,13 +70,17 @@ const Navigation = ({ navigation }: { navigation: any }) => {
         <FlatList
           data={allNotifications}
           keyExtractor={(item) => item.notificationId.toString()}
-          renderItem={({ item, index }) => {
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[theme.PRIMARY]}
+              progressBackgroundColor={"black"}
+            />
+          }
+          renderItem={({ item }) => {
             return (
-              <NotificationCard
-                notification={item}
-                navigation={navigation}
-                key={item}
-              />
+              <NotificationCard notification={item} navigation={navigation} />
             );
           }}
         />

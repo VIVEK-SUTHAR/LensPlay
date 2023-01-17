@@ -3,19 +3,17 @@ import {
   RefreshControl,
   ScrollView,
   StyleSheet,
-  Text,
   ToastAndroid,
   View,
-  TouchableWithoutFeedback,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import getIPFSLink from "../utils/getIPFSLink";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { dark_primary, dark_secondary, primary } from "../constants/Colors";
+import { dark_secondary, primary } from "../constants/Colors";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import VideoCard from "../components/VideoCard";
-import useStore from "../store/Store";
+import useStore, { useAuthStore } from "../store/Store";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
 import getPublications from "../apollo/Queries/getPublications";
@@ -36,26 +34,17 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [allVideos, setallVideos] = useState([]);
   const [isVideoAvilable, setIsVideoAvilable] = useState<boolean>(true);
   const [alreadyFollowing, setAlreadyFollowing] = useState<boolean | undefined>(
-    false
+    route.params.isFollowdByMe
   );
   const [isLoading, setIsLoading] = useState(true);
   const store = useStore();
-
+  const authStore = useAuthStore();
   useEffect(() => {
     getProfleInfo();
-    console.log(route.params.isFollowdByMe);
-    setAlreadyFollowing(route.params.isFollowdByMe)
-  }, [navigation, route.params.profileId]);
-  async function checkFollowed(): Promise<void> {
-    const data = await isFollowedByMe(
-      route.params.profileId,
-      store.accessToken
-    );
-    if (data.data.profile.isFollowedByMe) {
-      setAlreadyFollowing(true);
-      return;
-    }
-  }
+    navigation.setOptions({
+      headerTitle: route.params.name,
+    });
+  }, []);
 
   const getProfleInfo = async () => {
     try {
@@ -65,8 +54,14 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
         variables: {
           id: route.params.profileId,
         },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${authStore.accessToken}`,
+          },
+        },
       });
       setProfile(profiledata.data);
+      setAlreadyFollowing(profiledata.data.profile.isFollowedByMe);
       const getUserVideos = await client.query({
         query: getPublications,
         variables: {
@@ -77,7 +72,8 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
   const [refreshing, setRefreshing] = useState(false);

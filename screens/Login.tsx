@@ -82,7 +82,8 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
       });
       if (tokens.data.authenticate.accessToken) {
         store.setAccessToken(tokens.data.authenticate.accessToken);
-        console.log(tokens.data.authenticate.accessToken);
+        authStore.setAccessToken(tokens.data.authenticate.accessToken);
+        authStore.setRefreshToken(tokens.data.authenticate.refreshToken);
         storeData(
           tokens.data.authenticate.accessToken,
           tokens.data.authenticate.refreshToken
@@ -112,6 +113,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         if (isvaild.data.verify) {
           console.log("Tokens are valid,getting you in");
           store.setAccessToken(tokens.accessToken);
+          authStore.setAccessToken(tokens.accessToken);
           const data = await client.query({
             query: getProfile,
             variables: {
@@ -134,6 +136,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           });
           console.log("Tokens are invalid,generating new tokens...");
           store.setAccessToken(refreshToken.data.refresh.accessToken);
+          authStore.setAccessToken(refreshToken.data.refresh.accessToken);
           storeData(
             refreshToken.data.refresh.accessToken,
             refreshToken.data.refresh.refreshToken
