@@ -26,6 +26,7 @@ type videoPageProp = {
   date: string;
   reaction: string;
   isFollowdByMe?: boolean;
+  description: string;
 };
 
 const VideoCard = ({
@@ -40,6 +41,7 @@ const VideoCard = ({
   date,
   reaction,
   isFollowdByMe,
+  description
 }: videoPageProp) => {
   const store = useStore();
   const navigation = useNavigation();
@@ -67,6 +69,7 @@ const VideoCard = ({
               stats: stats,
               reaction: reaction,
               isFollowdByMe: isFollowdByMe,
+              description: description
             });
           }}
         >

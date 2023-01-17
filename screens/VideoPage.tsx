@@ -11,6 +11,7 @@ import {
 import {
   AntDesign,
   Entypo,
+  Feather,
   FontAwesome,
   MaterialIcons,
 } from "@expo/vector-icons";
@@ -51,6 +52,7 @@ const VideoPage = ({
   const [isLoading, setIsLoading] = useState(true);
   const [likes, setLikes] = useState<number>(route.params.stats?.totalUpvotes);
   const [inFullscreen, setInFullsreen] = useState(false);
+  const [descOpen, setDescOpen] = useState(false);
   const [alreadyFollowing, setAlreadyFollowing] = useState(
     route?.params?.isFollowdByMe || false
   );
@@ -96,10 +98,12 @@ const VideoPage = ({
       },
     });
     setComments([]);
+    // console.log(route.params.description);
+    
     setComments(data.data.publications.items);
     setIsLoading(false);
     // console.log(comments[0].profile);
-    
+
   }
 
   function handleBackButtonClick() {
@@ -179,6 +183,7 @@ const VideoPage = ({
         });
     }
   };
+  
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <StatusBar style="light" backgroundColor={"black"} translucent={true} />
@@ -307,6 +312,14 @@ const VideoPage = ({
                 }
               }}
             />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}><Feather name={`chevron-${descOpen ? 'up' : 'down'}`} size={28} color="white" onPress={() => setDescOpen(!descOpen)} /></View>
+          </View>
+          <View>
+          {
+              descOpen ? (<View style={{marginTop: 8}}>
+                <SubHeading title={route.params.description} style={{color: 'white', fontSize: 14, marginLeft: 4}}/>
+              </View>) : <></>
+            }
           </View>
           <ScrollView
             style={{
@@ -327,16 +340,16 @@ const VideoPage = ({
                 color: isalreadyLiked
                   ? theme.PRIMARY
                   : isLiked
-                  ? theme.PRIMARY
-                  : "white",
+                    ? theme.PRIMARY
+                    : "white",
                 marginLeft: 4,
               }}
               borderColor={
                 isalreadyLiked
                   ? theme.PRIMARY
                   : isLiked
-                  ? theme.PRIMARY
-                  : "white"
+                    ? theme.PRIMARY
+                    : "white"
               }
               onPress={onLike}
               icon={
@@ -347,8 +360,8 @@ const VideoPage = ({
                     isalreadyLiked
                       ? theme.PRIMARY
                       : isLiked
-                      ? theme.PRIMARY
-                      : "white"
+                        ? theme.PRIMARY
+                        : "white"
                   }
                 />
               }
@@ -404,7 +417,7 @@ const VideoPage = ({
               type={"outline"}
               icon={<MaterialIcons name="report" size={16} color="white" />}
               onPress={onShare}
-              textStyle={{ color: "white", marginHorizontal:4 }}
+              textStyle={{ color: "white", marginHorizontal: 4 }}
             />
           </ScrollView>
           <View>

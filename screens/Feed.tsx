@@ -99,6 +99,7 @@ const Feed = ({
                   isFollowdByMe={item.root.profile.isFollowedByMe}
                   profileId={item?.root?.profile?.id}
                   reaction={item?.root?.reaction}
+                  description={item?.root?.metadata?.description}
                 />
               );
             }
