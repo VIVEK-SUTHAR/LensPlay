@@ -141,11 +141,9 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                     style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
                   />
                   <SubHeading
-                    title={`@${profile?.profile?.handle} · ${
-                      profile?.profile?.stats?.totalFollowers
-                    } Subscribers · ${allVideos?.length} Video${
-                      allVideos.length > 1 ? "s" : ""
-                    } `}
+                    title={`@${profile?.profile?.handle} · ${profile?.profile?.stats?.totalFollowers
+                      } Subscribers · ${allVideos?.length} Video${allVideos.length > 1 ? "s" : ""
+                      } `}
                     style={{ fontSize: 12, color: "white", marginTop: 2 }}
                   />
                   <SubHeading
@@ -221,10 +219,9 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
               source={require("../assets/notfound.json")}
             />
             <Heading
-              title={`Seems like ${
-                profile?.profile?.name ||
+              title={`Seems like ${profile?.profile?.name ||
                 profile?.profile?.handle?.split(".")[0]
-              } has not uploaded any video`}
+                } has not uploaded any video`}
               style={{
                 color: "gray",
                 fontSize: 12,

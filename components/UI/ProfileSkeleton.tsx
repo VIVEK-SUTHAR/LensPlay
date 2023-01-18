@@ -27,7 +27,6 @@ const ProfileSkeleton = () => {
           justifyContent: "center",
           width: "100%",
           marginTop: "-20%",
-          //   backgroundColor: "green",
         }}
       >
         <View
@@ -41,60 +40,64 @@ const ProfileSkeleton = () => {
           }}
         />
       </View>
-      <View
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginVertical: 10,
-          width: 80,
-          height: 15,
-          backgroundColor: "rgba(255,255,255,0.7)",
-        }}
-      />
-      <View
-        style={{
-          padding: 4,
-          alignItems: "center",
-          flexDirection: "row",
-          justifyContent: "center",
-          //   backgroundColor: "rgba(255,255,255,0.7)",
-        }}
-      >
+      <View style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
         <View
           style={{
-            marginHorizontal: 5,
+            display: "flex",
+            justifyContent: "center",
+            marginVertical: 10,
             width: 80,
-            height: 5,
-            backgroundColor: "yellow",
+            height: 15,
+            backgroundColor: "rgba(255,255,255,0.7)",
           }}
         />
         <View
           style={{
-            marginHorizontal: 5,
-            width: 100,
-            height: 5,
-            backgroundColor: "grey",
+            padding: 4,
+            alignItems: "center",
+            flexDirection: "row",
+            justifyContent: "center",
+            //   backgroundColor: "rgba(255,255,255,0.7)",
           }}
-        />
+        >
+          <View
+            style={{
+              marginHorizontal: 5,
+              width: 80,
+              height: 5,
+              backgroundColor: "gray",
+            }}
+          />
+          <View
+            style={{
+              marginHorizontal: 5,
+              width: 100,
+              height: 5,
+              backgroundColor: "gray",
+            }}
+          />
+          <View
+            style={{
+              marginHorizontal: 5,
+              width: 50,
+              height: 5,
+              backgroundColor: 'gray'
+            }}
+          />
+        </View>
         <View
           style={{
-            marginHorizontal: 5,
-            width: 50,
             height: 5,
-            backgroundColor: "purple",
+            width: 200,
+            backgroundColor: "gray",
+            marginVertical: 10,
+            justifyContent: "center",
           }}
         />
       </View>
-
-      <View
-        style={{
-          height: 5,
-          width: 200,
-          backgroundColor: "gray",
-          marginVertical: 10,
-          justifyContent: "center",
-        }}
-      />
       <View style={{ paddingVertical: 10 }}>
         <View style={{ paddingVertical: 10 }}>
           <Heading
