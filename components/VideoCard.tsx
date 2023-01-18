@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { primary } from "../constants/Colors";
 import useStore from "../store/Store";
+import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
 import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
@@ -21,10 +22,10 @@ type videoPageProp = {
   profileId: string;
   uploadedBy: string;
   playbackId: string;
-  id: number;
+  id: string;
   stats: {};
-  date: string;
-  reaction: string;
+  date: string | Date;
+  reaction: string | null;
   isFollowdByMe?: boolean;
   description: string;
 };
@@ -41,7 +42,7 @@ const VideoCard = ({
   date,
   reaction,
   isFollowdByMe,
-  description
+  description,
 }: videoPageProp) => {
   const store = useStore();
   const navigation = useNavigation();
@@ -69,7 +70,7 @@ const VideoCard = ({
               stats: stats,
               reaction: reaction,
               isFollowdByMe: isFollowdByMe,
-              description: description
+              description: description,
             });
           }}
         >
@@ -91,7 +92,6 @@ const VideoCard = ({
       </View>
       <TouchableWithoutFeedback
         onPress={() => {
-          console.log(isFollowdByMe);
           navigation.navigate("Channel", {
             profileId: profileId,
             isFollowdByMe: isFollowdByMe,
@@ -113,7 +113,7 @@ const VideoCard = ({
               style={{ fontSize: 16, fontWeight: "700", color: "white" }}
             />
             <SubHeading
-              title={`By ${uploadedBy} on ${date}`}
+              title={`By ${uploadedBy} on ${getDifference(date)}`}
               style={{ fontSize: 12, color: "gray" }}
             />
           </View>
