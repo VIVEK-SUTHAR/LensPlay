@@ -15,6 +15,10 @@ import extractURLs from "../utils/extractURL";
 import { useNavigation } from "@react-navigation/native";
 import Button from "./UI/Button";
 import { AntDesign, Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
+import addLike from "../api/addReaction";
+import useStore, { useAuthStore } from "../store/Store";
+import freeMirror from "../api/freeMirror";
+
 
 type CommentCardProps = {
   avatar: string;
@@ -25,6 +29,7 @@ type CommentCardProps = {
   isFollowdByMe: boolean;
   name: string;
   stats: {};
+  commentId: string;
 };
 
 const CommentCard = ({
@@ -36,11 +41,27 @@ const CommentCard = ({
   isFollowdByMe,
   name,
   stats,
+  commentId,
 }: CommentCardProps) => {
+  const store = useStore();
+  const authStore = useAuthStore();
   const [isalreadyDisLiked, setisalreadyDisLiked] = useState(false);
   const navigation = useNavigation();
-  console.log(stats);
-  
+
+  const setLike = async () => {
+    addLike(
+      authStore.accessToken,
+      store.profileId,
+      commentId,
+      "UPVOTE"
+    ).then((res) => {
+      if (res.addReaction === null) {
+        console.log("liked");
+      }
+    });
+  }
+
+
   return (
     <View
       style={{
@@ -122,6 +143,7 @@ const CommentCard = ({
             title={stats?.totalUpvotes}
             onPress={() => {
               setisalreadyDisLiked((prev) => !prev);
+              setLike();
             }}
             px={12}
             py={4}
@@ -169,10 +191,17 @@ const CommentCard = ({
             type={"outline"}
             icon={<AntDesign name="retweet" size={16} color="white" />}
             borderColor="#232323"
-            onPress={() => {
-              // setIsmodalopen(true);
+            onPress={async () => {
+              try {
+                const data = await freeMirror(authStore.accessToken, store.profileId, commentId,) 
+                console.log(data);
+                
+              } catch (error) {
+                console.log(error);
+
+              }
             }}
-            textStyle={{ color: "white",marginHorizontal:2 }}
+            textStyle={{ color: "white", marginHorizontal: 2 }}
           />
           <Button
             title={""}

@@ -98,7 +98,6 @@ const VideoPage = ({
       },
     });
     setComments([]);
-    // console.log(route.params.description);
     
     setComments(data.data.publications.items);
     setIsLoading(false);
@@ -475,6 +474,7 @@ const VideoPage = ({
                     isFollowdByMe={item.profile.isFollowedByMe}
                     name={item.profile?.name}
                     stats={item?.stats}
+                    commentId={item?.id}
                   />
                 );
               })
