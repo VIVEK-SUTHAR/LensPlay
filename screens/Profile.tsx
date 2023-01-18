@@ -28,6 +28,7 @@ import { RootTabScreenProps } from "../types/navigation/types";
 import AnimatedLottieView from "lottie-react-native";
 import Skleton from "../components/Skleton";
 import ProfileSkeleton from "../components/UI/ProfileSkeleton";
+import { primary, secondary } from "../constants/Colors";
 const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [profile, setProfile] = useState<{}>({});
   const [allVideos, setallVideos] = useState([]);
@@ -80,6 +81,9 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
       setRefreshing(false);
     });
   }, []);
+  console.log(profile?.profile?.stats);
+
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <ScrollView
@@ -102,7 +106,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
               <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
                 <View
                   style={{
-                    height: 150,
+                    height: 200,
                     alignItems: "flex-start",
                     marginBottom: 30,
                   }}
@@ -116,7 +120,8 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                     style={{
                       height: "100%",
                       width: "100%",
-                      borderRadius: 10,
+                      borderBottomLeftRadius: 10,
+                      borderBottomRightRadius: 10,
                       resizeMode: "cover",
                     }}
                   />
@@ -124,34 +129,60 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                 <View
                   style={{
                     flexDirection: "row",
-                    justifyContent: "center",
-                    width: "100%",
+                    justifyContent: 'flex-start',
+                    marginLeft: 8,
                     marginTop: "-20%",
                   }}
                 >
                   <Avatar
-                    src={profile?.profile?.picture?.original?.url}
+                    src={getIPFSLink(profile?.profile?.picture?.original?.url)}
                     height={100}
                     width={100}
+                    borderRadius={25}
+                    borderColor={primary}
+                    borderWidth={2}
                   />
+                  <View style={{ marginTop: '14%', marginLeft: 16 }}>
+                    <Heading
+                      title={profile?.profile?.name}
+                      style={{ fontSize: 24, fontWeight: "bold", color: "white" }}
+                    />
+                    <SubHeading
+                      title={`@${profile?.profile?.handle}`}
+                      style={{ fontSize: 14, color: "white", opacity: 0.95 }}
+                    />
+                  </View>
                 </View>
-                <View style={{ padding: 4, alignItems: "center" }}>
-                  <Heading
-                    title={profile?.profile?.name}
-                    style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
-                  />
-                  <SubHeading
-                    title={`@${profile?.profile?.handle} · ${
-                      profile?.profile?.stats?.totalFollowers
-                    } Subscribers · ${allVideos?.length} Video${
-                      allVideos.length > 1 ? "s" : ""
-                    } `}
-                    style={{ fontSize: 12, color: "white", marginTop: 2 }}
-                  />
+                <View style={{ padding: 8, alignItems: "flex-start", marginLeft: 8, marginTop: 4 }}>
+
                   <SubHeading
                     title={extractURLs(profile?.profile?.bio)}
-                    style={{ fontSize: 14, color: "gray", textAlign: "center" }}
+                    style={{ fontSize: 16, color: "gray", textAlign: "left" }}
                   />
+                  <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
+                    <View>
+                      <SubHeading title={profile?.profile?.stats?.totalFollowers} style={{ color: primary, fontSize: 24, textAlign: 'center', fontWeight: '800' }} />
+                      <SubHeading title='Subscribers' style={{ color: secondary, textAlign: 'center', marginTop: 2, fontWeight: '800', fontSize: 16, opacity: 0.7 }} />
+                    </View>
+                    <View style={{
+                      height: '100%',
+                      width: 1,
+                      backgroundColor: primary,
+                    }}></View>
+                    <View>
+                      <SubHeading title={allVideos?.length} style={{ color: primary, fontSize: 24, textAlign: 'center', fontWeight: '800' }} />
+                      <SubHeading title='Video' style={{ color: secondary, textAlign: 'center', marginTop: 2, fontWeight: '800', fontSize: 16, opacity: 0.7 }} />
+                    </View>
+                    <View style={{
+                      height: '100%',
+                      width: 1,
+                      backgroundColor: primary,
+                    }}></View>
+                    <View>
+                      <SubHeading title={profile?.profile?.stats?.totalFollowing} style={{ color: primary, fontSize: 24, textAlign: 'center', fontWeight: '800' }} />
+                      <SubHeading title='Following' style={{ color: secondary, textAlign: 'center', marginTop: 2, fontWeight: '800', fontSize: 16, opacity: 0.7 }} />
+                    </View>
+                  </View>
                 </View>
                 <View style={{ paddingVertical: 10 }}>
                   <Heading
@@ -221,10 +252,9 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
               source={require("../assets/notfound.json")}
             />
             <Heading
-              title={`Seems like ${
-                profile?.profile?.name ||
+              title={`Seems like ${profile?.profile?.name ||
                 profile?.profile?.handle?.split(".")[0]
-              } has not uploaded any video`}
+                } has not uploaded any video`}
               style={{
                 color: "gray",
                 fontSize: 12,

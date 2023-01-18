@@ -6,16 +6,19 @@ import getIPFSLink from '../../utils/getIPFSLink'
 type AvatarProps = {
     src: string,
     height: number,
-    width: number
+    width: number,
+    borderRadius?: number,
+    borderColor?: string,
+    borderWidth?: number
 }
 
-export default function Avatar({ src, height, width }: AvatarProps) {
+export default function Avatar({ src, height, width, borderRadius=500, borderColor='', borderWidth=0 }: AvatarProps) {
     return (
         <Image
             source={{
                 uri: getIPFSLink(src)
             }}
-            style={{ height: height, width: width, borderRadius: 500, backgroundColor: dark_primary }}
+            style={{ height: height, width: width, borderRadius: borderRadius, backgroundColor: dark_primary, borderColor: borderColor, borderWidth: borderWidth }}
         />
     )
 }
