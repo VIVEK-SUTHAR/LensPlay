@@ -154,27 +154,14 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                   </View>
                 </View>
                 <View style={{ padding: 8, alignItems: "flex-start", marginLeft: 8, marginTop: 4 }}>
-
-                </View>
-                <View style={{ padding: 4, alignItems: "center" }}>
-                  <Heading
-                    title={profile?.profile?.name}
-                    style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
-                  />
-                  <SubHeading
-                    title={`@${profile?.profile?.handle} · ${profile?.profile?.stats?.totalFollowers
-                      } Subscribers · ${allVideos?.length} Video${allVideos.length > 1 ? "s" : ""
-                      } `}
-                    style={{ fontSize: 12, color: "white", marginTop: 2 }}
-                  />
                   <SubHeading
                     title={extractURLs(profile?.profile?.bio)}
                     style={{ fontSize: 16, color: "gray", textAlign: "left" }}
                   />
                   <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
                     <View>
-                      <SubHeading title={profile?.profile?.stats?.totalFollowers} style={{ color: primary, fontSize: 24, textAlign: 'center', fontWeight: '800' }} />
-                      <SubHeading title='Subscribers' style={{ color: secondary, textAlign: 'center', marginTop: 2, fontWeight: '800', fontSize: 16, opacity: 0.7 }} />
+                      <SubHeading title={profile?.profile?.stats?.totalFollowers} style={{ color: secondary, fontSize: 24, textAlign: 'center', fontWeight: '800' }} />
+                      <SubHeading title='Subscribers' style={{ color: primary, textAlign: 'center', marginTop: 2, fontWeight: '800', fontSize: 16, opacity: 0.9 }} />
                     </View>
                     <View style={{
                       height: '100%',
@@ -182,8 +169,8 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                       backgroundColor: primary,
                     }}></View>
                     <View>
-                      <SubHeading title={allVideos?.length} style={{ color: primary, fontSize: 24, textAlign: 'center', fontWeight: '800' }} />
-                      <SubHeading title='Video' style={{ color: secondary, textAlign: 'center', marginTop: 2, fontWeight: '800', fontSize: 16, opacity: 0.7 }} />
+                      <SubHeading title={allVideos?.length} style={{ color: secondary, fontSize: 24, textAlign: 'center', fontWeight: '800' }} />
+                      <SubHeading title='Video' style={{ color: primary, textAlign: 'center', marginTop: 2, fontWeight: '800', fontSize: 16, opacity: 0.9 }} />
                     </View>
                     <View style={{
                       height: '100%',
@@ -191,8 +178,8 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                       backgroundColor: primary,
                     }}></View>
                     <View>
-                      <SubHeading title={profile?.profile?.stats?.totalFollowing} style={{ color: primary, fontSize: 24, textAlign: 'center', fontWeight: '800' }} />
-                      <SubHeading title='Following' style={{ color: secondary, textAlign: 'center', marginTop: 2, fontWeight: '800', fontSize: 16, opacity: 0.7 }} />
+                      <SubHeading title={profile?.profile?.stats?.totalFollowing} style={{ color: secondary, fontSize: 24, textAlign: 'center', fontWeight: '800' }} />
+                      <SubHeading title='Following' style={{ color: primary, textAlign: 'center', marginTop: 2, fontWeight: '800', fontSize: 16, opacity: 0.9 }} />
                     </View>
                   </View>
                 </View>
@@ -264,7 +251,6 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
               source={require("../assets/notfound.json")}
             />
             <Heading
-              title={`Seems like ${profile?.profile?.name ||
               title={`Seems like ${profile?.profile?.name ||
                 profile?.profile?.handle?.split(".")[0]
                   } has not uploaded any video`}
