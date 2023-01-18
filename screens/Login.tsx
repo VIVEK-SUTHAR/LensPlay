@@ -16,7 +16,7 @@ import { client } from "../apollo/client";
 import getChallenge from "../apollo/Queries/getChallenge";
 import getAccessTokens from "../apollo/mutations/getAccessTokens";
 import getProfile from "../apollo/Queries/getProfile";
-import useStore, { useAuthStore } from "../store/Store";
+import useStore, { useAuthStore, useProfile } from "../store/Store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import verifyToken from "../apollo/Queries/verifyToken";
 import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
@@ -29,7 +29,7 @@ import Button from "../components/UI/Button";
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const store = useStore();
   const authStore = useAuthStore();
-
+  const userStore = useProfile();
   const [isloading, setIsloading] = useState<boolean>(false);
   const connector = useWalletConnect();
   const [isconnected, setIsconnected] = useState<boolean>(false);
@@ -61,6 +61,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
       return;
     }
     store.setProfileId(data.data.defaultProfile.id);
+    userStore.setCurrentProfile(data.data.defaultProfile);
     const challengeText = await client.query({
       query: getChallenge,
       variables: {
@@ -81,7 +82,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         },
       });
       if (tokens.data.authenticate.accessToken) {
-        store.setAccessToken(tokens.data.authenticate.accessToken);
         authStore.setAccessToken(tokens.data.authenticate.accessToken);
         authStore.setRefreshToken(tokens.data.authenticate.refreshToken);
         storeData(
@@ -112,7 +112,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         });
         if (isvaild.data.verify) {
           console.log("Tokens are valid,getting you in");
-          store.setAccessToken(tokens.accessToken);
           authStore.setAccessToken(tokens.accessToken);
           const data = await client.query({
             query: getProfile,
@@ -124,6 +123,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
             return;
           }
           store.setProfileId(data.data.defaultProfile.id);
+          userStore.setCurrentProfile(data.data.defaultProfile);
           setIsloading(false);
           navigation.navigate("Root");
         }
@@ -135,7 +135,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
             },
           });
           console.log("Tokens are invalid,generating new tokens...");
-          store.setAccessToken(refreshToken.data.refresh.accessToken);
           authStore.setAccessToken(refreshToken.data.refresh.accessToken);
           storeData(
             refreshToken.data.refresh.accessToken,
@@ -151,6 +150,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
             return;
           }
           store.setProfileId(data.data.defaultProfile.id);
+          userStore.setCurrentProfile(data.data.defaultProfile);
           navigation.navigate("Root");
         }
       } else {

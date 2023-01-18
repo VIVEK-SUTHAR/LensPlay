@@ -1,5 +1,5 @@
 import create from "zustand";
-import { IAuthStore, IThemeStore, IUserProfile } from "../types/Store";
+import { IAuthStore, IThemeStore, UserStore } from "../types/Store";
 
 export const useAuthStore = create<IAuthStore>((set) => ({
   accessToken: "",
@@ -10,16 +10,9 @@ export const useAuthStore = create<IAuthStore>((set) => ({
     set({ accessToken: newRefreshToken }),
 }));
 
-export const useProfile = create<IUserProfile>((set) => ({
-  profileId: "",
-  dispatcher: "",
-  name: "",
-  handle: "",
-  avatar: "",
-  bio: "",
-  cover: "",
-  totalFollowers: 0,
-  totalFollowing: 0,
+export const useProfile = create<UserStore>((set) => ({
+  currentProfile: null,
+  setCurrentProfile: (newProfile) => set({ currentProfile: newProfile }),
 }));
 
 export const useThemeStore = create<IThemeStore>((set) => ({

@@ -11,7 +11,11 @@ import {
 import { useEffect, useState } from "react";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
-import useStore, { useAuthStore, useThemeStore } from "../store/Store";
+import useStore, {
+  useAuthStore,
+  useProfile,
+  useThemeStore,
+} from "../store/Store";
 import getPublications from "../apollo/Queries/getPublications";
 import VideoCard from "../components/VideoCard";
 import convertDate from "../utils/formateDate";
@@ -31,6 +35,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
   const store = useStore();
   const theme = useThemeStore();
   const authStore = useAuthStore();
+  const userStore = useProfile();
   useEffect(() => {
     getProfleInfo();
   }, [navigation]);
@@ -40,7 +45,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
       const profiledata = await client.query({
         query: getUserProfile,
         variables: {
-          id: store.profileId,
+          id: userStore.currentProfile?.id,
         },
       });
       setProfile(profiledata.data);
@@ -48,7 +53,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
       const getUserVideos = await client.query({
         query: getPublications,
         variables: {
-          id: store.profileId,
+          id: userStore.currentProfile?.id,
         },
         context: {
           headers: {
@@ -87,98 +92,103 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
           />
         }
       >
-        {isLoading?<><ProfileSkeleton/></>:
-        <>
-        {Boolean(!isLoading) && (
-          <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
-            <View
-              style={{
-                height: 150,
-                alignItems: "flex-start",
-                marginBottom: 30,
-              }}
-            >
-              <Image
-                source={{
-                  uri: getIPFSLink(
-                    profile?.profile?.coverPicture?.original?.url
-                  ),
-                }}
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  borderRadius: 10,
-                  resizeMode: "cover",
-                }}
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                width: "100%",
-                marginTop: "-20%",
-              }}
-            >
-              <Avatar
-                src={profile?.profile?.picture?.original?.url}
-                height={100}
-                width={100}
-              />
-            </View>
-            <View style={{ padding: 4, alignItems: "center" }}>
-              <Heading
-                title={profile?.profile?.name}
-                style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
-              />
-              <SubHeading
-                title={`@${profile?.profile?.handle} · ${
-                  profile?.profile?.stats?.totalFollowers
-                } Subscribers · ${allVideos?.length} Video${
-                  allVideos.length > 1 ? "s" : ""
-                } `}
-                style={{ fontSize: 12, color: "white", marginTop: 2 }}
-              />
-              <SubHeading
-                title={extractURLs(profile?.profile?.bio)}
-                style={{ fontSize: 14, color: "gray", textAlign: "center" }}
-              />
-            </View>
-            <View style={{ paddingVertical: 10 }}>
-              <Heading
-                title="Videos"
-                style={{
-                  fontSize: 20,
-                  fontWeight: "700",
-                  color: "white",
-                }}
-              />
-              {Boolean(allVideos) &&
-                allVideos.map((item: any) => {
-                  if (item?.appId?.includes("lenstube")) {
-                    return (
-                      <VideoCard
-                        key={item?.id}
-                        id={item?.id}
-                        date={convertDate(item?.createdAt)}
-                        banner={item?.metadata?.cover}
-                        title={item?.metadata?.name}
-                        avatar={item?.profile?.picture?.original?.url}
-                        playbackId={item?.metadata?.media[0]?.original?.url}
-                        uploadedBy={item?.profile?.name}
-                        profileId={item?.profile?.id}
-                        stats={item?.stats}
-                        isFollowdByMe={item.profile.isFollowedByMe}
-                        reaction={item?.reaction}
-                      />
-                    );
-                  }
-                })}
-            </View>
-          </View>
+        {isLoading ? (
+          <>
+            <ProfileSkeleton />
+          </>
+        ) : (
+          <>
+            {Boolean(!isLoading) && (
+              <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
+                <View
+                  style={{
+                    height: 150,
+                    alignItems: "flex-start",
+                    marginBottom: 30,
+                  }}
+                >
+                  <Image
+                    source={{
+                      uri: getIPFSLink(
+                        profile?.profile?.coverPicture?.original?.url
+                      ),
+                    }}
+                    style={{
+                      height: "100%",
+                      width: "100%",
+                      borderRadius: 10,
+                      resizeMode: "cover",
+                    }}
+                  />
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    width: "100%",
+                    marginTop: "-20%",
+                  }}
+                >
+                  <Avatar
+                    src={profile?.profile?.picture?.original?.url}
+                    height={100}
+                    width={100}
+                  />
+                </View>
+                <View style={{ padding: 4, alignItems: "center" }}>
+                  <Heading
+                    title={profile?.profile?.name}
+                    style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
+                  />
+                  <SubHeading
+                    title={`@${profile?.profile?.handle} · ${
+                      profile?.profile?.stats?.totalFollowers
+                    } Subscribers · ${allVideos?.length} Video${
+                      allVideos.length > 1 ? "s" : ""
+                    } `}
+                    style={{ fontSize: 12, color: "white", marginTop: 2 }}
+                  />
+                  <SubHeading
+                    title={extractURLs(profile?.profile?.bio)}
+                    style={{ fontSize: 14, color: "gray", textAlign: "center" }}
+                  />
+                </View>
+                <View style={{ paddingVertical: 10 }}>
+                  <Heading
+                    title="Videos"
+                    style={{
+                      fontSize: 20,
+                      fontWeight: "700",
+                      color: "white",
+                    }}
+                  />
+                  {Boolean(allVideos) &&
+                    allVideos.map((item: any) => {
+                      if (item?.appId?.includes("lenstube")) {
+                        return (
+                          <VideoCard
+                            key={item?.id}
+                            id={item?.id}
+                            date={convertDate(item?.createdAt)}
+                            banner={item?.metadata?.cover}
+                            title={item?.metadata?.name}
+                            avatar={item?.profile?.picture?.original?.url}
+                            playbackId={item?.metadata?.media[0]?.original?.url}
+                            uploadedBy={item?.profile?.name}
+                            profileId={item?.profile?.id}
+                            stats={item?.stats}
+                            isFollowdByMe={item.profile.isFollowedByMe}
+                            reaction={item?.reaction}
+                          />
+                        );
+                      }
+                    })}
+                </View>
+              </View>
+            )}
+          </>
         )}
-        </>}
-        
+
         {Boolean(isLoading) && (
           <View
             style={{
@@ -223,7 +233,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
             ></Heading>
           </View>
         )}
-      {/* <ProfileSkeleton/> */}
+        {/* <ProfileSkeleton/> */}
       </ScrollView>
     </SafeAreaView>
   );
