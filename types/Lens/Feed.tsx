@@ -7,11 +7,11 @@ export interface Data {
 }
 
 export interface FeedClass {
-  items: Item[];
+  items: FeedItem[];
   pageInfo: PageInfo;
 }
 
-export interface Item {
+export interface FeedItem {
   root: Root;
   electedMirror: ElectedMirror | null;
   mirrors: Mirror[];

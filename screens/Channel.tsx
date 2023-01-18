@@ -32,7 +32,6 @@ import { ResizeMode } from "expo-av";
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [profile, setProfile] = useState<{}>({});
   const [allVideos, setallVideos] = useState([]);
-  const [isVideoAvilable, setIsVideoAvilable] = useState<boolean>(true);
   const [alreadyFollowing, setAlreadyFollowing] = useState<boolean | undefined>(
     route.params.isFollowdByMe
   );

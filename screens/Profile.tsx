@@ -155,6 +155,18 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                 </View>
                 <View style={{ padding: 8, alignItems: "flex-start", marginLeft: 8, marginTop: 4 }}>
 
+                </View>
+                <View style={{ padding: 4, alignItems: "center" }}>
+                  <Heading
+                    title={profile?.profile?.name}
+                    style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
+                  />
+                  <SubHeading
+                    title={`@${profile?.profile?.handle} · ${profile?.profile?.stats?.totalFollowers
+                      } Subscribers · ${allVideos?.length} Video${allVideos.length > 1 ? "s" : ""
+                      } `}
+                    style={{ fontSize: 12, color: "white", marginTop: 2 }}
+                  />
                   <SubHeading
                     title={extractURLs(profile?.profile?.bio)}
                     style={{ fontSize: 16, color: "gray", textAlign: "left" }}
@@ -253,8 +265,9 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
             />
             <Heading
               title={`Seems like ${profile?.profile?.name ||
+              title={`Seems like ${profile?.profile?.name ||
                 profile?.profile?.handle?.split(".")[0]
-                } has not uploaded any video`}
+                  } has not uploaded any video`}
               style={{
                 color: "gray",
                 fontSize: 12,
