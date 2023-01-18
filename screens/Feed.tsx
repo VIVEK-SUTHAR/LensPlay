@@ -107,7 +107,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
               playbackId={item?.root?.metadata?.media[0]?.original?.url}
               banner={item?.root?.metadata?.cover}
               avatar={item?.root?.profile?.picture?.original?.url}
-              uploadedBy={item?.root?.profile?.handle}
+              uploadedBy={item?.root?.profile?.name || item.root.profile.handle}
               stats={item?.root?.stats}
               isFollowdByMe={item.root.profile.isFollowedByMe}
               profileId={item?.root?.profile?.id}
