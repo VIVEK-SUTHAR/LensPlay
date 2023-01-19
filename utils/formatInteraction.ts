@@ -1,3 +1,11 @@
+/**
+ *
+ * @param value number to be formatted
+ * @returns formatted number like 1k or 6M
+ *
+ */
+
+
 function formatInteraction(value: number) {
     let result=''
     if(value>1000000){
