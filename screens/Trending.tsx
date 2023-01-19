@@ -1,38 +1,20 @@
-import {
-  Image,
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-} from "react-native";
+import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import * as React from "react";
 import { useState } from "react";
 import VideoCard from "../components/VideoCard";
 import { client } from "../apollo/client";
 import getTrendingPublication from "../apollo/Queries/getTrendingPublication";
 import { useEffect } from "react";
-import convertDate from "../utils/formateDate";
 import AnimatedLottieView from "lottie-react-native";
 import Heading from "../components/UI/Heading";
-import useStore, { useAuthStore, useThemeStore } from "../store/Store";
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
-
-type TrendingPageProps = {
-  navigation: any;
-};
-
-const Trending = ({ navigation }: TrendingPageProps) => {
-  const theme = useThemeStore();
-  const authStore = useAuthStore();
-
-  const [TrendingItems, setTrendingItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+import { Root } from "../types/Lens/Feed";
+import { RootTabScreenProps } from "../types/navigation/types";
+const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
   const [tags, setTags] = useState([
     {
-      name: "Top Collected",
+      name: "Latest",
       active: true,
     },
     {
@@ -40,7 +22,7 @@ const Trending = ({ navigation }: TrendingPageProps) => {
       active: false,
     },
     {
-      name: "Latest",
+      name: "Top Collected",
       active: false,
     },
     {
@@ -52,13 +34,22 @@ const Trending = ({ navigation }: TrendingPageProps) => {
       active: false,
     },
   ]);
-  const [currentTag, setCurrentTag] = useState(tags[0]);
-  const store = useStore();
+  const [currentTag, setCurrentTag] = useState<{
+    name: string;
+    active: boolean;
+  }>(tags[0]);
+  const [TrendingItems, setTrendingItems] = useState<Root[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const theme = useThemeStore();
+  const authStore = useAuthStore();
+  const userStore = useProfile();
+
   async function getTrendingData() {
     const trendingData = await client.query({
       query: getTrendingPublication,
       variables: {
-        id: store.profileId,
+        id: userStore.currentProfile?.id,
       },
       context: {
         headers: {
@@ -174,13 +165,12 @@ const Trending = ({ navigation }: TrendingPageProps) => {
             <></>
           )}
           {TrendingItems &&
-            TrendingItems?.map((item, index) => {
+            TrendingItems?.map((item: Root, index) => {
               return (
                 <VideoCard
                   key={index}
                   id={item?.id}
-                  navigation={navigation}
-                  date={convertDate(item?.createdAt)}
+                  date={item?.createdAt}
                   title={item?.metadata?.name}
                   isFollowdByMe={item?.profile?.isFollowedByMe}
                   banner={item?.metadata?.cover}

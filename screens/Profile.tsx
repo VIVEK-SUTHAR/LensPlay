@@ -83,7 +83,6 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
   }, []);
   console.log(profile?.profile?.stats);
 
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <ScrollView
@@ -129,7 +128,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                 <View
                   style={{
                     flexDirection: "row",
-                    justifyContent: 'flex-start',
+                    justifyContent: "flex-start",
                     marginLeft: 8,
                     marginTop: "-20%",
                   }}
@@ -140,12 +139,16 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                     width={100}
                     borderRadius={25}
                     borderColor={primary}
-                    borderWidth={2}
+                    borderWidth={1}
                   />
-                  <View style={{ marginTop: '14%', marginLeft: 16 }}>
+                  <View style={{ marginTop: "14%", marginLeft: 16 }}>
                     <Heading
                       title={profile?.profile?.name}
-                      style={{ fontSize: 24, fontWeight: "bold", color: "white" }}
+                      style={{
+                        fontSize: 24,
+                        fontWeight: "bold",
+                        color: "white",
+                      }}
                     />
                     <SubHeading
                       title={`@${profile?.profile?.handle}`}
@@ -153,33 +156,105 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                     />
                   </View>
                 </View>
-                <View style={{ padding: 8, alignItems: "flex-start", marginLeft: 8, marginTop: 4 }}>
+                <View
+                  style={{
+                    padding: 8,
+                    alignItems: "flex-start",
+                    marginLeft: 8,
+                    marginTop: 4,
+                  }}
+                >
                   <SubHeading
                     title={extractURLs(profile?.profile?.bio)}
                     style={{ fontSize: 16, color: "gray", textAlign: "left" }}
                   />
-                  <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
+                  <View
+                    style={{
+                      marginTop: 10,
+                      flexDirection: "row",
+                      justifyContent: "space-around",
+                      width: "100%",
+                    }}
+                  >
                     <View>
-                      <SubHeading title={profile?.profile?.stats?.totalFollowers} style={{ color: secondary, fontSize: 24, textAlign: 'center', fontWeight: '800' }} />
-                      <SubHeading title='Subscribers' style={{ color: primary, textAlign: 'center', marginTop: 2, fontWeight: '800', fontSize: 16, opacity: 0.9 }} />
+                      <SubHeading
+                        title={profile?.profile?.stats?.totalFollowers}
+                        style={{
+                          color: secondary,
+                          fontSize: 24,
+                          textAlign: "center",
+                          fontWeight: "800",
+                        }}
+                      />
+                      <SubHeading
+                        title="Subscribers"
+                        style={{
+                          color: primary,
+                          textAlign: "center",
+                          marginTop: 2,
+                          fontWeight: "800",
+                          fontSize: 16,
+                          opacity: 0.9,
+                        }}
+                      />
                     </View>
-                    <View style={{
-                      height: '100%',
-                      width: 1,
-                      backgroundColor: primary,
-                    }}></View>
+                    <View
+                      style={{
+                        height: "100%",
+                        width: 1,
+                        backgroundColor: primary,
+                      }}
+                    ></View>
                     <View>
-                      <SubHeading title={allVideos?.length} style={{ color: secondary, fontSize: 24, textAlign: 'center', fontWeight: '800' }} />
-                      <SubHeading title='Video' style={{ color: primary, textAlign: 'center', marginTop: 2, fontWeight: '800', fontSize: 16, opacity: 0.9 }} />
+                      <SubHeading
+                        title={allVideos?.length}
+                        style={{
+                          color: secondary,
+                          fontSize: 24,
+                          textAlign: "center",
+                          fontWeight: "800",
+                        }}
+                      />
+                      <SubHeading
+                        title="Video"
+                        style={{
+                          color: primary,
+                          textAlign: "center",
+                          marginTop: 2,
+                          fontWeight: "800",
+                          fontSize: 16,
+                          opacity: 0.9,
+                        }}
+                      />
                     </View>
-                    <View style={{
-                      height: '100%',
-                      width: 1,
-                      backgroundColor: primary,
-                    }}></View>
+                    <View
+                      style={{
+                        height: "100%",
+                        width: 1,
+                        backgroundColor: primary,
+                      }}
+                    ></View>
                     <View>
-                      <SubHeading title={profile?.profile?.stats?.totalFollowing} style={{ color: secondary, fontSize: 24, textAlign: 'center', fontWeight: '800' }} />
-                      <SubHeading title='Following' style={{ color: primary, textAlign: 'center', marginTop: 2, fontWeight: '800', fontSize: 16, opacity: 0.9 }} />
+                      <SubHeading
+                        title={profile?.profile?.stats?.totalFollowing}
+                        style={{
+                          color: secondary,
+                          fontSize: 24,
+                          textAlign: "center",
+                          fontWeight: "800",
+                        }}
+                      />
+                      <SubHeading
+                        title="Following"
+                        style={{
+                          color: primary,
+                          textAlign: "center",
+                          marginTop: 2,
+                          fontWeight: "800",
+                          fontSize: 16,
+                          opacity: 0.9,
+                        }}
+                      />
                     </View>
                   </View>
                 </View>
@@ -251,9 +326,10 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
               source={require("../assets/notfound.json")}
             />
             <Heading
-              title={`Seems like ${profile?.profile?.name ||
+              title={`Seems like ${
+                profile?.profile?.name ||
                 profile?.profile?.handle?.split(".")[0]
-                  } has not uploaded any video`}
+              } has not uploaded any video`}
               style={{
                 color: "gray",
                 fontSize: 12,

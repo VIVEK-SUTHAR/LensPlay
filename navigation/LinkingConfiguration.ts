@@ -8,6 +8,7 @@ const linking: LinkingOptions<RootStackParamList> = {
   config: {
     screens: {
       Root: {
+        path: "root",
         screens: {
           Home: {
             screens: {
@@ -15,6 +16,8 @@ const linking: LinkingOptions<RootStackParamList> = {
             },
           },
           Account: {
+            path: "account",
+
             screens: {
               TabTwoScreen: "account",
             },
@@ -25,6 +28,7 @@ const linking: LinkingOptions<RootStackParamList> = {
       NotFound: "*",
       VideoPage: {
         path: "video",
+        parse: { id: String },
       },
     },
   },

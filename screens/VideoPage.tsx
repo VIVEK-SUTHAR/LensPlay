@@ -1,12 +1,11 @@
 import {
   View,
   Share,
-  TouchableWithoutFeedback,
   ScrollView,
   SafeAreaView,
-  TouchableOpacity,
   ToastAndroid,
   BackHandler,
+  Linking,
 } from "react-native";
 import {
   AntDesign,
@@ -18,19 +17,19 @@ import {
 import React, { useEffect } from "react";
 import useStore, { useAuthStore, useThemeStore } from "../store/Store";
 import { useState } from "react";
-import addLike from "../api/addReaction";
-import removeLike from "../api/removeReaction";
+import {
+  addLike,
+  removeLike,
+  isFollowedByMe,
+  createFreeSubscribe,
+} from "../api";
 import CommentCard from "../components/CommentCard";
 import { setStatusBarHidden, StatusBar } from "expo-status-bar";
 import { client } from "../apollo/client";
 import getComments from "../apollo/Queries/getComments";
-import freeCollectPublication from "../api/freeCollect";
-import getProxyActionStatus from "../api/getProxyActionStatus";
 import Avatar from "../components/UI/Avatar";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
-import createSubScribe from "../api/freeSubScribe";
-import isFollowedByMe from "../api/isFollowedByMe";
 import AnimatedLottieView from "lottie-react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
 import Drawer from "../components/UI/Drawer";
@@ -72,6 +71,7 @@ const VideoPage = ({
 
   useEffect(() => {
     checkFollowed();
+    Linking.addEventListener("url", (e) => {});
   }, []);
 
   async function checkFollowed(): Promise<void> {
@@ -86,23 +86,27 @@ const VideoPage = ({
   }
 
   async function fetchComments(): Promise<void> {
-    const data = await client.query({
-      query: getComments,
-      variables: {
-        postId: route.params.id,
-      },
-      context: {
-        headers: {
-          "x-access-token": `Bearer ${authStore.accessToken}`,
+    try {
+      const data = await client.query({
+        query: getComments,
+        variables: {
+          postId: route.params.id,
         },
-      },
-    });
-    setComments([]);
-    
-    setComments(data.data.publications.items);
-    setIsLoading(false);
-    // console.log(comments[0].profile);
-
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${authStore.accessToken}`,
+          },
+        },
+      });
+      setComments([]);
+      setComments(data.data.publications.items);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Can't fetch comments", { cause: error.cause });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   function handleBackButtonClick() {
@@ -182,7 +186,7 @@ const VideoPage = ({
         });
     }
   };
-  
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <StatusBar style="light" backgroundColor={"black"} translucent={true} />
@@ -288,7 +292,7 @@ const VideoPage = ({
               }}
               onPress={async () => {
                 try {
-                  const data = await createSubScribe(
+                  const data = await createFreeSubscribe(
                     route.params.profileId,
                     authStore.accessToken
                   );
@@ -311,14 +315,26 @@ const VideoPage = ({
                 }
               }}
             />
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}><Feather name={`chevron-${descOpen ? 'up' : 'down'}`} size={28} color="white" onPress={() => setDescOpen(!descOpen)} /></View>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Feather
+                name={`chevron-${descOpen ? "up" : "down"}`}
+                size={28}
+                color="white"
+                onPress={() => setDescOpen(!descOpen)}
+              />
+            </View>
           </View>
           <View>
-          {
-              descOpen ? (<View style={{marginTop: 8}}>
-                <SubHeading title={route.params.description} style={{color: 'white', fontSize: 14, marginLeft: 4}}/>
-              </View>) : <></>
-            }
+            {descOpen ? (
+              <View style={{ marginTop: 8 }}>
+                <SubHeading
+                  title={route.params.description}
+                  style={{ color: "white", fontSize: 14, marginLeft: 4 }}
+                />
+              </View>
+            ) : (
+              <></>
+            )}
           </View>
           <ScrollView
             style={{
@@ -339,16 +355,16 @@ const VideoPage = ({
                 color: isalreadyLiked
                   ? theme.PRIMARY
                   : isLiked
-                    ? theme.PRIMARY
-                    : "white",
+                  ? theme.PRIMARY
+                  : "white",
                 marginLeft: 4,
               }}
               borderColor={
                 isalreadyLiked
                   ? theme.PRIMARY
                   : isLiked
-                    ? theme.PRIMARY
-                    : "white"
+                  ? theme.PRIMARY
+                  : "white"
               }
               onPress={onLike}
               icon={
@@ -359,8 +375,8 @@ const VideoPage = ({
                     isalreadyLiked
                       ? theme.PRIMARY
                       : isLiked
-                        ? theme.PRIMARY
-                        : "white"
+                      ? theme.PRIMARY
+                      : "white"
                   }
                 />
               }
