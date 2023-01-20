@@ -274,4 +274,3 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
 
 export default Channel;
 
-const styles = StyleSheet.create({});
