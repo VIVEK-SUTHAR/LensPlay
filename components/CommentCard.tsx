@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import React, { useState } from "react";
-import { dark_secondary, primary } from "../constants/Colors";
+import { primary } from "../constants/Colors";
 import getDifference from "../utils/getDifference";
 import Heading from "./UI/Heading";
 import SubHeading from "./UI/SubHeading";
@@ -16,7 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 import Button from "./UI/Button";
 import { AntDesign, Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
 import addLike from "../api/addReaction";
-import useStore, { useAuthStore } from "../store/Store";
+import { useAuthStore, useProfile } from "../store/Store";
 import freeMirror from "../api/freeMirror";
 
 
@@ -43,15 +43,15 @@ const CommentCard = ({
   stats,
   commentId,
 }: CommentCardProps) => {
-  const store = useStore();
   const authStore = useAuthStore();
   const [isalreadyDisLiked, setisalreadyDisLiked] = useState(false);
   const navigation = useNavigation();
+  const userStore = useProfile();
 
   const setLike = async () => {
     addLike(
       authStore.accessToken,
-      store.profileId,
+      userStore.currentProfile?.id,
       commentId,
       "UPVOTE"
     ).then((res) => {
@@ -193,7 +193,7 @@ const CommentCard = ({
             borderColor="#232323"
             onPress={async () => {
               try {
-                const data = await freeMirror(authStore.accessToken, store.profileId, commentId,) 
+                const data = await freeMirror(authStore.accessToken, userStore.currentProfile?.id, commentId) 
                 console.log(data);
                 
               } catch (error) {

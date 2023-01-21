@@ -15,7 +15,7 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import React, { useEffect } from "react";
-import useStore, { useAuthStore, useThemeStore } from "../store/Store";
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import { useState } from "react";
 import {
   addLike,
@@ -43,9 +43,9 @@ const VideoPage = ({
   navigation,
   route,
 }: RootStackScreenProps<"VideoPage">) => {
-  const store = useStore();
   const theme = useThemeStore();
   const authStore = useAuthStore();
+  const userStore = useProfile();
   const [comments, setComments] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -141,7 +141,7 @@ const VideoPage = ({
       setisalreadyDisLiked(false);
       addLike(
         authStore.accessToken,
-        store.profileId,
+        userStore.currentProfile?.id,
         route.params.id,
         "UPVOTE"
       ).then((res) => {
@@ -164,7 +164,7 @@ const VideoPage = ({
       console.log("dissliked");
       addLike(
         authStore.accessToken,
-        store.profileId,
+        userStore.currentProfile?.id,
         route.params.id,
         "DOWNVOTE"
       ).then((res) => {
@@ -174,7 +174,7 @@ const VideoPage = ({
           }
         }
       });
-      removeLike(authStore.accessToken, store.profileId, route.params.id)
+      removeLike(authStore.accessToken, userStore.currentProfile?.id, route.params.id)
         .then((res) => {
           if (res) {
           }

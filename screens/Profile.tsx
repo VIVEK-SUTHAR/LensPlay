@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
-import useStore, {
+import {
   useAuthStore,
   useProfile,
   useThemeStore,
@@ -34,7 +34,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [allVideos, setallVideos] = useState<LensPublication[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const store = useStore();
   const theme = useThemeStore();
   const authStore = useAuthStore();
   const userStore = useProfile();
@@ -51,7 +50,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
         },
       });
       setProfile(profiledata.data.profile);
-      store.setProfiledata(profiledata.data);
       const getUserVideos = await client.query({
         query: getPublications,
         variables: {

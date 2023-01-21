@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useState } from "react";
 import AnimatedLottieView from "lottie-react-native";
 import fetchNotifications from "../api/fetchNotifications";
-import useStore, {
+import {
   useAuthStore,
   useProfile,
   useThemeStore,

@@ -12,7 +12,7 @@ import { dark_secondary, primary } from "../constants/Colors";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import VideoCard from "../components/VideoCard";
-import useStore, { useAuthStore } from "../store/Store";
+import { useAuthStore } from "../store/Store";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
 import getPublications from "../apollo/Queries/getPublications";
@@ -36,7 +36,6 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
     route.params.isFollowdByMe
   );
   const [isLoading, setIsLoading] = useState(true);
-  const store = useStore();
   const authStore = useAuthStore();
   useEffect(() => {
     getProfleInfo();
@@ -166,7 +165,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                 try {
                   const data = await createSubScribe(
                     route.params.profileId,
-                    store.accessToken
+                    authStore.accessToken
                   );
                   if (data.data === null) {
                     console.log(data.errors[0].message);

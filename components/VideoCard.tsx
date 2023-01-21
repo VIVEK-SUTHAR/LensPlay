@@ -7,8 +7,6 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { primary } from "../constants/Colors";
-import useStore from "../store/Store";
 import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
 import Avatar from "./UI/Avatar";
@@ -44,7 +42,6 @@ const VideoCard = ({
   isFollowdByMe,
   description,
 }: videoPageProp) => {
-  const store = useStore();
   const navigation = useNavigation();
   return (
     <View
