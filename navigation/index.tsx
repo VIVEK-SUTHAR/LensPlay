@@ -26,8 +26,9 @@ import { useThemeStore } from "../store/Store";
 import Home from "../components/Svgs/Home";
 import Explore from "../components/Svgs/Explore";
 import Upload from "../components/Svgs/Upload";
-import NotificationSvg from '../components/Svgs/Notification'
+import NotificationSvg from "../components/Svgs/Notification";
 import ProfileSvg from "../components/Svgs/Profile";
+import { primary } from "../constants/Colors";
 
 export default function Navigation({
   colorScheme,
@@ -45,34 +46,6 @@ export default function Navigation({
 }
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
-// const NavigationItems: { name: string, icon: JSX.Element, component: JSX.Element }[] = [
-//   {
-//     name: "Home",
-//     icon: <Home />,
-//     component: <Feed />
-//   },
-//   {
-//     name: "Explore",
-//     icon: <Explore />,
-//     component: Trending
-//   },
-//   {
-//     name: "Upload",
-//     icon: <Upload />,
-//     component: UploadVideo
-//   },
-//   {
-//     name: "Notification",
-//     icon: <NotificationSvg />,
-//     component: Notification
-//   },
-//   {
-//     name: "Profile",
-//     icon: <ProfileSvg />,
-//     component: Profile
-//   }
-// ]
 
 function RootNavigator() {
   const theme = useThemeStore();
@@ -242,7 +215,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <Home />
+                <Home fill={focused ? primary : "none"} />
               </View>
             );
           },
@@ -267,7 +240,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <Explore />
+                <Explore fill={focused ? primary : "#FFFFFF"} />
               </View>
             );
           },
@@ -288,12 +261,11 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   justifyContent: "center",
                   flexDirection: "row",
                   borderTopWidth: 2,
-
                   borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
-                <Upload />
+                <Upload fill={focused ? primary : "#FFFFFF"} />
               </View>
             );
           },
@@ -318,7 +290,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <NotificationSvg />
+                <NotificationSvg fill={focused ? primary : "none"} />
               </View>
             );
           },
@@ -343,7 +315,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <ProfileSvg />
+                <ProfileSvg fill={focused ? primary : "#FFFFFF"} />
               </View>
             );
           },
