@@ -191,7 +191,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           justifyContent: "center",
           alignItems: "center",
           height: "100%",
-          height: "100%",
         }}
       >
         <View style={StyleSheet.absoluteFillObject}>

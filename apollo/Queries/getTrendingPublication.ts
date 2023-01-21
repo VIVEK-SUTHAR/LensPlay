@@ -1,11 +1,14 @@
 import { gql } from "@apollo/client";
 export default gql`
-  query ExplorePublications($id: ProfileId!) {
+  query ExplorePublications(
+    $id: ProfileId!
+    $sortBy: PublicationSortCriteria!
+  ) {
     explorePublications(
       request: {
         publicationTypes: [POST, MIRROR]
         sources: ["lenstube"]
-        sortCriteria: LATEST
+        sortCriteria: $sortBy
         metadata: { mainContentFocus: VIDEO }
       }
     ) {

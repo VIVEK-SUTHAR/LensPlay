@@ -51,6 +51,20 @@ export interface Root {
   hasCollectedByMe: boolean;
 }
 
+export interface LensPublication {
+  id: string;
+  profile: RootProfile;
+  stats: RootStats;
+  metadata: Metadata;
+  createdAt: Date;
+  collectModule: CollectModule;
+  referenceModule: Module | null;
+  appID: "";
+  hidden: boolean;
+  reaction: null | string;
+  mirrors: any[];
+  hasCollectedByMe: boolean;
+}
 export interface CollectModule {
   typename: string;
   type: string;

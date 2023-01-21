@@ -8,22 +8,29 @@ import {
 import React, { useEffect, useState } from "react";
 import AnimatedLottieView from "lottie-react-native";
 import fetchNotifications from "../api/fetchNotifications";
-import useStore, { useAuthStore, useThemeStore } from "../store/Store";
+import useStore, {
+  useAuthStore,
+  useProfile,
+  useThemeStore,
+} from "../store/Store";
 import Heading from "../components/UI/Heading";
 import NotificationCard from "../components/Notifications";
 import Skleton from "../components/Notifications/Skleton";
+import Item from "../components/Notifications/index.d";
 const Navigation = ({ navigation }: { navigation: any }) => {
-  const store = useStore();
-  const authStore = useAuthStore();
-  const theme = useThemeStore();
-  const [allNotifications, setAllNotifications] = useState([]);
+  const [allNotifications, setAllNotifications] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState(false);
+
+  const authStore = useAuthStore();
+  const theme = useThemeStore();
+  const userStore = useProfile();
+
   const onRefresh = async () => {
     setRefreshing(true);
     try {
       const data = await fetchNotifications(
-        store.profileId,
+        userStore.currentProfile?.id,
         authStore.accessToken
       );
       if (data == allNotifications) {
@@ -41,7 +48,7 @@ const Navigation = ({ navigation }: { navigation: any }) => {
   };
   useEffect(() => {
     setIsLoading(true);
-    fetchNotifications(store.profileId, authStore.accessToken)
+    fetchNotifications(userStore.currentProfile?.id, authStore.accessToken)
       .then((allNotification) => {
         setAllNotifications(allNotification);
         setIsLoading(false);
@@ -69,7 +76,7 @@ const Navigation = ({ navigation }: { navigation: any }) => {
       {allNotifications.length > 0 ? (
         <FlatList
           data={allNotifications}
-          keyExtractor={(item) => item.notificationId.toString()}
+          keyExtractor={(item, index) => index.toString()}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -80,7 +87,7 @@ const Navigation = ({ navigation }: { navigation: any }) => {
           }
           renderItem={({ item }) => {
             return (
-              <NotificationCard notification={item} navigation={navigation} />
+              <NotificationCard navigation={navigation} notification={item} />
             );
           }}
         />

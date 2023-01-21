@@ -46,7 +46,6 @@ const VideoCard = ({
 }: videoPageProp) => {
   const store = useStore();
   const navigation = useNavigation();
-  const setCurrentIndex = store.setCurrentIndex;
   return (
     <View
       style={{
@@ -58,7 +57,6 @@ const VideoCard = ({
       <View style={{ height: 200 }}>
         <TouchableWithoutFeedback
           onPress={() => {
-            setCurrentIndex(id);
             navigation.navigate("VideoPage", {
               title: title,
               id: id,

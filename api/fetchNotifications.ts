@@ -6,7 +6,7 @@ import { LENS_API_ENDPOINT } from "../constants";
  * @returns `onfullfilled`:All notificatons of user in Array Format `onrejected`:error message with valid reason
  */
 async function fetchNotifications(
-  profileId: string,
+  profileId: string|undefined,
   accesToken: string
 ): Promise<any> {
   try {

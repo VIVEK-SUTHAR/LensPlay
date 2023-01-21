@@ -9,7 +9,7 @@ import AnimatedLottieView from "lottie-react-native";
 import Heading from "../components/UI/Heading";
 import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
-import { Root } from "../types/Lens/Feed";
+import { LensPublication } from "../types/Lens/Feed";
 import { RootTabScreenProps } from "../types/navigation/types";
 const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
   const [tags, setTags] = useState([
@@ -38,7 +38,7 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
     name: string;
     active: boolean;
   }>(tags[0]);
-  const [TrendingItems, setTrendingItems] = useState<Root[]>([]);
+  const [TrendingItems, setTrendingItems] = useState<LensPublication[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const theme = useThemeStore();
@@ -46,19 +46,27 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
   const userStore = useProfile();
 
   async function getTrendingData() {
-    const trendingData = await client.query({
-      query: getTrendingPublication,
-      variables: {
-        id: userStore.currentProfile?.id,
-      },
-      context: {
-        headers: {
-          "x-access-token": `Bearer ${authStore.accessToken}`,
+    try {
+      const trendingData = await client.query({
+        query: getTrendingPublication,
+        variables: {
+          id: userStore.currentProfile?.id,
+          sortBy: "TOP_COMMENTED",
         },
-      },
-    });
-    setTrendingItems(trendingData.data.explorePublications.items);
-    setIsLoading(false);
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${authStore.accessToken}`,
+          },
+        },
+      });
+      setTrendingItems(trendingData.data.explorePublications.items);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Something went wrong", { cause: error.cause });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
   useEffect(() => {
     getTrendingData();
@@ -165,7 +173,7 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
             <></>
           )}
           {TrendingItems &&
-            TrendingItems?.map((item: Root, index) => {
+            TrendingItems?.map((item: LensPublication, index) => {
               return (
                 <VideoCard
                   key={index}
@@ -180,6 +188,7 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
                   stats={item?.stats}
                   playbackId={item?.metadata?.media[0]?.original?.url}
                   reaction={item?.reaction}
+                  description={item.metadata.description}
                 />
               );
             })}

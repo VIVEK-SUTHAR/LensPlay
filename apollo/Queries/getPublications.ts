@@ -6,7 +6,6 @@ export default gql`
       request: {
         profileId: $id
         publicationTypes: [POST]
-        limit: 20
         sources: ["lenstube"]
       }
     ) {
