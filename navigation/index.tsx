@@ -23,6 +23,12 @@ import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import Channel from "../screens/Channel";
 import { useThemeStore } from "../store/Store";
+import Home from "../components/Svgs/Home";
+import Explore from "../components/Svgs/Explore";
+import Upload from "../components/Svgs/Upload";
+import NotificationSvg from "../components/Svgs/Notification";
+import ProfileSvg from "../components/Svgs/Profile";
+import { primary } from "../constants/Colors";
 
 export default function Navigation({
   colorScheme,
@@ -161,6 +167,35 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
         headerShadowVisible: true,
       }}
     >
+      {/* {NavigationItems.map((item, index) => (
+        <BottomTab.Screen
+          key={index}
+          name={item.name}
+          component={Feed}
+          options={{
+            tabBarLabel: "",
+            tabBarIcon: ({ focused }) => {
+              return (
+                <View
+                  style={{
+                    padding: 5,
+                    width: 45,
+                    alignContent: "center",
+                    justifyContent: "center",
+                    flexDirection: "row",
+                    borderTopWidth: focused ? 2 : 0,
+                    borderTopColor: focused ? theme.PRIMARY : "transparent",
+                    height: "100%",
+                  }}
+                >
+                  {item.icon}
+                </View>
+              );
+            },
+          }}
+        />
+      ))} */}
+
       <BottomTab.Screen
         name="Home"
         component={Feed}
@@ -180,11 +215,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <Ionicons
-                  name={focused ? "ios-home" : "home-outline"}
-                  color={focused ? theme.PRIMARY : "white"}
-                  size={26}
-                />
+                <Home fill={focused ? primary : "none"} />
               </View>
             );
           },
@@ -209,11 +240,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <Ionicons
-                  name={focused ? "ios-compass" : "ios-compass-outline"}
-                  size={28}
-                  color={focused ? theme.PRIMARY : "white"}
-                />
+                <Explore fill={focused ? primary : "#FFFFFF"} />
               </View>
             );
           },
@@ -234,16 +261,11 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   justifyContent: "center",
                   flexDirection: "row",
                   borderTopWidth: 2,
-
                   borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
-                <AntDesign
-                  name={focused ? "pluscircle" : "pluscircleo"}
-                  size={28}
-                  color={focused ? theme.PRIMARY : "white"}
-                />
+                <Upload fill={focused ? primary : "#FFFFFF"} />
               </View>
             );
           },
@@ -268,13 +290,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <Ionicons
-                  name={
-                    focused ? "ios-notifications" : "ios-notifications-outline"
-                  }
-                  size={28}
-                  color={focused ? theme.PRIMARY : "white"}
-                />
+                <NotificationSvg fill={focused ? primary : "none"} />
               </View>
             );
           },
@@ -299,11 +315,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <FontAwesome
-                  name={focused ? "user" : "user-o"}
-                  color={focused ? theme.PRIMARY : "white"}
-                  size={28}
-                />
+                <ProfileSvg fill={focused ? primary : "#FFFFFF"} />
               </View>
             );
           },
