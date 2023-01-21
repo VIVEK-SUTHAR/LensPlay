@@ -14,33 +14,34 @@ import { RootTabScreenProps } from "../types/navigation/types";
 const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
   const [tags, setTags] = useState([
     {
-      name: "Latest",
+      name: "LATEST",
       active: true,
     },
     {
-      name: "Top Commented",
+      name: "TOP_COMMENTED",
       active: false,
     },
     {
-      name: "Top Collected",
+      name: "TOP_COLLECTED",
       active: false,
     },
     {
-      name: "Curated",
+      name: "TOP_MIRRORED",
       active: false,
     },
     {
-      name: "Technology",
+      name: "CURATED_PROFILES",
       active: false,
     },
   ]);
+
   const [currentTag, setCurrentTag] = useState<{
     name: string;
     active: boolean;
   }>(tags[0]);
+
   const [TrendingItems, setTrendingItems] = useState<Root[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
   const theme = useThemeStore();
   const authStore = useAuthStore();
   const userStore = useProfile();
@@ -50,6 +51,7 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
       query: getTrendingPublication,
       variables: {
         id: userStore.currentProfile?.id,
+        sortBy: currentTag.name,
       },
       context: {
         headers: {
@@ -60,6 +62,7 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
     setTrendingItems(trendingData.data.explorePublications.items);
     setIsLoading(false);
   }
+
   useEffect(() => {
     getTrendingData();
   }, []);
@@ -82,6 +85,11 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
               android_ripple={{
                 color: theme.PRIMARY,
                 radius: 25,
+              }}
+              onPress={() => {
+                setTrendingItems([]);
+                setIsLoading(true);
+                getTrendingData();
               }}
               onTouchEndCapture={() => {
                 setCurrentTag(tags[index]);
@@ -112,7 +120,7 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
                   color: "white",
                 }}
               >
-                {item.name}
+                {item.name.replace(/_/g, " ")}
               </Text>
             </Pressable>
           );
