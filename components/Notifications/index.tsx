@@ -6,7 +6,6 @@ import MirrorNotification from "./MirrorNotification";
 import FollowNotification from "./FollowNotification";
 import ReactionNotification from "./ReactionNotification";
 import CommentNotification from "./CommentNotification";
-import Skleton from "./Skleton";
 
 const NotificationCard = ({
   navigation,

@@ -14,7 +14,6 @@ import {
   RootStackScreenProps,
   RootTabParamList,
 } from "../types/navigation/types";
-import Profile from "../screens/Profile";
 import Trending from "../screens/Trending";
 import Notification from "../screens/Notification";
 import UploadVideo from "../screens/UploadVideo";
@@ -29,6 +28,7 @@ import Upload from "../components/Svgs/Upload";
 import NotificationSvg from "../components/Svgs/Notification";
 import ProfileSvg from "../components/Svgs/Profile";
 import { primary } from "../constants/Colors";
+import ProfileScreen from "../screens/Profile";
 
 export default function Navigation({
   colorScheme,
@@ -298,7 +298,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
       />
       <BottomTab.Screen
         name="Account"
-        component={Profile}
+        component={ProfileScreen}
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ focused }) => {

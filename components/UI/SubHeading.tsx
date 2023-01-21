@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { StyleProp, Text, TextStyle } from "react-native";
 
 interface SubHeadingProps {
-    title: string;
+    title: string | undefined | React.ReactNode;
     style: StyleProp<TextStyle>;
 }
 

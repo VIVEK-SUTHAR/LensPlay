@@ -2,7 +2,6 @@ import {
   Image,
   RefreshControl,
   ScrollView,
-  StyleSheet,
   ToastAndroid,
   View,
 } from "react-native";
@@ -23,14 +22,15 @@ import { STATIC_ASSET } from "../constants";
 import AnimatedLottieView from "lottie-react-native";
 import Skleton from "../components/Skleton";
 import extractURLs from "../utils/extractURL";
-import isFollowedByMe from "../api/isFollowedByMe";
 import createSubScribe from "../api/freeSubScribe";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Button from "../components/UI/Button";
 import { ResizeMode } from "expo-av";
+import { Profile } from "../types/Lens";
+import { LensPublication } from "../types/Lens/Feed";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
-  const [profile, setProfile] = useState<{}>({});
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [allVideos, setallVideos] = useState([]);
   const [alreadyFollowing, setAlreadyFollowing] = useState<boolean | undefined>(
     route.params.isFollowdByMe
@@ -59,7 +59,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
           },
         },
       });
-      setProfile(profiledata.data);
+      setProfile(profiledata.data.profile);
       setAlreadyFollowing(profiledata.data.profile.isFollowedByMe);
       const getUserVideos = await client.query({
         query: getPublications,
@@ -110,9 +110,8 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
               <Image
                 source={{
                   uri:
-                    getIPFSLink(
-                      profile?.profile?.coverPicture?.original?.url
-                    ) || STATIC_ASSET,
+                    getIPFSLink(profile?.coverPicture?.original.url) ||
+                    STATIC_ASSET,
                 }}
                 style={{
                   height: "100%",
@@ -131,22 +130,22 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
               }}
             >
               <Avatar
-                src={getIPFSLink(profile?.profile?.picture?.original?.url)}
+                src={getIPFSLink(profile?.picture.original.url)}
                 height={100}
                 width={100}
               />
             </View>
             <View style={{ padding: 4, alignItems: "center" }}>
               <Heading
-                title={profile?.profile?.name}
+                title={profile?.name}
                 style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
               />
               <SubHeading
-                title={`@${profile?.profile?.handle} · ${profile?.profile?.stats?.totalFollowers} Subscribers · ${allVideos.length} Videos`}
+                title={`@${profile?.handle} · ${profile?.stats?.totalFollowing} Subscribers · ${allVideos.length} Videos`}
                 style={{ fontSize: 12, color: "white", marginTop: 2 }}
               />
               <SubHeading
-                title={extractURLs(profile?.profile?.bio)}
+                title={extractURLs(profile?.bio)}
                 style={{ fontSize: 14, color: "gray", textAlign: "center" }}
               />
             </View>
@@ -198,26 +197,23 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                   color: "white",
                 }}
               />
-              {allVideos?.map((item, index) => {
-                if (item.appId.includes("lenstube")) {
-                  return (
-                    <VideoCard
-                      navigation={navigation}
-                      key={item?.id}
-                      id={item?.id}
-                      date={convertDate(item?.createdAt)}
-                      banner={item?.metadata?.cover}
-                      title={item?.metadata?.name}
-                      avatar={item?.profile?.picture?.original?.url}
-                      playbackId={item?.metadata?.media[0]?.original?.url}
-                      uploadedBy={item?.profile?.name || item?.profile?.handle}
-                      profileId={item?.profile?.id}
-                      stats={item?.stats}
-                      isFollowdByMe={item?.profile.isFollowedByMe}
-                      reaction={item?.reaction}
-                    />
-                  );
-                }
+              {allVideos?.map((item: LensPublication) => {
+                return (
+                  <VideoCard
+                    key={item?.id}
+                    id={item?.id}
+                    date={convertDate(item?.createdAt.toString())}
+                    banner={item?.metadata?.cover}
+                    title={item?.metadata?.name}
+                    avatar={item?.profile?.picture?.original?.url}
+                    playbackId={item?.metadata?.media[0]?.original?.url}
+                    uploadedBy={item?.profile?.name || item?.profile?.handle}
+                    profileId={item?.profile?.id}
+                    stats={item?.stats}
+                    isFollowdByMe={item?.profile.isFollowedByMe}
+                    reaction={item?.reaction}
+                  />
+                );
               })}
             </View>
           </View>
@@ -256,8 +252,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
             />
             <Heading
               title={`Seems like ${
-                profile?.profile?.name ||
-                profile?.profile?.handle?.split(".")[0]
+                profile?.name || profile?.handle?.split(".")[0]
               } has not uploaded any video`}
               style={{
                 color: "gray",
@@ -273,4 +268,3 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
 };
 
 export default Channel;
-

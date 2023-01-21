@@ -16,12 +16,15 @@ import { EvilIcons } from "@expo/vector-icons";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Button from "../components/UI/Button";
 import { useAuthStore, useThemeStore } from "../store/Store";
+import { LensPublication } from "../types/Lens/Feed";
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const theme = useThemeStore();
   const authStore = useAuthStore();
-  const textRef = useRef<HTMLInputElement>(null);
+  const textRef = useRef(null);
 
-  const [searchPostResult, setSearchPostResult] = useState([]);
+  const [searchPostResult, setSearchPostResult] = useState<LensPublication[]>(
+    []
+  );
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isSearching, setIsSearching] = useState(false);
   const [isfound, setIsfound] = useState(true);
@@ -155,10 +158,9 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                 return (
                   <VideoCard
                     key={index}
-                    navigation={navigation}
                     avatar={item?.profile?.picture?.original?.url}
                     id={item?.id}
-                    banner={item?.profile?.coverPicture?.original?.url}
+                    banner={item?.metadata.cover}
                     uploadedBy={item?.profile?.handle}
                     title={item?.metadata?.name}
                     playbackId={item?.metadata?.media[0]?.original?.url}

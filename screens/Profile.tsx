@@ -1,6 +1,5 @@
 import * as React from "react";
 import {
-  FlatList,
   Image,
   RefreshControl,
   SafeAreaView,
@@ -26,13 +25,15 @@ import Avatar from "../components/UI/Avatar";
 import extractURLs from "../utils/extractURL";
 import { RootTabScreenProps } from "../types/navigation/types";
 import AnimatedLottieView from "lottie-react-native";
-import Skleton from "../components/Skleton";
 import ProfileSkeleton from "../components/UI/ProfileSkeleton";
 import { primary, secondary } from "../constants/Colors";
-const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
-  const [profile, setProfile] = useState<{}>({});
-  const [allVideos, setallVideos] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+import { LensPublication } from "../types/Lens/Feed";
+import { Profile } from "../types/Lens";
+const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [allVideos, setallVideos] = useState<LensPublication[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const store = useStore();
   const theme = useThemeStore();
   const authStore = useAuthStore();
@@ -49,7 +50,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
           id: userStore.currentProfile?.id,
         },
       });
-      setProfile(profiledata.data);
+      setProfile(profiledata.data.profile);
       store.setProfiledata(profiledata.data);
       const getUserVideos = await client.query({
         query: getPublications,
@@ -81,7 +82,6 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
       setRefreshing(false);
     });
   }, []);
-  console.log(profile?.profile?.stats);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -112,9 +112,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                 >
                   <Image
                     source={{
-                      uri: getIPFSLink(
-                        profile?.profile?.coverPicture?.original?.url
-                      ),
+                      uri: getIPFSLink(profile?.coverPicture?.original.url),
                     }}
                     style={{
                       height: "100%",
@@ -134,7 +132,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                   }}
                 >
                   <Avatar
-                    src={getIPFSLink(profile?.profile?.picture?.original?.url)}
+                    src={getIPFSLink(profile?.picture.original.url)}
                     height={100}
                     width={100}
                     borderRadius={25}
@@ -143,7 +141,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                   />
                   <View style={{ marginTop: "14%", marginLeft: 16 }}>
                     <Heading
-                      title={profile?.profile?.name}
+                      title={profile?.name}
                       style={{
                         fontSize: 24,
                         fontWeight: "bold",
@@ -151,7 +149,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                       }}
                     />
                     <SubHeading
-                      title={`@${profile?.profile?.handle}`}
+                      title={`@${profile?.handle}`}
                       style={{ fontSize: 14, color: "white", opacity: 0.95 }}
                     />
                   </View>
@@ -165,7 +163,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                   }}
                 >
                   <SubHeading
-                    title={extractURLs(profile?.profile?.bio)}
+                    title={extractURLs(profile?.bio)}
                     style={{ fontSize: 16, color: "gray", textAlign: "left" }}
                   />
                   <View
@@ -178,7 +176,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                   >
                     <View>
                       <SubHeading
-                        title={profile?.profile?.stats?.totalFollowers}
+                        title={profile?.stats?.totalFollowers}
                         style={{
                           color: secondary,
                           fontSize: 24,
@@ -236,7 +234,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
                     ></View>
                     <View>
                       <SubHeading
-                        title={profile?.profile?.stats?.totalFollowing}
+                        title={profile?.stats?.totalFollowing}
                         style={{
                           color: secondary,
                           fontSize: 24,
@@ -327,8 +325,7 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
             />
             <Heading
               title={`Seems like ${
-                profile?.profile?.name ||
-                profile?.profile?.handle?.split(".")[0]
+                profile?.name || profile?.handle?.split(".")[0]
               } has not uploaded any video`}
               style={{
                 color: "gray",
@@ -338,9 +335,8 @@ const Profile = ({ navigation }: RootTabScreenProps<"Account">) => {
             ></Heading>
           </View>
         )}
-        {/* <ProfileSkeleton/> */}
       </ScrollView>
     </SafeAreaView>
   );
 };
-export default Profile;
+export default ProfileScreen;
