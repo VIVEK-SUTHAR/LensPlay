@@ -101,6 +101,10 @@ const config: ExpoConfig = {
   },
   updates: {
     fallbackToCacheTimeout: 0,
+    url: "https://u.expo.dev/c3c41aca-6bdd-4196-a006-a524dcf26c4e",
+  },
+  runtimeVersion: {
+    policy: "sdkVersion",
   },
   assetBundlePatterns: ["**/*"],
   ios: {

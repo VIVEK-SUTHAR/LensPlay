@@ -25,6 +25,7 @@ import Paginator from "../components/Paginator";
 import SubHeading from "../components/UI/SubHeading";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Button from "../components/UI/Button";
+import * as SplashScreen from "expo-splash-screen";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const store = useStore();
@@ -102,6 +103,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
     setIsloading(true);
     try {
       const jsonValue = await AsyncStorage.getItem("@storage_Key");
+     await  SplashScreen.hideAsync();
       if (jsonValue) {
         const tokens = JSON.parse(jsonValue);
         const isvaild = await client.query({
