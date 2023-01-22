@@ -1,18 +1,17 @@
-const crypto = require.resolve('crypto-browserify');
-const url = require.resolve('url/');
-module.exports = {
-  resolver: {
-    extraNodeModules: {
-      crypto,
-      url,
-      fs: require.resolve('expo-file-system'),
-      http: require.resolve('stream-http'),
-      https: require.resolve('https-browserify'),
-      net: require.resolve('react-native-tcp'),
-      os: require.resolve('os-browserify/browser.js'),
-      path: require.resolve('path-browserify'),
-      stream: require.resolve('readable-stream'),
-      vm: require.resolve('vm-browserify'),
-    },
-  },
-};
+// Learn more https://docs.expo.dev/guides/monorepos
+const { getDefaultConfig } = require("expo/metro-config");
+const path = require("path");
+
+// Find the project and workspace directories
+const projectRoot = __dirname;
+const workspaceRoot = path.resolve(projectRoot, "../..");
+const config = getDefaultConfig(projectRoot);
+config.watchFolders = [workspaceRoot];
+config.resolver.nodeModulesPaths = [
+  path.resolve(projectRoot, "node_modules"),
+  path.resolve(workspaceRoot, "node_modules"),
+];
+
+config.resolver.disableHierarchicalLookup = true;
+
+module.exports = config;
