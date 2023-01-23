@@ -12,11 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
-import {
-  useAuthStore,
-  useProfile,
-  useThemeStore,
-} from "../store/Store";
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import getPublications from "../apollo/Queries/getPublications";
 import VideoCard from "../components/VideoCard";
 import convertDate from "../utils/formateDate";
@@ -76,8 +72,8 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
     }
   };
   const [refreshing, setRefreshing] = useState(false);
-  const tags = ['Videos', 'Collected', 'Mirrored', 'Liked'];
-  const currentTag = useState(['Videos']);
+  const tags = ["Videos", "Collected", "Mirrored", "Liked"];
+  const currentTag = useState(["Videos"]);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getProfleInfo().then(() => {
@@ -92,11 +88,11 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-      <StatusBar backgroundColor={afterScroll>5?'black':'transparent'} />
+      <StatusBar backgroundColor={afterScroll > 5 ? "black" : "transparent"} />
       <ScrollView
-      onScroll={(event)=>{
-        setafterScroll(event.nativeEvent.contentOffset.y)
-      }}
+        onScroll={(event) => {
+          setafterScroll(event.nativeEvent.contentOffset.y);
+        }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -134,9 +130,9 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 <View
                   style={{
                     flexDirection: "row",
-                    justifyContent: "flex-start",
+                    justifyContent: "space-between",
                     marginLeft: 18,
-                    marginTop: "-25%",
+                    marginTop: "-20%",
                   }}
                 >
                   <Avatar
@@ -145,127 +141,212 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                     width={100}
                     borderRadius={50}
                   />
-
+                  <View
+                    style={
+                      {
+                        justifyContent:"flex-end",
+                        marginRight:16,
+                        top:0
+                      }
+                    }
+                  >
+                    <Button
+                      title={"Subscribe"}
+                      width={"auto"}
+                      px={28}
+                      py={8}
+                      bg={"#2AD95C"}
+                      textStyle={{
+                        fontSize: 16,
+                        fontWeight: "700",
+                        color: "black",
+                      }}
+                      onPress={async () => {}}
+                    />
+                  </View>
                 </View>
                 <View style={{ marginHorizontal: 15, marginTop: 4 }}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <View>
                       <Heading
                         title={profile?.name}
                         style={{
                           fontSize: 26,
+                          marginTop:8,
                           fontWeight: "bold",
                           color: "#FAF7F7",
                         }}
                       />
                       <SubHeading
                         title={`@${profile?.handle}`}
-                        style={{ fontSize: 14, color: "white", opacity: 0.7, marginTop: -4 }}
-                      />
-                    </View>
-                    <View>
-                      <Button
-                        title={"Subscribe"}
-                        width={"auto"}
-                        px={28}
-                        py={8}
-                        bg={'#2AD95C'}
-                        textStyle={{
-                          fontSize: 16,
-                          fontWeight: "700",
-                          color: "black"
-                        }}
-                        // mx={12}
-                        onPress={async () => {
+                        style={{
+                          fontSize: 14,
+                          color: "white",
+                          opacity: 0.7,
+                          marginTop: -4,
                         }}
                       />
                     </View>
                   </View>
                   <SubHeading
                     title={extractURLs(profile?.bio)}
-                    style={{ fontSize: 16, color: "#E9E8E8", textAlign: "left", marginTop: 4 }}
+                    style={{
+                      fontSize: 16,
+                      color: "#E9E8E8",
+                      textAlign: "left",
+                      marginTop: 4,
+                    }}
                   />
-                  <View style={{ backgroundColor: 'white', borderRadius: 20, height: 38, marginTop: 16 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', height: '100%', justifyContent: 'space-around', paddingHorizontal: 16 }}>
-                      <SubHeading title={`${profile?.stats?.totalFollowers} • Subscribers`} style={{ fontSize: 16, fontWeight: '600' }} />
-                      <View style={{ height: 24, backgroundColor: 'black', width: 2 }}></View>
-                      <SubHeading title={`${allVideos?.length} • Videos`} style={{ fontSize: 16, fontWeight: '600' }} />
+                  <View
+                    style={{
+                      backgroundColor: "white",
+                      borderRadius: 20,
+                      height: 38,
+                      marginTop: 16,
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        height: "100%",
+                        justifyContent: "space-around",
+                        paddingHorizontal: 16,
+                      }}
+                    >
+                      <SubHeading
+                        title={`${profile?.stats?.totalFollowers} • Subscribers`}
+                        style={{ fontSize: 16, fontWeight: "600" }}
+                      />
+                      <View
+                        style={{
+                          height: 24,
+                          backgroundColor: "black",
+                          width: 2,
+                        }}
+                      ></View>
+                      <SubHeading
+                        title={`${allVideos?.length} • Videos`}
+                        style={{ fontSize: 16, fontWeight: "600" }}
+                      />
                     </View>
                   </View>
                   <View style={{ marginTop: 24 }}>
                     <View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Heading title={'Videos'} style={{ fontSize: 20, color: 'white', fontWeight: '600' }} />
-                      <Feather
-                        name={`chevron-right`}
-                        size={24}
-                        color="white"
-                      />
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Heading
+                          title={"Videos"}
+                          style={{
+                            fontSize: 20,
+                            color: "white",
+                            fontWeight: "600",
+                          }}
+                        />
+                        <Feather
+                          name={`chevron-right`}
+                          size={24}
+                          color="white"
+                        />
+                      </View>
+                      <ScrollView
+                        horizontal={true}
+                        style={{ marginLeft: -12, marginTop: 8 }}
+                        showsHorizontalScrollIndicator={false}
+                      >
+                        {Boolean(allVideos) &&
+                          allVideos.map((item: any) => {
+                            if (item?.appId?.includes("lenstube")) {
+                              return (
+                                <VideoCard
+                                  key={item?.id}
+                                  id={item?.id}
+                                  date={convertDate(item?.createdAt)}
+                                  banner={item?.metadata?.cover}
+                                  title={item?.metadata?.name}
+                                  avatar={item?.profile?.picture?.original?.url}
+                                  playbackId={
+                                    item?.metadata?.media[0]?.original?.url
+                                  }
+                                  uploadedBy={item?.profile?.name}
+                                  profileId={item?.profile?.id}
+                                  stats={item?.stats}
+                                  isFollowdByMe={item.profile.isFollowedByMe}
+                                  reaction={item?.reaction}
+                                  width={300}
+                                  height={150}
+                                />
+                              );
+                            }
+                          })}
+                      </ScrollView>
                     </View>
-                    <ScrollView horizontal={true} style={{ marginLeft: -12, marginTop: 8 }} showsHorizontalScrollIndicator={false}>
-                      {Boolean(allVideos) &&
-                        allVideos.map((item: any) => {
-                          if (item?.appId?.includes("lenstube")) {
-                            return (
-                              <VideoCard
-                                key={item?.id}
-                                id={item?.id}
-                                date={convertDate(item?.createdAt)}
-                                banner={item?.metadata?.cover}
-                                title={item?.metadata?.name}
-                                avatar={item?.profile?.picture?.original?.url}
-                                playbackId={item?.metadata?.media[0]?.original?.url}
-                                uploadedBy={item?.profile?.name}
-                                profileId={item?.profile?.id}
-                                stats={item?.stats}
-                                isFollowdByMe={item.profile.isFollowedByMe}
-                                reaction={item?.reaction}
-                                width={300}
-                                height={150}
-                              />
-                            );
-                          }
-                        })}
-                    </ScrollView>
-                    </View>
-                    <View style={{marginTop: 16}}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Heading title={'Colllected Videos'} style={{ fontSize: 20, color: 'white', fontWeight: '600' }} />
-                      <Feather
-                        name={`chevron-right`}
-                        size={24}
-                        color="white"
-                      />
-                    </View>
-                    <ScrollView horizontal={true} style={{ marginLeft: -12, marginTop: 8 }} showsHorizontalScrollIndicator={false}>
-                      {Boolean(allVideos) &&
-                        allVideos.map((item: any) => {
-                          if (item?.appId?.includes("lenstube")) {
-                            return (
-                              <VideoCard
-                                key={item?.id}
-                                id={item?.id}
-                                date={convertDate(item?.createdAt)}
-                                banner={item?.metadata?.cover}
-                                title={item?.metadata?.name}
-                                avatar={item?.profile?.picture?.original?.url}
-                                playbackId={item?.metadata?.media[0]?.original?.url}
-                                uploadedBy={item?.profile?.name}
-                                profileId={item?.profile?.id}
-                                stats={item?.stats}
-                                isFollowdByMe={item.profile.isFollowedByMe}
-                                reaction={item?.reaction}
-                                width={300}
-                                height={150}
-                              />
-                            );
-                          }
-                        })}
-                    </ScrollView>
+                    <View style={{ marginTop: 16 }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Heading
+                          title={"Colllected Videos"}
+                          style={{
+                            fontSize: 20,
+                            color: "white",
+                            fontWeight: "600",
+                          }}
+                        />
+                        <Feather
+                          name={`chevron-right`}
+                          size={24}
+                          color="white"
+                        />
+                      </View>
+                      <ScrollView
+                        horizontal={true}
+                        style={{ marginLeft: -12, marginTop: 8 }}
+                        showsHorizontalScrollIndicator={false}
+                      >
+                        {Boolean(allVideos) &&
+                          allVideos.map((item: any) => {
+                            if (item?.appId?.includes("lenstube")) {
+                              return (
+                                <VideoCard
+                                  key={item?.id}
+                                  id={item?.id}
+                                  date={convertDate(item?.createdAt)}
+                                  banner={item?.metadata?.cover}
+                                  title={item?.metadata?.name}
+                                  avatar={item?.profile?.picture?.original?.url}
+                                  playbackId={
+                                    item?.metadata?.media[0]?.original?.url
+                                  }
+                                  uploadedBy={item?.profile?.name}
+                                  profileId={item?.profile?.id}
+                                  stats={item?.stats}
+                                  isFollowdByMe={item.profile.isFollowedByMe}
+                                  reaction={item?.reaction}
+                                  width={300}
+                                  height={150}
+                                />
+                              );
+                            }
+                          })}
+                      </ScrollView>
                     </View>
                   </View>
                 </View>
-
 
                 {/* <View style={{ paddingVertical: 20 }}>
                   {Boolean(allVideos) &&
@@ -327,8 +408,9 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
               source={require("../assets/notfound.json")}
             />
             <Heading
-              title={`Seems like ${profile?.name || profile?.handle?.split(".")[0]
-                } has not uploaded any video`}
+              title={`Seems like ${
+                profile?.name || profile?.handle?.split(".")[0]
+              } has not uploaded any video`}
               style={{
                 color: "gray",
                 fontSize: 12,
