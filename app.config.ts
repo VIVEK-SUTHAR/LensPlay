@@ -88,10 +88,10 @@ const withPackageVisibility: ConfigPlugin = (config) => {
 
 const config: ExpoConfig = {
   name: "LensPlay",
-  slug: "lensplay",
+  slug: "LensPlay",
   version: "1.0.0",
   orientation: "portrait",
-  icon: "./assets/images/icon.png",
+  icon: "./assets/images/lensplay.png",
   scheme: "lensplay",
   userInterfaceStyle: "automatic",
   splash: {
@@ -101,7 +101,7 @@ const config: ExpoConfig = {
   },
   updates: {
     fallbackToCacheTimeout: 0,
-    url: "https://u.expo.dev/2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f",
+    url: "https://u.expo.dev/c3c41aca-6bdd-4196-a006-a524dcf26c4e",
   },
   runtimeVersion: {
     policy: "sdkVersion",
@@ -122,7 +122,7 @@ const config: ExpoConfig = {
   },
   extra: {
     eas: {
-      projectId: "2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f",
+      projectId: "c3c41aca-6bdd-4196-a006-a524dcf26c4e",
     },
   },
   plugins: [

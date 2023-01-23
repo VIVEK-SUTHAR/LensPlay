@@ -70,12 +70,12 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
       },
     });
     try {
-      logToDB('login with lens - before sign', 'starting the sign', 73, 'nnnn')
+      logToDB("login with lens - before sign", "starting the sign", 73, "nnnn");
       const data = await connector.sendCustomRequest({
         method: "personal_sign",
         params: [connector.accounts[0], challengeText.data.challenge.text],
       });
-      logToDB('login with lens - after sign', 'Completed sign', 78, 'nnnn');
+      logToDB("login with lens - after sign", "Completed sign", 78, "nnnn");
       const address = connector.accounts[0];
       const tokens = await client.mutate({
         mutation: getAccessTokens,
@@ -85,14 +85,24 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         },
       });
       if (tokens.data.authenticate.accessToken) {
-        logToDB('login with lens - access tooken found from query', 'setting tokens', 86, 'nnnn')
+        logToDB(
+          "login with lens - access tooken found from query",
+          "setting tokens",
+          86,
+          "nnnn"
+        );
         authStore.setAccessToken(tokens.data.authenticate.accessToken);
         authStore.setRefreshToken(tokens.data.authenticate.refreshToken);
         await storeData(
           tokens.data.authenticate.accessToken,
           tokens.data.authenticate.refreshToken
         );
-        logToDB('login with lens - navigating to root', 'root screen', 95, 'nnnn')
+        logToDB(
+          "login with lens - navigating to root",
+          "root screen",
+          95,
+          "nnnn"
+        );
         navigation.navigate("Root");
       } else {
         Alert.alert("Something went wrong");
@@ -100,17 +110,22 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
-        logToDB('login with lens - catch', error.message, 114, error.cause)
+        logToDB("login with lens - catch", error.message, 114, error.cause);
       }
     }
   };
   const getData = async () => {
     setIsloading(true);
     try {
-      logToDB('In get data function', 'checking local storage', 110, 'dddd')
+      logToDB("In get data function", "checking local storage", 110, "dddd");
       const jsonValue = await AsyncStorage.getItem("@storage_Key");
       if (jsonValue) {
-        logToDB('In get data function - json value', 'tokens found in local storage', 113, 'dddd')
+        logToDB(
+          "In get data function - json value",
+          "tokens found in local storage",
+          113,
+          "dddd"
+        );
         const tokens = JSON.parse(jsonValue);
         const isvaild = await client.query({
           query: verifyToken,
@@ -133,11 +148,21 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           store.setProfileId(data.data.defaultProfile.id);
           userStore.setCurrentProfile(data.data.defaultProfile);
           setIsloading(false);
-          logToDB('In get data function - token valid', 'navigating to root', 136, 'dddd')
+          logToDB(
+            "In get data function - token valid",
+            "navigating to root",
+            136,
+            "dddd"
+          );
           navigation.navigate("Root");
         }
         if (isvaild.data.verify === false) {
-          logToDB('In get data function - invalid token', 'requesting refresh token', 140, 'dddd')
+          logToDB(
+            "In get data function - invalid token",
+            "requesting refresh token",
+            140,
+            "dddd"
+          );
           const refreshToken = await client.mutate({
             mutation: refreshCurrentToken,
             variables: {
@@ -161,17 +186,22 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           }
           store.setProfileId(data.data.defaultProfile.id);
           userStore.setCurrentProfile(data.data.defaultProfile);
-          logToDB('In get data function - got the new tokens', 'navigating to root', 164, 'dddd')
+          logToDB(
+            "In get data function - got the new tokens",
+            "navigating to root",
+            164,
+            "dddd"
+          );
           navigation.navigate("Root");
         }
       } else {
         console.log("not found");
-        logToDB('In get data function', 'token not found', 169, 'dddd')
+        logToDB("In get data function", "token not found", 169, "dddd");
       }
     } catch (e) {
       if (e instanceof Error) {
         //yaha sb krna
-        logToDB('In get data - catch block', e.message, 174, e.cause);
+        logToDB("In get data - catch block", e.message, 174, e.cause);
       }
     }
   };
@@ -351,4 +381,3 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
   },
 });
-
