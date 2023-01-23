@@ -94,11 +94,11 @@ const config: ExpoConfig = {
   icon: "./assets/images/icon.png",
   scheme: "lensplay",
   userInterfaceStyle: "automatic",
-  // splash: {
-  //   image: "./assets/images/lensplay.png",
-  //   resizeMode: "contain",
-  //   backgroundColor: "#000000",
-  // },
+  splash: {
+    image: "./assets/images/lensplay.png",
+    resizeMode: "contain",
+    backgroundColor: "#000000",
+  },
   updates: {
     fallbackToCacheTimeout: 0,
     url: "https://u.expo.dev/2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f",
