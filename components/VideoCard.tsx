@@ -26,6 +26,8 @@ type videoPageProp = {
   reaction: string | null;
   isFollowdByMe?: boolean;
   description: string;
+  width: string | number;
+  height: number;
 };
 
 const VideoCard = ({
@@ -41,6 +43,8 @@ const VideoCard = ({
   reaction,
   isFollowdByMe,
   description,
+  width='auto',
+  height=200
 }: videoPageProp) => {
   const navigation = useNavigation();
   return (
@@ -49,9 +53,10 @@ const VideoCard = ({
         margin: 10,
         backgroundColor: "#111111",
         borderRadius: 10,
+        width: width,
       }}
     >
-      <View style={{ height: 200 }}>
+      <View style={{ height: height }}>
         <TouchableWithoutFeedback
           onPress={() => {
             navigation.navigate("VideoPage", {

@@ -1,9 +1,11 @@
 import * as React from "react";
 import {
   Image,
+  Pressable,
   RefreshControl,
   SafeAreaView,
   ScrollView,
+  Text,
   ToastAndroid,
   View,
 } from "react-native";
@@ -29,6 +31,8 @@ import ProfileSkeleton from "../components/UI/ProfileSkeleton";
 import { primary, secondary } from "../constants/Colors";
 import { LensPublication } from "../types/Lens/Feed";
 import { Profile } from "../types/Lens";
+import Button from "../components/UI/Button";
+import { Feather } from "@expo/vector-icons";
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [allVideos, setallVideos] = useState<LensPublication[]>([]);
@@ -71,6 +75,8 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
     }
   };
   const [refreshing, setRefreshing] = useState(false);
+  const tags = ['Videos', 'Collected', 'Mirrored', 'Liked'];
+  const currentTag = useState(['Videos']);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getProfleInfo().then(() => {
@@ -100,11 +106,10 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
         ) : (
           <>
             {Boolean(!isLoading) && (
-              <View style={{ paddingHorizontal: 10, marginVertical: 10 }}>
+              <View style={{}}>
                 <View
                   style={{
-                    height: 200,
-                    alignItems: "flex-start",
+                    height: 180,
                     marginBottom: 30,
                   }}
                 >
@@ -115,8 +120,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                     style={{
                       height: "100%",
                       width: "100%",
-                      borderBottomLeftRadius: 10,
-                      borderBottomRightRadius: 10,
                       resizeMode: "cover",
                     }}
                   />
@@ -125,144 +128,139 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   style={{
                     flexDirection: "row",
                     justifyContent: "flex-start",
-                    marginLeft: 8,
-                    marginTop: "-20%",
+                    marginLeft: 18,
+                    marginTop: "-25%",
                   }}
                 >
                   <Avatar
                     src={getIPFSLink(profile?.picture.original.url)}
                     height={100}
                     width={100}
-                    borderRadius={25}
-                    borderColor={primary}
-                    borderWidth={1}
+                    borderRadius={50}
                   />
-                  <View style={{ marginTop: "14%", marginLeft: 16 }}>
-                    <Heading
-                      title={profile?.name}
-                      style={{
-                        fontSize: 24,
-                        fontWeight: "bold",
-                        color: "white",
-                      }}
-                    />
-                    <SubHeading
-                      title={`@${profile?.handle}`}
-                      style={{ fontSize: 14, color: "white", opacity: 0.95 }}
-                    />
-                  </View>
+
                 </View>
-                <View
-                  style={{
-                    padding: 8,
-                    alignItems: "flex-start",
-                    marginLeft: 8,
-                    marginTop: 4,
-                  }}
-                >
+                <View style={{ marginHorizontal: 15, marginTop: 4 }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View>
+                      <Heading
+                        title={profile?.name}
+                        style={{
+                          fontSize: 26,
+                          fontWeight: "bold",
+                          color: "#FAF7F7",
+                        }}
+                      />
+                      <SubHeading
+                        title={`@${profile?.handle}`}
+                        style={{ fontSize: 14, color: "white", opacity: 0.7, marginTop: -4 }}
+                      />
+                    </View>
+                    <View>
+                      <Button
+                        title={"Subscribe"}
+                        width={"auto"}
+                        px={28}
+                        py={8}
+                        bg={'#2AD95C'}
+                        textStyle={{
+                          fontSize: 16,
+                          fontWeight: "700",
+                          color: "black"
+                        }}
+                        // mx={12}
+                        onPress={async () => {
+                        }}
+                      />
+                    </View>
+                  </View>
                   <SubHeading
                     title={extractURLs(profile?.bio)}
-                    style={{ fontSize: 16, color: "gray", textAlign: "left" }}
+                    style={{ fontSize: 16, color: "#E9E8E8", textAlign: "left", marginTop: 4 }}
                   />
-                  <View
-                    style={{
-                      marginTop: 10,
-                      flexDirection: "row",
-                      justifyContent: "space-around",
-                      width: "100%",
-                    }}
-                  >
+                  <View style={{ backgroundColor: 'white', borderRadius: 20, height: 38, marginTop: 16 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', height: '100%', justifyContent: 'space-around', paddingHorizontal: 16 }}>
+                      <SubHeading title={`${profile?.stats?.totalFollowers} • Subscribers`} style={{ fontSize: 16, fontWeight: '600' }} />
+                      <View style={{ height: 24, backgroundColor: 'black', width: 2 }}></View>
+                      <SubHeading title={`${allVideos?.length} • Videos`} style={{ fontSize: 16, fontWeight: '600' }} />
+                    </View>
+                  </View>
+                  <View style={{ marginTop: 24 }}>
                     <View>
-                      <SubHeading
-                        title={profile?.stats?.totalFollowers}
-                        style={{
-                          color: secondary,
-                          fontSize: 24,
-                          textAlign: "center",
-                          fontWeight: "800",
-                        }}
-                      />
-                      <SubHeading
-                        title="Subscribers"
-                        style={{
-                          color: primary,
-                          textAlign: "center",
-                          marginTop: 2,
-                          fontWeight: "800",
-                          fontSize: 16,
-                          opacity: 0.9,
-                        }}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Heading title={'Videos'} style={{ fontSize: 20, color: 'white', fontWeight: '600' }} />
+                      <Feather
+                        name={`chevron-right`}
+                        size={24}
+                        color="white"
                       />
                     </View>
-                    <View
-                      style={{
-                        height: "100%",
-                        width: 1,
-                        backgroundColor: primary,
-                      }}
-                    ></View>
-                    <View>
-                      <SubHeading
-                        title={allVideos?.length}
-                        style={{
-                          color: secondary,
-                          fontSize: 24,
-                          textAlign: "center",
-                          fontWeight: "800",
-                        }}
-                      />
-                      <SubHeading
-                        title="Video"
-                        style={{
-                          color: primary,
-                          textAlign: "center",
-                          marginTop: 2,
-                          fontWeight: "800",
-                          fontSize: 16,
-                          opacity: 0.9,
-                        }}
+                    <ScrollView horizontal={true} style={{ marginLeft: -12, marginTop: 8 }} showsHorizontalScrollIndicator={false}>
+                      {Boolean(allVideos) &&
+                        allVideos.map((item: any) => {
+                          if (item?.appId?.includes("lenstube")) {
+                            return (
+                              <VideoCard
+                                key={item?.id}
+                                id={item?.id}
+                                date={convertDate(item?.createdAt)}
+                                banner={item?.metadata?.cover}
+                                title={item?.metadata?.name}
+                                avatar={item?.profile?.picture?.original?.url}
+                                playbackId={item?.metadata?.media[0]?.original?.url}
+                                uploadedBy={item?.profile?.name}
+                                profileId={item?.profile?.id}
+                                stats={item?.stats}
+                                isFollowdByMe={item.profile.isFollowedByMe}
+                                reaction={item?.reaction}
+                                width={300}
+                                height={150}
+                              />
+                            );
+                          }
+                        })}
+                    </ScrollView>
+                    </View>
+                    <View style={{marginTop: 16}}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Heading title={'Colllected Videos'} style={{ fontSize: 20, color: 'white', fontWeight: '600' }} />
+                      <Feather
+                        name={`chevron-right`}
+                        size={24}
+                        color="white"
                       />
                     </View>
-                    <View
-                      style={{
-                        height: "100%",
-                        width: 1,
-                        backgroundColor: primary,
-                      }}
-                    ></View>
-                    <View>
-                      <SubHeading
-                        title={profile?.stats?.totalFollowing}
-                        style={{
-                          color: secondary,
-                          fontSize: 24,
-                          textAlign: "center",
-                          fontWeight: "800",
-                        }}
-                      />
-                      <SubHeading
-                        title="Following"
-                        style={{
-                          color: primary,
-                          textAlign: "center",
-                          marginTop: 2,
-                          fontWeight: "800",
-                          fontSize: 16,
-                          opacity: 0.9,
-                        }}
-                      />
+                    <ScrollView horizontal={true} style={{ marginLeft: -12, marginTop: 8 }} showsHorizontalScrollIndicator={false}>
+                      {Boolean(allVideos) &&
+                        allVideos.map((item: any) => {
+                          if (item?.appId?.includes("lenstube")) {
+                            return (
+                              <VideoCard
+                                key={item?.id}
+                                id={item?.id}
+                                date={convertDate(item?.createdAt)}
+                                banner={item?.metadata?.cover}
+                                title={item?.metadata?.name}
+                                avatar={item?.profile?.picture?.original?.url}
+                                playbackId={item?.metadata?.media[0]?.original?.url}
+                                uploadedBy={item?.profile?.name}
+                                profileId={item?.profile?.id}
+                                stats={item?.stats}
+                                isFollowdByMe={item.profile.isFollowedByMe}
+                                reaction={item?.reaction}
+                                width={300}
+                                height={150}
+                              />
+                            );
+                          }
+                        })}
+                    </ScrollView>
                     </View>
                   </View>
                 </View>
-                <View style={{ paddingVertical: 10 }}>
-                  <Heading
-                    title="Videos"
-                    style={{
-                      fontSize: 20,
-                      fontWeight: "700",
-                      color: "white",
-                    }}
-                  />
+
+
+                {/* <View style={{ paddingVertical: 20 }}>
                   {Boolean(allVideos) &&
                     allVideos.map((item: any) => {
                       if (item?.appId?.includes("lenstube")) {
@@ -284,7 +282,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                         );
                       }
                     })}
-                </View>
+                </View> */}
               </View>
             )}
           </>
@@ -322,9 +320,8 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
               source={require("../assets/notfound.json")}
             />
             <Heading
-              title={`Seems like ${
-                profile?.name || profile?.handle?.split(".")[0]
-              } has not uploaded any video`}
+              title={`Seems like ${profile?.name || profile?.handle?.split(".")[0]
+                } has not uploaded any video`}
               style={{
                 color: "gray",
                 fontSize: 12,

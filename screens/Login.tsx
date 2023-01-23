@@ -43,9 +43,9 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   }, []);
 
   const data = [
-    "https://ipfs.io/ipfs/QmfY1JJanP2cZyrcf2WBka6dzoHFjT9sH2gYcEaJJiDwfK",
-    "https://ipfs.io/ipfs/QmQgwri9TtoCYWdxB9kkpC5NKwaSWHJw3MHon6Rt3oVQP7",
-    "https://ipfs.io/ipfs/Qmawvbo2VvS6aF6bL1bchAXtLEwkZurbbEtMu7PxfHFoQ1",
+    "https://ipfs.io/ipfs/QmV2zLgcc95i9E9ehNLDrixML1aPRFCAyuW2LfDebfmt1S",
+    "https://ipfs.io/ipfs/QmV64fJsahN6wCNQ5ZqryE9hjmgeq3L1ZLfnXkxaevtDrJ",
+    "https://ipfs.io/ipfs/QmZZGkgbS5EmkiSR5VeG2t5rs8jmcAcyN6mSq6Kxfy5WM1",
   ];
   const { width } = Dimensions.get("screen");
   const imageW = width * 0.8;

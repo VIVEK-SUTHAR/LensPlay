@@ -301,6 +301,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
         component={ProfileScreen}
         options={{
           tabBarLabel: "",
+          headerShown: false,
           tabBarIcon: ({ focused }) => {
             return (
               <View
