@@ -33,6 +33,7 @@ import { LensPublication } from "../types/Lens/Feed";
 import { Profile } from "../types/Lens";
 import Button from "../components/UI/Button";
 import { Feather } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [allVideos, setallVideos] = useState<LensPublication[]>([]);
@@ -87,9 +88,15 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
     });
   }, []);
 
+  const [afterScroll, setafterScroll] = useState(0);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+      <StatusBar backgroundColor={afterScroll>5?'black':'transparent'} />
       <ScrollView
+      onScroll={(event)=>{
+        setafterScroll(event.nativeEvent.contentOffset.y)
+      }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
