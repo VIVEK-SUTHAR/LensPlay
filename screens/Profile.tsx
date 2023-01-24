@@ -30,6 +30,7 @@ import { StatusBar } from "expo-status-bar";
 import getMirrorVideos from "../apollo/Queries/getMirrorVideos";
 import getCollectVideos from "../apollo/Queries/getCollectVideos";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import { LinearGradient } from "expo-linear-gradient";
 
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -146,29 +147,39 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
           <>
             {Boolean(!isLoading) && (
               <View style={{}}>
-                <View
+                <LinearGradient
+                  colors={["#ffffff", "transparent"]}
+                  start={{x:0,y:0}}
+                  end={{x:1,}}
                   style={{
-                    height: 180,
-                    marginBottom: 30,
+                    zIndex: 3,
                   }}
                 >
-                  <Image
-                    source={{
-                      uri: getIPFSLink(profile?.coverPicture?.original.url),
-                    }}
+                  <View
                     style={{
-                      height: "100%",
-                      width: "100%",
-                      resizeMode: "cover",
+                      height: 180,
+                      marginBottom: 34,
                     }}
-                  />
-                </View>
+                  >
+                    <Image
+                      source={{
+                        uri: getIPFSLink(profile?.coverPicture?.original.url),
+                      }}
+                      style={{
+                        height: "100%",
+                        width: "100%",
+                        resizeMode: "cover",
+                      }}
+                    />
+                  </View>
+                </LinearGradient>
                 <View
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-between",
                     marginLeft: 18,
                     marginTop: "-20%",
+                    zIndex:5
                   }}
                 >
                   <Avatar

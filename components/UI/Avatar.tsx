@@ -18,7 +18,7 @@ export default function Avatar({ src, height, width, borderRadius=500, borderCol
             source={{
                 uri: getIPFSLink(src)
             }}
-            style={{ height: height, width: width, borderRadius: borderRadius, backgroundColor: dark_primary, borderColor: borderColor, borderWidth: borderWidth }}
+            style={{ height: height, width: width, borderRadius: borderRadius, backgroundColor: dark_primary, borderColor: borderColor, borderWidth: borderWidth,zIndex:9}}
         />
     )
 }
