@@ -113,6 +113,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
               profileId={item?.root?.profile?.id}
               reaction={item?.root?.reaction}
               description={item?.root?.metadata?.description}
+              attributes={item?.root?.metadata?.attributes}
             />
           )}
         />

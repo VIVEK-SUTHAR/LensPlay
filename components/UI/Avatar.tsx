@@ -12,7 +12,7 @@ type AvatarProps = {
     borderWidth?: number
 }
 
-export default function Avatar({ src, height, width, borderRadius=500, borderColor='', borderWidth=0 }: AvatarProps) {
+export default function Avatar({ src, height, width, borderRadius=500, borderColor='transparent', borderWidth=0 }: AvatarProps) {
     return (
         <Image
             source={{

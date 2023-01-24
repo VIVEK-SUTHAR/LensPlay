@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { Attribute } from "../types/Lens/Feed";
 import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
 import Avatar from "./UI/Avatar";
@@ -28,6 +29,7 @@ type videoPageProp = {
   description: string;
   width: string | number;
   height: number;
+  attributes: Attribute
 };
 
 const VideoCard = ({
@@ -44,8 +46,17 @@ const VideoCard = ({
   isFollowdByMe,
   description,
   width='auto',
-  height=200
+  height=200,
+  attributes
 }: videoPageProp) => {
+  const [videoTime, setVideoTime] = React.useState<Attribute[] | null>();
+  React.useEffect(() => {
+    const time = attributes?.filter((item) => {
+      if (item?.traitType === "durationInSeconds") {
+        setVideoTime(item?.value);
+      }
+    });
+  }, []);
   const navigation = useNavigation();
   return (
     <View
@@ -88,7 +99,23 @@ const VideoCard = ({
               resizeMode: "contain",
             }}
           />
+          
         </TouchableWithoutFeedback>
+        <View
+          style={{
+            position: "absolute",
+            bottom: 8,
+            right: 8,
+            width: "auto",
+            paddingHorizontal: 4,
+            paddingVertical: 2,
+            height: "auto",
+            backgroundColor: "rgba(0,0,0,0.9)",
+            borderRadius: 4,
+          }}
+        >
+          <Text style={{ color: "white", fontSize: 12 }}>{videoTime}</Text>
+        </View>
       </View>
       <TouchableWithoutFeedback
         onPress={() => {

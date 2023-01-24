@@ -30,10 +30,19 @@ import { Profile } from "../types/Lens";
 import Button from "../components/UI/Button";
 import { Feather } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
+import getMirrorVideos from "../apollo/Queries/getMirrorVideos";
+import getCollectVideos from "../apollo/Queries/getCollectVideos";
+import { useWalletConnect } from "@walletconnect/react-native-dapp";
+
+
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [allVideos, setallVideos] = useState<LensPublication[]>([]);
+  const [mirrorVideos, setmirrorVideos] = useState<LensPublication[]>([]);
+  const [collectVideos, setcollectVideos] = useState<LensPublication[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const wallet = useWalletConnect();
 
   const theme = useThemeStore();
   const authStore = useAuthStore();
@@ -63,6 +72,30 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
         },
       });
       setallVideos(getUserVideos.data.publications.items);
+      const getMirrorVideo = await client.query({
+        query: getMirrorVideos,
+        variables: {
+          id: userStore.currentProfile?.id,
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${authStore.accessToken}`,
+          },
+        },
+      });
+      setmirrorVideos(getMirrorVideo.data.publications.items);
+      const getCollectVideo = await client.query({
+        query: getCollectVideos,
+        variables: {
+          ethAddress: wallet.accounts[0],
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${authStore.accessToken}`,
+          },
+        },
+      });
+      setcollectVideos(getCollectVideo.data.publications.items);
     } catch (error) {
       if (error instanceof Error) {
         console.log(error);
@@ -72,8 +105,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
     }
   };
   const [refreshing, setRefreshing] = useState(false);
-  const tags = ["Videos", "Collected", "Mirrored", "Liked"];
-  const currentTag = useState(["Videos"]);
+  
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getProfleInfo().then(() => {
@@ -300,7 +332,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                         }}
                       >
                         <Heading
-                          title={"Colllected Videos"}
+                          title={"Mirrored Videos"}
                           style={{
                             fontSize: 20,
                             color: "white",
@@ -318,8 +350,8 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                         style={{ marginLeft: -12, marginTop: 8 }}
                         showsHorizontalScrollIndicator={false}
                       >
-                        {Boolean(allVideos) &&
-                          allVideos.map((item: any) => {
+                        {Boolean(mirrorVideos) &&
+                          mirrorVideos.map((item: any) => {
                             if (item?.appId?.includes("lenstube")) {
                               return (
                                 <VideoCard
@@ -346,6 +378,60 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                       </ScrollView>
                     </View>
                   </View>
+                    <View style={{ marginTop: 16 }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Heading
+                          title={"Collected Videos"}
+                          style={{
+                            fontSize: 20,
+                            color: "white",
+                            fontWeight: "600",
+                          }}
+                        />
+                        <Feather
+                          name={`chevron-right`}
+                          size={24}
+                          color="white"
+                        />
+                      </View>
+                      <ScrollView
+                        horizontal={true}
+                        style={{ marginLeft: -12, marginTop: 8 }}
+                        showsHorizontalScrollIndicator={false}
+                      >
+                        {Boolean(collectVideos) &&
+                          collectVideos.map((item: any) => {
+                            if (item?.appId?.includes("lenstube")) {
+                              return (
+                                <VideoCard
+                                  key={item?.id}
+                                  id={item?.id}
+                                  date={convertDate(item?.createdAt)}
+                                  banner={item?.metadata?.cover}
+                                  title={item?.metadata?.name}
+                                  avatar={item?.profile?.picture?.original?.url}
+                                  playbackId={
+                                    item?.metadata?.media[0]?.original?.url
+                                  }
+                                  uploadedBy={item?.profile?.name}
+                                  profileId={item?.profile?.id}
+                                  stats={item?.stats}
+                                  isFollowdByMe={item.profile.isFollowedByMe}
+                                  reaction={item?.reaction}
+                                  width={300}
+                                  height={150}
+                                />
+                              );
+                            }
+                          })}
+                      </ScrollView>
+                    </View>
                 </View>
 
                 {/* <View style={{ paddingVertical: 20 }}>
