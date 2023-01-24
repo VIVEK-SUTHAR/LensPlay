@@ -1,11 +1,9 @@
 import * as React from "react";
 import {
   Image,
-  Pressable,
   RefreshControl,
   SafeAreaView,
   ScrollView,
-  Text,
   ToastAndroid,
   View,
 } from "react-native";
@@ -24,7 +22,6 @@ import extractURLs from "../utils/extractURL";
 import { RootTabScreenProps } from "../types/navigation/types";
 import AnimatedLottieView from "lottie-react-native";
 import ProfileSkeleton from "../components/UI/ProfileSkeleton";
-import { primary, secondary } from "../constants/Colors";
 import { LensPublication } from "../types/Lens/Feed";
 import { Profile } from "../types/Lens";
 import Button from "../components/UI/Button";
@@ -33,7 +30,6 @@ import { StatusBar } from "expo-status-bar";
 import getMirrorVideos from "../apollo/Queries/getMirrorVideos";
 import getCollectVideos from "../apollo/Queries/getCollectVideos";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-
 
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -72,30 +68,38 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
         },
       });
       setallVideos(getUserVideos.data.publications.items);
-      const getMirrorVideo = await client.query({
-        query: getMirrorVideos,
-        variables: {
-          id: userStore.currentProfile?.id,
-        },
-        context: {
-          headers: {
-            "x-access-token": `Bearer ${authStore.accessToken}`,
+      try {
+        const getMirrorVideo = await client.query({
+          query: getMirrorVideos,
+          variables: {
+            id: userStore.currentProfile?.id,
           },
-        },
-      });
-      setmirrorVideos(getMirrorVideo.data.publications.items);
-      const getCollectVideo = await client.query({
-        query: getCollectVideos,
-        variables: {
-          ethAddress: wallet.accounts[0],
-        },
-        context: {
-          headers: {
-            "x-access-token": `Bearer ${authStore.accessToken}`,
+          context: {
+            headers: {
+              "x-access-token": `Bearer ${authStore.accessToken}`,
+            },
           },
-        },
-      });
-      setcollectVideos(getCollectVideo.data.publications.items);
+        });
+        setmirrorVideos(getMirrorVideo.data.publications.items);
+      } catch (err) {
+        setmirrorVideos([]);
+      }
+      try {
+        const getCollectVideo = await client.query({
+          query: getCollectVideos,
+          variables: {
+            ethAddress: wallet.accounts[0],
+          },
+          context: {
+            headers: {
+              "x-access-token": `Bearer ${authStore.accessToken}`,
+            },
+          },
+        });
+        setcollectVideos(getCollectVideo.data.publications.items);
+      } catch (err) {
+        setcollectVideos([]);
+      }
     } catch (error) {
       if (error instanceof Error) {
         console.log(error);
@@ -105,7 +109,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
     }
   };
   const [refreshing, setRefreshing] = useState(false);
-  
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getProfleInfo().then(() => {
@@ -174,13 +178,11 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                     borderRadius={50}
                   />
                   <View
-                    style={
-                      {
-                        justifyContent:"flex-end",
-                        marginRight:16,
-                        top:0
-                      }
-                    }
+                    style={{
+                      justifyContent: "flex-end",
+                      marginRight: 16,
+                      top: 0,
+                    }}
                   >
                     <Button
                       title={"Subscribe"}
@@ -209,7 +211,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                         title={profile?.name}
                         style={{
                           fontSize: 26,
-                          marginTop:8,
+                          marginTop: 8,
                           fontWeight: "bold",
                           color: "#FAF7F7",
                         }}
@@ -376,87 +378,105 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                             }
                           })}
                       </ScrollView>
+                      {mirrorVideos?.length === 0 && (
+                        <View style={{ maxHeight: 150 }}>
+                          <AnimatedLottieView
+                            autoPlay
+                            hardwareAccelerationAndroid={true}
+                            style={{
+                              height: "90%",
+                              alignSelf: "center",
+                            }}
+                            source={require("../assets/notfound.json")}
+                          />
+                          <Heading
+                            title={`Seems like ${
+                              profile?.name || profile?.handle?.split(".")[0]
+                            } has not mirrored any video`}
+                            style={{
+                              color: "gray",
+                              fontSize: 12,
+                              textAlign: "center",
+                            }}
+                          ></Heading>
+                        </View>
+                      )}
                     </View>
                   </View>
-                    <View style={{ marginTop: 16 }}>
-                      <View
+                  <View style={{ marginTop: 16 }}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Heading
+                        title={"Collected Videos"}
                         style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignItems: "center",
+                          fontSize: 20,
+                          color: "white",
+                          fontWeight: "600",
                         }}
-                      >
-                        <Heading
-                          title={"Collected Videos"}
-                          style={{
-                            fontSize: 20,
-                            color: "white",
-                            fontWeight: "600",
-                          }}
-                        />
-                        <Feather
-                          name={`chevron-right`}
-                          size={24}
-                          color="white"
-                        />
-                      </View>
-                      <ScrollView
-                        horizontal={true}
-                        style={{ marginLeft: -12, marginTop: 8 }}
-                        showsHorizontalScrollIndicator={false}
-                      >
-                        {Boolean(collectVideos) &&
-                          collectVideos.map((item: any) => {
-                            if (item?.appId?.includes("lenstube")) {
-                              return (
-                                <VideoCard
-                                  key={item?.id}
-                                  id={item?.id}
-                                  date={convertDate(item?.createdAt)}
-                                  banner={item?.metadata?.cover}
-                                  title={item?.metadata?.name}
-                                  avatar={item?.profile?.picture?.original?.url}
-                                  playbackId={
-                                    item?.metadata?.media[0]?.original?.url
-                                  }
-                                  uploadedBy={item?.profile?.name}
-                                  profileId={item?.profile?.id}
-                                  stats={item?.stats}
-                                  isFollowdByMe={item.profile.isFollowedByMe}
-                                  reaction={item?.reaction}
-                                  width={300}
-                                  height={150}
-                                />
-                              );
-                            }
-                          })}
-                      </ScrollView>
+                      />
+                      <Feather name={`chevron-right`} size={24} color="white" />
                     </View>
+                    <ScrollView
+                      horizontal={true}
+                      style={{ marginLeft: -12, marginTop: 8 }}
+                      showsHorizontalScrollIndicator={false}
+                    >
+                      {Boolean(collectVideos) &&
+                        collectVideos.map((item: any) => {
+                          if (item?.appId?.includes("lenstube")) {
+                            return (
+                              <VideoCard
+                                key={item?.id}
+                                id={item?.id}
+                                date={convertDate(item?.createdAt)}
+                                banner={item?.metadata?.cover}
+                                title={item?.metadata?.name}
+                                avatar={item?.profile?.picture?.original?.url}
+                                playbackId={
+                                  item?.metadata?.media[0]?.original?.url
+                                }
+                                uploadedBy={item?.profile?.name}
+                                profileId={item?.profile?.id}
+                                stats={item?.stats}
+                                isFollowdByMe={item.profile.isFollowedByMe}
+                                reaction={item?.reaction}
+                                width={300}
+                                height={150}
+                              />
+                            );
+                          }
+                        })}
+                    </ScrollView>
+                    {collectVideos.length === 0 && (
+                      <View style={{ maxHeight: 150 }}>
+                        <AnimatedLottieView
+                          autoPlay
+                          hardwareAccelerationAndroid={true}
+                          style={{
+                            height: "90%",
+                            alignSelf: "center",
+                          }}
+                          source={require("../assets/notfound.json")}
+                        />
+                        <Heading
+                          title={`Seems like ${
+                            profile?.name || profile?.handle?.split(".")[0]
+                          } has not collected any video`}
+                          style={{
+                            color: "gray",
+                            fontSize: 12,
+                            textAlign: "center",
+                          }}
+                        ></Heading>
+                      </View>
+                    )}
+                  </View>
                 </View>
-
-                {/* <View style={{ paddingVertical: 20 }}>
-                  {Boolean(allVideos) &&
-                    allVideos.map((item: any) => {
-                      if (item?.appId?.includes("lenstube")) {
-                        return (
-                          <VideoCard
-                            key={item?.id}
-                            id={item?.id}
-                            date={convertDate(item?.createdAt)}
-                            banner={item?.metadata?.cover}
-                            title={item?.metadata?.name}
-                            avatar={item?.profile?.picture?.original?.url}
-                            playbackId={item?.metadata?.media[0]?.original?.url}
-                            uploadedBy={item?.profile?.name}
-                            profileId={item?.profile?.id}
-                            stats={item?.stats}
-                            isFollowdByMe={item.profile.isFollowedByMe}
-                            reaction={item?.reaction}
-                          />
-                        );
-                      }
-                    })}
-                </View> */}
               </View>
             )}
           </>

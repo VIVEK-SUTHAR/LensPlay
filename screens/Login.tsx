@@ -11,7 +11,6 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import { client } from "../apollo/client";
 import getChallenge from "../apollo/Queries/getChallenge";
 import getAccessTokens from "../apollo/mutations/getAccessTokens";
@@ -51,6 +50,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const imageW = width * 0.8;
   const imageH = imageW * 1.54;
   const logInWithLens = async () => {
+    setIsloading(true);
     const data = await client.query({
       query: getProfile,
       variables: {
@@ -88,13 +88,16 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           tokens.data.authenticate.accessToken,
           tokens.data.authenticate.refreshToken
         );
+        setIsloading(false);
         navigation.navigate("Root");
       } else {
+        setIsloading(false);
         Alert.alert("Something went wrong");
       }
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
+        setIsloading(false);
       }
     }
   };
@@ -155,17 +158,15 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         }
       } else {
         console.log("not found");
+        setIsloading(false);
       }
     } catch (e) {
       if (e instanceof Error) {
         //yaha sb krna
+        setIsloading(false);
       }
     }
   };
-  React.useEffect(() => {
-    getData();
-  }, []);
-
   const storeData = async (accessToken: string, refreshToken: string) => {
     try {
       const tokens = {
