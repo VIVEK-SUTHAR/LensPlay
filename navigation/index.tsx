@@ -1,5 +1,5 @@
 //@ts-ignore
-import { AntDesign, Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { Feather, FontAwesome, Fontisto, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -22,12 +22,6 @@ import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import Channel from "../screens/Channel";
 import { useThemeStore } from "../store/Store";
-import Home from "../components/Svgs/Home";
-import Explore from "../components/Svgs/Explore";
-import Upload from "../components/Svgs/Upload";
-import NotificationSvg from "../components/Svgs/Notification";
-import ProfileSvg from "../components/Svgs/Profile";
-import { primary } from "../constants/Colors";
 import ProfileScreen from "../screens/Profile";
 import UserVideos from "../screens/UserVideos";
 
@@ -226,7 +220,11 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <Home fill={focused ? primary : "none"} />
+                <Ionicons
+                  name={focused ? "md-home" : "md-home-outline"}
+                  color={focused ? theme.PRIMARY : "white"}
+                  size={26}
+                />
               </View>
             );
           },
@@ -251,7 +249,11 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <Explore fill={focused ? primary : "#FFFFFF"} />
+                <Ionicons
+                  name={focused ? "compass" : "compass-outline"}
+                  color={focused ? theme.PRIMARY : "white"}
+                  size={28}
+                />
               </View>
             );
           },
@@ -276,7 +278,11 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <Upload fill={focused ? primary : "#FFFFFF"} />
+                <Feather
+                  name={"plus-circle"}
+                  color={focused ? theme.PRIMARY : "white"}
+                  size={28}
+                />
               </View>
             );
           },
@@ -301,7 +307,11 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <NotificationSvg fill={focused ? primary : "none"} />
+                <Fontisto
+                  name={focused ? "bell-alt" : "bell"}
+                  color={focused ? theme.PRIMARY : "white"}
+                  size={25}
+                />
               </View>
             );
           },
@@ -327,7 +337,11 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <ProfileSvg fill={focused ? primary : "#FFFFFF"} />
+                <FontAwesome
+                  name={focused ? "user-circle" : "user-circle-o"}
+                  color={focused ? theme.PRIMARY : "white"}
+                  size={25}
+                />
               </View>
             );
           },
