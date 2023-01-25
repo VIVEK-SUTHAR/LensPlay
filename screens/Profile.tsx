@@ -1,6 +1,7 @@
 import * as React from "react";
 import {
   Image,
+  Linking,
   Pressable,
   RefreshControl,
   SafeAreaView,
@@ -217,7 +218,7 @@ const ProfileScreen = ({
                     }}
                   >
                     <Button
-                      title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
+                      title={"Edit Profile"}
                       width={"auto"}
                       px={20}
                       py={8}
@@ -225,32 +226,15 @@ const ProfileScreen = ({
                       textStyle={{
                         fontSize: 16,
                         fontWeight: "700",
+                        marginHorizontal: 4,
                         color: "black",
                       }}
-                      onPress={async () => {
-                        try {
-                          const data = await createFreeSubscribe(
-                            route.params.profileId,
-                            authStore.accessToken
-                          );
-                          if (data.data === null) {
-                            console.log(data.errors[0].message);
-                            ToastAndroid.show(
-                              "Currenctly not supported",
-                              ToastAndroid.SHORT
-                            );
-                          }
-                          if (data.data.proxyAction) {
-                            ToastAndroid.show(
-                              "Subscribed Successfully",
-                              ToastAndroid.SHORT
-                            );
-                          }
-                        } catch (error) {
-                          if (error instanceof Error) {
-                          }
-                        }
+                      onPress={() => {
+                        Linking.openURL(
+                          `https://www.lensfrens.xyz/${userStore.currentProfile?.handle}`
+                        );
                       }}
+                      icon={<Feather name="edit" size={14} color={"black"} />}
                     />
                   </View>
                 </View>
