@@ -5,8 +5,9 @@ export default gql`
     publications(
       request: {
         profileId: $id
-        publicationTypes: [POST]
+        publicationTypes: [MIRROR]
         sources: ["lenstube"]
+        metadata:{mainContentFocus:VIDEO}
       }
     ) {
       items {

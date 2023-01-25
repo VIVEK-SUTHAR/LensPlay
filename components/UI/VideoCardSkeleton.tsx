@@ -1,20 +1,23 @@
-import { StyleSheet, View } from "react-native";
-import React from "react";
+import React, { FC } from "react";
+import { StyleProp, Text, TextStyle, View } from "react-native";
 
-const Skleton = () => {
+
+const VideoCardSkeleton = () => {
   return (
     <View
       style={{
-        marginVertical: 1,
-        borderTopLeftRadius: 10,
+        // paddingHorizontal: 10,
+        paddingVertical: 1,
+        borderRadius: 10,
+        margin: 10,
+        backgroundColor: '#111111',
       }}
     >
       <View
         style={{
-          height: 150,
-          backgroundColor: "rgba(255,255,255,0.02)",
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
+          height: 200,
+          backgroundColor: "rgba(255,255,255,0.1)",
+          borderRadius: 10
         }}
       ></View>
       <View
@@ -23,7 +26,7 @@ const Skleton = () => {
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          backgroundColor: "rgba(255,255,255,0.02)",
+          backgroundColor: "#111111",
           borderBottomLeftRadius: 10,
           borderBottomRightRadius: 10,
         }}
@@ -35,10 +38,11 @@ const Skleton = () => {
             alignItems: "flex-start",
           }}
         >
-          <View
+            <View
             style={{
               backgroundColor: "lightgray",
-              minWidth: "80%",
+              marginVertical: 8,
+              width: "50%",
               height: 10,
               borderRadius: 2,
             }}
@@ -46,8 +50,7 @@ const Skleton = () => {
           <View
             style={{
               backgroundColor: "lightgray",
-              marginVertical: 8,
-              width: "60%",
+              minWidth: "70%",
               height: 10,
               borderRadius: 2,
             }}
@@ -66,6 +69,4 @@ const Skleton = () => {
   );
 };
 
-export default Skleton;
-
-const styles = StyleSheet.create({});
+export default VideoCardSkeleton;

@@ -1,66 +1,66 @@
 import {
   View,
   Share,
-  TouchableWithoutFeedback,
   ScrollView,
   SafeAreaView,
-  TouchableOpacity,
   ToastAndroid,
   BackHandler,
+  Linking,
 } from "react-native";
 import {
   AntDesign,
   Entypo,
+  Feather,
   FontAwesome,
   MaterialIcons,
 } from "@expo/vector-icons";
 import React, { useEffect } from "react";
-import { dark_primary, primary } from "../constants/Colors";
-import useStore from "../store/Store";
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import { useState } from "react";
-import addLike from "../api/addReaction";
-import removeLike from "../api/removeReaction";
+import {
+  addLike,
+  removeLike,
+  isFollowedByMe,
+  createFreeSubscribe,
+} from "../api";
 import CommentCard from "../components/CommentCard";
 import { setStatusBarHidden, StatusBar } from "expo-status-bar";
 import { client } from "../apollo/client";
 import getComments from "../apollo/Queries/getComments";
-import freeCollectPublication from "../api/freeCollect";
-import getProxyActionStatus from "../api/getProxyActionStatus";
 import Avatar from "../components/UI/Avatar";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
-import createSubScribe from "../api/freeSubScribe";
-import isFollowedByMe from "../api/isFollowedByMe";
 import AnimatedLottieView from "lottie-react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
 import Drawer from "../components/UI/Drawer";
 import Player from "../components/VideoPlayer";
 import Button from "../components/UI/Button";
+import { RootStackScreenProps } from "../types/navigation/types";
+import CommentSkeleton from "../components/UI/CommentSkeleton";
+import formatInteraction from "../utils/formatInteraction";
 
-type VideoPageProps = {
-  navigation: any;
-  route: any;
-};
-
-const VideoPage = ({ route, navigation }: VideoPageProps) => {
-  const store = useStore();
+const VideoPage = ({
+  navigation,
+  route,
+}: RootStackScreenProps<"VideoPage">) => {
+  const theme = useThemeStore();
+  const authStore = useAuthStore();
+  const userStore = useProfile();
   const [comments, setComments] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
-  const [likes, setLikes] = useState(route.params.stats?.totalUpvotes);
+  const [isLoading, setIsLoading] = useState(true);
+  const [likes, setLikes] = useState<number>(route.params.stats?.totalUpvotes);
   const [inFullscreen, setInFullsreen] = useState(false);
+  const [descOpen, setDescOpen] = useState(false);
   const [alreadyFollowing, setAlreadyFollowing] = useState(
     route?.params?.isFollowdByMe || false
   );
   const [ismodalopen, setIsmodalopen] = useState(false);
   const [isMute, setIsMute] = useState(false);
-  console.log(route.params.reaction);
-
   const playbackId = route.params.playbackId;
-
   const [isalreadyLiked, setisalreadyLiked] = useState(
     route.params.reaction === "UPVOTE" ? true : false
   );
-
   const [isalreadyDisLiked, setisalreadyDisLiked] = useState(
     route.params.reaction === "DOWNVOTE" ? true : false
   );
@@ -71,12 +71,13 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
 
   useEffect(() => {
     checkFollowed();
+    Linking.addEventListener("url", (e) => {});
   }, []);
 
   async function checkFollowed(): Promise<void> {
     const data = await isFollowedByMe(
       route.params.profileId,
-      store.accessToken
+      authStore.accessToken
     );
     if (data.data.profile.isFollowedByMe) {
       setAlreadyFollowing(true);
@@ -85,14 +86,27 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
   }
 
   async function fetchComments(): Promise<void> {
-    const data = await client.query({
-      query: getComments,
-      variables: {
-        postId: route.params.id,
-      },
-    });
-    setComments([]);
-    setComments(data.data.publications.items);
+    try {
+      const data = await client.query({
+        query: getComments,
+        variables: {
+          postId: route.params.id,
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${authStore.accessToken}`,
+          },
+        },
+      });
+      setComments([]);
+      setComments(data.data.publications.items);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Can't fetch comments", { cause: error.cause });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   function handleBackButtonClick() {
@@ -119,13 +133,63 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
       }
     }
   };
+
+  const onLike = async () => {
+    if (!isalreadyLiked && !isLiked) {
+      setLikes((prev) => prev + 1);
+      setIsLiked(true);
+      setisalreadyDisLiked(false);
+      addLike(
+        authStore.accessToken,
+        userStore.currentProfile?.id,
+        route.params.id,
+        "UPVOTE"
+      ).then((res) => {
+        if (res.addReaction === null) {
+          console.log("liked");
+        }
+      });
+    }
+  };
+
+  const onDislike = async () => {
+    if (!isalreadyDisLiked) {
+      if (isalreadyLiked || isLiked) {
+        setLikes((prev) => prev - 1);
+        setIsLiked(false);
+        setisalreadyLiked(false);
+      }
+      // setIsLiked(false);
+      setisalreadyDisLiked(true);
+      console.log("dissliked");
+      addLike(
+        authStore.accessToken,
+        userStore.currentProfile?.id,
+        route.params.id,
+        "DOWNVOTE"
+      ).then((res) => {
+        if (res) {
+          if (res.addReaction === null) {
+            console.log("added disliked");
+          }
+        }
+      });
+      removeLike(authStore.accessToken, userStore.currentProfile?.id, route.params.id)
+        .then((res) => {
+          if (res) {
+          }
+        })
+        .catch((error) => {
+          if (error instanceof Error) {
+            ToastAndroid.show("Can't react to post", ToastAndroid.SHORT);
+          }
+        });
+    }
+  };
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
-      <StatusBar
-        style="light"
-        backgroundColor={dark_primary}
-        translucent={true}
-      />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+      <StatusBar style="light" backgroundColor={"black"} translucent={true} />
       <Player
         poster={route.params.banner}
         title={route.params.title}
@@ -163,44 +227,13 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
               marginVertical: 12,
             }}
           />
-          <TouchableOpacity
-            style={{ width: "90%", marginVertical: 0 }}
-            onPress={async () => {
-              const res = await freeCollectPublication(
-                route.params.id,
-                store.accessToken
-              );
-              console.log(res);
-              if (res?.proxyAction) {
-                setIsmodalopen(false);
-                console.log(res?.proxyAction);
-                ToastAndroid.show("Video collected", ToastAndroid.SHORT);
-                const status = await getProxyActionStatus(
-                  res?.proxyAction,
-                  store.accessToken
-                );
-              }
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: primary,
-                borderRadius: 100,
-                paddingVertical: 8,
-                marginVertical: 4,
-              }}
-            >
-              <Heading
-                title="Collect for free"
-                style={{
-                  color: "white",
-                  fontSize: 18,
-                  fontWeight: "600",
-                  textAlign: "center",
-                }}
-              />
-            </View>
-          </TouchableOpacity>
+          <Button
+            title="Collect for free"
+            width={"90%"}
+            py={8}
+            my={4}
+            textStyle={{ fontSize: 18, fontWeight: "600", textAlign: "center" }}
+          />
         </View>
       </Drawer>
       <ScrollView>
@@ -245,19 +278,28 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
                 />
               </View>
             </View>
-            <TouchableWithoutFeedback
+            <Button
+              title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
+              width={"auto"}
+              px={12}
+              my={4}
+              type={alreadyFollowing ? "outline" : "filled"}
+              bg={alreadyFollowing ? "transparent" : "white"}
+              textStyle={{
+                fontSize: 14,
+                fontWeight: "700",
+                color: alreadyFollowing ? "white" : "black",
+              }}
               onPress={async () => {
-                // setIsmodalopen(true);
                 try {
-                  const data = await createSubScribe(
+                  const data = await createFreeSubscribe(
                     route.params.profileId,
-                    store.accessToken
+                    authStore.accessToken
                   );
                   if (data.data === null) {
                     console.log(data.errors[0].message);
-
                     ToastAndroid.show(
-                      data.errors[0].message,
+                      "Currenctly not supported",
                       ToastAndroid.SHORT
                     );
                   }
@@ -272,30 +314,27 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
                   }
                 }
               }}
-            >
-              <View
-                style={{
-                  marginHorizontal: 4,
-                  paddingHorizontal: 12,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderRadius: 50,
-                  borderColor: alreadyFollowing ? "white" : undefined,
-                  borderWidth: alreadyFollowing ? 1 : undefined,
-                  backgroundColor: alreadyFollowing ? "transparent" : "white",
-                }}
-              >
-                <Heading
-                  title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "700",
-                    color: alreadyFollowing ? "white" : "black",
-                  }}
+            />
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Feather
+                name={`chevron-${descOpen ? "up" : "down"}`}
+                size={28}
+                color="white"
+                onPress={() => setDescOpen(!descOpen)}
+              />
+            </View>
+          </View>
+          <View>
+            {descOpen ? (
+              <View style={{ marginTop: 8 }}>
+                <SubHeading
+                  title={route.params.description}
+                  style={{ color: "white", fontSize: 14, marginLeft: 4 }}
                 />
               </View>
-            </TouchableWithoutFeedback>
+            ) : (
+              <></>
+            )}
           </View>
           <ScrollView
             style={{
@@ -304,204 +343,98 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
             horizontal={true}
             showsHorizontalScrollIndicator={false}
           >
-            <TouchableWithoutFeedback
-              onPress={() => {
-                if (!isalreadyLiked && !isLiked) {
-                  setLikes((prev) => prev + 1);
-                  setIsLiked(true);
-                  setisalreadyDisLiked(false);
-                  addLike(
-                    store.accessToken,
-                    store.profileId,
-                    route.params.id,
-                    "UPVOTE"
-                  ).then((res) => {
-                    if (res.addReaction === null) {
-                      console.log("liked");
-                    }
-                  });
-                }
+            <Button
+              title={formatInteraction(likes) || 0}
+              mx={4}
+              px={10}
+              width={"auto"}
+              type={"outline"}
+              textStyle={{
+                fontSize: 14,
+                fontWeight: "500",
+                color: isalreadyLiked
+                  ? theme.PRIMARY
+                  : isLiked
+                  ? theme.PRIMARY
+                  : "white",
+                marginLeft: 4,
               }}
-            >
-              <View
-                style={{
-                  marginHorizontal: 4,
-                  paddingVertical: 4,
-                  paddingHorizontal: 10,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderRadius: 16,
-                  borderWidth: 1,
-                  borderColor: isalreadyLiked
-                    ? primary
-                    : isLiked
-                    ? primary
-                    : "white",
-                  backgroundColor: "rgba(255, 255, 255, 0.08)",
-                }}
-              >
+              borderColor={
+                isalreadyLiked
+                  ? theme.PRIMARY
+                  : isLiked
+                  ? theme.PRIMARY
+                  : "white"
+              }
+              onPress={onLike}
+              icon={
                 <AntDesign
-                  name="like2"
+                  name={isalreadyLiked ? "like1" : "like2"}
                   size={16}
-                  color={isalreadyLiked ? primary : isLiked ? primary : "white"}
-                />
-                <SubHeading
-                  title={likes || 0}
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "500",
-                    color: isalreadyLiked
-                      ? primary
+                  color={
+                    isalreadyLiked
+                      ? theme.PRIMARY
                       : isLiked
-                      ? primary
-                      : "white",
-                    marginLeft: 4,
-                  }}
-                />
-              </View>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback
-              onPress={() => {
-                if (!isalreadyDisLiked) {
-                  if (isalreadyLiked) {
-                    setLikes((prev) => prev - 1);
-                    setIsLiked(false);
-                    setisalreadyLiked(false);
+                      ? theme.PRIMARY
+                      : "white"
                   }
-                  setisalreadyDisLiked(true);
-                  console.log("dissliked");
-                  addLike(
-                    store.accessToken,
-                    store.profileId,
-                    route.params.id,
-                    "DOWNVOTE"
-                  ).then((res) => {
-                    if (res) {
-                      if (res.addReaction === null) {
-                        console.log("added disliked");
-                      }
-                    }
-                  });
-                  removeLike(
-                    store.accessToken,
-                    store.profileId,
-                    route.params.id
-                  ).then((res) => {
-                    if (res) {
-                      console.log("tt");
-                    }
-                  });
-                }
-              }}
-            >
-              <View
-                style={{
-                  marginHorizontal: 4,
-                  paddingHorizontal: 10,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderRadius: 16,
-                  borderWidth: 1,
-                  borderColor: isalreadyDisLiked ? primary : "white",
-                }}
-              >
-                <AntDesign name="dislike2" size={16} color={"white"} />
-                <SubHeading
-                  title=""
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "500",
-                    color: "white",
-                    marginLeft: 4,
-                  }}
                 />
-              </View>
-            </TouchableWithoutFeedback>
-
-            <TouchableWithoutFeedback
+              }
+            />
+            <Button
+              title=""
+              onPress={onDislike}
+              mx={4}
+              px={16}
+              width={"auto"}
+              type={"outline"}
+              textStyle={{
+                fontSize: 14,
+                fontWeight: "500",
+                color: "white",
+              }}
+              borderColor={isalreadyDisLiked ? theme.PRIMARY : "white"}
+              icon={
+                <AntDesign
+                  name={isalreadyDisLiked ? "dislike1" : "dislike2"}
+                  size={16}
+                  color={isalreadyDisLiked ? theme.PRIMARY : "white"}
+                />
+              }
+            />
+            <Button
+              title={`${STATS?.totalAmountOfCollects || 0} Collects`}
+              mx={4}
+              px={10}
+              width={"auto"}
+              type={"outline"}
+              icon={<Entypo name="folder-video" size={18} color={"white"} />}
               onPress={() => {
                 setIsmodalopen(true);
               }}
-            >
-              <View
-                style={{
-                  marginHorizontal: 4,
-                  paddingHorizontal: 10,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderRadius: 16,
-                  borderWidth: 1,
-                  borderColor: "white",
-                }}
-              >
-                <Entypo name="folder-video" size={18} color={"white"} />
-                <SubHeading
-                  title={`${STATS?.totalAmountOfCollects || 0} Collects`}
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "500",
-                    color: "white",
-                    marginLeft: 8,
-                  }}
-                />
-              </View>
-            </TouchableWithoutFeedback>
-
-            <TouchableWithoutFeedback onPress={onShare}>
-              <View
-                style={{
-                  marginHorizontal: 4,
-                  paddingHorizontal: 10,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderRadius: 16,
-                  borderWidth: 1,
-                  borderColor: "white",
-                }}
-              >
-                <FontAwesome name="share" size={16} color="white" />
-                <SubHeading
-                  title="Share"
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "500",
-                    color: "white",
-                    marginLeft: 8,
-                  }}
-                />
-              </View>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback>
-              <View
-                style={{
-                  marginHorizontal: 4,
-                  paddingHorizontal: 10,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderRadius: 16,
-                  borderWidth: 1,
-                  borderColor: "white",
-                }}
-              >
-                <MaterialIcons name="report" size={16} color="white" />
-                <SubHeading
-                  title="Report"
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "500",
-                    color: "white",
-                    marginLeft: 8,
-                  }}
-                />
-              </View>
-            </TouchableWithoutFeedback>
+              textStyle={{ color: "white", marginHorizontal: 4 }}
+            />
+            <Button
+              title={"Share"}
+              mx={4}
+              px={10}
+              width={"auto"}
+              type={"outline"}
+              icon={<FontAwesome name="share" size={16} color="white" />}
+              onPress={onShare}
+              textStyle={{ color: "white", marginHorizontal: 4 }}
+            />
+            <Button
+              title={"Report"}
+              mx={4}
+              px={10}
+              width={"auto"}
+              type={"outline"}
+              icon={<MaterialIcons name="report" size={16} color="white" />}
+              onPress={onShare}
+              textStyle={{ color: "white", marginHorizontal: 4 }}
+            />
           </ScrollView>
-
           <View>
             <SubHeading
               title="Comments"
@@ -512,21 +445,20 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
                 marginBottom: 8,
               }}
             />
-
-            {comments?.map((item, index) => {
-              return (
-                <CommentCard
-                  key={index}
-                  username={item?.profile?.handle}
-                  avatar={item?.profile?.picture?.original?.url}
-                  commentText={item?.metadata?.description}
-                  commentTime={item?.createdAt}
-                  id={item?.profile?.id}
-                  navigation={navigation}
-                />
-              );
-            })}
-            {comments.length === 0 && (
+            {isLoading ? (
+              <ScrollView>
+                <CommentSkeleton />
+                <CommentSkeleton />
+                <CommentSkeleton />
+                <CommentSkeleton />
+                <CommentSkeleton />
+                <CommentSkeleton />
+                <CommentSkeleton />
+              </ScrollView>
+            ) : (
+              <></>
+            )}
+            {!isLoading && comments.length == 0 ? (
               <View style={{ maxHeight: 200 }}>
                 <AnimatedLottieView
                   autoPlay
@@ -545,6 +477,23 @@ const VideoPage = ({ route, navigation }: VideoPageProps) => {
                   }}
                 ></Heading>
               </View>
+            ) : (
+              comments?.map((item, index) => {
+                return (
+                  <CommentCard
+                    key={index}
+                    username={item?.profile?.handle}
+                    avatar={item?.profile?.picture?.original?.url}
+                    commentText={item?.metadata?.description}
+                    commentTime={item?.createdAt}
+                    id={item?.profile?.id}
+                    isFollowdByMe={item.profile.isFollowedByMe}
+                    name={item.profile?.name}
+                    stats={item?.stats}
+                    commentId={item?.id}
+                  />
+                );
+              })
             )}
           </View>
         </View>

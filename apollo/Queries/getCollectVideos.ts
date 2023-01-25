@@ -1,12 +1,13 @@
 import { gql } from "@apollo/client";
 
 export default gql`
-  query Publications($id: ProfileId!) {
+  query Publications($ethAddress: EthereumAddress!) {
     publications(
       request: {
-        profileId: $id
-        publicationTypes: [POST]
+        collectedBy: $ethAddress
+        publicationTypes: [POST, MIRROR]
         sources: ["lenstube"]
+        metadata: { mainContentFocus: VIDEO }
       }
     ) {
       items {
@@ -79,7 +80,6 @@ export default gql`
     ownedBy
     dispatcher {
       address
-      canUseRelay
     }
     stats {
       totalFollowers
@@ -147,7 +147,7 @@ export default gql`
     }
     appId
     hidden
-    reaction(request: { profileId: $id })
+    reaction(request: null)
     mirrors(by: null)
     hasCollectedByMe
   }
@@ -172,7 +172,7 @@ export default gql`
     }
     appId
     hidden
-    reaction(request: { profileId: $id })
+    reaction(request: null)
     hasCollectedByMe
   }
 
@@ -208,7 +208,7 @@ export default gql`
     }
     appId
     hidden
-    reaction(request: { profileId: $id })
+    reaction(request: null)
     mirrors(by: null)
     hasCollectedByMe
   }

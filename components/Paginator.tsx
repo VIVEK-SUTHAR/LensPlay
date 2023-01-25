@@ -3,7 +3,7 @@ import { Animated, StyleSheet, useWindowDimensions, View } from "react-native";
 
 type PaginatorProps = {
   data: string[];
-  scrollX: number;
+  scrollX: Animated.Value;
 };
 
 export default function Paginator({ data, scrollX }: PaginatorProps) {

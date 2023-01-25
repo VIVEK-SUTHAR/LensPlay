@@ -1,15 +1,15 @@
 import {
   View,
-  TouchableOpacity,
   StyleProp,
   ViewProps,
   TextStyle,
   ActivityIndicator,
   ColorValue,
+  Pressable,
 } from "react-native";
 import React from "react";
 import SubHeading from "./SubHeading";
-import { primary } from "../../constants/Colors";
+import { useThemeStore } from "../../store/Store";
 interface ButtonProps {
   title: string;
   type?: "outline" | "filled";
@@ -20,12 +20,17 @@ interface ButtonProps {
   px?: number;
   py?: number;
   bg?: ColorValue;
+  ripple_radius?: number;
   style?: StyleProp<ViewProps>;
   textStyle?: StyleProp<TextStyle>;
+  borderColor?: ColorValue;
+  borderRadius?: number;
   onPress?: () => void;
+  icon?: any;
 }
 
 const Button = (props: ButtonProps): JSX.Element => {
+  const theme = useThemeStore();
   const {
     title,
     type = "filled",
@@ -37,13 +42,26 @@ const Button = (props: ButtonProps): JSX.Element => {
     px = 4,
     py = 8,
     textStyle,
-    bg = primary,
+    borderRadius = 50,
+    ripple_radius = 0.5,
+    bg = theme.PRIMARY.toString(),
     onPress,
+    borderColor = "white",
+    icon,
     ...rest
   } = props;
   return (
-    <TouchableOpacity
-      style={{ width: width }}
+    <Pressable
+      android_ripple={{
+        color: type === "outline" ? theme.PRIMARY : "rgba(255,255,255,0.08)",
+        radius: borderRadius * ripple_radius,
+      }}
+      style={[
+        style,
+        {
+          width: width,
+        },
+      ]}
       {...rest}
       onPress={
         onPress
@@ -55,9 +73,13 @@ const Button = (props: ButtonProps): JSX.Element => {
     >
       <View
         style={{
-          backgroundColor: type === "filled" ? bg : "rgba(255,255,255,0.08)",
-          borderRadius: 50,
-          borderColor: type === "outline" ? "white" : undefined,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          borderRadius: borderRadius,
+          justifyContent: textStyle ? "center" : "space-between",
+          backgroundColor: type === "filled" ? bg : "transparent",
+          borderColor: type === "outline" ? borderColor : "transparent",
           borderWidth: type === "outline" ? 1 : 0,
           paddingVertical: py,
           paddingHorizontal: px,
@@ -68,19 +90,23 @@ const Button = (props: ButtonProps): JSX.Element => {
         {isLoading ? (
           <ActivityIndicator size={"small"} color={"black"} />
         ) : (
-          <SubHeading
-            title={title}
-            style={[
-              textStyle,
-              {
-                textAlign: "center",
-                color: bg === "white" ? "black" : "white",
-              },
-            ]}
-          />
+          <>
+            {icon}
+            <SubHeading
+              title={title}
+              style={[
+                textStyle,
+                {
+                  textAlign: "center",
+                  // marginHorizontal: 4,
+                  // color: bg === "white" ? "black" : "white",
+                },
+              ]}
+            />
+          </>
         )}
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

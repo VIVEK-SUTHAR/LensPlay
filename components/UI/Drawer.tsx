@@ -1,13 +1,13 @@
 import {
   View,
   TouchableWithoutFeedback,
-  SafeAreaView,
   Modal,
-  Text,
+  SafeAreaView,
 } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import { dark_primary } from "../../constants/Colors";
 import { StatusBar } from "expo-status-bar";
+import { useThemeStore } from "../../store/Store";
 
 interface DrawerProps {
   children: React.ReactNode;
@@ -18,13 +18,14 @@ interface DrawerProps {
 const Drawer = ({ children, isOpen, setIsOpen }: DrawerProps) => {
   return (
     <SafeAreaView style={{ backgroundColor: dark_primary }}>
+      <StatusBar backgroundColor="black" style="auto" translucent={true} />
       <Modal
         animationType="slide"
         visible={isOpen}
         onRequestClose={() => {
           setIsOpen(false);
         }}
-        statusBarTranslucent={false}
+        statusBarTranslucent={true}
         transparent={true}
       >
         <TouchableWithoutFeedback

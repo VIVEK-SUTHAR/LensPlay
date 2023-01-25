@@ -2,20 +2,17 @@ import {
   Image,
   RefreshControl,
   ScrollView,
-  StyleSheet,
-  Text,
   ToastAndroid,
   View,
-  TouchableWithoutFeedback,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import getIPFSLink from "../utils/getIPFSLink";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { dark_primary, dark_secondary, primary } from "../constants/Colors";
+import { dark_secondary, primary } from "../constants/Colors";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import VideoCard from "../components/VideoCard";
-import useStore from "../store/Store";
+import { useAuthStore } from "../store/Store";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
 import getPublications from "../apollo/Queries/getPublications";
@@ -25,25 +22,27 @@ import { STATIC_ASSET } from "../constants";
 import AnimatedLottieView from "lottie-react-native";
 import Skleton from "../components/Skleton";
 import extractURLs from "../utils/extractURL";
-import isFollowedByMe from "../api/isFollowedByMe";
 import createSubScribe from "../api/freeSubScribe";
+import { RootStackScreenProps } from "../types/navigation/types";
+import Button from "../components/UI/Button";
+import { ResizeMode } from "expo-av";
+import { Profile } from "../types/Lens";
+import { LensPublication } from "../types/Lens/Feed";
 
-interface ChannelScreenProps {
-  navigation: any;
-  route: any;
-}
-
-const Channel = ({ navigation, route }: ChannelScreenProps) => {
-  const [profile, setProfile] = useState<{}>({});
+const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [allVideos, setallVideos] = useState([]);
-  const [isVideoAvilable, setIsVideoAvilable] = useState<boolean>(true);
-  const [alreadyFollowing, setAlreadyFollowing] = useState(false);
+  const [alreadyFollowing, setAlreadyFollowing] = useState<boolean | undefined>(
+    route.params.isFollowdByMe
+  );
   const [isLoading, setIsLoading] = useState(true);
-  const store = useStore();
-
+  const authStore = useAuthStore();
   useEffect(() => {
     getProfleInfo();
-  }, [navigation, route.params.profileId]);
+    navigation.setOptions({
+      headerTitle: route.params.name,
+    });
+  }, []);
 
   const getProfleInfo = async () => {
     try {
@@ -53,8 +52,14 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
         variables: {
           id: route.params.profileId,
         },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${authStore.accessToken}`,
+          },
+        },
       });
-      setProfile(profiledata.data);
+      setProfile(profiledata.data.profile);
+      setAlreadyFollowing(profiledata.data.profile.isFollowedByMe);
       const getUserVideos = await client.query({
         query: getPublications,
         variables: {
@@ -65,7 +70,8 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
   const [refreshing, setRefreshing] = useState(false);
@@ -80,7 +86,7 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -103,15 +109,14 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
               <Image
                 source={{
                   uri:
-                    getIPFSLink(
-                      profile?.profile?.coverPicture?.original?.url
-                    ) || STATIC_ASSET,
+                    getIPFSLink(profile?.coverPicture?.original.url) ||
+                    STATIC_ASSET,
                 }}
                 style={{
                   height: "100%",
                   width: "100%",
                   borderRadius: 10,
-                  resizeMode: "contain",
+                  resizeMode: ResizeMode.STRETCH,
                 }}
               />
             </View>
@@ -124,38 +129,49 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
               }}
             >
               <Avatar
-                src={getIPFSLink(profile?.profile?.picture?.original?.url)}
+                src={getIPFSLink(profile?.picture.original.url)}
                 height={100}
                 width={100}
               />
             </View>
             <View style={{ padding: 4, alignItems: "center" }}>
               <Heading
-                title={profile?.profile?.name}
+                title={profile?.name}
                 style={{ fontSize: 20, fontWeight: "bold", color: "white" }}
               />
               <SubHeading
-                title={`@${profile?.profile?.handle} · ${profile?.profile?.stats?.totalFollowers} Subscribers · ${allVideos.length} Videos`}
+                title={`@${profile?.handle} · ${profile?.stats?.totalFollowing} Subscribers · ${allVideos.length} Videos`}
                 style={{ fontSize: 12, color: "white", marginTop: 2 }}
               />
               <SubHeading
-                title={extractURLs(profile?.profile?.bio)}
+                title={extractURLs(profile?.bio)}
                 style={{ fontSize: 14, color: "gray", textAlign: "center" }}
               />
             </View>
-            <TouchableWithoutFeedback
+            <Button
+              title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
+              width={"auto"}
+              px={12}
+              my={4}
+              type={alreadyFollowing ? "outline" : "filled"}
+              bg={alreadyFollowing ? "transparent" : "white"}
+              textStyle={{
+                fontSize: 16,
+                fontWeight: "700",
+                color: alreadyFollowing ? "white" : "black",
+              }}
+              borderColor={alreadyFollowing ? primary : "white"}
               onPress={async () => {
-                if (alreadyFollowing) return;
                 try {
                   const data = await createSubScribe(
                     route.params.profileId,
-                    store.accessToken
+                    authStore.accessToken
                   );
                   if (data.data === null) {
                     console.log(data.errors[0].message);
 
                     ToastAndroid.show(
-                      data.errors[0].message,
+                      "Currenctly not supported",
                       ToastAndroid.SHORT
                     );
                   }
@@ -170,39 +186,7 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
                   }
                 }
               }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: 8,
-                }}
-              >
-                <View
-                  style={{
-                    paddingHorizontal: 10,
-                    paddingVertical: 8,
-                    width: "40%",
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: 50,
-                    backgroundColor: alreadyFollowing ? "#7400B8" : "white",
-                  }}
-                >
-                  <Heading
-                    title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "700",
-                      textAlign: "center",
-                      color: alreadyFollowing ? "white" : "black",
-                    }}
-                  />
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
+            />
             <View style={{ paddingVertical: 10 }}>
               <Heading
                 title="Videos"
@@ -212,26 +196,23 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
                   color: "white",
                 }}
               />
-              {allVideos?.map((item, index) => {
-                if (item.appId.includes("lenstube")) {
-                  return (
-                    <VideoCard
-                      navigation={navigation}
-                      key={item?.id}
-                      id={item?.id}
-                      date={convertDate(item?.createdAt)}
-                      banner={item?.metadata?.cover}
-                      title={item?.metadata?.name}
-                      avatar={item?.profile?.picture?.original?.url}
-                      playbackId={item?.metadata?.media[0]?.original?.url}
-                      uploadedBy={item?.profile?.name || item?.profile?.handle}
-                      profileId={item?.profile?.id}
-                      stats={item?.stats}
-                      isFollowdByMe={item?.profile.isFollowedByMe}
-                      reaction={item?.reaction}
-                    />
-                  );
-                }
+              {allVideos?.map((item: LensPublication) => {
+                return (
+                  <VideoCard
+                    key={item?.id}
+                    id={item?.id}
+                    date={convertDate(item?.createdAt.toString())}
+                    banner={item?.metadata?.cover}
+                    title={item?.metadata?.name}
+                    avatar={item?.profile?.picture?.original?.url}
+                    playbackId={item?.metadata?.media[0]?.original?.url}
+                    uploadedBy={item?.profile?.name || item?.profile?.handle}
+                    profileId={item?.profile?.id}
+                    stats={item?.stats}
+                    isFollowdByMe={item?.profile.isFollowedByMe}
+                    reaction={item?.reaction}
+                  />
+                );
               })}
             </View>
           </View>
@@ -270,8 +251,7 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
             />
             <Heading
               title={`Seems like ${
-                profile?.profile?.name ||
-                profile?.profile?.handle?.split(".")[0]
+                profile?.name || profile?.handle?.split(".")[0]
               } has not uploaded any video`}
               style={{
                 color: "gray",
@@ -287,5 +267,3 @@ const Channel = ({ navigation, route }: ChannelScreenProps) => {
 };
 
 export default Channel;
-
-const styles = StyleSheet.create({});

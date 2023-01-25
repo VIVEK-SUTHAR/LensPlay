@@ -116,6 +116,15 @@ const config: ExpoConfig = {
   web: {
     favicon: "./assets/images/favicon.png",
   },
+  plugins: [
+    [
+      "expo-image-picker",
+      {
+        photosPermission:
+          "The app accesses your gallery to let you share them with your friends on Lens",
+      },
+    ],
+  ],
 };
 
 export default withPackageVisibility(config);

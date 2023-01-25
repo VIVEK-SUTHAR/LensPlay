@@ -1,28 +1,38 @@
 import {
+  FlatList,
   RefreshControl,
   SafeAreaView,
-  ScrollView,
   ToastAndroid,
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import AnimatedLottieView from "lottie-react-native";
 import fetchNotifications from "../api/fetchNotifications";
-import useStore from "../store/Store";
+import {
+  useAuthStore,
+  useProfile,
+  useThemeStore,
+} from "../store/Store";
 import Heading from "../components/UI/Heading";
 import NotificationCard from "../components/Notifications";
-
+import Skleton from "../components/Notifications/Skleton";
+import Item from "../components/Notifications/index.d";
 const Navigation = ({ navigation }: { navigation: any }) => {
-  const store = useStore();
-  const [allNotifications, setAllNotifications] = useState([]);
+  const [allNotifications, setAllNotifications] = useState<Item[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState(false);
+
+  const authStore = useAuthStore();
+  const theme = useThemeStore();
+  const userStore = useProfile();
+
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      const data = await fetchNotifications(store.profileId, store.accessToken);
-      console.log(data);
-
+      const data = await fetchNotifications(
+        userStore.currentProfile?.id,
+        authStore.accessToken
+      );
       if (data == allNotifications) {
         ToastAndroid.show("No new notifications", ToastAndroid.SHORT);
       } else {
@@ -37,74 +47,104 @@ const Navigation = ({ navigation }: { navigation: any }) => {
     }
   };
   useEffect(() => {
-    //@ts-expect-error
-    fetchNotifications(store.profileId, store.accessToken).then((res) => {
-      setAllNotifications(res);
-    });
+    setIsLoading(true);
+    fetchNotifications(userStore.currentProfile?.id, authStore.accessToken)
+      .then((allNotification) => {
+        setAllNotifications(allNotification);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        if (error instanceof Error) {
+          throw new Error(
+            "Some thing Went wrong while fetching notifications",
+            { cause: error.cause }
+          );
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   return (
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: dark_primary,
+        backgroundColor: "black",
       }}
     >
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            colors={[primary]}
-            progressBackgroundColor={dark_secondary}
-            onRefresh={onRefresh}
-          />
-        }
-      >
-        {allNotifications &&
-          allNotifications.map((item, index) => {
+      {allNotifications.length > 0 ? (
+        <FlatList
+          data={allNotifications}
+          keyExtractor={(item, index) => index.toString()}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[theme.PRIMARY]}
+              progressBackgroundColor={"black"}
+            />
+          }
+          renderItem={({ item }) => {
             return (
-              <NotificationCard
-                key={index}
-                notification={item}
-                navigation={navigation}
-              />
+              <NotificationCard navigation={navigation} notification={item} />
             );
-          })}
-        {allNotifications?.length === 0 && (
+          }}
+        />
+      ) : (
+        <></>
+      )}
+      {isLoading ? (
+        <>
+          <Skleton />
+          <Skleton />
+          <Skleton />
+          <Skleton />
+          <Skleton />
+          <Skleton />
+          <Skleton />
+          <Skleton />
+          <Skleton />
+        </>
+      ) : (
+        <></>
+      )}
+      {!isLoading && allNotifications.length === 0 ? (
+        <View
+          style={{
+            height: 500,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <AnimatedLottieView
+            autoPlay
+            style={{
+              height: "auto",
+            }}
+            source={require("../assets/notifications.json")}
+          />
           <View
             style={{
-              height: 500,
-              justifyContent: "center",
               alignItems: "center",
             }}
           >
-            <AnimatedLottieView
-              autoPlay
+            <Heading
+              title="No new notifications"
               style={{
-                height: "auto",
+                fontSize: 16,
+                color: "white",
+                marginVertical: 5,
+                marginHorizontal: 15,
+                fontWeight: "600",
+                alignSelf: "flex-start",
               }}
-              source={require("../assets/notifications.json")}
             />
-            <View
-              style={{
-                alignItems: "center",
-              }}
-            >
-              <Heading
-                title="No new notifications"
-                style={{
-                  fontSize: 16,
-                  color: "white",
-                  marginVertical: 5,
-                  marginHorizontal: 15,
-                  fontWeight: "600",
-                  alignSelf: "flex-start",
-                }}
-              />
-            </View>
           </View>
-        )}
-      </ScrollView>
+        </View>
+      ) : (
+        <></>
+      )}
     </SafeAreaView>
   );
 };

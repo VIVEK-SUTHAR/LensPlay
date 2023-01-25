@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { StyleProp, Text, TextStyle } from "react-native";
 
 interface HeadingProps {
-  title: string;
+  title: string | React.ReactNode;
   style: StyleProp<TextStyle>;
 }
 

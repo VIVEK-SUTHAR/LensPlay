@@ -1,11 +1,10 @@
+import { View } from "react-native";
 import React from "react";
 import NotificationCardProps, { NotificationTypes } from "./index.d";
 import CollectNotification from "./CollectNotification";
 import MirrorNotification from "./MirrorNotification";
 import FollowNotification from "./FollowNotification";
 import ReactionNotification from "./ReactionNotification";
-import { dark_secondary } from "../../constants/Colors";
-import { View } from "react-native";
 import CommentNotification from "./CommentNotification";
 
 const NotificationCard = ({
@@ -52,18 +51,20 @@ const NotificationCard = ({
     }
   };
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        backgroundColor: dark_secondary,
-        padding: 8,
-        marginVertical: 4,
-        marginHorizontal: 8,
-        borderRadius: 8,
-      }}
-    >
-      {getNotification()}
-    </View>
+    <>
+      <View
+        style={{
+          flexDirection: "row",
+          backgroundColor: "#111111",
+          padding: 8,
+          marginVertical: 2,
+          marginHorizontal: 4,
+          borderRadius: 8,
+        }}
+      >
+        {getNotification()}
+      </View>
+    </>
   );
 };
 export default NotificationCard;

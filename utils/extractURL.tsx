@@ -1,3 +1,4 @@
+import React from "react";
 import { Linking, Text } from "react-native";
 import { URL_REGEX } from "../constants";
 import { primary } from "../constants/Colors";
@@ -6,8 +7,8 @@ import { primary } from "../constants/Colors";
  * @param txt Simple text that may contain URLs
  * @returns Same text with URLs highlighted
  */
-function extractURLs(txt: string) {
-  const renderText = (txt: string) =>
+function extractURLs(txt: string | undefined) {
+  const renderText = (txt: string | undefined) =>
     txt?.split(" ").map((part, index) =>
       URL_REGEX.test(part) ? (
         <Text

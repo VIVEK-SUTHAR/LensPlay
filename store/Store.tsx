@@ -1,11 +1,5 @@
 import create from "zustand";
-
-export interface IAuthStore {
-  accessToken: string;
-  refreshToken: string;
-  setAccessToken: (newToken: string) => void;
-  setRefreshToken: (newToken: string) => void;
-}
+import { IAuthStore, IThemeStore, UserStore } from "../types/Store";
 
 export const useAuthStore = create<IAuthStore>((set) => ({
   accessToken: "",
@@ -14,6 +8,17 @@ export const useAuthStore = create<IAuthStore>((set) => ({
   refreshToken: "",
   setRefreshToken: (newRefreshToken: string) =>
     set({ accessToken: newRefreshToken }),
+}));
+
+export const useProfile = create<UserStore>((set) => ({
+  currentProfile: null,
+  setCurrentProfile: (newProfile) => set({ currentProfile: newProfile }),
+}));
+
+export const useThemeStore = create<IThemeStore>((set) => ({
+  PRIMARY: "#2AD95C",
+  setPrimaryColor: (newPrimaryColor: string) =>
+    set({ PRIMARY: newPrimaryColor }),
 }));
 
 const useStore = create((set) => ({

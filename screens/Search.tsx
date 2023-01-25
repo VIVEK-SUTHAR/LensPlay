@@ -7,17 +7,24 @@ import {
   View,
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { dark_secondary, primary } from "../constants/Colors";
 import { useFocusEffect } from "@react-navigation/native";
 import { client } from "../apollo/client";
 import searchPublicationQuery from "../apollo/Queries/searchPublicationQuery";
 import VideoCard from "../components/VideoCard";
-import { useQuery } from "@apollo/client";
 import AnimatedLottieView from "lottie-react-native";
 import { EvilIcons } from "@expo/vector-icons";
-const Search = ({ navigation }) => {
+import { RootStackScreenProps } from "../types/navigation/types";
+import Button from "../components/UI/Button";
+import { useAuthStore, useThemeStore } from "../store/Store";
+import { LensPublication } from "../types/Lens/Feed";
+const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
+  const theme = useThemeStore();
+  const authStore = useAuthStore();
   const textRef = useRef(null);
-  const [searchPostResult, setSearchPostResult] = useState([]);
+
+  const [searchPostResult, setSearchPostResult] = useState<LensPublication[]>(
+    []
+  );
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isSearching, setIsSearching] = useState(false);
   const [isfound, setIsfound] = useState(true);
@@ -45,9 +52,12 @@ const Search = ({ navigation }) => {
         variables: {
           query: searchQuery.toLowerCase().trim(),
         },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${authStore.accessToken}`,
+          },
+        },
       });
-      console.log(result);
-
       setSearchPostResult(result?.data?.search?.items);
       if (searchPostResult.length === 0) {
         setIsfound(false);
@@ -63,7 +73,7 @@ const Search = ({ navigation }) => {
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerStyle: { backgroundColor: dark_secondary, elevation: 0 },
+      headerStyle: { backgroundColor: "black" },
       headerLeft: () => (
         <View
           style={{
@@ -80,7 +90,7 @@ const Search = ({ navigation }) => {
           <EvilIcons name="search" size={24} color="white" />
           <TextInput
             ref={textRef}
-            selectionColor={primary}
+            selectionColor={theme.PRIMARY}
             placeholder="Type something to search..."
             placeholderTextColor={"white"}
             clearButtonMode={"always"}
@@ -99,7 +109,7 @@ const Search = ({ navigation }) => {
     });
   }, []);
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: dark_secondary }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <ScrollView>
         {!!isSearching && (
           <>
@@ -144,18 +154,19 @@ const Search = ({ navigation }) => {
               Here's what we found
             </Text>
             {searchPostResult.map((item, index) => {
-              return (
-                <VideoCard
-                  key={index}
-                  navigation={navigation}
-                  avatar={item?.profile?.picture?.original?.url}
-                  id={item?.id}
-                  banner={item?.profile?.coverPicture?.original?.url}
-                  uploadedBy={item?.profile?.handle}
-                  title={item?.metadata?.name}
-                  playbackId={item?.metadata?.media[0]?.original?.url}
-                />
-              );
+              if (!item.hidden) {
+                return (
+                  <VideoCard
+                    key={index}
+                    avatar={item?.profile?.picture?.original?.url}
+                    id={item?.id}
+                    banner={item?.metadata.cover}
+                    uploadedBy={item?.profile?.handle}
+                    title={item?.metadata?.name}
+                    playbackId={item?.metadata?.media[0]?.original?.url}
+                  />
+                );
+              }
             })}
           </>
         ) : (
@@ -186,6 +197,21 @@ const Search = ({ navigation }) => {
                   >
                     No videos found 😔
                   </Text>
+                  <Button
+                    title="Continue browsing..."
+                    width={"auto"}
+                    type="outline"
+                    borderColor={theme.PRIMARY}
+                    px={16}
+                    textStyle={{
+                      color: "white",
+                      fontSize: 20,
+                      fontWeight: "600",
+                    }}
+                    onPress={() => {
+                      navigation.navigate("Root");
+                    }}
+                  />
                 </View>
               </>
             )}

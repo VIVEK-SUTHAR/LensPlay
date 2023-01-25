@@ -22,24 +22,43 @@ function getDifference(timestamp: Date) {
   const notificationHour = notificationStamp.getHours();
 
   if (currentYear != notificationYear) {
-    const difference = notificationYear - currentYear;
-    return `~${difference} y ago`;
+    if (currentYear - notificationYear == 1) {
+      if (notificationMonth - currentMonth != 0){
+        if (currentMonth == 0 && notificationMonth == 11) {
+          if (currentDate > notificationDate) {
+            return `1m ago`
+          }
+          else {
+            return findDiffernce(31,notificationDate - currentDate, 'd')
+          }
+        }
+        else {
+          return findDiffernce(notificationMonth, currentMonth, 'm');
+        }
+      }
+      else {
+        return `1 y ago`
+      }
+    }
+    else{
+      return findDiffernce(notificationYear, currentYear, 'y')
+    }
   } else if (currentMonth != notificationMonth) {
-    const difference = notificationMonth - currentMonth;
-    return `~${difference} m ago`;
+    return findDiffernce(notificationMonth, currentMonth, 'm');
   } else if (currentDate != notificationDate) {
-    const difference = currentDate - notificationDate;
-    return `~${difference} d ago`;
+    return findDiffernce(currentDate, notificationDate, 'd');
   } else if (currentHour != notificationHour) {
-    const difference = currentHour - notificationHour;
-    return `~${difference} h ago`;
+    return findDiffernce(currentHour, notificationHour, 'h');
   } else if (currentMinute != notificationMinute) {
-    const difference = currentMinute - notificationMinute;
-    return `~${difference} min ago`;
+    return findDiffernce(currentMinute, notificationMinute, 'min');
   } else if (currentSecond != notificationSecond) {
-    const difference = currentSecond - notificationSecond;
-    return `~${difference} sec ago`;
+    return findDiffernce(currentSecond, notificationSecond, 'sec');
   }
+}
+
+const findDiffernce = (x:number, y:number, stamp:string) =>{
+  const difference = x-y;
+  return `~${difference}${stamp} ago`
 }
 
 export default getDifference;

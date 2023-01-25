@@ -1,28 +1,35 @@
-import { LinkingOptions } from '@react-navigation/native';
-import * as Linking from 'expo-linking';
+import { LinkingOptions } from "@react-navigation/native";
+import * as Linking from "expo-linking";
 
-import { RootStackParamList } from '../types';
+import { RootStackParamList } from "../types/navigation/types";
 
 const linking: LinkingOptions<RootStackParamList> = {
-  prefixes: [Linking.createURL("/")],
+  prefixes: [Linking.createURL("lensplay")],
   config: {
     screens: {
       Root: {
+        path: "root",
         screens: {
-          TabOne: {
+          Home: {
             screens: {
-              TabOneScreen: 'one',
+              TabOneScreen: "home",
             },
           },
-          TabTwo: {
+          Account: {
+            path: "account",
+
             screens: {
-              TabTwoScreen: 'two',
+              TabTwoScreen: "account",
             },
           },
         },
       },
-      Modal: 'modal',
-      NotFound: '*',
+      Modal: "modal",
+      NotFound: "*",
+      VideoPage: {
+        path: "video",
+        parse: { id: String },
+      },
     },
   },
 };
