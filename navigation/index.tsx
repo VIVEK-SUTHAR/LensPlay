@@ -23,6 +23,7 @@ import SubHeading from "../components/UI/SubHeading";
 import Channel from "../screens/Channel";
 import { useThemeStore } from "../store/Store";
 import ProfileScreen from "../screens/Profile";
+import UserVideos from "../screens/UserVideos";
 
 export default function Navigation({
   colorScheme,
@@ -90,6 +91,16 @@ function RootNavigator() {
           animation: "slide_from_left",
           headerShown: true,
           headerTintColor: theme.PRIMARY,
+        }}
+      />
+      <Stack.Screen
+        name="YourVideos"
+        component={UserVideos}
+        options={{
+          animation: "slide_from_right",
+          headerShown: true,
+          headerTintColor: theme.PRIMARY,
+          headerTitle: "Your videos",
         }}
       />
     </Stack.Navigator>
@@ -311,6 +322,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
         component={ProfileScreen}
         options={{
           tabBarLabel: "",
+          headerShown: false,
           tabBarIcon: ({ focused }) => {
             return (
               <View

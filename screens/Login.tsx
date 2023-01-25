@@ -11,7 +11,6 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import { client } from "../apollo/client";
 import getChallenge from "../apollo/Queries/getChallenge";
 import getAccessTokens from "../apollo/mutations/getAccessTokens";
@@ -25,7 +24,6 @@ import Paginator from "../components/Paginator";
 import SubHeading from "../components/UI/SubHeading";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Button from "../components/UI/Button";
-import logToDB from "../utils/logToDB";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const store = useStore();
@@ -39,19 +37,20 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
     setIsconnected(true);
   }, [connector]);
 
-  // useEffect(() => {
-  //   navigation.addListener("focus", getData);
-  // }, []);
+  useEffect(() => {
+    navigation.addListener("focus", getData);
+  }, []);
 
   const data = [
-    "https://ipfs.io/ipfs/QmfY1JJanP2cZyrcf2WBka6dzoHFjT9sH2gYcEaJJiDwfK",
-    "https://ipfs.io/ipfs/QmQgwri9TtoCYWdxB9kkpC5NKwaSWHJw3MHon6Rt3oVQP7",
-    "https://ipfs.io/ipfs/Qmawvbo2VvS6aF6bL1bchAXtLEwkZurbbEtMu7PxfHFoQ1",
+    "https://res.cloudinary.com/djkwixcg8/image/upload/v1674534829/landing-1_lrrjd1.webp",
+    "https://res.cloudinary.com/djkwixcg8/image/upload/v1674534829/landing-2_byfsnm.webp",
+    "https://res.cloudinary.com/djkwixcg8/image/upload/v1674534828/landing-3_gatvjy.webp",
   ];
   const { width } = Dimensions.get("screen");
   const imageW = width * 0.8;
   const imageH = imageW * 1.54;
   const logInWithLens = async () => {
+    setIsloading(true);
     const data = await client.query({
       query: getProfile,
       variables: {
@@ -59,7 +58,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
       },
     });
     if (!data.data.defaultProfile) {
-      // return;
+      return;
     }
     store.setProfileId(data.data.defaultProfile.id);
     userStore.setCurrentProfile(data.data.defaultProfile);
@@ -70,12 +69,10 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
       },
     });
     try {
-      logToDB("login with lens - before sign", "starting the sign", 73, "nnnn");
       const data = await connector.sendCustomRequest({
         method: "personal_sign",
         params: [connector.accounts[0], challengeText.data.challenge.text],
       });
-      logToDB("login with lens - after sign", "Completed sign", 78, "nnnn");
       const address = connector.accounts[0];
       const tokens = await client.mutate({
         mutation: getAccessTokens,
@@ -85,47 +82,30 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         },
       });
       if (tokens.data.authenticate.accessToken) {
-        logToDB(
-          "login with lens - access tooken found from query",
-          "setting tokens",
-          86,
-          "nnnn"
-        );
         authStore.setAccessToken(tokens.data.authenticate.accessToken);
         authStore.setRefreshToken(tokens.data.authenticate.refreshToken);
-        await storeData(
+        storeData(
           tokens.data.authenticate.accessToken,
           tokens.data.authenticate.refreshToken
         );
-        logToDB(
-          "login with lens - navigating to root",
-          "root screen",
-          95,
-          "nnnn"
-        );
+        setIsloading(false);
         navigation.navigate("Root");
       } else {
+        setIsloading(false);
         Alert.alert("Something went wrong");
       }
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
-        logToDB("login with lens - catch", error.message, 114, error.cause);
+        setIsloading(false);
       }
     }
   };
   const getData = async () => {
     setIsloading(true);
     try {
-      logToDB("In get data function", "checking local storage", 110, "dddd");
       const jsonValue = await AsyncStorage.getItem("@storage_Key");
       if (jsonValue) {
-        logToDB(
-          "In get data function - json value",
-          "tokens found in local storage",
-          113,
-          "dddd"
-        );
         const tokens = JSON.parse(jsonValue);
         const isvaild = await client.query({
           query: verifyToken,
@@ -148,21 +128,9 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           store.setProfileId(data.data.defaultProfile.id);
           userStore.setCurrentProfile(data.data.defaultProfile);
           setIsloading(false);
-          logToDB(
-            "In get data function - token valid",
-            "navigating to root",
-            136,
-            "dddd"
-          );
           navigation.navigate("Root");
         }
         if (isvaild.data.verify === false) {
-          logToDB(
-            "In get data function - invalid token",
-            "requesting refresh token",
-            140,
-            "dddd"
-          );
           const refreshToken = await client.mutate({
             mutation: refreshCurrentToken,
             variables: {
@@ -186,29 +154,19 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           }
           store.setProfileId(data.data.defaultProfile.id);
           userStore.setCurrentProfile(data.data.defaultProfile);
-          logToDB(
-            "In get data function - got the new tokens",
-            "navigating to root",
-            164,
-            "dddd"
-          );
           navigation.navigate("Root");
         }
       } else {
         console.log("not found");
-        logToDB("In get data function", "token not found", 169, "dddd");
+        setIsloading(false);
       }
     } catch (e) {
       if (e instanceof Error) {
         //yaha sb krna
-        logToDB("In get data - catch block", e.message, 174, e.cause);
+        setIsloading(false);
       }
     }
   };
-  React.useEffect(() => {
-    getData();
-  }, []);
-
   const storeData = async (accessToken: string, refreshToken: string) => {
     try {
       const tokens = {

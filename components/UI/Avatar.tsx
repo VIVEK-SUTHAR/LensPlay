@@ -12,13 +12,13 @@ type AvatarProps = {
     borderWidth?: number
 }
 
-export default function Avatar({ src, height, width, borderRadius=500, borderColor='', borderWidth=0 }: AvatarProps) {
+export default function Avatar({ src, height, width, borderRadius=500, borderColor='transparent', borderWidth=0 }: AvatarProps) {
     return (
         <Image
             source={{
                 uri: getIPFSLink(src)
             }}
-            style={{ height: height, width: width, borderRadius: borderRadius, backgroundColor: dark_primary, borderColor: borderColor, borderWidth: borderWidth }}
+            style={{ height: height, width: width, borderRadius: borderRadius, backgroundColor: dark_primary, borderColor: borderColor, borderWidth: borderWidth,zIndex:9}}
         />
     )
 }

@@ -71,8 +71,9 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
   }
 
   useEffect(() => {
+    setIsLoading(true);
     getTrendingData();
-  }, []);
+  }, [currentTag]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -95,9 +96,9 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
               }}
               onTouchEndCapture={() => {
                 setCurrentTag(tags[index]);
-                setTrendingItems([]);
-                setIsLoading(true);
-                getTrendingData();
+                // setTrendingItems([]);
+                // setIsLoading(true);
+                // getTrendingData();
               }}
               key={index}
               style={{

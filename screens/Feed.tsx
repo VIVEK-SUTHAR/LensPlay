@@ -18,6 +18,7 @@ import { FeedItem } from "../types/Lens/Feed";
 import AnimatedLottieView from "lottie-react-native";
 import Heading from "../components/UI/Heading";
 import Button from "../components/UI/Button";
+import NewVideoCard from "../components/NewVideoCard"
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [feedData, setfeedData] = useState<FeedItem[]>([]);
@@ -100,7 +101,8 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
             />
           }
           renderItem={({ item }) => (
-            <VideoCard
+            <>
+            {/* <VideoCard
               id={item?.root?.id}
               title={item?.root?.metadata?.name}
               date={item.root.createdAt}
@@ -113,7 +115,25 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
               profileId={item?.root?.profile?.id}
               reaction={item?.root?.reaction}
               description={item?.root?.metadata?.description}
-            />
+              attributes={item?.root?.metadata?.attributes}
+              /> */}
+
+            <NewVideoCard
+              id={item?.root?.id}
+              title={item?.root?.metadata?.name}
+              date={item.root.createdAt}
+              playbackId={item?.root?.metadata?.media[0]?.original?.url}
+              banner={item?.root?.metadata?.cover}
+              avatar={item?.root?.profile?.picture?.original?.url}
+              uploadedBy={item?.root?.profile?.name || item.root.profile.handle}
+              stats={item?.root?.stats}
+              isFollowdByMe={item.root.profile.isFollowedByMe}
+              profileId={item?.root?.profile?.id}
+              reaction={item?.root?.reaction}
+              description={item?.root?.metadata?.description}
+              attributes={item?.root?.metadata?.attributes}
+              />
+              </>
           )}
         />
       ) : (
