@@ -100,21 +100,25 @@ const VideoCard = ({
             }}
           />
         </TouchableWithoutFeedback>
-        <View
-          style={{
-            position: "absolute",
-            bottom: 8,
-            right: 8,
-            width: "auto",
-            paddingHorizontal: 4,
-            paddingVertical: 2,
-            height: "auto",
-            backgroundColor: "rgba(0,0,0,0.9)",
-            borderRadius: 4,
-          }}
-        >
-          <Text style={{ color: "white", fontSize: 12 }}>{videoTime}</Text>
-        </View>
+        {videoTime?.length ? (
+          <View
+            style={{
+              position: "absolute",
+              bottom: 8,
+              right: 8,
+              width: "auto",
+              paddingHorizontal: 4,
+              paddingVertical: 2,
+              height: "auto",
+              backgroundColor: "rgba(0,0,0,0.9)",
+              borderRadius: 4,
+            }}
+          >
+            <Text style={{ color: "white", fontSize: 12 }}>{videoTime}</Text>
+          </View>
+        ) : (
+          <></>
+        )}
       </View>
       <TouchableWithoutFeedback
         onPress={() => {

@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   ScrollView,
   ToastAndroid,
-  TouchableHighlight,
   View,
 } from "react-native";
 import { useEffect, useState } from "react";
@@ -313,6 +312,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                           onPress={() => {
                             navigation.navigate("YourVideos", {
                               videos: allVideos,
+                              title: "Your videos",
                             });
                           }}
                         >
@@ -320,6 +320,9 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                             name={`chevron-right`}
                             size={24}
                             color="white"
+                            style={{
+                              display: allVideos?.length > 0 ? "flex" : "none",
+                            }}
                           />
                         </Pressable>
                       </Pressable>
@@ -349,11 +352,26 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                                   reaction={item?.reaction}
                                   width={300}
                                   height={150}
+                                  attributes={item?.metadata?.attributes}
                                 />
                               );
                             }
                           })}
                       </ScrollView>
+                      {allVideos?.length === 0 && (
+                        <View style={{ height: 50, justifyContent: "center" }}>
+                          <Heading
+                            title={`Looks like ${
+                              profile?.name || profile?.handle?.split(".")[0]
+                            } has not posted  any video`}
+                            style={{
+                              color: "gray",
+                              fontSize: 14,
+                              textAlign: "center",
+                            }}
+                          ></Heading>
+                        </View>
+                      )}
                     </View>
                     <View style={{ marginTop: 16 }}>
                       <View
@@ -371,11 +389,24 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                             fontWeight: "600",
                           }}
                         />
-                        <Feather
-                          name={`chevron-right`}
-                          size={24}
-                          color="white"
-                        />
+                        <Pressable
+                          onPress={() => {
+                            navigation.navigate("YourVideos", {
+                              videos: mirrorVideos,
+                              title: "Your mirrors",
+                            });
+                          }}
+                        >
+                          <Feather
+                            name={`chevron-right`}
+                            size={24}
+                            color="white"
+                            style={{
+                              display:
+                                mirrorVideos?.length > 0 ? "flex" : "none",
+                            }}
+                          />
+                        </Pressable>
                       </View>
                       <ScrollView
                         horizontal={true}
@@ -403,29 +434,21 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                                   reaction={item?.reaction}
                                   width={300}
                                   height={150}
+                                  attributes={item?.metadata?.attributes}
                                 />
                               );
                             }
                           })}
                       </ScrollView>
                       {mirrorVideos?.length === 0 && (
-                        <View style={{ maxHeight: 150 }}>
-                          <AnimatedLottieView
-                            autoPlay
-                            hardwareAccelerationAndroid={true}
-                            style={{
-                              height: "90%",
-                              alignSelf: "center",
-                            }}
-                            source={require("../assets/notfound.json")}
-                          />
+                        <View style={{ height: 50, justifyContent: "center" }}>
                           <Heading
                             title={`Seems like ${
                               profile?.name || profile?.handle?.split(".")[0]
                             } has not mirrored any video`}
                             style={{
                               color: "gray",
-                              fontSize: 12,
+                              fontSize: 14,
                               textAlign: "center",
                             }}
                           ></Heading>
@@ -449,7 +472,25 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                           fontWeight: "600",
                         }}
                       />
-                      <Feather name={`chevron-right`} size={24} color="white" />
+
+                      <Pressable
+                        onPress={() => {
+                          navigation.navigate("YourVideos", {
+                            videos: collectVideos,
+                            title: "Your collects",
+                          });
+                        }}
+                      >
+                        <Feather
+                          name={`chevron-right`}
+                          size={24}
+                          color="white"
+                          style={{
+                            display:
+                              collectVideos?.length > 0 ? "flex" : "none",
+                          }}
+                        />
+                      </Pressable>
                     </View>
                     <ScrollView
                       horizontal={true}
@@ -477,29 +518,21 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                                 reaction={item?.reaction}
                                 width={300}
                                 height={150}
+                                attributes={item?.metadata?.attributes}
                               />
                             );
                           }
                         })}
                     </ScrollView>
-                    {collectVideos.length === 0 && (
-                      <View style={{ maxHeight: 150 }}>
-                        <AnimatedLottieView
-                          autoPlay
-                          hardwareAccelerationAndroid={true}
-                          style={{
-                            height: "90%",
-                            alignSelf: "center",
-                          }}
-                          source={require("../assets/notfound.json")}
-                        />
+                    {collectVideos?.length === 0 && (
+                      <View style={{ height: 50, justifyContent: "center" }}>
                         <Heading
-                          title={`Seems like ${
+                          title={`Looks like ${
                             profile?.name || profile?.handle?.split(".")[0]
                           } has not collected any video`}
                           style={{
                             color: "gray",
-                            fontSize: 12,
+                            fontSize: 15,
                             textAlign: "center",
                           }}
                         ></Heading>
