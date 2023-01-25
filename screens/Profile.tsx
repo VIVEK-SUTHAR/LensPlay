@@ -32,14 +32,21 @@ import getMirrorVideos from "../apollo/Queries/getMirrorVideos";
 import getCollectVideos from "../apollo/Queries/getCollectVideos";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { LinearGradient } from "expo-linear-gradient";
+import { primary } from "../constants/Colors";
+import { createFreeSubscribe } from "../api";
 
-const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
+const ProfileScreen = ({
+  navigation,
+  route,
+}: RootTabScreenProps<"Account">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [allVideos, setallVideos] = useState<LensPublication[]>([]);
   const [mirrorVideos, setmirrorVideos] = useState<LensPublication[]>([]);
   const [collectVideos, setcollectVideos] = useState<LensPublication[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+  const [alreadyFollowing, setAlreadyFollowing] = useState(
+    route?.params?.isFollowdByMe || false
+  );
   const wallet = useWalletConnect();
 
   const theme = useThemeStore();
@@ -173,10 +180,12 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   />
                   <LinearGradient
                     colors={["transparent", "black"]}
+                    start={{ x: 1, y: 0 }}
+                    end={{ x: 1, y: 1 }}
                     style={{
                       position: "relative",
-                      height: 90,
-                      marginTop: -90,
+                      height: 50,
+                      marginTop: -50,
                       zIndex: 12,
                     }}
                   ></LinearGradient>
@@ -187,6 +196,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-between",
+                    alignItems: "center",
                     marginLeft: 18,
                     marginTop: "-20%",
                     zIndex: 12,
@@ -194,8 +204,8 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 >
                   <Avatar
                     src={getIPFSLink(profile?.picture.original.url)}
-                    height={100}
-                    width={100}
+                    height={90}
+                    width={90}
                     borderRadius={50}
                   />
                   <View
@@ -203,24 +213,52 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                       justifyContent: "flex-end",
                       marginRight: 16,
                       top: 0,
+                      marginTop: 24,
                     }}
                   >
                     <Button
-                      title={"Subscribe"}
+                      title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
                       width={"auto"}
-                      px={28}
+                      px={20}
                       py={8}
-                      bg={"#2AD95C"}
+                      bg={primary}
                       textStyle={{
                         fontSize: 16,
                         fontWeight: "700",
                         color: "black",
                       }}
-                      onPress={async () => {}}
+                      onPress={async () => {
+                        try {
+                          const data = await createFreeSubscribe(
+                            route.params.profileId,
+                            authStore.accessToken
+                          );
+                          if (data.data === null) {
+                            console.log(data.errors[0].message);
+                            ToastAndroid.show(
+                              "Currenctly not supported",
+                              ToastAndroid.SHORT
+                            );
+                          }
+                          if (data.data.proxyAction) {
+                            ToastAndroid.show(
+                              "Subscribed Successfully",
+                              ToastAndroid.SHORT
+                            );
+                          }
+                        } catch (error) {
+                          if (error instanceof Error) {
+                          }
+                        }
+                      }}
                     />
                   </View>
                 </View>
-                <View style={{ marginHorizontal: 15, marginTop: 4 }}>
+                <View
+                  style={{
+                    marginHorizontal: 15,
+                  }}
+                >
                   <View
                     style={{
                       flexDirection: "row",
@@ -231,7 +269,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                       <Heading
                         title={profile?.name}
                         style={{
-                          fontSize: 26,
+                          fontSize: 20,
                           marginTop: 8,
                           fontWeight: "bold",
                           color: "#FAF7F7",
@@ -241,27 +279,31 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                         title={`@${profile?.handle}`}
                         style={{
                           fontSize: 14,
-                          color: "white",
-                          opacity: 0.7,
-                          marginTop: -4,
+                          lineHeight: 16,
+                          fontWeight: "500",
+                          color: "gray",
                         }}
                       />
                     </View>
                   </View>
-                  <SubHeading
-                    title={extractURLs(profile?.bio)}
-                    style={{
-                      fontSize: 16,
-                      color: "#E9E8E8",
-                      textAlign: "left",
-                      marginTop: 4,
-                    }}
-                  />
+                  {profile?.bio ? (
+                    <SubHeading
+                      title={extractURLs(profile?.bio)}
+                      style={{
+                        fontSize: 16,
+                        color: "#E9E8E8",
+                        textAlign: "left",
+                        marginTop: 4,
+                      }}
+                    />
+                  ) : (
+                    <></>
+                  )}
                   <View
                     style={{
                       backgroundColor: "white",
-                      borderRadius: 20,
-                      height: 38,
+                      borderRadius: 8,
+                      paddingVertical: 8,
                       marginTop: 16,
                     }}
                   >
@@ -269,7 +311,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        height: "100%",
                         justifyContent: "space-around",
                         paddingHorizontal: 16,
                       }}
@@ -367,7 +408,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                             style={{
                               color: "gray",
                               fontSize: 14,
-                              textAlign: "center",
+                              // textAlign: "center",
                             }}
                           ></Heading>
                         </View>
@@ -449,7 +490,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                             style={{
                               color: "gray",
                               fontSize: 14,
-                              textAlign: "center",
                             }}
                           ></Heading>
                         </View>
@@ -533,7 +573,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                           style={{
                             color: "gray",
                             fontSize: 15,
-                            textAlign: "center",
                           }}
                         ></Heading>
                       </View>
