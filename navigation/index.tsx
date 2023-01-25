@@ -29,6 +29,7 @@ import NotificationSvg from "../components/Svgs/Notification";
 import ProfileSvg from "../components/Svgs/Profile";
 import { primary } from "../constants/Colors";
 import ProfileScreen from "../screens/Profile";
+import UserVideos from "../screens/UserVideos";
 
 export default function Navigation({
   colorScheme,
@@ -96,6 +97,16 @@ function RootNavigator() {
           animation: "slide_from_left",
           headerShown: true,
           headerTintColor: theme.PRIMARY,
+        }}
+      />
+      <Stack.Screen
+        name="YourVideos"
+        component={UserVideos}
+        options={{
+          animation: "slide_from_right",
+          headerShown: true,
+          headerTintColor: theme.PRIMARY,
+          headerTitle: "Your videos",
         }}
       />
     </Stack.Navigator>

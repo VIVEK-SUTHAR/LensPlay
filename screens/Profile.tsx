@@ -1,10 +1,12 @@
 import * as React from "react";
 import {
   Image,
+  Pressable,
   RefreshControl,
   SafeAreaView,
   ScrollView,
   ToastAndroid,
+  TouchableHighlight,
   View,
 } from "react-native";
 import { useEffect, useState } from "react";
@@ -147,39 +149,48 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
           <>
             {Boolean(!isLoading) && (
               <View style={{}}>
-                <LinearGradient
-                  colors={["#ffffff", "transparent"]}
-                  start={{x:0,y:0}}
-                  end={{x:1,}}
+                {/* <LinearGradient
+                  colors={["white", "transparent"]}
+                  start={{ x: 0, y: 0 }}
                   style={{
                     zIndex: 3,
                   }}
+                > */}
+                <View
+                  style={{
+                    height: 180,
+                    marginBottom: 34,
+                  }}
                 >
-                  <View
-                    style={{
-                      height: 180,
-                      marginBottom: 34,
+                  <Image
+                    source={{
+                      uri: getIPFSLink(profile?.coverPicture?.original.url),
                     }}
-                  >
-                    <Image
-                      source={{
-                        uri: getIPFSLink(profile?.coverPicture?.original.url),
-                      }}
-                      style={{
-                        height: "100%",
-                        width: "100%",
-                        resizeMode: "cover",
-                      }}
-                    />
-                  </View>
-                </LinearGradient>
+                    style={{
+                      height: "100%",
+                      width: "100%",
+                      resizeMode: "cover",
+                    }}
+                  />
+                  <LinearGradient
+                    colors={["transparent", "black"]}
+                    style={{
+                      position: "relative",
+                      height: 90,
+                      marginTop: -90,
+                      zIndex: 12,
+                    }}
+                  ></LinearGradient>
+                </View>
+
+                {/* </LinearGradient> */}
                 <View
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-between",
                     marginLeft: 18,
                     marginTop: "-20%",
-                    zIndex:5
+                    zIndex: 12,
                   }}
                 >
                   <Avatar
@@ -283,7 +294,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   </View>
                   <View style={{ marginTop: 24 }}>
                     <View>
-                      <View
+                      <Pressable
                         style={{
                           flexDirection: "row",
                           justifyContent: "space-between",
@@ -298,12 +309,20 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                             fontWeight: "600",
                           }}
                         />
-                        <Feather
-                          name={`chevron-right`}
-                          size={24}
-                          color="white"
-                        />
-                      </View>
+                        <Pressable
+                          onPress={() => {
+                            navigation.navigate("YourVideos", {
+                              videos: allVideos,
+                            });
+                          }}
+                        >
+                          <Feather
+                            name={`chevron-right`}
+                            size={24}
+                            color="white"
+                          />
+                        </Pressable>
+                      </Pressable>
                       <ScrollView
                         horizontal={true}
                         style={{ marginLeft: -12, marginTop: 8 }}

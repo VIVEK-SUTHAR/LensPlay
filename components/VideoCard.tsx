@@ -29,7 +29,7 @@ type videoPageProp = {
   description: string;
   width: string | number;
   height: number;
-  attributes: Attribute
+  attributes: Attribute;
 };
 
 const VideoCard = ({
@@ -45,9 +45,9 @@ const VideoCard = ({
   reaction,
   isFollowdByMe,
   description,
-  width='auto',
-  height=200,
-  attributes
+  width = "auto",
+  height = 200,
+  attributes,
 }: videoPageProp) => {
   const [videoTime, setVideoTime] = React.useState<Attribute[] | null>();
   React.useEffect(() => {
@@ -99,7 +99,6 @@ const VideoCard = ({
               resizeMode: "contain",
             }}
           />
-          
         </TouchableWithoutFeedback>
         <View
           style={{

@@ -63,7 +63,7 @@ const NewVideoCard = ({
     <View
       style={{
         margin: 10,
-        backgroundColor: "#5F6666",
+        backgroundColor: "black",
         borderRadius: 10,
         width: width,
         zIndex: 1,
@@ -100,7 +100,7 @@ const NewVideoCard = ({
               borderTopLeftRadius: 10,
               borderTopRightRadius: 10,
               resizeMode: "contain",
-              zIndex:8,
+              zIndex: 8,
             }}
           />
         </TouchableWithoutFeedback>
@@ -136,53 +136,63 @@ const NewVideoCard = ({
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "flex-start",
+            shadowColor: "black",
+            shadowOffset: {
+              height: 45,
+              width: 45,
+            },
+            shadowRadius: 1,
           }}
         >
-          <LinearGradient
+          {/* <LinearGradient
             colors={["#000000", "transparent"]}
-            end={{x:1,y:1.1}}
-            start={{x:1,y:0.3}}
-            locations={[0.1,1]}
+            end={{ x: 1, y: 1.1 }}
+            start={{ x: 1, y: 0.3 }}
+            locations={[0.1, 1]}
             style={{
               zIndex: 7,
               position: "absolute",
               top: -40,
-              left:-8,
+              left: -8,
               width: 380,
-              height:110,
-            //   borderWidth:2,
-            //   borderBottomLeftRadius:160,
-            //   borderBottomRightRadius:180,
-            //   borderBottomEndRadius:140 ,
-            //   borderBottomStartRadius:150,
-            //   borderBottomLeftRadius:40
-
+              height: 110,
+              //   borderWidth:2,
+              //   borderBottomLeftRadius:160,
+              //   borderBottomRightRadius:180,
+              //   borderBottomEndRadius:140 ,
+              //   borderBottomStartRadius:150,
+              //   borderBottomLeftRadius:40
             }}
-          >
-            <View
-              style={{
-                // width: 150,
-                // height: 50,
-                backgroundColor: "#E9E8E8",
-                shadowColor:'#00000',
-                shadowRadius:40,
-                shadowOffset:{width:20,height:30},
-                zIndex: 5,
-                // borderRadius: 80,
-              }}
-            />
-          </LinearGradient>
+          > */}
+          <View
+            style={{
+              // width: 150,
+              // height: 50,
+              // backgroundColor: "#E9E8E8",
+              // shadowColor: "#00000",
+              // shadowRadius: 40,
+              // shadowOffset: { width: 20, height: 30 },
+              zIndex: 5,
+              // borderRadius: 80,
+            }}
+          />
+          {/* </LinearGradient> */}
           <View style={{ flex: 0.95 }}>
             <Heading
               title={title}
-              style={{ fontSize: 16, fontWeight: "700", color: "white",zIndex:9 }}
+              style={{
+                fontSize: 16,
+                fontWeight: "700",
+                color: "white",
+                zIndex: 9,
+              }}
             />
             <SubHeading
               title={`By ${uploadedBy} on ${getDifference(date)}`}
-              style={{ fontSize: 12, color: "gray",zIndex:9 }}
+              style={{ fontSize: 12, color: "gray", zIndex: 9 }}
             />
           </View>
-          <Avatar src={getIPFSLink(avatar)} height={40} width={40}/>
+          <Avatar src={getIPFSLink(avatar)} height={40} width={40} />
         </View>
       </TouchableWithoutFeedback>
     </View>
