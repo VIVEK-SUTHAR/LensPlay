@@ -46,6 +46,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
     "https://res.cloudinary.com/djkwixcg8/image/upload/v1674534829/landing-2_byfsnm.webp",
     "https://res.cloudinary.com/djkwixcg8/image/upload/v1674534828/landing-3_gatvjy.webp",
   ];
+
   const { width } = Dimensions.get("screen");
   const imageW = width * 0.8;
   const imageH = imageW * 1.54;

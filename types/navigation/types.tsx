@@ -76,8 +76,9 @@ export type RootStackParamList = {
  * They will be type of Native Screen props
  */
 
-export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
-  NativeStackScreenProps<RootStackParamList, Screen>;
+export type RootStackScreenProps<
+  Screen extends keyof RootStackParamList
+> = NativeStackScreenProps<RootStackParamList, Screen>;
 
 /**
  * RootTabParamList defins the parameters recived by Screen which will be
@@ -98,8 +99,9 @@ export type UploadTabParamsList = {
   GoLive: undefined;
 };
 
-export type UploadScreenProps<Screen extends keyof UploadTabParamsList> =
-  NativeStackScreenProps<UploadTabParamsList, Screen>;
+export type UploadScreenProps<
+  Screen extends keyof UploadTabParamsList
+> = NativeStackScreenProps<UploadTabParamsList, Screen>;
 
 /**
  * RootTabScreenProps Means the Every Screen which is going to rendered by bottom tabs will receive
@@ -111,8 +113,9 @@ export type UploadScreenProps<Screen extends keyof UploadTabParamsList> =
  * -2nd is type of a parent navigator or any other source of secondary navigation
  */
 
-export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
-  CompositeScreenProps<
-    BottomTabScreenProps<RootTabParamList, Screen>,
-    NativeStackScreenProps<RootStackParamList>
-  >;
+export type RootTabScreenProps<
+  Screen extends keyof RootTabParamList
+> = CompositeScreenProps<
+  BottomTabScreenProps<RootTabParamList, Screen>,
+  NativeStackScreenProps<RootStackParamList>
+>;

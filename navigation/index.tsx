@@ -30,6 +30,7 @@ import ProfileSvg from "../components/Svgs/Profile";
 import { primary } from "../constants/Colors";
 import ProfileScreen from "../screens/Profile";
 import UserVideos from "../screens/UserVideos";
+import Waitlist from "../screens/Waitlist";
 
 export default function Navigation({
   colorScheme,
@@ -58,6 +59,11 @@ function RootNavigator() {
         },
       }}
     >
+      <Stack.Screen
+        name="Waitlist"
+        component={Waitlist}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="Login"
         component={Login}
