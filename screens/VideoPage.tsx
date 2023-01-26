@@ -174,7 +174,11 @@ const VideoPage = ({
           }
         }
       });
-      removeLike(authStore.accessToken, userStore.currentProfile?.id, route.params.id)
+      removeLike(
+        authStore.accessToken,
+        userStore.currentProfile?.id,
+        route.params.id
+      )
         .then((res) => {
           if (res) {
           }

@@ -195,6 +195,7 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
                   playbackId={item?.metadata?.media[0]?.original?.url}
                   reaction={item?.reaction}
                   description={item.metadata.description}
+                  attributes={item?.metadata?.attributes}
                 />
               );
             })}

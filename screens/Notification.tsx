@@ -8,15 +8,11 @@ import {
 import React, { useEffect, useState } from "react";
 import AnimatedLottieView from "lottie-react-native";
 import fetchNotifications from "../api/fetchNotifications";
-import {
-  useAuthStore,
-  useProfile,
-  useThemeStore,
-} from "../store/Store";
 import Heading from "../components/UI/Heading";
 import NotificationCard from "../components/Notifications";
 import Skleton from "../components/Notifications/Skleton";
 import Item from "../components/Notifications/index.d";
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 const Navigation = ({ navigation }: { navigation: any }) => {
   const [allNotifications, setAllNotifications] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -73,7 +69,7 @@ const Navigation = ({ navigation }: { navigation: any }) => {
         backgroundColor: "black",
       }}
     >
-      {allNotifications.length > 0 ? (
+      {allNotifications?.length ? (
         <FlatList
           data={allNotifications}
           keyExtractor={(item, index) => index.toString()}
@@ -109,7 +105,7 @@ const Navigation = ({ navigation }: { navigation: any }) => {
       ) : (
         <></>
       )}
-      {!isLoading && allNotifications.length === 0 ? (
+      {!isLoading && allNotifications?.length === 0 ? (
         <View
           style={{
             height: 500,

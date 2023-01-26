@@ -20,6 +20,13 @@ const { withWalletConnect } = require("@walletconnect/react-native-dapp");
 // the environment is set up appropriately
 registerRootComponent(
   withWalletConnect(App, {
+    clientMeta: {
+      name: "LensPlay",
+      description:
+        "Lensplay is a decentralized video-centric social graph built on top of Lens Protocol. It is designed to empower creators to own their social graph, forming a fully composable, user-owned social graph.",
+      icons: ["https://lensplay-site.vercel.app/lensplay.png"],
+      url: "https://lensplay-site.vercel.app",
+    },
     redirectUrl:
       Platform.OS === "web" ? window.location.origin : `${scheme}://`,
     storageOptions: {

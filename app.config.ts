@@ -91,7 +91,7 @@ const config: ExpoConfig = {
   slug: "LensPlay",
   version: "1.0.0",
   orientation: "portrait",
-  icon: "./assets/images/icon.png",
+  icon: "./assets/images/lensplay.png",
   scheme: "lensplay",
   userInterfaceStyle: "automatic",
   splash: {
@@ -101,6 +101,10 @@ const config: ExpoConfig = {
   },
   updates: {
     fallbackToCacheTimeout: 0,
+    url: "https://u.expo.dev/c3c41aca-6bdd-4196-a006-a524dcf26c4e",
+  },
+  runtimeVersion: {
+    policy: "sdkVersion",
   },
   assetBundlePatterns: ["**/*"],
   ios: {
@@ -115,6 +119,11 @@ const config: ExpoConfig = {
   },
   web: {
     favicon: "./assets/images/favicon.png",
+  },
+  extra: {
+    // eas: {
+    //   projectId: "c3c41aca-6bdd-4196-a006-a524dcf26c4e",
+    // },
   },
   plugins: [
     [

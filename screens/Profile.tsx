@@ -1,12 +1,12 @@
 import * as React from "react";
 import {
   Image,
+  Linking,
   Pressable,
   RefreshControl,
   SafeAreaView,
   ScrollView,
   ToastAndroid,
-  TouchableHighlight,
   View,
 } from "react-native";
 import { useEffect, useState } from "react";
@@ -33,14 +33,21 @@ import getMirrorVideos from "../apollo/Queries/getMirrorVideos";
 import getCollectVideos from "../apollo/Queries/getCollectVideos";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { LinearGradient } from "expo-linear-gradient";
+import { primary } from "../constants/Colors";
+import { createFreeSubscribe } from "../api";
 
-const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
+const ProfileScreen = ({
+  navigation,
+  route,
+}: RootTabScreenProps<"Account">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [allVideos, setallVideos] = useState<LensPublication[]>([]);
   const [mirrorVideos, setmirrorVideos] = useState<LensPublication[]>([]);
   const [collectVideos, setcollectVideos] = useState<LensPublication[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+  const [alreadyFollowing, setAlreadyFollowing] = useState(
+    route?.params?.isFollowdByMe || false
+  );
   const wallet = useWalletConnect();
 
   const theme = useThemeStore();
@@ -174,10 +181,12 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   />
                   <LinearGradient
                     colors={["transparent", "black"]}
+                    start={{ x: 1, y: 0 }}
+                    end={{ x: 1, y: 1 }}
                     style={{
                       position: "relative",
-                      height: 90,
-                      marginTop: -90,
+                      height: 50,
+                      marginTop: -50,
                       zIndex: 12,
                     }}
                   ></LinearGradient>
@@ -188,6 +197,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-between",
+                    alignItems: "center",
                     marginLeft: 18,
                     marginTop: "-20%",
                     zIndex: 12,
@@ -195,8 +205,8 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 >
                   <Avatar
                     src={getIPFSLink(profile?.picture.original.url)}
-                    height={100}
-                    width={100}
+                    height={90}
+                    width={90}
                     borderRadius={50}
                   />
                   <View
@@ -204,24 +214,35 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                       justifyContent: "flex-end",
                       marginRight: 16,
                       top: 0,
+                      marginTop: 24,
                     }}
                   >
                     <Button
-                      title={"Subscribe"}
+                      title={"Edit Profile"}
                       width={"auto"}
-                      px={28}
+                      px={20}
                       py={8}
-                      bg={"#2AD95C"}
+                      bg={primary}
                       textStyle={{
                         fontSize: 16,
                         fontWeight: "700",
+                        marginHorizontal: 4,
                         color: "black",
                       }}
-                      onPress={async () => {}}
+                      onPress={() => {
+                        Linking.openURL(
+                          `https://www.lensfrens.xyz/${userStore.currentProfile?.handle}`
+                        );
+                      }}
+                      icon={<Feather name="edit" size={14} color={"black"} />}
                     />
                   </View>
                 </View>
-                <View style={{ marginHorizontal: 15, marginTop: 4 }}>
+                <View
+                  style={{
+                    marginHorizontal: 15,
+                  }}
+                >
                   <View
                     style={{
                       flexDirection: "row",
@@ -232,7 +253,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                       <Heading
                         title={profile?.name}
                         style={{
-                          fontSize: 26,
+                          fontSize: 20,
                           marginTop: 8,
                           fontWeight: "bold",
                           color: "#FAF7F7",
@@ -242,27 +263,31 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                         title={`@${profile?.handle}`}
                         style={{
                           fontSize: 14,
-                          color: "white",
-                          opacity: 0.7,
-                          marginTop: -4,
+                          lineHeight: 16,
+                          fontWeight: "500",
+                          color: "gray",
                         }}
                       />
                     </View>
                   </View>
-                  <SubHeading
-                    title={extractURLs(profile?.bio)}
-                    style={{
-                      fontSize: 16,
-                      color: "#E9E8E8",
-                      textAlign: "left",
-                      marginTop: 4,
-                    }}
-                  />
+                  {profile?.bio ? (
+                    <SubHeading
+                      title={extractURLs(profile?.bio)}
+                      style={{
+                        fontSize: 16,
+                        color: "#E9E8E8",
+                        textAlign: "left",
+                        marginTop: 4,
+                      }}
+                    />
+                  ) : (
+                    <></>
+                  )}
                   <View
                     style={{
                       backgroundColor: "white",
-                      borderRadius: 20,
-                      height: 38,
+                      borderRadius: 8,
+                      paddingVertical: 8,
                       marginTop: 16,
                     }}
                   >
@@ -270,7 +295,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        height: "100%",
                         justifyContent: "space-around",
                         paddingHorizontal: 16,
                       }}
@@ -313,6 +337,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                           onPress={() => {
                             navigation.navigate("YourVideos", {
                               videos: allVideos,
+                              title: "Your videos",
                             });
                           }}
                         >
@@ -320,6 +345,9 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                             name={`chevron-right`}
                             size={24}
                             color="white"
+                            style={{
+                              display: allVideos?.length > 0 ? "flex" : "none",
+                            }}
                           />
                         </Pressable>
                       </Pressable>
@@ -349,11 +377,26 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                                   reaction={item?.reaction}
                                   width={300}
                                   height={150}
+                                  attributes={item?.metadata?.attributes}
                                 />
                               );
                             }
                           })}
                       </ScrollView>
+                      {allVideos?.length === 0 && (
+                        <View style={{ height: 50, justifyContent: "center" }}>
+                          <Heading
+                            title={`Looks like ${
+                              profile?.name || profile?.handle?.split(".")[0]
+                            } has not posted  any video`}
+                            style={{
+                              color: "gray",
+                              fontSize: 14,
+                              // textAlign: "center",
+                            }}
+                          ></Heading>
+                        </View>
+                      )}
                     </View>
                     <View style={{ marginTop: 16 }}>
                       <View
@@ -371,11 +414,24 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                             fontWeight: "600",
                           }}
                         />
-                        <Feather
-                          name={`chevron-right`}
-                          size={24}
-                          color="white"
-                        />
+                        <Pressable
+                          onPress={() => {
+                            navigation.navigate("YourVideos", {
+                              videos: mirrorVideos,
+                              title: "Your mirrors",
+                            });
+                          }}
+                        >
+                          <Feather
+                            name={`chevron-right`}
+                            size={24}
+                            color="white"
+                            style={{
+                              display:
+                                mirrorVideos?.length > 0 ? "flex" : "none",
+                            }}
+                          />
+                        </Pressable>
                       </View>
                       <ScrollView
                         horizontal={true}
@@ -403,30 +459,21 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                                   reaction={item?.reaction}
                                   width={300}
                                   height={150}
+                                  attributes={item?.metadata?.attributes}
                                 />
                               );
                             }
                           })}
                       </ScrollView>
                       {mirrorVideos?.length === 0 && (
-                        <View style={{ maxHeight: 150 }}>
-                          <AnimatedLottieView
-                            autoPlay
-                            hardwareAccelerationAndroid={true}
-                            style={{
-                              height: "90%",
-                              alignSelf: "center",
-                            }}
-                            source={require("../assets/notfound.json")}
-                          />
+                        <View style={{ height: 50, justifyContent: "center" }}>
                           <Heading
                             title={`Seems like ${
                               profile?.name || profile?.handle?.split(".")[0]
                             } has not mirrored any video`}
                             style={{
                               color: "gray",
-                              fontSize: 12,
-                              textAlign: "center",
+                              fontSize: 14,
                             }}
                           ></Heading>
                         </View>
@@ -449,7 +496,25 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                           fontWeight: "600",
                         }}
                       />
-                      <Feather name={`chevron-right`} size={24} color="white" />
+
+                      <Pressable
+                        onPress={() => {
+                          navigation.navigate("YourVideos", {
+                            videos: collectVideos,
+                            title: "Your collects",
+                          });
+                        }}
+                      >
+                        <Feather
+                          name={`chevron-right`}
+                          size={24}
+                          color="white"
+                          style={{
+                            display:
+                              collectVideos?.length > 0 ? "flex" : "none",
+                          }}
+                        />
+                      </Pressable>
                     </View>
                     <ScrollView
                       horizontal={true}
@@ -477,30 +542,21 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                                 reaction={item?.reaction}
                                 width={300}
                                 height={150}
+                                attributes={item?.metadata?.attributes}
                               />
                             );
                           }
                         })}
                     </ScrollView>
-                    {collectVideos.length === 0 && (
-                      <View style={{ maxHeight: 150 }}>
-                        <AnimatedLottieView
-                          autoPlay
-                          hardwareAccelerationAndroid={true}
-                          style={{
-                            height: "90%",
-                            alignSelf: "center",
-                          }}
-                          source={require("../assets/notfound.json")}
-                        />
+                    {collectVideos?.length === 0 && (
+                      <View style={{ height: 50, justifyContent: "center" }}>
                         <Heading
-                          title={`Seems like ${
+                          title={`Looks like ${
                             profile?.name || profile?.handle?.split(".")[0]
                           } has not collected any video`}
                           style={{
                             color: "gray",
-                            fontSize: 12,
-                            textAlign: "center",
+                            fontSize: 15,
                           }}
                         ></Heading>
                       </View>
