@@ -1,5 +1,11 @@
 import create from "zustand";
-import { IAuthStore, IThemeStore, UserStore } from "../types/Store";
+import {
+  IAuthStore,
+  IThemeStore,
+  ToastProps,
+  ToastType,
+  UserStore,
+} from "../types/Store";
 
 export const useAuthStore = create<IAuthStore>((set) => ({
   accessToken: "",
@@ -19,6 +25,14 @@ export const useThemeStore = create<IThemeStore>((set) => ({
   PRIMARY: "#2AD95C",
   setPrimaryColor: (newPrimaryColor: string) =>
     set({ PRIMARY: newPrimaryColor }),
+}));
+
+export const useToast = create<ToastProps>((set) => ({
+  isVisible: false,
+  message: "",
+  timeOut: 3000,
+  show: (message: string, type: ToastType, isVisible: boolean) =>
+    set({ isVisible: isVisible, message: message, type: type }),
 }));
 
 const useStore = create((set) => ({

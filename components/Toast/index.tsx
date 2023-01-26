@@ -1,32 +1,52 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import { Animated, Easing, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import Constants from "expo-constants";
+import { useToast } from "../../store/Store";
+import { ToastType } from "../../types/Store";
 
 const StatusBarHeight = Constants.statusBarHeight;
 
-type ToastProps = {
-  message: string;
-  timeout?: number;
-  type?: ToastTypes;
-};
-enum ToastTypes {
-  SUCCESS = "SUCCESS",
-  ERROR = "ERROR",
-  INFO = "INFO",
-}
-const Toast = ({
-  message,
-  timeout = 2000,
-  type = ToastTypes.INFO,
-}: ToastProps) => {
-  const [isVisible, setIsVisible] = useState<boolean>(false);
-  setTimeout(() => {
-    setIsVisible(false);
-  }, timeout);
+const Toast = () => {
+  const toastStore = useToast();
+
+  const slideIn = useRef(new Animated.Value(-100)).current;
+
+  useEffect(() => {
+    if (toastStore.isVisible === true) {
+      Animated.timing(slideIn, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+      setTimeout(() => {
+        toastStore.show("", ToastType.INFO, false);
+      }, 5000);
+    }
+  }, [toastStore.isVisible]);
   return (
-    <View style={[styles.conatiner, { display: isVisible ? "flex" : "none" }]}>
-      <Text>index</Text>
-    </View>
+    <Animated.View
+      style={[
+        styles.conatiner,
+        {
+          display: toastStore.isVisible ? "flex" : "none",
+          borderColor:
+            toastStore.type === ToastType.ERROR
+              ? "red"
+              : toastStore.type === ToastType.INFO
+              ? "white"
+              : "#2AD95C",
+          transform: [
+            {
+              translateY: slideIn,
+            },
+          ],
+        },
+      ]}
+    >
+      <Text style={{ fontSize: 20, color: "white", textAlign: "center" }}>
+        {toastStore.message}
+      </Text>
+    </Animated.View>
   );
 };
 
@@ -36,13 +56,16 @@ const styles = StyleSheet.create({
   conatiner: {
     position: "absolute",
     height: 60,
-    bottom: StatusBarHeight * 2,
+    top: StatusBarHeight + 10,
+    // bottom: StatusBarHeight * 2,
     width: "95%",
     alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
     zIndex: 100,
     borderRadius: 5,
     borderColor: "#2AD95C",
     borderWidth: 1,
-    backgroundColor: "rgba(0,0,0,0.9)",
+    backgroundColor: "black",
   },
 });

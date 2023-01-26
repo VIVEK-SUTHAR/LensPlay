@@ -15,7 +15,12 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import React, { useEffect } from "react";
-import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
+import {
+  useAuthStore,
+  useProfile,
+  useThemeStore,
+  useToast,
+} from "../store/Store";
 import { useState } from "react";
 import {
   addLike,
@@ -39,6 +44,7 @@ import { RootStackScreenProps } from "../types/navigation/types";
 import CommentSkeleton from "../components/UI/CommentSkeleton";
 import formatInteraction from "../utils/formatInteraction";
 import Toast from "../components/Toast";
+import { ToastType } from "../types/Store";
 
 const VideoPage = ({
   navigation,
@@ -47,6 +53,8 @@ const VideoPage = ({
   const theme = useThemeStore();
   const authStore = useAuthStore();
   const userStore = useProfile();
+  const toast = useToast();
+
   const [comments, setComments] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -238,6 +246,10 @@ const VideoPage = ({
             py={8}
             my={4}
             textStyle={{ fontSize: 18, fontWeight: "600", textAlign: "center" }}
+            onPress={() => {
+              setIsmodalopen(false);
+              toast.show("Collect Submitted", ToastType.SUCCESS, true);
+            }}
           />
         </View>
       </Drawer>
@@ -437,6 +449,9 @@ const VideoPage = ({
               type={"outline"}
               icon={<MaterialIcons name="report" size={16} color="white" />}
               textStyle={{ color: "white", marginHorizontal: 4 }}
+              onPress={() => {
+                toast.show("Thanks for reporting", ToastType.INFO, true);
+              }}
             />
           </ScrollView>
           <View>
