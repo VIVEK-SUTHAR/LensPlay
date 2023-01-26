@@ -38,6 +38,7 @@ import Button from "../components/UI/Button";
 import { RootStackScreenProps } from "../types/navigation/types";
 import CommentSkeleton from "../components/UI/CommentSkeleton";
 import formatInteraction from "../utils/formatInteraction";
+import Toast from "../components/Toast";
 
 const VideoPage = ({
   navigation,
@@ -435,7 +436,6 @@ const VideoPage = ({
               width={"auto"}
               type={"outline"}
               icon={<MaterialIcons name="report" size={16} color="white" />}
-              onPress={onShare}
               textStyle={{ color: "white", marginHorizontal: 4 }}
             />
           </ScrollView>

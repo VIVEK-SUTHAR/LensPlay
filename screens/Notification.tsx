@@ -7,12 +7,13 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import AnimatedLottieView from "lottie-react-native";
-import fetchNotifications from "../api/fetchNotifications";
 import Heading from "../components/UI/Heading";
 import NotificationCard from "../components/Notifications";
 import Skleton from "../components/Notifications/Skleton";
 import Item from "../components/Notifications/index.d";
 import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
+import notificationsQuery from "../apollo/Queries/notificationsQuery";
+import { client } from "../apollo/client";
 const Navigation = ({ navigation }: { navigation: any }) => {
   const [allNotifications, setAllNotifications] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -22,17 +23,16 @@ const Navigation = ({ navigation }: { navigation: any }) => {
   const theme = useThemeStore();
   const userStore = useProfile();
 
+  useEffect(() => {
+    getAllNotifications();
+  }, []);
+
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      const data = await fetchNotifications(
-        userStore.currentProfile?.id,
-        authStore.accessToken
-      );
-      if (data == allNotifications) {
+      let newdata = await getAllNotifications();
+      if (newdata?.data?.result?.items === allNotifications) {
         ToastAndroid.show("No new notifications", ToastAndroid.SHORT);
-      } else {
-        setAllNotifications(data);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -42,25 +42,31 @@ const Navigation = ({ navigation }: { navigation: any }) => {
       setRefreshing(false);
     }
   };
-  useEffect(() => {
+
+  async function getAllNotifications() {
     setIsLoading(true);
-    fetchNotifications(userStore.currentProfile?.id, authStore.accessToken)
-      .then((allNotification) => {
-        setAllNotifications(allNotification);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        if (error instanceof Error) {
-          throw new Error(
-            "Some thing Went wrong while fetching notifications",
-            { cause: error.cause }
-          );
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
+    try {
+      const notificationdata = await client.query({
+        query: notificationsQuery,
+        variables: {
+          pid: userStore?.currentProfile?.id,
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${authStore.accessToken}`,
+          },
+        },
       });
-  }, []);
+      setAllNotifications(notificationdata?.data?.result?.items);
+      return notificationdata;
+    } catch (error) {
+      if (error instanceof Error) {
+        return;
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <SafeAreaView
@@ -92,6 +98,7 @@ const Navigation = ({ navigation }: { navigation: any }) => {
       )}
       {isLoading ? (
         <>
+          <Skleton />
           <Skleton />
           <Skleton />
           <Skleton />
