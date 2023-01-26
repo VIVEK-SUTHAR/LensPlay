@@ -22,6 +22,16 @@ const Toast = () => {
         toastStore.show("", ToastType.INFO, false);
       }, 5000);
     }
+    if (toastStore.isVisible === false) {
+      Animated.timing(slideIn, {
+        toValue: -100,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+      // setTimeout(() => {
+      //   toastStore.show("", ToastType.INFO, false);
+      // }, 5000);
+    }
   }, [toastStore.isVisible]);
   return (
     <Animated.View
