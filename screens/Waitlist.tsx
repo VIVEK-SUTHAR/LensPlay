@@ -1,7 +1,12 @@
 import React from "react";
-import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Linking,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import SubHeading from "../components/UI/SubHeading";
-import waitlistPanda from "@zootools/waitlist-js";
 
 export default function Waitlist() {
   return (
@@ -15,7 +20,11 @@ export default function Waitlist() {
     >
       <TouchableOpacity
         style={{ width: "80%" }}
-        onPress={() => waitlistPanda.init()}
+        onPress={() =>
+          Linking.openURL(
+            "https://form.waitlistpanda.com/go/wUIsEr2CcnPtycRD68nc"
+          )
+        }
       >
         <View
           style={{
