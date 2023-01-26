@@ -11,6 +11,7 @@ const VideoCardSkeleton = () => {
         borderRadius: 10,
         margin: 10,
         backgroundColor: '#111111',
+        width:360
       }}
     >
       <View
