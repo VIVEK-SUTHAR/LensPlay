@@ -18,6 +18,7 @@ import React, { useEffect } from "react";
 import {
   useAuthStore,
   useProfile,
+  useReactionStore,
   useThemeStore,
   useToast,
 } from "../store/Store";
@@ -54,7 +55,7 @@ const VideoPage = ({
   const authStore = useAuthStore();
   const userStore = useProfile();
   const toast = useToast();
-
+  const likedPublication=useReactionStore();
   const [comments, setComments] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -73,9 +74,17 @@ const VideoPage = ({
   const [isalreadyDisLiked, setisalreadyDisLiked] = useState(
     route.params.reaction === "DOWNVOTE" ? true : false
   );
+  console.log(likedPublication.likedPublication);
+  const thumbup=likedPublication.likedPublication;
 
   useEffect(() => {
     fetchComments();
+    thumbup.map((publication)=>{
+      if(publication.id===route.params.id){
+        setisalreadyLiked(true);
+        setLikes(publication.likes+1)
+      }
+    })
   }, [playbackId]);
 
   useEffect(() => {
@@ -153,8 +162,10 @@ const VideoPage = ({
         userStore.currentProfile?.id,
         route.params.id,
         "UPVOTE"
-      ).then((res) => {
+        ).then((res) => {
         if (res.addReaction === null) {
+          likedPublication.addToReactedPublications(route.params.id,likes)
+          console.log(likedPublication.likedPublication);
           console.log("liked");
         }
       });

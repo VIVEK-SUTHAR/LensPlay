@@ -35,6 +35,11 @@ export const useToast = create<ToastProps>((set) => ({
     set({ isVisible: isVisible, message: message, type: type }),
 }));
 
+export const useReactionStore=create((set)=>({
+  likedPublication:[{likes:0,id:0}],
+  addToReactedPublications:(publicationId:string,likes:any)=>set(((state)=>({likedPublication:[...state.likedPublication,{likes:likes,id:publicationId}]})))
+}))
+
 const useStore = create((set) => ({
   currentProfile: null,
   accessToken: "",
@@ -44,6 +49,7 @@ const useStore = create((set) => ({
   isOpen: false,
   currentIndex: 0,
   profileData: null,
+
   setProfiledata: (value: any) => set({ profileData: value }),
   setAccessToken: (value: string) => set({ accessToken: value }),
   setRefreshToken: (value: string) => set({ refreshToken: value }),
