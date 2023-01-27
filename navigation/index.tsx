@@ -26,7 +26,7 @@ import Search from "../screens/Search";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import Channel from "../screens/Channel";
-import { useThemeStore } from "../store/Store";
+import { useProfile, useThemeStore } from "../store/Store";
 import ProfileScreen from "../screens/Profile";
 import UserVideos from "../screens/UserVideos";
 import {
@@ -34,7 +34,11 @@ import {
   HOME_OUTLINE,
   NOTI_FILLED,
   NOTI_OUTLINE,
+  UPLOAD_FILLED,
+  UPLOAD_OUTLINE,
 } from "../components/Icons";
+import Avatar from "../components/UI/Avatar";
+import getIPFSLink from "../utils/getIPFSLink";
 
 export default function Navigation({
   colorScheme,
@@ -122,7 +126,7 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
   const theme = useThemeStore();
-
+  const user = useProfile();
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
@@ -294,11 +298,21 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <Feather
+                <Image
+                  source={{
+                    uri: focused ? UPLOAD_FILLED : UPLOAD_OUTLINE,
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    height: 26,
+                    width: 26,
+                  }}
+                />
+                {/* <Feather
                   name={"plus-circle"}
                   color={focused ? theme.PRIMARY : "white"}
                   size={28}
-                />
+                /> */}
               </View>
             );
           },
@@ -358,10 +372,12 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <FontAwesome
-                  name={focused ? "user-circle" : "user-circle-o"}
-                  color={focused ? theme.PRIMARY : "white"}
-                  size={25}
+                <Avatar
+                  src={getIPFSLink(
+                    user?.currentProfile?.picture?.original?.url
+                  )}
+                  height={28}
+                  width={28}
                 />
               </View>
             );

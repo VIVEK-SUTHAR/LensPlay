@@ -40,12 +40,12 @@ const Toast = () => {
         styles.conatiner,
         {
           display: toastStore.isVisible ? "flex" : "none",
-          borderColor:
-            toastStore.type === ToastType.ERROR
-              ? "red"
-              : toastStore.type === ToastType.INFO
-              ? "white"
-              : "#22ae4a",
+          // borderColor:
+          //   toastStore.type === ToastType.ERROR
+          //     ? "red"
+          //     : toastStore.type === ToastType.INFO
+          //     ? "white" 
+          //     : "#22ae4a",
           backgroundColor:
             toastStore.type === ToastType.ERROR
               ? "#ff4d4d"
@@ -69,10 +69,10 @@ const Toast = () => {
             : "check-circle-outline"
         }
         color={"white"}
-        style={{ marginHorizontal: 8 }}
+        style={{marginHorizontal:2}}
         size={24}
       />
-      <Text style={{ fontSize: 16, color: "white", textAlign: "center" }}>
+      <Text style={{ fontSize: 16, color: "white", textAlign: "center",marginHorizontal:2 }}>
         {toastStore.message}
       </Text>
     </Animated.View>
@@ -84,19 +84,19 @@ export default Toast;
 const styles = StyleSheet.create({
   conatiner: {
     position: "absolute",
-    height: 60,
+    height: 40,
     flexDirection: "row",
-    top: StatusBarHeight + 10,
+    top: StatusBarHeight + 20,
     // bottom: StatusBarHeight * 2,
     width: "auto",
     alignSelf: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 8,
     alignItems: "center",
     zIndex: 100,
-    borderRadius: 5,
-    borderColor: "#2AD95C",
-    borderWidth: 1,
+    borderRadius: 100,
+    // borderColor: "#2AD95C",
+    // borderWidth: 1,
     backgroundColor: "black",
   },
 });

@@ -68,6 +68,7 @@ export type RootStackParamList = {
     isFollowdByMe?: boolean;
     name?: string;
     ethAddress?: string;
+    handle?: string;
   };
   Search: undefined;
   YourVideos: {

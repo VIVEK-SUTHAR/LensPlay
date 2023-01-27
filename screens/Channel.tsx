@@ -542,29 +542,29 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     >
                       {Boolean(collectVideos) &&
                         collectVideos.map((item: LensPublication) => {
-                            return (
-                              <VideoCard
-                                key={item?.id}
-                                id={item?.id}
-                                date={convertDate(item?.createdAt)}
-                                banner={item?.metadata?.cover}
-                                title={item?.metadata?.name}
-                                avatar={item?.profile?.picture?.original?.url}
-                                playbackId={
-                                  item?.metadata?.media[0]?.original?.url
-                                }
-                                uploadedBy={item?.profile?.name}
-                                profileId={item?.profile?.id}
-                                stats={item?.stats}
-                                isFollowdByMe={item.profile.isFollowedByMe}
-                                reaction={item?.reaction}
-                                width={300}
-                                height={150}
-                                description={item?.metadata?.description}
-                                ethAddress={item?.profile.ownedBy}
-                                attributes={item?.metadata?.attributes}
-                              />
-                            );
+                          return (
+                            <VideoCard
+                              key={item?.id}
+                              id={item?.id}
+                              date={convertDate(item?.createdAt)}
+                              banner={item?.metadata?.cover}
+                              title={item?.metadata?.name}
+                              avatar={item?.profile?.picture?.original?.url}
+                              playbackId={
+                                item?.metadata?.media[0]?.original?.url
+                              }
+                              uploadedBy={item?.profile?.name}
+                              profileId={item?.profile?.id}
+                              stats={item?.stats}
+                              isFollowdByMe={item.profile.isFollowedByMe}
+                              reaction={item?.reaction}
+                              width={300}
+                              height={150}
+                              description={item?.metadata?.description}
+                              ethAddress={item?.profile.ownedBy}
+                              attributes={item?.metadata?.attributes}
+                            />
+                          );
                         })}
                     </ScrollView>
                     {collectVideos?.length === 0 && (
