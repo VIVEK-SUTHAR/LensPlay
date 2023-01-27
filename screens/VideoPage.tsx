@@ -6,6 +6,8 @@ import {
   ToastAndroid,
   BackHandler,
   Linking,
+  FlatList,
+  RefreshControl
 } from "react-native";
 import {
   AntDesign,
@@ -46,6 +48,7 @@ import CommentSkeleton from "../components/UI/CommentSkeleton";
 import formatInteraction from "../utils/formatInteraction";
 import Toast from "../components/Toast";
 import { ToastType } from "../types/Store";
+import { Comments } from "../types/Lens/Feed";
 
 const VideoPage = ({
   navigation,
@@ -56,18 +59,21 @@ const VideoPage = ({
   const userStore = useProfile();
   const toast = useToast();
   const likedPublication = useReactionStore();
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState<Comments[]>([]);
   const [isLiked, setIsLiked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const [likes, setLikes] = useState<number>(route.params.stats?.totalUpvotes);
+  
   const [inFullscreen, setInFullsreen] = useState(false);
   const [descOpen, setDescOpen] = useState(false);
-  const [alreadyFollowing, setAlreadyFollowing] = useState(
+  const [alreadyFollowing, setAlreadyFollowing] = useState<boolean>(
     route?.params?.isFollowdByMe || false
   );
-  const [ismodalopen, setIsmodalopen] = useState(false);
-  const [isMute, setIsMute] = useState(false);
+  const [ismodalopen, setIsmodalopen] = useState<boolean>(false);
+  const [isMute, setIsMute] = useState<boolean>(false);
   const playbackId = route.params.playbackId;
+  
   const [isalreadyLiked, setisalreadyLiked] = useState(
     route.params.reaction === "UPVOTE" ? true : false
   );
@@ -112,7 +118,7 @@ const VideoPage = ({
   async function checkFollowed(): Promise<void> {
     const data = await isFollowedByMe(
       route.params.profileId,
-      authStore.accessToken
+      authStore.accessToken,
     );
     if (data.data.profile.isFollowedByMe) {
       setAlreadyFollowing(true);
@@ -120,6 +126,8 @@ const VideoPage = ({
     }
   }
 
+  const onRefresh = async () => {
+  };
   async function fetchComments(): Promise<void> {
     try {
       const data = await client.query({
@@ -135,6 +143,8 @@ const VideoPage = ({
       });
       setComments([]);
       setComments(data.data.publications.items);
+      console.log(data.data.publications.items[0].id);
+      
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Can't fetch comments", { cause: error.cause });
@@ -283,7 +293,7 @@ const VideoPage = ({
       </Drawer>
       <ScrollView>
         <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
-          <View>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
             <Heading
               title={route.params.title}
               style={{
@@ -292,6 +302,26 @@ const VideoPage = ({
                 color: "white",
               }}
             />
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Feather
+                name={`chevron-${descOpen ? "up" : "down"}`}
+                size={28}
+                color="white"
+                onPress={() => setDescOpen(!descOpen)}
+              />
+            </View>
+          </View>
+          <View>
+            {descOpen ? (
+              <View style={{ marginTop: 8 }}>
+                <SubHeading
+                  title={route.params.description}
+                  style={{ color: "white", fontSize: 14 }}
+                />
+              </View>
+            ) : (
+              <></>
+            )}
           </View>
           <View
             style={{
@@ -357,26 +387,7 @@ const VideoPage = ({
                 }
               }}
             />
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Feather
-                name={`chevron-${descOpen ? "up" : "down"}`}
-                size={28}
-                color="white"
-                onPress={() => setDescOpen(!descOpen)}
-              />
-            </View>
-          </View>
-          <View>
-            {descOpen ? (
-              <View style={{ marginTop: 8 }}>
-                <SubHeading
-                  title={route.params.description}
-                  style={{ color: "white", fontSize: 14, marginLeft: 4 }}
-                />
-              </View>
-            ) : (
-              <></>
-            )}
+            
           </View>
           <ScrollView
             style={{
@@ -386,7 +397,7 @@ const VideoPage = ({
             showsHorizontalScrollIndicator={false}
           >
             <Button
-              title={formatInteraction(likes) || 0}
+              title={formatInteraction(likes) || '0'}
               mx={4}
               px={10}
               width={"auto"}
@@ -537,8 +548,7 @@ const VideoPage = ({
                     commentId={item?.id}
                   />
                 );
-              })
-            )}
+              }))}
           </View>
         </View>
       </ScrollView>

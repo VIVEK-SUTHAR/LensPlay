@@ -1,3 +1,5 @@
+import { Profile, Stats } from ".";
+
 export interface Feed {
   data: Data;
 }
@@ -168,6 +170,23 @@ export interface ProfileStats {
   totalMirrors: number;
   totalPublications: number;
   totalCollects: number;
+}
+
+export interface VideoPageStats {
+  __typename: string;
+  totalAmountOfCollects: number;
+  totalAmountOfComments: number;
+  totalAmountOfMirrors:  number;
+  totalDownvotes:        number;
+  totalUpvotes:          number;
+}
+
+export interface Comments {
+  profile: Profile,
+  createdAt: string;
+  metadata: Metadata;
+  stats: Stats;
+  id: string;
 }
 
 export interface RootStats {

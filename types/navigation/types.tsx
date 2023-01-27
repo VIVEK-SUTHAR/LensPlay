@@ -4,7 +4,7 @@ import {
   NavigatorScreenParams,
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { LensPublication } from "../Lens/Feed";
+import { LensPublication, VideoPageStats } from "../Lens/Feed";
 
 /**
  
@@ -12,7 +12,7 @@ import { LensPublication } from "../Lens/Feed";
 
                                    Stack-Navigator
     -------------------------------------------------------------------------------------                               
-    -Login  |          -Root           | -VideoPage    |  -Proifle  | -Search | -Channel
+    -Login  |          -Root           | -VideoPage    |  -Profile  | -Search | -Channel
     -------------------------------------------------------------------------------------                    
                     ->Home     
                     ->Trending
@@ -62,6 +62,17 @@ export type RootStackParamList = {
   Login: undefined;
   VideoPage: {
     publicationId: string;
+    isFollowdByMe?: boolean;
+    id: string;
+    playbackId: string;
+    reaction: string;
+    stats: VideoPageStats;
+    profileId: string;
+    title: string;
+    uploadedBy: string;
+    banner: string;
+    description: string;
+    avatar: string;
   };
   Channel: {
     profileId: string;
