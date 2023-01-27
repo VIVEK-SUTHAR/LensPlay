@@ -218,7 +218,7 @@ const ProfileScreen = ({
                     }}
                   >
                     <Button
-                      title={"Edit Profile"}
+                      title={"Edit Channel"}
                       width={"auto"}
                       px={20}
                       py={8}

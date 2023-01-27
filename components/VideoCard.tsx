@@ -30,7 +30,8 @@ type videoPageProp = {
   description: string;
   width: string | number;
   height: number;
-  attributes: Attribute;
+  attributes: Attribute[];
+  ethAddress?: string;
 };
 
 const VideoCard = ({
@@ -49,6 +50,7 @@ const VideoCard = ({
   width = "auto",
   height = 200,
   attributes,
+  ethAddress,
 }: videoPageProp) => {
   const [videoTime, setVideoTime] = React.useState<Attribute[] | null>();
   React.useEffect(() => {
@@ -115,7 +117,9 @@ const VideoCard = ({
               borderRadius: 4,
             }}
           >
-            <Text style={{ color: "white", fontSize: 12 }}>{formatTime(videoTime)}</Text>
+            <Text style={{ color: "white", fontSize: 12 }}>
+              {formatTime(videoTime)}
+            </Text>
           </View>
         ) : (
           <></>
@@ -127,6 +131,7 @@ const VideoCard = ({
             profileId: profileId,
             isFollowdByMe: isFollowdByMe,
             name: uploadedBy,
+            ethAddress: ethAddress,
           });
         }}
       >

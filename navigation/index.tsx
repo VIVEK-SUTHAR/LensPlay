@@ -5,7 +5,12 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import { ColorSchemeName, TouchableWithoutFeedback, View } from "react-native";
+import {
+  ColorSchemeName,
+  Image,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import VideoPage from "../screens/VideoPage";
 import Feed from "../screens/Feed";
 import Login from "../screens/Login";
@@ -24,6 +29,12 @@ import Channel from "../screens/Channel";
 import { useThemeStore } from "../store/Store";
 import ProfileScreen from "../screens/Profile";
 import UserVideos from "../screens/UserVideos";
+import {
+  HOME_FILLED,
+  HOME_OUTLINE,
+  NOTI_FILLED,
+  NOTI_OUTLINE,
+} from "../components/Icons";
 
 export default function Navigation({
   colorScheme,
@@ -89,7 +100,7 @@ function RootNavigator() {
         component={Channel}
         options={{
           animation: "slide_from_left",
-          headerShown: true,
+          headerShown: false,
           headerTintColor: theme.PRIMARY,
         }}
       />
@@ -220,10 +231,15 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <Ionicons
-                  name={focused ? "md-home" : "md-home-outline"}
-                  color={focused ? theme.PRIMARY : "white"}
-                  size={26}
+                <Image
+                  source={{
+                    uri: focused ? HOME_FILLED : HOME_OUTLINE,
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    height: 26,
+                    width: 26,
+                  }}
                 />
               </View>
             );
@@ -307,10 +323,15 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <Fontisto
-                  name={focused ? "bell-alt" : "bell"}
-                  color={focused ? theme.PRIMARY : "white"}
-                  size={25}
+                <Image
+                  source={{
+                    uri: focused ? NOTI_FILLED : NOTI_OUTLINE,
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    height: 26,
+                    width: 26,
+                  }}
                 />
               </View>
             );

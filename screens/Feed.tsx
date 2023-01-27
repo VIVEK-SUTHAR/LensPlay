@@ -29,13 +29,13 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const authStore = useAuthStore();
   const userStore = useProfile();
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", async () => {
-      const updatedFeedData = await getFeedData();
-      setfeedData(updatedFeedData?.data.feed.items);
-    });
-    return unsubscribe;
-  }, [navigation]);
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener("focus", async () => {
+  //     const updatedFeedData = await getFeedData();
+  //     setfeedData(updatedFeedData?.data.feed.items);
+  //   });
+  //   return unsubscribe;
+  // }, [navigation]);
 
   useEffect(() => {
     getFeedData().then((res) => {
@@ -118,6 +118,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
                 reaction={item?.root?.reaction}
                 description={item?.root?.metadata?.description}
                 attributes={item?.root?.metadata?.attributes}
+                ethAddress={item?.root?.profile?.ownedBy}
               />
 
               {/* <NewVideoCard

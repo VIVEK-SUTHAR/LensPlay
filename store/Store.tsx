@@ -1,7 +1,9 @@
 import create from "zustand";
 import {
   IAuthStore,
+  IReactionStore,
   IThemeStore,
+  LikeObject,
   ToastProps,
   ToastType,
   UserStore,
@@ -35,10 +37,16 @@ export const useToast = create<ToastProps>((set) => ({
     set({ isVisible: isVisible, message: message, type: type }),
 }));
 
-export const useReactionStore=create((set)=>({
-  likedPublication:[{likes:0,id:0}],
-  addToReactedPublications:(publicationId:string,likes:any)=>set(((state)=>({likedPublication:[...state.likedPublication,{likes:likes,id:publicationId}]})))
-}))
+export const useReactionStore = create<IReactionStore>((set) => ({
+  likedPublication: [{ likes: 0, id: 0 }],
+  addToReactedPublications: (publicationId: string, likes: number) =>
+    set((state) => ({
+      likedPublication: [
+        ...state.likedPublication,
+        { likes: likes, id: publicationId } as unknown as LikeObject,
+      ],
+    })),
+}));
 
 const useStore = create((set) => ({
   currentProfile: null,

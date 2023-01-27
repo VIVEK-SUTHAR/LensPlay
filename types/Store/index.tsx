@@ -27,3 +27,12 @@ export enum ToastType {
   ERROR = "ERROR",
   INFO = "INFO",
 }
+export interface IReactionStore {
+  likedPublication: LikeObject[];
+  addToReactedPublications: (publicationId: string, likes: number) => void;
+}
+export interface LikeObject {
+  likes: number;
+  id: number;
+}
+

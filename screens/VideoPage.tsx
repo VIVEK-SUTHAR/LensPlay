@@ -55,7 +55,7 @@ const VideoPage = ({
   const authStore = useAuthStore();
   const userStore = useProfile();
   const toast = useToast();
-  const likedPublication=useReactionStore();
+  const likedPublication = useReactionStore();
   const [comments, setComments] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -75,16 +75,16 @@ const VideoPage = ({
     route.params.reaction === "DOWNVOTE" ? true : false
   );
   console.log(likedPublication.likedPublication);
-  const thumbup=likedPublication.likedPublication;
+  const thumbup = likedPublication.likedPublication;
 
   useEffect(() => {
     fetchComments();
-    thumbup.map((publication)=>{
-      if(publication.id===route.params.id){
+    thumbup.map((publication) => {
+      if (publication.id === route.params.id) {
         setisalreadyLiked(true);
-        setLikes(publication.likes+1)
+        setLikes(publication.likes + 1);
       }
-    })
+    });
   }, [playbackId]);
 
   useEffect(() => {
@@ -162,9 +162,9 @@ const VideoPage = ({
         userStore.currentProfile?.id,
         route.params.id,
         "UPVOTE"
-        ).then((res) => {
+      ).then((res) => {
         if (res.addReaction === null) {
-          likedPublication.addToReactedPublications(route.params.id,likes)
+          likedPublication.addToReactedPublications(route.params.id, likes);
           console.log(likedPublication.likedPublication);
           console.log("liked");
         }
@@ -325,16 +325,13 @@ const VideoPage = ({
                     authStore.accessToken
                   );
                   if (data.data === null) {
-                    console.log(data.errors[0].message);
-                    ToastAndroid.show(
-                      "Currenctly not supported",
-                      ToastAndroid.SHORT
-                    );
+                    toast.show("Currntly not supported", ToastType.ERROR, true);
                   }
-                  if (data.data.proxyAction) {
-                    ToastAndroid.show(
-                      "Subscribed Successfully",
-                      ToastAndroid.SHORT
+                  if (data.data.proxyAction !== null) {
+                    toast.show(
+                      "Subscribed succesfully",
+                      ToastType.SUCCESS,
+                      true
                     );
                   }
                 } catch (error) {

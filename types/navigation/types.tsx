@@ -4,6 +4,7 @@ import {
   NavigatorScreenParams,
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { LensPublication } from "../Lens/Feed";
 
 /**
  
@@ -66,8 +67,13 @@ export type RootStackParamList = {
     profileId: string;
     isFollowdByMe?: boolean;
     name?: string;
+    ethAddress?: string;
   };
   Search: undefined;
+  YourVideos: {
+    videos: LensPublication[];
+    title: string;
+  };
 };
 
 /**
