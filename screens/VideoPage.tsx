@@ -74,17 +74,34 @@ const VideoPage = ({
   const [isalreadyDisLiked, setisalreadyDisLiked] = useState(
     route.params.reaction === "DOWNVOTE" ? true : false
   );
-  console.log(likedPublication.likedPublication);
+  // console.log(likedPublication.likedPublication);
   const thumbup = likedPublication.likedPublication;
+  const thumbdown = likedPublication.dislikedPublication;
 
   useEffect(() => {
     fetchComments();
     thumbup.map((publication) => {
       if (publication.id === route.params.id) {
         setisalreadyLiked(true);
-        setLikes(publication.likes + 1);
+        setisalreadyDisLiked(false);
+        setLikes(publication.likes+1);
       }
     });
+    thumbdown.map((publication) => {
+      if (publication.id === route.params.id) {
+        if (isalreadyLiked){
+          setisalreadyDisLiked(true);
+        setisalreadyLiked(false);
+        setLikes(prev => prev - 1);
+        }
+        else {
+          setisalreadyDisLiked(true);
+        setisalreadyLiked(false);
+        }
+      }
+    })
+    console.log(thumbdown);
+    
   }, [playbackId]);
 
   useEffect(() => {
@@ -164,8 +181,7 @@ const VideoPage = ({
         "UPVOTE"
       ).then((res) => {
         if (res.addReaction === null) {
-          likedPublication.addToReactedPublications(route.params.id, likes);
-          console.log(likedPublication.likedPublication);
+          likedPublication.addToReactedPublications(route.params.id, likes, thumbdown);
           console.log("liked");
         }
       });
@@ -191,6 +207,7 @@ const VideoPage = ({
         if (res) {
           if (res.addReaction === null) {
             console.log("added disliked");
+            likedPublication.addToDislikedPublications(route.params.id, thumbup);
           }
         }
       });

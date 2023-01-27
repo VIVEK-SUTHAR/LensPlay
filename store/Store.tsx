@@ -1,5 +1,6 @@
 import create from "zustand";
 import {
+  DisLikeObject,
   IAuthStore,
   IReactionStore,
   IThemeStore,
@@ -39,13 +40,32 @@ export const useToast = create<ToastProps>((set) => ({
 
 export const useReactionStore = create<IReactionStore>((set) => ({
   likedPublication: [{ likes: 0, id: 0 }],
-  addToReactedPublications: (publicationId: string, likes: number) =>
+  dislikedPublication: [{ id: 0}],
+  addToReactedPublications: (publicationId: string, likes: number, dislikedPublication: DisLikeObject[]) => {
+    for (var i=0; i < dislikedPublication.length; i++){
+      if (dislikedPublication[i].id === publicationId) {
+        dislikedPublication.splice(i, 1);
+      }
+    }
     set((state) => ({
       likedPublication: [
         ...state.likedPublication,
         { likes: likes, id: publicationId } as unknown as LikeObject,
       ],
-    })),
+      dislikedPublication: dislikedPublication
+    }))},
+  addToDislikedPublications: (publicationId: string, likedPublication: LikeObject[]) => {
+    for (var i=0; i < likedPublication.length; i++){
+      if (likedPublication[i].id === publicationId) {
+        likedPublication.splice(i, 1);
+      }
+    }
+    set((state) => ({
+      dislikedPublication: [
+        ...state.dislikedPublication,
+        { id: publicationId } as unknown as DisLikeObject,
+      ],
+    }))},
 }));
 
 const useStore = create((set) => ({
