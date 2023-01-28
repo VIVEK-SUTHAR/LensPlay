@@ -28,7 +28,6 @@ async function freeCollectPublication(
 }`,
       variables: { pubId: publicationId },
     };
-    console.log(gqlBody);
     let bodyContent = JSON.stringify(gqlBody);
     let response = await fetch("https://api-mumbai.lens.dev", {
       method: "POST",
@@ -36,7 +35,6 @@ async function freeCollectPublication(
       headers: headersList,
     });
     let data = await response.json();
-    console.log(data.data);
     return data;
   } catch (error) {
     if (error instanceof Error) {

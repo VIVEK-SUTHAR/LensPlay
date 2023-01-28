@@ -183,7 +183,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
           paddingVertical: 2,
           height: "auto",
           minHeight: 55,
-          backgroundColor: "#202020",
+          backgroundColor: "#171923",
           borderTopColor: "transparent",
           paddingHorizontal: 10,
         },

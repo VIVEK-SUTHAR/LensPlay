@@ -43,7 +43,6 @@ async function freeMirror(
       `,
         variables: { pid: profileId ,pubId: publicationId },
       };
-      console.log(gqlBody);
       let bodyContent = JSON.stringify(gqlBody);
       let response = await fetch("https://api-mumbai.lens.dev", {
         method: "POST",
@@ -51,7 +50,6 @@ async function freeMirror(
         headers: headersList,
       });
       let data = await response.json();
-    //   console.log(data.data);
       return data;
     } catch (error) {
       if (error instanceof Error) {

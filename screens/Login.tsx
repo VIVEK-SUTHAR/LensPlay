@@ -114,7 +114,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           },
         });
         if (isvaild.data.verify) {
-          console.log("Tokens are valid,getting you in");
           authStore.setAccessToken(tokens.accessToken);
           const data = await client.query({
             query: getProfile,
@@ -137,7 +136,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
               rtoken: tokens.refreshToken,
             },
           });
-          console.log("Tokens are invalid,generating new tokens...");
           authStore.setAccessToken(refreshToken.data.refresh.accessToken);
           storeData(
             refreshToken.data.refresh.accessToken,
@@ -157,7 +155,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           navigation.navigate("Root");
         }
       } else {
-        console.log("not found");
         setIsloading(false);
       }
     } catch (e) {

@@ -29,7 +29,6 @@ async function removeLike(
       headers: headersList,
     });
     let data = await response.json();
-    console.log(data?.data);
     return data?.data;
   }
   export default removeLike;

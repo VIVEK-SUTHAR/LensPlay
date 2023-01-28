@@ -218,7 +218,7 @@ const ProfileScreen = ({
                     <Button
                       title={"Edit Channel"}
                       width={"auto"}
-                      px={20}
+                      px={16}
                       py={8}
                       bg={primary}
                       textStyle={{
@@ -232,7 +232,6 @@ const ProfileScreen = ({
                           `https://www.lensfrens.xyz/${userStore.currentProfile?.handle}`
                         );
                       }}
-                      icon={<Feather name="edit" size={14} color={"black"} />}
                     />
                   </View>
                 </View>

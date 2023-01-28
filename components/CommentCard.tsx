@@ -20,7 +20,6 @@ import { useAuthStore, useProfile, useReactionStore } from "../store/Store";
 import freeMirror from "../api/freeMirror";
 import { CommentStats } from "../types/Lens/Feed";
 
-
 type CommentCardProps = {
   avatar: string;
   username: string;
@@ -38,7 +37,7 @@ const CommentCard = ({
   username,
   commentText,
   commentTime,
-  id, 
+  id,
   isFollowdByMe,
   name,
   stats,
@@ -51,8 +50,6 @@ const CommentCard = ({
   const navigation = useNavigation();
   const userStore = useProfile();
   const likedComments = reactions.likedComments;
-  
-  
 
   const setLike = async () => {
     if (!isalreadyDisLiked) {
@@ -63,21 +60,20 @@ const CommentCard = ({
         "UPVOTE"
       ).then((res) => {
         if (res.addReaction === null) {
-          console.log("liked");
-          setLikes(prev => prev + 1);
+          setLikes((prev) => prev + 1);
           reactions.addToLikedComments(commentId);
         }
       });
     }
   };
 
-  useEffect(()=>{
-    likedComments.map((id)=>{
+  useEffect(() => {
+    likedComments.map((id) => {
       if (id.id === commentId) {
         setisalreadyDisLiked(true);
       }
-    })
-  })
+    });
+  });
 
   return (
     <View
@@ -216,7 +212,6 @@ const CommentCard = ({
                   userStore.currentProfile?.id,
                   commentId
                 );
-                console.log(data);
               } catch (error) {
                 console.log(error);
               }

@@ -138,8 +138,6 @@ const VideoPage = ({
       });
       setComments([]);
       setComments(data.data.publications.items);
-      
-      
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Can't fetch comments", { cause: error.cause });
@@ -191,7 +189,6 @@ const VideoPage = ({
             likes,
             thumbdown
           );
-          console.log("liked");
         }
       });
     }
@@ -206,7 +203,6 @@ const VideoPage = ({
       }
       // setIsLiked(false);
       setisalreadyDisLiked(true);
-      console.log("dissliked");
       addLike(
         authStore.accessToken,
         userStore.currentProfile?.id,
@@ -215,7 +211,6 @@ const VideoPage = ({
       ).then((res) => {
         if (res) {
           if (res.addReaction === null) {
-            console.log("added disliked");
             likedPublication.addToDislikedPublications(
               route.params.id,
               thumbup
@@ -364,14 +359,15 @@ const VideoPage = ({
             <Button
               title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
               width={"auto"}
-              px={12}
-              my={4}
-              type={alreadyFollowing ? "outline" : "filled"}
-              bg={alreadyFollowing ? "transparent" : "white"}
+              px={16}
+              py={8}
+              type={"filled"}
+              bg={theme.PRIMARY}
               textStyle={{
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: "700",
-                color: alreadyFollowing ? "white" : "black",
+                marginHorizontal: 4,
+                color: "black",
               }}
               onPress={async () => {
                 try {

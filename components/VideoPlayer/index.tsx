@@ -79,12 +79,12 @@ function Player({
           >
             {inFullscreen ? title : ""}
           </Text>
-          <Feather
+          {/* <Feather
             name="settings"
             size={26}
             color={"white"}
-            style={{ alignSelf: "flex-end",marginHorizontal:8, }}
-          />
+            style={{ alignSelf: "flex-end", marginHorizontal: 8 }}
+          /> */}
         </View>
       }
       videoProps={{

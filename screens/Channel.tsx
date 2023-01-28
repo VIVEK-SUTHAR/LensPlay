@@ -223,18 +223,15 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     <Button
                       title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
                       width={"auto"}
-                      px={20}
+                      px={16}
                       py={8}
-                      type={alreadyFollowing ? "outline" : "filled"}
-                      borderColor={
-                        alreadyFollowing ? theme.PRIMARY : "transparent"
-                      }
+                      type={"filled"}
                       bg={theme.PRIMARY}
                       textStyle={{
                         fontSize: 16,
                         fontWeight: "700",
                         marginHorizontal: 4,
-                        color: alreadyFollowing ? "white" : "black",
+                        color: "black",
                       }}
                       onPress={async () => {
                         try {
