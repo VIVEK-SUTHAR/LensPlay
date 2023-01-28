@@ -17,7 +17,7 @@ import { client } from "../apollo/client";
 const Navigation = ({ navigation }: { navigation: any }) => {
   const [allNotifications, setAllNotifications] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const authStore = useAuthStore();
   const theme = useThemeStore();
@@ -78,7 +78,7 @@ const Navigation = ({ navigation }: { navigation: any }) => {
       {allNotifications?.length ? (
         <FlatList
           data={allNotifications}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(_, index) => index.toString()}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}

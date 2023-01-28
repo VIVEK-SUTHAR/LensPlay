@@ -19,7 +19,6 @@ import addLike from "../api/addReaction";
 import { useAuthStore, useProfile } from "../store/Store";
 import freeMirror from "../api/freeMirror";
 
-
 type CommentCardProps = {
   avatar: string;
   username: string;
@@ -59,11 +58,11 @@ const CommentCard = ({
         console.log("liked");
       }
     });
-  }
-
+  };
 
   return (
     <View
+      key={commentId}
       style={{
         flexDirection: "row",
         backgroundColor: "black",
@@ -193,12 +192,14 @@ const CommentCard = ({
             borderColor="#232323"
             onPress={async () => {
               try {
-                const data = await freeMirror(authStore.accessToken, userStore.currentProfile?.id, commentId) 
+                const data = await freeMirror(
+                  authStore.accessToken,
+                  userStore.currentProfile?.id,
+                  commentId
+                );
                 console.log(data);
-                
               } catch (error) {
                 console.log(error);
-
               }
             }}
             textStyle={{ color: "white", marginHorizontal: 2 }}

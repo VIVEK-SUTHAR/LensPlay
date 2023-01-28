@@ -53,6 +53,8 @@ const VideoCard = ({
   ethAddress,
 }: videoPageProp) => {
   const [videoTime, setVideoTime] = React.useState<Attribute[] | null>();
+  console.log(ethAddress);
+  
   React.useEffect(() => {
     const time = attributes?.filter((item) => {
       if (item?.traitType === "durationInSeconds") {

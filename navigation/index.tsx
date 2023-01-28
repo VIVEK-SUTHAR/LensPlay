@@ -39,6 +39,7 @@ import {
 } from "../components/Icons";
 import Avatar from "../components/UI/Avatar";
 import getIPFSLink from "../utils/getIPFSLink";
+import linking from "./LinkingConfiguration";
 
 export default function Navigation({
   colorScheme,
@@ -48,7 +49,7 @@ export default function Navigation({
   return (
     <>
       <StatusBar style="dark" />
-      <NavigationContainer>
+      <NavigationContainer linking={linking}>
         <RootNavigator />
       </NavigationContainer>
     </>
@@ -179,8 +180,10 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
           </View>
         ),
         tabBarStyle: {
-          height: 54,
-          backgroundColor: "black",
+          paddingVertical: 2,
+          height: "auto",
+          minHeight: 55,
+          backgroundColor: "#202020",
           borderTopColor: "transparent",
           paddingHorizontal: 10,
         },
@@ -230,8 +233,6 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: focused ? 2 : 0,
-                  borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
@@ -264,8 +265,6 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: 2,
-                  borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
@@ -293,8 +292,6 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: 2,
-                  borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
@@ -332,8 +329,6 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: 2,
-                  borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
@@ -362,14 +357,14 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
             return (
               <View
                 style={{
-                  padding: 5,
-                  width: 45,
+                  width: 30,
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: 2,
-                  borderTopColor: focused ? theme.PRIMARY : "transparent",
-                  height: "100%",
+                  height: 30,
+                  borderRadius: 45,
+                  borderColor: focused ? theme.PRIMARY : "transparent",
+                  borderWidth: 1,
                 }}
               >
                 <Avatar

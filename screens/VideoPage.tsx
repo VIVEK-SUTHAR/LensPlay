@@ -7,7 +7,7 @@ import {
   BackHandler,
   Linking,
   FlatList,
-  RefreshControl
+  RefreshControl,
 } from "react-native";
 import {
   AntDesign,
@@ -64,7 +64,7 @@ const VideoPage = ({
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [likes, setLikes] = useState<number>(route.params.stats?.totalUpvotes);
-  
+
   const [inFullscreen, setInFullsreen] = useState(false);
   const [descOpen, setDescOpen] = useState(false);
   const [alreadyFollowing, setAlreadyFollowing] = useState<boolean>(
@@ -73,7 +73,7 @@ const VideoPage = ({
   const [ismodalopen, setIsmodalopen] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(false);
   const playbackId = route.params.playbackId;
-  
+
   const [isalreadyLiked, setisalreadyLiked] = useState(
     route.params.reaction === "UPVOTE" ? true : false
   );
@@ -90,24 +90,22 @@ const VideoPage = ({
       if (publication.id === route.params.id) {
         setisalreadyLiked(true);
         setisalreadyDisLiked(false);
-        setLikes(publication.likes+1);
+        setLikes(publication.likes + 1);
       }
     });
     thumbdown.map((publication) => {
       if (publication.id === route.params.id) {
-        if (isalreadyLiked){
+        if (isalreadyLiked) {
           setisalreadyDisLiked(true);
-        setisalreadyLiked(false);
-        setLikes(prev => prev - 1);
-        }
-        else {
+          setisalreadyLiked(false);
+          setLikes((prev) => prev - 1);
+        } else {
           setisalreadyDisLiked(true);
-        setisalreadyLiked(false);
+          setisalreadyLiked(false);
         }
       }
-    })
+    });
     console.log(thumbdown);
-    
   }, [playbackId]);
 
   useEffect(() => {
@@ -118,7 +116,7 @@ const VideoPage = ({
   async function checkFollowed(): Promise<void> {
     const data = await isFollowedByMe(
       route.params.profileId,
-      authStore.accessToken,
+      authStore.accessToken
     );
     if (data.data.profile.isFollowedByMe) {
       setAlreadyFollowing(true);
@@ -126,8 +124,7 @@ const VideoPage = ({
     }
   }
 
-  const onRefresh = async () => {
-  };
+  const onRefresh = async () => {};
   async function fetchComments(): Promise<void> {
     try {
       const data = await client.query({
@@ -144,7 +141,6 @@ const VideoPage = ({
       setComments([]);
       setComments(data.data.publications.items);
       console.log(data.data.publications.items[0].id);
-      
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Can't fetch comments", { cause: error.cause });
@@ -191,7 +187,11 @@ const VideoPage = ({
         "UPVOTE"
       ).then((res) => {
         if (res.addReaction === null) {
-          likedPublication.addToReactedPublications(route.params.id, likes, thumbdown);
+          likedPublication.addToReactedPublications(
+            route.params.id,
+            likes,
+            thumbdown
+          );
           console.log("liked");
         }
       });
@@ -217,7 +217,10 @@ const VideoPage = ({
         if (res) {
           if (res.addReaction === null) {
             console.log("added disliked");
-            likedPublication.addToDislikedPublications(route.params.id, thumbup);
+            likedPublication.addToDislikedPublications(
+              route.params.id,
+              thumbup
+            );
           }
         }
       });
@@ -293,7 +296,13 @@ const VideoPage = ({
       </Drawer>
       <ScrollView>
         <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <Heading
               title={route.params.title}
               style={{
@@ -387,7 +396,6 @@ const VideoPage = ({
                 }
               }}
             />
-            
           </View>
           <ScrollView
             style={{
@@ -397,7 +405,7 @@ const VideoPage = ({
             showsHorizontalScrollIndicator={false}
           >
             <Button
-              title={formatInteraction(likes) || '0'}
+              title={formatInteraction(likes) || "0"}
               mx={4}
               px={10}
               width={"auto"}
@@ -536,7 +544,7 @@ const VideoPage = ({
               comments?.map((item, index) => {
                 return (
                   <CommentCard
-                    key={index}
+                    key={item?.id}
                     username={item?.profile?.handle}
                     avatar={item?.profile?.picture?.original?.url}
                     commentText={item?.metadata?.description}
@@ -548,7 +556,8 @@ const VideoPage = ({
                     commentId={item?.id}
                   />
                 );
-              }))}
+              })
+            )}
           </View>
         </View>
       </ScrollView>

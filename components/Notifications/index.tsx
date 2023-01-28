@@ -6,6 +6,7 @@ import MirrorNotification from "./MirrorNotification";
 import FollowNotification from "./FollowNotification";
 import ReactionNotification from "./ReactionNotification";
 import CommentNotification from "./CommentNotification";
+import MentionNotification from "./MentionNotification";
 
 const NotificationCard = ({
   navigation,
@@ -48,6 +49,13 @@ const NotificationCard = ({
             notification={notification}
           />
         );
+      case NotificationTypes.MENTION_NOTIFICATION:
+        return (
+          <MentionNotification
+            navigation={navigation}
+            notification={notification}
+          />
+        )
     }
   };
   return (

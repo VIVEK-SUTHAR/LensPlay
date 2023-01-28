@@ -50,53 +50,69 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const toast = useToast();
 
   useEffect(() => {
+    let profileId = "";
+    Linking.addEventListener("url", (event) => {
+      const id = event.url.split("=")[1];
+      profileId = id;
+      getProfleInfo(id);
+      return;
+    });
+    Linking.getInitialURL().then((res) => {
+      const id = res?.split("=")[1];
+      profileId = id ? id : "";
+      getProfleInfo(id);
+      return;
+    });
+
     setAlreadyFollowing(route.params.isFollowdByMe);
-    getProfleInfo();
+    getProfleInfo(profileId || route.params.profileId);
   }, []);
 
-  const getProfleInfo = async () => {
+  const getProfleInfo = async (profileId: string) => {
     try {
       const profiledata = await client.query({
         query: getUserProfile,
         variables: {
-          id: route.params.profileId,
+          id: profileId,
         },
       });
       setProfile(profiledata.data.profile);
       const getUserVideos = await client.query({
         query: getPublications,
         variables: {
-          id: route.params.profileId,
+          id: profileId,
         },
         context: {
           headers: {
-            "x-access-token": `Bearer ${authStore.accessToken}`,
+            "x-access-token": authStore.accessToken
+              ? `Bearer ${authStore.accessToken}`
+              : "",
           },
         },
       });
       setallVideos(getUserVideos.data.publications.items);
-      console.log(allVideos);
-
-      await getUserMirrors();
+      await getUserMirrors(profileId);
       await getUserCollects();
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error);
+        // console.log(error);
       }
     } finally {
       setIsLoading(false);
     }
   };
-  const getUserMirrors = async () => {
+  const getUserMirrors = async (id) => {
     try {
       const getMirrorVideo = await client.query({
         query: getMirrorVideos,
         variables: {
-          id: route.params.profileId,
+          id: id,
         },
         context: {
           headers: {
-            "x-access-token": `Bearer ${authStore.accessToken}`,
+            "x-access-token": authStore.accessToken
+              ? `Bearer ${authStore.accessToken}`
+              : "",
           },
         },
       });
@@ -243,15 +259,6 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                           }
                         }
                       }}
-                      icon={
-                        <SimpleLineIcons
-                          name={
-                            alreadyFollowing ? "user-unfollow" : "user-follow"
-                          }
-                          size={16}
-                          color={alreadyFollowing ? "white" : "black"}
-                        />
-                      }
                     />
                   </View>
                 </View>

@@ -45,9 +45,7 @@ const ProfileScreen = ({
   const [mirrorVideos, setmirrorVideos] = useState<LensPublication[]>([]);
   const [collectVideos, setcollectVideos] = useState<LensPublication[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [alreadyFollowing, setAlreadyFollowing] = useState(
-    route?.params?.isFollowdByMe || false
-  );
+
   const wallet = useWalletConnect();
 
   const theme = useThemeStore();
@@ -357,30 +355,30 @@ const ProfileScreen = ({
                         showsHorizontalScrollIndicator={false}
                       >
                         {Boolean(allVideos) &&
-                          allVideos.map((item: any) => {
-                            if (item?.appId?.includes("lenstube")) {
-                              return (
-                                <VideoCard
-                                  key={item?.id}
-                                  id={item?.id}
-                                  date={convertDate(item?.createdAt)}
-                                  banner={item?.metadata?.cover}
-                                  title={item?.metadata?.name}
-                                  avatar={item?.profile?.picture?.original?.url}
-                                  playbackId={
-                                    item?.metadata?.media[0]?.original?.url
-                                  }
-                                  uploadedBy={item?.profile?.name}
-                                  profileId={item?.profile?.id}
-                                  stats={item?.stats}
-                                  isFollowdByMe={item.profile.isFollowedByMe}
-                                  reaction={item?.reaction}
-                                  width={300}
-                                  height={150}
-                                  attributes={item?.metadata?.attributes}
-                                />
-                              );
-                            }
+                          allVideos.map((item: LensPublication) => {
+                            return (
+                              <VideoCard
+                                key={item?.id}
+                                id={item?.id}
+                                date={convertDate(item?.createdAt)}
+                                banner={item?.metadata?.cover}
+                                title={item?.metadata?.name}
+                                avatar={item?.profile?.picture?.original?.url}
+                                playbackId={
+                                  item?.metadata?.media[0]?.original?.url
+                                }
+                                ethAddress={item?.profile.ownedBy}
+                                description={item?.metadata?.description}
+                                uploadedBy={item?.profile?.name}
+                                profileId={item?.profile?.id}
+                                stats={item?.stats}
+                                isFollowdByMe={item.profile.isFollowedByMe}
+                                reaction={item?.reaction}
+                                width={300}
+                                height={150}
+                                attributes={item?.metadata?.attributes}
+                              />
+                            );
                           })}
                       </ScrollView>
                       {allVideos?.length === 0 && (
@@ -447,6 +445,8 @@ const ProfileScreen = ({
                                   id={item?.id}
                                   date={convertDate(item?.createdAt)}
                                   banner={item?.metadata?.cover}
+                                  ethAddress={item?.profile.ownedBy}
+                                  description={item?.metadata?.description}
                                   title={item?.metadata?.name}
                                   avatar={item?.profile?.picture?.original?.url}
                                   playbackId={
@@ -528,6 +528,8 @@ const ProfileScreen = ({
                               <VideoCard
                                 key={item?.id}
                                 id={item?.id}
+                                ethAddress={item?.profile.ownedBy}
+                                description={item?.metadata?.description}
                                 date={convertDate(item?.createdAt)}
                                 banner={item?.metadata?.cover}
                                 title={item?.metadata?.name}

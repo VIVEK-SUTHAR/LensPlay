@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC} from "react";
 import { StyleProp, Text, TextStyle } from "react-native";
 
 interface SubHeadingProps {
@@ -8,7 +8,7 @@ interface SubHeadingProps {
 
 const SubHeading: FC<SubHeadingProps> = ({ title, style, ...rest }) => {
     return (
-        <Text style={style} {...rest}>
+        <Text  style={style} {...rest}>
             {title}
         </Text>
     );

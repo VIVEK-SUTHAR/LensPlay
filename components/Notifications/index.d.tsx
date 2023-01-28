@@ -1,9 +1,13 @@
 export default interface NotificationCardProps {
+  __typename?: string;
+  createdAt?: Date;
   navigation: any;
   notification: Item;
+  mentionPublication?: MentionedPublication;
 }
 
 export interface Item {
+  mentionPublication: MentionedPublication;
   __typename: string;
   createdAt: Date;
   profile?: Profile;
@@ -23,6 +27,15 @@ export interface CollectedPublication {
   collectedBy: Wallet | null;
   createdAt: Date;
   commentOn?: CollectedPublication;
+}
+
+export interface MentionedPublication {
+  __typename: string;
+  collectedBy: Wallet | null;
+  createdAt: Date;
+  metadata: Metadata;
+  profile: Profile;
+  notificationId: string;
 }
 
 export interface Wallet {
@@ -51,6 +64,7 @@ export interface Original {
 }
 
 export interface Metadata {
+  __typename: string;
   name: string;
   description: string;
   content: string;
@@ -69,9 +83,10 @@ export interface PageInfo {
   totalCount: number;
 }
 export enum NotificationTypes {
-  COMMENT_NOTIFICATION = 'NewCommentNotification',
-  REACTION_NOTIFICATION = 'NewReactionNotification',
-  FOLLOW_NOTIFICATION = 'NewFollowerNotification',
-  MIRROR_NOTIFICATION = 'NewMirrorNotification',
-  COLLECT_NOTIFICATION = 'NewCollectNotification'
+  COMMENT_NOTIFICATION = "NewCommentNotification",
+  REACTION_NOTIFICATION = "NewReactionNotification",
+  FOLLOW_NOTIFICATION = "NewFollowerNotification",
+  MIRROR_NOTIFICATION = "NewMirrorNotification",
+  COLLECT_NOTIFICATION = "NewCollectNotification",
+  MENTION_NOTIFICATION = "NewMentionNotification",
 }
