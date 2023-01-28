@@ -41,6 +41,7 @@ export const useToast = create<ToastProps>((set) => ({
 export const useReactionStore = create<IReactionStore>((set) => ({
   likedPublication: [{ likes: 0, id: 0 }],
   dislikedPublication: [{ id: 0}],
+  likedComments: [{id: 0}],
   addToReactedPublications: (publicationId: string, likes: number, dislikedPublication: DisLikeObject[]) => {
     for (var i=0; i < dislikedPublication.length; i++){
       if (dislikedPublication[i].id === publicationId) {
@@ -66,6 +67,13 @@ export const useReactionStore = create<IReactionStore>((set) => ({
         { id: publicationId } as unknown as DisLikeObject,
       ],
     }))},
+  addToLikedComments: (commentId: string) => {
+    set((state) => ({
+      likedComments: [
+        ...state.likedComments, { id: commentId } as unknown as DisLikeObject
+      ]
+    }))
+  }
 }));
 
 const useStore = create((set) => ({

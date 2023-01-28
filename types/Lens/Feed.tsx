@@ -189,6 +189,12 @@ export interface Comments {
   id: string;
 }
 
+export interface CommentStats {
+  totalUpvotes: string;
+  totalAmountOfCollects: string;
+  totalAmountOfMirrors: string; 
+}
+
 export interface RootStats {
   totalAmountOfMirrors: number;
   totalAmountOfCollects: number;

@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { primary } from "../constants/Colors";
 import getDifference from "../utils/getDifference";
 import Heading from "./UI/Heading";
@@ -16,8 +16,10 @@ import { useNavigation } from "@react-navigation/native";
 import Button from "./UI/Button";
 import { AntDesign, Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
 import addLike from "../api/addReaction";
-import { useAuthStore, useProfile } from "../store/Store";
+import { useAuthStore, useProfile, useReactionStore } from "../store/Store";
 import freeMirror from "../api/freeMirror";
+import { CommentStats } from "../types/Lens/Feed";
+
 
 type CommentCardProps = {
   avatar: string;
@@ -27,7 +29,7 @@ type CommentCardProps = {
   id: string;
   isFollowdByMe: boolean;
   name: string;
-  stats: {};
+  stats: CommentStats;
   commentId: string;
 };
 
@@ -36,29 +38,46 @@ const CommentCard = ({
   username,
   commentText,
   commentTime,
-  id,
+  id, 
   isFollowdByMe,
   name,
   stats,
   commentId,
 }: CommentCardProps) => {
   const authStore = useAuthStore();
-  const [isalreadyDisLiked, setisalreadyDisLiked] = useState(false);
+  const reactions = useReactionStore();
+  const [isalreadyDisLiked, setisalreadyDisLiked] = useState<Boolean>(false);
+  const [likes, setLikes] = useState<string>(stats?.totalUpvotes);
   const navigation = useNavigation();
   const userStore = useProfile();
+  const likedComments = reactions.likedComments;
+  
+  
 
   const setLike = async () => {
-    addLike(
-      authStore.accessToken,
-      userStore.currentProfile?.id,
-      commentId,
-      "UPVOTE"
-    ).then((res) => {
-      if (res.addReaction === null) {
-        console.log("liked");
-      }
-    });
+    if (!isalreadyDisLiked) {
+      addLike(
+        authStore.accessToken,
+        userStore.currentProfile?.id,
+        commentId,
+        "UPVOTE"
+      ).then((res) => {
+        if (res.addReaction === null) {
+          console.log("liked");
+          setLikes(prev => prev + 1);
+          reactions.addToLikedComments(commentId);
+        }
+      });
+    }
   };
+
+  useEffect(()=>{
+    likedComments.map((id)=>{
+      if (id.id === commentId) {
+        setisalreadyDisLiked(true);
+      }
+    })
+  })
 
   return (
     <View
@@ -139,9 +158,9 @@ const CommentCard = ({
           }}
         >
           <Button
-            title={stats?.totalUpvotes}
+            title={likes}
             onPress={() => {
-              setisalreadyDisLiked((prev) => !prev);
+              setisalreadyDisLiked(true);
               setLike();
             }}
             px={12}

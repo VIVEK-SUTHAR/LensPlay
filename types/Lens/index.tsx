@@ -48,3 +48,4 @@ export interface Stats {
   totalPublications: number;
   totalCollects: number;
 }
+

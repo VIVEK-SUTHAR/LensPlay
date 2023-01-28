@@ -29,9 +29,11 @@ export enum ToastType {
 }
 export interface IReactionStore {
   likedPublication: LikeObject[];
+  likedComments: DisLikeObject[];
   addToReactedPublications: (publicationId: string, likes: number, dislikedPublication: DisLikeObject[]) => void;
   dislikedPublication: DisLikeObject[];
   addToDislikedPublications: (publicationId: string, likedPublication: LikeObject[]) => void;
+  addToLikedComments: (commentId: string) => void;
 }
 export interface LikeObject {
   likes: number;

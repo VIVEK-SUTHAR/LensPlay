@@ -80,7 +80,6 @@ const VideoPage = ({
   const [isalreadyDisLiked, setisalreadyDisLiked] = useState(
     route.params.reaction === "DOWNVOTE" ? true : false
   );
-  // console.log(likedPublication.likedPublication);
   const thumbup = likedPublication.likedPublication;
   const thumbdown = likedPublication.dislikedPublication;
 
@@ -105,7 +104,6 @@ const VideoPage = ({
         }
       }
     });
-    console.log(thumbdown);
   }, [playbackId]);
 
   useEffect(() => {
@@ -140,7 +138,8 @@ const VideoPage = ({
       });
       setComments([]);
       setComments(data.data.publications.items);
-      console.log(data.data.publications.items[0].id);
+      
+      
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Can't fetch comments", { cause: error.cause });
