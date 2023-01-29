@@ -7,28 +7,28 @@
  */
 
 async function removeLike(
-    token: string,
-    profileId: string,
-    publicationId: string
-  ) {
-    let headersList = {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
-    };
-    let gqlBody = {
-      query: `mutation RemoveReaction {
+  token: string,
+  profileId: string | undefined,
+  publicationId: string
+) {
+  let headersList = {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + token,
+  };
+  let gqlBody = {
+    query: `mutation RemoveReaction {
         removeReaction(request: { profileId: "${profileId}", reaction: UPVOTE, publicationId: "${publicationId}" })
       }
   `,
-      variables: "{}",
-    };
-    let bodyContent = JSON.stringify(gqlBody);
-    let response = await fetch("https://api-mumbai.lens.dev", {
-      method: "POST",
-      body: bodyContent,
-      headers: headersList,
-    });
-    let data = await response.json();
-    return data?.data;
-  }
-  export default removeLike;
+    variables: "{}",
+  };
+  let bodyContent = JSON.stringify(gqlBody);
+  let response = await fetch("https://api-mumbai.lens.dev", {
+    method: "POST",
+    body: bodyContent,
+    headers: headersList,
+  });
+  let data = await response.json();
+  return data?.data;
+}
+export default removeLike;

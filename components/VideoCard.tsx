@@ -28,8 +28,8 @@ type videoPageProp = {
   reaction: string | null;
   isFollowdByMe?: boolean;
   description: string;
-  width: string | number;
-  height: number;
+  width?: string | number;
+  height?: number;
   attributes: Attribute[];
   ethAddress?: string;
 };
@@ -52,7 +52,7 @@ const VideoCard = ({
   attributes,
   ethAddress,
 }: videoPageProp) => {
-  const [videoTime, setVideoTime] = React.useState<Attribute[] | null>();
+  const [videoTime, setVideoTime] = React.useState<string>();
 
   React.useEffect(() => {
     const time = attributes?.filter((item) => {

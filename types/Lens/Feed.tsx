@@ -176,13 +176,13 @@ export interface VideoPageStats {
   __typename: string;
   totalAmountOfCollects: number;
   totalAmountOfComments: number;
-  totalAmountOfMirrors:  number;
-  totalDownvotes:        number;
-  totalUpvotes:          number;
+  totalAmountOfMirrors: number;
+  totalDownvotes: number;
+  totalUpvotes: number;
 }
 
 export interface Comments {
-  profile: Profile,
+  profile: Profile;
   createdAt: string;
   metadata: Metadata;
   stats: Stats;
@@ -192,7 +192,7 @@ export interface Comments {
 export interface CommentStats {
   totalUpvotes: string;
   totalAmountOfCollects: string;
-  totalAmountOfMirrors: string; 
+  totalAmountOfMirrors: string;
 }
 
 export interface RootStats {

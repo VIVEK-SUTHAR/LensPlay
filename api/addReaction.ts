@@ -9,7 +9,7 @@
 
 async function addLike(
   token: string,
-  profileId: string,
+  profileId: string | undefined,
   publicationId: string,
   vote: string
 ): Promise<any> {

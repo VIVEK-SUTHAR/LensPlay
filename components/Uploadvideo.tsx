@@ -41,7 +41,6 @@ const Uploadvideo = () => {
     if (status?.granted) {
       let camera = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-
       });
       if (camera.cancelled) {
         ToastAndroid.show("No Video recorded", ToastAndroid.SHORT);
@@ -109,71 +108,70 @@ const Uploadvideo = () => {
         onPress={recordVideo}
       />
       {image && (
-         <VideoPlayer
-      style={{
-        width:Dimensions.get("screen").width,
-        height: 280,
-        videoBackgroundColor: "transparent",
-        controlsBackgroundColor: "transparent",
-      }}
-      textStyle={{
-        fontSize: 14,
-        fontWeight: "600",
-      }}
-      slider={{
-        visible: true,
-        thumbTintColor: "white",
-        maximumTrackTintColor: "white",
-        minimumTrackTintColor: "green",
-      }}
-      icon={{
-        size: 48,
-        play: <AntDesign name="play" color={"white"} size={36} />,
-        pause: <AntDesign name="pause" color={"white"} size={36} />,
-        replay: (
-          <MaterialCommunityIcons name="replay" size={48} color={"white"} />
-        ),
-      }}
-      header={
-        <View
+        <VideoPlayer
           style={{
-            marginTop: 30,
-            flexDirection: "row",
-            width: "100%",
-            justifyContent: "space-between",
+            width: Dimensions.get("screen").width,
+            height: 280,
+            videoBackgroundColor: "transparent",
+            controlsBackgroundColor: "transparent",
           }}
-        >
-          <Text
-            style={{
-              color: "white",
-              paddingHorizontal: 20,
-              fontSize: 18,
-              fontWeight: "600",
-              paddingVertical: 8,
-            }}
-          >
-            {image?.name}
-          </Text>
-        </View>
-      }
-      videoProps={{
-        posterStyle: {
-          height: "100%",
-          width: "100%",
-          resizeMode: "contain",
-        },
-        isMuted: false,
-        shouldPlay: true,
-        resizeMode: ResizeMode.CONTAIN,
-        source: {
-          uri: image,
-        },
-      }}
-    />
+          textStyle={{
+            fontSize: 14,
+            fontWeight: "600",
+          }}
+          slider={{
+            visible: true,
+            thumbTintColor: "white",
+            maximumTrackTintColor: "white",
+            minimumTrackTintColor: "green",
+          }}
+          icon={{
+            size: 48,
+            play: <AntDesign name="play" color={"white"} size={36} />,
+            pause: <AntDesign name="pause" color={"white"} size={36} />,
+            replay: (
+              <MaterialCommunityIcons name="replay" size={48} color={"white"} />
+            ),
+          }}
+          header={
+            <View
+              style={{
+                marginTop: 30,
+                flexDirection: "row",
+                width: "100%",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  paddingHorizontal: 20,
+                  fontSize: 18,
+                  fontWeight: "600",
+                  paddingVertical: 8,
+                }}
+              >
+                {image?.name}
+              </Text>
+            </View>
+          }
+          videoProps={{
+            posterStyle: {
+              height: "100%",
+              width: "100%",
+              resizeMode: "contain",
+            },
+            isMuted: false,
+            shouldPlay: true,
+            resizeMode: ResizeMode.CONTAIN,
+            source: {
+              uri: image,
+            },
+          }}
+        />
       )}
     </SafeAreaView>
   );
 };
 
 export default Uploadvideo;
-

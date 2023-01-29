@@ -1,11 +1,4 @@
-import {
-  Image,
-  Linking,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { primary } from "../constants/Colors";
 import getDifference from "../utils/getDifference";
@@ -26,8 +19,8 @@ type CommentCardProps = {
   commentText: string;
   commentTime: string;
   id: string;
-  isFollowdByMe: boolean;
-  name: string;
+  isFollowdByMe: boolean | undefined;
+  name: string | undefined;
   stats: CommentStats;
   commentId: string;
 };

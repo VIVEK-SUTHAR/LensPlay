@@ -545,8 +545,8 @@ const VideoPage = ({
                     commentText={item?.metadata?.description}
                     commentTime={item?.createdAt}
                     id={item?.profile?.id}
-                    isFollowdByMe={item.profile.isFollowedByMe}
-                    name={item.profile?.name}
+                    isFollowdByMe={item?.profile?.isFollowedByMe}
+                    name={item?.profile?.name}
                     stats={item?.stats}
                     commentId={item?.id}
                   />
