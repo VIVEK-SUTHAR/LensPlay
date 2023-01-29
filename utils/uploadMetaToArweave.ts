@@ -5,7 +5,7 @@
  * @returns id Arweave txn id
  */
 
-async function uploadMetaDataToArweave(commentText: string, handle: string) {
+async function uploadMetaDataToArweave(commentText: string, handle: string|undefined) {
   try {
     const headersList = {
       Accept: "*/*",

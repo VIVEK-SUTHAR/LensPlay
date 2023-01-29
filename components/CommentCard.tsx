@@ -15,7 +15,7 @@ import { CommentStats } from "../types/Lens/Feed";
 import AnimatedLottieView from "lottie-react-native";
 
 type CommentCardProps = {
-  avatar: string;
+  avatar: string | undefined;
   username: string;
   commentText: string;
   commentTime: string;
@@ -48,6 +48,7 @@ const CommentCard = ({
   const likedComments = reactions.likedComments;
 
   const setLike = async () => {
+    if (isIndexing) return;
     if (!isalreadyDisLiked) {
       addLike(
         authStore.accessToken,
@@ -125,7 +126,7 @@ const CommentCard = ({
             />
 
             <SubHeading
-              title={isIndexing?"Indexing...": getDifference(commentTime)}
+              title={isIndexing ? "Indexing..." : getDifference(commentTime)}
               style={{ fontSize: 10, color: "gray" }}
             />
           </View>
@@ -153,8 +154,8 @@ const CommentCard = ({
           <Button
             title={likes}
             onPress={() => {
-              setisalreadyDisLiked(true);
               setLike();
+              setisalreadyDisLiked(true);
             }}
             px={12}
             py={4}
@@ -204,6 +205,8 @@ const CommentCard = ({
             borderColor="#232323"
             onPress={async () => {
               try {
+                if (isIndexing) return;
+
                 const data = await freeMirror(
                   authStore.accessToken,
                   userStore.currentProfile?.id,

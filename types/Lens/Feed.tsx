@@ -185,7 +185,7 @@ export interface Comments {
   profile: Profile;
   createdAt: string;
   metadata: Metadata;
-  stats: Stats;
+  stats: CommentStats;
   id: string;
 }
 

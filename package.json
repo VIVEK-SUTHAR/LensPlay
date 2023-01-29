@@ -58,6 +58,13 @@
     "xml2js": "^0.4.23",
     "zustand": "^4.1.4"
   },
+  "prettier":{
+    "printWidth": 100,
+    "arrowParens": "always",
+    "bracketSameLine": false,
+    "jsxSingleQuote": false,
+    "useTabs": true
+  },
   "resolutions": {
     "react-native-svg": "12.3.0",
     "react-native-qrcode-svg": "6.1.2"
