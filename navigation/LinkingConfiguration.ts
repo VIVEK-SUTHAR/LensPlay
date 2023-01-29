@@ -16,7 +16,7 @@ const linking: LinkingOptions<RootStackParamList> = {
         path: "channel",
         parse: { id: String },
       },
-      VideoPage: {
+      LinkingVideos: {
         path: "watch",
         parse: { id: String },
       },

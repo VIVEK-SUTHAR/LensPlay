@@ -40,6 +40,7 @@ import {
 import Avatar from "../components/UI/Avatar";
 import getIPFSLink from "../utils/getIPFSLink";
 import linking from "./LinkingConfiguration";
+import LinkingVideo from "../screens/LinkingVideo";
 
 export default function Navigation({
   colorScheme,
@@ -115,6 +116,16 @@ function RootNavigator() {
         options={{
           animation: "slide_from_right",
           headerShown: true,
+          headerTintColor: theme.PRIMARY,
+          headerTitle: "Your videos",
+        }}
+      />
+      <Stack.Screen
+        name="LinkingVideos"
+        component={LinkingVideo}
+        options={{
+          animation: "slide_from_right",
+          headerShown: false,
           headerTintColor: theme.PRIMARY,
           headerTitle: "Your videos",
         }}

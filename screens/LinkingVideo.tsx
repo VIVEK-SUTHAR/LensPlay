@@ -6,6 +6,8 @@ import {
 	ToastAndroid,
 	BackHandler,
 	TextInput,
+    Text,
+    Linking
 } from "react-native";
 import { AntDesign, Entypo, Feather, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect } from "react";
@@ -17,59 +19,34 @@ import {
 	useToast,
 } from "../store/Store";
 import { useState } from "react";
-import { addLike, removeLike, isFollowedByMe, createFreeSubscribe } from "../api";
-import CommentCard from "../components/CommentCard";
 import { setStatusBarHidden, StatusBar } from "expo-status-bar";
 import { client } from "../apollo/client";
-import getComments from "../apollo/Queries/getComments";
 import Avatar from "../components/UI/Avatar";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
-import AnimatedLottieView from "lottie-react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
 import Drawer from "../components/UI/Drawer";
 import Player from "../components/VideoPlayer";
 import Button from "../components/UI/Button";
 import { RootStackScreenProps } from "../types/navigation/types";
-import CommentSkeleton from "../components/UI/CommentSkeleton";
 import formatInteraction from "../utils/formatInteraction";
 import { ToastType } from "../types/Store";
-import { Comments } from "../types/Lens/Feed";
-import getIPFSLink from "../utils/getIPFSLink";
-import createCommentViaDispatcher from "../apollo/mutations/createCommentViaDispatcher";
-import uploadMetaDataToArweave from "../utils/uploadMetaToArweave";
+import fetchPublicationById from "../apollo/Queries/fetchPublicationById";
 
-const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => {
-	const [comments, setComments] = useState<Comments[]>([]);
+
+const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos">) => {
 	const [isLiked, setIsLiked] = useState<boolean>(false);
-	const [isLoading, setIsLoading] = useState<boolean>(true);
-	const [likes, setLikes] = useState<number>(route.params.stats?.totalUpvotes);
-	const [commentText, setCommentText] = useState<string>("");
-	const [isImdexing, setIsImdexing] = useState<boolean>(false);
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
 	const [descOpen, setDescOpen] = useState<boolean>(false);
-	const [alreadyFollowing, setAlreadyFollowing] = useState<boolean>(
-		route?.params?.isFollowdByMe || false
-	);
 	const [ismodalopen, setIsmodalopen] = useState<boolean>(false);
 	const [isMute, setIsMute] = useState<boolean>(false);
-	const playbackId = route.params.playbackId;
-
-	const [isalreadyLiked, setisalreadyLiked] = useState<boolean>(
-		route.params.reaction === "UPVOTE" ? true : false
-	);
-	const [isalreadyDisLiked, setisalreadyDisLiked] = useState<boolean>(
-		route.params.reaction === "DOWNVOTE" ? true : false
-	);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [videoData, setVideoData] = useState({});
 
 	const theme = useThemeStore();
 	const authStore = useAuthStore();
 	const userStore = useProfile();
 	const toast = useToast();
-	const likedPublication = useReactionStore();
-
-	const thumbup = likedPublication.likedPublication;
-	const thumbdown = likedPublication.dislikedPublication;
 
 
 
@@ -82,10 +59,48 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 	}
 
 	useEffect(() => {
+        let publicationId = "";
+        Linking.addEventListener("url", (event) => {
+      const id = event.url.split("=")[1];
+      publicationId = id;
+      getVideoById(publicationId);
+      return;
+    });
+    Linking.getInitialURL().then((res) => {
+        const id = res?.split("=")[1];
+        publicationId = id ? id : "";
+        getVideoById(publicationId);
+        return;
+      });
 		BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
 	}, []);
 
-	const STATS = route.params.stats;
+    const getVideoById = async (pubId) => {
+        setIsLoading(true);
+        try {
+          const feed = await client.query({
+            query: fetchPublicationById,
+            variables: {
+                pubId: pubId,
+            },
+            context: {
+                headers: {
+                    "x-access-token": authStore.accessToken
+                      ? `Bearer ${authStore.accessToken}`
+                      : "",
+                  },
+            },
+          });
+          setVideoData(feed.data.publication);
+          return feed;
+        } catch (error) {
+          if (error instanceof Error) {
+            throw new Error("Something went wrong", { cause: error });
+          }
+        } finally {
+          setIsLoading(false);
+        }
+    }
 	const onShare = async () => {
 		try {
 			const result = await Share.share({
@@ -99,109 +114,19 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 			}
 		}
 	};
-
-	const onLike = async () => {
-		if (!isalreadyLiked && !isLiked) {
-			setLikes((prev) => prev + 1);
-			setIsLiked(true);
-			setisalreadyDisLiked(false);
-			addLike(authStore.accessToken, userStore.currentProfile?.id, route.params.id, "UPVOTE").then(
-				(res) => {
-					if (res.addReaction === null) {
-						likedPublication.addToReactedPublications(route.params.id, likes, thumbdown);
-					}
-				}
-			);
-		}
-	};
-
-	const onDislike = async () => {
-		if (!isalreadyDisLiked) {
-			if (isalreadyLiked || isLiked) {
-				setLikes((prev) => prev - 1);
-				setIsLiked(false);
-				setisalreadyLiked(false);
-			}
-			// setIsLiked(false);
-			setisalreadyDisLiked(true);
-			addLike(
-				authStore.accessToken,
-				userStore.currentProfile?.id,
-				route.params.id,
-				"DOWNVOTE"
-			).then((res) => {
-				if (res) {
-					if (res.addReaction === null) {
-						likedPublication.addToDislikedPublications(route.params.id, thumbup);
-					}
-				}
-			});
-			removeLike(authStore.accessToken, userStore.currentProfile?.id, route.params.id)
-				.then((res) => {
-					if (res) {
-					}
-				})
-				.catch((error) => {
-					if (error instanceof Error) {
-						ToastAndroid.show("Can't react to post", ToastAndroid.SHORT);
-					}
-				});
-		}
-	};
-
-	async function publishComment() {
-		if (commentText.length === 0) {
-			toast.show("please type your message", ToastType.ERROR, true);
-			return;
-		}
-		try {
-			const contenturi = await uploadMetaDataToArweave(
-				commentText,
-				userStore.currentProfile?.handle
-			);
-			console.log("uri found" + contenturi);
-
-			const { data, errors } = await client.mutate({
-				mutation: createCommentViaDispatcher,
-				variables: {
-					profileId: userStore.currentProfile?.id,
-					publicationId: route.params.id,
-					uri: contenturi,
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${authStore.accessToken}`,
-					},
-				},
-			});
-			if (data) {
-				console.log(data);
-				toast.show("Comment submitted", ToastType.SUCCESS, true);
-				setIsImdexing(true);
-				setTimeout(() => {
-					setIsImdexing(false);
-					setCommentText("");
-				}, 35000);
-				return;
-			}
-			if (errors) {
-				toast.show("Something went wrong", ToastType.ERROR, true);
-				return;
-			}
-		} catch (error) {
-			console.log(error);
-			setCommentText("");
-			toast.show("Something Went wrong", ToastType.ERROR, true);
-		}
-	}
+    if (isLoading) {
+        return (
+          <Text>Loading</Text>
+        );
+      } 
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
 			<StatusBar style="light" backgroundColor={"black"} translucent={true} />
 			<Player
-				poster={route.params.banner}
-				title={route.params.title}
-				url={route.params.playbackId}
+				poster={videoData?.metadata?.cover}
+				title={videoData?.metadata?.name}
+				url={videoData?.metadata?.media?.original?.url}
 				inFullscreen={inFullscreen}
 				isMute={isMute}
 				setInFullscreen={setInFullsreen}
@@ -217,16 +142,18 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 					}}
 				>
 					<View style={{ maxWidth: "90%" }}>
-						<Player
-							title={route.params.title}
-							url={route.params.playbackId}
-							poster={route.params.banner}
-							isMute={isMute}
-							setIsMute={setIsMute}
-						/>
+                    <Player
+				poster={videoData?.metadata?.cover}
+				title={videoData?.metadata?.name}
+				url={videoData?.metadata?.media?.original?.url}
+				inFullscreen={inFullscreen}
+				isMute={isMute}
+				setInFullscreen={setInFullsreen}
+				setIsMute={setIsMute}
+			/>
 					</View>
 					<Heading
-						title={`${route.params.title} by ${route.params.uploadedBy}`}
+						title={`${videoData?.metadata?.name} by ${videoData?.profile?.name}`}
 						style={{
 							textAlign: "center",
 							fontSize: 16,
@@ -258,7 +185,7 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 						}}
 					>
 						<Heading
-							title={route.params.title}
+							title={videoData?.metadata?.name}
 							style={{
 								fontSize: 16,
 								fontWeight: "700",
@@ -278,7 +205,7 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 						{descOpen ? (
 							<View style={{ marginTop: 8 }}>
 								<SubHeading
-									title={route.params.description}
+									title={videoData?.metadata?.description}
 									style={{ color: "white", fontSize: 14 }}
 								/>
 							</View>
@@ -296,10 +223,10 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 						}}
 					>
 						<View style={{ flexDirection: "row", alignItems: "center" }}>
-							<Avatar src={route.params.avatar} width={40} height={40} />
+							<Avatar src={videoData?.profile?.picture?.original?.url} width={40} height={40} />
 							<View style={{ marginHorizontal: 8 }}>
 								<Heading
-									title={route.params.uploadedBy}
+									title={videoData?.profile?.name}
 									style={{
 										color: "white",
 										fontSize: 16,
@@ -307,7 +234,7 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 									}}
 								/>
 								<SubHeading
-									title={`@${route.params.uploadedBy}`}
+									title={`@${videoData?.profile?.handle}`}
 									style={{
 										color: "gray",
 										fontSize: 12,
@@ -317,7 +244,7 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 							</View>
 						</View>
 						<Button
-							title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
+							title={"Subscribe"}
 							width={"auto"}
 							px={16}
 							py={8}
@@ -330,22 +257,6 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 								color: "black",
 							}}
 							onPress={async () => {
-								if (alreadyFollowing) {
-									toast.show("Currntly not supported", ToastType.ERROR, true);
-									return;
-								}
-								try {
-									const data = await createFreeSubscribe(
-										route.params.profileId,
-										authStore.accessToken
-									);
-									if (data.data.proxyAction !== null) {
-										toast.show("Subscribed succesfully", ToastType.SUCCESS, true);
-									}
-								} catch (error) {
-									if (error instanceof Error) {
-									}
-								}
 							}}
 						/>
 					</View>
@@ -357,7 +268,7 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 						showsHorizontalScrollIndicator={false}
 					>
 						<Button
-							title={formatInteraction(likes) || "0"}
+							title={videoData?.stats?.totalUpvotes}
 							mx={4}
 							px={10}
 							width={"auto"}
@@ -365,16 +276,16 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 							textStyle={{
 								fontSize: 14,
 								fontWeight: "500",
-								color: isalreadyLiked ? theme.PRIMARY : isLiked ? theme.PRIMARY : "white",
+								color: "white",
 								marginLeft: 4,
 							}}
-							borderColor={isalreadyLiked ? theme.PRIMARY : isLiked ? theme.PRIMARY : "white"}
-							onPress={onLike}
+							borderColor={"white"}
+							onPress={()=>{'Like not allowed'}}
 							icon={
 								<AntDesign
-									name={isalreadyLiked ? "like1" : "like2"}
+									name={"like1"}
 									size={16}
-									color={isalreadyLiked ? theme.PRIMARY : isLiked ? theme.PRIMARY : "white"}
+									color={"white"}
 								/>
 							}
 						/>
@@ -390,17 +301,17 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 								fontWeight: "500",
 								color: "white",
 							}}
-							borderColor={isalreadyDisLiked ? theme.PRIMARY : "white"}
+							borderColor={"white"}
 							icon={
 								<AntDesign
-									name={isalreadyDisLiked ? "dislike1" : "dislike2"}
+									name={ "dislike1" }
 									size={16}
-									color={isalreadyDisLiked ? theme.PRIMARY : "white"}
+									color={"white"}
 								/>
 							}
 						/>
 						<Button
-							title={`${STATS?.totalAmountOfCollects || 0} Collects`}
+							title={`${videoData?.stats?.totalAmountOfCollects} Collects`}
 							mx={4}
 							px={10}
 							width={"auto"}
@@ -434,140 +345,10 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 							}}
 						/>
 					</ScrollView>
-					<View>
-						<View
-							style={{
-								backgroundColor: "#232323",
-								width: "100%",
-								height: 60,
-								borderRadius: 8,
-								flexDirection: "row",
-								justifyContent: "center",
-								alignItems: "center",
-							}}
-						>
-							<View
-								style={{
-									flex: 0.2,
-									justifyContent: "center",
-									alignItems: "center",
-								}}
-							>
-								<Avatar
-									src={getIPFSLink(userStore.currentProfile?.picture.original.url)}
-									height={28}
-									width={28}
-								/>
-							</View>
-							<TextInput
-								placeholder="What's in your mind"
-								style={{ flex: 1, color: "white" }}
-								selectionColor={theme.PRIMARY}
-								onChangeText={(text) => {
-									setCommentText(text);
-								}}
-								placeholderTextColor={theme.PRIMARY}
-							/>
-							<Button
-								title="Comment"
-								width={"auto"}
-								ripple_radius={5}
-								type="outline"
-								textStyle={{
-									fontSize: 14,
-									color: commentText.length === 0 ? "gray" : theme.PRIMARY,
-								}}
-								borderColor={commentText.length === 0 ? "gray" : theme.PRIMARY}
-								mx={2}
-								onPress={publishComment}
-							/>
-						</View>
-						<SubHeading
-							title="Comments"
-							style={{
-								fontSize: 20,
-								fontWeight: "700",
-								color: "white",
-								marginBottom: 8,
-							}}
-						/>
-						{isImdexing ? (
-							<CommentCard
-								avatar={userStore.currentProfile?.picture.original.url}
-								commentText={commentText}
-								name={userStore.currentProfile?.name}
-								username={userStore.currentProfile?.handle || ""}
-								isIndexing={true}
-								commentTime={""}
-								id={""}
-								isFollowdByMe={undefined}
-								stats={{
-									totalUpvotes: "0",
-									totalAmountOfCollects: "0",
-									totalAmountOfMirrors: "0",
-								}}
-								commentId={""}
-							/>
-						) : (
-							<></>
-						)}
-						{isLoading ? (
-							<ScrollView>
-								<CommentSkeleton />
-								<CommentSkeleton />
-								<CommentSkeleton />
-								<CommentSkeleton />
-								<CommentSkeleton />
-								<CommentSkeleton />
-								<CommentSkeleton />
-							</ScrollView>
-						) : (
-							<></>
-						)}
-						{!isLoading && comments.length == 0 ? (
-							<View style={{ maxHeight: 200 }}>
-								<AnimatedLottieView
-									autoPlay
-									style={{
-										height: "90%",
-										alignSelf: "center",
-									}}
-									source={require("../assets/nocomments.json")}
-								/>
-								<Heading
-									title="There are no comments yet"
-									style={{
-										color: "white",
-										fontSize: 20,
-										textAlign: "center",
-									}}
-								></Heading>
-							</View>
-						) : (
-							comments?.map((item, index) => {
-								console.log(item?.metadata?.content);
-
-								return (
-									<CommentCard
-										key={item?.id}
-										username={item?.profile?.handle}
-										avatar={item?.profile?.picture?.original?.url}
-										commentText={item?.metadata?.content || item?.metadata?.description}
-										commentTime={item?.createdAt}
-										id={item?.profile?.id}
-										isFollowdByMe={item?.profile?.isFollowedByMe}
-										name={item?.profile?.name}
-										stats={item?.stats}
-										commentId={item?.id}
-									/>
-								);
-							})
-						)}
-					</View>
 				</View>
 			</ScrollView>
 		</SafeAreaView>
 	);
 };
 
-export default VideoPage;
+export default LinkingVideo;

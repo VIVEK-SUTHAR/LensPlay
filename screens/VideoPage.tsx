@@ -249,6 +249,8 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 			toast.show("Something Went wrong", ToastType.ERROR, true);
 		}
 	}
+  
+  
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
