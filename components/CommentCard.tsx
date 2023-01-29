@@ -12,6 +12,7 @@ import addLike from "../api/addReaction";
 import { useAuthStore, useProfile, useReactionStore } from "../store/Store";
 import freeMirror from "../api/freeMirror";
 import { CommentStats } from "../types/Lens/Feed";
+import AnimatedLottieView from "lottie-react-native";
 
 type CommentCardProps = {
   avatar: string;
@@ -23,6 +24,7 @@ type CommentCardProps = {
   name: string | undefined;
   stats: CommentStats;
   commentId: string;
+  isIndexing?: boolean;
 };
 
 const CommentCard = ({
@@ -35,6 +37,7 @@ const CommentCard = ({
   name,
   stats,
   commentId,
+  isIndexing,
 }: CommentCardProps) => {
   const authStore = useAuthStore();
   const reactions = useReactionStore();
@@ -120,8 +123,9 @@ const CommentCard = ({
               title={`@${username}`}
               style={{ fontSize: 12, color: "gray", marginTop: 2 }}
             />
+
             <SubHeading
-              title={getDifference(commentTime)}
+              title={isIndexing?"Indexing...": getDifference(commentTime)}
               style={{ fontSize: 10, color: "gray" }}
             />
           </View>

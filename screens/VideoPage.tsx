@@ -8,12 +8,18 @@ import {
   Linking,
   FlatList,
   RefreshControl,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableHighlight,
 } from "react-native";
 import {
   AntDesign,
   Entypo,
+  EvilIcons,
   Feather,
   FontAwesome,
+  Ionicons,
   MaterialIcons,
 } from "@expo/vector-icons";
 import React, { useEffect } from "react";
@@ -30,6 +36,7 @@ import {
   removeLike,
   isFollowedByMe,
   createFreeSubscribe,
+  getProxyActionStatus,
 } from "../api";
 import CommentCard from "../components/CommentCard";
 import { setStatusBarHidden, StatusBar } from "expo-status-bar";
@@ -49,6 +56,9 @@ import formatInteraction from "../utils/formatInteraction";
 import Toast from "../components/Toast";
 import { ToastType } from "../types/Store";
 import { Comments } from "../types/Lens/Feed";
+import getIPFSLink from "../utils/getIPFSLink";
+import createCommentViaDispatcher from "../apollo/mutations/createCommentViaDispatcher";
+import uploadMetaDataToArweave from "../utils/uploadMetaToArweave";
 
 const VideoPage = ({
   navigation,
@@ -62,9 +72,9 @@ const VideoPage = ({
   const [comments, setComments] = useState<Comments[]>([]);
   const [isLiked, setIsLiked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState<boolean>(false);
   const [likes, setLikes] = useState<number>(route.params.stats?.totalUpvotes);
-
+  const [commentText, setCommentText] = useState("");
+  const [isImdexing, setIsImdexing] = useState(false);
   const [inFullscreen, setInFullsreen] = useState(false);
   const [descOpen, setDescOpen] = useState(false);
   const [alreadyFollowing, setAlreadyFollowing] = useState<boolean>(
@@ -104,11 +114,10 @@ const VideoPage = ({
         }
       }
     });
-  }, [playbackId]);
+  }, [navigation, playbackId]);
 
   useEffect(() => {
     checkFollowed();
-    Linking.addEventListener("url", (e) => {});
   }, []);
 
   async function checkFollowed(): Promise<void> {
@@ -234,6 +243,52 @@ const VideoPage = ({
         });
     }
   };
+
+  async function publishComment() {
+    if (commentText.length === 0) {
+      toast.show("please type your message", ToastType.ERROR, true);
+      return;
+    }
+    try {
+      const contenturi = await uploadMetaDataToArweave(
+        commentText,
+        userStore.currentProfile?.handle
+      );
+      console.log("uri found" + contenturi);
+
+      const { data, errors } = await client.mutate({
+        mutation: createCommentViaDispatcher,
+        variables: {
+          profileId: userStore.currentProfile?.id,
+          publicationId: route.params.id,
+          uri: contenturi,
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${authStore.accessToken}`,
+          },
+        },
+      });
+      if (data) {
+        console.log(data);
+        toast.show("Comment submitted", ToastType.SUCCESS, true);
+        setIsImdexing(true);
+        setTimeout(() => {
+          setIsImdexing(false);
+          setCommentText("");
+        }, 35000);
+        return;
+      }
+      if (errors) {
+        toast.show("Something went wrong", ToastType.ERROR, true);
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+      setCommentText("");
+      toast.show("Something Went wrong", ToastType.ERROR, true);
+    }
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -494,6 +549,55 @@ const VideoPage = ({
             />
           </ScrollView>
           <View>
+            <View
+              style={{
+                backgroundColor: "#232323",
+                width: "100%",
+                height: 60,
+                borderRadius: 8,
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={{
+                  flex: 0.2,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Avatar
+                  src={getIPFSLink(
+                    userStore.currentProfile?.picture.original.url
+                  )}
+                  height={28}
+                  width={28}
+                />
+              </View>
+              <TextInput
+                placeholder="What's in your mind"
+                style={{ flex: 1, color: "white" }}
+                selectionColor={theme.PRIMARY}
+                onChangeText={(text) => {
+                  setCommentText(text);
+                }}
+                placeholderTextColor={theme.PRIMARY}
+              />
+              <Button
+                title="Comment"
+                width={"auto"}
+                ripple_radius={5}
+                type="outline"
+                textStyle={{
+                  fontSize: 14,
+                  color: commentText.length === 0 ? "gray" : theme.PRIMARY,
+                }}
+                borderColor={commentText.length === 0 ? "gray" : theme.PRIMARY}
+                mx={2}
+                onPress={publishComment}
+              />
+            </View>
             <SubHeading
               title="Comments"
               style={{
@@ -503,6 +607,18 @@ const VideoPage = ({
                 marginBottom: 8,
               }}
             />
+            {isImdexing ? (
+              <CommentCard
+                avatar={userStore.currentProfile?.picture.original.url}
+                commentText={commentText}
+                name={userStore.currentProfile?.name}
+                username={userStore.currentProfile?.handle}
+                isIndexing={true}
+              />
+            ) : (
+              <></>
+            )}
+
             {isLoading ? (
               <ScrollView>
                 <CommentSkeleton />
@@ -537,12 +653,16 @@ const VideoPage = ({
               </View>
             ) : (
               comments?.map((item, index) => {
+                console.log(item?.metadata?.content);
+
                 return (
                   <CommentCard
                     key={item?.id}
                     username={item?.profile?.handle}
                     avatar={item?.profile?.picture?.original?.url}
-                    commentText={item?.metadata?.description}
+                    commentText={
+                      item?.metadata?.content || item?.metadata?.description
+                    }
                     commentTime={item?.createdAt}
                     id={item?.profile?.id}
                     isFollowdByMe={item?.profile?.isFollowedByMe}
