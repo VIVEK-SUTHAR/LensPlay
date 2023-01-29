@@ -71,63 +71,7 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 	const thumbup = likedPublication.likedPublication;
 	const thumbdown = likedPublication.dislikedPublication;
 
-	useEffect(() => {
-		fetchComments();
-		thumbup.map((publication) => {
-			if (publication.id === route.params.id) {
-				setisalreadyLiked(true);
-				setisalreadyDisLiked(false);
-				setLikes(publication.likes + 1);
-			}
-		});
-		thumbdown.map((publication) => {
-			if (publication.id === route.params.id) {
-				if (isalreadyLiked) {
-					setisalreadyDisLiked(true);
-					setisalreadyLiked(false);
-					setLikes((prev) => prev - 1);
-				} else {
-					setisalreadyDisLiked(true);
-					setisalreadyLiked(false);
-				}
-			}
-		});
-	}, [navigation, playbackId]);
 
-	useEffect(() => {
-		checkFollowed();
-	}, []);
-
-	async function checkFollowed(): Promise<void> {
-		const data = await isFollowedByMe(route.params.profileId, authStore.accessToken);
-		if (data.data.profile.isFollowedByMe) {
-			setAlreadyFollowing(true);
-			return;
-		}
-	}
-	async function fetchComments(): Promise<void> {
-		try {
-			const data = await client.query({
-				query: getComments,
-				variables: {
-					postId: route.params.id,
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${authStore.accessToken}`,
-					},
-				},
-			});
-			setComments([]);
-			setComments(data.data.publications.items);
-		} catch (error) {
-			if (error instanceof Error) {
-				throw new Error("Can't fetch comments", { cause: error.cause });
-			}
-		} finally {
-			setIsLoading(false);
-		}
-	}
 
 	function handleBackButtonClick() {
 		setStatusBarHidden(false, "fade");
@@ -215,6 +159,7 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 				commentText,
 				userStore.currentProfile?.handle
 			);
+			console.log("uri found" + contenturi);
 
 			const { data, errors } = await client.mutate({
 				mutation: createCommentViaDispatcher,
@@ -435,7 +380,7 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 						/>
 						<Button
 							title=""
-							onPress={onDislike}
+							onPress={()=>console.log('cant dislike')}
 							mx={4}
 							px={16}
 							width={"auto"}
@@ -600,6 +545,7 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 							</View>
 						) : (
 							comments?.map((item, index) => {
+								console.log(item?.metadata?.content);
 
 								return (
 									<CommentCard

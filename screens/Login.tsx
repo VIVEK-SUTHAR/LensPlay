@@ -52,15 +52,22 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const imageW = width * 0.8;
   const imageH = imageW * 1.54;
 
-  const currentTime = new Date();
+  const currentTime = new Date().getTime();
+
+
 
   const updateTokens = async () => {
     const jsonValue = await AsyncStorage.getItem("@storage_Key");
     if (jsonValue) {
       const tokens = JSON.parse(jsonValue);
       const generatedTime = tokens.generatedTime;
+      const minute = Math.floor(( (currentTime - generatedTime) % (1000 * 60 * 60)) / (1000 * 60));
+      const second = Math.floor(((currentTime - generatedTime) % (1000 * 60)) / 1000);
+      console.log("min" + minute);     
+      console.log(second);
     }
   };
+  updateTokens();
 
   const logInWithLens = async () => {
     setIsloading(true);
@@ -158,7 +165,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
       const tokens = {
         accessToken: accessToken,
         refreshToken: refreshToken,
-        generatedTime: currentTime.toLocaleString(),
+        generatedTime: new Date().getTime(),
       };
       const jsonValue = JSON.stringify(tokens);
       await AsyncStorage.setItem("@storage_Key", jsonValue);
