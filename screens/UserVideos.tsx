@@ -40,7 +40,7 @@ const UserVideos = ({ navigation, route }) => {
               playbackId={item?.metadata?.media[0]?.original?.url}
               banner={item?.metadata?.cover}
               avatar={item?.profile?.picture?.original?.url}
-              uploadedBy={item?.profile?.name || item.root.profile.handle}
+              uploadedBy={item?.profile?.name || item?.profile?.handle}
               stats={item?.stats}
               isFollowdByMe={item.profile.isFollowedByMe}
               profileId={item?.profile?.id}

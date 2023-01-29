@@ -6,18 +6,13 @@ import {
 	ToastAndroid,
 	BackHandler,
 	TextInput,
-    Text,
-    Linking
+	Text,
+	Linking,
+	Pressable,
 } from "react-native";
 import { AntDesign, Entypo, Feather, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect } from "react";
-import {
-	useAuthStore,
-	useProfile,
-	useReactionStore,
-	useThemeStore,
-	useToast,
-} from "../store/Store";
+import { useAuthStore, useProfile, useThemeStore, useToast } from "../store/Store";
 import { useState } from "react";
 import { setStatusBarHidden, StatusBar } from "expo-status-bar";
 import { client } from "../apollo/client";
@@ -32,23 +27,21 @@ import { RootStackScreenProps } from "../types/navigation/types";
 import formatInteraction from "../utils/formatInteraction";
 import { ToastType } from "../types/Store";
 import fetchPublicationById from "../apollo/Queries/fetchPublicationById";
-
+import { LensPublication } from "../types/Lens/Feed";
+import getIPFSLink from "../utils/getIPFSLink";
 
 const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos">) => {
-	const [isLiked, setIsLiked] = useState<boolean>(false);
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
 	const [descOpen, setDescOpen] = useState<boolean>(false);
 	const [ismodalopen, setIsmodalopen] = useState<boolean>(false);
 	const [isMute, setIsMute] = useState<boolean>(false);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [videoData, setVideoData] = useState({});
-
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [videoData, setVideoData] = useState<LensPublication>();
+	const [isFocused, setIsFocused] = useState(false);
 	const theme = useThemeStore();
 	const authStore = useAuthStore();
 	const userStore = useProfile();
 	const toast = useToast();
-
-
 
 	function handleBackButtonClick() {
 		setStatusBarHidden(false, "fade");
@@ -59,52 +52,51 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos
 	}
 
 	useEffect(() => {
-        let publicationId = "";
-        Linking.addEventListener("url", (event) => {
-      const id = event.url.split("=")[1];
-      publicationId = id;
-      getVideoById(publicationId);
-      return;
-    });
-    Linking.getInitialURL().then((res) => {
-        const id = res?.split("=")[1];
-        publicationId = id ? id : "";
-        getVideoById(publicationId);
-        return;
-      });
+		let publicationId = "";
+		Linking.addEventListener("url", (event) => {
+			const id = event.url.split("=")[1];
+			publicationId = id;
+			getVideoById(publicationId);
+			return;
+		});
+		Linking.getInitialURL().then((res) => {
+			const id = res?.split("=")[1];
+			publicationId = id ? id : "";
+			getVideoById(publicationId);
+			return;
+		});
 		BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
 	}, []);
 
-    const getVideoById = async (pubId) => {
-        setIsLoading(true);
-        try {
-          const feed = await client.query({
-            query: fetchPublicationById,
-            variables: {
-                pubId: pubId,
-            },
-            context: {
-                headers: {
-                    "x-access-token": authStore.accessToken
-                      ? `Bearer ${authStore.accessToken}`
-                      : "",
-                  },
-            },
-          });
-          setVideoData(feed.data.publication);
-          return feed;
-        } catch (error) {
-          if (error instanceof Error) {
-            throw new Error("Something went wrong", { cause: error });
-          }
-        } finally {
-          setIsLoading(false);
-        }
-    }
+	const getVideoById = async (pubId: string) => {
+		setIsLoading(true);
+		try {
+			const feed = await client.query({
+				query: fetchPublicationById,
+				variables: {
+					pubId: pubId,
+				},
+				context: {
+					headers: {
+						"x-access-token": authStore.accessToken ? `Bearer ${authStore.accessToken}` : "",
+					},
+				},
+			});
+			setVideoData(feed.data.publication);
+
+			return feed;
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new Error("Something went wrong", { cause: error });
+			}
+		} finally {
+			setIsLoading(false);
+		}
+	};
 	const onShare = async () => {
 		try {
 			const result = await Share.share({
-				message: `Let's watch ${route.params.title} by ${route.params.uploadedBy} on LensPlay,
+				message: `Let's watch ${videoData?.metadata?.name} by ${videoData?.profile.handle} on LensPlay,
         
         `,
 			});
@@ -114,19 +106,73 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos
 			}
 		}
 	};
-    if (isLoading) {
-        return (
-          <Text>Loading</Text>
-        );
-      } 
+	if (isLoading) {
+		return (
+			<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+				<View
+					style={{
+						height: 280,
+						backgroundColor: "gray",
+					}}
+				></View>
+				<View
+					style={{
+						flexDirection: "row",
+						marginVertical: 15,
+						justifyContent: "space-between",
+						paddingHorizontal: 5,
+					}}
+				>
+					<View style={{ height: 15, width: 150, backgroundColor: "gray" }}></View>
+					<View style={{ height: 15, width: 35, backgroundColor: "gray" }}></View>
+				</View>
+				<View
+					style={{
+						width: "100%",
+						flexDirection: "row",
+						paddingVertical: 4,
+						justifyContent: "space-between",
+						marginTop: 8,
+					}}
+				>
+					<View style={{ flexDirection: "row", alignItems: "center" }}>
+						<View
+							style={{ height: 40, width: 40, borderRadius: 50, backgroundColor: "gray" }}
+						></View>
+						<View style={{ marginHorizontal: 8 }}>
+							<View style={{ height: 8, width: 100, backgroundColor: "gray" }}></View>
+							<View
+								style={{ height: 8, width: 45, backgroundColor: "gray", marginVertical: 8 }}
+							></View>
+						</View>
+					</View>
+					<Button
+						title={"Subscribe"}
+						width={"auto"}
+						px={16}
+						py={8}
+						type={"filled"}
+						bg={"gray"}
+						textStyle={{
+							fontSize: 16,
+							fontWeight: "700",
+							marginHorizontal: 4,
+							color: "black",
+						}}
+						onPress={async () => {}}
+					/>
+				</View>
+			</SafeAreaView>
+		);
+	}
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
 			<StatusBar style="light" backgroundColor={"black"} translucent={true} />
 			<Player
 				poster={videoData?.metadata?.cover}
-				title={videoData?.metadata?.name}
-				url={videoData?.metadata?.media?.original?.url}
+				title={videoData?.metadata?.name || ""}
+				url={videoData?.metadata?.media[0]?.original?.url || ""}
 				inFullscreen={inFullscreen}
 				isMute={isMute}
 				setInFullscreen={setInFullsreen}
@@ -142,15 +188,15 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos
 					}}
 				>
 					<View style={{ maxWidth: "90%" }}>
-                    <Player
-				poster={videoData?.metadata?.cover}
-				title={videoData?.metadata?.name}
-				url={videoData?.metadata?.media?.original?.url}
-				inFullscreen={inFullscreen}
-				isMute={isMute}
-				setInFullscreen={setInFullsreen}
-				setIsMute={setIsMute}
-			/>
+						<Player
+							poster={videoData?.metadata?.cover}
+							title={videoData?.metadata.name || ""}
+							url={videoData?.metadata.media[0].original.url || ""}
+							inFullscreen={inFullscreen}
+							isMute={isMute}
+							setInFullscreen={setInFullsreen}
+							setIsMute={setIsMute}
+						/>
 					</View>
 					<Heading
 						title={`${videoData?.metadata?.name} by ${videoData?.profile?.name}`}
@@ -256,8 +302,7 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos
 								marginHorizontal: 4,
 								color: "black",
 							}}
-							onPress={async () => {
-							}}
+							onPress={async () => {}}
 						/>
 					</View>
 					<ScrollView
@@ -268,7 +313,7 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos
 						showsHorizontalScrollIndicator={false}
 					>
 						<Button
-							title={videoData?.stats?.totalUpvotes}
+							title={videoData?.stats?.totalUpvotes || "0"}
 							mx={4}
 							px={10}
 							width={"auto"}
@@ -280,18 +325,13 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos
 								marginLeft: 4,
 							}}
 							borderColor={"white"}
-							onPress={()=>{'Like not allowed'}}
-							icon={
-								<AntDesign
-									name={"like1"}
-									size={16}
-									color={"white"}
-								/>
-							}
+							onPress={() => {
+								toast.show("Please login to interact", ToastType.ERROR, true);
+							}}
+							icon={<AntDesign name={"like1"} size={16} color={"white"} />}
 						/>
 						<Button
 							title=""
-							onPress={()=>console.log('cant dislike')}
 							mx={4}
 							px={16}
 							width={"auto"}
@@ -302,13 +342,10 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos
 								color: "white",
 							}}
 							borderColor={"white"}
-							icon={
-								<AntDesign
-									name={ "dislike1" }
-									size={16}
-									color={"white"}
-								/>
-							}
+							onPress={() => {
+								toast.show("Please login to interact", ToastType.ERROR, true);
+							}}
+							icon={<AntDesign name={"dislike1"} size={16} color={"white"} />}
 						/>
 						<Button
 							title={`${videoData?.stats?.totalAmountOfCollects} Collects`}
@@ -318,7 +355,7 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos
 							type={"outline"}
 							icon={<Entypo name="folder-video" size={18} color={"white"} />}
 							onPress={() => {
-								setIsmodalopen(true);
+								toast.show("Please login to collect", ToastType.ERROR, true);
 							}}
 							textStyle={{ color: "white", marginHorizontal: 4 }}
 						/>
@@ -341,12 +378,80 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos
 							icon={<MaterialIcons name="report" size={16} color="white" />}
 							textStyle={{ color: "white", marginHorizontal: 4 }}
 							onPress={() => {
-								toast.show("Thanks for reporting", ToastType.INFO, true);
+								toast.show("Please login to report", ToastType.ERROR, true);
 							}}
 						/>
 					</ScrollView>
 				</View>
 			</ScrollView>
+			<View
+				style={{
+					backgroundColor: "#171923",
+					width: "100%",
+					height: 60,
+					flexDirection: "row",
+					justifyContent: "center",
+					alignItems: "center",
+				}}
+			>
+				<View
+					style={{
+						flex: 0.2,
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<Avatar
+						src={getIPFSLink(userStore.currentProfile?.picture.original.url)}
+						height={28}
+						width={28}
+					/>
+				</View>
+				<TextInput
+					placeholder="What's in your mind"
+					style={{ flex: 1, color: "white" }}
+					selectionColor={theme.PRIMARY}
+					onFocus={(e) => {
+						setIsFocused((state) => !state);
+					}}
+					onSubmitEditing={() => {
+						setIsFocused((state) => !state);
+					}}
+					onPressIn={() => {
+						setIsFocused((state) => !state);
+					}}
+					onPressOut={() => {
+						setIsFocused((state) => !state);
+					}}
+					onBlur={() => {
+						setIsFocused((state) => !state);
+					}}
+					onChange={(e) => {}}
+					placeholderTextColor={theme.PRIMARY}
+				/>
+				{isFocused ? (
+					<Pressable
+						android_ripple={{
+							color: "gray",
+							radius: 20,
+						}}
+						style={{
+							height: 60,
+							justifyContent: "center",
+							alignItems: "center",
+							// marginHorizontal: 2,
+							paddingHorizontal: 12,
+						}}
+						onPressIn={() => {
+							toast.show("Please login to comment", ToastType.ERROR, true);
+						}}
+					>
+						<Feather name="send" color={"gray"} size={24} />
+					</Pressable>
+				) : (
+					<></>
+				)}
+			</View>
 		</SafeAreaView>
 	);
 };

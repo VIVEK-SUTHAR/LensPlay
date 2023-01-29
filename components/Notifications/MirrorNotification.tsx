@@ -5,6 +5,7 @@ import getDifference from "../../utils/getDifference";
 import formatAddress from "../../utils/formatAddress";
 import Avatar from "../UI/Avatar";
 import { AntDesign } from "@expo/vector-icons";
+import extractURLs from "../../utils/extractURL";
 
 const MirrorNotification = ({
   navigation,
@@ -52,7 +53,7 @@ const MirrorNotification = ({
             </Text>
             <View>
               <Text style={{ color: "grey", fontSize: 12 }}>
-                {notification?.publication?.metadata?.description}
+                {extractURLs(notification?.publication?.metadata?.description)}
               </Text>
             </View>
           </View>

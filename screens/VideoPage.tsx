@@ -6,6 +6,8 @@ import {
 	ToastAndroid,
 	BackHandler,
 	TextInput,
+	Pressable,
+	Vibration,
 } from "react-native";
 import { AntDesign, Entypo, Feather, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect } from "react";
@@ -52,9 +54,8 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 		route?.params?.isFollowdByMe || false
 	);
 	const [ismodalopen, setIsmodalopen] = useState<boolean>(false);
+	const [isFocused, setIsFocused] = useState<boolean>(false);
 	const [isMute, setIsMute] = useState<boolean>(false);
-	const playbackId = route.params.playbackId;
-
 	const [isalreadyLiked, setisalreadyLiked] = useState<boolean>(
 		route.params.reaction === "UPVOTE" ? true : false
 	);
@@ -70,6 +71,7 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 
 	const thumbup = likedPublication.likedPublication;
 	const thumbdown = likedPublication.dislikedPublication;
+	const playbackId = route.params.playbackId;
 
 	useEffect(() => {
 		fetchComments();
@@ -207,7 +209,8 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 
 	async function publishComment() {
 		if (commentText.length === 0) {
-			toast.show("please type your message", ToastType.ERROR, true);
+			Vibration.vibrate(20);
+			toast.show("Please type something", ToastType.ERROR, true);
 			return;
 		}
 		try {
@@ -216,41 +219,39 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 				userStore.currentProfile?.handle
 			);
 
-			const { data, errors } = await client.mutate({
-				mutation: createCommentViaDispatcher,
-				variables: {
-					profileId: userStore.currentProfile?.id,
-					publicationId: route.params.id,
-					uri: contenturi,
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${authStore.accessToken}`,
-					},
-				},
-			});
-			if (data) {
-				console.log(data);
-				toast.show("Comment submitted", ToastType.SUCCESS, true);
-				setIsImdexing(true);
-				setTimeout(() => {
-					setIsImdexing(false);
-					setCommentText("");
-				}, 35000);
-				return;
-			}
-			if (errors) {
-				toast.show("Something went wrong", ToastType.ERROR, true);
-				return;
-			}
+			// const { data, errors } = await client.mutate({
+			// 	mutation: createCommentViaDispatcher,
+			// 	variables: {
+			// 		profileId: userStore.currentProfile?.id,
+			// 		publicationId: route.params.id,
+			// 		uri: contenturi,
+			// 	},
+			// 	context: {
+			// 		headers: {
+			// 			"x-access-token": `Bearer ${authStore.accessToken}`,
+			// 		},
+			// 	},
+			// });
+			// if (data) {
+			// 	console.log(data);
+			// 	toast.show("Comment submitted", ToastType.SUCCESS, true);
+			// 	setIsImdexing(true);
+			// 	setTimeout(() => {
+			// 		setIsImdexing(false);
+			// 		setCommentText("");
+			// 	}, 35000);
+			// 	return;
+			// }
+			// if (errors) {
+			// 	toast.show("Something went wrong", ToastType.ERROR, true);
+			// 	return;
+			// }
 		} catch (error) {
 			console.log(error);
 			setCommentText("");
 			toast.show("Something Went wrong", ToastType.ERROR, true);
 		}
 	}
-  
-  
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -492,53 +493,6 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 						/>
 					</ScrollView>
 					<View>
-						<View
-							style={{
-								backgroundColor: "#232323",
-								width: "100%",
-								height: 60,
-								borderRadius: 8,
-								flexDirection: "row",
-								justifyContent: "center",
-								alignItems: "center",
-							}}
-						>
-							<View
-								style={{
-									flex: 0.2,
-									justifyContent: "center",
-									alignItems: "center",
-								}}
-							>
-								<Avatar
-									src={getIPFSLink(userStore.currentProfile?.picture.original.url)}
-									height={28}
-									width={28}
-								/>
-							</View>
-							<TextInput
-								placeholder="What's in your mind"
-								style={{ flex: 1, color: "white" }}
-								selectionColor={theme.PRIMARY}
-								onChangeText={(text) => {
-									setCommentText(text);
-								}}
-								placeholderTextColor={theme.PRIMARY}
-							/>
-							<Button
-								title="Comment"
-								width={"auto"}
-								ripple_radius={5}
-								type="outline"
-								textStyle={{
-									fontSize: 14,
-									color: commentText.length === 0 ? "gray" : theme.PRIMARY,
-								}}
-								borderColor={commentText.length === 0 ? "gray" : theme.PRIMARY}
-								mx={2}
-								onPress={publishComment}
-							/>
-						</View>
 						<SubHeading
 							title="Comments"
 							style={{
@@ -602,7 +556,6 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 							</View>
 						) : (
 							comments?.map((item, index) => {
-
 								return (
 									<CommentCard
 										key={item?.id}
@@ -622,6 +575,78 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 					</View>
 				</View>
 			</ScrollView>
+			<View
+				style={{
+					backgroundColor: "#171923",
+					width: "100%",
+					height: 60,
+					flexDirection: "row",
+					justifyContent: "center",
+					alignItems: "center",
+				}}
+			>
+				<View
+					style={{
+						flex: 0.2,
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<Avatar
+						src={getIPFSLink(userStore.currentProfile?.picture.original.url)}
+						height={28}
+						width={28}
+					/>
+				</View>
+				<TextInput
+					placeholder="What's in your mind"
+					style={{ flex: 1, color: "white" }}
+					selectionColor={theme.PRIMARY}
+					onFocus={(e) => {
+						setIsFocused((state) => !state);
+					}}
+					onSubmitEditing={() => {
+						setIsFocused((state) => !state);
+					}}
+					onPressIn={() => {
+						setIsFocused((state) => !state);
+					}}
+					onPressOut={() => {
+						setIsFocused((state) => !state);
+					}}
+					onBlur={() => {
+						setIsFocused((state) => !state);
+					}}
+					onChange={(e) => {
+						setCommentText(e.nativeEvent.text);
+					}}
+					placeholderTextColor={theme.PRIMARY}
+				/>
+				{isFocused ? (
+					<Pressable
+						android_ripple={{
+							color: commentText.length === 0 ? "gray" : theme.PRIMARY,
+							radius: 20,
+						}}
+						style={{
+							height: 60,
+							justifyContent: "center",
+							alignItems: "center",
+							// marginHorizontal: 2,
+							paddingHorizontal: 12,
+						}}
+						onPressIn={publishComment}
+					>
+						<Feather
+							name="send"
+							color={commentText.length === 0 ? "gray" : theme.PRIMARY}
+							size={24}
+						/>
+					</Pressable>
+				) : (
+					<></>
+				)}
+			</View>
 		</SafeAreaView>
 	);
 };

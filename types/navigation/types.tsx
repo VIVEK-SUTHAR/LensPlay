@@ -86,7 +86,7 @@ export type RootStackParamList = {
     videos: LensPublication[];
     title: string;
   };
-  LinkingVideos: {};
+  LinkingVideos: undefined;
 };
 
 /**
