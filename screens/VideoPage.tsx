@@ -214,10 +214,10 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 			return;
 		}
 		try {
-			const contenturi = await uploadMetaDataToArweave(
-				commentText,
-				userStore.currentProfile?.handle
-			);
+			// const contenturi = await uploadMetaDataToArweave(
+			// 	commentText,
+			// 	userStore.currentProfile?.handle
+			// );
 
 			// const { data, errors } = await client.mutate({
 			// 	mutation: createCommentViaDispatcher,
