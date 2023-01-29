@@ -24,6 +24,7 @@ import Paginator from "../components/Paginator";
 import SubHeading from "../components/UI/SubHeading";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Button from "../components/UI/Button";
+import formatTime from "../utils/formatTime";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const store = useStore();
@@ -46,9 +47,21 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
     "https://res.cloudinary.com/djkwixcg8/image/upload/v1674534829/landing-2_byfsnm.webp",
     "https://res.cloudinary.com/djkwixcg8/image/upload/v1674534828/landing-3_gatvjy.webp",
   ];
+
   const { width } = Dimensions.get("screen");
   const imageW = width * 0.8;
   const imageH = imageW * 1.54;
+
+  const currentTime = new Date();
+
+  const updateTokens = async () => {
+    const jsonValue = await AsyncStorage.getItem("@storage_Key");
+    if (jsonValue) {
+      const tokens = JSON.parse(jsonValue);
+      const generatedTime = tokens.generatedTime;
+    }
+  };
+
   const logInWithLens = async () => {
     setIsloading(true);
     const data = await client.query({
@@ -107,53 +120,29 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
       const jsonValue = await AsyncStorage.getItem("@storage_Key");
       if (jsonValue) {
         const tokens = JSON.parse(jsonValue);
-        const isvaild = await client.query({
-          query: verifyToken,
+        console.log(tokens);
+        const refreshToken = await client.mutate({
+          mutation: refreshCurrentToken,
           variables: {
-            token: tokens.accessToken,
+            rtoken: tokens.refreshToken,
           },
         });
-        if (isvaild.data.verify) {
-          authStore.setAccessToken(tokens.accessToken);
-          const data = await client.query({
-            query: getProfile,
-            variables: {
-              ethAddress: connector.accounts[0],
-            },
-          });
-          if (!data.data.defaultProfile) {
-            return;
-          }
-          store.setProfileId(data.data.defaultProfile.id);
-          userStore.setCurrentProfile(data.data.defaultProfile);
-          setIsloading(false);
-          navigation.navigate("Root");
+        authStore.setAccessToken(refreshToken.data.refresh.accessToken);
+        storeData(
+          refreshToken.data.refresh.accessToken,
+          refreshToken.data.refresh.refreshToken
+        );
+        const data = await client.query({
+          query: getProfile,
+          variables: {
+            ethAddress: connector.accounts[0],
+          },
+        });
+        if (!data.data.defaultProfile) {
+          return;
         }
-        if (isvaild.data.verify === false) {
-          const refreshToken = await client.mutate({
-            mutation: refreshCurrentToken,
-            variables: {
-              rtoken: tokens.refreshToken,
-            },
-          });
-          authStore.setAccessToken(refreshToken.data.refresh.accessToken);
-          storeData(
-            refreshToken.data.refresh.accessToken,
-            refreshToken.data.refresh.refreshToken
-          );
-          const data = await client.query({
-            query: getProfile,
-            variables: {
-              ethAddress: connector.accounts[0],
-            },
-          });
-          if (!data.data.defaultProfile) {
-            return;
-          }
-          store.setProfileId(data.data.defaultProfile.id);
-          userStore.setCurrentProfile(data.data.defaultProfile);
-          navigation.navigate("Root");
-        }
+        userStore.setCurrentProfile(data.data.defaultProfile);
+        navigation.navigate("Root");
       } else {
         setIsloading(false);
       }
@@ -169,6 +158,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
       const tokens = {
         accessToken: accessToken,
         refreshToken: refreshToken,
+        generatedTime: currentTime.toLocaleString(),
       };
       const jsonValue = JSON.stringify(tokens);
       await AsyncStorage.setItem("@storage_Key", jsonValue);
