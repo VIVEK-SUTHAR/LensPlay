@@ -52,22 +52,25 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const imageW = width * 0.8;
   const imageH = imageW * 1.54;
 
-  const currentTime = new Date().getTime();
-
-
-
   const updateTokens = async () => {
     const jsonValue = await AsyncStorage.getItem("@storage_Key");
     if (jsonValue) {
       const tokens = JSON.parse(jsonValue);
       const generatedTime = tokens.generatedTime;
-      const minute = Math.floor(( (currentTime - generatedTime) % (1000 * 60 * 60)) / (1000 * 60));
-      const second = Math.floor(((currentTime - generatedTime) % (1000 * 60)) / 1000);
-      console.log("min" + minute);     
-      console.log(second);
+      const currentTime = new Date().getTime();
+
+      setInterval(function () {
+        const minute = Math.floor(
+          ((currentTime - generatedTime) % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        if (minute < 25) {
+          return;
+        } else {
+          getData();
+        }
+      }, 60 * 1000);
     }
   };
-  updateTokens();
 
   const logInWithLens = async () => {
     setIsloading(true);
@@ -80,7 +83,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
     if (!data.data.defaultProfile) {
       return;
     }
-    store.setProfileId(data.data.defaultProfile.id);
     userStore.setCurrentProfile(data.data.defaultProfile);
     const challengeText = await client.query({
       query: getChallenge,
@@ -127,29 +129,51 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
       const jsonValue = await AsyncStorage.getItem("@storage_Key");
       if (jsonValue) {
         const tokens = JSON.parse(jsonValue);
-        console.log(tokens);
-        const refreshToken = await client.mutate({
-          mutation: refreshCurrentToken,
+        const isvaild = await client.query({
+          query: verifyToken,
           variables: {
-            rtoken: tokens.refreshToken,
+            token: tokens.accessToken,
           },
         });
-        authStore.setAccessToken(refreshToken.data.refresh.accessToken);
-        storeData(
-          refreshToken.data.refresh.accessToken,
-          refreshToken.data.refresh.refreshToken
-        );
-        const data = await client.query({
-          query: getProfile,
-          variables: {
-            ethAddress: connector.accounts[0],
-          },
-        });
-        if (!data.data.defaultProfile) {
-          return;
+        if (isvaild.data.verify) {
+          authStore.setAccessToken(tokens.accessToken);
+          const data = await client.query({
+            query: getProfile,
+            variables: {
+              ethAddress: connector.accounts[0],
+            },
+          });
+          if (!data.data.defaultProfile) {
+            return;
+          }
+          userStore.setCurrentProfile(data.data.defaultProfile);
+          setIsloading(false);
+          navigation.navigate("Root");
         }
-        userStore.setCurrentProfile(data.data.defaultProfile);
-        navigation.navigate("Root");
+        if (isvaild.data.verify === false) {
+          const refreshToken = await client.mutate({
+            mutation: refreshCurrentToken,
+            variables: {
+              rtoken: tokens.refreshToken,
+            },
+          });
+          authStore.setAccessToken(refreshToken.data.refresh.accessToken);
+          storeData(
+            refreshToken.data.refresh.accessToken,
+            refreshToken.data.refresh.refreshToken
+          );
+          const data = await client.query({
+            query: getProfile,
+            variables: {
+              ethAddress: connector.accounts[0],
+            },
+          });
+          if (!data.data.defaultProfile) {
+            return;
+          }
+          userStore.setCurrentProfile(data.data.defaultProfile);
+          navigation.navigate("Root");
+        }
       } else {
         setIsloading(false);
       }
@@ -169,6 +193,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
       };
       const jsonValue = JSON.stringify(tokens);
       await AsyncStorage.setItem("@storage_Key", jsonValue);
+      updateTokens();
     } catch (e) {
       // saving error
       console.log(e);
