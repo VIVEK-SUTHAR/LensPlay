@@ -5,7 +5,7 @@ import { ADDRESS_REGEX } from "../constants";
  * @returns Shorted Address ex:0xa5...c50
  */
 
-const formatAddress = (address: string | null): string => {
+const formatAddress = (address: string | undefined): string => {
   if (!address) {
     return "";
   }

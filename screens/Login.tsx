@@ -8,24 +8,29 @@ import {
   View,
 } from "react-native";
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import { dark_primary, dark_secondary, primary } from "../constants/Colors";
 import { client } from "../apollo/client";
 import getChallenge from "../apollo/Queries/getChallenge";
 import getAccessTokens from "../apollo/mutations/getAccessTokens";
 import getProfile from "../apollo/Queries/getProfile";
-import useStore from "../store/Store";
+import useStore, { useAuthStore, useProfile } from "../store/Store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import verifyToken from "../apollo/Queries/verifyToken";
 import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
 import { StatusBar } from "expo-status-bar";
 import Paginator from "../components/Paginator";
 import SubHeading from "../components/UI/SubHeading";
+import { RootStackScreenProps } from "../types/navigation/types";
+import Button from "../components/UI/Button";
+import formatTime from "../utils/formatTime";
 
-const Login = ({ navigation }: { navigation: any }) => {
+const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const store = useStore();
+  const authStore = useAuthStore();
+  const userStore = useProfile();
+  const [isloading, setIsloading] = useState<boolean>(false);
   const connector = useWalletConnect();
   const [isconnected, setIsconnected] = useState<boolean>(false);
   const connectWallet = React.useCallback(async () => {
@@ -33,15 +38,42 @@ const Login = ({ navigation }: { navigation: any }) => {
     setIsconnected(true);
   }, [connector]);
 
+  useEffect(() => {
+    navigation.addListener("focus", getData);
+  }, []);
+
   const data = [
-    "https://ipfs.io/ipfs/QmfY1JJanP2cZyrcf2WBka6dzoHFjT9sH2gYcEaJJiDwfK",
-    "https://ipfs.io/ipfs/QmQgwri9TtoCYWdxB9kkpC5NKwaSWHJw3MHon6Rt3oVQP7",
-    "https://ipfs.io/ipfs/Qmawvbo2VvS6aF6bL1bchAXtLEwkZurbbEtMu7PxfHFoQ1",
+    "https://res.cloudinary.com/djkwixcg8/image/upload/v1674534829/landing-1_lrrjd1.webp",
+    "https://res.cloudinary.com/djkwixcg8/image/upload/v1674534829/landing-2_byfsnm.webp",
+    "https://res.cloudinary.com/djkwixcg8/image/upload/v1674534828/landing-3_gatvjy.webp",
   ];
-  const { width, height } = Dimensions.get("screen");
+
+  const { width } = Dimensions.get("screen");
   const imageW = width * 0.8;
   const imageH = imageW * 1.54;
+
+  const updateTokens = async () => {
+    const jsonValue = await AsyncStorage.getItem("@storage_Key");
+    if (jsonValue) {
+      const tokens = JSON.parse(jsonValue);
+      const generatedTime = tokens.generatedTime;
+      const currentTime = new Date().getTime();
+
+      setInterval(function () {
+        const minute = Math.floor(
+          ((currentTime - generatedTime) % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        if (minute < 25) {
+          return;
+        } else {
+          getData();
+        }
+      }, 60 * 1000);
+    }
+  };
+
   const logInWithLens = async () => {
+    setIsloading(true);
     const data = await client.query({
       query: getProfile,
       variables: {
@@ -51,7 +83,7 @@ const Login = ({ navigation }: { navigation: any }) => {
     if (!data.data.defaultProfile) {
       return;
     }
-    store.setProfileId(data.data.defaultProfile.id);
+    userStore.setCurrentProfile(data.data.defaultProfile);
     const challengeText = await client.query({
       query: getChallenge,
       variables: {
@@ -72,23 +104,27 @@ const Login = ({ navigation }: { navigation: any }) => {
         },
       });
       if (tokens.data.authenticate.accessToken) {
-        store.setAccessToken(tokens.data.authenticate.accessToken);
-        console.log(tokens.data.authenticate.accessToken);
+        authStore.setAccessToken(tokens.data.authenticate.accessToken);
+        authStore.setRefreshToken(tokens.data.authenticate.refreshToken);
         storeData(
           tokens.data.authenticate.accessToken,
           tokens.data.authenticate.refreshToken
         );
+        setIsloading(false);
         navigation.navigate("Root");
       } else {
+        setIsloading(false);
         Alert.alert("Something went wrong");
       }
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
+        setIsloading(false);
       }
     }
   };
   const getData = async () => {
+    setIsloading(true);
     try {
       const jsonValue = await AsyncStorage.getItem("@storage_Key");
       if (jsonValue) {
@@ -100,8 +136,7 @@ const Login = ({ navigation }: { navigation: any }) => {
           },
         });
         if (isvaild.data.verify) {
-          console.log("Tokens are valid,getting you in");
-          store.setAccessToken(tokens.accessToken);
+          authStore.setAccessToken(tokens.accessToken);
           const data = await client.query({
             query: getProfile,
             variables: {
@@ -111,7 +146,8 @@ const Login = ({ navigation }: { navigation: any }) => {
           if (!data.data.defaultProfile) {
             return;
           }
-          store.setProfileId(data.data.defaultProfile.id);
+          userStore.setCurrentProfile(data.data.defaultProfile);
+          setIsloading(false);
           navigation.navigate("Root");
         }
         if (isvaild.data.verify === false) {
@@ -121,8 +157,7 @@ const Login = ({ navigation }: { navigation: any }) => {
               rtoken: tokens.refreshToken,
             },
           });
-          console.log("Tokens are invalid,generating new tokens...");
-          store.setAccessToken(refreshToken.data.refresh.accessToken);
+          authStore.setAccessToken(refreshToken.data.refresh.accessToken);
           storeData(
             refreshToken.data.refresh.accessToken,
             refreshToken.data.refresh.refreshToken
@@ -136,30 +171,29 @@ const Login = ({ navigation }: { navigation: any }) => {
           if (!data.data.defaultProfile) {
             return;
           }
-          store.setProfileId(data.data.defaultProfile.id);
+          userStore.setCurrentProfile(data.data.defaultProfile);
           navigation.navigate("Root");
         }
       } else {
-        console.log("not found");
+        setIsloading(false);
       }
     } catch (e) {
       if (e instanceof Error) {
         //yaha sb krna
+        setIsloading(false);
       }
     }
   };
-  React.useEffect(() => {
-    getData();
-  }, []);
-
   const storeData = async (accessToken: string, refreshToken: string) => {
     try {
       const tokens = {
         accessToken: accessToken,
         refreshToken: refreshToken,
+        generatedTime: new Date().getTime(),
       };
       const jsonValue = JSON.stringify(tokens);
       await AsyncStorage.setItem("@storage_Key", jsonValue);
+      updateTokens();
     } catch (e) {
       // saving error
       console.log(e);
@@ -177,12 +211,8 @@ const Login = ({ navigation }: { navigation: any }) => {
           justifyContent: "center",
           alignItems: "center",
           height: "100%",
-          height: "100%",
         }}
       >
-        {/* <View
-          style={{ width: "100%", alignItems: "center", aspectRatio: 1.4 / 1 }}
-        > */}
         <View style={StyleSheet.absoluteFillObject}>
           {data.map((image, index) => {
             const inputRange = [
@@ -247,48 +277,25 @@ const Login = ({ navigation }: { navigation: any }) => {
             );
           }}
         />
-        {/* <Image
-            source={require("../assets/images/lensplay.png")}
-            style={{
-              height: "100%",
-              width: "100%",
-              resizeMode: "center",
-            }}
-          /> */}
-        {/* </View> */}
-
         {!!connector.connected ? (
           <>
-            <TouchableOpacity
-              style={{
-                width: "80%",
+            <Button
+              title="Login With Lens"
+              bg={"#abfe2c"}
+              my={10}
+              py={16}
+              textStyle={{
+                color: "black",
+                fontSize: 20,
+                fontWeight: "bold",
+                textAlign: "center",
               }}
+              width={"80%"}
               onPress={async () => {
                 await logInWithLens();
               }}
-            >
-              <View
-                style={{
-                  backgroundColor: "#abfe2c",
-                  borderRadius: 50,
-                  paddingVertical: 16,
-                  marginVertical: 10,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <SubHeading
-                  title="Login with Lens"
-                  style={{
-                    color: "black",
-                    fontSize: 20,
-                    fontWeight: "bold",
-                    textAlign: "center",
-                  }}
-                />
-              </View>
-            </TouchableOpacity>
+              isLoading={isloading}
+            />
             <TouchableOpacity style={{ width: "80%" }} onPress={killSession}>
               <View
                 style={{
@@ -348,6 +355,6 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: dark_primary,
+    backgroundColor: "black",
   },
 });

@@ -3,7 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { client } from "./apollo/client";
-import { dark_primary } from "./constants/Colors";
+import Toast from "./components/Toast";
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
@@ -17,9 +17,10 @@ export default function App() {
   } else {
     return (
       <SafeAreaProvider>
+        <Toast/>
         <ApolloProvider client={client}>
           <Navigation colorScheme={colorScheme} />
-          <StatusBar style="auto"/>
+          <StatusBar style="auto" />
         </ApolloProvider>
       </SafeAreaProvider>
     );

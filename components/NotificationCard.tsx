@@ -1,14 +1,6 @@
 import { AntDesign, Entypo, EvilIcons } from "@expo/vector-icons";
 import React, { FC } from "react";
-import {
-  Image,
-  Pressable,
-  Text,
-  TouchableHighlight,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
-import { dark_secondary } from "../constants/Colors";
+import { Pressable, Text, View } from "react-native";
 import formatAddress from "../utils/formatAddress";
 import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
@@ -228,12 +220,10 @@ const NotificationCard: FC<NotificationsProps> = ({
     <View
       style={{
         flexDirection: "row",
-        backgroundColor: dark_secondary,
+        backgroundColor: "#1a1a1a",
         padding: 8,
         marginVertical: 4,
         marginHorizontal: 8,
-        // borderBottomColor: "gray",
-        // borderBottomWidth:1,
         borderRadius: 8,
       }}
     >

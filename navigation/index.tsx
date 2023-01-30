@@ -1,5 +1,5 @@
 //@ts-ignore
-import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
+import { Feather, FontAwesome, Fontisto, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -7,23 +7,40 @@ import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import {
   ColorSchemeName,
-  Text,
+  Image,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
 import VideoPage from "../screens/VideoPage";
-import { dark_secondary, primary } from "../constants/Colors";
 import Feed from "../screens/Feed";
 import Login from "../screens/Login";
-import { RootTabParamList } from "../types";
-import Profile from "../screens/Profile";
+import {
+  RootStackParamList,
+  RootStackScreenProps,
+  RootTabParamList,
+} from "../types/navigation/types";
 import Trending from "../screens/Trending";
-import Notification from "../components/Notification";
+import Notification from "../screens/Notification";
 import UploadVideo from "../screens/UploadVideo";
 import Search from "../screens/Search";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import Channel from "../screens/Channel";
+import { useProfile, useThemeStore } from "../store/Store";
+import ProfileScreen from "../screens/Profile";
+import UserVideos from "../screens/UserVideos";
+import {
+  HOME_FILLED,
+  HOME_OUTLINE,
+  NOTI_FILLED,
+  NOTI_OUTLINE,
+  UPLOAD_FILLED,
+  UPLOAD_OUTLINE,
+} from "../components/Icons";
+import Avatar from "../components/UI/Avatar";
+import getIPFSLink from "../utils/getIPFSLink";
+import linking from "./LinkingConfiguration";
+import LinkingVideo from "../screens/LinkingVideo";
 
 export default function Navigation({
   colorScheme,
@@ -33,18 +50,25 @@ export default function Navigation({
   return (
     <>
       <StatusBar style="dark" />
-      <NavigationContainer>
+      <NavigationContainer linking={linking}>
         <RootNavigator />
       </NavigationContainer>
     </>
   );
 }
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
+  const theme = useThemeStore();
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "black",
+        },
+      }}
+    >
       <Stack.Screen
         name="Login"
         component={Login}
@@ -53,32 +77,57 @@ function RootNavigator() {
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}
-        options={{ headerShown: false, presentation: "card" }}
+        options={{
+          headerShown: false,
+          animation: "slide_from_right",
+          gestureEnabled: false,
+        }}
       />
       <Stack.Screen
         name="VideoPage"
         component={VideoPage}
-        options={{ headerShown: false, presentation: "containedModal" }}
-      />
-      <Stack.Screen
-        name="Profile"
-        component={Profile}
-        options={{ headerShown: true, presentation: "card" }}
+        options={{
+          headerShown: false,
+          presentation: "card",
+          animation: "slide_from_right",
+        }}
       />
       <Stack.Screen
         name="Search"
         component={Search}
-        options={{ headerShown: true, presentation: "modal" }}
+        options={{
+          headerShown: true,
+          presentation: "card",
+          animation: "default",
+        }}
       />
       <Stack.Screen
         name="Channel"
         component={Channel}
         options={{
+          animation: "slide_from_left",
+          headerShown: false,
+          headerTintColor: theme.PRIMARY,
+        }}
+      />
+      <Stack.Screen
+        name="YourVideos"
+        component={UserVideos}
+        options={{
+          animation: "slide_from_right",
           headerShown: true,
-          headerStyle: {
-            backgroundColor: dark_secondary,
-          },
-          headerTintColor: primary,
+          headerTintColor: theme.PRIMARY,
+          headerTitle: "Your videos",
+        }}
+      />
+      <Stack.Screen
+        name="LinkingVideos"
+        component={LinkingVideo}
+        options={{
+          animation: "slide_from_right",
+          headerShown: false,
+          headerTintColor: theme.PRIMARY,
+          headerTitle: "Your videos",
         }}
       />
     </Stack.Navigator>
@@ -87,12 +136,14 @@ function RootNavigator() {
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
-function BottomTabNavigator({ navigation }) {
+function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
+  const theme = useThemeStore();
+  const user = useProfile();
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        headerStyle: { backgroundColor: dark_secondary, elevation: 0 },
+        headerStyle: { backgroundColor: "black", elevation: 2 },
         headerTitle: "",
         headerRight: () => (
           <TouchableWithoutFeedback
@@ -125,7 +176,7 @@ function BottomTabNavigator({ navigation }) {
             />
             <View
               style={{
-                backgroundColor: primary,
+                backgroundColor: theme.PRIMARY,
                 marginHorizontal: 4,
                 paddingHorizontal: 8,
                 paddingVertical: 2,
@@ -134,19 +185,51 @@ function BottomTabNavigator({ navigation }) {
             >
               <SubHeading
                 title="BETA"
-                style={{ color: "white", fontSize: 11, fontWeight: "600" }}
+                style={{ color: "white", fontSize: 8, fontWeight: "600" }}
               />
             </View>
           </View>
         ),
         tabBarStyle: {
-          height: 54,
-          backgroundColor: dark_secondary,
-          borderTopColor: "lightgray",
+          paddingVertical: 2,
+          height: "auto",
+          minHeight: 55,
+          backgroundColor: "#171923",
+          borderTopColor: "transparent",
           paddingHorizontal: 10,
         },
+        headerShadowVisible: true,
       }}
     >
+      {/* {NavigationItems.map((item, index) => (
+        <BottomTab.Screen
+          key={index}
+          name={item.name}
+          component={Feed}
+          options={{
+            tabBarLabel: "",
+            tabBarIcon: ({ focused }) => {
+              return (
+                <View
+                  style={{
+                    padding: 5,
+                    width: 45,
+                    alignContent: "center",
+                    justifyContent: "center",
+                    flexDirection: "row",
+                    borderTopWidth: focused ? 2 : 0,
+                    borderTopColor: focused ? theme.PRIMARY : "transparent",
+                    height: "100%",
+                  }}
+                >
+                  {item.icon}
+                </View>
+              );
+            },
+          }}
+        />
+      ))} */}
+
       <BottomTab.Screen
         name="Home"
         component={Feed}
@@ -161,15 +244,18 @@ function BottomTabNavigator({ navigation }) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: focused ? 2 : 0,
-                  borderTopColor: focused ? primary : "none",
                   height: "100%",
                 }}
               >
-                <Feather
-                  name="home"
-                  size={28}
-                  color={focused ? primary : "white"}
+                <Image
+                  source={{
+                    uri: focused ? HOME_FILLED : HOME_OUTLINE,
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    height: 26,
+                    width: 26,
+                  }}
                 />
               </View>
             );
@@ -190,15 +276,13 @@ function BottomTabNavigator({ navigation }) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: focused ? 2 : 0,
-                  borderTopColor: focused ? primary : "none",
                   height: "100%",
                 }}
               >
-                <Feather
-                  name="trending-up"
+                <Ionicons
+                  name={focused ? "compass" : "compass-outline"}
+                  color={focused ? theme.PRIMARY : "white"}
                   size={28}
-                  color={focused ? primary : "white"}
                 />
               </View>
             );
@@ -219,16 +303,24 @@ function BottomTabNavigator({ navigation }) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: focused ? 2 : 0,
-                  borderTopColor: focused ? primary : "none",
                   height: "100%",
                 }}
               >
-                <AntDesign
-                  name="pluscircleo"
-                  size={28}
-                  color={focused ? primary : "white"}
+                <Image
+                  source={{
+                    uri: focused ? UPLOAD_FILLED : UPLOAD_OUTLINE,
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    height: 26,
+                    width: 26,
+                  }}
                 />
+                {/* <Feather
+                  name={"plus-circle"}
+                  color={focused ? theme.PRIMARY : "white"}
+                  size={28}
+                /> */}
               </View>
             );
           },
@@ -239,11 +331,6 @@ function BottomTabNavigator({ navigation }) {
         component={Notification}
         options={{
           tabBarLabel: "",
-          // tabBarBadge: 2,
-          // tabBarBadgeStyle: {
-          //   backgroundColor: primary,
-          //   left: 0,
-          // },
           tabBarIcon: ({ focused }) => {
             return (
               <View
@@ -253,15 +340,18 @@ function BottomTabNavigator({ navigation }) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: focused ? 2 : 0,
-                  borderTopColor: focused ? primary : "none",
                   height: "100%",
                 }}
               >
-                <Ionicons
-                  name="notifications-outline"
-                  size={28}
-                  color={focused ? primary : "white"}
+                <Image
+                  source={{
+                    uri: focused ? NOTI_FILLED : NOTI_OUTLINE,
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    height: 26,
+                    width: 26,
+                  }}
                 />
               </View>
             );
@@ -270,27 +360,30 @@ function BottomTabNavigator({ navigation }) {
       />
       <BottomTab.Screen
         name="Account"
-        component={Profile}
+        component={ProfileScreen}
         options={{
           tabBarLabel: "",
+          headerShown: false,
           tabBarIcon: ({ focused }) => {
             return (
               <View
                 style={{
-                  padding: 5,
-                  width: 45,
+                  width: 30,
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: focused ? 2 : 0,
-                  borderTopColor: focused ? primary : "none",
-                  height: "100%",
+                  height: 30,
+                  borderRadius: 45,
+                  borderColor: focused ? theme.PRIMARY : "transparent",
+                  borderWidth: 1,
                 }}
               >
-                <Feather
-                  name="user"
-                  size={28}
-                  color={focused ? primary : "white"}
+                <Avatar
+                  src={getIPFSLink(
+                    user?.currentProfile?.picture?.original?.url
+                  )}
+                  height={28}
+                  width={28}
                 />
               </View>
             );

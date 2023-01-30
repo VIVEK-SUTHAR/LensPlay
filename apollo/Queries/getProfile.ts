@@ -62,11 +62,10 @@ export default gql`
       followModule {
         ... on FeeFollowModuleSettings {
           type
-          contractAddress
           amount {
             asset {
-              name
               symbol
+              name
               decimals
               address
             }
