@@ -116,13 +116,13 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <ScrollView>
-        <View
+        {/* <View
           style={{
             padding: 10,
           }}
         >
           <ProfileCard />
-        </View>
+        </View> */}
         {!!isSearching && (
           <>
             <AnimatedLottieView
