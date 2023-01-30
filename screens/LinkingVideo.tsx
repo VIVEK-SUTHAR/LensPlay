@@ -54,13 +54,15 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos
 	useEffect(() => {
 		let publicationId = "";
 		Linking.addEventListener("url", (event) => {
-			const id = event.url.split("=")[1];
+			const id = event?.url?.split("/watch/")[1];
 			publicationId = id;
 			getVideoById(publicationId);
 			return;
 		});
 		Linking.getInitialURL().then((res) => {
-			const id = res?.split("=")[1];
+			console.log(res);
+			
+			const id = res?.split("/watch/")[1];
 			publicationId = id ? id : "";
 			getVideoById(publicationId);
 			return;

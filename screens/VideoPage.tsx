@@ -214,38 +214,38 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 			return;
 		}
 		try {
-			// const contenturi = await uploadMetaDataToArweave(
-			// 	commentText,
-			// 	userStore.currentProfile?.handle
-			// );
+			const contenturi = await uploadMetaDataToArweave(
+				commentText,
+				userStore.currentProfile?.handle
+			);
 
-			// const { data, errors } = await client.mutate({
-			// 	mutation: createCommentViaDispatcher,
-			// 	variables: {
-			// 		profileId: userStore.currentProfile?.id,
-			// 		publicationId: route.params.id,
-			// 		uri: contenturi,
-			// 	},
-			// 	context: {
-			// 		headers: {
-			// 			"x-access-token": `Bearer ${authStore.accessToken}`,
-			// 		},
-			// 	},
-			// });
-			// if (data) {
-			// 	console.log(data);
-			// 	toast.show("Comment submitted", ToastType.SUCCESS, true);
-			// 	setIsImdexing(true);
-			// 	setTimeout(() => {
-			// 		setIsImdexing(false);
-			// 		setCommentText("");
-			// 	}, 35000);
-			// 	return;
-			// }
-			// if (errors) {
-			// 	toast.show("Something went wrong", ToastType.ERROR, true);
-			// 	return;
-			// }
+			const { data, errors } = await client.mutate({
+				mutation: createCommentViaDispatcher,
+				variables: {
+					profileId: userStore.currentProfile?.id,
+					publicationId: route.params.id,
+					uri: contenturi,
+				},
+				context: {
+					headers: {
+						"x-access-token": `Bearer ${authStore.accessToken}`,
+					},
+				},
+			});
+			if (data) {
+				console.log(data);
+				toast.show("Comment submitted", ToastType.SUCCESS, true);
+				setIsImdexing(true);
+				setTimeout(() => {
+					setIsImdexing(false);
+					setCommentText("");
+				}, 35000);
+				return;
+			}
+			if (errors) {
+				toast.show("Something went wrong", ToastType.ERROR, true);
+				return;
+			}
 		} catch (error) {
 			console.log(error);
 			setCommentText("");
