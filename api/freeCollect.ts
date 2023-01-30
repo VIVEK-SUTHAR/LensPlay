@@ -35,7 +35,22 @@ async function freeCollectPublication(
       headers: headersList,
     });
     let data = await response.json();
-    return data;
+    console.log(data.data);
+    
+    if (data?.data?.proxyAction){
+      return data?.data?.proxyAction;
+    }
+    else if(data?.errors){
+      if (data?.errors[0].message === "Can only collect if the publication has a `FreeCollectModule` set") {
+        throw new Error('You can\'t collect this post');
+      }
+      else if (data?.errors[0].message === "You have already collected this publication"){
+        throw new Error("You have already collected this post");
+      }
+      else{
+        throw new Error('Something wen\'t wrong');
+      }
+    }
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);

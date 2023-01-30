@@ -19,7 +19,7 @@ import {
 	useToast,
 } from "../store/Store";
 import { useState } from "react";
-import { addLike, removeLike, isFollowedByMe, createFreeSubscribe } from "../api";
+import { addLike, removeLike, isFollowedByMe, createFreeSubscribe, freeCollectPublication } from "../api";
 import CommentCard from "../components/CommentCard";
 import { setStatusBarHidden, StatusBar } from "expo-status-bar";
 import { client } from "../apollo/client";
@@ -299,9 +299,23 @@ const VideoPage = ({ navigation, route }: RootStackScreenProps<"VideoPage">) => 
 						py={8}
 						my={4}
 						textStyle={{ fontSize: 18, fontWeight: "600", textAlign: "center" }}
-						onPress={() => {
+						onPress={async () => {
+							try {
+								const data = await freeCollectPublication(
+									route.params.id,
+									authStore.accessToken
+								);
+								
+								
+								if (data) {
+									toast.show("Collect Submitted", ToastType.SUCCESS, true);
+								}
+							} catch (error) {
+								if (error instanceof Error) {
+									toast.show(error.message, ToastType.ERROR, true);
+								}
+							}
 							setIsmodalopen(false);
-							toast.show("Collect Submitted", ToastType.SUCCESS, true);
 						}}
 					/>
 				</View>
