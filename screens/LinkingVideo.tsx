@@ -29,15 +29,25 @@ import { ToastType } from "../types/Store";
 import fetchPublicationById from "../apollo/Queries/fetchPublicationById";
 import { LensPublication } from "../types/Lens/Feed";
 import getIPFSLink from "../utils/getIPFSLink";
+import getComments from "../apollo/Queries/getComments";
+import { Comments } from "../types/Lens/Feed";
+import CommentCard from "../components/CommentCard";
+import CommentSkeleton from "../components/UI/CommentSkeleton";
+import AnimatedLottieView from "lottie-react-native";
+
 
 const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos">) => {
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
 	const [descOpen, setDescOpen] = useState<boolean>(false);
 	const [ismodalopen, setIsmodalopen] = useState<boolean>(false);
+	const [commentText, setCommentText] = useState<string>("");
 	const [isMute, setIsMute] = useState<boolean>(false);
+	const [isImdexing, setIsImdexing] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [videoData, setVideoData] = useState<LensPublication>();
 	const [isFocused, setIsFocused] = useState(false);
+	const [comments, setComments] = useState<Comments[]>([]);
+
 	const theme = useThemeStore();
 	const authStore = useAuthStore();
 	const userStore = useProfile();
@@ -69,6 +79,30 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos
 		});
 		BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
 	}, []);
+	
+	async function fetchComments(publicationId): Promise<void> {
+		try {
+			const data = await client.query({
+				query: getComments,
+				variables: {
+					postId: publicationId,
+				},
+				context: {
+					headers: {
+						"x-access-token": `Bearer ${authStore.accessToken}`,
+					},
+				},
+			});
+			setComments([]);
+			setComments(data.data.publications.items);
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new Error("Can't fetch comments", { cause: error.cause });
+			}
+		} finally {
+			setIsLoading(false);
+		}
+	}
 
 	const getVideoById = async (pubId: string) => {
 		setIsLoading(true);
@@ -85,7 +119,8 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos
 				},
 			});
 			setVideoData(feed.data.publication);
-
+			fetchComments(pubId);
+			
 			return feed;
 		} catch (error) {
 			if (error instanceof Error) {
@@ -384,6 +419,87 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos
 							}}
 						/>
 					</ScrollView>
+					<View>
+						<SubHeading
+							title="Comments"
+							style={{
+								fontSize: 20,
+								fontWeight: "700",
+								color: "white",
+								marginBottom: 8,
+							}}
+						/>
+						{isImdexing ? (
+							<CommentCard
+								avatar={userStore.currentProfile?.picture.original.url}
+								commentText={commentText}
+								name={userStore.currentProfile?.name}
+								username={userStore.currentProfile?.handle || ""}
+								isIndexing={true}
+								commentTime={""}
+								id={""}
+								isFollowdByMe={undefined}
+								stats={{
+									totalUpvotes: "0",
+									totalAmountOfCollects: "0",
+									totalAmountOfMirrors: "0",
+								}}
+								commentId={""}
+							/>
+						) : (
+							<></>
+						)}
+						{isLoading ? (
+							<ScrollView>
+								<CommentSkeleton />
+								<CommentSkeleton />
+								<CommentSkeleton />
+								<CommentSkeleton />
+								<CommentSkeleton />
+								<CommentSkeleton />
+								<CommentSkeleton />
+							</ScrollView>
+						) : (
+							<></>
+						)}
+						{!isLoading && comments.length == 0 ? (
+							<View style={{ maxHeight: 200 }}>
+								<AnimatedLottieView
+									autoPlay
+									style={{
+										height: "90%",
+										alignSelf: "center",
+									}}
+									source={require("../assets/nocomments.json")}
+								/>
+								<Heading
+									title="There are no comments yet"
+									style={{
+										color: "white",
+										fontSize: 20,
+										textAlign: "center",
+									}}
+								></Heading>
+							</View>
+						) : (
+							comments?.map((item, index) => {
+								return (
+									<CommentCard
+										key={item?.id}
+										username={item?.profile?.handle}
+										avatar={item?.profile?.picture?.original?.url}
+										commentText={item?.metadata?.content || item?.metadata?.description}
+										commentTime={item?.createdAt}
+										id={item?.profile?.id}
+										isFollowdByMe={item?.profile?.isFollowedByMe}
+										name={item?.profile?.name}
+										stats={item?.stats}
+										commentId={item?.id}
+									/>
+								);
+							})
+						)}
+					</View>
 				</View>
 			</ScrollView>
 			<View
