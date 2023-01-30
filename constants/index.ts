@@ -17,7 +17,7 @@ const ARWEAVE_GATEWAY = "https://arweave.net";
 
 //Static Media
 const STATIC_ASSET =
-  "https://ipfs.io/ipfs/QmfY1JJanP2cZyrcf2WBka6dzoHFjT9sH2gYcEaJJiDwfK";
+  "https://lens.infura-ipfs.io/ipfs/bafybeibv2kpqpjtvuj5uprvq6knnr2reb7ylq3o4bnypqjioqgxmjw2akq/5460475.webp";
 
 //Regular Expressions
 const URL_REGEX =

@@ -98,8 +98,6 @@ const Button = (props: ButtonProps): JSX.Element => {
                 textStyle,
                 {
                   textAlign: "center",
-                  // marginHorizontal: 4,
-                  // color: bg === "white" ? "black" : "white",
                 },
               ]}
             />

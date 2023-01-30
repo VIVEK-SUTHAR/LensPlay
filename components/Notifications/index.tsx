@@ -55,7 +55,7 @@ const NotificationCard = ({
             navigation={navigation}
             notification={notification}
           />
-        )
+        );
     }
   };
   return (

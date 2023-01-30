@@ -141,20 +141,21 @@ const VideoCard = ({
             padding: 10,
             flexDirection: "row",
             justifyContent: "space-between",
-            alignItems: "flex-start",
+            alignItems: "center",
           }}
         >
           <View style={{ flex: 0.95 }}>
             <Heading
               title={title}
               style={{ fontSize: 16, fontWeight: "700", color: "white" }}
+              numberOfLines={1}
             />
             <SubHeading
               title={`By ${uploadedBy} on ${getDifference(date)}`}
               style={{ fontSize: 12, color: "gray" }}
+              numberOfLines={1}
             />
           </View>
-
           <Avatar src={getIPFSLink(avatar)} height={40} width={40} />
         </View>
       </TouchableWithoutFeedback>

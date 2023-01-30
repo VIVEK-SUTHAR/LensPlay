@@ -41,6 +41,7 @@ import Avatar from "../components/UI/Avatar";
 import getIPFSLink from "../utils/getIPFSLink";
 import linking from "./LinkingConfiguration";
 import LinkingVideo from "../screens/LinkingVideo";
+import { dark_primary } from "../constants/Colors";
 
 export default function Navigation({
   colorScheme,
@@ -194,7 +195,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
           paddingVertical: 2,
           height: "auto",
           minHeight: 55,
-          backgroundColor: "#171923",
+          backgroundColor: dark_primary,
           borderTopColor: "transparent",
           paddingHorizontal: 10,
         },

@@ -189,8 +189,6 @@ const ProfileScreen = ({
                     }}
                   ></LinearGradient>
                 </View>
-
-                {/* </LinearGradient> */}
                 <View
                   style={{
                     flexDirection: "row",

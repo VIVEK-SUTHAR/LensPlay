@@ -23,28 +23,28 @@ function getDifference(timestamp: Date | string) {
 
   if (currentYear != notificationYear) {
     if (currentYear - notificationYear == 1) {
-      if (notificationMonth - currentMonth != 0){
+      if (notificationMonth - currentMonth != 0) {
         if (currentMonth == 0 && notificationMonth == 11) {
           if (currentDate > notificationDate) {
             return `1m ago`
           }
           else {
-            return findDiffernce(31,notificationDate - currentDate, 'd')
+            return findDiffernce(31, notificationDate - currentDate, 'd')
           }
         }
         else {
-          return findDiffernce(notificationMonth, currentMonth, 'm');
+          return findDiffernce(notificationMonth, currentMonth, 'mon');
         }
       }
       else {
         return `1 y ago`
       }
     }
-    else{
+    else {
       return findDiffernce(notificationYear, currentYear, 'y')
     }
   } else if (currentMonth != notificationMonth) {
-    return findDiffernce(notificationMonth, currentMonth, 'm');
+    return findDiffernce(notificationMonth, currentMonth, 'mon');
   } else if (currentDate != notificationDate) {
     return findDiffernce(currentDate, notificationDate, 'd');
   } else if (currentHour != notificationHour) {
@@ -56,8 +56,8 @@ function getDifference(timestamp: Date | string) {
   }
 }
 
-const findDiffernce = (x:number, y:number, stamp:string) =>{
-  const difference = x-y;
+const findDiffernce = (x: number, y: number, stamp: string) => {
+  const difference = x - y;
   return `~${difference}${stamp} ago`
 }
 
