@@ -9,7 +9,7 @@
 
 async function addLike(
   token: string,
-  profileId: string,
+  profileId: string | undefined,
   publicationId: string,
   vote: string
 ): Promise<any> {
@@ -32,7 +32,6 @@ async function addLike(
       headers: headersList,
     });
     let data = await response.json();
-    console.log(data?.data);
     return data?.data;
   } catch (error) {
     if (error instanceof Error) {

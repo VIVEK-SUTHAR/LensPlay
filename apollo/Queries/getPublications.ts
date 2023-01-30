@@ -6,7 +6,6 @@ export default gql`
       request: {
         profileId: $id
         publicationTypes: [POST]
-        limit: 20
         sources: ["lenstube"]
       }
     ) {
@@ -80,6 +79,7 @@ export default gql`
     ownedBy
     dispatcher {
       address
+      canUseRelay
     }
     stats {
       totalFollowers

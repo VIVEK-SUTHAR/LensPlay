@@ -1,109 +1,140 @@
-import {
-  Image,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import * as React from "react";
 import { useState } from "react";
 import VideoCard from "../components/VideoCard";
 import { client } from "../apollo/client";
 import getTrendingPublication from "../apollo/Queries/getTrendingPublication";
 import { useEffect } from "react";
-import { dark_primary } from "../constants/Colors";
-import convertDate from "../utils/formateDate";
 import AnimatedLottieView from "lottie-react-native";
 import Heading from "../components/UI/Heading";
-import useStore from "../store/Store";
-
-type TrendingPageProps = {
-  navigation: any;
-};
-
-const Trending = ({ navigation }: TrendingPageProps) => {
-  const [TrendingItems, setTrendingItems] = useState([]);
-  const store = useStore();
-  async function getTrendingData() {
-    const trendingData = await client.query({
-      query: getTrendingPublication,
-      variables: {
-        id: store.profileId,
-      },
-    });
-    setTrendingItems(trendingData.data.explorePublications.items);
-  }
-  useEffect(() => {
-    getTrendingData();
-  }, []);
-
-  const Tags = [
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
+import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
+import { LensPublication } from "../types/Lens/Feed";
+import { RootTabScreenProps } from "../types/navigation/types";
+const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
+  const [tags, setTags] = useState([
     {
-      name: "Top Collected",
+      name: "LATEST",
       active: true,
     },
     {
-      name: "Top Commented",
+      name: "TOP_COMMENTED",
       active: false,
     },
     {
-      name: "Art",
+      name: "TOP_COLLECTED",
       active: false,
     },
     {
-      name: "Technology",
+      name: "TOP_MIRRORED",
       active: false,
     },
-  ];
+    {
+      name: "CURATED_PROFILES",
+      active: false,
+    },
+  ]);
+
+  const [currentTag, setCurrentTag] = useState<{
+    name: string;
+    active: boolean;
+  }>(tags[0]);
+  const [TrendingItems, setTrendingItems] = useState<LensPublication[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const theme = useThemeStore();
+  const authStore = useAuthStore();
+  const userStore = useProfile();
+
+  async function getTrendingData() {
+    try {
+      const trendingData = await client.query({
+        query: getTrendingPublication,
+        variables: {
+          id: userStore.currentProfile?.id,
+          sortBy: currentTag.name,
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${authStore.accessToken}`,
+          },
+        },
+      });
+      setTrendingItems(trendingData.data.explorePublications.items);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error("Something went wrong", { cause: error.cause });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    setIsLoading(true);
+    getTrendingData();
+  }, [currentTag]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
-      {/* <ScrollView
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+      <ScrollView
         style={{
           height: 60,
+          paddingVertical: 8,
           maxHeight: 60,
-          paddingVertical: 12,
-          paddingHorizontal: 8,
+          paddingStart: 2,
         }}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
       >
-        {Tags.map((item, index) => {
+        {tags.map((item, index) => {
           return (
-            <View
+            <Pressable
+              android_ripple={{
+                color: theme.PRIMARY,
+                radius: 25,
+              }}
+              onTouchEndCapture={() => {
+                setCurrentTag(tags[index]);
+                // setTrendingItems([]);
+                // setIsLoading(true);
+                // getTrendingData();
+              }}
               key={index}
               style={{
                 marginHorizontal: 4,
-                backgroundColor: `${item.active ? primary : "transparent"}`,
+                backgroundColor: `${
+                  currentTag.name === item.name ? theme.PRIMARY : "transparent"
+                }`,
                 width: "auto",
                 height: "auto",
-                paddingHorizontal: 16,
-                paddingVertical: 4,
+                paddingHorizontal: 12,
+                paddingVertical: 6,
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 20,
-                borderColor: `${item.active ? primary : "white"}`,
+                borderColor: `${
+                  currentTag.name === item.name ? theme.PRIMARY : "white"
+                }`,
                 borderWidth: 1,
               }}
             >
               <Text
                 style={{
                   fontSize: 12,
-                  fontWeight: "500",
+                  fontWeight: "600",
                   color: "white",
                 }}
               >
-                {item.name}
+                {item.name.replace(/_/g, " ")}
               </Text>
-            </View>
+            </Pressable>
           );
         })}
-      </ScrollView> */}
+      </ScrollView>
       <ScrollView>
-        <View style={{ marginTop: 10 }}>
-          {TrendingItems && TrendingItems.length === 0 ? (
-            <View
+        <View>
+          {!isLoading && TrendingItems.length === 0 ? (
+            <Pressable
               style={{
                 height: 500,
                 justifyContent: "center",
@@ -134,22 +165,27 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                   }}
                 />
               </View>
-            </View>
+            </Pressable>
+          ) : isLoading ? (
+            <>
+              <VideoCardSkeleton />
+              <VideoCardSkeleton />
+              <VideoCardSkeleton />
+              <VideoCardSkeleton />
+              <VideoCardSkeleton />
+            </>
           ) : (
             <></>
           )}
           {TrendingItems &&
-            TrendingItems?.map((item, index) => {
-              if (item?.profile?.id === "0x5c59") {
-                console.log(item?.reaction);
-              }
+            TrendingItems?.map((item: LensPublication, index) => {
               return (
                 <VideoCard
                   key={index}
                   id={item?.id}
-                  navigation={navigation}
-                  date={convertDate(item?.createdAt)}
+                  date={item?.createdAt}
                   title={item?.metadata?.name}
+                  isFollowdByMe={item?.profile?.isFollowedByMe}
                   banner={item?.metadata?.cover}
                   avatar={item?.profile?.picture?.original?.url}
                   uploadedBy={item?.profile?.handle}
@@ -157,9 +193,10 @@ const Trending = ({ navigation }: TrendingPageProps) => {
                   stats={item?.stats}
                   playbackId={item?.metadata?.media[0]?.original?.url}
                   reaction={item?.reaction}
+                  description={item.metadata.description}
+                  attributes={item?.metadata?.attributes}
                 />
               );
-              // }
             })}
         </View>
       </ScrollView>
@@ -168,5 +205,3 @@ const Trending = ({ navigation }: TrendingPageProps) => {
 };
 
 export default Trending;
-
-const styles = StyleSheet.create({});

@@ -1,30 +1,28 @@
-import { LinkingOptions } from '@react-navigation/native';
-import * as Linking from 'expo-linking';
+import { LinkingOptions } from "@react-navigation/native";
+import * as Linking from "expo-linking";
 
-import { RootStackParamList } from '../types';
+import { RootStackParamList } from "../types/navigation/types";
 
 const linking: LinkingOptions<RootStackParamList> = {
-  prefixes: [Linking.makeUrl('/')],
-  config: {
-    screens: {
-      Root: {
-        screens: {
-          TabOne: {
-            screens: {
-              TabOneScreen: 'one',
-            },
-          },
-          TabTwo: {
-            screens: {
-              TabTwoScreen: 'two',
-            },
-          },
-        },
-      },
-      Modal: 'modal',
-      NotFound: '*',
-    },
-  },
+	prefixes: [
+		Linking.createURL("lensplay"),
+		Linking.createURL("https://lensplay-site.vercel.app"),
+		Linking.createURL("https://lenstube.xyz"),
+		Linking.createURL("https://testnet.lenstube.xyz"),
+	],
+	config: {
+		screens: {
+			NotFound: "*",
+			Channel: {
+				path: "channel",
+				parse: { id: String },
+			},
+			LinkingVideos: {
+				path: "watch/:id",
+				parse: { id: String },
+			},
+		},
+	},
 };
 
 export default linking;

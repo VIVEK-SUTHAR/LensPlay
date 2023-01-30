@@ -25,6 +25,7 @@ const URL_REGEX =
 
 const ADDRESS_REGEX = /^(0x)?[\da-f]{40}$/i;
 
+const MENTION_REGEX = /(@[^\s]+)/g;
 // Misc
 export const OFFICIAL_EMAIL = "contactweb3devs@gmail.com";
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
@@ -40,4 +41,5 @@ export {
   APP_NAME,
   DESCRIPTION,
   ARWEAVE_GATEWAY,
+  MENTION_REGEX,
 };

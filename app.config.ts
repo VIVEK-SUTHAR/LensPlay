@@ -1,8 +1,4 @@
-import {
-  AndroidManifest,
-  ConfigPlugin,
-  withAndroidManifest,
-} from "@expo/config-plugins";
+import { AndroidManifest, ConfigPlugin, withAndroidManifest } from "@expo/config-plugins";
 import { ExpoConfig } from "@expo/config-types";
 import xml2js from "xml2js";
 
@@ -23,30 +19,30 @@ const queriesXml = `
 </queries>`;
 
 type KeyValuePair = {
-  $: {
-    [key: string]: string | undefined;
-  };
+	$: {
+		[key: string]: string | undefined;
+	};
 };
 
 type Intent = {
-  action?: KeyValuePair[];
-  data?: KeyValuePair[];
+	action?: KeyValuePair[];
+	data?: KeyValuePair[];
 };
 
 type Queries = {
-  intent?: Intent[];
+	intent?: Intent[];
 };
 
 type ParseResult = {
-  queries: Queries;
+	queries: Queries;
 };
 
 type AndroidManifestWithQuery = AndroidManifest & {
-  manifest: {
-    $: {
-      ["queries"]?: any;
-    };
-  };
+	manifest: {
+		$: {
+			["queries"]?: any;
+		};
+	};
 };
 
 /**
@@ -63,59 +59,78 @@ type AndroidManifestWithQuery = AndroidManifest & {
  * @see https://docs.expo.dev/guides/config-plugins/#modifying-the-androidmanifestxml
  */
 const addQueryToManifest = (androidManifest: AndroidManifestWithQuery) => {
-  const { manifest } = androidManifest;
-  let packageQuery: Queries;
+	const { manifest } = androidManifest;
+	let packageQuery: Queries;
 
-  xml2js.parseString(queriesXml, (err, result: ParseResult) => {
-    packageQuery = result.queries;
+	xml2js.parseString(queriesXml, (err, result: ParseResult) => {
+		packageQuery = result.queries;
 
-    if (!Array.isArray(manifest.$["queries"])) {
-      manifest.$["queries"] = [];
-    }
+		if (!Array.isArray(manifest.$["queries"])) {
+			manifest.$["queries"] = [];
+		}
 
-    manifest.$["queries"].push(packageQuery);
-  });
+		manifest.$["queries"].push(packageQuery);
+	});
 
-  return androidManifest;
+	return androidManifest;
 };
 
 const withPackageVisibility: ConfigPlugin = (config) => {
-  return withAndroidManifest(config, (config) => {
-    config.modResults = addQueryToManifest(config.modResults);
-    return config;
-  });
+	return withAndroidManifest(config, (config) => {
+		config.modResults = addQueryToManifest(config.modResults);
+		return config;
+	});
 };
 
 const config: ExpoConfig = {
-  name: "LensPlay",
-  slug: "LensPlay",
-  version: "1.0.0",
-  orientation: "portrait",
-  icon: "./assets/images/icon.png",
-  scheme: "lensplay",
-  userInterfaceStyle: "automatic",
-  splash: {
-    image: "./assets/images/lensplay.png",
-    resizeMode: "contain",
-    backgroundColor: "#000000",
-  },
-  updates: {
-    fallbackToCacheTimeout: 0,
-  },
-  assetBundlePatterns: ["**/*"],
-  ios: {
-    supportsTablet: true,
-  },
-  android: {
-    package: "com.clxyder.lensplay",
-    adaptiveIcon: {
-      foregroundImage: "./assets/images/lensplay.png",
-      backgroundColor: "#000000",
-    },
-  },
-  web: {
-    favicon: "./assets/images/favicon.png",
-  },
+	name: "LensPlay",
+	slug: "LensPlay",
+	version: "1.0.0",
+	orientation: "portrait",
+	icon: "./assets/images/icon.png",
+	scheme: "lensplay",
+	userInterfaceStyle: "automatic",
+	splash: {
+		image: "./assets/images/icon.png",
+		resizeMode: "contain",
+		backgroundColor: "#000000",
+	},
+	updates: {
+		fallbackToCacheTimeout: 0,
+		url: "https://u.expo.dev/c3c41aca-6bdd-4196-a006-a524dcf26c4e",
+	},
+	runtimeVersion: {
+		policy: "sdkVersion",
+	},
+	assetBundlePatterns: ["**/*"],
+	ios: {
+		supportsTablet: true,
+	},
+	jsEngine: "hermes",
+	android: {
+		package: "com.lensplayxyz.lensplay",
+		adaptiveIcon: {
+			foregroundImage: "./assets/images/adaptive-icon.png",
+			backgroundColor: "#000000",
+		},
+	},
+	web: {
+		favicon: "./assets/images/favicon.png",
+	},
+	extra: {
+		eas: {
+			projectId: "c3c41aca-6bdd-4196-a006-a524dcf26c4e",
+		},
+	},
+	plugins: [
+		[
+			"expo-image-picker",
+			{
+				photosPermission:
+					"The app accesses your gallery to let you share them with your friends on Lens",
+			},
+		],
+	],
 };
 
 export default withPackageVisibility(config);

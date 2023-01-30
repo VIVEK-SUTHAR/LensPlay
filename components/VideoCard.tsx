@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import * as React from "react";
 import {
   Image,
@@ -6,29 +7,35 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import useStore from "../store/Store";
+import { Attribute } from "../types/Lens/Feed";
+import formatTime from "../utils/formatTime";
+import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
 import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
 import SubHeading from "./UI/SubHeading";
 
 type videoPageProp = {
-  navigation: any;
   title: string;
   banner: string;
   avatar: string;
   profileId: string;
   uploadedBy: string;
   playbackId: string;
-  id: number;
+  id: string;
   stats: {};
-  date: string;
-  reaction: string;
+  date: string | Date;
+  reaction: string | null;
+  isFollowdByMe?: boolean;
+  description: string;
+  width?: string | number;
+  height?: number;
+  attributes: Attribute[];
+  ethAddress?: string;
 };
 
 const VideoCard = ({
   id,
-  navigation,
   banner,
   title,
   avatar,
@@ -37,22 +44,36 @@ const VideoCard = ({
   playbackId,
   stats,
   date,
-  reaction
+  reaction,
+  isFollowdByMe,
+  description,
+  width = "auto",
+  height = 200,
+  attributes,
+  ethAddress,
 }: videoPageProp) => {
-  const store = useStore();
-  const setCurrentIndex = store.setCurrentIndex;
+  const [videoTime, setVideoTime] = React.useState<string>();
+
+  React.useEffect(() => {
+    const time = attributes?.filter((item) => {
+      if (item?.traitType === "durationInSeconds") {
+        setVideoTime(item?.value);
+      }
+    });
+  }, []);
+  const navigation = useNavigation();
   return (
     <View
       style={{
         margin: 10,
-        backgroundColor: "rgba(255, 255, 255, 0.08)",
+        backgroundColor: "#111111",
         borderRadius: 10,
+        width: width,
       }}
     >
-      <View style={{ height: 200 }}>
+      <View style={{ height: height }}>
         <TouchableWithoutFeedback
           onPress={() => {
-            setCurrentIndex(id);
             navigation.navigate("VideoPage", {
               title: title,
               id: id,
@@ -62,7 +83,9 @@ const VideoCard = ({
               avatar: avatar,
               banner: banner,
               stats: stats,
-              reaction:reaction,
+              reaction: reaction,
+              isFollowdByMe: isFollowdByMe,
+              description: description,
             });
           }}
         >
@@ -81,11 +104,35 @@ const VideoCard = ({
             }}
           />
         </TouchableWithoutFeedback>
+        {videoTime?.length ? (
+          <View
+            style={{
+              position: "absolute",
+              bottom: 8,
+              right: 8,
+              width: "auto",
+              paddingHorizontal: 4,
+              paddingVertical: 2,
+              height: "auto",
+              backgroundColor: "rgba(0,0,0,0.9)",
+              borderRadius: 4,
+            }}
+          >
+            <Text style={{ color: "white", fontSize: 12 }}>
+              {formatTime(videoTime)}
+            </Text>
+          </View>
+        ) : (
+          <></>
+        )}
       </View>
       <TouchableWithoutFeedback
         onPress={() => {
           navigation.navigate("Channel", {
             profileId: profileId,
+            isFollowdByMe: isFollowdByMe,
+            name: uploadedBy,
+            ethAddress: ethAddress,
           });
         }}
       >
@@ -103,7 +150,7 @@ const VideoCard = ({
               style={{ fontSize: 16, fontWeight: "700", color: "white" }}
             />
             <SubHeading
-              title={`By ${uploadedBy} on ${date}`}
+              title={`By ${uploadedBy} on ${getDifference(date)}`}
               style={{ fontSize: 12, color: "gray" }}
             />
           </View>

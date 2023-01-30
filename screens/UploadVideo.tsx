@@ -1,21 +1,19 @@
-import {
-  View,
-  Text,
-  SafeAreaView,
-  TouchableWithoutFeedback,
-} from "react-native";
-import React, { useState } from "react";
-import { dark_primary, primary } from "../constants/Colors";
+import { View, SafeAreaView } from "react-native";
+import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Uploadvideo from "../components/Uploadvideo";
 import GoLive from "../components/GoLive";
 import AnimatedLottieView from "lottie-react-native";
-import Drawer from "../components/UI/Drawer";
-import Heading from "../components/UI/Heading";
+import Button from "../components/UI/Button";
+import {
+  UploadScreenProps,
+  UploadTabParamsList,
+} from "../types/navigation/types";
+import { useThemeStore } from "../store/Store";
 
 const UploadStack = createNativeStackNavigator();
 
-const UploadVideo = ({ navigation }) => {
+const UploadVideo = ({}: UploadTabParamsList) => {
   return (
     <UploadStack.Navigator
       screenOptions={{
@@ -23,8 +21,12 @@ const UploadVideo = ({ navigation }) => {
       }}
       initialRouteName="UploadIndex"
     >
-      <UploadStack.Screen name="UploadIndex" component={Index} />
-      <UploadStack.Screen name="UploadScreen" component={Uploadvideo} />
+      <UploadStack.Screen name="Index" component={Index} />
+      <UploadStack.Screen
+        name="UploadScreen"
+        component={Uploadvideo}
+        options={{ animation: "slide_from_right", animationDuration: 100 }}
+      />
       <UploadStack.Screen name="GoLive" component={GoLive} />
     </UploadStack.Navigator>
   );
@@ -32,14 +34,17 @@ const UploadVideo = ({ navigation }) => {
 
 export default UploadVideo;
 
-function Index({ navigation }) {
+function Index({ navigation }: UploadScreenProps<"Index">) {
+  const theme = useThemeStore();
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: dark_primary }}>
-      <View style={{
-        height: 500,
-        justifyContent: "center",
-        alignItems: "center",
-      }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+      <View
+        style={{
+          height: 500,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <AnimatedLottieView
           autoPlay
           style={{
@@ -47,29 +52,19 @@ function Index({ navigation }) {
           }}
           source={require("../assets/upload.json")}
         />
-        <TouchableWithoutFeedback
+        <Button
+          type="outline"
+          title="Upload Video"
+          width={"auto"}
+          px={24}
+          borderColor={theme.PRIMARY}
+          borderRadius={10}
+          textStyle={{ color: "white", fontWeight: "700", fontSize: 20 }}
           onPress={() => {
             navigation.navigate("UploadScreen");
           }}
-        >
-          <View style={{
-            alignItems: 'center',
-            backgroundColor: primary,
-            paddingHorizontal: 24,
-            paddingVertical: 4,
-            borderRadius: 10,
-          }}>
-            <Heading title="Upload a video" style={{
-              fontSize: 20,
-              color: "white",
-              marginVertical: 5,
-              marginHorizontal: 15,
-              fontWeight: "600",
-              alignSelf: "flex-start",
-            }}/>
-          </View>
-        </TouchableWithoutFeedback>
+        />
       </View>
-    </SafeAreaView >
+    </SafeAreaView>
   );
 }

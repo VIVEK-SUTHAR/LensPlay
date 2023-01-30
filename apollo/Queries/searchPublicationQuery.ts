@@ -108,6 +108,7 @@ export default gql`
     ownedBy
     dispatcher {
       address
+      canUseRelay
     }
     stats {
       totalFollowers

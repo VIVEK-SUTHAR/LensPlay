@@ -8,7 +8,7 @@
 async function getProxyActionStatus(
   proxyId: string,
   accessToken: string
-): Promise<void> {
+): Promise<any> {
   try {
     let headersList = {
       "Content-Type": "application/json",
@@ -26,8 +26,7 @@ async function getProxyActionStatus(
       headers: headersList,
     });
     let data = await response.json();
-    console.log(data);
-    console.log(data?.data?.result);
+    return data;
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);

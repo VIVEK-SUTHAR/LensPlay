@@ -1,6 +1,8 @@
 # LensPlay
 
-## LensPlay is a decentralized mobile-first video-sharing application built on top of Lens Protocol
+## LensPlay is a decentralized mobile-first video-sharing application built on top of Lens Protocol.
+
+![Banner](https://ipfs.io/ipfs/QmZLFwSmmzDvG24SmC4VwFMqdU6ckZELt3tGMEWLdfugxf)
 
 ## v0.0.1 is coming..
 
