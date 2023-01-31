@@ -55,7 +55,7 @@ const ProfileScreen = ({
     getProfleInfo();
   }, [navigation]);
   const getProfleInfo = async () => {
-    // setIsLoading(true);
+    setIsLoading(true);
     try {
       const profiledata = await client.query({
         query: getUserProfile,
@@ -154,13 +154,6 @@ const ProfileScreen = ({
           <>
             {Boolean(!isLoading) && (
               <View style={{}}>
-                {/* <LinearGradient
-                  colors={["white", "transparent"]}
-                  start={{ x: 0, y: 0 }}
-                  style={{
-                    zIndex: 3,
-                  }}
-                > */}
                 <View
                   style={{
                     height: 180,
@@ -381,9 +374,8 @@ const ProfileScreen = ({
                       {allVideos?.length === 0 && (
                         <View style={{ height: 50, justifyContent: "center" }}>
                           <Heading
-                            title={`Looks like ${
-                              profile?.name || profile?.handle?.split(".")[0]
-                            } has not posted  any video`}
+                            title={`Looks like ${profile?.name || profile?.handle?.split(".")[0]
+                              } has not posted  any video`}
                             style={{
                               color: "gray",
                               fontSize: 14,
@@ -465,9 +457,8 @@ const ProfileScreen = ({
                       {mirrorVideos?.length === 0 && (
                         <View style={{ height: 50, justifyContent: "center" }}>
                           <Heading
-                            title={`Seems like ${
-                              profile?.name || profile?.handle?.split(".")[0]
-                            } has not mirrored any video`}
+                            title={`Seems like ${profile?.name || profile?.handle?.split(".")[0]
+                              } has not mirrored any video`}
                             style={{
                               color: "gray",
                               fontSize: 14,
@@ -550,9 +541,8 @@ const ProfileScreen = ({
                     {collectVideos?.length === 0 && (
                       <View style={{ height: 50, justifyContent: "center" }}>
                         <Heading
-                          title={`Looks like ${
-                            profile?.name || profile?.handle?.split(".")[0]
-                          } has not collected any video`}
+                          title={`Looks like ${profile?.name || profile?.handle?.split(".")[0]
+                            } has not collected any video`}
                           style={{
                             color: "gray",
                             fontSize: 15,
@@ -567,26 +557,6 @@ const ProfileScreen = ({
           </>
         )}
 
-        {Boolean(isLoading) && (
-          <View
-            style={{
-              height: "auto",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <AnimatedLottieView
-              autoPlay
-              style={{
-                height: "auto",
-              }}
-              source={require("../assets/skeleton.json")}
-            />
-            {/* <Skleton />
-            <Skleton />
-            <Skleton /> */}
-          </View>
-        )}
         {!allVideos && (
           <View style={{ maxHeight: 250 }}>
             <AnimatedLottieView
@@ -599,9 +569,8 @@ const ProfileScreen = ({
               source={require("../assets/notfound.json")}
             />
             <Heading
-              title={`Seems like ${
-                profile?.name || profile?.handle?.split(".")[0]
-              } has not uploaded any video`}
+              title={`Seems like ${profile?.name || profile?.handle?.split(".")[0]
+                } has not uploaded any video`}
               style={{
                 color: "gray",
                 fontSize: 12,

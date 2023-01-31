@@ -87,9 +87,10 @@ const NotFound = () => {
 	return (
 		<View
 			style={{
-				height: 500,
+				height: '100%',
 				justifyContent: "center",
 				alignItems: "center",
+				backgroundColor: "black"
 			}}
 		>
 			<AnimatedLottieView

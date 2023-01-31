@@ -58,6 +58,7 @@ const ProfileSkeleton = () => {
       <View
         style={{
           justifyContent: "space-between",
+          marginLeft: 12,
           // alignItems: "center",
         }}
       >
@@ -69,6 +70,7 @@ const ProfileSkeleton = () => {
             width: 80,
             height: 16,
             backgroundColor: "rgba(255,255,255,0.7)",
+
           }}
         />
         <View
@@ -90,36 +92,40 @@ const ProfileSkeleton = () => {
         />
       </View>
 
-      <View
-        style={{
-          backgroundColor: "white",
-          borderRadius: 8,
-          paddingVertical: 8,
-          marginTop: 16,
-        }}
-      >
+      <View style={{
+        paddingHorizontal: 10
+      }}>
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-around",
-            paddingHorizontal: 16,
+            backgroundColor: "white",
+            borderRadius: 8,
+            paddingVertical: 8,
+            marginTop: 16,
           }}
         >
           <View
-            // title=' • Subscribers'
-            style={{ width: 108, height: 16, backgroundColor: "#E9E8E8" }}
-          />
-          <View
             style={{
-              height: 24,
-              backgroundColor: "black",
-              width: 2,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-around",
+              paddingHorizontal: 16,
             }}
-          ></View>
-          <View
-            style={{ width: 108, height: 16, backgroundColor: "#E9E8E8" }}
-          />
+          >
+            <View
+              // title=' • Subscribers'
+              style={{ width: 108, height: 16, backgroundColor: "#E9E8E8" }}
+            />
+            <View
+              style={{
+                height: 24,
+                backgroundColor: "black",
+                width: 2,
+              }}
+            ></View>
+            <View
+              style={{ width: 108, height: 16, backgroundColor: "#E9E8E8" }}
+            />
+          </View>
         </View>
       </View>
       <View style={{ marginTop: 24 }}>
@@ -139,21 +145,21 @@ const ProfileSkeleton = () => {
                 fontWeight: "600",
               }}
             />
-              <Feather
-                name={`chevron-right`}
-                size={24}
-                color="white"
-              />
-            </Pressable>
+            <Feather
+              name={`chevron-right`}
+              size={24}
+              color="white"
+            />
+          </Pressable>
           <ScrollView
             horizontal={true}
-            style={{marginLeft:-12,marginTop: 8 }}
+            style={{ marginLeft: -12, marginTop: 8 }}
             showsHorizontalScrollIndicator={false}
           >
-            <VideoCardSkeleton/>
-            <VideoCardSkeleton/>
-            <VideoCardSkeleton/>
-            <VideoCardSkeleton/>
+            <VideoCardSkeleton width={310} />
+            <VideoCardSkeleton width={310} />
+            <VideoCardSkeleton width={310} />
+            <VideoCardSkeleton width={310} />
           </ScrollView>
         </View>
         <View style={{ marginTop: 16 }}>
@@ -172,22 +178,22 @@ const ProfileSkeleton = () => {
                 fontWeight: "600",
               }}
             />
-              <Feather
-                name={`chevron-right`}
-                size={24}
-                color="white"
-                
-              />
+            <Feather
+              name={`chevron-right`}
+              size={24}
+              color="white"
+
+            />
           </View>
           <ScrollView
             horizontal={true}
             style={{ marginLeft: -12, marginTop: 8 }}
             showsHorizontalScrollIndicator={false}
           >
-            <VideoCardSkeleton/>
-            <VideoCardSkeleton/>
-            <VideoCardSkeleton/>
-            <VideoCardSkeleton/>
+            <VideoCardSkeleton width={310} />
+            <VideoCardSkeleton width={310} />
+            <VideoCardSkeleton width={310} />
+            <VideoCardSkeleton width={310} />
           </ScrollView>
         </View>
       </View>

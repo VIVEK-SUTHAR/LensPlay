@@ -1,8 +1,11 @@
 import React, { FC } from "react";
 import { StyleProp, Text, TextStyle, View } from "react-native";
 
+type videoCardProps = {
+  width?: number | string;
+}
 
-const VideoCardSkeleton = () => {
+const VideoCardSkeleton = ({ width = "auto" }: videoCardProps) => {
   return (
     <View
       style={{
@@ -11,7 +14,7 @@ const VideoCardSkeleton = () => {
         borderRadius: 10,
         margin: 10,
         backgroundColor: '#111111',
-        width:360
+        width: width
       }}
     >
       <View
@@ -39,7 +42,7 @@ const VideoCardSkeleton = () => {
             alignItems: "flex-start",
           }}
         >
-            <View
+          <View
             style={{
               backgroundColor: "lightgray",
               marginVertical: 8,
