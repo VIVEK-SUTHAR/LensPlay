@@ -52,6 +52,10 @@ const VideoCard = ({
   attributes,
   ethAddress,
 }: videoPageProp) => {
+  // console.log(date);
+  console.log(getDifference(date));
+  
+  
   const [videoTime, setVideoTime] = React.useState<string>();
 
   React.useEffect(() => {

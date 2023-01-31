@@ -346,11 +346,12 @@ const ProfileScreen = ({
                       >
                         {Boolean(allVideos) &&
                           allVideos.map((item: LensPublication) => {
+                        
                             return (
                               <VideoCard
                                 key={item?.id}
                                 id={item?.id}
-                                date={convertDate(item?.createdAt)}
+                                date={(item?.createdAt)}
                                 banner={item?.metadata?.cover}
                                 title={item?.metadata?.name}
                                 avatar={item?.profile?.picture?.original?.url}
