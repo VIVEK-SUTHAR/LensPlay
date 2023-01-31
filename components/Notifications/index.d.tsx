@@ -7,7 +7,7 @@ export default interface NotificationCardProps {
 }
 
 export interface Item {
-  mentionPublication: MentionedPublication;
+  mentionPublication?: MentionedPublication;
   __typename: string;
   createdAt: Date;
   profile?: Profile;
