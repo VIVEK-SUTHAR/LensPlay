@@ -5,36 +5,32 @@ import { LENS_API_ENDPOINT } from "../constants";
  * @param accesToken Accesstoken of Signed-in Lens user
  * @returns `onfullfilled`:All notificatons of user in Array Format `onrejected`:error message with valid reason
  */
-async function fetchNotifications(
-  profileId: string|undefined,
-  accesToken: string
-): Promise<any> {
-  try {
-    let headersList = {
-      Authorization: "Bearer " + accesToken,
-      "Content-Type": "application/json",
-    };
+async function fetchNotifications(profileId: string | undefined, accesToken: string): Promise<any> {
+	try {
+		let headersList = {
+			Authorization: "Bearer " + accesToken,
+			"Content-Type": "application/json",
+		};
 
-    let gqlBody = {
-      query: NOTIFICATIONS_QUERY,
-      variables: { pid: profileId },
-    };
+		let gqlBody = {
+			query: NOTIFICATIONS_QUERY,
+			variables: { pid: profileId },
+		};
 
-    let bodyContent = JSON.stringify(gqlBody);
+		let bodyContent = JSON.stringify(gqlBody);
 
-    let response = await fetch(LENS_API_ENDPOINT, {
-      method: "POST",
-      body: bodyContent,
-      headers: headersList,
-    });
-    let data = await response.json();
-    return data?.data?.result?.items;
-  } catch (error) {
-    if (error instanceof Error) {
-      console.log(error.message);
-      throw new Error(error.message);
-    }
-  }
+		let response = await fetch(LENS_API_ENDPOINT, {
+			method: "POST",
+			body: bodyContent,
+			headers: headersList,
+		});
+		let data = await response.json();
+		return data?.data?.result?.items;
+	} catch (error) {
+		if (error instanceof Error) {
+			throw new Error(error.message);
+		}
+	}
 }
 export default fetchNotifications;
 
