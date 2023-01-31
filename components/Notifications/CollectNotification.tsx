@@ -7,6 +7,7 @@ import getIPFSLink from "../../utils/getIPFSLink";
 import formatAddress from "../../utils/formatAddress";
 import getDifference from "../../utils/getDifference";
 import Avatar from "../UI/Avatar";
+import CollectIcon from "../svg/CollectIcon";
 
 const CollectNotification: React.FC<NotificationCardProps> = ({
   navigation,
@@ -23,7 +24,7 @@ const CollectNotification: React.FC<NotificationCardProps> = ({
           alignItems: "center",
         }}
       >
-        <Entypo name="folder-video" size={24} color={"coral"} />
+        <CollectIcon height={20} width={20} />
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>

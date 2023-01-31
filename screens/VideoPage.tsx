@@ -53,6 +53,12 @@ import getIPFSLink from "../utils/getIPFSLink";
 import createCommentViaDispatcher from "../apollo/mutations/createCommentViaDispatcher";
 import uploadMetaDataToArweave from "../utils/uploadMetaToArweave";
 import { dark_primary } from "../constants/Colors";
+import LikeIcon from "../components/svg/LikeIcon";
+import DisLikeIcon from "../components/svg/LikeIcon";
+import CollectIcon from "../components/svg/CollectIcon";
+import ShareIcon from "../components/svg/ShareIcon";
+import ReportIconIcon from "../components/svg/ReportIcon";
+import ReportIcon from "../components/svg/ReportIcon";
 
 const VideoPage = ({
   navigation,
@@ -490,17 +496,7 @@ const VideoPage = ({
               }
               onPress={onLike}
               icon={
-                <AntDesign
-                  name={isalreadyLiked ? "like1" : "like2"}
-                  size={16}
-                  color={
-                    isalreadyLiked
-                      ? theme.PRIMARY
-                      : isLiked
-                      ? theme.PRIMARY
-                      : "white"
-                  }
-                />
+                <LikeIcon height={20} width={20} filled={isalreadyLiked || isLiked?true:false}/>
               }
             />
             <Button
@@ -519,11 +515,7 @@ const VideoPage = ({
               }}
               borderColor={isalreadyDisLiked ? theme.PRIMARY : "white"}
               icon={
-                <AntDesign
-                  name={isalreadyDisLiked ? "dislike1" : "dislike2"}
-                  size={16}
-                  color={isalreadyDisLiked ? theme.PRIMARY : "white"}
-                />
+                <DisLikeIcon height={20} width={20} filled={isalreadyDisLiked?true:false}/>
               }
             />
             <Button
@@ -534,10 +526,12 @@ const VideoPage = ({
               bg={dark_primary}
               type={"filled"}
               borderRadius={8}
-              icon={<Entypo name="folder-video" size={18} color={"white"} />}
               onPress={() => {
                 setIsmodalopen(true);
               }}
+              icon={
+                <CollectIcon height={20} width={20} filled={true} />
+              }
               textStyle={{ color: "white", marginHorizontal: 4 }}
             />
             <Button
@@ -548,7 +542,7 @@ const VideoPage = ({
               bg={dark_primary}
               type={"filled"}
               borderRadius={8}
-              icon={<FontAwesome name="share" size={16} color="white" />}
+              icon={<ShareIcon height={20} width={20} />}
               onPress={onShare}
               textStyle={{ color: "white", marginHorizontal: 4 }}
             />
@@ -560,7 +554,7 @@ const VideoPage = ({
               bg={dark_primary}
               type={"filled"}
               borderRadius={8}
-              icon={<MaterialIcons name="report" size={16} color="white" />}
+              icon={<ReportIcon height={20} width={20} />}
               textStyle={{ color: "white", marginHorizontal: 4 }}
               onPress={() => {
                 toast.show("Thanks for reporting", ToastType.INFO, true);
