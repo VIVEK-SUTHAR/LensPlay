@@ -1,4 +1,4 @@
-import { FlatList, RefreshControl, SafeAreaView, ToastAndroid, View } from "react-native";
+import { FlatList, RefreshControl, SafeAreaView, StyleSheet, View } from "react-native";
 import React, { useState } from "react";
 import AnimatedLottieView from "lottie-react-native";
 import Heading from "../components/UI/Heading";
@@ -7,6 +7,7 @@ import Skleton from "../components/Notifications/Skleton";
 import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import notificationsQuery from "../apollo/Queries/notificationsQuery";
 import { useQuery } from "@apollo/client";
+
 const Navigation = ({ navigation }: { navigation: any }) => {
 	const [refreshing, setRefreshing] = useState<boolean>(false);
 
@@ -28,74 +29,15 @@ const Navigation = ({ navigation }: { navigation: any }) => {
 			},
 		},
 	});
+	if (error) console.log(error);
 
-	if (error) {
-		console.log(error);
-	}
-	if (loading) {
-		return (
-			<SafeAreaView
-				style={{
-					flex: 1,
-					backgroundColor: "black",
-				}}
-			>
-				<Skleton />
-				<Skleton />
-				<Skleton />
-				<Skleton />
-				<Skleton />
-				<Skleton />
-				<Skleton />
-				<Skleton />
-				<Skleton />
-			</SafeAreaView>
-		);
-	}
+	if (loading) return <Loader />;
+
+	if (!data) return <NotFound />;
+
 	if (data) {
-		if (!data.result.items.length) {
-			return (
-				<View
-					style={{
-						height: 500,
-						justifyContent: "center",
-						alignItems: "center",
-					}}
-				>
-					<AnimatedLottieView
-						autoPlay
-						style={{
-							height: "auto",
-						}}
-						source={require("../assets/notifications.json")}
-					/>
-					<View
-						style={{
-							alignItems: "center",
-						}}
-					>
-						<Heading
-							title="No new notifications"
-							style={{
-								fontSize: 16,
-								color: "white",
-								marginVertical: 5,
-								marginHorizontal: 15,
-								fontWeight: "600",
-								alignSelf: "flex-start",
-							}}
-						/>
-					</View>
-				</View>
-			);
-		}
 		return (
-			<SafeAreaView
-				style={{
-					flex: 1,
-					backgroundColor: "black",
-				}}
-			>
+			<SafeAreaView style={styles.container}>
 				<FlatList
 					data={data.result.items}
 					keyExtractor={(_, index) => index.toString()}
@@ -120,14 +62,67 @@ const Navigation = ({ navigation }: { navigation: any }) => {
 		);
 	}
 
-	return (
-		<SafeAreaView
-			style={{
-				flex: 1,
-				backgroundColor: "black",
-			}}
-		></SafeAreaView>
-	);
+	return <SafeAreaView style={styles.container}></SafeAreaView>;
 };
 
 export default Navigation;
+
+const Loader = () => {
+	return (
+		<SafeAreaView style={styles.container}>
+			<Skleton />
+			<Skleton />
+			<Skleton />
+			<Skleton />
+			<Skleton />
+			<Skleton />
+			<Skleton />
+			<Skleton />
+			<Skleton />
+		</SafeAreaView>
+	);
+};
+
+const NotFound = () => {
+	return (
+		<View
+			style={{
+				height: 500,
+				justifyContent: "center",
+				alignItems: "center",
+			}}
+		>
+			<AnimatedLottieView
+				autoPlay
+				style={{
+					height: "auto",
+				}}
+				source={require("../assets/notifications.json")}
+			/>
+			<View
+				style={{
+					alignItems: "center",
+				}}
+			>
+				<Heading
+					title="No new notifications"
+					style={{
+						fontSize: 16,
+						color: "white",
+						marginVertical: 5,
+						marginHorizontal: 15,
+						fontWeight: "600",
+						alignSelf: "flex-start",
+					}}
+				/>
+			</View>
+		</View>
+	);
+};
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: "black",
+	},
+});
