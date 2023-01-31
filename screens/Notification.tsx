@@ -7,22 +7,24 @@ import Skleton from "../components/Notifications/Skleton";
 import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import notificationsQuery from "../apollo/Queries/notificationsQuery";
 import { useQuery } from "@apollo/client";
+import { RootTabScreenProps } from "../types/navigation/types";
+import { INotifications, Item } from "../components/Notifications/index.d";
 
-const Navigation = ({ navigation }: { navigation: any }) => {
+const Navigation = ({ navigation }: RootTabScreenProps<"Notifications">) => {
 	const [refreshing, setRefreshing] = useState<boolean>(false);
 
 	const authStore = useAuthStore();
 	const theme = useThemeStore();
 	const userStore = useProfile();
 
-	const { data, error, loading, refetch } = useQuery(notificationsQuery, {
+	const { data, error, loading, refetch } = useQuery<INotifications>(notificationsQuery, {
 		variables: {
 			pid: userStore.currentProfile?.id,
 		},
 		fetchPolicy: "cache-and-network",
 		initialFetchPolicy: "network-only",
 		refetchWritePolicy: "merge",
-		pollInterval: 600000,
+		pollInterval: 5000,
 		context: {
 			headers: {
 				"x-access-token": `Bearer ${authStore.accessToken}`,
@@ -61,8 +63,6 @@ const Navigation = ({ navigation }: { navigation: any }) => {
 			</SafeAreaView>
 		);
 	}
-
-	return <SafeAreaView style={styles.container}></SafeAreaView>;
 };
 
 export default Navigation;
