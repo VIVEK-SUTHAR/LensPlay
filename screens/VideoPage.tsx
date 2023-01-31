@@ -265,7 +265,6 @@ const VideoPage = ({
         },
       });
       if (data) {
-        console.log(data);
         toast.show("Comment submitted", ToastType.SUCCESS, true);
         setIsImdexing(true);
         setTimeout(() => {

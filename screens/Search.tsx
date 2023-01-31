@@ -98,8 +98,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
             placeholderTextColor={"white"}
             clearButtonMode={"always"}
             onChange={(e) => {
-              console.log(e.nativeEvent.text);
-
               setSearchQuery(e.nativeEvent.text);
             }}
             onSubmitEditing={getSearchResult}
