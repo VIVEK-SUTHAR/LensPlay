@@ -48,7 +48,7 @@ import { RootStackScreenProps } from "../types/navigation/types";
 import CommentSkeleton from "../components/UI/CommentSkeleton";
 import formatInteraction from "../utils/formatInteraction";
 import { ToastType } from "../types/Store";
-import { Comments } from "../types/Lens/Feed";
+// import { Comments } from "../types/Lens/Feed";
 import getIPFSLink from "../utils/getIPFSLink";
 import createCommentViaDispatcher from "../apollo/mutations/createCommentViaDispatcher";
 import uploadMetaDataToArweave from "../utils/uploadMetaToArweave";
@@ -59,6 +59,8 @@ import CollectIcon from "../components/svg/CollectIcon";
 import ShareIcon from "../components/svg/ShareIcon";
 import ReportIconIcon from "../components/svg/ReportIcon";
 import ReportIcon from "../components/svg/ReportIcon";
+import { useComments } from "../hooks/useFeed";
+import Comment from "../components/Comments/";
 
 const VideoPage = ({
   navigation,
@@ -294,6 +296,8 @@ console.log(route.params.playbackId);
       toast.show("Something Went wrong", ToastType.ERROR, true);
     }
   }
+
+
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -565,91 +569,7 @@ console.log(route.params.playbackId);
               }}
             />
           </ScrollView>
-          <View>
-            <SubHeading
-              title="Comments"
-              style={{
-                fontSize: 20,
-                fontWeight: "700",
-                color: "white",
-                marginBottom: 8,
-              }}
-            />
-            {isImdexing ? (
-              <CommentCard
-                avatar={userStore.currentProfile?.picture.original.url}
-                commentText={commentText}
-                name={userStore.currentProfile?.name}
-                username={userStore.currentProfile?.handle || ""}
-                isIndexing={true}
-                commentTime={""}
-                id={""}
-                isFollowdByMe={undefined}
-                stats={{
-                  totalUpvotes: "0",
-                  totalAmountOfCollects: "0",
-                  totalAmountOfMirrors: "0",
-                }}
-                commentId={""}
-              />
-            ) : (
-              <></>
-            )}
-            {isLoading ? (
-              <ScrollView>
-                <CommentSkeleton />
-                <CommentSkeleton />
-                <CommentSkeleton />
-                <CommentSkeleton />
-                <CommentSkeleton />
-                <CommentSkeleton />
-                <CommentSkeleton />
-              </ScrollView>
-            ) : (
-              <></>
-            )}
-            {!isLoading && comments.length == 0 ? (
-              <View style={{ maxHeight: 200 }}>
-                <AnimatedLottieView
-                  autoPlay
-                  style={{
-                    height: "90%",
-                    alignSelf: "center",
-                    width: "100%",
-                  }}
-                  source={require("../assets/nocomments.json")}
-                />
-                <Heading
-                  title="There are no comments yet"
-                  style={{
-                    color: "white",
-                    fontSize: 20,
-                    textAlign: "center",
-                    fontWeight: "600",
-                  }}
-                ></Heading>
-              </View>
-            ) : (
-              comments?.map((item) => {
-                return (
-                  <CommentCard
-                    key={item?.id}
-                    username={item?.profile?.handle}
-                    avatar={item?.profile?.picture?.original?.url}
-                    commentText={
-                      item?.metadata?.content || item?.metadata?.description
-                    }
-                    commentTime={item?.createdAt}
-                    id={item?.profile?.id}
-                    isFollowdByMe={item?.profile?.isFollowedByMe}
-                    name={item?.profile?.name}
-                    stats={item?.stats}
-                    commentId={item?.id}
-                  />
-                );
-              })
-            )}
-          </View>
+          <Comment publicationId={route.params.id}/>
         </View>
       </ScrollView>
       <View

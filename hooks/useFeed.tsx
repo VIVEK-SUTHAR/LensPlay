@@ -77,12 +77,12 @@ const useComments = (publicationId: string) => {
 				"x-access-token": `Bearer ${accessToken}`,
 			},
 		},
-		skip: !publicationId || !publicationId.includes("0x"),
 		fetchPolicy: "cache-and-network",
 		refetchWritePolicy: "merge",
+		pollInterval: 5000,
 		initialFetchPolicy: "network-only",
 	});
 	return { data, error, loading };
 };
 
-export { useFeed, useExplorePublication, useUserPublication };
+export { useFeed, useExplorePublication, useUserPublication, useComments };
