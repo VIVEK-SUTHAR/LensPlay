@@ -1,8 +1,5 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import {
-  CompositeScreenProps,
-  NavigatorScreenParams,
-} from "@react-navigation/native";
+import { CompositeScreenProps, NavigatorScreenParams } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { LensPublication, VideoPageStats } from "../Lens/Feed";
 
@@ -24,9 +21,9 @@ import { LensPublication, VideoPageStats } from "../Lens/Feed";
  */
 
 declare global {
-  namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList {}
-  }
+	namespace ReactNavigation {
+		interface RootParamList extends RootStackParamList {}
+	}
 }
 
 /**
@@ -56,37 +53,40 @@ declare global {
  */
 
 export type RootStackParamList = {
-  Root: NavigatorScreenParams<RootTabParamList> | undefined;
-  Modal: undefined;
-  NotFound: undefined;
-  Login: undefined;
-  VideoPage: {
-    publicationId: string;
-    isFollowdByMe?: boolean;
-    id: string;
-    playbackId: string;
-    reaction: string | null;
-    stats: VideoPageStats;
-    profileId: string;
-    title: string;
-    uploadedBy: string;
-    banner: string;
-    description: string;
-    avatar: string;
-  };
-  Channel: {
-    profileId: string;
-    isFollowdByMe?: boolean;
-    name?: string;
-    ethAddress?: string;
-    handle?: string;
-  };
-  Search: undefined;
-  YourVideos: {
-    videos: LensPublication[];
-    title: string;
-  };
-  LinkingVideos: undefined;
+	Root: NavigatorScreenParams<RootTabParamList> | undefined;
+	Modal: undefined;
+	NotFound: undefined;
+	Login: undefined;
+	UserStats: {
+		profileId?: string;
+	};
+	VideoPage: {
+		publicationId: string;
+		isFollowdByMe?: boolean;
+		id: string;
+		playbackId: string;
+		reaction: string | null;
+		stats: VideoPageStats;
+		profileId: string;
+		title: string;
+		uploadedBy: string;
+		banner: string;
+		description: string;
+		avatar: string;
+	};
+	Channel: {
+		profileId: string;
+		isFollowdByMe?: boolean;
+		name?: string;
+		ethAddress?: string;
+		handle?: string;
+	};
+	Search: undefined;
+	YourVideos: {
+		videos: LensPublication[];
+		title: string;
+	};
+	LinkingVideos: undefined;
 };
 
 /**
@@ -95,9 +95,10 @@ export type RootStackParamList = {
  * They will be type of Native Screen props
  */
 
-export type RootStackScreenProps<
-  Screen extends keyof RootStackParamList
-> = NativeStackScreenProps<RootStackParamList, Screen>;
+export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
+	RootStackParamList,
+	Screen
+>;
 
 /**
  * RootTabParamList defins the parameters recived by Screen which will be
@@ -105,22 +106,23 @@ export type RootStackScreenProps<
  */
 
 export type RootTabParamList = {
-  Home: undefined;
-  Trending: undefined;
-  Create: undefined;
-  Notifications: undefined;
-  Account: undefined;
+	Home: undefined;
+	Trending: undefined;
+	Create: undefined;
+	Notifications: undefined;
+	Account: undefined;
 };
 
 export type UploadTabParamsList = {
-  Index: undefined;
-  UploadScreen: undefined;
-  GoLive: undefined;
+	Index: undefined;
+	UploadScreen: undefined;
+	GoLive: undefined;
 };
 
-export type UploadScreenProps<
-  Screen extends keyof UploadTabParamsList
-> = NativeStackScreenProps<UploadTabParamsList, Screen>;
+export type UploadScreenProps<Screen extends keyof UploadTabParamsList> = NativeStackScreenProps<
+	UploadTabParamsList,
+	Screen
+>;
 
 /**
  * RootTabScreenProps Means the Every Screen which is going to rendered by bottom tabs will receive
@@ -132,9 +134,7 @@ export type UploadScreenProps<
  * -2nd is type of a parent navigator or any other source of secondary navigation
  */
 
-export type RootTabScreenProps<
-  Screen extends keyof RootTabParamList
-> = CompositeScreenProps<
-  BottomTabScreenProps<RootTabParamList, Screen>,
-  NativeStackScreenProps<RootStackParamList>
+export type RootTabScreenProps<Screen extends keyof RootTabParamList> = CompositeScreenProps<
+	BottomTabScreenProps<RootTabParamList, Screen>,
+	NativeStackScreenProps<RootStackParamList>
 >;

@@ -12,7 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
-import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
+import useStore, { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import getPublications from "../apollo/Queries/getPublications";
 import VideoCard from "../components/VideoCard";
 import convertDate from "../utils/formateDate";
@@ -283,10 +283,22 @@ const ProfileScreen = ({ navigation, route }: RootTabScreenProps<"Account">) => 
 												paddingHorizontal: 16,
 											}}
 										>
-											<SubHeading
-												title={`${profile?.stats?.totalFollowers} • Subscribers`}
-												style={{ fontSize: 16, fontWeight: "600" }}
-											/>
+											<Pressable
+												android_ripple={{
+													radius: 45,
+													color: "gray",
+												}}
+												onPress={() => {
+													navigation.navigate("UserStats", {
+														profileId: userStore.currentProfile?.id,
+													});
+												}}
+											>
+												<SubHeading
+													title={`${profile?.stats?.totalFollowers} • Subscribers`}
+													style={{ fontSize: 16, fontWeight: "600" }}
+												/>
+											</Pressable>
 											<View
 												style={{
 													height: 24,
