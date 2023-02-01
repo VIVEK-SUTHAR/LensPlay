@@ -5,7 +5,7 @@ import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
 import SubHeading from "./UI/SubHeading";
 
-export default function ProfileCard() {
+export default function ProfileCard({profileIcon="https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1331&q=80",profileName="Harsh Sachaniya",handle="@iamharsh"}) {
   return (
     <View
       style={{
@@ -18,7 +18,7 @@ export default function ProfileCard() {
     >
       <Avatar
         src={
-          "https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1331&q=80"
+          profileIcon
         }
         height={60}
         width={60}
@@ -29,7 +29,7 @@ export default function ProfileCard() {
         }}
       >
         <Heading
-          title="Harsh Sachaniya"
+          title={profileName}
           style={{
             color: "white",
             fontSize: 16,
@@ -37,7 +37,7 @@ export default function ProfileCard() {
           }}
         />
         <SubHeading
-          title="@iamharsh"
+          title={handle}
           style={{
             color: "gray",
             fontSize: 12,

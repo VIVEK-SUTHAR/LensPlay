@@ -105,4 +105,4 @@ const useFollowers = (profileId: string) => {
   return { data, error, loading };
 };
 
-export { useFeed, useExplorePublication, useUserPublication, useComments };
+export { useFeed, useExplorePublication, useUserPublication, useComments,useFollowers };
