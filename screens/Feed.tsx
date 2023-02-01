@@ -8,7 +8,7 @@ import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
 import AnimatedLottieView from "lottie-react-native";
 import Heading from "../components/UI/Heading";
 import Button from "../components/UI/Button";
-import useFeed from "../hooks/useFeed";
+import { useFeed } from "../hooks/useFeed";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	const [refreshing, setRefreshing] = useState<boolean>(false);

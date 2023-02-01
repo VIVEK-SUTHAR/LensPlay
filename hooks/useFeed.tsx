@@ -1,6 +1,9 @@
 import { useQuery } from "@apollo/client";
 import React from "react";
+import getComments from "../apollo/Queries/getComments";
 import getFeed from "../apollo/Queries/getFeed";
+import getPublications from "../apollo/Queries/getPublications";
+import getTrendingPublication from "../apollo/Queries/getTrendingPublication";
 import { useAuthStore, useProfile } from "../store/Store";
 import { FeedData } from "../types/Lens/Feed";
 const useFeed = () => {
@@ -22,4 +25,64 @@ const useFeed = () => {
 	});
 	return { data, error, loading, refetch };
 };
-export default useFeed;
+
+const useExplorePublication = () => {
+	const { accessToken } = useAuthStore();
+	const { currentProfile } = useProfile();
+
+	const { data, error, loading } = useQuery(getTrendingPublication, {
+		variables: {
+			id: currentProfile?.id,
+			sort: "LATEST",
+		},
+		context: {
+			headers: {
+				"x-access-token": `Bearer ${accessToken}`,
+			},
+		},
+		fetchPolicy: "cache-and-network",
+		pollInterval: 500000,
+		skip: !currentProfile?.id,
+	});
+	return { data, error, loading };
+};
+
+const useUserPublication = (publicationId: string) => {
+	const { accessToken } = useAuthStore();
+
+	const { data, error, loading } = useQuery(getPublications, {
+		variables: {
+			id: publicationId,
+		},
+		context: {
+			headers: {
+				"x-access-token": `Bearer ${accessToken}`,
+			},
+		},
+		fetchPolicy: "cache-and-network",
+		refetchWritePolicy: "merge",
+		initialFetchPolicy: "network-only",
+	});
+	return { data, error, loading };
+};
+
+const useComments = (publicationId: string) => {
+	const { accessToken } = useAuthStore();
+	const { data, error, loading } = useQuery(getComments, {
+		variables: {
+			postId: publicationId,
+		},
+		context: {
+			headers: {
+				"x-access-token": `Bearer ${accessToken}`,
+			},
+		},
+		skip: !publicationId || !publicationId.includes("0x"),
+		fetchPolicy: "cache-and-network",
+		refetchWritePolicy: "merge",
+		initialFetchPolicy: "network-only",
+	});
+	return { data, error, loading };
+};
+
+export { useFeed, useExplorePublication, useUserPublication };

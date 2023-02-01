@@ -64,6 +64,11 @@ const VideoPage = ({
   navigation,
   route,
 }: RootStackScreenProps<"VideoPage">) => {
+
+console.log(route.params.playbackId);
+
+
+
   const [comments, setComments] = useState<Comments[]>([]);
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);

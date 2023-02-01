@@ -2,11 +2,12 @@ import React from "react";
 import { setStatusBarHidden } from "expo-status-bar";
 import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ResizeMode } from "expo-av";
-import { Dimensions, Text, View } from "react-native";
+import { Dimensions, Image, Text, View } from "react-native";
 import { primary } from "../../constants/Colors";
 import * as ScreenOrientation from "expo-screen-orientation";
 import VideoPlayer from "expo-video-player";
 import getIPFSLink from "../../utils/getIPFSLink";
+import { PLAY_FILLED } from "../Icons";
 
 interface VideoPlayerProps {
 	url: string;
@@ -51,7 +52,7 @@ function Player({
 			}}
 			icon={{
 				size: 48,
-				play: <AntDesign name="play" color={primary} size={36} />,
+				play: <Image source={{ uri: PLAY_FILLED }} style={{height:48,width:48}} />,
 				pause: <AntDesign name="pause" color={primary} size={36} />,
 				replay: <MaterialCommunityIcons name="replay" size={48} color={primary} />,
 			}}

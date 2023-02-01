@@ -1,10 +1,6 @@
 import { Profile, Stats } from ".";
 
-export interface Feed {
-  data: Data;
-}
-
-export interface Data {
+export interface FeedData {
   feed: FeedClass;
 }
 
