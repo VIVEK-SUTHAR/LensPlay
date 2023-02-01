@@ -6,7 +6,6 @@ import {
   Dimensions,
   Pressable,
   FlatList,
-  RefreshControl,
 } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
 import { RootStackScreenProps } from "../types/navigation/types";
@@ -29,10 +28,9 @@ const UserStats = ({
 
   const [headerTitle, setHeaderTitle] = useState<string>("Subscribers");
   const [isSubscribers, setIsSubscribers] = useState<boolean>(true);
-//   console.log(data);
-//   var profileIconUrl=(data.followers.items[0].wallet.defaultProfile.picture?.original.url);
-  
-  
+  //   console.log(data);
+  //   var profileIconUrl=(data.followers.items[0].wallet.defaultProfile.picture?.original.url);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topBarTab}>
@@ -57,7 +55,6 @@ const UserStats = ({
           <Text
             style={{
               color: isSubscribers ? theme.PRIMARY : "white",
-
               fontWeight: isSubscribers ? "700" : "400",
             }}
           >
@@ -92,10 +89,13 @@ const UserStats = ({
         </Pressable>
       </View>
       {isSubscribers ? (
-        <View style={{ width: "100%", height: "100%", backgroundColor: "red" }}>
+        <View style={{ width: "100%", height: "100%" }}>
           <FlatList
             data={data?.followers?.items}
             keyExtractor={(index) => index}
+            style={{
+              padding: 8,
+            }}
             // refreshControl={
             //   <RefreshControl
             //     refreshing={refreshing}
@@ -105,8 +105,11 @@ const UserStats = ({
             //   />
             // }
             renderItem={({ item }) => (
-              <ProfileCard profileIcon={item?.wallet?.defaultProfile.picture?.original.url} profileName={item?.wallet?.defaultProfile?.name} handle={item?.wallet?.defaultProfile?.handle}
-			   />
+              <ProfileCard
+                profileIcon={item?.wallet?.defaultProfile.picture?.original.url}
+                profileName={item?.wallet?.defaultProfile?.name}
+                handle={item?.wallet?.defaultProfile?.handle}
+              />
             )}
           />
         </View>
