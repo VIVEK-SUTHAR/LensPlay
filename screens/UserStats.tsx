@@ -13,6 +13,7 @@ import { useProfile, useThemeStore } from "../store/Store";
 import { useFollowers } from "../hooks/useFeed";
 import ProfileCard from "../components/ProfileCard";
 import { useFollowing } from "../hooks/useFeed";
+import { dark_primary } from "../constants/Colors";
 
 const UserStats = ({
   navigation,
@@ -95,9 +96,17 @@ const SuscriberList = () => {
 
   if (loading) {
     return (
-      <View
-        style={{ width: "100%", height: 50, backgroundColor: "blue" }}
-      ></View>
+      <>
+        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton/>
+      </>
     );
   }
   if (data) {
@@ -127,31 +136,74 @@ const SubscriptionsList = () => {
 
   if (loading) {
     return (
-      <View
-        style={{ width: "100%", height: 40, backgroundColor: "gray" }}
-      ></View>
+      <>
+        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton/>
+      </>
     );
   }
 
   if (data) {
     return (
-      <FlatList
-        data={data.following.items}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={({ item }) => {
-          return (
-            <ProfileCard
-              handle={item.profile.handle}
-              profileName={item.profile?.name}
-              profileIcon={item.profile?.picture?.original?.url}
-            />
-          );
-        }}
-      />
+      <>
+        <FlatList
+          data={data.following.items}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({ item }) => {
+            return (
+              <ProfileCard
+                handle={item.profile.handle}
+                profileName={item.profile?.name}
+                profileIcon={item.profile?.picture?.original?.url}
+              />
+            );
+          }}
+        />
+      </>
     );
   }
   return <></>;
 };
+
+const ProfileCardSkeleton=()=>{
+  return <>
+              <View
+            style={{
+              backgroundColor: 'black',
+              borderRadius: 16,
+              flexDirection: "row",
+              alignItems: "center",
+              padding: 10,
+              marginVertical: 4,
+            }}
+          >
+            <View
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 50,
+                backgroundColor: "#232323",
+              }}
+            />
+            <View
+              style={{
+                marginLeft: 8,
+                width:"40%",
+                height:16,
+                borderRadius:3,
+                backgroundColor:'#232323'
+              }}
+            ></View>
+          </View>
+  </>
+}
 
 const styles = StyleSheet.create({
   container: {
