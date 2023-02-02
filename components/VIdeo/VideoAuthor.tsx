@@ -26,7 +26,7 @@ const VideoCreator = (props: VideoCreatorProps) => {
 
 	const followCreator = async () => {
 		if (following) {
-			toast.show("Currntly not supported", ToastType.ERROR, true);
+			toast.show("Currently not supported", ToastType.ERROR, true);
 			return;
 		}
 		try {
