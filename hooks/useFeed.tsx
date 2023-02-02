@@ -3,6 +3,7 @@ import React from "react";
 import getComments from "../apollo/Queries/getComments";
 import getFeed from "../apollo/Queries/getFeed";
 import getFollowers from "../apollo/Queries/getFollowers";
+import getFollowing from "../apollo/Queries/getFollowing";
 import getPublications from "../apollo/Queries/getPublications";
 import getTrendingPublication from "../apollo/Queries/getTrendingPublication";
 import { useAuthStore, useProfile } from "../store/Store";
@@ -86,6 +87,25 @@ const useComments = (publicationId: string) => {
   return { data, error, loading };
 };
 
+const useFollowing = (ethAddress: string) => {
+  const { accessToken } = useAuthStore();
+  const { data, loading, error, refetch } = useQuery(getFollowing, {
+    variables: {
+      subId: ethAddress,
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+      },
+    },
+    fetchPolicy: "cache-and-network",
+    refetchWritePolicy: "merge",
+    pollInterval: 5000,
+    initialFetchPolicy: "network-only",
+  });
+  return {data,loading,error}
+};
+
 const useFollowers = (profileId: string) => {
   const { accessToken } = useAuthStore();
   const { data, error, loading } = useQuery(getFollowers, {
@@ -105,4 +125,11 @@ const useFollowers = (profileId: string) => {
   return { data, error, loading };
 };
 
-export { useFeed, useExplorePublication, useUserPublication, useComments,useFollowers };
+export {
+  useFeed,
+  useExplorePublication,
+  useUserPublication,
+  useComments,
+  useFollowers,
+  useFollowing
+};
