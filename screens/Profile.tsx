@@ -99,6 +99,7 @@ const ProfileScreen = ({
       setRefreshing(false);
     });
   }, []);
+  
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>

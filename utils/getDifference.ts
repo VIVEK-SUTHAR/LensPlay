@@ -24,7 +24,7 @@ function getDifference(timestamp: Date | string) {
 
 	if (currentYear != notificationYear) {
 		if (currentYear - notificationYear == 1) {
-			if (notificationMonth - currentMonth != 0) {
+			if (notificationMonth - currentMonth != 0 && notificationMonth > currentMonth ) {
 				if (currentMonth == 0 && notificationMonth == 11) {
 					if (currentDate > notificationDate) {
 						return `1mon ago`;
@@ -32,7 +32,7 @@ function getDifference(timestamp: Date | string) {
 						return findDiffernce(31, notificationDate - currentDate, "d");
 					}
 				} else {
-					return findDiffernce(notificationMonth, currentMonth, "mon");
+					return findDiffernce(12,notificationMonth - currentMonth, "mon");
 				}
 			} else {
 				return `1 y ago`;
@@ -41,7 +41,17 @@ function getDifference(timestamp: Date | string) {
 			return findDiffernce(notificationYear, currentYear, "y");
 		}
 	} else if (currentMonth != notificationMonth) {
-		return findDiffernce(notificationMonth, currentMonth, "mon");
+		if (currentMonth - notificationMonth == 1){
+			if (currentDate < notificationDate) {
+				return findDiffernce(31,notificationDate - currentDate, "d");
+			}
+			else {
+				return `1 mon ago`
+			}
+		}
+		else {
+			return findDiffernce(notificationMonth, currentMonth, "mon");
+		}
 	} else if (currentDate != notificationDate) {
 		return findDiffernce(currentDate, notificationDate, "d");
 	} else if (currentHour != notificationHour) {

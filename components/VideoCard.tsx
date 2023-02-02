@@ -52,9 +52,9 @@ const VideoCard = ({
   attributes,
   ethAddress,
 }: videoPageProp) => {
-  // console.log(date);
   
   const [videoTime, setVideoTime] = React.useState<string>();
+  
 
   React.useEffect(() => {
     const time = attributes?.filter((item) => {
