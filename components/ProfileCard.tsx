@@ -13,7 +13,7 @@ export default function ProfileCard({
   return (
     <View
       style={{
-        backgroundColor: dark_primary,
+        backgroundColor: "black",
         borderRadius: 16,
         flexDirection: "row",
         alignItems: "center",
@@ -21,7 +21,7 @@ export default function ProfileCard({
         marginVertical: 4,
       }}
     >
-      <Avatar src={profileIcon} height={60} width={60} />
+      <Avatar src={profileIcon} height={40} width={40} />
       <View
         style={{
           marginLeft: 8,
@@ -41,8 +41,9 @@ export default function ProfileCard({
         <Heading
           title={handle}
           style={{
-            color: "gray",
-            fontSize: 12,
+            color: profileName ? "gray" : "white",
+            fontSize: profileName ? 12 : 16,
+            marginTop: profileName ? 0 : -8,
           }}
         />
       </View>

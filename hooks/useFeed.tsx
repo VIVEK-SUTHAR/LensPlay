@@ -87,7 +87,7 @@ const useComments = (publicationId: string) => {
   return { data, error, loading };
 };
 
-const useFollowing = (ethAddress: string) => {
+const useFollowing = (ethAddress: string | undefined) => {
   const { accessToken } = useAuthStore();
   const { data, loading, error, refetch } = useQuery(getFollowing, {
     variables: {
@@ -103,10 +103,10 @@ const useFollowing = (ethAddress: string) => {
     pollInterval: 5000,
     initialFetchPolicy: "network-only",
   });
-  return {data,loading,error}
+  return { data, loading, error };
 };
 
-const useFollowers = (profileId: string) => {
+const useFollowers = (profileId: string | undefined) => {
   const { accessToken } = useAuthStore();
   const { data, error, loading } = useQuery(getFollowers, {
     variables: {
@@ -131,5 +131,5 @@ export {
   useUserPublication,
   useComments,
   useFollowers,
-  useFollowing
+  useFollowing,
 };

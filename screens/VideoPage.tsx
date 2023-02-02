@@ -124,7 +124,10 @@ const VideoPage = ({
               totalCollects={PublicationStats.totalAmountOfCollects}
               videoUrl={route.params.playbackId}
             />
-            <ShareButton title={route.params.title} id={route.params.id} />
+            <ShareButton
+              title={route.params.title}
+              publicationId={route.params.id}
+            />
             <ReportButton />
           </ScrollView>
           <Comment publicationId={route.params.id} />

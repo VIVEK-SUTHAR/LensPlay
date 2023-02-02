@@ -24,11 +24,8 @@ const UserStats = ({
     });
   });
   const theme = useThemeStore();
-  const { currentProfile } = useProfile();
-  // const { data, error, loading } = useFollowers(currentProfile?.id);
   const [headerTitle, setHeaderTitle] = useState<string>("Subscribers");
   const [isSubscribers, setIsSubscribers] = useState<boolean>(true);
-  //   var profileIconUrl=(data.followers.items[0].wallet.defaultProfile.picture?.original.url);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -87,27 +84,7 @@ const UserStats = ({
           </Text>
         </Pressable>
       </View>
-      {isSubscribers ? (
-        <SuscriberList />
-      ) : (
-        // <View style={{ width: "100%", height: "100%" }}>
-        //   <FlatList
-        //     data={data?.followers?.items}
-        //     keyExtractor={(index) => index}
-        //     style={{
-        //       padding: 8,
-        //     }}
-        //     renderItem={({ item }) => (
-        //       <ProfileCard
-        //         profileIcon={item?.wallet?.defaultProfile.picture?.original.url}
-        //         profileName={item?.wallet?.defaultProfile?.name}
-        //         handle={item?.wallet?.defaultProfile?.handle}
-        //       />
-        //     )}
-        //   />
-        // </View>
-        <SubscriptionsList />
-      )}
+      {isSubscribers ? <SuscriberList /> : <SubscriptionsList />}
     </SafeAreaView>
   );
 };
@@ -115,7 +92,7 @@ const UserStats = ({
 const SuscriberList = () => {
   const { currentProfile } = useProfile();
   const { data, error, loading } = useFollowers(currentProfile?.id);
-  
+
   if (loading) {
     return (
       <View
@@ -124,21 +101,24 @@ const SuscriberList = () => {
     );
   }
   if (data) {
-   return <FlatList
-      data={data?.followers?.items}
-      keyExtractor={(index) => index}
-      style={{
-        padding: 8,
-      }}
-      renderItem={({ item }) => (
-        <ProfileCard
-          profileIcon={item?.wallet?.defaultProfile.picture?.original.url}
-          profileName={item?.wallet?.defaultProfile?.name}
-          handle={item?.wallet?.defaultProfile?.handle}
-        />
-      )}
-    />;
+    return (
+      <FlatList
+        data={data?.followers?.items}
+        keyExtractor={(_, index) => index.toString()}
+        style={{
+          padding: 8,
+        }}
+        renderItem={({ item }) => (
+          <ProfileCard
+            profileIcon={item?.wallet?.defaultProfile.picture?.original.url}
+            profileName={item?.wallet?.defaultProfile?.name}
+            handle={item?.wallet?.defaultProfile?.handle}
+          />
+        )}
+      />
+    );
   }
+  return <></>;
 };
 
 const SubscriptionsList = () => {
@@ -157,18 +137,20 @@ const SubscriptionsList = () => {
     return (
       <FlatList
         data={data.following.items}
+        keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }) => {
           return (
             <ProfileCard
               handle={item.profile.handle}
-              profileName={item.profile.name}
-              profileIcon={item.profile.picture.original.url}
+              profileName={item.profile?.name}
+              profileIcon={item.profile?.picture?.original?.url}
             />
           );
         }}
       />
     );
   }
+  return <></>;
 };
 
 const styles = StyleSheet.create({
