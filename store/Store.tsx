@@ -40,10 +40,14 @@ export const useToast = create<ToastProps>((set) => ({
 
 export const useReactionStore = create<IReactionStore>((set) => ({
   likedPublication: [{ likes: 0, id: 0 }],
-  dislikedPublication: [{ id: 0}],
-  likedComments: [{id: 0}],
-  addToReactedPublications: (publicationId: string, likes: number, dislikedPublication: DisLikeObject[]) => {
-    for (var i=0; i < dislikedPublication.length; i++){
+  dislikedPublication: [{ id: 0 }],
+  likedComments: [{ id: 0 }],
+  addToReactedPublications: (
+    publicationId: string,
+    likes: number,
+    dislikedPublication: DisLikeObject[]
+  ) => {
+    for (var i = 0; i < dislikedPublication.length; i++) {
       if (dislikedPublication[i].id === publicationId) {
         dislikedPublication.splice(i, 1);
       }
@@ -51,12 +55,16 @@ export const useReactionStore = create<IReactionStore>((set) => ({
     set((state) => ({
       likedPublication: [
         ...state.likedPublication,
-        { likes: likes, id: publicationId } as unknown as LikeObject,
+        ({ likes: likes, id: publicationId } as unknown) as LikeObject,
       ],
-      dislikedPublication: dislikedPublication
-    }))},
-  addToDislikedPublications: (publicationId: string, likedPublication: LikeObject[]) => {
-    for (var i=0; i < likedPublication.length; i++){
+      dislikedPublication: dislikedPublication,
+    }));
+  },
+  addToDislikedPublications: (
+    publicationId: string,
+    likedPublication: LikeObject[]
+  ) => {
+    for (var i = 0; i < likedPublication.length; i++) {
       if (likedPublication[i].id === publicationId) {
         likedPublication.splice(i, 1);
       }
@@ -64,16 +72,18 @@ export const useReactionStore = create<IReactionStore>((set) => ({
     set((state) => ({
       dislikedPublication: [
         ...state.dislikedPublication,
-        { id: publicationId } as unknown as DisLikeObject,
+        { id: publicationId } as DisLikeObject,
       ],
-    }))},
+    }));
+  },
   addToLikedComments: (commentId: string) => {
     set((state) => ({
       likedComments: [
-        ...state.likedComments, { id: commentId } as unknown as DisLikeObject
-      ]
-    }))
-  }
+        ...state.likedComments,
+        ({ id: commentId } as unknown) as DisLikeObject,
+      ],
+    }));
+  },
 }));
 
 const useStore = create((set) => ({

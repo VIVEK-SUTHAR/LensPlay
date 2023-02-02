@@ -27,15 +27,18 @@ export default function ProfileCard({
           marginLeft: 8,
         }}
       >
+        {profileName && (
+          <Heading
+            title={profileName}
+            style={{
+              color: "white",
+              fontSize: 16,
+              fontWeight: "500",
+            }}
+          />
+        )}
+
         <Heading
-          title={profileName}
-          style={{
-            color: "white",
-            fontSize: 16,
-            fontWeight: "500",
-          }}
-        />
-        <SubHeading
           title={handle}
           style={{
             color: "gray",

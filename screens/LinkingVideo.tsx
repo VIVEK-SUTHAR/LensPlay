@@ -24,16 +24,15 @@ import Drawer from "../components/UI/Drawer";
 import Player from "../components/VideoPlayer";
 import Button from "../components/UI/Button";
 import { RootStackScreenProps } from "../types/navigation/types";
-import formatInteraction from "../utils/formatInteraction";
 import { ToastType } from "../types/Store";
 import fetchPublicationById from "../apollo/Queries/fetchPublicationById";
 import { LensPublication } from "../types/Lens/Feed";
 import getIPFSLink from "../utils/getIPFSLink";
 import getComments from "../apollo/Queries/getComments";
 import { Comments } from "../types/Lens/Feed";
-import CommentCard from "../components/CommentCard";
 import CommentSkeleton from "../components/UI/CommentSkeleton";
 import AnimatedLottieView from "lottie-react-native";
+import CommentCard from "../components/Comments/CommentCard";
 
 
 const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos">) => {
@@ -80,7 +79,7 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos
 		BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
 	}, []);
 	
-	async function fetchComments(publicationId): Promise<void> {
+	async function fetchComments(publicationId:string): Promise<void> {
 		try {
 			const data = await client.query({
 				query: getComments,
@@ -306,7 +305,7 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos
 						}}
 					>
 						<View style={{ flexDirection: "row", alignItems: "center" }}>
-							<Avatar src={videoData?.profile?.picture?.original?.url} width={40} height={40} />
+							<Avatar src={videoData?.profile?.picture?.original?.url||""} width={40} height={40} />
 							<View style={{ marginHorizontal: 8 }}>
 								<Heading
 									title={videoData?.profile?.name}
@@ -350,7 +349,7 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideos
 						showsHorizontalScrollIndicator={false}
 					>
 						<Button
-							title={videoData?.stats?.totalUpvotes || "0"}
+							title={videoData?.stats?.totalUpvotes}
 							mx={4}
 							px={10}
 							width={"auto"}

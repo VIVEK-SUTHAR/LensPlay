@@ -1,18 +1,16 @@
 import { Image, Pressable, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { primary } from "../constants/Colors";
-import getDifference from "../utils/getDifference";
-import Heading from "./UI/Heading";
-import SubHeading from "./UI/SubHeading";
-import extractURLs from "../utils/extractURL";
+import getDifference from "../../utils/getDifference";
 import { useNavigation } from "@react-navigation/native";
-import Button from "./UI/Button";
-import { AntDesign, Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
-import addLike from "../api/addReaction";
-import { useAuthStore, useProfile, useReactionStore } from "../store/Store";
-import freeMirror from "../api/freeMirror";
-import { CommentStats } from "../types/Lens/Feed";
-import AnimatedLottieView from "lottie-react-native";
+import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
+import { CommentStats } from "../../types/Lens/Feed";
+import { useAuthStore, useProfile, useReactionStore } from "../../store/Store";
+import { addLike, freeMirror } from "../../api";
+import Heading from "../UI/Heading";
+import SubHeading from "../UI/SubHeading";
+import extractURLs from "../../utils/extractURL";
+import Button from "../UI/Button";
+import { primary } from "../../constants/Colors";
 
 type CommentCardProps = {
   avatar: string | undefined;
@@ -70,7 +68,7 @@ const CommentCard = ({
         setisalreadyDisLiked(true);
       }
     });
-  });
+  }, [addLike]);
 
   return (
     <View
