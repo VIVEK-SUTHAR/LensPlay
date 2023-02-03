@@ -40,7 +40,6 @@ const UserStats = ({
             styles.tab,
             {
               borderBottomWidth: isSubscribers ? 1 : 0,
-
               borderBottomColor: isSubscribers ? theme.PRIMARY : "red",
             },
           ]}

@@ -5,20 +5,26 @@ import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
 import SubHeading from "./UI/SubHeading";
 
+type ProfileCardProps = {
+  profileicon: string;
+  profileName: string;
+  handle: string;
+};
+
 export default function ProfileCard({
-  profileIcon = "https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1331&q=80",
-  profileName = "Harsh Sachaniya",
-  handle = "@iamharsh",
-}) {
+  profileIcon,
+  profileName,
+  handle,
+}: ProfileCardProps) {
   return (
     <View
       style={{
-        backgroundColor: "black",
-        borderRadius: 16,
         flexDirection: "row",
         alignItems: "center",
         padding: 10,
         marginVertical: 4,
+        borderBottomWidth: 1,
+        borderBottomColor: dark_primary,
       }}
     >
       <Avatar src={profileIcon} height={40} width={40} />
