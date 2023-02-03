@@ -85,67 +85,91 @@ const UserStats = ({
           </Text>
         </Pressable>
       </View>
-      {isSubscribers ? <SuscriberList /> : <SubscriptionsList />}
+      {isSubscribers ? (
+        <SuscriberList
+          isSubscribers={isSubscribers}
+          setScreen={setIsSubscribers}
+        />
+      ) : (
+        <SubscriptionsList
+          isSubscribers={isSubscribers}
+          setScreen={setIsSubscribers}
+        />
+      )}
     </SafeAreaView>
   );
 };
 
-const SuscriberList = () => {
+const SuscriberList = ({ isSubscribers, setScreen }) => {
   const { currentProfile } = useProfile();
   const { data, error, loading } = useFollowers(currentProfile?.id);
-
+  const [pagey, setPagey] = useState(0);
   if (loading) {
     return (
       <>
-        <ProfileCardSkeleton/>
-        <ProfileCardSkeleton/>
-        <ProfileCardSkeleton/>
-        <ProfileCardSkeleton/>
-        <ProfileCardSkeleton/>
-        <ProfileCardSkeleton/>
-        <ProfileCardSkeleton/>
-        <ProfileCardSkeleton/>
-        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton />
+        <ProfileCardSkeleton />
+        <ProfileCardSkeleton />
+        <ProfileCardSkeleton />
+        <ProfileCardSkeleton />
+        <ProfileCardSkeleton />
+        <ProfileCardSkeleton />
+        <ProfileCardSkeleton />
+        <ProfileCardSkeleton />
       </>
     );
   }
   if (data) {
     return (
-      <FlatList
-        data={data?.followers?.items}
-        keyExtractor={(_, index) => index.toString()}
-        style={{
-          padding: 8,
+      <View
+        onTouchStart={(e) => {
+          setPagey(e.nativeEvent.pageX);
         }}
-        renderItem={({ item }) => (
-          <ProfileCard
-            profileIcon={item?.wallet?.defaultProfile.picture?.original.url}
-            profileName={item?.wallet?.defaultProfile?.name}
-            handle={item?.wallet?.defaultProfile?.handle}
-          />
-        )}
-      />
+        onTouchEnd={(e) => {
+          if (pagey - e.nativeEvent.pageX > 10) {
+            if (isSubscribers) {
+              setScreen(false);
+            }
+          }
+        }}
+      >
+        <FlatList
+          data={data?.followers?.items}
+          keyExtractor={(_, index) => index.toString()}
+          style={{
+            padding: 8,
+          }}
+          renderItem={({ item }) => (
+            <ProfileCard
+              profileIcon={item?.wallet?.defaultProfile.picture?.original.url}
+              profileName={item?.wallet?.defaultProfile?.name}
+              handle={item?.wallet?.defaultProfile?.handle}
+            />
+          )}
+        />
+      </View>
     );
   }
   return <></>;
 };
 
-const SubscriptionsList = () => {
+const SubscriptionsList = ({ isSubscribers, setScreen }) => {
   const { currentProfile } = useProfile();
   const { data, error, loading } = useFollowing(currentProfile?.ownedBy);
+  const [pagex, setPagex] = useState(0);
 
   if (loading) {
     return (
       <>
-        <ProfileCardSkeleton/>
-        <ProfileCardSkeleton/>
-        <ProfileCardSkeleton/>
-        <ProfileCardSkeleton/>
-        <ProfileCardSkeleton/>
-        <ProfileCardSkeleton/>
-        <ProfileCardSkeleton/>
-        <ProfileCardSkeleton/>
-        <ProfileCardSkeleton/>
+        <ProfileCardSkeleton />
+        <ProfileCardSkeleton />
+        <ProfileCardSkeleton />
+        <ProfileCardSkeleton />
+        <ProfileCardSkeleton />
+        <ProfileCardSkeleton />
+        <ProfileCardSkeleton />
+        <ProfileCardSkeleton />
+        <ProfileCardSkeleton />
       </>
     );
   }
@@ -153,57 +177,75 @@ const SubscriptionsList = () => {
   if (data) {
     return (
       <>
-        <FlatList
-          data={data.following.items}
-          keyExtractor={(_, index) => index.toString()}
-          renderItem={({ item }) => {
-            return (
-              <ProfileCard
-                handle={item.profile.handle}
-                profileName={item.profile?.name}
-                profileIcon={item.profile?.picture?.original?.url}
-              />
-            );
+        <View
+          onTouchStart={(e) => {
+            setPagex(e.nativeEvent.pageX);
           }}
-        />
+          onTouchEnd={(e) => {
+            if (
+              pagex - e.nativeEvent.pageX > 0 ||
+              pagex - e.nativeEvent.pageX < 0
+            ) {
+              if (!isSubscribers) {
+                setScreen(true);
+              }
+            }
+          }}
+        >
+          <FlatList
+            data={data.following.items}
+            keyExtractor={(_, index) => index.toString()}
+            renderItem={({ item }) => {
+              return (
+                <ProfileCard
+                  handle={item.profile.handle}
+                  profileName={item.profile?.name}
+                  profileIcon={item.profile?.picture?.original?.url}
+                />
+              );
+            }}
+          />
+        </View>
       </>
     );
   }
   return <></>;
 };
 
-const ProfileCardSkeleton=()=>{
-  return <>
-              <View
-            style={{
-              backgroundColor: 'black',
-              borderRadius: 16,
-              flexDirection: "row",
-              alignItems: "center",
-              padding: 10,
-              marginVertical: 4,
-            }}
-          >
-            <View
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 50,
-                backgroundColor: "#232323",
-              }}
-            />
-            <View
-              style={{
-                marginLeft: 8,
-                width:"40%",
-                height:16,
-                borderRadius:3,
-                backgroundColor:'#232323'
-              }}
-            ></View>
-          </View>
-  </>
-}
+const ProfileCardSkeleton = () => {
+  return (
+    <>
+      <View
+        style={{
+          backgroundColor: "black",
+          borderRadius: 16,
+          flexDirection: "row",
+          alignItems: "center",
+          padding: 10,
+          marginVertical: 4,
+        }}
+      >
+        <View
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 50,
+            backgroundColor: "#232323",
+          }}
+        />
+        <View
+          style={{
+            marginLeft: 8,
+            width: "40%",
+            height: 16,
+            borderRadius: 3,
+            backgroundColor: "#232323",
+          }}
+        ></View>
+      </View>
+    </>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
