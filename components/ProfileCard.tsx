@@ -1,12 +1,12 @@
 import React from "react";
 import { Text, View } from "react-native";
 import { dark_primary } from "../constants/Colors";
+import getIPFSLink from "../utils/getIPFSLink";
 import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
-import SubHeading from "./UI/SubHeading";
 
 type ProfileCardProps = {
-  profileicon: string;
+  profileIcon: string;
   profileName: string;
   handle: string;
 };

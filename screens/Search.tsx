@@ -19,6 +19,7 @@ import { dark_primary } from "../constants/Colors";
 import ProfileCard from "../components/ProfileCard";
 import useDebounce from "../hooks/useDebounce";
 import { useSearchProfile } from "../hooks/useFeed";
+import getIPFSLink from "../utils/getIPFSLink";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const theme = useThemeStore();
@@ -175,7 +176,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                 return (
                   <ProfileCard
                     key={index}
-                    profileicon={item?.picture?.original?.url}
+                    profileIcon={item?.picture?.original?.url}
                     profileName={item?.name || item?.profileId}
                     handle={item?.handle}
                   />
