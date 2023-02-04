@@ -6,11 +6,8 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import { client } from "../apollo/client";
-import searchPublicationQuery from "../apollo/Queries/searchPublicationQuery";
-import VideoCard from "../components/VideoCard";
 import AnimatedLottieView from "lottie-react-native";
 import { EvilIcons } from "@expo/vector-icons";
 import { RootStackScreenProps } from "../types/navigation/types";
@@ -18,33 +15,58 @@ import Button from "../components/UI/Button";
 import { useAuthStore, useThemeStore } from "../store/Store";
 import { LensPublication } from "../types/Lens/Feed";
 import searchProfileQuery from "../apollo/Queries/searchProfileQuery";
+import { dark_primary } from "../constants/Colors";
 import ProfileCard from "../components/ProfileCard";
+import useDebounce from "../hooks/useDebounce";
+import { useSearchProfile } from "../hooks/useFeed";
+
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const theme = useThemeStore();
   const authStore = useAuthStore();
-  const textRef = useRef(null);
 
   const [searchPostResult, setSearchPostResult] = useState<LensPublication[]>(
     []
   );
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isSearching, setIsSearching] = useState(false);
-  const [isfound, setIsfound] = useState(true);
-  useFocusEffect(
-    useCallback(() => {
-      const focus = () => {
-        setTimeout(() => {
-          textRef?.current?.focus();
-        }, 1);
-      };
-      focus();
-      return focus;
-    }, [])
-  );
+  const [keyword, setKeyword] = useState<string>("");
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [isfound, setIsfound] = useState<boolean>(true);
+  const debouncedValue = useDebounce<string>(keyword, 500);
+
+  const onDebounce = async () => {
+    if (keyword.trim().length) {
+      // const { data, error, loading } = useSearchProfile(keyword);
+      // setSearchPostResult(data?.search?.items);
+      try {
+        const result = await client.query({
+          query: searchProfileQuery,
+          variables: {
+            query: keyword.trim().toLowerCase(),
+          },
+          context: {
+            headers: {
+              "x-access-token": `Bearer ${authStore.accessToken}`,
+            },
+          },
+        });
+        setSearchPostResult(result?.data?.search?.items);
+        if (searchPostResult.length === 0) {
+          setIsfound(false);
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          console.log(error);
+          setIsSearching(false);
+        }
+      } finally {
+        setIsSearching(false);
+      }
+    }
+  };
 
   useEffect(() => {
-    return setSearchQuery("");
-  }, []);
+    onDebounce();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedValue]);
 
   async function getSearchResult() {
     setIsSearching(true);
@@ -52,7 +74,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
       const result = await client.query({
         query: searchProfileQuery,
         variables: {
-          query: searchQuery.trim().toLowerCase(),
+          query: keyword.trim().toLowerCase(),
         },
         context: {
           headers: {
@@ -83,27 +105,26 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
             width: "88%",
             flexDirection: "row",
             alignItems: "center",
-            padding: 4,
+            paddingHorizontal: 8,
+            paddingVertical: 4,
             borderRadius: 20,
-            borderColor: "white",
             borderWidth: 1,
-            backgroundColor: "rgba(255,255,255,0.04)",
+            backgroundColor: dark_primary,
           }}
         >
           <EvilIcons name="search" size={24} color="white" />
           <TextInput
-            ref={textRef}
             selectionColor={theme.PRIMARY}
-            placeholder="Type something to search..."
+            placeholder="Search by profile"
             placeholderTextColor={"white"}
             clearButtonMode={"always"}
             onChange={(e) => {
-              setSearchQuery(e.nativeEvent.text);
+              setKeyword(e.nativeEvent.text);
             }}
-            onSubmitEditing={getSearchResult}
+            // onSubmitEditing={getSearchResult}
             style={{
               width: "100%",
-              marginLeft: 4,
+              marginLeft: 8,
               color: "white",
             }}
           />
@@ -114,13 +135,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <ScrollView>
-        {/* <View
-          style={{
-            padding: 10,
-          }}
-        >
-          <ProfileCard />
-        </View> */}
         {!!isSearching && (
           <>
             <AnimatedLottieView
@@ -152,29 +166,22 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
         )}
         {searchPostResult.length > 0 ? (
           <>
-            <Text
+            <View
               style={{
-                paddingHorizontal: 5,
-                fontSize: 20,
-                marginHorizontal: 8,
-                fontWeight: "500",
-                color: "white",
+                padding: 10,
               }}
             >
-              Here's what we found
-            </Text>
-            {searchPostResult.map((item, index) => {
-              if (!item.hidden) {
+              {searchPostResult.map((item, index) => {
                 return (
-                  <VideoCard
+                  <ProfileCard
                     key={index}
-                    avatar={item?.profile?.picture?.original?.url}
-                    id={item?.id}
-                    uploadedBy={item?.profile?.handle}
+                    profileicon={item?.picture?.original?.url}
+                    profileName={item?.name || item?.profileId}
+                    handle={item?.handle}
                   />
                 );
-              }
-            })}
+              })}
+            </View>
           </>
         ) : (
           <>
