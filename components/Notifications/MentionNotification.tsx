@@ -5,6 +5,7 @@ import getDifference from "../../utils/getDifference";
 import formatAddress from "../../utils/formatAddress";
 import Avatar from "../UI/Avatar";
 import { Octicons } from "@expo/vector-icons";
+import MentionIcon from "../svg/MentionIcon";
 
 const MentionNotification = ({
   navigation,
@@ -21,7 +22,8 @@ const MentionNotification = ({
           alignItems: "center",
         }}
       >
-        <Octicons name="mention" size={24} color={"#6bd841"} />
+        {/* <Octicons name="mention" size={24} color={"#6bd841"} /> */}
+        <MentionIcon width={24} height={24} />
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>

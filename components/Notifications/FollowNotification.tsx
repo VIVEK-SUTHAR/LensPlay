@@ -6,6 +6,7 @@ import formatAddress from "../../utils/formatAddress";
 import NotificationCardProps from "./index.d";
 import Avatar from "../UI/Avatar";
 import getIPFSLink from "../../utils/getIPFSLink";
+import FollowIcon from "../svg/FollowIcon";
 
 const FollowNotification: React.FC<NotificationCardProps> = ({
   navigation,
@@ -22,7 +23,8 @@ const FollowNotification: React.FC<NotificationCardProps> = ({
           alignItems: "center",
         }}
       >
-        <AntDesign name="adduser" size={24} color={"#9a76e0"} />
+        {/* <AntDesign name="adduser" size={24} color={"#9a76e0"} /> */}
+        <FollowIcon width={32} height={32} />
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
