@@ -13,20 +13,18 @@ import { useProfile, useThemeStore } from "../store/Store";
 import { useFollowers } from "../hooks/useFeed";
 import ProfileCard from "../components/ProfileCard";
 import { useFollowing } from "../hooks/useFeed";
-import { dark_primary } from "../constants/Colors";
 
-const UserStats = ({
-  navigation,
-  route,
-}: RootStackScreenProps<"UserStats">) => {
+const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
+  const [headerTitle, setHeaderTitle] = useState<string>("Subscribers");
+  const [isSubscribers, setIsSubscribers] = useState<boolean>(true);
+
+  const theme = useThemeStore();
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "Your " + headerTitle,
     });
   });
-  const theme = useThemeStore();
-  const [headerTitle, setHeaderTitle] = useState<string>("Subscribers");
-  const [isSubscribers, setIsSubscribers] = useState<boolean>(true);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -99,10 +97,15 @@ const UserStats = ({
   );
 };
 
-const SuscriberList = ({ isSubscribers, setScreen }) => {
+type TabProps = {
+  isSubscribers: boolean;
+  setScreen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const SuscriberList = ({ isSubscribers, setScreen }: TabProps) => {
   const { currentProfile } = useProfile();
   const { data, error, loading } = useFollowers(currentProfile?.id);
-  const [pagey, setPagey] = useState(0);
+  const [pagey, setPagey] = useState<number>(0);
   if (loading) {
     return (
       <>
@@ -152,7 +155,7 @@ const SuscriberList = ({ isSubscribers, setScreen }) => {
   return <></>;
 };
 
-const SubscriptionsList = ({ isSubscribers, setScreen }) => {
+const SubscriptionsList = ({ isSubscribers, setScreen }: TabProps) => {
   const { currentProfile } = useProfile();
   const { data, error, loading } = useFollowing(currentProfile?.ownedBy);
   const [pagex, setPagex] = useState(0);
@@ -213,36 +216,10 @@ const SubscriptionsList = ({ isSubscribers, setScreen }) => {
 
 const ProfileCardSkeleton = () => {
   return (
-    <>
-      <View
-        style={{
-          backgroundColor: "black",
-          borderRadius: 16,
-          flexDirection: "row",
-          alignItems: "center",
-          padding: 10,
-          marginVertical: 4,
-        }}
-      >
-        <View
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 50,
-            backgroundColor: "#232323",
-          }}
-        />
-        <View
-          style={{
-            marginLeft: 8,
-            width: "40%",
-            height: 16,
-            borderRadius: 3,
-            backgroundColor: "#232323",
-          }}
-        ></View>
-      </View>
-    </>
+    <View style={styles.SkletonContainer}>
+      <View style={styles.SkletonAvatar} />
+      <View style={styles.SkletonText}></View>
+    </View>
   );
 };
 
@@ -260,6 +237,27 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flex: 0.5,
+  },
+  SkletonContainer: {
+    backgroundColor: "black",
+    borderRadius: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    marginVertical: 4,
+  },
+  SkletonAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 50,
+    backgroundColor: "#232323",
+  },
+  SkletonText: {
+    marginLeft: 8,
+    width: "40%",
+    height: 16,
+    borderRadius: 3,
+    backgroundColor: "#232323",
   },
 });
 
