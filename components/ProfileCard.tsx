@@ -1,7 +1,6 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { dark_primary } from "../constants/Colors";
-import getIPFSLink from "../utils/getIPFSLink";
 import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
 
@@ -43,7 +42,6 @@ export default function ProfileCard({
             }}
           />
         )}
-
         <Heading
           title={handle}
           style={{
