@@ -19,14 +19,6 @@ export default function Avatar({
   borderColor = "transparent",
   borderWidth = 0,
 }: AvatarProps) {
-  console.log(
-    getIPFSLink(src) ===
-      "https://lens.infura-ipfs.io/ipfs/bafybeibv2kpqpjtvuj5uprvq6knnr2reb7ylq3o4bnypqjioqgxmjw2akq/5460475.webp"
-      ? `https://xsgames.co/randomusers/assets/avatars/pixel/${Math.floor(
-          53 * Math.random()
-        )}.jpg`
-      : getIPFSLink(src)
-  );
   return (
     <Image
       source={{
