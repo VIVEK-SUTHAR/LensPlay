@@ -146,6 +146,8 @@ const SuscriberList = ({ isSubscribers, setScreen }: TabProps) => {
               profileIcon={item?.wallet?.defaultProfile.picture?.original.url}
               profileName={item?.wallet?.defaultProfile?.name}
               handle={item?.wallet?.defaultProfile?.handle}
+              profileId={item?.wallet?.defaultProfile?.id}
+              owner={item?.wallet?.address}
             />
           )}
         />
@@ -200,9 +202,12 @@ const SubscriptionsList = ({ isSubscribers, setScreen }: TabProps) => {
             renderItem={({ item }) => {
               return (
                 <ProfileCard
-                  handle={item.profile.handle}
-                  profileName={item.profile?.name}
-                  profileIcon={item.profile?.picture?.original?.url}
+                  handle={item?.profile?.handle}
+                  profileName={item?.profile?.name}
+                  profileIcon={item?.profile?.picture?.original?.url}
+                  profileId={item?.profile?.id}
+              owner={item?.profile?.handle}
+              isFollowed={true}
                 />
               );
             }}
