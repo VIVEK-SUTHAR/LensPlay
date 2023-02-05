@@ -1,5 +1,6 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { View } from "react-native";
+import { TouchableWithoutFeedback, View } from "react-native";
 import { dark_primary } from "../constants/Colors";
 import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
@@ -8,14 +9,33 @@ type ProfileCardProps = {
   profileIcon: string;
   profileName: string;
   handle: string;
+  owner: string;
+  isFollowed: boolean;
+  profileId: string;
 };
 
 export default function ProfileCard({
   profileIcon,
   profileName,
   handle,
+  owner,
+  profileId,
+  isFollowed
 }: ProfileCardProps) {
+  const navigation = useNavigation();
   return (
+    <TouchableWithoutFeedback
+    onPress={() => {
+      console.log('touch');
+      
+      navigation.navigate("Channel", {
+        profileId: profileId,
+        isFollowdByMe: isFollowed,
+        name: profileName,
+        ethAddress: owner,
+      });
+    }}
+  >
     <View
       style={{
         flexDirection: "row",
@@ -52,5 +72,6 @@ export default function ProfileCard({
         />
       </View>
     </View>
+    </TouchableWithoutFeedback>
   );
 }

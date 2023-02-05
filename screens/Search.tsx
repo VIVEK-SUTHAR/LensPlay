@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -174,12 +175,17 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
             >
               {searchPostResult.map((item, index) => {
                 return (
-                  <ProfileCard
-                    key={index}
-                    profileIcon={item?.picture?.original?.url}
-                    profileName={item?.name || item?.profileId}
-                    handle={item?.handle}
-                  />
+                 
+                    <ProfileCard
+                      key={index}
+                      profileIcon={item?.picture?.original?.url}
+                      profileName={item?.name || item?.profileId}
+                      profileId={item?.profileId}
+                      isFollowed={item?.isFollowedByMe}
+                      handle={item?.handle}
+                      owner={item?.ownedBy}
+                    />
+
                 );
               })}
             </View>

@@ -207,7 +207,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                   }}
                 >
                   <Avatar
-                    src={getIPFSLink(profile?.picture.original.url)}
+                    src={profile?.picture?.original?.url}
                     height={90}
                     width={90}
                     borderRadius={50}
