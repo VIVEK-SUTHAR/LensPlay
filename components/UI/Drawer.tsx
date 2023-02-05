@@ -3,6 +3,7 @@ import {
   TouchableWithoutFeedback,
   Modal,
   SafeAreaView,
+  Pressable,
 } from "react-native";
 import React from "react";
 import { dark_primary } from "../../constants/Colors";
@@ -63,13 +64,13 @@ const Drawer = ({ children, isOpen, setIsOpen }: DrawerProps) => {
               paddingRight: 16,
             }}
           >
-            <TouchableWithoutFeedback
+            <Pressable
               onPress={() => {
                 setIsOpen(false);
               }}
             >
               <CloseIcon width={20} height={20} />
-            </TouchableWithoutFeedback>
+            </Pressable>
           </View>
           {children}
         </View>

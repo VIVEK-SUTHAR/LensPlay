@@ -1,12 +1,10 @@
-import { Image, View } from "react-native";
+import { Dimensions, Image, View } from "react-native";
 import React, { useState } from "react";
 import Drawer from "../../UI/Drawer";
-import Player from "../../VideoPlayer";
 import { useAuthStore, useToast } from "../../../store/Store";
 import { freeCollectPublication } from "../../../api";
 import Button from "../../UI/Button";
 import { ToastType } from "../../../types/Store";
-import Heading from "../../UI/Heading";
 import { dark_primary } from "../../../constants/Colors";
 import CollectIcon from "../../svg/CollectIcon";
 import getIPFSLink from "../../../utils/getIPFSLink";
@@ -35,6 +33,8 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
   } = CollectVideoProps;
 
   const collectPublication = async () => {
+    console.log(bannerUrl);
+    
     try {
       const data = await freeCollectPublication(publicationId, accessToken);
       if (data) {
@@ -49,8 +49,6 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
     }
   };
 
-  console.log(getIPFSLink(bannerUrl));
-
   return (
     <>
       <Drawer isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
@@ -62,7 +60,7 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
             alignItems: "center",
           }}
         >
-          <View style={{ maxWidth: "90%" }}>
+          <View style={{ maxWidth: "90%",height:300 }}>
             {/* <Player
               title={title}
               url={videoUrl}
@@ -71,13 +69,15 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
               setIsMute={setIsMute}
             /> */}
             <Image
-              source={{ uri: getIPFSLink(bannerUrl) }}
+              source={{
+                uri: getIPFSLink(bannerUrl)
+              }}
               style={{
                 height: 300,
-                width: "100%",
-                borderRadius: 50,
-                resizeMode: "contain",
+                width: Dimensions.get("screen").width * 0.85,
+                resizeMode:"cover"
               }}
+              progressiveRenderingEnabled={true}
             />
           </View>
           {/* <Heading
