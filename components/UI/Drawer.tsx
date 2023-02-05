@@ -8,6 +8,8 @@ import React from "react";
 import { dark_primary } from "../../constants/Colors";
 import { StatusBar } from "expo-status-bar";
 import { useThemeStore } from "../../store/Store";
+import Heading from "./Heading";
+import CloseIcon from "../svg/CloseIcon";
 
 interface DrawerProps {
   children: React.ReactNode;
@@ -42,7 +44,6 @@ const Drawer = ({ children, isOpen, setIsOpen }: DrawerProps) => {
             }}
           ></View>
         </TouchableWithoutFeedback>
-
         <View
           style={{
             position: "absolute",
@@ -56,6 +57,20 @@ const Drawer = ({ children, isOpen, setIsOpen }: DrawerProps) => {
             paddingVertical: 20,
           }}
         >
+          <View
+            style={{
+              alignItems: "flex-end",
+              paddingRight: 16,
+            }}
+          >
+            <TouchableWithoutFeedback
+              onPress={() => {
+                setIsOpen(false);
+              }}
+            >
+              <CloseIcon width={20} height={20} />
+            </TouchableWithoutFeedback>
+          </View>
           {children}
         </View>
       </Modal>
