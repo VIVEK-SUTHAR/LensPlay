@@ -34,7 +34,7 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
 
   const collectPublication = async () => {
     console.log(bannerUrl);
-    
+
     try {
       const data = await freeCollectPublication(publicationId, accessToken);
       if (data) {
@@ -60,22 +60,16 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
             alignItems: "center",
           }}
         >
-          <View style={{ maxWidth: "90%",height:300 }}>
-            {/* <Player
-              title={title}
-              url={videoUrl}
-              poster={bannerUrl}
-              isMute={isMute}
-              setIsMute={setIsMute}
-            /> */}
+          <View style={{ maxWidth: "90%", height: 300, marginTop: 32 }}>
             <Image
               source={{
-                uri: getIPFSLink(bannerUrl)
+                uri: getIPFSLink(bannerUrl),
               }}
               style={{
-                height: 300,
-                width: Dimensions.get("screen").width * 0.85,
-                resizeMode:"cover"
+                height: 180,
+                borderRadius: 8,
+                width: Dimensions.get("screen").width - 48,
+                resizeMode: "cover",
               }}
               progressiveRenderingEnabled={true}
             />
