@@ -25,7 +25,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	const [callData, setCallData] = useState(true);
 	useEffect(()=>{
 		if(callData){
-			getData().then(()=>{
+			getData().then(() => {
 				console.log('gettig data again');
 				setCallData(false);
 				setInterval(()=>{

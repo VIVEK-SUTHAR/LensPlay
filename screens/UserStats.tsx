@@ -143,12 +143,11 @@ const SuscriberList = ({ isSubscribers, setScreen }: TabProps) => {
           }}
           renderItem={({ item }) => (
             <ProfileCard
-              profileIcon={item?.wallet?.defaultProfile.picture?.original.url}
+              profileIcon={item?.wallet?.defaultProfile?.picture?.original?.url}
               profileName={item?.wallet?.defaultProfile?.name}
               handle={item?.wallet?.defaultProfile?.handle}
               profileId={item?.wallet?.defaultProfile?.id}
-              owner={item?.wallet?.address}
-            />
+              owner={item?.wallet?.address} isFollowed={false}            />
           )}
         />
       </View>

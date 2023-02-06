@@ -36,7 +36,7 @@ const CommentNotification: React.FC<NotificationCardProps> = ({
               }}
             >
               <Avatar
-                src={getIPFSLink(notification.profile?.picture.original.url)}
+                src={getIPFSLink(notification?.profile?.picture?.original?.url)}
                 height={35}
                 width={35}
               />

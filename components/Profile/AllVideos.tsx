@@ -89,7 +89,7 @@ const AllVideos = ({
       {Videos?.length === 0 && (
         <View style={{ height: 50, justifyContent: "center" }}>
           <Heading
-            title={`Looks like ${handle} has not posted  any video`}
+            title={`Looks like you have not posted  any video`}
             style={{
               color: "gray",
               fontSize: 14,

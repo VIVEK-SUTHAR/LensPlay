@@ -6,6 +6,7 @@ import getFollowers from "../apollo/Queries/getFollowers";
 import getFollowing from "../apollo/Queries/getFollowing";
 import getPublications from "../apollo/Queries/getPublications";
 import getTrendingPublication from "../apollo/Queries/getTrendingPublication";
+import notificationsQuery from "../apollo/Queries/notificationsQuery";
 import searchProfileQuery from "../apollo/Queries/searchProfileQuery";
 import { useAuthStore, useProfile } from "../store/Store";
 import { FeedData } from "../types/Lens/Feed";
@@ -140,6 +141,29 @@ const useSearchProfile = (profile: string) => {
   });
   return { data, error, loading };
 };
+const useNotifications = () => {
+  const activeProfile = useProfile();
+  const { accessToken } = useAuthStore();
+  const { data, error, loading, refetch, startPolling,previousData } = useQuery(
+    notificationsQuery,
+    {
+      variables: {
+        pid: activeProfile.currentProfile?.id,
+      },
+      fetchPolicy: "cache-and-network",
+      initialFetchPolicy: "network-only",
+      refetchWritePolicy: "merge",
+      pollInterval: 100,
+      context: {
+        headers: {
+          "x-access-token": `Bearer ${accessToken}`,
+        },
+      },
+    }
+  );
+  return { data, error, loading, refetch, startPolling,previousData };
+};
+export default useNotifications;
 
 export {
   useFeed,
@@ -149,4 +173,5 @@ export {
   useFollowers,
   useFollowing,
   useSearchProfile,
+  useNotifications,
 };

@@ -99,7 +99,6 @@ const ProfileScreen = ({
       setRefreshing(false);
     });
   }, []);
-  
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -126,6 +125,7 @@ const ProfileScreen = ({
             {Boolean(!isLoading) && (
               <View style={{}}>
                 <Cover
+                  navigation={navigation}
                   url={
                     userStore.currentProfile?.coverPicture?.original.url ||
                     STATIC_ASSET
