@@ -1,26 +1,24 @@
 import {
+  Dimensions,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
-  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { client } from "../apollo/client";
 import AnimatedLottieView from "lottie-react-native";
-import { EvilIcons } from "@expo/vector-icons";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Button from "../components/UI/Button";
 import { useAuthStore, useThemeStore } from "../store/Store";
 import { LensPublication } from "../types/Lens/Feed";
 import searchProfileQuery from "../apollo/Queries/searchProfileQuery";
-import { dark_primary } from "../constants/Colors";
 import ProfileCard from "../components/ProfileCard";
 import useDebounce from "../hooks/useDebounce";
-import { useSearchProfile } from "../hooks/useFeed";
-import getIPFSLink from "../utils/getIPFSLink";
+import { EvilIcons, Feather, MaterialIcons } from "@expo/vector-icons";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const theme = useThemeStore();
@@ -36,8 +34,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 
   const onDebounce = async () => {
     if (keyword.trim().length) {
-      // const { data, error, loading } = useSearchProfile(keyword);
-      // setSearchPostResult(data?.search?.items);
       try {
         const result = await client.query({
           query: searchProfileQuery,
@@ -69,74 +65,63 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
     onDebounce();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
-
-  async function getSearchResult() {
-    setIsSearching(true);
-    try {
-      const result = await client.query({
-        query: searchProfileQuery,
-        variables: {
-          query: keyword.trim().toLowerCase(),
-        },
-        context: {
-          headers: {
-            "x-access-token": `Bearer ${authStore.accessToken}`,
-          },
-        },
-      });
-      setSearchPostResult(result?.data?.search?.items);
-      if (searchPostResult.length === 0) {
-        setIsfound(false);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error);
-        setIsSearching(false);
-      }
-    } finally {
-      setIsSearching(false);
-    }
-  }
-
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: { backgroundColor: "black" },
-      headerLeft: () => (
-        <View
-          style={{
-            width: "88%",
-            flexDirection: "row",
-            alignItems: "center",
-            paddingHorizontal: 8,
-            paddingVertical: 4,
-            borderRadius: 20,
-            borderWidth: 1,
-            backgroundColor: dark_primary,
-          }}
-        >
-          <EvilIcons name="search" size={24} color="white" />
-          <TextInput
-            selectionColor={theme.PRIMARY}
-            placeholder="Search by profile"
-            placeholderTextColor={"white"}
-            clearButtonMode={"always"}
-            onChange={(e) => {
-              setKeyword(e.nativeEvent.text);
-            }}
-            // onSubmitEditing={getSearchResult}
+      headerTitle: "",
+      headerTintColor: "white",
+      headerTransparent: false,
+      headerLeft: () => {
+        return (
+          <View
             style={{
-              width: "100%",
-              marginLeft: 8,
-              color: "white",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: Dimensions.get("window").width * 0.94,
+              paddingHorizontal: 8,
             }}
-          />
-        </View>
-      ),
+          >
+            <MaterialIcons
+              name={Platform.OS === "android" ? "arrow-back" : "arrow-back-ios"}
+              color={"white"}
+              size={24}
+              onPress={(e) => {
+                e.preventDefault();
+                navigation.goBack();
+              }}
+              style={{
+                marginHorizontal: 2,
+              }}
+            />
+            <TextInput
+              placeholder="Enter profile name..."
+              placeholderTextColor={"white"}
+              selectionColor={"white"}
+              onChange={(e) => {
+                setKeyword(e.nativeEvent.text);
+                onDebounce();
+              }}
+              autoFocus={true}
+              style={{
+                backgroundColor: "#232323",
+                flex: 1,
+                color: "white",
+                borderColor: "white",
+                borderWidth: 1,
+                paddingHorizontal: 12,
+                paddingVertical: 2,
+                borderRadius: 50,
+              }}
+            />
+          </View>
+        );
+      },
     });
   }, []);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-      <ScrollView>
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
         {!!isSearching && (
           <>
             <AnimatedLottieView
@@ -175,17 +160,15 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
             >
               {searchPostResult.map((item, index) => {
                 return (
-                 
-                    <ProfileCard
-                      key={index}
-                      profileIcon={item?.picture?.original?.url}
-                      profileName={item?.name || item?.profileId}
-                      profileId={item?.profileId}
-                      isFollowed={item?.isFollowedByMe}
-                      handle={item?.handle}
-                      owner={item?.ownedBy}
-                    />
-
+                  <ProfileCard
+                    key={index}
+                    profileIcon={item?.picture?.original?.url}
+                    profileName={item?.name || item?.profileId}
+                    profileId={item?.profileId}
+                    isFollowed={item?.isFollowedByMe}
+                    handle={item?.handle}
+                    owner={item?.ownedBy}
+                  />
                 );
               })}
             </View>
