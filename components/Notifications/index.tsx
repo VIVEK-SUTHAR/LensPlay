@@ -6,6 +6,8 @@ import MirrorNotification from "./MirrorNotification";
 import FollowNotification from "./FollowNotification";
 import ReactionNotification from "./ReactionNotification";
 import CommentNotification from "./CommentNotification";
+import MentionNotification from "./MentionNotification";
+import { dark_primary } from "../../constants/Colors";
 
 const NotificationCard = ({
   navigation,
@@ -48,6 +50,13 @@ const NotificationCard = ({
             notification={notification}
           />
         );
+      case NotificationTypes.MENTION_NOTIFICATION:
+        return (
+          <MentionNotification
+            navigation={navigation}
+            notification={notification}
+          />
+        );
     }
   };
   return (
@@ -55,11 +64,10 @@ const NotificationCard = ({
       <View
         style={{
           flexDirection: "row",
-          backgroundColor: "#111111",
           padding: 8,
           marginVertical: 2,
-          marginHorizontal: 4,
-          borderRadius: 8,
+          borderBottomWidth: 1,
+          borderBottomColor: dark_primary,
         }}
       >
         {getNotification()}

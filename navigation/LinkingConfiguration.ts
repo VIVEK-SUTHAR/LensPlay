@@ -4,34 +4,25 @@ import * as Linking from "expo-linking";
 import { RootStackParamList } from "../types/navigation/types";
 
 const linking: LinkingOptions<RootStackParamList> = {
-  prefixes: [Linking.createURL("lensplay")],
-  config: {
-    screens: {
-      Root: {
-        path: "root",
-        screens: {
-          Home: {
-            screens: {
-              TabOneScreen: "home",
-            },
-          },
-          Account: {
-            path: "account",
-
-            screens: {
-              TabTwoScreen: "account",
-            },
-          },
-        },
-      },
-      Modal: "modal",
-      NotFound: "*",
-      VideoPage: {
-        path: "video",
-        parse: { id: String },
-      },
-    },
-  },
+	prefixes: [
+		Linking.createURL("lensplay"),
+		Linking.createURL("https://lensplay-site.vercel.app"),
+		Linking.createURL("https://lenstube.xyz"),
+		Linking.createURL("https://testnet.lenstube.xyz"),
+	],
+	config: {
+		screens: {
+			NotFound: "*",
+			Channel: {
+				path: "channel",
+				parse: { id: String },
+			},
+			LinkingVideos: {
+				path: "watch/:id",
+				parse: { id: String },
+			},
+		},
+	},
 };
 
 export default linking;

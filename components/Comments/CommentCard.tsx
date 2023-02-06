@@ -1,35 +1,28 @@
-import {
-  Image,
-  Linking,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import React, { useState } from "react";
-import { primary } from "../constants/Colors";
-import getDifference from "../utils/getDifference";
-import Heading from "./UI/Heading";
-import SubHeading from "./UI/SubHeading";
-import extractURLs from "../utils/extractURL";
+import { Image, Pressable, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import getDifference from "../../utils/getDifference";
 import { useNavigation } from "@react-navigation/native";
-import Button from "./UI/Button";
-import { AntDesign, Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
-import addLike from "../api/addReaction";
-import { useAuthStore, useProfile } from "../store/Store";
-import freeMirror from "../api/freeMirror";
-
+import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
+import { CommentStats } from "../../types/Lens/Feed";
+import { useAuthStore, useProfile, useReactionStore } from "../../store/Store";
+import { addLike, freeMirror } from "../../api";
+import Heading from "../UI/Heading";
+import SubHeading from "../UI/SubHeading";
+import extractURLs from "../../utils/extractURL";
+import Button from "../UI/Button";
+import { primary } from "../../constants/Colors";
 
 type CommentCardProps = {
-  avatar: string;
+  avatar: string | undefined;
   username: string;
   commentText: string;
   commentTime: string;
   id: string;
-  isFollowdByMe: boolean;
-  name: string;
-  stats: {};
+  isFollowdByMe: boolean | undefined;
+  name: string | undefined;
+  stats: CommentStats;
   commentId: string;
+  isIndexing?: boolean;
 };
 
 const CommentCard = ({
@@ -42,28 +35,44 @@ const CommentCard = ({
   name,
   stats,
   commentId,
+  isIndexing,
 }: CommentCardProps) => {
   const authStore = useAuthStore();
-  const [isalreadyDisLiked, setisalreadyDisLiked] = useState(false);
+  const reactions = useReactionStore();
+  const [isalreadyDisLiked, setisalreadyDisLiked] = useState<Boolean>(false);
+  const [likes, setLikes] = useState<string>(stats?.totalUpvotes);
   const navigation = useNavigation();
   const userStore = useProfile();
+  const likedComments = reactions.likedComments;
 
   const setLike = async () => {
-    addLike(
-      authStore.accessToken,
-      userStore.currentProfile?.id,
-      commentId,
-      "UPVOTE"
-    ).then((res) => {
-      if (res.addReaction === null) {
-        console.log("liked");
+    if (isIndexing) return;
+    if (!isalreadyDisLiked) {
+      addLike(
+        authStore.accessToken,
+        userStore.currentProfile?.id,
+        commentId,
+        "UPVOTE"
+      ).then((res) => {
+        if (res.addReaction === null) {
+          setLikes((prev) => prev + 1);
+          reactions.addToLikedComments(commentId);
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    likedComments.map((id) => {
+      if (id.id === commentId) {
+        setisalreadyDisLiked(true);
       }
     });
-  }
-
+  }, [addLike]);
 
   return (
     <View
+      key={commentId}
       style={{
         flexDirection: "row",
         backgroundColor: "black",
@@ -113,8 +122,9 @@ const CommentCard = ({
               title={`@${username}`}
               style={{ fontSize: 12, color: "gray", marginTop: 2 }}
             />
+
             <SubHeading
-              title={getDifference(commentTime)}
+              title={isIndexing ? "Indexing..." : getDifference(commentTime)}
               style={{ fontSize: 10, color: "gray" }}
             />
           </View>
@@ -140,10 +150,10 @@ const CommentCard = ({
           }}
         >
           <Button
-            title={stats?.totalUpvotes}
+            title={likes}
             onPress={() => {
-              setisalreadyDisLiked((prev) => !prev);
               setLike();
+              setisalreadyDisLiked(true);
             }}
             px={12}
             py={4}
@@ -193,12 +203,15 @@ const CommentCard = ({
             borderColor="#232323"
             onPress={async () => {
               try {
-                const data = await freeMirror(authStore.accessToken, userStore.currentProfile?.id, commentId) 
-                console.log(data);
-                
+                if (isIndexing) return;
+
+                const data = await freeMirror(
+                  authStore.accessToken,
+                  userStore.currentProfile?.id,
+                  commentId
+                );
               } catch (error) {
                 console.log(error);
-
               }
             }}
             textStyle={{ color: "white", marginHorizontal: 2 }}

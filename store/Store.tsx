@@ -1,5 +1,14 @@
 import create from "zustand";
-import { IAuthStore, IThemeStore, UserStore } from "../types/Store";
+import {
+  DisLikeObject,
+  IAuthStore,
+  IReactionStore,
+  IThemeStore,
+  LikeObject,
+  ToastProps,
+  ToastType,
+  UserStore,
+} from "../types/Store";
 
 export const useAuthStore = create<IAuthStore>((set) => ({
   accessToken: "",
@@ -21,6 +30,62 @@ export const useThemeStore = create<IThemeStore>((set) => ({
     set({ PRIMARY: newPrimaryColor }),
 }));
 
+export const useToast = create<ToastProps>((set) => ({
+  isVisible: false,
+  message: "",
+  timeOut: 3000,
+  show: (message: string, type: ToastType, isVisible: boolean) =>
+    set({ isVisible: isVisible, message: message, type: type }),
+}));
+
+export const useReactionStore = create<IReactionStore>((set) => ({
+  likedPublication: [{ likes: 0, id: 0 }],
+  dislikedPublication: [{ id: 0 }],
+  likedComments: [{ id: 0 }],
+  addToReactedPublications: (
+    publicationId: string,
+    likes: number,
+    dislikedPublication: DisLikeObject[]
+  ) => {
+    for (var i = 0; i < dislikedPublication.length; i++) {
+      if (dislikedPublication[i].id === publicationId) {
+        dislikedPublication.splice(i, 1);
+      }
+    }
+    set((state) => ({
+      likedPublication: [
+        ...state.likedPublication,
+        ({ likes: likes, id: publicationId } as unknown) as LikeObject,
+      ],
+      dislikedPublication: dislikedPublication,
+    }));
+  },
+  addToDislikedPublications: (
+    publicationId: string,
+    likedPublication: LikeObject[]
+  ) => {
+    for (var i = 0; i < likedPublication.length; i++) {
+      if (likedPublication[i].id === publicationId) {
+        likedPublication.splice(i, 1);
+      }
+    }
+    set((state) => ({
+      dislikedPublication: [
+        ...state.dislikedPublication,
+        { id: publicationId } as DisLikeObject,
+      ],
+    }));
+  },
+  addToLikedComments: (commentId: string) => {
+    set((state) => ({
+      likedComments: [
+        ...state.likedComments,
+        ({ id: commentId } as unknown) as DisLikeObject,
+      ],
+    }));
+  },
+}));
+
 const useStore = create((set) => ({
   currentProfile: null,
   accessToken: "",
@@ -30,6 +95,7 @@ const useStore = create((set) => ({
   isOpen: false,
   currentIndex: 0,
   profileData: null,
+
   setProfiledata: (value: any) => set({ profileData: value }),
   setAccessToken: (value: string) => set({ accessToken: value }),
   setRefreshToken: (value: string) => set({ refreshToken: value }),

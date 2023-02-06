@@ -4,7 +4,7 @@
  * @returns Date in format 12-dec-2051
  */
 
-function convertDate(timestamp: string) {
+function convertDate(timestamp: string | Date) {
   const months = [
     "Jan",
     "Feb",

@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { useThemeStore } from "../store/Store";
 import NewVideoCard from "../components/NewVideoCard";
 import VideoCard from "../components/VideoCard";
@@ -14,6 +14,11 @@ import VideoCard from "../components/VideoCard";
 const UserVideos = ({ navigation, route }) => {
   const videos = route.params.videos;
   const theme = useThemeStore();
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: route.params.title,
+    });
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
@@ -35,14 +40,14 @@ const UserVideos = ({ navigation, route }) => {
               playbackId={item?.metadata?.media[0]?.original?.url}
               banner={item?.metadata?.cover}
               avatar={item?.profile?.picture?.original?.url}
-              uploadedBy={item?.profile?.name || item.root.profile.handle}
+              uploadedBy={item?.profile?.name || item?.profile?.handle}
               stats={item?.stats}
               isFollowdByMe={item.profile.isFollowedByMe}
               profileId={item?.profile?.id}
               reaction={item?.reaction}
               description={item?.metadata?.description}
               attributes={item?.metadata?.attributes}
-              />
+            />
           </>
         )}
       />

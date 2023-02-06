@@ -2,151 +2,118 @@ import {
   FlatList,
   RefreshControl,
   SafeAreaView,
-  ToastAndroid,
+  StyleSheet,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AnimatedLottieView from "lottie-react-native";
-import fetchNotifications from "../api/fetchNotifications";
-import {
-  useAuthStore,
-  useProfile,
-  useThemeStore,
-} from "../store/Store";
 import Heading from "../components/UI/Heading";
 import NotificationCard from "../components/Notifications";
 import Skleton from "../components/Notifications/Skleton";
-import Item from "../components/Notifications/index.d";
-const Navigation = ({ navigation }: { navigation: any }) => {
-  const [allNotifications, setAllNotifications] = useState<Item[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [refreshing, setRefreshing] = useState(false);
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
+import { RootTabScreenProps } from "../types/navigation/types";
+import useNotifications from "../hooks/useFeed";
 
-  const authStore = useAuthStore();
+const Navigation = ({ navigation }: RootTabScreenProps<"Notifications">) => {
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+
   const theme = useThemeStore();
   const userStore = useProfile();
 
-  const onRefresh = async () => {
-    setRefreshing(true);
-    try {
-      const data = await fetchNotifications(
-        userStore.currentProfile?.id,
-        authStore.accessToken
-      );
-      if (data == allNotifications) {
-        ToastAndroid.show("No new notifications", ToastAndroid.SHORT);
-      } else {
-        setAllNotifications(data);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-      }
-    } finally {
-      setRefreshing(false);
-    }
-  };
-  useEffect(() => {
-    setIsLoading(true);
-    fetchNotifications(userStore.currentProfile?.id, authStore.accessToken)
-      .then((allNotification) => {
-        setAllNotifications(allNotification);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        if (error instanceof Error) {
-          throw new Error(
-            "Some thing Went wrong while fetching notifications",
-            { cause: error.cause }
-          );
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, []);
+  const { data, error, loading, refetch } = useNotifications();
+  if (error) console.log(error);
 
-  return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: "black",
-      }}
-    >
-      {allNotifications.length > 0 ? (
+  if (loading) return <Loader />;
+
+  if (!data) return <NotFound />;
+
+  if (data) {
+    return (
+      <SafeAreaView style={styles.container}>
         <FlatList
-          data={allNotifications}
-          keyExtractor={(item, index) => index.toString()}
+          data={data.result.items}
+          keyExtractor={(_, index) => index.toString()}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
-              onRefresh={onRefresh}
+              onRefresh={() => {
+                setRefreshing(true);
+                refetch({
+                  pid: userStore.currentProfile?.id,
+                }).then(() => setRefreshing(false));
+              }}
               colors={[theme.PRIMARY]}
               progressBackgroundColor={"black"}
             />
           }
-          renderItem={({ item }) => {
-            return (
-              <NotificationCard navigation={navigation} notification={item} />
-            );
-          }}
+          renderItem={({ item }) => (
+            <NotificationCard navigation={navigation} notification={item} />
+          )}
         />
-      ) : (
-        <></>
-      )}
-      {isLoading ? (
-        <>
-          <Skleton />
-          <Skleton />
-          <Skleton />
-          <Skleton />
-          <Skleton />
-          <Skleton />
-          <Skleton />
-          <Skleton />
-          <Skleton />
-        </>
-      ) : (
-        <></>
-      )}
-      {!isLoading && allNotifications.length === 0 ? (
-        <View
-          style={{
-            height: 500,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <AnimatedLottieView
-            autoPlay
-            style={{
-              height: "auto",
-            }}
-            source={require("../assets/notifications.json")}
-          />
-          <View
-            style={{
-              alignItems: "center",
-            }}
-          >
-            <Heading
-              title="No new notifications"
-              style={{
-                fontSize: 16,
-                color: "white",
-                marginVertical: 5,
-                marginHorizontal: 15,
-                fontWeight: "600",
-                alignSelf: "flex-start",
-              }}
-            />
-          </View>
-        </View>
-      ) : (
-        <></>
-      )}
+      </SafeAreaView>
+    );
+  }
+};
+
+export default Navigation;
+
+const Loader = () => {
+  return (
+    <SafeAreaView style={styles.container}>
+      <Skleton />
+      <Skleton />
+      <Skleton />
+      <Skleton />
+      <Skleton />
+      <Skleton />
+      <Skleton />
+      <Skleton />
+      <Skleton />
     </SafeAreaView>
   );
 };
 
-export default Navigation;
+const NotFound = () => {
+  return (
+    <View
+      style={{
+        height: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "black",
+      }}
+    >
+      <AnimatedLottieView
+        autoPlay
+        style={{
+          height: "auto",
+        }}
+        source={require("../assets/notifications.json")}
+      />
+      <View
+        style={{
+          alignItems: "center",
+        }}
+      >
+        <Heading
+          title="No new notifications"
+          style={{
+            fontSize: 16,
+            color: "white",
+            marginVertical: 5,
+            marginHorizontal: 15,
+            fontWeight: "600",
+            alignSelf: "flex-start",
+          }}
+        />
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "black",
+  },
+});

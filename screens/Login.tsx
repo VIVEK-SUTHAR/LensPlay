@@ -24,6 +24,8 @@ import Paginator from "../components/Paginator";
 import SubHeading from "../components/UI/SubHeading";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Button from "../components/UI/Button";
+import formatTime from "../utils/formatTime";
+import storeData from "../utils/storeData";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const store = useStore();
@@ -38,7 +40,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   }, [connector]);
 
   useEffect(() => {
-    navigation.addListener("focus", getData);
+    // navigation.addListener("focus", getData);
   }, []);
 
   const data = [
@@ -50,6 +52,9 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const { width } = Dimensions.get("screen");
   const imageW = width * 0.8;
   const imageH = imageW * 1.54;
+
+
+
   const logInWithLens = async () => {
     setIsloading(true);
     const data = await client.query({
@@ -61,7 +66,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
     if (!data.data.defaultProfile) {
       return;
     }
-    store.setProfileId(data.data.defaultProfile.id);
     userStore.setCurrentProfile(data.data.defaultProfile);
     const challengeText = await client.query({
       query: getChallenge,
@@ -102,85 +106,8 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
       }
     }
   };
-  const getData = async () => {
-    setIsloading(true);
-    try {
-      const jsonValue = await AsyncStorage.getItem("@storage_Key");
-      if (jsonValue) {
-        const tokens = JSON.parse(jsonValue);
-        const isvaild = await client.query({
-          query: verifyToken,
-          variables: {
-            token: tokens.accessToken,
-          },
-        });
-        if (isvaild.data.verify) {
-          console.log("Tokens are valid,getting you in");
-          authStore.setAccessToken(tokens.accessToken);
-          const data = await client.query({
-            query: getProfile,
-            variables: {
-              ethAddress: connector.accounts[0],
-            },
-          });
-          if (!data.data.defaultProfile) {
-            return;
-          }
-          store.setProfileId(data.data.defaultProfile.id);
-          userStore.setCurrentProfile(data.data.defaultProfile);
-          setIsloading(false);
-          navigation.navigate("Root");
-        }
-        if (isvaild.data.verify === false) {
-          const refreshToken = await client.mutate({
-            mutation: refreshCurrentToken,
-            variables: {
-              rtoken: tokens.refreshToken,
-            },
-          });
-          console.log("Tokens are invalid,generating new tokens...");
-          authStore.setAccessToken(refreshToken.data.refresh.accessToken);
-          storeData(
-            refreshToken.data.refresh.accessToken,
-            refreshToken.data.refresh.refreshToken
-          );
-          const data = await client.query({
-            query: getProfile,
-            variables: {
-              ethAddress: connector.accounts[0],
-            },
-          });
-          if (!data.data.defaultProfile) {
-            return;
-          }
-          store.setProfileId(data.data.defaultProfile.id);
-          userStore.setCurrentProfile(data.data.defaultProfile);
-          navigation.navigate("Root");
-        }
-      } else {
-        console.log("not found");
-        setIsloading(false);
-      }
-    } catch (e) {
-      if (e instanceof Error) {
-        //yaha sb krna
-        setIsloading(false);
-      }
-    }
-  };
-  const storeData = async (accessToken: string, refreshToken: string) => {
-    try {
-      const tokens = {
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-      };
-      const jsonValue = JSON.stringify(tokens);
-      await AsyncStorage.setItem("@storage_Key", jsonValue);
-    } catch (e) {
-      // saving error
-      console.log(e);
-    }
-  };
+
+
   const killSession = React.useCallback(() => {
     return connector.killSession();
   }, [connector]);

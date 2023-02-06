@@ -17,7 +17,7 @@ const ARWEAVE_GATEWAY = "https://arweave.net";
 
 //Static Media
 const STATIC_ASSET =
-  "https://ipfs.io/ipfs/QmfY1JJanP2cZyrcf2WBka6dzoHFjT9sH2gYcEaJJiDwfK";
+  "https://lens.infura-ipfs.io/ipfs/bafybeibv2kpqpjtvuj5uprvq6knnr2reb7ylq3o4bnypqjioqgxmjw2akq/5460475.webp";
 
 //Regular Expressions
 const URL_REGEX =
@@ -25,6 +25,7 @@ const URL_REGEX =
 
 const ADDRESS_REGEX = /^(0x)?[\da-f]{40}$/i;
 
+const MENTION_REGEX = /(@[^\s]+)/g;
 // Misc
 export const OFFICIAL_EMAIL = "contactweb3devs@gmail.com";
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
@@ -40,4 +41,5 @@ export {
   APP_NAME,
   DESCRIPTION,
   ARWEAVE_GATEWAY,
+  MENTION_REGEX,
 };

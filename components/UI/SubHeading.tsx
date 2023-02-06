@@ -2,16 +2,17 @@ import React, { FC } from "react";
 import { StyleProp, Text, TextStyle } from "react-native";
 
 interface SubHeadingProps {
-    title: string | undefined | React.ReactNode;
-    style: StyleProp<TextStyle>;
+  title: string | undefined | React.ReactNode;
+  style: StyleProp<TextStyle>;
+  numberOfLines?: number;
 }
 
 const SubHeading: FC<SubHeadingProps> = ({ title, style, ...rest }) => {
-    return (
-        <Text style={style} {...rest}>
-            {title}
-        </Text>
-    );
+  return (
+    <Text style={style} {...rest}>
+      {title}
+    </Text>
+  );
 };
 
 export default SubHeading;

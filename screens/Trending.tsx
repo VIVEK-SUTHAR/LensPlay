@@ -60,7 +60,6 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
         },
       });
       setTrendingItems(trendingData.data.explorePublications.items);
-      console.log(TrendingItems);
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Something went wrong", { cause: error.cause });
@@ -195,6 +194,7 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
                   playbackId={item?.metadata?.media[0]?.original?.url}
                   reaction={item?.reaction}
                   description={item.metadata.description}
+                  attributes={item?.metadata?.attributes}
                 />
               );
             })}

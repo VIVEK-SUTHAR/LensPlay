@@ -52,11 +52,16 @@ const NewVideoCard = ({
 }: videoPageProp) => {
   const [videoTime, setVideoTime] = React.useState<Attribute[] | null>();
   React.useEffect(() => {
-    const time = attributes?.filter((item) => {
-      if (item?.traitType === "durationInSeconds") {
-        setVideoTime(item?.value);
+    const time = attributes?.filter(
+      (item: {
+        traitType: string;
+        value: React.SetStateAction<Attribute[] | null | undefined>;
+      }) => {
+        if (item?.traitType === "durationInSeconds") {
+          setVideoTime(item?.value);
+        }
       }
-    });
+    );
   }, []);
   const navigation = useNavigation();
   return (

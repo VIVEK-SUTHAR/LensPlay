@@ -1,11 +1,16 @@
 //@ts-ignore
-import { AntDesign, Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { Feather, FontAwesome, Fontisto, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import { ColorSchemeName, TouchableWithoutFeedback, View } from "react-native";
+import {
+  ColorSchemeName,
+  Image,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import VideoPage from "../screens/VideoPage";
 import Feed from "../screens/Feed";
 import Login from "../screens/Login";
@@ -21,16 +26,24 @@ import Search from "../screens/Search";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import Channel from "../screens/Channel";
-import { useThemeStore } from "../store/Store";
-import Home from "../components/Svgs/Home";
-import Explore from "../components/Svgs/Explore";
-import Upload from "../components/Svgs/Upload";
-import NotificationSvg from "../components/Svgs/Notification";
-import ProfileSvg from "../components/Svgs/Profile";
-import { primary } from "../constants/Colors";
+import { useProfile, useThemeStore } from "../store/Store";
 import ProfileScreen from "../screens/Profile";
 import UserVideos from "../screens/UserVideos";
 import Waitlist from "../screens/Waitlist";
+import {
+  HOME_FILLED,
+  HOME_OUTLINE,
+  NOTI_FILLED,
+  NOTI_OUTLINE,
+  UPLOAD_FILLED,
+  UPLOAD_OUTLINE,
+} from "../components/Icons";
+import Avatar from "../components/UI/Avatar";
+import getIPFSLink from "../utils/getIPFSLink";
+import linking from "./LinkingConfiguration";
+import LinkingVideo from "../screens/LinkingVideo";
+import { dark_primary } from "../constants/Colors";
+import UserStats from "../screens/UserStats";
 
 export default function Navigation({
   colorScheme,
@@ -40,7 +53,7 @@ export default function Navigation({
   return (
     <>
       <StatusBar style="dark" />
-      <NavigationContainer>
+      <NavigationContainer linking={linking}>
         <RootNavigator />
       </NavigationContainer>
     </>
@@ -58,6 +71,7 @@ function RootNavigator() {
           backgroundColor: "black",
         },
       }}
+      initialRouteName={"Root"}
     >
       <Stack.Screen
         name="Waitlist"
@@ -101,7 +115,7 @@ function RootNavigator() {
         component={Channel}
         options={{
           animation: "slide_from_left",
-          headerShown: true,
+          headerShown: false,
           headerTintColor: theme.PRIMARY,
         }}
       />
@@ -115,6 +129,25 @@ function RootNavigator() {
           headerTitle: "Your videos",
         }}
       />
+      <Stack.Screen
+        name="LinkingVideos"
+        component={LinkingVideo}
+        options={{
+          animation: "slide_from_right",
+          headerShown: false,
+          headerTintColor: theme.PRIMARY,
+          headerTitle: "Your videos",
+        }}
+      />
+      <Stack.Screen
+        name="UserStats"
+        component={UserStats}
+        options={{
+          animation: "slide_from_right",
+          headerShown: true,
+          headerTintColor: theme.PRIMARY,
+        }}
+      />
     </Stack.Navigator>
   );
 }
@@ -123,7 +156,7 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
   const theme = useThemeStore();
-
+  const user = useProfile();
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
@@ -176,8 +209,10 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
           </View>
         ),
         tabBarStyle: {
-          height: 54,
-          backgroundColor: "black",
+          paddingVertical: 2,
+          height: "auto",
+          minHeight: 55,
+          backgroundColor: dark_primary,
           borderTopColor: "transparent",
           paddingHorizontal: 10,
         },
@@ -227,12 +262,19 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: focused ? 2 : 0,
-                  borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
-                <Home fill={focused ? primary : "none"} />
+                <Image
+                  source={{
+                    uri: focused ? HOME_FILLED : HOME_OUTLINE,
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    height: 26,
+                    width: 26,
+                  }}
+                />
               </View>
             );
           },
@@ -252,12 +294,14 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: 2,
-                  borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
-                <Explore fill={focused ? primary : "#FFFFFF"} />
+                <Ionicons
+                  name={focused ? "compass" : "compass-outline"}
+                  color={focused ? theme.PRIMARY : "white"}
+                  size={28}
+                />
               </View>
             );
           },
@@ -277,12 +321,24 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: 2,
-                  borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
-                <Upload fill={focused ? primary : "#FFFFFF"} />
+                <Image
+                  source={{
+                    uri: focused ? UPLOAD_FILLED : UPLOAD_OUTLINE,
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    height: 26,
+                    width: 26,
+                  }}
+                />
+                {/* <Feather
+                  name={"plus-circle"}
+                  color={focused ? theme.PRIMARY : "white"}
+                  size={28}
+                /> */}
               </View>
             );
           },
@@ -302,12 +358,19 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: 2,
-                  borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
-                <NotificationSvg fill={focused ? primary : "none"} />
+                <Image
+                  source={{
+                    uri: focused ? NOTI_FILLED : NOTI_OUTLINE,
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    height: 26,
+                    width: 26,
+                  }}
+                />
               </View>
             );
           },
@@ -323,17 +386,23 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
             return (
               <View
                 style={{
-                  padding: 5,
-                  width: 45,
+                  width: 30,
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: 2,
-                  borderTopColor: focused ? theme.PRIMARY : "transparent",
-                  height: "100%",
+                  height: 30,
+                  borderRadius: 45,
+                  borderColor: focused ? theme.PRIMARY : "transparent",
+                  borderWidth: 1,
                 }}
               >
-                <ProfileSvg fill={focused ? primary : "#FFFFFF"} />
+                <Avatar
+                  src={getIPFSLink(
+                    user?.currentProfile?.picture?.original?.url
+                  )}
+                  height={28}
+                  width={28}
+                />
               </View>
             );
           },

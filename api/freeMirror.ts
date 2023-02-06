@@ -9,17 +9,17 @@
  */
 
 async function freeMirror(
-    accessToken: string,
-    profileId: string,
-    publicationId: string,
-  ): Promise<any> {
-    try {
-      let headersList = {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + accessToken,
-      };
-      let gqlBody = {
-        query: `
+  accessToken: string,
+  profileId: string | undefined,
+  publicationId: string,
+): Promise<any> {
+  try {
+    let headersList = {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + accessToken,
+    };
+    let gqlBody = {
+      query: `
         mutation CreateMirrorViaDispatcher(
           $pid: ProfileId!
           $pubId: InternalPublicationId!
@@ -41,22 +41,20 @@ async function freeMirror(
           }
         }
       `,
-        variables: { pid: profileId ,pubId: publicationId },
-      };
-      console.log(gqlBody);
-      let bodyContent = JSON.stringify(gqlBody);
-      let response = await fetch("https://api-mumbai.lens.dev", {
-        method: "POST",
-        body: bodyContent,
-        headers: headersList,
-      });
-      let data = await response.json();
-    //   console.log(data.data);
-      return data;
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
+      variables: { pid: profileId, pubId: publicationId },
+    };
+    let bodyContent = JSON.stringify(gqlBody);
+    let response = await fetch("https://api-mumbai.lens.dev", {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList,
+    });
+    let data = await response.json();
+    return data;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
     }
   }
-  export default freeMirror;
+}
+export default freeMirror;

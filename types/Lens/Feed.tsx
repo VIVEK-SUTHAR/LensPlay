@@ -1,8 +1,6 @@
-export interface Feed {
-  data: Data;
-}
+import { Profile, Stats } from ".";
 
-export interface Data {
+export interface FeedData {
   feed: FeedClass;
 }
 
@@ -168,6 +166,29 @@ export interface ProfileStats {
   totalMirrors: number;
   totalPublications: number;
   totalCollects: number;
+}
+
+export interface VideoPageStats {
+  __typename: string;
+  totalAmountOfCollects: number;
+  totalAmountOfComments: number;
+  totalAmountOfMirrors: number;
+  totalDownvotes: number;
+  totalUpvotes: number;
+}
+
+export interface Comments {
+  profile: Profile;
+  createdAt: string;
+  metadata: Metadata;
+  stats: CommentStats;
+  id: string;
+}
+
+export interface CommentStats {
+  totalUpvotes: string;
+  totalAmountOfCollects: string;
+  totalAmountOfMirrors: string;
 }
 
 export interface RootStats {

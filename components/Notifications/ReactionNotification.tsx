@@ -6,6 +6,8 @@ import Avatar from "../UI/Avatar";
 import getIPFSLink from "../../utils/getIPFSLink";
 import formatAddress from "../../utils/formatAddress";
 import getDifference from "../../utils/getDifference";
+import extractURLs from "../../utils/extractURL";
+import LikeIcon from "../svg/LikeIcon";
 
 const ReactionNotification: React.FC<NotificationCardProps> = ({
   navigation,
@@ -22,7 +24,8 @@ const ReactionNotification: React.FC<NotificationCardProps> = ({
           alignItems: "center",
         }}
       >
-        <AntDesign name="heart" size={24} color={"#E60073"} />
+        {/* <AntDesign name="heart" size={24} color={"#E60073"} /> */}
+        <LikeIcon filled={true} width={24} height={24} />
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -58,7 +61,7 @@ const ReactionNotification: React.FC<NotificationCardProps> = ({
             </Text>
             <View>
               <Text style={{ color: "grey", fontSize: 12 }}>
-                {notification?.publication?.metadata?.description}
+                {extractURLs(notification?.publication?.metadata?.description)}
               </Text>
             </View>
           </View>

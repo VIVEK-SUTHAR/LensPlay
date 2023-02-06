@@ -6,6 +6,7 @@ import NotificationCardProps from "./index.d";
 import Avatar from "../UI/Avatar";
 import getDifference from "../../utils/getDifference";
 import getIPFSLink from "../../utils/getIPFSLink";
+import CommentIcon from "../svg/CommentIcon";
 
 const CommentNotification: React.FC<NotificationCardProps> = ({
   navigation,
@@ -22,7 +23,7 @@ const CommentNotification: React.FC<NotificationCardProps> = ({
           alignItems: "center",
         }}
       >
-        <EvilIcons name="comment" size={28} color={"#1d9bf0"} />
+        <CommentIcon height={20} width={20} />
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -35,7 +36,7 @@ const CommentNotification: React.FC<NotificationCardProps> = ({
               }}
             >
               <Avatar
-                src={getIPFSLink(notification.profile?.picture.original.url)}
+                src={getIPFSLink(notification?.profile?.picture?.original?.url)}
                 height={35}
                 width={35}
               />
@@ -58,7 +59,7 @@ const CommentNotification: React.FC<NotificationCardProps> = ({
             </Text>
             <View>
               <Text style={{ color: "grey", fontSize: 12 }}>
-                {notification?.comment?.metadata?.description}
+                {notification?.comment?.metadata?.description || notification?.comment?.metadata?.content}
               </Text>
             </View>
           </View>
