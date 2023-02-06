@@ -144,24 +144,28 @@ const useSearchProfile = (profile: string) => {
 const useNotifications = () => {
   const activeProfile = useProfile();
   const { accessToken } = useAuthStore();
-  const { data, error, loading, refetch, startPolling,previousData } = useQuery(
-    notificationsQuery,
-    {
-      variables: {
-        pid: activeProfile.currentProfile?.id,
+  const {
+    data,
+    error,
+    loading,
+    refetch,
+    startPolling,
+    previousData,
+  } = useQuery(notificationsQuery, {
+    variables: {
+      pid: activeProfile.currentProfile?.id,
+    },
+    fetchPolicy: "cache-and-network",
+    initialFetchPolicy: "network-only",
+    refetchWritePolicy: "merge",
+    pollInterval: 100,
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
       },
-      fetchPolicy: "cache-and-network",
-      initialFetchPolicy: "network-only",
-      refetchWritePolicy: "merge",
-      pollInterval: 100,
-      context: {
-        headers: {
-          "x-access-token": `Bearer ${accessToken}`,
-        },
-      },
-    }
-  );
-  return { data, error, loading, refetch, startPolling,previousData };
+    },
+  });
+  return { data, error, loading, refetch, startPolling, previousData };
 };
 export default useNotifications;
 
