@@ -4,20 +4,12 @@ import { dark_primary } from "../constants/Colors";
 import CopyIcon from "../components/svg/CopyIcon";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
-
-type LeaderBoardProps = {
-  referralsCount: number;
-  rankingPoints: number;
-  rankingPosition: number;
-  refferalLink: string;
-};
+import { RootStackScreenProps } from "../types/navigation/types";
 
 export default function LeaderBoard({
-  referralsCount,
-  rankingPoints,
-  rankingPosition,
-  refferalLink,
-}: LeaderBoardProps) {
+  navigation,
+  route,
+}: RootStackScreenProps<"LeaderBoard">) {
   return (
     <View
       style={{
@@ -74,7 +66,7 @@ export default function LeaderBoard({
             }}
           />
           <Heading
-            title={rankingPosition}
+            title={route.params.rankingPosition}
             style={{
               fontSize: 32,
               fontWeight: "700",
@@ -111,7 +103,7 @@ export default function LeaderBoard({
             }}
           />
           <Heading
-            title={rankingPoints}
+            title={route.params.rankingPoints}
             style={{
               fontSize: 24,
               fontWeight: "700",
@@ -137,7 +129,7 @@ export default function LeaderBoard({
             }}
           />
           <Heading
-            title={referralsCount}
+            title={route.params.referralsCount}
             style={{
               fontSize: 24,
               fontWeight: "700",
@@ -178,7 +170,7 @@ export default function LeaderBoard({
         }}
       >
         <TextInput
-          value={refferalLink}
+          value={route.params.refferalLink}
           editable={false}
           style={{
             color: "black",
