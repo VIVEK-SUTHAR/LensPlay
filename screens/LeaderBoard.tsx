@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Image, Pressable, SafeAreaView, TextInput, View } from "react-native";
+import React from "react";
+import { Image, Pressable, View } from "react-native";
 import { dark_primary } from "../constants/Colors";
 import CopyIcon from "../components/svg/CopyIcon";
 import Heading from "../components/UI/Heading";
@@ -169,7 +169,7 @@ export default function LeaderBoard({
           marginTop: 24,
         }}
       >
-        <TextInput
+        {/* <TextInput
           value={route.params.refferalLink}
           editable={false}
           style={{
@@ -180,13 +180,18 @@ export default function LeaderBoard({
           }}
           selectionColor={"black"}
           placeholderTextColor={"black"}
+        /> */}
+        <SubHeading
+          title={route.params.refferalLink}
+          style={{
+            color: "black",
+            fontSize: 16,
+            fontWeight: "700",
+            width: "90%",
+          }}
+          numberOfLines={1}
         />
-        <Pressable
-          style={{ marginHorizontal: 8 }}
-          // onPress={() =>
-          // navigator.clipboard.(route.params.refferalLink)
-          // }
-        >
+        <Pressable style={{ marginHorizontal: 8 }} onPress={() => {}}>
           <CopyIcon width={16} height={16} />
         </Pressable>
       </View>

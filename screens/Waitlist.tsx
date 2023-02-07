@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { isValidElement, useState } from "react";
-import { Linking, SafeAreaView, TextInput, View } from "react-native";
+import { Image, Linking, SafeAreaView, TextInput, View } from "react-native";
 import searchUser from "../api/zooTools/searchUser";
 import Button from "../components/UI/Button";
 import Heading from "../components/UI/Heading";
@@ -67,6 +67,13 @@ export default function Waitlist({
         alignItems: "center",
       }}
     >
+      <View style={{ width: "100%", marginBottom: 48 }}>
+        <Image
+          source={require("../assets/images/waitlist.png")}
+          resizeMode="contain"
+          style={{ width: "100%", height: 300 }}
+        />
+      </View>
       {subscribed ? (
         <View style={{ width: "80%" }}>
           <TextInput
