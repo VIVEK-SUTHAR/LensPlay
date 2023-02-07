@@ -176,11 +176,17 @@ export default function LeaderBoard({
             color: "black",
             fontSize: 16,
             fontWeight: "700",
+            width: "90%",
           }}
           selectionColor={"black"}
           placeholderTextColor={"black"}
         />
-        <Pressable style={{ marginHorizontal: 8 }}>
+        <Pressable
+          style={{ marginHorizontal: 8 }}
+          // onPress={() =>
+          // navigator.clipboard.(route.params.refferalLink)
+          // }
+        >
           <CopyIcon width={16} height={16} />
         </Pressable>
       </View>

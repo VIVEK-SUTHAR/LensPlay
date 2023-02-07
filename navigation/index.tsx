@@ -256,7 +256,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
 
       <BottomTab.Screen
         name="Home"
-        getComponent={Feed}
+        component={Feed}
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ focused }) => {
@@ -352,7 +352,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
       />
       <BottomTab.Screen
         name="Notifications"
-        getComponent={Notification}
+        component={Notification}
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ focused }) => {

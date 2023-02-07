@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useState } from "react";
+import React, { isValidElement, useState } from "react";
 import { Linking, SafeAreaView, TextInput, View } from "react-native";
 import searchUser from "../api/zooTools/searchUser";
 import Button from "../components/UI/Button";
@@ -7,6 +7,8 @@ import Heading from "../components/UI/Heading";
 import LeaderBoard from "./LeaderBoard";
 import { primary } from "../constants/Colors";
 import { RootStackScreenProps } from "../types/navigation/types";
+import { useToast } from "../store/Store";
+import { ToastType } from "../types/Store";
 
 interface fieldsData {
   hasAccess: boolean;
@@ -25,6 +27,12 @@ export default function Waitlist({
 }: RootStackScreenProps<"Waitlist">) {
   const [email, setEmail] = useState<string>("");
   const [subscribed, setSubscribed] = useState<boolean>(true);
+  const toast = useToast();
+
+  const isValidEmail = (userEmail: string) => {
+    const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return regex.test(userEmail);
+  };
 
   const handleUser = async (email: string) => {
     const data = await searchUser(email);
@@ -85,7 +93,12 @@ export default function Waitlist({
             title={"Check your Position 👀"}
             onPress={() => {
               setEmail("");
-              handleUser(email);
+              const isValid = isValidEmail(email);
+              if (isValid) {
+                handleUser(email);
+              } else {
+                toast.show("Please enter valid email", ToastType.ERROR, true);
+              }
             }}
             px={8}
             py={16}
