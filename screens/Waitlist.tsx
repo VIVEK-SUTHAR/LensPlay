@@ -12,7 +12,6 @@ import {
 import searchUser from "../api/zooTools/searchUser";
 import Button from "../components/UI/Button";
 import Heading from "../components/UI/Heading";
-import LeaderBoard from "./LeaderBoard";
 import { primary } from "../constants/Colors";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { useToast } from "../store/Store";
@@ -120,7 +119,7 @@ export default function Waitlist({
               borderRadius: 50,
               paddingHorizontal: 16,
               paddingVertical: 8,
-              fontWeight: "700",
+              fontWeight: "500",
               fontSize: 16,
               marginBottom: 16,
             }}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, Pressable, View } from "react-native";
+import { Image, Pressable, TextInput, View } from "react-native";
 import { dark_primary } from "../constants/Colors";
 import CopyIcon from "../components/svg/CopyIcon";
 import Heading from "../components/UI/Heading";
@@ -137,7 +137,7 @@ export default function LeaderBoard({
           />
         </View>
       </View>
-      <View style={{ alignItems: "center", marginTop: 48 }}>
+      <View style={{ alignItems: "center", marginTop: 48, width: "80%" }}>
         <Heading
           title="Go Ahead of the Heard"
           style={{
@@ -163,13 +163,13 @@ export default function LeaderBoard({
           alignItems: "center",
           justifyContent: "space-between",
           backgroundColor: "white",
-          width: "100%",
+          width: "80%",
           padding: 8,
           borderRadius: 4,
           marginTop: 24,
         }}
       >
-        {/* <TextInput
+        <TextInput
           value={route.params.refferalLink}
           editable={false}
           style={{
@@ -180,8 +180,8 @@ export default function LeaderBoard({
           }}
           selectionColor={"black"}
           placeholderTextColor={"black"}
-        /> */}
-        <SubHeading
+        />
+        {/* <SubHeading
           title={route.params.refferalLink}
           style={{
             color: "black",
@@ -190,7 +190,7 @@ export default function LeaderBoard({
             width: "90%",
           }}
           numberOfLines={1}
-        />
+        /> */}
         <Pressable style={{ marginHorizontal: 8 }} onPress={() => {}}>
           <CopyIcon width={16} height={16} />
         </Pressable>
