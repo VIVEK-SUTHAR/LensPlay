@@ -38,16 +38,13 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
     const userData = await AsyncStorage.getItem("@access_Key");
     if (userData) {
       const user = JSON.parse(userData);
-      hasAccess = user.hasAccess;
-      if (!user.hasAccess) {
-        const data = await searchUser(user.email);
-        const handleUser = {
-          email: user.email,
-          hasAccess: data.fields.hasAccess,
-        };
-        await AsyncStorage.setItem("@access_Key", JSON.stringify(handleUser));
-        hasAccess = data.fields.hasAccess;
-      }
+      const data = await searchUser(user.email);
+      const handleUser = {
+        email: user.email,
+        hasAccess: data.fields.hasAccess,
+      };
+      await AsyncStorage.setItem("@access_Key", JSON.stringify(handleUser));
+      hasAccess = data.fields.hasAccess;
     }
   };
 

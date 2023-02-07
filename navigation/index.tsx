@@ -44,6 +44,7 @@ import linking from "./LinkingConfiguration";
 import LinkingVideo from "../screens/LinkingVideo";
 import { dark_primary } from "../constants/Colors";
 import UserStats from "../screens/UserStats";
+import LeaderBoard from "../screens/LeaderBoard";
 
 export default function Navigation({
   colorScheme,
@@ -76,6 +77,11 @@ function RootNavigator() {
       <Stack.Screen
         name="Waitlist"
         component={Waitlist}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="LeaderBoard"
+        component={LeaderBoard}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -250,7 +256,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
 
       <BottomTab.Screen
         name="Home"
-        component={Feed}
+        getComponent={Feed}
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ focused }) => {
@@ -346,7 +352,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
       />
       <BottomTab.Screen
         name="Notifications"
-        component={Notification}
+        getComponent={Notification}
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ focused }) => {
