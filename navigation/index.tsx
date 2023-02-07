@@ -1,12 +1,11 @@
 //@ts-ignore
-import { Feather, FontAwesome, Fontisto, Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import {
-  ColorSchemeName,
   Image,
   TouchableWithoutFeedback,
   View,
@@ -43,13 +42,8 @@ import linking from "./LinkingConfiguration";
 import LinkingVideo from "../screens/LinkingVideo";
 import { dark_primary } from "../constants/Colors";
 import UserStats from "../screens/UserStats";
-import useNotifications from "../hooks/useFeed";
 
-export default function Navigation({
-  colorScheme,
-}: {
-  colorScheme: ColorSchemeName;
-}) {
+export default function Navigation() {
   return (
     <>
       <StatusBar style="dark" />

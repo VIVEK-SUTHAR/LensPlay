@@ -147,7 +147,9 @@ const SuscriberList = ({ isSubscribers, setScreen }: TabProps) => {
               profileName={item?.wallet?.defaultProfile?.name}
               handle={item?.wallet?.defaultProfile?.handle}
               profileId={item?.wallet?.defaultProfile?.id}
-              owner={item?.wallet?.address} isFollowed={false}            />
+              owner={item?.wallet?.address}
+              isFollowed={false}
+            />
           )}
         />
       </View>
@@ -205,8 +207,8 @@ const SubscriptionsList = ({ isSubscribers, setScreen }: TabProps) => {
                   profileName={item?.profile?.name}
                   profileIcon={item?.profile?.picture?.original?.url}
                   profileId={item?.profile?.id}
-              owner={item?.profile?.handle}
-              isFollowed={true}
+                  owner={item?.profile?.handle}
+                  isFollowed={item?.profile?.isFollowedByMe}
                 />
               );
             }}

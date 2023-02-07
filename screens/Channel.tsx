@@ -30,9 +30,10 @@ import getCollectVideos from "../apollo/Queries/getCollectVideos";
 import { StatusBar } from "expo-status-bar";
 import ProfileSkeleton from "../components/UI/ProfileSkeleton";
 import { LinearGradient } from "expo-linear-gradient";
-import { Feather, SimpleLineIcons } from "@expo/vector-icons";
+import { Entypo, Feather } from "@expo/vector-icons";
 import { createFreeSubscribe } from "../api";
 import { ToastType } from "../types/Store";
+import VERIFIED_CHANNELS from "../constants/Varified";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -271,15 +272,34 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     }}
                   >
                     <View>
-                      <Heading
-                        title={profile?.name}
-                        style={{
-                          fontSize: 20,
-                          marginTop: 8,
-                          fontWeight: "bold",
-                          color: "#FAF7F7",
-                        }}
-                      />
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <Heading
+                          title={profile?.name}
+                          style={{
+                            fontSize: 20,
+                            marginTop: 8,
+                            fontWeight: "bold",
+                            color: "#FAF7F7",
+                          }}
+                        />
+                        {VERIFIED_CHANNELS.includes(profile?.id) && (
+                          <View
+                            style={{
+                              backgroundColor: theme.PRIMARY,
+                              height: 15,
+                              width: 15,
+                              padding: 1,
+                              borderRadius: 8,
+                              marginTop: 8,
+                              marginHorizontal: 4,
+                            }}
+                          >
+                            <Entypo name="check" color={"white"} />
+                          </View>
+                        )}
+                      </View>
                       <SubHeading
                         title={`@${profile?.handle}`}
                         style={{

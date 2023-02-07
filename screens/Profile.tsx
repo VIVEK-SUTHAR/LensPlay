@@ -31,7 +31,8 @@ import AllVideos from "../components/Profile/AllVideos";
 import MirroredVideos from "../components/Profile/MirroredVideos";
 import getPublications from "../apollo/Queries/getPublications";
 import CollectedVideos from "../components/Profile/CollectedVideos";
-
+import { Entypo, Feather } from "@expo/vector-icons";
+import VERIFIED_CHANNELS from "../constants/Varified";
 const ProfileScreen = ({
   navigation,
   route,
@@ -187,15 +188,34 @@ const ProfileScreen = ({
                     }}
                   >
                     <View>
-                      <Heading
-                        title={profile?.name}
-                        style={{
-                          fontSize: 20,
-                          marginTop: 8,
-                          fontWeight: "bold",
-                          color: "#FAF7F7",
-                        }}
-                      />
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <Heading
+                          title={profile?.name}
+                          style={{
+                            fontSize: 20,
+                            marginTop: 8,
+                            fontWeight: "bold",
+                            color: "#FAF7F7",
+                          }}
+                        />
+                        {VERIFIED_CHANNELS.includes(profile?.id) && (
+                          <View
+                            style={{
+                              backgroundColor: theme.PRIMARY,
+                              height: 15,
+                              width: 15,
+                              padding: 1,
+                              borderRadius: 8,
+                              marginTop: 8,
+                              marginHorizontal: 4,
+                            }}
+                          >
+                            <Entypo name="check" color={"white"} />
+                          </View>
+                        )}
+                      </View>
                       <SubHeading
                         title={`@${profile?.handle}`}
                         style={{
