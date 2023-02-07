@@ -151,6 +151,7 @@ const useNotifications = () => {
     refetch,
     startPolling,
     previousData,
+    fetchMore
   } = useQuery(notificationsQuery, {
     variables: {
       pid: activeProfile.currentProfile?.id,
