@@ -1,6 +1,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { isValidElement, useState } from "react";
-import { Image, Linking, SafeAreaView, TextInput, View } from "react-native";
+import React, { isValidElement, useEffect, useState } from "react";
+import {
+  Alert,
+  BackHandler,
+  Image,
+  Linking,
+  SafeAreaView,
+  TextInput,
+  View,
+} from "react-native";
 import searchUser from "../api/zooTools/searchUser";
 import Button from "../components/UI/Button";
 import Heading from "../components/UI/Heading";
@@ -28,6 +36,27 @@ export default function Waitlist({
   const [email, setEmail] = useState<string>("");
   const [subscribed, setSubscribed] = useState<boolean>(true);
   const toast = useToast();
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Hold on!", "Are you sure you want to go back?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "YES", onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   const isValidEmail = (userEmail: string) => {
     const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
