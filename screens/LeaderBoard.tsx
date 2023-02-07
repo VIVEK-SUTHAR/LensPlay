@@ -1,5 +1,12 @@
 import React, { useEffect } from "react";
-import { BackHandler, Image, Pressable, TextInput, View } from "react-native";
+import {
+  BackHandler,
+  Image,
+  Pressable,
+  TextInput,
+  Vibration,
+  View,
+} from "react-native";
 import { dark_primary } from "../constants/Colors";
 import CopyIcon from "../components/svg/CopyIcon";
 import Heading from "../components/UI/Heading";
@@ -181,7 +188,7 @@ export default function LeaderBoard({
           alignItems: "center",
           justifyContent: "space-between",
           backgroundColor: "white",
-          width: "80%",
+          width: 300,
           padding: 8,
           borderRadius: 4,
           marginTop: 24,
@@ -213,6 +220,7 @@ export default function LeaderBoard({
           style={{ marginHorizontal: 8 }}
           onPress={async () => {
             await Clipboard.setStringAsync(route.params.refferalLink);
+            Vibration.vibrate(100, true);
             toast.show("Link copied", ToastType.SUCCESS, true);
           }}
         >
