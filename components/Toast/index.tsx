@@ -11,11 +11,16 @@ const Toast = () => {
   const toastStore = useToast();
 
   const slideIn = useRef(new Animated.Value(-100)).current;
-
+  const scale = useRef(new Animated.Value(0.5)).current;
   useEffect(() => {
     if (toastStore.isVisible === true) {
       Animated.timing(slideIn, {
         toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+      Animated.timing(scale, {
+        toValue: 1,
         duration: 500,
         useNativeDriver: true,
       }).start();
@@ -24,6 +29,11 @@ const Toast = () => {
       }, 5000);
     }
     if (toastStore.isVisible === false) {
+      Animated.timing(scale, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
       Animated.timing(slideIn, {
         toValue: -100,
         duration: 500,
@@ -33,7 +43,7 @@ const Toast = () => {
       //   toastStore.show("", ToastType.INFO, false);
       // }, 5000);
     }
-  }, [toastStore.isVisible]);
+  }, [toastStore.message]);
   return (
     <Animated.View
       style={[
@@ -44,7 +54,7 @@ const Toast = () => {
           //   toastStore.type === ToastType.ERROR
           //     ? "red"
           //     : toastStore.type === ToastType.INFO
-          //     ? "white" 
+          //     ? "white"
           //     : "#22ae4a",
           backgroundColor:
             toastStore.type === ToastType.ERROR
@@ -55,6 +65,9 @@ const Toast = () => {
           transform: [
             {
               translateY: slideIn,
+            },
+            {
+              scale: scale,
             },
           ],
         },
@@ -69,10 +82,17 @@ const Toast = () => {
             : "check-circle-outline"
         }
         color={"white"}
-        style={{marginHorizontal:2}}
+        style={{ marginHorizontal: 2 }}
         size={24}
       />
-      <Text style={{ fontSize: 16, color: "white", textAlign: "center",marginHorizontal:2 }}>
+      <Text
+        style={{
+          fontSize: 16,
+          color: "white",
+          textAlign: "center",
+          marginHorizontal: 2,
+        }}
+      >
         {toastStore.message}
       </Text>
     </Animated.View>

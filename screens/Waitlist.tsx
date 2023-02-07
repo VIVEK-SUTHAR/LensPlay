@@ -4,6 +4,7 @@ import {
   Alert,
   BackHandler,
   Image,
+  KeyboardAvoidingView,
   Linking,
   SafeAreaView,
   TextInput,

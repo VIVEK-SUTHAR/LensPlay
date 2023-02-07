@@ -1,15 +1,33 @@
-import React from "react";
-import { Image, Pressable, TextInput, View } from "react-native";
+import React, { useEffect } from "react";
+import { BackHandler, Image, Pressable, TextInput, View } from "react-native";
 import { dark_primary } from "../constants/Colors";
 import CopyIcon from "../components/svg/CopyIcon";
 import Heading from "../components/UI/Heading";
 import SubHeading from "../components/UI/SubHeading";
 import { RootStackScreenProps } from "../types/navigation/types";
+import * as Clipboard from "expo-clipboard";
+import { useToast } from "../store/Store";
+import { ToastType } from "../types/Store";
 
 export default function LeaderBoard({
   navigation,
   route,
 }: RootStackScreenProps<"LeaderBoard">) {
+  const toast = useToast();
+
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
   return (
     <View
       style={{
@@ -170,7 +188,7 @@ export default function LeaderBoard({
         }}
       >
         <TextInput
-          value={route.params.refferalLink}
+          value={"https://form.waitlistpanda.com/"}
           editable={false}
           style={{
             color: "black",
@@ -191,7 +209,13 @@ export default function LeaderBoard({
           }}
           numberOfLines={1}
         /> */}
-        <Pressable style={{ marginHorizontal: 8 }} onPress={() => {}}>
+        <Pressable
+          style={{ marginHorizontal: 8 }}
+          onPress={async () => {
+            await Clipboard.setStringAsync(route.params.refferalLink);
+            toast.show("Link copied", ToastType.SUCCESS, true);
+          }}
+        >
           <CopyIcon width={16} height={16} />
         </Pressable>
       </View>
