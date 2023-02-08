@@ -137,7 +137,7 @@ export default function Waitlist({
                 width: "100%",
                 color: "black",
                 backgroundColor: "white",
-                borderRadius: 50,
+                borderRadius: 8,
                 paddingHorizontal: 16,
                 paddingVertical: 8,
                 fontWeight: "500",
@@ -147,7 +147,7 @@ export default function Waitlist({
               }}
             />
             <Button
-              title={"Check your Position 👀"}
+              title={"Check your position"}
               onPress={() => {
                 setEmail("");
                 const isValid = isValidEmail(email);
@@ -159,6 +159,7 @@ export default function Waitlist({
               }}
               px={8}
               py={16}
+              borderRadius={8}
               width={"auto"}
               type={"filled"}
               textStyle={{
