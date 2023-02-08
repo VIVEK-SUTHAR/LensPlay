@@ -21,7 +21,7 @@ import verifyToken from "../apollo/Queries/verifyToken";
 import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
 import { StatusBar } from "expo-status-bar";
 import Paginator from "../components/Paginator";
-import SubHeading from "../components/UI/SubHeading";
+import StyledText from "../components/UI/StyledText";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Button from "../components/UI/Button";
 import formatTime from "../utils/formatTime";
@@ -52,8 +52,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const { width } = Dimensions.get("screen");
   const imageW = width * 0.8;
   const imageH = imageW * 1.54;
-
-
 
   const logInWithLens = async () => {
     setIsloading(true);
@@ -106,7 +104,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
       }
     }
   };
-
 
   const killSession = React.useCallback(() => {
     return connector.killSession();
@@ -214,7 +211,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
                   marginVertical: 10,
                 }}
               >
-                <SubHeading
+                <StyledText
                   title="Disconnect Wallet"
                   style={{
                     color: "black",
@@ -241,7 +238,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
                 marginVertical: 30,
               }}
             >
-              <SubHeading
+              <StyledText
                 title="Connect Wallet"
                 style={{
                   color: "black",

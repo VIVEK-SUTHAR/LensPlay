@@ -8,7 +8,7 @@ import {
   Pressable,
 } from "react-native";
 import React from "react";
-import SubHeading from "./SubHeading";
+import StyledText from "./StyledText";
 import { useThemeStore } from "../../store/Store";
 import Heading from "./Heading";
 interface ButtonProps {
@@ -98,7 +98,7 @@ const Button = (props: ButtonProps): JSX.Element => {
         ) : (
           <>
             {icon}
-            <SubHeading title={title} style={newStyle} />
+            <StyledText title={title} style={newStyle} />
           </>
         )}
       </View>

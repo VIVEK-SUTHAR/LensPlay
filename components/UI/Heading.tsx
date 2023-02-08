@@ -46,8 +46,6 @@ const Heading: FC<HeadingProps> = ({ title, style, ...rest }) => {
     fontFamily: getFontFamily(parseInt(style?.fontWeight)),
   });
 
-  console.log(newStyle);
-
   return (
     <Text style={newStyle} {...rest} onLayout={onLayoutRootView}>
       {title}

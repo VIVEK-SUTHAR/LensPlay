@@ -13,7 +13,7 @@ import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
 import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
-import SubHeading from "./UI/SubHeading";
+import StyledText from "./UI/StyledText";
 
 type videoPageProp = {
   title: string;
@@ -52,9 +52,7 @@ const VideoCard = ({
   attributes,
   ethAddress,
 }: videoPageProp) => {
-  
   const [videoTime, setVideoTime] = React.useState<string>();
-  
 
   React.useEffect(() => {
     const time = attributes?.filter((item) => {
@@ -149,10 +147,10 @@ const VideoCard = ({
           <View style={{ flex: 0.95 }}>
             <Heading
               title={title}
-              style={{ fontSize: 16, fontWeight: "700", color: "white" }}
+              style={{ fontSize: 16, fontWeight: "600", color: "white" }}
               numberOfLines={1}
             />
-            <SubHeading
+            <StyledText
               title={`By ${uploadedBy} on ${getDifference(date)}`}
               style={{ fontSize: 12, color: "gray" }}
               numberOfLines={1}

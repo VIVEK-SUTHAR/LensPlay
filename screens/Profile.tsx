@@ -14,7 +14,7 @@ import getUserProfile from "../apollo/Queries/getUserProfile";
 import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import getIPFSLink from "../utils/getIPFSLink";
 import Heading from "../components/UI/Heading";
-import SubHeading from "../components/UI/SubHeading";
+import StyledText from "../components/UI/StyledText";
 import Avatar from "../components/UI/Avatar";
 import extractURLs from "../utils/extractURL";
 import { RootTabScreenProps } from "../types/navigation/types";
@@ -196,7 +196,7 @@ const ProfileScreen = ({
                           color: "#FAF7F7",
                         }}
                       />
-                      <SubHeading
+                      <StyledText
                         title={`@${profile?.handle}`}
                         style={{
                           fontSize: 14,
@@ -208,7 +208,7 @@ const ProfileScreen = ({
                     </View>
                   </View>
                   {profile?.bio ? (
-                    <SubHeading
+                    <StyledText
                       title={extractURLs(profile?.bio)}
                       style={{
                         fontSize: 16,
@@ -247,7 +247,7 @@ const ProfileScreen = ({
                           });
                         }}
                       >
-                        <SubHeading
+                        <StyledText
                           title={`${profile?.stats?.totalFollowers} • Subscribers`}
                           style={{ fontSize: 16, fontWeight: "600" }}
                         />
@@ -259,7 +259,7 @@ const ProfileScreen = ({
                           width: 2,
                         }}
                       ></View>
-                      <SubHeading
+                      <StyledText
                         title={`${allVideos?.length} • Videos`}
                         style={{ fontSize: 16, fontWeight: "600" }}
                       />

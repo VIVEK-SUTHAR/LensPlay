@@ -10,7 +10,7 @@ interface SubHeadingProps {
 
 SplashScreen.preventAutoHideAsync();
 
-const SubHeading: FC<SubHeadingProps> = ({ title, style, ...rest }) => {
+const StyledText: FC<SubHeadingProps> = ({ title, style, ...rest }) => {
   const [fontsLoaded] = useFonts({
     OpenSans_Regular: require("../../assets/fonts/OpenSans-Regular.ttf"),
     OpenSans_Medium: require("../../assets/fonts/OpenSans-Medium.ttf"),
@@ -52,4 +52,4 @@ const SubHeading: FC<SubHeadingProps> = ({ title, style, ...rest }) => {
   );
 };
 
-export default SubHeading;
+export default StyledText;

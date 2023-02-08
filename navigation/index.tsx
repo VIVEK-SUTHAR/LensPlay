@@ -24,7 +24,7 @@ import Notification from "../screens/Notification";
 import UploadVideo from "../screens/UploadVideo";
 import Search from "../screens/Search";
 import Heading from "../components/UI/Heading";
-import SubHeading from "../components/UI/SubHeading";
+import StyledText from "../components/UI/StyledText";
 import Channel from "../screens/Channel";
 import { useProfile, useThemeStore } from "../store/Store";
 import ProfileScreen from "../screens/Profile";
@@ -209,7 +209,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                 borderRadius: 10,
               }}
             >
-              <SubHeading
+              <StyledText
                 title="BETA"
                 style={{ color: "white", fontSize: 8, fontWeight: "600" }}
               />

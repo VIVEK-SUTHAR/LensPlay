@@ -10,7 +10,7 @@ import {
 import { dark_primary } from "../constants/Colors";
 import CopyIcon from "../components/svg/CopyIcon";
 import Heading from "../components/UI/Heading";
-import SubHeading from "../components/UI/SubHeading";
+import StyledText from "../components/UI/StyledText";
 import { RootStackScreenProps } from "../types/navigation/types";
 import * as Clipboard from "expo-clipboard";
 import { useToast } from "../store/Store";
@@ -82,7 +82,7 @@ export default function LeaderBoard({
             borderBottomColor: dark_primary,
           }}
         >
-          <SubHeading
+          <StyledText
             title="Your spot in line"
             style={{
               fontSize: 16,
@@ -119,7 +119,7 @@ export default function LeaderBoard({
             width: "48%",
           }}
         >
-          <SubHeading
+          <StyledText
             title="Points"
             style={{
               fontSize: 16,
@@ -145,7 +145,7 @@ export default function LeaderBoard({
             width: "48%",
           }}
         >
-          <SubHeading
+          <StyledText
             title="Refferal"
             style={{
               fontSize: 16,
@@ -171,7 +171,7 @@ export default function LeaderBoard({
             color: "white",
           }}
         />
-        <SubHeading
+        <StyledText
           title="Move up in the queue by inviting your friends with this link"
           style={{
             fontSize: 16,
@@ -206,7 +206,7 @@ export default function LeaderBoard({
           selectionColor={"black"}
           placeholderTextColor={"black"}
         />
-        {/* <SubHeading
+        {/* <StyledText
           title={route.params.refferalLink}
           style={{
             color: "black",

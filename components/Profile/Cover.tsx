@@ -18,7 +18,7 @@ import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
 import Heading from "../UI/Heading";
-import SubHeading from "../UI/SubHeading";
+import StyledText from "../UI/StyledText";
 import Button from "../UI/Button";
 type CoverProps = {
   url: string;
@@ -108,7 +108,7 @@ const Cover = ({ url, navigation }: CoverProps) => {
                 marginVertical: 4,
               }}
             />
-            <SubHeading
+            <StyledText
               title="By doing this,next time when you open LensPlay, you need to connect your wallet again."
               style={{
                 color: "gray",

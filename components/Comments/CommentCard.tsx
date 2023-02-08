@@ -7,7 +7,7 @@ import { CommentStats } from "../../types/Lens/Feed";
 import { useAuthStore, useProfile, useReactionStore } from "../../store/Store";
 import { addLike, freeMirror } from "../../api";
 import Heading from "../UI/Heading";
-import SubHeading from "../UI/SubHeading";
+import StyledText from "../UI/StyledText";
 import extractURLs from "../../utils/extractURL";
 import Button from "../UI/Button";
 import { primary } from "../../constants/Colors";
@@ -123,7 +123,7 @@ const CommentCard = ({
               style={{ fontSize: 12, color: "gray", marginTop: 2 }}
             />
 
-            <SubHeading
+            <StyledText
               title={isIndexing ? "Indexing..." : getDifference(commentTime)}
               style={{ fontSize: 10, color: "gray" }}
             />
