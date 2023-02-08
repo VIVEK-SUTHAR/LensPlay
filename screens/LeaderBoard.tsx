@@ -15,6 +15,9 @@ import { RootStackScreenProps } from "../types/navigation/types";
 import * as Clipboard from "expo-clipboard";
 import { useToast } from "../store/Store";
 import { ToastType } from "../types/Store";
+import { StatusBar } from "expo-status-bar";
+import RefferalIcon from "../components/svg/RefferalIcon";
+import PointsIcon from "../components/svg/PointsIcon";
 
 export default function LeaderBoard({
   navigation,
@@ -46,6 +49,7 @@ export default function LeaderBoard({
         alignItems: "center",
       }}
     >
+      <StatusBar style="light" backgroundColor="transparent" />
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Image
           source={require("../assets/images/icon.png")}
@@ -55,9 +59,10 @@ export default function LeaderBoard({
           title="LensPlay"
           style={{
             fontSize: 32,
-            fontWeight: "700",
-            textTransform: "uppercase",
+            fontWeight: "600",
             color: "white",
+            marginLeft: 4,
+            marginBottom: 8,
           }}
         />
       </View>
@@ -66,7 +71,7 @@ export default function LeaderBoard({
           width: "100%",
           paddingHorizontal: 16,
           paddingVertical: 24,
-          backgroundColor: "white",
+          backgroundColor: dark_primary,
           marginTop: 32,
           alignItems: "center",
           borderRadius: 8,
@@ -78,24 +83,26 @@ export default function LeaderBoard({
             alignItems: "center",
             borderTopWidth: 2,
             borderBottomWidth: 2,
-            borderTopColor: dark_primary,
-            borderBottomColor: dark_primary,
+            borderTopColor: "gray",
+            borderBottomColor: "gray",
           }}
         >
           <StyledText
             title="Your spot in line"
             style={{
-              fontSize: 16,
-              fontWeight: "700",
+              fontSize: 20,
+              fontWeight: "600",
               textTransform: "uppercase",
+              color: "white",
             }}
           />
           <Heading
             title={route.params.rankingPosition}
             style={{
-              fontSize: 32,
-              fontWeight: "700",
+              fontSize: 34,
+              fontWeight: "600",
               marginTop: 8,
+              color: "white",
             }}
           />
         </View>
@@ -112,52 +119,60 @@ export default function LeaderBoard({
         <View
           style={{
             padding: 16,
-            backgroundColor: "white",
+            backgroundColor: dark_primary,
             marginTop: 16,
             alignItems: "center",
             borderRadius: 8,
             width: "48%",
           }}
         >
+          <PointsIcon width={34} height={34} />
           <StyledText
             title="Points"
             style={{
               fontSize: 16,
               fontWeight: "600",
               textTransform: "uppercase",
+              color: "white",
+              marginTop: 8,
             }}
           />
           <Heading
             title={route.params.rankingPoints}
             style={{
               fontSize: 24,
-              fontWeight: "700",
+              fontWeight: "600",
+              color: "white",
             }}
           />
         </View>
         <View
           style={{
             padding: 16,
-            backgroundColor: "white",
+            backgroundColor: dark_primary,
             marginTop: 16,
             alignItems: "center",
             borderRadius: 8,
             width: "48%",
           }}
         >
+          <RefferalIcon width={34} height={34} />
           <StyledText
             title="Refferal"
             style={{
               fontSize: 16,
               fontWeight: "600",
               textTransform: "uppercase",
+              color: "white",
+              marginTop: 8,
             }}
           />
           <Heading
             title={route.params.referralsCount}
             style={{
               fontSize: 24,
-              fontWeight: "700",
+              fontWeight: "600",
+              color: "white",
             }}
           />
         </View>
@@ -166,8 +181,8 @@ export default function LeaderBoard({
         <Heading
           title="Go Ahead of the Heard"
           style={{
-            fontSize: 20,
-            fontWeight: "700",
+            fontSize: 24,
+            fontWeight: "600",
             color: "white",
           }}
         />
@@ -200,22 +215,12 @@ export default function LeaderBoard({
           style={{
             color: "black",
             fontSize: 16,
-            fontWeight: "700",
+            fontWeight: "600",
             width: "90%",
           }}
           selectionColor={"black"}
           placeholderTextColor={"black"}
         />
-        {/* <StyledText
-          title={route.params.refferalLink}
-          style={{
-            color: "black",
-            fontSize: 16,
-            fontWeight: "700",
-            width: "90%",
-          }}
-          numberOfLines={1}
-        /> */}
         <Pressable
           style={{ marginHorizontal: 8 }}
           onPress={async () => {
