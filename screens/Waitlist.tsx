@@ -1,15 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   BackHandler,
-  Image,
   KeyboardAvoidingView,
   Linking,
   Platform,
-  SafeAreaView,
   ScrollView,
-  Keyboard,
   TextInput,
   View,
 } from "react-native";
@@ -22,16 +19,6 @@ import { ToastType } from "../types/Store";
 import AnimatedLottieView from "lottie-react-native";
 import { StatusBar } from "expo-status-bar";
 import { useToast } from "../store/Store";
-interface fieldsData {
-  hasAccess: boolean;
-}
-interface userData {
-  referralsCount: number;
-  rankingPoints: number;
-  id: string;
-  fields: fieldsData;
-  rankingPosition: number;
-}
 
 export default function Waitlist({
   navigation,
@@ -120,7 +107,11 @@ export default function Waitlist({
             style={{
               width: "100%",
             }}
-            source={require("../assets/wait.json")}
+            source={
+              subscribed
+                ? require("../assets/waitlist.json")
+                : require("../assets/notInWaitlist.json")
+            }
           />
         </View>
         {subscribed ? (
@@ -147,7 +138,7 @@ export default function Waitlist({
               }}
             />
             <Button
-              title={"Check your position"}
+              title={"Get started"}
               onPress={() => {
                 setEmail("");
                 const isValid = isValidEmail(email);
@@ -158,12 +149,12 @@ export default function Waitlist({
                 }
               }}
               px={8}
-              py={16}
+              py={12}
               borderRadius={8}
               width={"auto"}
               type={"filled"}
               textStyle={{
-                fontSize: 20,
+                fontSize: 16,
                 fontWeight: "600",
                 color: "black",
               }}
@@ -173,12 +164,13 @@ export default function Waitlist({
         ) : (
           <View>
             <Heading
-              title="seems like you didn't joined waitlist"
+              title="seems like you have not yet joined waitlist"
               style={{
                 fontSize: 24,
                 color: "white",
                 marginVertical: 10,
                 textAlign: "center",
+                fontWeight: "600",
               }}
             />
             <Button
@@ -189,12 +181,14 @@ export default function Waitlist({
                 )
               }
               px={8}
-              py={16}
+              py={12}
+              borderRadius={8}
+              my={8}
               width={"auto"}
               type={"filled"}
               textStyle={{
-                fontSize: 20,
-                fontWeight: "700",
+                fontSize: 16,
+                fontWeight: "600",
                 color: "black",
               }}
               bg={primary}
