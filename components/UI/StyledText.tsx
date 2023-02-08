@@ -6,11 +6,12 @@ interface SubHeadingProps {
   title: string | undefined | React.ReactNode;
   style: StyleProp<TextStyle>;
   numberOfLines?: number;
+  onPress?: () => void;
 }
 
 SplashScreen.preventAutoHideAsync();
 
-const StyledText: FC<SubHeadingProps> = ({ title, style, ...rest }) => {
+const StyledText: FC<SubHeadingProps> = ({ title, style, onPress,...rest }) => {
   const [fontsLoaded] = useFonts({
     OpenSans_Regular: require("../../assets/fonts/OpenSans-Regular.ttf"),
     OpenSans_Medium: require("../../assets/fonts/OpenSans-Medium.ttf"),
@@ -46,7 +47,7 @@ const StyledText: FC<SubHeadingProps> = ({ title, style, ...rest }) => {
   });
 
   return (
-    <Text style={newStyle} {...rest} onLayout={onLayoutRootView}>
+    <Text style={newStyle} {...rest} onLayout={onLayoutRootView} onPress={onPress}>
       {title}
     </Text>
   );

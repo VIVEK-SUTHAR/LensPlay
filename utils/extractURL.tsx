@@ -3,6 +3,7 @@ import { Linking, Text } from "react-native";
 import { MENTION_REGEX, URL_REGEX } from "../constants";
 import { primary } from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
+import StyledText from "../components/UI/StyledText";
 
 /**
  *
@@ -15,15 +16,14 @@ function extractURLs(txt: string | undefined) {
   const renderText = (txt: string | undefined) =>
     txt?.split(" ").map((part, index) =>
       URL_REGEX.test(part) ? (
-        <Text
+        <StyledText
+          title={part+" "}
           key={index}
           style={{ color: primary, textDecorationLine: "underline" }}
           onPress={() => {
             Linking.openURL(part);
           }}
-        >
-          {part}{" "}
-        </Text>
+        />
       ) : (
         <>{checkIsLens(part)} </>
       )
@@ -31,7 +31,8 @@ function extractURLs(txt: string | undefined) {
   const checkIsLens = (string: string) => {
     if (MENTION_REGEX.test(string)) {
       return (
-        <Text
+        <StyledText
+          title={string}
           key={string}
           style={{ color: primary }}
           onPress={() => {
@@ -39,7 +40,7 @@ function extractURLs(txt: string | undefined) {
           }}
         >
           {string}
-        </Text>
+        </StyledText>
       );
     } else return string;
   };
