@@ -10,6 +10,7 @@ import {
 import React from "react";
 import SubHeading from "./SubHeading";
 import { useThemeStore } from "../../store/Store";
+import Heading from "./Heading";
 interface ButtonProps {
   title: string;
   type?: "outline" | "filled";
@@ -50,6 +51,11 @@ const Button = (props: ButtonProps): JSX.Element => {
     icon,
     ...rest
   } = props;
+
+  var newStyle = Object.assign({}, textStyle, {
+    textAlign: "center",
+  });
+
   return (
     <Pressable
       android_ripple={{
@@ -92,15 +98,7 @@ const Button = (props: ButtonProps): JSX.Element => {
         ) : (
           <>
             {icon}
-            <SubHeading
-              title={title}
-              style={[
-                textStyle,
-                {
-                  textAlign: "center",
-                },
-              ]}
-            />
+            <SubHeading title={title} style={newStyle} />
           </>
         )}
       </View>

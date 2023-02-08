@@ -132,6 +132,7 @@ export default function Waitlist({
               fontWeight: "500",
               fontSize: 16,
               marginBottom: 16,
+              fontFamily: "OpenSans_Medium",
             }}
           />
           <Button
@@ -151,7 +152,7 @@ export default function Waitlist({
             type={"filled"}
             textStyle={{
               fontSize: 20,
-              fontWeight: "700",
+              fontWeight: "600",
               color: "black",
             }}
             bg={primary}

@@ -77,7 +77,9 @@ function RootNavigator() {
       <Stack.Screen
         name="Waitlist"
         component={Waitlist}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+        }}
       />
       <Stack.Screen
         name="LeaderBoard"
