@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import React from "react";
 import { primary } from "../constants/Colors";
+import StyledText from "./UI/StyledText";
 
 const Create = () => {
   return (
@@ -37,7 +38,8 @@ const Create = () => {
             justifyContent: "center",
           }}
         >
-          <Text
+          <StyledText
+            title={"Start Livestream"}
             style={{
               color: "black",
               fontSize: 24,
@@ -45,8 +47,8 @@ const Create = () => {
               textAlign: "center",
             }}
           >
-            Start Livestream
-          </Text>
+           
+          </StyText>
         </View>
       </TouchableOpacity>
       <TouchableOpacity

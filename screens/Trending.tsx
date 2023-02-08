@@ -11,6 +11,7 @@ import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
 import { LensPublication } from "../types/Lens/Feed";
 import { RootTabScreenProps } from "../types/navigation/types";
+import StyledText from "../components/UI/StyledText";
 const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
   const [tags, setTags] = useState([
     {
@@ -118,15 +119,14 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
                 borderWidth: 1,
               }}
             >
-              <Text
+              <StyledText
+                title={item.name.replace(/_/g, " ")}
                 style={{
                   fontSize: 12,
                   fontWeight: "600",
                   color: "white",
                 }}
-              >
-                {item.name.replace(/_/g, " ")}
-              </Text>
+              />
             </Pressable>
           );
         })}

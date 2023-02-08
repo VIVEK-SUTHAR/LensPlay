@@ -7,6 +7,7 @@ import NotificationCardProps from "./index.d";
 import Avatar from "../UI/Avatar";
 import getIPFSLink from "../../utils/getIPFSLink";
 import FollowIcon from "../svg/FollowIcon";
+import StyledText from "../UI/StyledText";
 
 const FollowNotification: React.FC<NotificationCardProps> = ({
   navigation,
@@ -48,17 +49,20 @@ const FollowNotification: React.FC<NotificationCardProps> = ({
                 width={35}
               />
             </Pressable>
-            <Text style={{ color: "gray", fontSize: 14 }}>
-              <Text style={{ color: "white", fontWeight: "500" }}>
-                {notification?.wallet?.defaultProfile?.handle?.split(".")[0] ||
-                  formatAddress(notification?.wallet?.address)}{" "}
-              </Text>
-              followed you
-              <Text style={{ fontSize: 10, color: "gray" }}>
-                {" "}
-                {getDifference(notification?.createdAt)}
-              </Text>
-            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <StyledText
+                title={
+                  notification?.wallet?.defaultProfile?.handle?.split(".")[0] ||
+                  formatAddress(notification?.wallet?.address)
+                }
+                style={{ color: "white", fontWeight: "500" }}
+              />
+              <StyledText title={" followed you"} style={{ color: "gray" }} />
+              <StyledText
+                title={getDifference(notification?.createdAt)}
+                style={{ fontSize: 10, color: "gray" }}
+              />
+            </View>
           </View>
         </View>
       </View>

@@ -137,7 +137,7 @@ const Cover = ({ url, navigation }: CoverProps) => {
                   setIsModalOpen(false);
                 }}
               >
-                <Text style={{ color: "white" }}>Cancel</Text>
+                <StyledText title="Cancel" style={{ color: "white" }} />
               </Pressable>
               <Pressable
                 style={{
@@ -156,7 +156,7 @@ const Cover = ({ url, navigation }: CoverProps) => {
                   navigation.navigate("Login");
                 }}
               >
-                <Text style={{ color: "white" }}>Log-out</Text>
+                <StyledText title="Log out" style={{ color: "white" }} />
               </Pressable>
             </View>
           </View>

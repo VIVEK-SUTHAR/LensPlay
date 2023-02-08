@@ -6,6 +6,8 @@ import formatAddress from "../../utils/formatAddress";
 import Avatar from "../UI/Avatar";
 import { AntDesign } from "@expo/vector-icons";
 import extractURLs from "../../utils/extractURL";
+import StyledText from "../UI/StyledText";
+import { STATIC_ASSET } from "../../constants";
 
 const MirrorNotification = ({
   navigation,
@@ -35,26 +37,43 @@ const MirrorNotification = ({
               }}
             >
               <Avatar
-                src={notification?.profile?.picture?.original?.url}
+                src={
+                  notification?.profile?.picture?.original?.url || STATIC_ASSET
+                }
                 height={35}
                 width={35}
               />
             </Pressable>
-            <Text style={{ color: "gray", fontSize: 14 }}>
-              <Text style={{ color: "white", fontWeight: "600" }}>
-                {notification?.profile?.handle?.split(".")[0] ||
-                  formatAddress(notification?.wallet?.address)}{" "}
-              </Text>
-              mirrored your post
-              <Text style={{ fontSize: 10, color: "gray" }}>
-                {" "}
-                {getDifference(notification?.createdAt)}
-              </Text>
-            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <StyledText
+                title={
+                  notification?.profile?.handle?.split(".")[0] ||
+                  formatAddress(notification?.wallet?.address)
+                }
+                style={{ color: "white", fontWeight: "500" }}
+              />
+              <StyledText
+                title={` mirrored your ${
+                  notification?.publication?.__typename == "Post"
+                    ? "post"
+                    : notification?.publication?.__typename == "Comment"
+                    ? "comment"
+                    : "mirrored post"
+                }`}
+                style={{ color: "gray" }}
+              />
+              <StyledText
+                title={getDifference(notification?.createdAt)}
+                style={{ fontSize: 10, color: "gray" }}
+              />
+            </View>
             <View>
-              <Text style={{ color: "grey", fontSize: 12 }}>
-                {extractURLs(notification?.publication?.metadata?.description)}
-              </Text>
+              <StyledText
+                title={extractURLs(
+                  notification?.publication?.metadata?.description
+                )}
+                style={{ color: "grey", fontSize: 12 }}
+              />
             </View>
           </View>
         </View>
