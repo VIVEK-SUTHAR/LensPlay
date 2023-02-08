@@ -1,10 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { isValidElement, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   BackHandler,
   Image,
-  KeyboardAvoidingView,
   Linking,
   SafeAreaView,
   TextInput,
@@ -17,11 +16,10 @@ import { primary } from "../constants/Colors";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { useToast } from "../store/Store";
 import { ToastType } from "../types/Store";
-
+import AnimatedLottieView from "lottie-react-native";
 interface fieldsData {
   hasAccess: boolean;
 }
-
 interface userData {
   referralsCount: number;
   rankingPoints: number;
@@ -92,15 +90,26 @@ export default function Waitlist({
       style={{
         flex: 1,
         backgroundColor: "black",
-        justifyContent: "center",
         alignItems: "center",
       }}
     >
-      <View style={{ width: "100%", marginBottom: 48 }}>
-        <Image
-          source={require("../assets/images/waitlist.png")}
-          resizeMode="contain"
-          style={{ width: "100%", height: 300 }}
+      <View
+        style={{
+          width: "100%",
+          marginBottom: 48,
+          paddingVertical: 96,
+          borderBottomLeftRadius: 34,
+          borderBottomRightRadius: 34,
+          backgroundColor: "white",
+        }}
+      >
+        <AnimatedLottieView
+          autoPlay
+          autoSize
+          style={{
+            width: "100%",
+          }}
+          source={require("../assets/wait.json")}
         />
       </View>
       {subscribed ? (
