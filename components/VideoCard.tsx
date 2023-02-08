@@ -118,9 +118,10 @@ const VideoCard = ({
               borderRadius: 4,
             }}
           >
-            <Text style={{ color: "white", fontSize: 12 }}>
-              {formatTime(videoTime)}
-            </Text>
+            <StyledText
+              title={formatTime(videoTime)}
+              style={{ color: "white", fontSize: 12 }}>
+            </StyledText>
           </View>
         ) : (
           <></>

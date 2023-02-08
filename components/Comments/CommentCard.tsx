@@ -131,16 +131,16 @@ const CommentCard = ({
         </View>
 
         {/* <Hyperlink linkDefault={true} linkStyle={ { color: '#2980b9' } }> */}
-        <Text
+        <StyledText
           style={{
             fontSize: 14,
             color: "white",
             fontWeight: "600",
             marginTop: 4,
           }}
+         title={extractURLs(commentText)}
         >
-          {extractURLs(commentText)}
-        </Text>
+        </StyledText>
         <View
           style={{
             flexDirection: "row",
