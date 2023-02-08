@@ -1,10 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Alert,
   BackHandler,
+  Image,
+  KeyboardAvoidingView,
   Linking,
+  Platform,
   SafeAreaView,
+  ScrollView,
+  Keyboard,
   TextInput,
   View,
 } from "react-native";
@@ -13,9 +18,10 @@ import Button from "../components/UI/Button";
 import Heading from "../components/UI/Heading";
 import { primary } from "../constants/Colors";
 import { RootStackScreenProps } from "../types/navigation/types";
-import { useToast } from "../store/Store";
 import { ToastType } from "../types/Store";
 import AnimatedLottieView from "lottie-react-native";
+import { StatusBar } from "expo-status-bar";
+import { useToast } from "../store/Store";
 interface fieldsData {
   hasAccess: boolean;
 }
@@ -32,6 +38,7 @@ export default function Waitlist({
 }: RootStackScreenProps<"Waitlist">) {
   const [email, setEmail] = useState<string>("");
   const [subscribed, setSubscribed] = useState<boolean>(true);
+
   const toast = useToast();
 
   useEffect(() => {
@@ -85,109 +92,115 @@ export default function Waitlist({
   };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: "black",
-        alignItems: "center",
-      }}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1, backgroundColor: "black" }}
     >
-      <View
-        style={{
-          width: "100%",
-          marginBottom: 48,
-          paddingVertical: 96,
-          borderBottomLeftRadius: 34,
-          borderBottomRightRadius: 34,
-          backgroundColor: "white",
+      <ScrollView
+        contentContainerStyle={{
+          justifyContent: "center",
+          alignItems: "center",
         }}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
       >
-        <AnimatedLottieView
-          autoPlay
-          autoSize
+        <StatusBar style="dark" backgroundColor="transparent" />
+        <View
           style={{
-            width: "100%",
+            marginBottom: 48,
+            paddingVertical: 96,
+            borderBottomLeftRadius: 34,
+            borderBottomRightRadius: 34,
+            backgroundColor: "white",
           }}
-          source={require("../assets/wait.json")}
-        />
-      </View>
-      {subscribed ? (
-        <View style={{ width: "80%" }}>
-          <TextInput
-            selectionColor={"black"}
-            placeholder="Enter your email"
-            placeholderTextColor={"black"}
-            value={email}
-            onChange={(e) => {
-              setEmail(e.nativeEvent.text);
-            }}
+        >
+          <AnimatedLottieView
+            autoPlay
+            autoSize
             style={{
               width: "100%",
-              color: "black",
-              backgroundColor: "white",
-              borderRadius: 50,
-              paddingHorizontal: 16,
-              paddingVertical: 8,
-              fontWeight: "500",
-              fontSize: 16,
-              marginBottom: 16,
-              fontFamily: "OpenSans_Medium",
             }}
+            source={require("../assets/wait.json")}
           />
-          <Button
-            title={"Check your Position 👀"}
-            onPress={() => {
-              setEmail("");
-              const isValid = isValidEmail(email);
-              if (isValid) {
-                handleUser(email);
-              } else {
-                toast.show("Please enter valid email", ToastType.ERROR, true);
+        </View>
+        {subscribed ? (
+          <View style={{ width: "80%" }}>
+            <TextInput
+              selectionColor={"black"}
+              placeholder="Enter your email"
+              placeholderTextColor={"black"}
+              value={email}
+              onChange={(e) => {
+                setEmail(e.nativeEvent.text);
+              }}
+              style={{
+                width: "100%",
+                color: "black",
+                backgroundColor: "white",
+                borderRadius: 50,
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+                fontWeight: "500",
+                fontSize: 16,
+                marginBottom: 16,
+                fontFamily: "OpenSans_Medium",
+              }}
+            />
+            <Button
+              title={"Check your Position 👀"}
+              onPress={() => {
+                setEmail("");
+                const isValid = isValidEmail(email);
+                if (isValid) {
+                  handleUser(email);
+                } else {
+                  toast.show("Please enter valid email", ToastType.ERROR, true);
+                }
+              }}
+              px={8}
+              py={16}
+              width={"auto"}
+              type={"filled"}
+              textStyle={{
+                fontSize: 20,
+                fontWeight: "600",
+                color: "black",
+              }}
+              bg={primary}
+            />
+          </View>
+        ) : (
+          <View>
+            <Heading
+              title="seems like you didn't joined waitlist"
+              style={{
+                fontSize: 24,
+                color: "white",
+                marginVertical: 10,
+                textAlign: "center",
+              }}
+            />
+            <Button
+              title={"Join waitlist"}
+              onPress={() =>
+                Linking.openURL(
+                  "https://form.waitlistpanda.com/go/WzNdl6Tusvm3k89B3yKL"
+                )
               }
-            }}
-            px={8}
-            py={16}
-            width={"auto"}
-            type={"filled"}
-            textStyle={{
-              fontSize: 20,
-              fontWeight: "600",
-              color: "black",
-            }}
-            bg={primary}
-          />
-        </View>
-      ) : (
-        <View>
-          <Heading
-            title="seems like you didn't joined waitlist"
-            style={{
-              fontSize: 24,
-              color: "white",
-              marginVertical: 10,
-              textAlign: "center",
-            }}
-          />
-          <Button
-            title={"Join waitlist"}
-            onPress={() =>
-              Linking.openURL(
-                "https://form.waitlistpanda.com/go/WzNdl6Tusvm3k89B3yKL"
-              )
-            }
-            px={8}
-            py={16}
-            width={"auto"}
-            type={"filled"}
-            textStyle={{
-              fontSize: 20,
-              fontWeight: "700",
-              color: "black",
-            }}
-            bg={primary}
-          />
-        </View>
-      )}
-    </SafeAreaView>
+              px={8}
+              py={16}
+              width={"auto"}
+              type={"filled"}
+              textStyle={{
+                fontSize: 20,
+                fontWeight: "700",
+                color: "black",
+              }}
+              bg={primary}
+            />
+          </View>
+        )}
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
