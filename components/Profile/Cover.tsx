@@ -153,7 +153,7 @@ const Cover = ({ url, navigation }: CoverProps) => {
                   setIsModalOpen(false);
                   await AsyncStorage.removeItem("@storage_Key");
                   await Wallet.killSession();
-                  navigation.navigate("Login");
+                  navigation.replace("Login");
                 }}
               >
                 <StyledText title="Log out" style={{ color: "white" }} />

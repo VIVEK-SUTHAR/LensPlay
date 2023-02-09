@@ -23,7 +23,6 @@ import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
 import storeData from "../utils/storeData";
 import searchUser from "../api/zooTools/searchUser";
-
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const connector = useWalletConnect();
   const authStore = useAuthStore();

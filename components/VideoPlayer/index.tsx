@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { setStatusBarHidden } from "expo-status-bar";
 import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ResizeMode } from "expo-av";
@@ -85,7 +85,6 @@ function Player({
               paddingVertical: 8,
             }}
           />
-
           {/* <Feather
             name="settings"
             size={26}

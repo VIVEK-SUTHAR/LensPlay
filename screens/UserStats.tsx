@@ -238,7 +238,7 @@ const SubscriptionsList = ({ isSubscribers, setScreen }: TabProps) => {
                   profileIcon={item?.profile?.picture?.original?.url}
                   profileId={item?.profile?.id}
                   owner={item?.profile?.handle}
-                  isFollowed={true}
+                  isFollowed={item?.profile?.isFollowedByMe}
                 />
               );
             }}

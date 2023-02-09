@@ -30,7 +30,7 @@ type videoPageProp = {
   description: string;
   width?: string | number;
   height?: number;
-  attributes: Attribute[];
+  attributes: Attribute | Attribute[];
   ethAddress?: string;
 };
 
