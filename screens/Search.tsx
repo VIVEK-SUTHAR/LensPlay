@@ -1,6 +1,7 @@
 import {
   Dimensions,
   Platform,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -20,6 +21,8 @@ import ProfileCard from "../components/ProfileCard";
 import useDebounce from "../hooks/useDebounce";
 import { EvilIcons, Feather, MaterialIcons } from "@expo/vector-icons";
 import StyledText from "../components/UI/StyledText";
+import { dark_primary } from "../constants/Colors";
+import BackIcon from "../components/svg/BackIcon";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const theme = useThemeStore();
@@ -83,20 +86,17 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
               paddingHorizontal: 8,
             }}
           >
-            <MaterialIcons
-              name={Platform.OS === "android" ? "arrow-back" : "arrow-back-ios"}
-              color={"white"}
-              size={24}
+            <Pressable
               onPress={(e) => {
                 e.preventDefault();
                 navigation.goBack();
               }}
-              style={{
-                marginHorizontal: 2,
-              }}
-            />
+              style={{ marginRight: 8 }}
+            >
+              <BackIcon height={24} width={24} />
+            </Pressable>
             <TextInput
-              placeholder="Enter profile name..."
+              placeholder="Search by channel"
               placeholderTextColor={"white"}
               selectionColor={"white"}
               onChange={(e) => {
@@ -105,13 +105,12 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
               }}
               autoFocus={true}
               style={{
-                backgroundColor: "#232323",
+                backgroundColor: dark_primary,
                 flex: 1,
                 color: "white",
-                borderColor: "white",
                 borderWidth: 1,
-                paddingHorizontal: 12,
-                paddingVertical: 2,
+                paddingHorizontal: 16,
+                paddingVertical: 4,
                 borderRadius: 50,
               }}
             />

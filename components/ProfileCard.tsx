@@ -4,6 +4,7 @@ import { TouchableWithoutFeedback, View } from "react-native";
 import { dark_primary } from "../constants/Colors";
 import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
+import StyledText from "./UI/StyledText";
 
 type ProfileCardProps = {
   profileIcon: string;
@@ -62,7 +63,7 @@ export default function ProfileCard({
               }}
             />
           )}
-          <Heading
+          <StyledText
             title={handle}
             style={{
               color: profileName ? "gray" : "white",
