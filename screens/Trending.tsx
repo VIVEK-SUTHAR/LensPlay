@@ -13,7 +13,7 @@ import { LensPublication } from "../types/Lens/Feed";
 import { RootTabScreenProps } from "../types/navigation/types";
 import StyledText from "../components/UI/StyledText";
 const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
-  const [tags, setTags] = useState([
+  const tags = [
     {
       name: "LATEST",
       active: true,
@@ -34,7 +34,7 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
       name: "CURATED_PROFILES",
       active: false,
     },
-  ]);
+  ];
 
   const [currentTag, setCurrentTag] = useState<{
     name: string;
@@ -82,7 +82,7 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
           height: 60,
           paddingVertical: 8,
           maxHeight: 60,
-          paddingStart: 2,
+          marginLeft: 10,
         }}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -91,8 +91,7 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
           return (
             <Pressable
               android_ripple={{
-                color: theme.PRIMARY,
-                radius: 25,
+                color: "transparent",
               }}
               onTouchEndCapture={() => {
                 setCurrentTag(tags[index]);
@@ -107,12 +106,12 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
                   currentTag.name === item.name ? theme.PRIMARY : "transparent"
                 }`,
                 width: "auto",
-                height: "auto",
+                maxHeight: 34,
                 paddingHorizontal: 12,
                 paddingVertical: 6,
                 justifyContent: "center",
                 alignItems: "center",
-                borderRadius: 20,
+                borderRadius: 16,
                 borderColor: `${
                   currentTag.name === item.name ? theme.PRIMARY : "white"
                 }`,
@@ -123,7 +122,7 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
                 title={item.name.replace(/_/g, " ")}
                 style={{
                   fontSize: 12,
-                  fontWeight: "600",
+                  fontWeight: "500",
                   color: "white",
                 }}
               />
