@@ -14,7 +14,7 @@ import { dark_primary, primary } from "../../constants/Colors";
 import Avatar from "../UI/Avatar";
 
 type CommentCardProps = {
-  avatar: string | undefined;
+  avatar: string;
   username: string;
   commentText: string;
   commentTime: string;
@@ -46,6 +46,8 @@ const CommentCard = ({
   const userStore = useProfile();
   const likedComments = reactions.likedComments;
 
+  console.log(id, name);
+
   const setLike = async () => {
     if (isIndexing) return;
     if (!isalreadyDisLiked) {
@@ -73,7 +75,6 @@ const CommentCard = ({
 
   return (
     <View
-      key={commentId}
       style={{
         flexDirection: "row",
         backgroundColor: "black",
@@ -83,38 +84,23 @@ const CommentCard = ({
         marginVertical: 4,
       }}
     >
-      <View
+      <Pressable
+        onPress={() => {
+          navigation.navigate("Channel", {
+            profileId: id,
+            isFollowdByMe: isFollowdByMe,
+          });
+        }}
         style={{
-          height: 40,
-          width: 40,
           marginRight: 8,
         }}
       >
-        <Pressable
-          onPress={() => {
-            navigation.navigate("Channel", {
-              profileId: id,
-              isFollowdByMe: isFollowdByMe,
-            });
-          }}
-        >
-          <Image
-            style={{
-              height: "100%",
-              width: "100%",
-              borderRadius: 50,
-              resizeMode: "contain",
-            }}
-            source={{
-              uri: `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`,
-            }}
-          />
-        </Pressable>
-      </View>
+        <Avatar src={avatar} height={40} width={40} />
+      </Pressable>
       <View style={{ flex: 1 }}>
         <View>
           <Heading
-            title={name}
+            title={name || id}
             style={{ fontSize: 14, color: "white", fontWeight: "500" }}
           />
           <View
@@ -129,13 +115,11 @@ const CommentCard = ({
               style={{ fontSize: 12, color: "gray", marginTop: 2 }}
             />
             <StyledText
-              title={isIndexing ? "Indexing..." : getDifference(commentTime)}
+              title={isIndexing ? "Indexing" : getDifference(commentTime)}
               style={{ fontSize: 10, color: "gray" }}
             />
           </View>
         </View>
-
-        {/* <Hyperlink linkDefault={true} linkStyle={ { color: '#2980b9' } }> */}
         <StyledText
           style={{
             fontSize: 14,
@@ -143,9 +127,8 @@ const CommentCard = ({
             fontWeight: "600",
             marginTop: 4,
           }}
-         title={extractURLs(commentText)}
-        >
-        </StyledText>
+          title={extractURLs(commentText)}
+        ></StyledText>
         <View
           style={{
             flexDirection: "row",
