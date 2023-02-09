@@ -168,10 +168,11 @@ const ProfileScreen = ({
                         marginHorizontal: 4,
                         color: "black",
                       }}
-                      onPress={() => {
-                        Linking.openURL(
-                          `https://www.lensfrens.xyz/${userStore.currentProfile?.handle}`
-                        );
+                        onPress={() => {
+                          navigation.navigate("EditProfile");
+                        // Linking.openURL(
+                        //   `https://www.lensfrens.xyz/${userStore.currentProfile?.handle}`
+                        // );
                       }}
                     />
                   </View>

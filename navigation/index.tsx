@@ -5,11 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import {
-  Image,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { Image, TouchableWithoutFeedback, View } from "react-native";
 import VideoPage from "../screens/VideoPage";
 import Feed from "../screens/Feed";
 import Login from "../screens/Login";
@@ -44,6 +40,7 @@ import LinkingVideo from "../screens/LinkingVideo";
 import { dark_primary } from "../constants/Colors";
 import UserStats from "../screens/UserStats";
 import LeaderBoard from "../screens/LeaderBoard";
+import EditProfile from "../screens/EditProfile";
 
 export default function Navigation() {
   return (
@@ -145,6 +142,15 @@ function RootNavigator() {
       <Stack.Screen
         name="UserStats"
         component={UserStats}
+        options={{
+          animation: "slide_from_right",
+          headerShown: true,
+          headerTintColor: theme.PRIMARY,
+        }}
+      />
+      <Stack.Screen
+        name="EditProfile"
+        component={EditProfile}
         options={{
           animation: "slide_from_right",
           headerShown: true,

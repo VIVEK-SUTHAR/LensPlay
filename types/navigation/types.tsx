@@ -61,6 +61,11 @@ export type RootStackParamList = {
   NotFound: undefined;
   Login: undefined;
   Waitlist: undefined;
+  EditProfile: {
+    handle: string;
+    name: string;
+    bio: string;
+  };
   LeaderBoard: {
     referralsCount: number;
     rankingPoints: number;
