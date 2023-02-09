@@ -2,6 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { TouchableWithoutFeedback, View } from "react-native";
 import { dark_primary } from "../constants/Colors";
+import formatHandle from "../utils/formatHandle";
 import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
 import StyledText from "./UI/StyledText";
@@ -64,7 +65,7 @@ export default function ProfileCard({
             />
           )}
           <StyledText
-            title={handle}
+            title={formatHandle(handle)}
             style={{
               color: profileName ? "gray" : "white",
               fontSize: profileName ? 12 : 16,

@@ -33,6 +33,7 @@ import getPublications from "../apollo/Queries/getPublications";
 import CollectedVideos from "../components/Profile/CollectedVideos";
 import { Entypo, Feather } from "@expo/vector-icons";
 import VERIFIED_CHANNELS from "../constants/Varified";
+import formatHandle from "../utils/formatHandle";
 const ProfileScreen = ({
   navigation,
   route,
@@ -217,7 +218,7 @@ const ProfileScreen = ({
                         )}
                       </View>
                       <StyledText
-                        title={`@${profile?.handle}`}
+                        title={formatHandle(profile?.handle)}
                         style={{
                           fontSize: 14,
                           lineHeight: 16,
