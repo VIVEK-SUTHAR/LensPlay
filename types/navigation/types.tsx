@@ -4,6 +4,7 @@ import {
   NavigatorScreenParams,
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Profile } from "../Lens/index";
 import { LensPublication, VideoPageStats } from "../Lens/Feed";
 
 /**
@@ -62,9 +63,7 @@ export type RootStackParamList = {
   Login: undefined;
   Waitlist: undefined;
   EditProfile: {
-    handle: string;
-    name: string;
-    bio: string;
+    profile: Profile | null;
   };
   LeaderBoard: {
     referralsCount: number;

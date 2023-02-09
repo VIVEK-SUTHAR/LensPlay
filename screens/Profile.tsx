@@ -169,8 +169,10 @@ const ProfileScreen = ({
                         marginHorizontal: 4,
                         color: "black",
                       }}
-                        onPress={() => {
-                          navigation.navigate("EditProfile");
+                      onPress={() => {
+                        navigation.navigate("EditProfile", {
+                          profile: profile,
+                        });
                         // Linking.openURL(
                         //   `https://www.lensfrens.xyz/${userStore.currentProfile?.handle}`
                         // );
