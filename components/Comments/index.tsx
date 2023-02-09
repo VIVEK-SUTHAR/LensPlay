@@ -4,7 +4,7 @@ import { useComments } from "../../hooks/useFeed";
 import Heading from "../UI/Heading";
 import AnimatedLottieView from "lottie-react-native";
 import CommentSkeleton from "../UI/CommentSkeleton";
-import SubHeading from "../UI/SubHeading";
+import StyledText from "../UI/StyledText";
 import { Comments } from "../../types/Lens/Feed";
 import CommentCard from "./CommentCard";
 
@@ -24,7 +24,7 @@ const Comment = ({ publicationId }: { publicationId: string }) => {
       <SafeAreaView>
         <ScrollView>
           <View>
-            <SubHeading
+            <StyledText
               title="Comments"
               style={{
                 fontSize: 20,

@@ -13,6 +13,9 @@ import { useProfile, useThemeStore } from "../store/Store";
 import { useFollowers } from "../hooks/useFeed";
 import ProfileCard from "../components/ProfileCard";
 import { useFollowing } from "../hooks/useFeed";
+import StyledText from "../components/UI/StyledText";
+import Heading from "../components/UI/Heading";
+import { Feather } from "@expo/vector-icons";
 
 const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
   const [headerTitle, setHeaderTitle] = useState<string>("Subscribers");
@@ -22,7 +25,36 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: "Your " + headerTitle,
+      headerTitle: "",
+      headerLeft: () => {
+        return (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Feather
+              name="arrow-left"
+              color={theme.PRIMARY}
+              size={22}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
+            <Heading
+              title={`Your ${headerTitle}`}
+              style={{
+                color: theme.PRIMARY,
+                fontSize: 22,
+                fontWeight: "500",
+                marginHorizontal: 4,
+              }}
+            />
+          </View>
+        );
+      },
     });
   });
 
@@ -46,14 +78,13 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
             setHeaderTitle("Subscribers");
           }}
         >
-          <Text
+          <StyledText
+            title="Subscribers"
             style={{
               color: isSubscribers ? theme.PRIMARY : "white",
               fontWeight: isSubscribers ? "700" : "400",
             }}
-          >
-            Subscribers
-          </Text>
+          ></StyledText>
         </Pressable>
         <Pressable
           android_ripple={{
@@ -72,14 +103,13 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
             setHeaderTitle("Subscriptions");
           }}
         >
-          <Text
+          <StyledText
+            title="Subscriptions"
             style={{
               color: !isSubscribers ? theme.PRIMARY : "white",
               fontWeight: !isSubscribers ? "700" : "400",
             }}
-          >
-            Subscriptions
-          </Text>
+          />
         </Pressable>
       </View>
       {isSubscribers ? (

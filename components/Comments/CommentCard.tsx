@@ -7,7 +7,7 @@ import { CommentStats } from "../../types/Lens/Feed";
 import { useAuthStore, useProfile, useReactionStore } from "../../store/Store";
 import { addLike, freeMirror } from "../../api";
 import Heading from "../UI/Heading";
-import SubHeading from "../UI/SubHeading";
+import StyledText from "../UI/StyledText";
 import extractURLs from "../../utils/extractURL";
 import Button from "../UI/Button";
 import { dark_primary, primary } from "../../constants/Colors";
@@ -128,7 +128,7 @@ const CommentCard = ({
               title={`@${username}`}
               style={{ fontSize: 12, color: "gray", marginTop: 2 }}
             />
-            <SubHeading
+            <StyledText
               title={isIndexing ? "Indexing..." : getDifference(commentTime)}
               style={{ fontSize: 10, color: "gray" }}
             />
@@ -136,16 +136,16 @@ const CommentCard = ({
         </View>
 
         {/* <Hyperlink linkDefault={true} linkStyle={ { color: '#2980b9' } }> */}
-        <Text
+        <StyledText
           style={{
             fontSize: 14,
             color: "white",
             fontWeight: "600",
             marginTop: 4,
           }}
+         title={extractURLs(commentText)}
         >
-          {extractURLs(commentText)}
-        </Text>
+        </StyledText>
         <View
           style={{
             flexDirection: "row",

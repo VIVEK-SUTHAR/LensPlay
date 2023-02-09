@@ -1,13 +1,13 @@
 import { Pressable, Text, View } from "react-native";
 import React from "react";
 import NotificationCardProps from "./index.d";
-import { AntDesign } from "@expo/vector-icons";
 import Avatar from "../UI/Avatar";
 import getIPFSLink from "../../utils/getIPFSLink";
 import formatAddress from "../../utils/formatAddress";
 import getDifference from "../../utils/getDifference";
 import extractURLs from "../../utils/extractURL";
 import LikeIcon from "../svg/LikeIcon";
+import StyledText from "../UI/StyledText";
 
 const ReactionNotification: React.FC<NotificationCardProps> = ({
   navigation,
@@ -24,7 +24,6 @@ const ReactionNotification: React.FC<NotificationCardProps> = ({
           alignItems: "center",
         }}
       >
-        {/* <AntDesign name="heart" size={24} color={"#E60073"} /> */}
         <LikeIcon filled={true} width={24} height={24} />
       </View>
       <View style={{ flex: 1 }}>
@@ -43,26 +42,36 @@ const ReactionNotification: React.FC<NotificationCardProps> = ({
                 width={35}
               />
             </Pressable>
-            <Text style={{ color: "gray", fontSize: 14 }}>
-              <Text style={{ color: "white", fontWeight: "600" }}>
-                {notification?.profile?.handle?.split(".")[0] ||
-                  formatAddress(notification?.wallet?.address)}{" "}
-              </Text>
-              liked your{" "}
-              {notification?.publication?.__typename == "Post"
-                ? "post"
-                : notification?.publication?.__typename == "Comment"
-                ? "comment"
-                : "mirrored post"}
-              <Text style={{ fontSize: 10, color: "gray" }}>
-                {" "}
-                {getDifference(notification?.createdAt)}
-              </Text>
-            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <StyledText
+                title={
+                  notification?.profile?.handle?.split(".")[0] ||
+                  formatAddress(notification?.wallet?.address)
+                }
+                style={{ color: "white", fontWeight: "500" }}
+              />
+              <StyledText
+                title={` liked your ${
+                  notification?.publication?.__typename == "Post"
+                    ? "post"
+                    : notification?.publication?.__typename == "Comment"
+                    ? "comment"
+                    : "mirrored post"
+                }`}
+                style={{ color: "gray" }}
+              />
+              <StyledText
+                title={getDifference(notification?.createdAt)}
+                style={{ fontSize: 10, color: "gray" }}
+              />
+            </View>
             <View>
-              <Text style={{ color: "grey", fontSize: 12 }}>
-                {extractURLs(notification?.publication?.metadata?.description)}
-              </Text>
+              <StyledText
+                title={extractURLs(
+                  notification?.publication?.metadata?.description
+                )}
+                style={{ fontSize: 12, color: "gray" }}
+              />
             </View>
           </View>
         </View>

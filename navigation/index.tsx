@@ -23,11 +23,12 @@ import Notification from "../screens/Notification";
 import UploadVideo from "../screens/UploadVideo";
 import Search from "../screens/Search";
 import Heading from "../components/UI/Heading";
-import SubHeading from "../components/UI/SubHeading";
+import StyledText from "../components/UI/StyledText";
 import Channel from "../screens/Channel";
 import { useProfile, useThemeStore } from "../store/Store";
 import ProfileScreen from "../screens/Profile";
 import UserVideos from "../screens/UserVideos";
+import Waitlist from "../screens/Waitlist";
 import {
   HOME_FILLED,
   HOME_OUTLINE,
@@ -42,6 +43,7 @@ import linking from "./LinkingConfiguration";
 import LinkingVideo from "../screens/LinkingVideo";
 import { dark_primary } from "../constants/Colors";
 import UserStats from "../screens/UserStats";
+import LeaderBoard from "../screens/LeaderBoard";
 
 export default function Navigation() {
   return (
@@ -67,6 +69,18 @@ function RootNavigator() {
       }}
       initialRouteName={"Root"}
     >
+      <Stack.Screen
+        name="Waitlist"
+        component={Waitlist}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="LeaderBoard"
+        component={LeaderBoard}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="Login"
         component={Login}
@@ -190,7 +204,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                 borderRadius: 10,
               }}
             >
-              <SubHeading
+              <StyledText
                 title="BETA"
                 style={{ color: "white", fontSize: 8, fontWeight: "600" }}
               />

@@ -8,6 +8,7 @@ import * as ScreenOrientation from "expo-screen-orientation";
 import VideoPlayer from "expo-video-player";
 import getIPFSLink from "../../utils/getIPFSLink";
 import { PLAY_FILLED } from "../Icons";
+import StyledText from "../UI/StyledText";
 
 interface VideoPlayerProps {
   url: string;
@@ -28,8 +29,6 @@ function Player({
   setInFullscreen,
   setIsMute,
 }: VideoPlayerProps) {
-  const [watchTime, setWatchTime] = useState(0);
-
   return (
     <VideoPlayer
       style={{
@@ -76,7 +75,8 @@ function Player({
             justifyContent: "space-between",
           }}
         >
-          <Text
+          <StyledText
+            title={inFullscreen ? title : ""}
             style={{
               color: "white",
               paddingHorizontal: 20,
@@ -84,9 +84,7 @@ function Player({
               fontWeight: "600",
               paddingVertical: 8,
             }}
-          >
-            {inFullscreen ? title : ""}
-          </Text>
+          />
           {/* <Feather
             name="settings"
             size={26}
@@ -134,9 +132,6 @@ function Player({
         exitMute: () => setIsMute(!isMute),
         isMute,
         visible: false,
-      }}
-      playbackCallback={(s) => {
-        setWatchTime(s.positionMillis);
       }}
     />
   );

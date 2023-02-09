@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import getIPFSLink from "../utils/getIPFSLink";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Heading from "../components/UI/Heading";
-import SubHeading from "../components/UI/SubHeading";
+import StyledText from "../components/UI/StyledText";
 import VideoCard from "../components/VideoCard";
 import { useAuthStore, useThemeStore, useToast } from "../store/Store";
 import { client } from "../apollo/client";
@@ -300,7 +300,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                           </View>
                         )}
                       </View>
-                      <SubHeading
+                      <StyledText
                         title={`@${profile?.handle}`}
                         style={{
                           fontSize: 14,
@@ -312,7 +312,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     </View>
                   </View>
                   {profile?.bio ? (
-                    <SubHeading
+                    <StyledText
                       title={extractURLs(profile?.bio)}
                       style={{
                         fontSize: 16,
@@ -340,7 +340,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                         paddingHorizontal: 16,
                       }}
                     >
-                      <SubHeading
+                      <StyledText
                         title={`${profile?.stats?.totalFollowers} • Subscribers`}
                         style={{ fontSize: 16, fontWeight: "600" }}
                       />
@@ -351,7 +351,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                           width: 2,
                         }}
                       ></View>
-                      <SubHeading
+                      <StyledText
                         title={`${allVideos?.length} • Videos`}
                         style={{ fontSize: 16, fontWeight: "600" }}
                       />

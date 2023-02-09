@@ -1,22 +1,22 @@
+import { useFonts } from "expo-font";
 import React, { FC, useCallback } from "react";
 import { StyleProp, Text, TextStyle } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
-import { useFonts } from "expo-font";
-
-interface HeadingProps {
-  title: string | React.ReactNode;
+interface SubHeadingProps {
+  title: string | undefined | React.ReactNode;
   style: StyleProp<TextStyle>;
   numberOfLines?: number;
+  onPress?: () => void;
 }
 
 SplashScreen.preventAutoHideAsync();
 
-const Heading: FC<HeadingProps> = ({ title, style, ...rest }) => {
+const StyledText: FC<SubHeadingProps> = ({ title, style, onPress,...rest }) => {
   const [fontsLoaded] = useFonts({
-    Raleway_Regular: require("../../assets/fonts/Raleway-Regular.ttf"),
-    Raleway_Medium: require("../../assets/fonts/Raleway-Medium.ttf"),
-    Raleway_SemiBold: require("../../assets/fonts/Raleway-SemiBold.ttf"),
-    Raleway_Bold: require("../../assets/fonts/Raleway-Bold.ttf"),
+    OpenSans_Regular: require("../../assets/fonts/OpenSans-Regular.ttf"),
+    OpenSans_Medium: require("../../assets/fonts/OpenSans-Medium.ttf"),
+    OpenSans_SemiBold: require("../../assets/fonts/OpenSans-SemiBold.ttf"),
+    OpenSans_Bold: require("../../assets/fonts/OpenSans-Bold.ttf"),
   });
 
   const onLayoutRootView = useCallback(async () => {
@@ -32,13 +32,13 @@ const Heading: FC<HeadingProps> = ({ title, style, ...rest }) => {
   const getFontFamily = (fontWeight: number) => {
     switch (fontWeight) {
       case 700:
-        return "Raleway_Bold";
+        return "OpenSans_Bold";
       case 600:
-        return "Raleway_SemiBold";
+        return "OpenSans_SemiBold";
       case 500:
-        return "Raleway_Medium";
+        return "OpenSans_Medium";
       default:
-        return "Raleway_Regular";
+        return "OpenSans_Regular";
     }
   };
 
@@ -47,10 +47,10 @@ const Heading: FC<HeadingProps> = ({ title, style, ...rest }) => {
   });
 
   return (
-    <Text style={newStyle} {...rest} onLayout={onLayoutRootView}>
+    <Text style={newStyle} {...rest} onLayout={onLayoutRootView} onPress={onPress}>
       {title}
     </Text>
   );
 };
 
-export default Heading;
+export default StyledText;

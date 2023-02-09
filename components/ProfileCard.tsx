@@ -20,58 +20,58 @@ export default function ProfileCard({
   handle,
   owner,
   profileId,
-  isFollowed
+  isFollowed,
 }: ProfileCardProps) {
   const navigation = useNavigation();
   return (
     <TouchableWithoutFeedback
-    onPress={() => {
-      console.log('touch');
-      
-      navigation.navigate("Channel", {
-        profileId: profileId,
-        isFollowdByMe: isFollowed,
-        name: profileName,
-        ethAddress: owner,
-      });
-    }}
-  >
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        padding: 10,
-        marginVertical: 4,
-        borderBottomWidth: 1,
-        borderBottomColor: dark_primary,
+      onPress={() => {
+        console.log("touch");
+
+        navigation.navigate("Channel", {
+          profileId: profileId,
+          isFollowdByMe: isFollowed,
+          name: profileName,
+          ethAddress: owner,
+        });
       }}
     >
-      <Avatar src={profileIcon} height={40} width={40} />
       <View
         style={{
-          marginLeft: 8,
+          flexDirection: "row",
+          alignItems: "center",
+          padding: 10,
+          marginVertical: 4,
+          borderBottomWidth: 1,
+          borderBottomColor: dark_primary,
         }}
       >
-        {profileName && (
+        <Avatar src={profileIcon} height={40} width={40} />
+        <View
+          style={{
+            marginLeft: 8,
+          }}
+        >
+          {profileName && (
+            <Heading
+              title={profileName}
+              style={{
+                color: "white",
+                fontSize: 16,
+                fontWeight: "500",
+              }}
+            />
+          )}
           <Heading
-            title={profileName}
+            title={handle}
             style={{
-              color: "white",
-              fontSize: 16,
-              fontWeight: "500",
+              color: profileName ? "gray" : "white",
+              fontSize: profileName ? 12 : 16,
+              marginTop: profileName ? 0 : -8,
             }}
           />
-        )}
-        <Heading
-          title={handle}
-          style={{
-            color: profileName ? "gray" : "white",
-            fontSize: profileName ? 12 : 16,
-            marginTop: profileName ? 0 : -8,
-          }}
-        />
+        </View>
       </View>
-    </View>
     </TouchableWithoutFeedback>
   );
 }

@@ -22,27 +22,45 @@ import getProfile from "../apollo/Queries/getProfile";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
 import storeData from "../utils/storeData";
-
+import searchUser from "../api/zooTools/searchUser";
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const connector = useWalletConnect();
   const authStore = useAuthStore();
   const userStore = useProfile();
   const [callData, setCallData] = useState(true);
-  useEffect(() => {
-    if (callData) {
-      getData().then(() => {
-        console.log("gettig data again");
-        setCallData(false);
-        setInterval(() => {
-          updateTokens();
-        }, 10000);
-      });
-    }
-  }, [callData]);
-
   const [refreshing, setRefreshing] = useState<boolean>(false);
-
   const theme = useThemeStore();
+
+  let hasAccess: boolean;
+
+  const isWaitListed = async () => {
+    const userData = await AsyncStorage.getItem("@access_Key");
+    if (userData) {
+      const user = JSON.parse(userData);
+      const data = await searchUser(user.email);
+      const handleUser = {
+        email: user.email,
+        hasAccess: data.fields.hasAccess,
+      };
+      await AsyncStorage.setItem("@access_Key", JSON.stringify(handleUser));
+      hasAccess = data.fields.hasAccess;
+    }
+  };
+
+  useEffect(() => {
+    isWaitListed().then(() => {
+      if (callData && hasAccess) {
+        getData().then(() => {
+          setCallData(false);
+          setInterval(() => {
+            updateTokens();
+          }, 10000);
+        });
+      } else {
+        navigation.navigate("Waitlist");
+      }
+    });
+  }, []);
 
   const updateTokens = async () => {
     const jsonValue = await AsyncStorage.getItem("@storage_Key");
@@ -124,7 +142,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
         }
       } else {
         // setIsloading(false);
-        navigation.replace("Login");
+        navigation.navigate("Login");
       }
     } catch (e) {
       if (e instanceof Error) {

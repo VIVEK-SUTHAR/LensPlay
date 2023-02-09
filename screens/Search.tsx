@@ -19,6 +19,7 @@ import searchProfileQuery from "../apollo/Queries/searchProfileQuery";
 import ProfileCard from "../components/ProfileCard";
 import useDebounce from "../hooks/useDebounce";
 import { EvilIcons, Feather, MaterialIcons } from "@expo/vector-icons";
+import StyledText from "../components/UI/StyledText";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const theme = useThemeStore();
@@ -136,7 +137,8 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                 alignItems: "center",
               }}
             >
-              <Text
+              <StyledText
+                title="Getting videos..."
                 style={{
                   fontSize: 16,
                   color: "white",
@@ -145,9 +147,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                   fontWeight: "600",
                   alignSelf: "flex-start",
                 }}
-              >
-                Getting videos...
-              </Text>
+              ></StyledText>
             </View>
           </>
         )}
@@ -189,7 +189,8 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                     alignItems: "center",
                   }}
                 >
-                  <Text
+                  <StyledText
+                    title=" No profile found 😔"
                     style={{
                       fontSize: 18,
                       color: "white",
@@ -198,9 +199,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                       fontWeight: "600",
                       textAlign: "center",
                     }}
-                  >
-                    No videos found 😔
-                  </Text>
+                  />
                   <Button
                     title="Continue browsing..."
                     width={"auto"}

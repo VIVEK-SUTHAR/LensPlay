@@ -60,6 +60,13 @@ export type RootStackParamList = {
   Modal: undefined;
   NotFound: undefined;
   Login: undefined;
+  Waitlist: undefined;
+  LeaderBoard: {
+    referralsCount: number;
+    rankingPoints: number;
+    rankingPosition: number;
+    refferalLink: string;
+  };
   UserStats: {
     profileId?: string;
   };
