@@ -26,6 +26,8 @@ import { RootStackScreenProps } from "../types/navigation/types";
 import Button from "../components/UI/Button";
 import formatTime from "../utils/formatTime";
 import storeData from "../utils/storeData";
+import Heading from "../components/UI/Heading";
+
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const store = useStore();
@@ -49,10 +51,12 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
     "https://res.cloudinary.com/djkwixcg8/image/upload/v1674534828/landing-3_gatvjy.webp",
   ];
 
-  const { width } = Dimensions.get("screen");
-  const imageW = width * 0.8;
-  const imageH = imageW * 1.54;
-
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
+  // const { width } = Dimensions.get("screen");
+  // const imageW = width ;
+  // const imageH = imageW ;
+  console.log(windowWidth);
   const logInWithLens = async () => {
     setIsloading(true);
     const data = await client.query({
@@ -104,7 +108,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
       }
     }
   };
-
   const killSession = React.useCallback(() => {
     return connector.killSession();
   }, [connector]);
@@ -112,145 +115,78 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar />
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
-        }}
-      >
-        <View style={StyleSheet.absoluteFillObject}>
-          {data.map((image, index) => {
-            const inputRange = [
-              (index - 1) * width,
-              index * width,
-              (index + 1) * width,
-            ];
-            const opacity = scrollX.interpolate({
-              inputRange,
-              outputRange: [0, 1, 0],
-            });
-            return (
-              <Animated.Image
-                key={`image-${index}`}
-                source={{ uri: image }}
-                style={[
-                  StyleSheet.absoluteFillObject,
-                  {
-                    opacity,
-                  },
-                ]}
-                blurRadius={40}
-              />
-            );
-          })}
-        </View>
-        <Animated.FlatList
-          data={data}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-            { useNativeDriver: false }
-          )}
-          keyExtractor={(_, index) => index.toString()}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => {
-            return (
-              <View
-                style={{
-                  width,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  shadowColor: "#000",
-                  shadowOffset: {
-                    width: 10,
-                    height: 10,
-                  },
-                  shadowRadius: 100,
-                }}
-              >
-                <Image
-                  source={{ uri: item }}
-                  style={{
-                    width: imageW,
-                    height: imageH,
-                    resizeMode: "cover",
-                    borderRadius: 16,
-                  }}
-                />
-              </View>
-            );
+      <View style={{ position: "relative" }}>
+        <Image
+          source={require("../assets/images/Vector256.png")}
+          style={{ width: windowWidth, height: windowWidth + 105 }}
+          resizeMode={"contain"}
+        />
+        <Image
+          source={require("../assets/images/login1.png")}
+          style={{ width: windowWidth, height: 495, position: "absolute" }}
+          resizeMode={"contain"}
+        />
+      </View>
+      <View style={{ justifyContent: "flex-end" }}>
+        <Heading
+          title={"LensPlay"}
+          style={{
+            fontSize: 64,
+            color: "white",
+            fontWeight: "600",
+            textAlign: "center",
           }}
         />
-        {!!connector.connected ? (
-          <>
-            <Button
-              title="Login With Lens"
-              bg={"#abfe2c"}
-              my={10}
-              py={16}
-              textStyle={{
-                color: "black",
-                fontSize: 20,
-                fontWeight: "bold",
-                textAlign: "center",
-              }}
-              width={"80%"}
-              onPress={async () => {
-                await logInWithLens();
-              }}
-              isLoading={isloading}
-            />
-            <TouchableOpacity style={{ width: "80%" }} onPress={killSession}>
-              <View
-                style={{
-                  backgroundColor: "white",
-                  borderRadius: 50,
-                  paddingVertical: 16,
-                  marginVertical: 10,
-                }}
-              >
-                <StyledText
-                  title="Disconnect Wallet"
-                  style={{
-                    color: "black",
-                    fontSize: 20,
-                    fontWeight: "bold",
-                    textAlign: "center",
-                  }}
-                />
-              </View>
-            </TouchableOpacity>
-          </>
-        ) : (
-          <TouchableOpacity
-            style={{ width: "100%", paddingHorizontal: 10 }}
-            onPress={() => {
-              connectWallet();
+        <View
+          style={{
+            position: "relative",
+            flexDirection: "column",
+            alignItems: "flex-end",
+            paddingHorizontal:34,
+            marginTop:8
+          }}
+        >
+          <StyledText
+            title={"See the world in a"}
+            style={{
+              fontSize: 24,
+              color: "white",
+              fontWeight: "500",
+              textAlign: "right",
             }}
-          >
-            <View
+          />
+          <View style={{flexDirection:"row" }} >
+            <StyledText
+              title={"different"}
               style={{
-                backgroundColor: "white",
-                borderRadius: 50,
-                paddingVertical: 16,
-                marginVertical: 30,
+                fontSize: 24,
+                color: "#93E9C8",
+                fontWeight: "500",
+                textAlign: "right",
+                marginRight:8
               }}
-            >
-              <StyledText
-                title="Connect Wallet"
-                style={{
-                  color: "black",
-                  fontSize: 24,
-                  fontWeight: "600",
-                  textAlign: "center",
-                }}
-              />
-            </View>
-          </TouchableOpacity>
-        )}
-        <Paginator data={data} scrollX={scrollX} />
+            />
+            <StyledText
+              title={"way"}
+              style={{
+                fontSize: 24,
+                color: "white",
+                fontWeight: "500",
+                textAlign: "right",
+              }}
+            />
+          </View>
+        </View>
+        <View style={{ padding: 16,marginTop:16 }}>
+          <Button
+            onPress={()=>{navigation.push("ConnectWallet")}}
+            title="Get Started"
+            bg="#93E9C8"
+            borderRadius={5}
+            textStyle={{ fontWeight: "700", fontSize: 24 }}
+            py={16}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );

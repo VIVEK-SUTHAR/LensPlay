@@ -61,6 +61,7 @@ export type RootStackParamList = {
   NotFound: undefined;
   Login: undefined;
   Waitlist: undefined;
+  ConnectWallet:undefined;
   LeaderBoard: {
     referralsCount: number;
     rankingPoints: number;

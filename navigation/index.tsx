@@ -44,6 +44,8 @@ import LinkingVideo from "../screens/LinkingVideo";
 import { dark_primary } from "../constants/Colors";
 import UserStats from "../screens/UserStats";
 import LeaderBoard from "../screens/LeaderBoard";
+import ConnectWallet from "../screens/ConnectWallet";
+
 
 export default function Navigation() {
   return (
@@ -149,6 +151,14 @@ function RootNavigator() {
           animation: "slide_from_right",
           headerShown: true,
           headerTintColor: theme.PRIMARY,
+        }}
+      />
+      <Stack.Screen
+        name="ConnectWallet"
+        component={ConnectWallet}
+        options={{
+          animation: "slide_from_right",
+          headerShown: false,
         }}
       />
     </Stack.Navigator>
