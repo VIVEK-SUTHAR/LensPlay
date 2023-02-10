@@ -65,14 +65,8 @@ function RootNavigator() {
           backgroundColor: "black",
         },
       }}
-      initialRouteName={"Login"}
+      initialRouteName={"Root"}
     >
-      
-      <Stack.Screen
-        name="Login"
-        component={Login}
-        options={{ headerShown: false }}
-      />
       <Stack.Screen
         name="Waitlist"
         component={Waitlist}
@@ -85,6 +79,12 @@ function RootNavigator() {
         component={LeaderBoard}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{ headerShown: false }}
+      />
+     
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}
