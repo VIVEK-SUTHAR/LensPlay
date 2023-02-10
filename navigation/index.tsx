@@ -42,6 +42,7 @@ import UserStats from "../screens/UserStats";
 import LeaderBoard from "../screens/LeaderBoard";
 import EditProfile from "../screens/EditProfile";
 import SearchIcon from "../components/svg/SearchIcon";
+import Loader from "../screens/Loader";
 import ConnectWallet from "../screens/ConnectWallet";
 import LoginWithLens from "../screens/LoginWithLens";
 import ReportPublication from "../screens/ReportPublication";
@@ -73,6 +74,13 @@ function RootNavigator() {
       <Stack.Screen
         name="Waitlist"
         component={Waitlist}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Loader"
+        component={Loader}
         options={{
           headerShown: false,
         }}

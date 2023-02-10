@@ -8,7 +8,11 @@ import {
 } from "react-native";
 import { useState } from "react";
 import VideoCard from "../components/VideoCard";
-import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
+import useStore, {
+  useAuthStore,
+  useProfile,
+  useThemeStore,
+} from "../store/Store";
 import { RootTabScreenProps } from "../types/navigation/types";
 import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
 import AnimatedLottieView from "lottie-react-native";
@@ -31,36 +35,24 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [callData, setCallData] = useState(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const theme = useThemeStore();
-
-  let hasAccess: boolean;
-
-  const isWaitListed = async () => {
-    const userData = await AsyncStorage.getItem("@access_Key");
-    if (userData) {
-      const user = JSON.parse(userData);
-      const data = await searchUser(user.email);
-      const handleUser = {
-        email: user.email,
-        hasAccess: data.fields.hasAccess,
-      };
-      await AsyncStorage.setItem("@access_Key", JSON.stringify(handleUser));
-      hasAccess = data.fields.hasAccess;
-    }
-  };
+  const { hasAccess } = useStore();
 
   useEffect(() => {
-    isWaitListed().then(() => {
-      if (callData && hasAccess) {
+    if (callData) {
+      if (!hasAccess) {
+        // console.log("adding loader");
+        navigation.replace("Loader");
+        // console.log("loader is now live");
+
+      } else {
         getData().then(() => {
           setCallData(false);
           setInterval(() => {
             updateTokens();
-          }, 10000);
+          }, 840000);
         });
-      } else {
-        navigation.navigate("Waitlist");
       }
-    });
+    }
   }, []);
 
   const updateTokens = async () => {
@@ -139,7 +131,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
             return;
           }
           userStore.setCurrentProfile(data.data.defaultProfile);
-          navigation.navigate("Root");
         }
       } else {
         // setIsloading(false);
@@ -154,7 +145,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 
   const { data: Feeddata, error, loading } = useFeed();
   if (callData) return <Loader />;
-  if (loading) return <Loader />;
+  if (!callData && loading) return <Loader />;
 
   if (error) return <NotFound navigation={navigation} />;
 
