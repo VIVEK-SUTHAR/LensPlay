@@ -5,11 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import {
-  Image,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { Image, TouchableWithoutFeedback, View } from "react-native";
 import VideoPage from "../screens/VideoPage";
 import Feed from "../screens/Feed";
 import Login from "../screens/Login";
@@ -45,7 +41,7 @@ import { dark_primary } from "../constants/Colors";
 import UserStats from "../screens/UserStats";
 import LeaderBoard from "../screens/LeaderBoard";
 import ConnectWallet from "../screens/ConnectWallet";
-
+import LoginWithLens from "../screens/LoginWithLens";
 
 export default function Navigation() {
   return (
@@ -156,6 +152,14 @@ function RootNavigator() {
       <Stack.Screen
         name="ConnectWallet"
         component={ConnectWallet}
+        options={{
+          animation: "slide_from_right",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="LoginWithLens"
+        component={LoginWithLens}
         options={{
           animation: "slide_from_right",
           headerShown: false,

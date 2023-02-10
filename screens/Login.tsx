@@ -27,7 +27,7 @@ import Button from "../components/UI/Button";
 import formatTime from "../utils/formatTime";
 import storeData from "../utils/storeData";
 import Heading from "../components/UI/Heading";
-
+import Constants from "expo-constants";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const store = useStore();
@@ -40,16 +40,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
     await connector.connect();
     setIsconnected(true);
   }, [connector]);
-
-  useEffect(() => {
-    // navigation.addListener("focus", getData);
-  }, []);
-
-  const data = [
-    "https://res.cloudinary.com/djkwixcg8/image/upload/v1674534829/landing-1_lrrjd1.webp",
-    "https://res.cloudinary.com/djkwixcg8/image/upload/v1674534829/landing-2_byfsnm.webp",
-    "https://res.cloudinary.com/djkwixcg8/image/upload/v1674534828/landing-3_gatvjy.webp",
-  ];
 
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
@@ -114,11 +104,18 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const scrollX = React.useRef(new Animated.Value(0)).current;
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar />
+      <StatusBar
+        backgroundColor="#93E9C8"
+        style="dark"
+      />
       <View style={{ position: "relative" }}>
         <Image
           source={require("../assets/images/Vector256.png")}
-          style={{ width: windowWidth, height: windowWidth + 105 }}
+          style={{
+            width: windowWidth,
+            height: windowWidth + 105,
+            marginTop: -Constants.statusBarHeight/2,
+          }}
           resizeMode={"contain"}
         />
         <Image
@@ -142,8 +139,8 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
             position: "relative",
             flexDirection: "column",
             alignItems: "flex-end",
-            paddingHorizontal:34,
-            marginTop:8
+            paddingHorizontal: 34,
+            marginTop: 8,
           }}
         >
           <StyledText
@@ -155,7 +152,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
               textAlign: "right",
             }}
           />
-          <View style={{flexDirection:"row" }} >
+          <View style={{ flexDirection: "row" }}>
             <StyledText
               title={"different"}
               style={{
@@ -163,7 +160,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
                 color: "#93E9C8",
                 fontWeight: "500",
                 textAlign: "right",
-                marginRight:8
+                marginRight: 8,
               }}
             />
             <StyledText
@@ -177,9 +174,11 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
             />
           </View>
         </View>
-        <View style={{ padding: 16,marginTop:16 }}>
+        <View style={{ padding: 16, marginTop: 16 }}>
           <Button
-            onPress={()=>{navigation.push("ConnectWallet")}}
+            onPress={() => {
+              navigation.push("ConnectWallet");
+            }}
             title="Get Started"
             bg="#93E9C8"
             borderRadius={5}
