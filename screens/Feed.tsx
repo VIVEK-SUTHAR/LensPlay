@@ -142,7 +142,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
         }
       } else {
         // setIsloading(false);
-        navigation.navigate("Login");
+        navigation.replace("Login");
       }
     } catch (e) {
       if (e instanceof Error) {

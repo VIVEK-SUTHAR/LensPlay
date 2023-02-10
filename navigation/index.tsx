@@ -153,7 +153,7 @@ function RootNavigator() {
         name="ConnectWallet"
         component={ConnectWallet}
         options={{
-          animation: "slide_from_right",
+          animation: "slide_from_bottom",
           headerShown: false,
         }}
       />
@@ -161,7 +161,7 @@ function RootNavigator() {
         name="LoginWithLens"
         component={LoginWithLens}
         options={{
-          animation: "slide_from_right",
+          animation: "slide_from_bottom",
           headerShown: false,
         }}
       />
