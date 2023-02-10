@@ -41,6 +41,7 @@ import { dark_primary } from "../constants/Colors";
 import UserStats from "../screens/UserStats";
 import LeaderBoard from "../screens/LeaderBoard";
 import EditProfile from "../screens/EditProfile";
+import SearchIcon from "../components/svg/SearchIcon";
 
 export default function Navigation() {
   return (
@@ -185,7 +186,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                 alignItems: "center",
               }}
             >
-              <Feather name="search" size={24} color="white" />
+              <SearchIcon width={24} height={24} />
             </View>
           </TouchableWithoutFeedback>
         ),
