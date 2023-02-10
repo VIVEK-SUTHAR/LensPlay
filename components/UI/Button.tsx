@@ -28,6 +28,7 @@ interface ButtonProps {
   borderRadius?: number;
   onPress?: () => void;
   icon?: any;
+  disabled?: boolean;
 }
 
 const Button = (props: ButtonProps): JSX.Element => {
@@ -49,6 +50,7 @@ const Button = (props: ButtonProps): JSX.Element => {
     onPress,
     borderColor = "white",
     icon,
+    disabled,
     ...rest
   } = props;
 
@@ -84,7 +86,11 @@ const Button = (props: ButtonProps): JSX.Element => {
           alignItems: "center",
           borderRadius: borderRadius,
           justifyContent: textStyle ? "center" : "space-between",
-          backgroundColor: type === "filled" ? bg : "transparent",
+          backgroundColor: disabled
+            ? "#cccccc"
+            : type === "filled"
+            ? bg
+            : "transparent",
           borderColor: type === "outline" ? borderColor : "transparent",
           borderWidth: type === "outline" ? 1 : 0,
           paddingVertical: py,

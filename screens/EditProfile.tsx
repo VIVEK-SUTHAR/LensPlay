@@ -6,8 +6,6 @@ import { useAuthStore, useThemeStore, useToast } from "../store/Store";
 import Button from "../components/UI/Button";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
-import { useUpdateChannel } from "../hooks/useFeed";
-import { useQuery } from "@apollo/client";
 import updateChannel from "../apollo/mutations/updateChannel";
 import { client } from "../apollo/client";
 
@@ -16,6 +14,9 @@ const EditProfile = ({
   route,
 }: RootStackScreenProps<"EditProfile">) => {
   const theme = useThemeStore();
+
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+
   const [userData, setUserData] = useState({
     name: "",
     bio: "",
@@ -41,7 +42,9 @@ const EditProfile = ({
     });
     if (result.data) {
       toast.show("Channel updated successfully", ToastType.SUCCESS, true);
+      setIsUpdating(false);
     } else {
+      setIsUpdating(false);
       toast.show("Some error occured please try again", ToastType.ERROR, true);
     }
   };
@@ -52,7 +55,7 @@ const EditProfile = ({
         name: "",
         bio: "",
       });
-
+      setIsUpdating(true);
       const bodyContent = JSON.stringify({
         oldProfileData: route.params.profile,
         newProfileData: userData,
@@ -131,6 +134,7 @@ const EditProfile = ({
             fontSize: 16,
             fontWeight: "600",
           }}
+          isLoading={isUpdating}
           onPress={() => uploadMetadata()}
         />
       </View>

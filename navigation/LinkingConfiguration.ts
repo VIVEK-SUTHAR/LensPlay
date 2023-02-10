@@ -6,7 +6,7 @@ import { RootStackParamList } from "../types/navigation/types";
 const linking: LinkingOptions<RootStackParamList> = {
 	prefixes: [
 		Linking.createURL("lensplay"),
-		Linking.createURL("https://lensplay-site.vercel.app"),
+		Linking.createURL("https://lensplay.xyz"),
 		Linking.createURL("https://lenstube.xyz"),
 		Linking.createURL("https://testnet.lenstube.xyz"),
 	],

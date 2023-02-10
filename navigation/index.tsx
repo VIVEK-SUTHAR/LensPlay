@@ -43,6 +43,9 @@ import LeaderBoard from "../screens/LeaderBoard";
 import EditProfile from "../screens/EditProfile";
 import SearchIcon from "../components/svg/SearchIcon";
 import Loader from "../screens/Loader";
+import ConnectWallet from "../screens/ConnectWallet";
+import LoginWithLens from "../screens/LoginWithLens";
+import ReportPublication from "../screens/ReportPublication";
 
 export default function Navigation() {
   return (
@@ -92,6 +95,7 @@ function RootNavigator() {
         component={Login}
         options={{ headerShown: false }}
       />
+
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}
@@ -164,6 +168,32 @@ function RootNavigator() {
           animation: "slide_from_right",
           headerShown: true,
           headerTintColor: theme.PRIMARY,
+        }}
+      />
+      <Stack.Screen
+        name="ConnectWallet"
+        component={ConnectWallet}
+        options={{
+          animation: "slide_from_bottom",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="LoginWithLens"
+        component={LoginWithLens}
+        options={{
+          animation: "slide_from_bottom",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ReportPublication"
+        component={ReportPublication}
+        options={{
+          animation: "slide_from_right",
+          headerShown: true,
+          headerTintColor: theme.PRIMARY,
+          headerTitle: "Report Video",
         }}
       />
     </Stack.Navigator>

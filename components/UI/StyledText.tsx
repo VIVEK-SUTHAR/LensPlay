@@ -45,7 +45,6 @@ const StyledText: FC<SubHeadingProps> = ({ title, style, onPress,...rest }) => {
   var newStyle = Object.assign({}, style, {
     fontFamily: getFontFamily(parseInt(style?.fontWeight)),
   });
-
   return (
     <Text style={newStyle} {...rest} onLayout={onLayoutRootView} onPress={onPress}>
       {title}
