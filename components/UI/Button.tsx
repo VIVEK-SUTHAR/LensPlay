@@ -28,7 +28,7 @@ interface ButtonProps {
   borderRadius?: number;
   onPress?: () => void;
   icon?: any;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 const Button = (props: ButtonProps): JSX.Element => {
