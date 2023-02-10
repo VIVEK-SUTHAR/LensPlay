@@ -6,7 +6,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { Image, TouchableWithoutFeedback, View } from "react-native";
-import { Image, TouchableWithoutFeedback, View } from "react-native";
 import VideoPage from "../screens/VideoPage";
 import Feed from "../screens/Feed";
 import Login from "../screens/Login";
