@@ -16,6 +16,7 @@ export default function Loader({
   const isWaitListed = async () => {
     const userData = await AsyncStorage.getItem("@access_Key");
     if (userData) {
+        console.log("data found");
       const user = JSON.parse(userData);
       const data = await searchUser(user.email);
       const handleUser = {
@@ -26,6 +27,8 @@ export default function Loader({
       isLoading = false;
       handleAccess(data.fields.hasAccess);
       if (data.fields.hasAccess) {
+        // console.log("has access going to root");
+
         navigation.push("Root");
       } else {
         navigation.push("Waitlist");
@@ -37,9 +40,10 @@ export default function Loader({
 
   useEffect(() => {
     if (isLoading) {
+        // console.log("ln loading useeffect");
       isWaitListed();
     }
-  }, [hasAccess]);
+  }, []);
 
   return (
     <View

@@ -38,7 +38,10 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   useEffect(() => {
     if (callData) {
       if (!hasAccess) {
-        navigation.push("Loader");
+        // console.log("adding loader");
+        navigation.replace("Loader");
+        // console.log("loader is now live");
+
       } else {
         getData().then(() => {
           setCallData(false);
@@ -126,7 +129,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
             return;
           }
           userStore.setCurrentProfile(data.data.defaultProfile);
-          navigation.navigate("Root");
         }
       } else {
         // setIsloading(false);
@@ -141,7 +143,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 
   const { data: Feeddata, error, loading } = useFeed();
   if (callData) return <Loader />;
-  if (loading) return <Loader />;
+  if (!callData && loading) return <Loader />;
 
   if (error) return <NotFound navigation={navigation} />;
 
