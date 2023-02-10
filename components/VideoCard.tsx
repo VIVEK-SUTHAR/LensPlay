@@ -120,8 +120,8 @@ const VideoCard = ({
           >
             <StyledText
               title={formatTime(videoTime)}
-              style={{ color: "white", fontSize: 12 }}>
-            </StyledText>
+              style={{ color: "white", fontSize: 12 }}
+            ></StyledText>
           </View>
         ) : (
           <></>
@@ -152,7 +152,7 @@ const VideoCard = ({
               numberOfLines={1}
             />
             <StyledText
-              title={`By ${uploadedBy} on ${getDifference(date)}`}
+              title={`By ${uploadedBy} ${getDifference(date)}`}
               style={{ fontSize: 12, color: "gray" }}
               numberOfLines={1}
             />
