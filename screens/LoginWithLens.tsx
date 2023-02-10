@@ -23,9 +23,7 @@ import getAccessTokens from "../apollo/mutations/getAccessTokens";
 import storeData from "../utils/storeData";
 import AnimatedLottieView from "lottie-react-native";
 
-function LoginWithLens({
-  navigation,
-}: RootStackScreenProps<"LoginWithLens">) {
+function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const [isloading, setIsloading] = useState(false);
@@ -94,7 +92,7 @@ function LoginWithLens({
           style={{
             width: windowWidth,
             height: windowWidth + 105,
-            marginTop: -Constants.statusBarHeight/2,
+            marginTop: -Constants.statusBarHeight / 2,
           }}
           resizeMode={"contain"}
         />
@@ -110,7 +108,7 @@ function LoginWithLens({
           resizeMode={"contain"}
         />
       </View>
-      <View style={{ justifyContent: "flex-end" }}>
+      <View style={{ justifyContent: "flex-end", marginTop: 48 }}>
         <View
           style={{
             position: "relative",
@@ -118,7 +116,6 @@ function LoginWithLens({
             alignItems: "flex-end",
             paddingHorizontal: 34,
             marginTop: 8,
-            top: 72,
           }}
         >
           <StyledText
@@ -143,20 +140,21 @@ function LoginWithLens({
             />
           </View>
         </View>
-        <View style={{ padding: 16, marginTop: 144 }}>
-          <Button
-            title="Login With Lens"
-            bg="#93E9C8"
-            borderRadius={5}
-            textStyle={{ fontWeight: "700", fontSize: 24 }}
-            py={16}
-            isLoading={isloading}
-            onPress={async()=>{
-              await logInWithLens();
-              }
-            }
-          />
-        </View>
+      </View>
+      <View
+        style={{ padding: 16, position: "absolute", bottom: 0, width: "100%" }}
+      >
+        <Button
+          title="Login With Lens"
+          bg="#93E9C8"
+          borderRadius={8}
+          textStyle={{ fontWeight: "600", fontSize: 24 }}
+          py={16}
+          isLoading={isloading}
+          onPress={async () => {
+            await logInWithLens();
+          }}
+        />
       </View>
     </SafeAreaView>
   );

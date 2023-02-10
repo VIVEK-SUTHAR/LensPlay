@@ -30,7 +30,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           style={{
             width: windowWidth,
             height: windowWidth + 105,
-            marginTop: -Constants.statusBarHeight/2,
+            marginTop: -Constants.statusBarHeight / 2,
           }}
           resizeMode={"contain"}
         />
@@ -46,15 +46,18 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           resizeMode={"contain"}
         />
       </View>
-      <View style={{ justifyContent: "center" }}>
+      <View
+        style={{
+          justifyContent: "center",
+          marginTop: 48,
+        }}
+      >
         <View
           style={{
-            position: "relative",
             flexDirection: "row",
             alignItems: "flex-start",
             paddingHorizontal: 34,
             marginTop: 8,
-            top: 72,
           }}
         >
           <StyledText
@@ -77,7 +80,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             }}
           />
         </View>
-        <View style={{ flexDirection: "row", paddingHorizontal: 36, top: 72 }}>
+        <View style={{ flexDirection: "row", paddingHorizontal: 36 }}>
           <StyledText
             title={"of your choice"}
             style={{
@@ -88,19 +91,21 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             }}
           />
         </View>
-        <View style={{ padding: 16, marginTop: 144 }}>
-          <Button
-            onPress={async() => {
-              await connectWallet();
-              navigation.push("LoginWithLens");
-            }}
-            title="Connect Wallet"
-            bg="#93E9C8"
-            borderRadius={5}
-            textStyle={{ fontWeight: "700", fontSize: 24 }}
-            py={16}
-          />
-        </View>
+      </View>
+      <View
+        style={{ padding: 16, position: "absolute", bottom: 0, width: "100%" }}
+      >
+        <Button
+          onPress={async () => {
+            await connectWallet();
+            navigation.push("LoginWithLens");
+          }}
+          title="Connect Wallet"
+          bg="#93E9C8"
+          borderRadius={8}
+          textStyle={{ fontWeight: "600", fontSize: 24 }}
+          py={16}
+        />
       </View>
     </SafeAreaView>
   );

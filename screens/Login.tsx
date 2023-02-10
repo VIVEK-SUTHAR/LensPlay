@@ -38,7 +38,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const [isconnected, setIsconnected] = useState<boolean>(false);
 
   const windowWidth = Dimensions.get("window").width;
-  
+
   const logInWithLens = async () => {
     setIsloading(true);
     const data = await client.query({
@@ -96,17 +96,14 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const scrollX = React.useRef(new Animated.Value(0)).current;
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar
-        backgroundColor="#93E9C8"
-        style="dark"
-      />
+      <StatusBar backgroundColor="#93E9C8" style="dark" />
       <View style={{ position: "relative" }}>
         <Image
           source={require("../assets/images/Vector256.png")}
           style={{
             width: windowWidth,
             height: windowWidth + 105,
-            marginTop: -Constants.statusBarHeight/2,
+            marginTop: -Constants.statusBarHeight / 2,
           }}
           resizeMode={"contain"}
         />
@@ -120,15 +117,14 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         <Heading
           title={"LensPlay"}
           style={{
-            fontSize: 64,
+            fontSize: 56,
             color: "white",
-            fontWeight: "700",
+            fontWeight: "600",
             textAlign: "center",
           }}
         />
         <View
           style={{
-            position: "relative",
             flexDirection: "column",
             alignItems: "flex-end",
             paddingHorizontal: 34,
@@ -166,15 +162,15 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
             />
           </View>
         </View>
-        <View style={{ padding: 16, marginTop: 16 }}>
+        <View style={{ padding: 16, marginTop: 8 }}>
           <Button
             onPress={() => {
               navigation.push("ConnectWallet");
             }}
             title="Get Started"
             bg="#93E9C8"
-            borderRadius={5}
-            textStyle={{ fontWeight: "700", fontSize: 24 }}
+            borderRadius={8}
+            textStyle={{ fontWeight: "600", fontSize: 24 }}
             py={16}
           />
         </View>
