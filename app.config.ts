@@ -85,7 +85,7 @@ const withPackageVisibility: ConfigPlugin = (config) => {
 const config: ExpoConfig = {
 	name: "LensPlay",
 	slug: "LensPlay",
-	version: "1.0.0",
+	version: "0.0.1",
 	orientation: "portrait",
 	icon: "./assets/images/icon.png",
 	scheme: "lensplay",
@@ -119,7 +119,7 @@ const config: ExpoConfig = {
 	},
 	extra: {
 		// eas: {
-			// projectId: "c3c41aca-6bdd-4196-a006-a524dcf26c4e",
+		// 	projectId: "c3c41aca-6bdd-4196-a006-a524dcf26c4e",
 		// },
 	},
 	plugins: [

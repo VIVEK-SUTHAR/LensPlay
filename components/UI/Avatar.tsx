@@ -25,7 +25,9 @@ export default function Avatar({
         uri: `${
           getIPFSLink(src) ===
           "https://lens.infura-ipfs.io/ipfs/bafybeibv2kpqpjtvuj5uprvq6knnr2reb7ylq3o4bnypqjioqgxmjw2akq/5460475.webp"
-            ? "https://avatars.dicebear.com/api/human/300.svg"
+            ? `https://xsgames.co/randomusers/assets/avatars/pixel/${Math.floor(
+                53 * Math.random()
+              )}.jpg`
             : getIPFSLink(src)
         }`,
       }}

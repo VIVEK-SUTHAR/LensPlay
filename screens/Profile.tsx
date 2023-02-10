@@ -14,7 +14,7 @@ import getUserProfile from "../apollo/Queries/getUserProfile";
 import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import getIPFSLink from "../utils/getIPFSLink";
 import Heading from "../components/UI/Heading";
-import SubHeading from "../components/UI/SubHeading";
+import StyledText from "../components/UI/StyledText";
 import Avatar from "../components/UI/Avatar";
 import extractURLs from "../utils/extractURL";
 import { RootTabScreenProps } from "../types/navigation/types";
@@ -31,7 +31,9 @@ import AllVideos from "../components/Profile/AllVideos";
 import MirroredVideos from "../components/Profile/MirroredVideos";
 import getPublications from "../apollo/Queries/getPublications";
 import CollectedVideos from "../components/Profile/CollectedVideos";
-
+import { Entypo, Feather } from "@expo/vector-icons";
+import VERIFIED_CHANNELS from "../constants/Varified";
+import formatHandle from "../utils/formatHandle";
 const ProfileScreen = ({
   navigation,
   route,
@@ -99,7 +101,6 @@ const ProfileScreen = ({
       setRefreshing(false);
     });
   }, []);
-  
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -126,6 +127,7 @@ const ProfileScreen = ({
             {Boolean(!isLoading) && (
               <View style={{}}>
                 <Cover
+                  navigation={navigation}
                   url={
                     userStore.currentProfile?.coverPicture?.original.url ||
                     STATIC_ASSET
@@ -168,9 +170,12 @@ const ProfileScreen = ({
                         color: "black",
                       }}
                       onPress={() => {
-                        Linking.openURL(
-                          `https://www.lensfrens.xyz/${userStore.currentProfile?.handle}`
-                        );
+                        navigation.navigate("EditProfile", {
+                          profile: profile,
+                        });
+                        // Linking.openURL(
+                        //   `https://www.lensfrens.xyz/${userStore.currentProfile?.handle}`
+                        // );
                       }}
                     />
                   </View>
@@ -187,17 +192,36 @@ const ProfileScreen = ({
                     }}
                   >
                     <View>
-                      <Heading
-                        title={profile?.name}
-                        style={{
-                          fontSize: 20,
-                          marginTop: 8,
-                          fontWeight: "bold",
-                          color: "#FAF7F7",
-                        }}
-                      />
-                      <SubHeading
-                        title={`@${profile?.handle}`}
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <Heading
+                          title={profile?.name}
+                          style={{
+                            fontSize: 20,
+                            marginTop: 8,
+                            fontWeight: "bold",
+                            color: "#FAF7F7",
+                          }}
+                        />
+                        {VERIFIED_CHANNELS.includes(profile?.id) && (
+                          <View
+                            style={{
+                              backgroundColor: theme.PRIMARY,
+                              height: 15,
+                              width: 15,
+                              padding: 1,
+                              borderRadius: 8,
+                              marginTop: 8,
+                              marginHorizontal: 4,
+                            }}
+                          >
+                            <Entypo name="check" color={"white"} />
+                          </View>
+                        )}
+                      </View>
+                      <StyledText
+                        title={formatHandle(profile?.handle)}
                         style={{
                           fontSize: 14,
                           lineHeight: 16,
@@ -208,7 +232,7 @@ const ProfileScreen = ({
                     </View>
                   </View>
                   {profile?.bio ? (
-                    <SubHeading
+                    <StyledText
                       title={extractURLs(profile?.bio)}
                       style={{
                         fontSize: 16,
@@ -247,7 +271,7 @@ const ProfileScreen = ({
                           });
                         }}
                       >
-                        <SubHeading
+                        <StyledText
                           title={`${profile?.stats?.totalFollowers} • Subscribers`}
                           style={{ fontSize: 16, fontWeight: "600" }}
                         />
@@ -259,7 +283,7 @@ const ProfileScreen = ({
                           width: 2,
                         }}
                       ></View>
-                      <SubHeading
+                      <StyledText
                         title={`${allVideos?.length} • Videos`}
                         style={{ fontSize: 16, fontWeight: "600" }}
                       />

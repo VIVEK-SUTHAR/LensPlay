@@ -1,7 +1,6 @@
-import { ApolloClient, ApolloLink, InMemoryCache } from "@apollo/client";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 const client = new ApolloClient({
-  uri: "https://api-mumbai.lens.dev",
-  cache: new InMemoryCache(),
+	uri: "https://api-mumbai.lens.dev",
+	cache: new InMemoryCache(),
 });
 export { client };

@@ -1,8 +1,15 @@
 import { Feather } from "@expo/vector-icons";
 import React, { FC } from "react";
-import { Pressable, ScrollView, StyleProp, Text, TextStyle, View } from "react-native";
+import {
+  Pressable,
+  ScrollView,
+  StyleProp,
+  Text,
+  TextStyle,
+  View,
+} from "react-native";
 import Heading from "./Heading";
-import SubHeading from "./SubHeading";
+import StyledText from "./StyledText";
 import VideoCardSkeleton from "./VideoCardSkeleton";
 
 const ProfileSkeleton = () => {
@@ -70,7 +77,6 @@ const ProfileSkeleton = () => {
             width: 80,
             height: 16,
             backgroundColor: "rgba(255,255,255,0.7)",
-
           }}
         />
         <View
@@ -92,9 +98,11 @@ const ProfileSkeleton = () => {
         />
       </View>
 
-      <View style={{
-        paddingHorizontal: 10
-      }}>
+      <View
+        style={{
+          paddingHorizontal: 10,
+        }}
+      >
         <View
           style={{
             backgroundColor: "white",
@@ -137,7 +145,7 @@ const ProfileSkeleton = () => {
               alignItems: "center",
             }}
           >
-            <SubHeading
+            <StyledText
               title={"Videos"}
               style={{
                 fontSize: 20,
@@ -145,11 +153,7 @@ const ProfileSkeleton = () => {
                 fontWeight: "600",
               }}
             />
-            <Feather
-              name={`chevron-right`}
-              size={24}
-              color="white"
-            />
+            <Feather name={`chevron-right`} size={24} color="white" />
           </Pressable>
           <ScrollView
             horizontal={true}
@@ -178,12 +182,7 @@ const ProfileSkeleton = () => {
                 fontWeight: "600",
               }}
             />
-            <Feather
-              name={`chevron-right`}
-              size={24}
-              color="white"
-
-            />
+            <Feather name={`chevron-right`} size={24} color="white" />
           </View>
           <ScrollView
             horizontal={true}

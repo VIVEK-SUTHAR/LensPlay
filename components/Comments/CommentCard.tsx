@@ -7,13 +7,14 @@ import { CommentStats } from "../../types/Lens/Feed";
 import { useAuthStore, useProfile, useReactionStore } from "../../store/Store";
 import { addLike, freeMirror } from "../../api";
 import Heading from "../UI/Heading";
-import SubHeading from "../UI/SubHeading";
+import StyledText from "../UI/StyledText";
 import extractURLs from "../../utils/extractURL";
 import Button from "../UI/Button";
-import { primary } from "../../constants/Colors";
+import { dark_primary, primary } from "../../constants/Colors";
+import Avatar from "../UI/Avatar";
 
 type CommentCardProps = {
-  avatar: string | undefined;
+  avatar: string;
   username: string;
   commentText: string;
   commentTime: string;
@@ -45,6 +46,8 @@ const CommentCard = ({
   const userStore = useProfile();
   const likedComments = reactions.likedComments;
 
+  console.log(id, name);
+
   const setLike = async () => {
     if (isIndexing) return;
     if (!isalreadyDisLiked) {
@@ -72,43 +75,32 @@ const CommentCard = ({
 
   return (
     <View
-      key={commentId}
       style={{
         flexDirection: "row",
         backgroundColor: "black",
-        borderColor: "#232323",
-        borderWidth: 1,
-        padding: 8,
+        borderColor: dark_primary,
+        borderBottomWidth: 1,
+        paddingVertical: 8,
         marginVertical: 4,
-        borderRadius: 8,
       }}
     >
-      <View style={{ height: 40, width: 40, marginRight: 8 }}>
-        <Pressable
-          onPress={() => {
-            navigation.navigate("Channel", {
-              profileId: id,
-              isFollowdByMe: isFollowdByMe,
-            });
-          }}
-        >
-          <Image
-            style={{
-              height: "100%",
-              width: "100%",
-              borderRadius: 50,
-              resizeMode: "contain",
-            }}
-            source={{
-              uri: `https://ipfs.io/ipfs/${avatar?.split("//")[1]}`,
-            }}
-          />
-        </Pressable>
-      </View>
+      <Pressable
+        onPress={() => {
+          navigation.navigate("Channel", {
+            profileId: id,
+            isFollowdByMe: isFollowdByMe,
+          });
+        }}
+        style={{
+          marginRight: 8,
+        }}
+      >
+        <Avatar src={avatar} height={40} width={40} />
+      </Pressable>
       <View style={{ flex: 1 }}>
         <View>
           <Heading
-            title={name}
+            title={name || id}
             style={{ fontSize: 14, color: "white", fontWeight: "500" }}
           />
           <View
@@ -122,31 +114,27 @@ const CommentCard = ({
               title={`@${username}`}
               style={{ fontSize: 12, color: "gray", marginTop: 2 }}
             />
-
-            <SubHeading
-              title={isIndexing ? "Indexing..." : getDifference(commentTime)}
+            <StyledText
+              title={isIndexing ? "Indexing" : getDifference(commentTime)}
               style={{ fontSize: 10, color: "gray" }}
             />
           </View>
         </View>
-
-        {/* <Hyperlink linkDefault={true} linkStyle={ { color: '#2980b9' } }> */}
-        <Text
+        <StyledText
           style={{
             fontSize: 14,
             color: "white",
             fontWeight: "600",
             marginTop: 4,
           }}
-        >
-          {extractURLs(commentText)}
-        </Text>
+          title={extractURLs(commentText)}
+        ></StyledText>
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
             marginTop: 8,
-            justifyContent: "space-around",
+            justifyContent: "space-between",
           }}
         >
           <Button
@@ -155,20 +143,16 @@ const CommentCard = ({
               setLike();
               setisalreadyDisLiked(true);
             }}
-            px={12}
-            py={4}
             width={"auto"}
-            type={"outline"}
+            bg="transparent"
+            type={"filled"}
             textStyle={{
-              fontSize: 14,
-              marginHorizontal: 2,
-              fontWeight: "500",
               color: "white",
-
-              // marginLeft: 4,
+              fontSize: 14,
+              fontWeight: "500",
+              marginLeft: 4,
+              paddingEnd: 16,
             }}
-            // borderColor={isalreadyDisLiked ? primary : "white"}
-            borderColor="#232323"
             icon={
               <AntDesign
                 name={isalreadyDisLiked ? "like1" : "like2"}
@@ -180,32 +164,41 @@ const CommentCard = ({
 
           <Button
             title={stats?.totalAmountOfCollects}
-            mx={8}
-            px={12}
             py={4}
             width={"auto"}
-            type={"outline"}
+            type={"filled"}
+            px={16}
+            bg="transparent"
+            textStyle={{
+              color: "white",
+              fontSize: 14,
+              fontWeight: "500",
+              marginLeft: 4,
+            }}
             icon={<Entypo name="folder-video" size={16} color={"white"} />}
-            borderColor="#232323"
             onPress={() => {
               // setIsmodalopen(true);
             }}
-            textStyle={{ color: "white", marginHorizontal: 2 }}
           />
           <Button
             title={stats?.totalAmountOfMirrors}
-            // mx={4}
-            px={12}
             py={4}
             width={"auto"}
-            type={"outline"}
+            type={"filled"}
+            px={16}
+            bg="transparent"
+            textStyle={{
+              color: "white",
+              fontSize: 14,
+              fontWeight: "500",
+              marginLeft: 4,
+            }}
             icon={<AntDesign name="retweet" size={16} color="white" />}
             borderColor="#232323"
             onPress={async () => {
               try {
                 if (isIndexing) return;
-
-                const data = await freeMirror(
+                await freeMirror(
                   authStore.accessToken,
                   userStore.currentProfile?.id,
                   commentId
@@ -214,21 +207,25 @@ const CommentCard = ({
                 console.log(error);
               }
             }}
-            textStyle={{ color: "white", marginHorizontal: 2 }}
           />
           <Button
             title={""}
-            // mx={4}
-            px={12}
             py={4}
             width={"auto"}
-            type={"outline"}
+            type={"filled"}
+            px={16}
+            bg="transparent"
+            textStyle={{
+              color: "white",
+              fontSize: 14,
+              fontWeight: "500",
+              marginLeft: 4,
+            }}
             icon={<MaterialIcons name="report" size={16} color="white" />}
             borderColor="#232323"
             onPress={() => {
               // setIsmodalopen(true);
             }}
-            textStyle={{ color: "white" }}
           />
         </View>
       </View>

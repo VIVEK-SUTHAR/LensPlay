@@ -7,6 +7,7 @@ import { useAuthStore } from "../../store/Store";
 import Heading from "../UI/Heading";
 import VideoCard from "../VideoCard";
 import { Feather } from "@expo/vector-icons";
+import formatHandle from "../../utils/formatHandle";
 
 type MirroredVideosProps = {
   profileId: string | undefined;
@@ -116,7 +117,7 @@ const MirroredVideos = ({
       {mirrorVideos?.length === 0 && (
         <View style={{ height: 50, justifyContent: "center" }}>
           <Heading
-            title={`Seems like ${handle} has not mirrored any video`}
+            title={`Seems like ${formatHandle(handle)} has not mirrored any video`}
             style={{
               color: "gray",
               fontSize: 14,

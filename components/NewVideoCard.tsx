@@ -12,7 +12,7 @@ import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
 import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
-import SubHeading from "./UI/SubHeading";
+import StyledText from "./UI/StyledText";
 import { LinearGradient } from "expo-linear-gradient";
 
 type videoPageProp = {
@@ -192,7 +192,7 @@ const NewVideoCard = ({
                 zIndex: 9,
               }}
             />
-            <SubHeading
+            <StyledText
               title={`By ${uploadedBy} on ${getDifference(date)}`}
               style={{ fontSize: 12, color: "gray", zIndex: 9 }}
             />

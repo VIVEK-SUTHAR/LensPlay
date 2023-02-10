@@ -13,20 +13,50 @@ import { useProfile, useThemeStore } from "../store/Store";
 import { useFollowers } from "../hooks/useFeed";
 import ProfileCard from "../components/ProfileCard";
 import { useFollowing } from "../hooks/useFeed";
-import { dark_primary } from "../constants/Colors";
+import StyledText from "../components/UI/StyledText";
+import Heading from "../components/UI/Heading";
+import { Feather } from "@expo/vector-icons";
 
-const UserStats = ({
-  navigation,
-  route,
-}: RootStackScreenProps<"UserStats">) => {
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: "Your " + headerTitle,
-    });
-  });
-  const theme = useThemeStore();
+const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
   const [headerTitle, setHeaderTitle] = useState<string>("Subscribers");
   const [isSubscribers, setIsSubscribers] = useState<boolean>(true);
+
+  const theme = useThemeStore();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: "",
+      headerLeft: () => {
+        return (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Feather
+              name="arrow-left"
+              color={theme.PRIMARY}
+              size={22}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
+            <Heading
+              title={`Your ${headerTitle}`}
+              style={{
+                color: theme.PRIMARY,
+                fontSize: 22,
+                fontWeight: "500",
+                marginHorizontal: 4,
+              }}
+            />
+          </View>
+        );
+      },
+    });
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -40,7 +70,6 @@ const UserStats = ({
             styles.tab,
             {
               borderBottomWidth: isSubscribers ? 1 : 0,
-
               borderBottomColor: isSubscribers ? theme.PRIMARY : "red",
             },
           ]}
@@ -49,14 +78,13 @@ const UserStats = ({
             setHeaderTitle("Subscribers");
           }}
         >
-          <Text
+          <StyledText
+            title="Subscribers"
             style={{
               color: isSubscribers ? theme.PRIMARY : "white",
               fontWeight: isSubscribers ? "700" : "400",
             }}
-          >
-            Subscribers
-          </Text>
+          ></StyledText>
         </Pressable>
         <Pressable
           android_ripple={{
@@ -75,14 +103,13 @@ const UserStats = ({
             setHeaderTitle("Subscriptions");
           }}
         >
-          <Text
+          <StyledText
+            title="Subscriptions"
             style={{
               color: !isSubscribers ? theme.PRIMARY : "white",
               fontWeight: !isSubscribers ? "700" : "400",
             }}
-          >
-            Subscriptions
-          </Text>
+          />
         </Pressable>
       </View>
       {isSubscribers ? (
@@ -100,10 +127,15 @@ const UserStats = ({
   );
 };
 
-const SuscriberList = ({ isSubscribers, setScreen }) => {
+type TabProps = {
+  isSubscribers: boolean;
+  setScreen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const SuscriberList = ({ isSubscribers, setScreen }: TabProps) => {
   const { currentProfile } = useProfile();
   const { data, error, loading } = useFollowers(currentProfile?.id);
-  const [pagey, setPagey] = useState(0);
+  const [pagey, setPagey] = useState<number>(0);
   if (loading) {
     return (
       <>
@@ -141,9 +173,12 @@ const SuscriberList = ({ isSubscribers, setScreen }) => {
           }}
           renderItem={({ item }) => (
             <ProfileCard
-              profileIcon={item?.wallet?.defaultProfile.picture?.original.url}
+              profileIcon={item?.wallet?.defaultProfile?.picture?.original?.url}
               profileName={item?.wallet?.defaultProfile?.name}
               handle={item?.wallet?.defaultProfile?.handle}
+              profileId={item?.wallet?.defaultProfile?.id}
+              owner={item?.wallet?.address}
+              isFollowed={false}
             />
           )}
         />
@@ -153,7 +188,7 @@ const SuscriberList = ({ isSubscribers, setScreen }) => {
   return <></>;
 };
 
-const SubscriptionsList = ({ isSubscribers, setScreen }) => {
+const SubscriptionsList = ({ isSubscribers, setScreen }: TabProps) => {
   const { currentProfile } = useProfile();
   const { data, error, loading } = useFollowing(currentProfile?.ownedBy);
   const [pagex, setPagex] = useState(0);
@@ -198,9 +233,12 @@ const SubscriptionsList = ({ isSubscribers, setScreen }) => {
             renderItem={({ item }) => {
               return (
                 <ProfileCard
-                  handle={item.profile.handle}
-                  profileName={item.profile?.name}
-                  profileIcon={item.profile?.picture?.original?.url}
+                  handle={item?.profile?.handle}
+                  profileName={item?.profile?.name}
+                  profileIcon={item?.profile?.picture?.original?.url}
+                  profileId={item?.profile?.id}
+                  owner={item?.profile?.handle}
+                  isFollowed={item?.profile?.isFollowedByMe}
                 />
               );
             }}
@@ -214,36 +252,10 @@ const SubscriptionsList = ({ isSubscribers, setScreen }) => {
 
 const ProfileCardSkeleton = () => {
   return (
-    <>
-      <View
-        style={{
-          backgroundColor: "black",
-          borderRadius: 16,
-          flexDirection: "row",
-          alignItems: "center",
-          padding: 10,
-          marginVertical: 4,
-        }}
-      >
-        <View
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 50,
-            backgroundColor: "#232323",
-          }}
-        />
-        <View
-          style={{
-            marginLeft: 8,
-            width: "40%",
-            height: 16,
-            borderRadius: 3,
-            backgroundColor: "#232323",
-          }}
-        ></View>
-      </View>
-    </>
+    <View style={styles.SkletonContainer}>
+      <View style={styles.SkletonAvatar} />
+      <View style={styles.SkletonText}></View>
+    </View>
   );
 };
 
@@ -261,6 +273,27 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flex: 0.5,
+  },
+  SkletonContainer: {
+    backgroundColor: "black",
+    borderRadius: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    marginVertical: 4,
+  },
+  SkletonAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 50,
+    backgroundColor: "#232323",
+  },
+  SkletonText: {
+    marginLeft: 8,
+    width: "40%",
+    height: 16,
+    borderRadius: 3,
+    backgroundColor: "#232323",
   },
 });
 

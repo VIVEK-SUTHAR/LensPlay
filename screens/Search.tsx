@@ -1,4 +1,7 @@
 import {
+  Dimensions,
+  Platform,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -6,121 +9,119 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import { client } from "../apollo/client";
-import searchPublicationQuery from "../apollo/Queries/searchPublicationQuery";
-import VideoCard from "../components/VideoCard";
 import AnimatedLottieView from "lottie-react-native";
-import { EvilIcons } from "@expo/vector-icons";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Button from "../components/UI/Button";
 import { useAuthStore, useThemeStore } from "../store/Store";
 import { LensPublication } from "../types/Lens/Feed";
 import searchProfileQuery from "../apollo/Queries/searchProfileQuery";
 import ProfileCard from "../components/ProfileCard";
+import useDebounce from "../hooks/useDebounce";
+import { EvilIcons, Feather, MaterialIcons } from "@expo/vector-icons";
+import StyledText from "../components/UI/StyledText";
+import { dark_primary } from "../constants/Colors";
+import BackIcon from "../components/svg/BackIcon";
+
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const theme = useThemeStore();
   const authStore = useAuthStore();
-  const textRef = useRef(null);
 
   const [searchPostResult, setSearchPostResult] = useState<LensPublication[]>(
     []
   );
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isSearching, setIsSearching] = useState(false);
-  const [isfound, setIsfound] = useState(true);
-  useFocusEffect(
-    useCallback(() => {
-      const focus = () => {
-        setTimeout(() => {
-          textRef?.current?.focus();
-        }, 1);
-      };
-      focus();
-      return focus;
-    }, [])
-  );
+  const [keyword, setKeyword] = useState<string>("");
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [isfound, setIsfound] = useState<boolean>(true);
+  const debouncedValue = useDebounce<string>(keyword, 500);
 
-  useEffect(() => {
-    return setSearchQuery("");
-  }, []);
-
-  async function getSearchResult() {
-    setIsSearching(true);
-    try {
-      const result = await client.query({
-        query: searchProfileQuery,
-        variables: {
-          query: searchQuery.trim().toLowerCase(),
-        },
-        context: {
-          headers: {
-            "x-access-token": `Bearer ${authStore.accessToken}`,
+  const onDebounce = async () => {
+    if (keyword.trim().length) {
+      try {
+        const result = await client.query({
+          query: searchProfileQuery,
+          variables: {
+            query: keyword.trim().toLowerCase(),
           },
-        },
-      });
-      setSearchPostResult(result?.data?.search?.items);
-      if (searchPostResult.length === 0) {
-        setIsfound(false);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error);
+          context: {
+            headers: {
+              "x-access-token": `Bearer ${authStore.accessToken}`,
+            },
+          },
+        });
+        setSearchPostResult(result?.data?.search?.items);
+        if (searchPostResult.length === 0) {
+          setIsfound(false);
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          console.log(error);
+          setIsSearching(false);
+        }
+      } finally {
         setIsSearching(false);
       }
-    } finally {
-      setIsSearching(false);
     }
-  }
+  };
 
+  useEffect(() => {
+    onDebounce();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedValue]);
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: { backgroundColor: "black" },
-      headerLeft: () => (
-        <View
-          style={{
-            width: "88%",
-            flexDirection: "row",
-            alignItems: "center",
-            padding: 4,
-            borderRadius: 20,
-            borderColor: "white",
-            borderWidth: 1,
-            backgroundColor: "rgba(255,255,255,0.04)",
-          }}
-        >
-          <EvilIcons name="search" size={24} color="white" />
-          <TextInput
-            ref={textRef}
-            selectionColor={theme.PRIMARY}
-            placeholder="Type something to search..."
-            placeholderTextColor={"white"}
-            clearButtonMode={"always"}
-            onChange={(e) => {
-              setSearchQuery(e.nativeEvent.text);
-            }}
-            onSubmitEditing={getSearchResult}
+      headerTitle: "",
+      headerTintColor: "white",
+      headerTransparent: false,
+      headerLeft: () => {
+        return (
+          <View
             style={{
-              width: "100%",
-              marginLeft: 4,
-              color: "white",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: Dimensions.get("window").width * 0.94,
+              paddingHorizontal: 8,
             }}
-          />
-        </View>
-      ),
+          >
+            <Pressable
+              onPress={(e) => {
+                e.preventDefault();
+                navigation.goBack();
+              }}
+              style={{ marginRight: 8 }}
+            >
+              <BackIcon height={24} width={24} />
+            </Pressable>
+            <TextInput
+              placeholder="Search by channel"
+              placeholderTextColor={"white"}
+              selectionColor={"white"}
+              onChange={(e) => {
+                setKeyword(e.nativeEvent.text);
+                onDebounce();
+              }}
+              autoFocus={true}
+              style={{
+                backgroundColor: dark_primary,
+                flex: 1,
+                color: "white",
+                borderWidth: 1,
+                paddingHorizontal: 16,
+                paddingVertical: 4,
+                borderRadius: 50,
+              }}
+            />
+          </View>
+        );
+      },
     });
   }, []);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-      <ScrollView>
-        {/* <View
-          style={{
-            padding: 10,
-          }}
-        >
-          <ProfileCard />
-        </View> */}
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
         {!!isSearching && (
           <>
             <AnimatedLottieView
@@ -135,7 +136,8 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                 alignItems: "center",
               }}
             >
-              <Text
+              <StyledText
+                title="Getting videos..."
                 style={{
                   fontSize: 16,
                   color: "white",
@@ -144,37 +146,31 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                   fontWeight: "600",
                   alignSelf: "flex-start",
                 }}
-              >
-                Getting videos...
-              </Text>
+              ></StyledText>
             </View>
           </>
         )}
         {searchPostResult.length > 0 ? (
           <>
-            <Text
+            <View
               style={{
-                paddingHorizontal: 5,
-                fontSize: 20,
-                marginHorizontal: 8,
-                fontWeight: "500",
-                color: "white",
+                padding: 10,
               }}
             >
-              Here's what we found
-            </Text>
-            {searchPostResult.map((item, index) => {
-              if (!item.hidden) {
+              {searchPostResult.map((item, index) => {
                 return (
-                  <VideoCard
+                  <ProfileCard
                     key={index}
-                    avatar={item?.profile?.picture?.original?.url}
-                    id={item?.id}
-                    uploadedBy={item?.profile?.handle}
+                    profileIcon={item?.picture?.original?.url}
+                    profileName={item?.name || item?.profileId}
+                    profileId={item?.profileId}
+                    isFollowed={item?.isFollowedByMe}
+                    handle={item?.handle}
+                    owner={item?.ownedBy}
                   />
                 );
-              }
-            })}
+              })}
+            </View>
           </>
         ) : (
           <>
@@ -192,7 +188,8 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                     alignItems: "center",
                   }}
                 >
-                  <Text
+                  <StyledText
+                    title=" No profile found 😔"
                     style={{
                       fontSize: 18,
                       color: "white",
@@ -201,9 +198,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                       fontWeight: "600",
                       textAlign: "center",
                     }}
-                  >
-                    No videos found 😔
-                  </Text>
+                  />
                   <Button
                     title="Continue browsing..."
                     width={"auto"}

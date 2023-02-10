@@ -3,11 +3,14 @@ import {
   TouchableWithoutFeedback,
   Modal,
   SafeAreaView,
+  Pressable,
 } from "react-native";
 import React from "react";
 import { dark_primary } from "../../constants/Colors";
 import { StatusBar } from "expo-status-bar";
 import { useThemeStore } from "../../store/Store";
+import Heading from "./Heading";
+import CloseIcon from "../svg/CloseIcon";
 
 interface DrawerProps {
   children: React.ReactNode;
@@ -42,7 +45,6 @@ const Drawer = ({ children, isOpen, setIsOpen }: DrawerProps) => {
             }}
           ></View>
         </TouchableWithoutFeedback>
-
         <View
           style={{
             position: "absolute",
@@ -56,6 +58,20 @@ const Drawer = ({ children, isOpen, setIsOpen }: DrawerProps) => {
             paddingVertical: 20,
           }}
         >
+          <View
+            style={{
+              alignItems: "flex-end",
+              paddingRight: 16,
+            }}
+          >
+            <Pressable
+              onPress={() => {
+                setIsOpen(false);
+              }}
+            >
+              <CloseIcon width={20} height={20} />
+            </Pressable>
+          </View>
           {children}
         </View>
       </Modal>

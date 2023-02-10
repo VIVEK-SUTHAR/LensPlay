@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import getIPFSLink from "../utils/getIPFSLink";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Heading from "../components/UI/Heading";
-import SubHeading from "../components/UI/SubHeading";
+import StyledText from "../components/UI/StyledText";
 import VideoCard from "../components/VideoCard";
 import { useAuthStore, useThemeStore, useToast } from "../store/Store";
 import { client } from "../apollo/client";
@@ -30,9 +30,10 @@ import getCollectVideos from "../apollo/Queries/getCollectVideos";
 import { StatusBar } from "expo-status-bar";
 import ProfileSkeleton from "../components/UI/ProfileSkeleton";
 import { LinearGradient } from "expo-linear-gradient";
-import { Feather, SimpleLineIcons } from "@expo/vector-icons";
+import { Entypo, Feather } from "@expo/vector-icons";
 import { createFreeSubscribe } from "../api";
 import { ToastType } from "../types/Store";
+import VERIFIED_CHANNELS from "../constants/Varified";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -207,7 +208,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                   }}
                 >
                   <Avatar
-                    src={getIPFSLink(profile?.picture.original.url)}
+                    src={profile?.picture?.original?.url}
                     height={90}
                     width={90}
                     borderRadius={50}
@@ -271,16 +272,35 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     }}
                   >
                     <View>
-                      <Heading
-                        title={profile?.name}
-                        style={{
-                          fontSize: 20,
-                          marginTop: 8,
-                          fontWeight: "bold",
-                          color: "#FAF7F7",
-                        }}
-                      />
-                      <SubHeading
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <Heading
+                          title={profile?.name}
+                          style={{
+                            fontSize: 20,
+                            marginTop: 8,
+                            fontWeight: "bold",
+                            color: "#FAF7F7",
+                          }}
+                        />
+                        {VERIFIED_CHANNELS.includes(profile?.id) && (
+                          <View
+                            style={{
+                              backgroundColor: theme.PRIMARY,
+                              height: 15,
+                              width: 15,
+                              padding: 1,
+                              borderRadius: 8,
+                              marginTop: 8,
+                              marginHorizontal: 4,
+                            }}
+                          >
+                            <Entypo name="check" color={"white"} />
+                          </View>
+                        )}
+                      </View>
+                      <StyledText
                         title={`@${profile?.handle}`}
                         style={{
                           fontSize: 14,
@@ -292,7 +312,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     </View>
                   </View>
                   {profile?.bio ? (
-                    <SubHeading
+                    <StyledText
                       title={extractURLs(profile?.bio)}
                       style={{
                         fontSize: 16,
@@ -320,7 +340,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                         paddingHorizontal: 16,
                       }}
                     >
-                      <SubHeading
+                      <StyledText
                         title={`${profile?.stats?.totalFollowers} • Subscribers`}
                         style={{ fontSize: 16, fontWeight: "600" }}
                       />
@@ -331,7 +351,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                           width: 2,
                         }}
                       ></View>
-                      <SubHeading
+                      <StyledText
                         title={`${allVideos?.length} • Videos`}
                         style={{ fontSize: 16, fontWeight: "600" }}
                       />

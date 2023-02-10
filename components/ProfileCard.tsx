@@ -1,52 +1,79 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { Text, View } from "react-native";
+import { TouchableWithoutFeedback, View } from "react-native";
 import { dark_primary } from "../constants/Colors";
+import formatHandle from "../utils/formatHandle";
 import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
-import SubHeading from "./UI/SubHeading";
+import StyledText from "./UI/StyledText";
+
+type ProfileCardProps = {
+  profileIcon: string;
+  profileName: string;
+  handle: string;
+  owner: string;
+  isFollowed: boolean;
+  profileId: string;
+};
 
 export default function ProfileCard({
-  profileIcon = "https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1331&q=80",
-  profileName = "Harsh Sachaniya",
-  handle = "@iamharsh",
-}) {
+  profileIcon,
+  profileName,
+  handle,
+  owner,
+  profileId,
+  isFollowed,
+}: ProfileCardProps) {
+  const navigation = useNavigation();
   return (
-    <View
-      style={{
-        backgroundColor: "black",
-        borderRadius: 16,
-        flexDirection: "row",
-        alignItems: "center",
-        padding: 10,
-        marginVertical: 4,
+    <TouchableWithoutFeedback
+      onPress={() => {
+        console.log("touch");
+
+        navigation.navigate("Channel", {
+          profileId: profileId,
+          isFollowdByMe: isFollowed,
+          name: profileName,
+          ethAddress: owner,
+        });
       }}
     >
-      <Avatar src={profileIcon} height={40} width={40} />
       <View
         style={{
-          marginLeft: 8,
+          flexDirection: "row",
+          alignItems: "center",
+          padding: 10,
+          marginVertical: 4,
+          borderBottomWidth: 1,
+          borderBottomColor: dark_primary,
         }}
       >
-        {profileName && (
-          <Heading
-            title={profileName}
+        <Avatar src={profileIcon} height={40} width={40} />
+        <View
+          style={{
+            marginLeft: 8,
+          }}
+        >
+          {profileName && (
+            <Heading
+              title={profileName}
+              style={{
+                color: "white",
+                fontSize: 16,
+                fontWeight: "500",
+              }}
+            />
+          )}
+          <StyledText
+            title={formatHandle(handle)}
             style={{
-              color: "white",
-              fontSize: 16,
-              fontWeight: "500",
+              color: profileName ? "gray" : "white",
+              fontSize: profileName ? 12 : 16,
+              marginTop: profileName ? 0 : -8,
             }}
           />
-        )}
-
-        <Heading
-          title={handle}
-          style={{
-            color: profileName ? "gray" : "white",
-            fontSize: profileName ? 12 : 16,
-            marginTop: profileName ? 0 : -8,
-          }}
-        />
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }

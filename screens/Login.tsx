@@ -21,10 +21,11 @@ import verifyToken from "../apollo/Queries/verifyToken";
 import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
 import { StatusBar } from "expo-status-bar";
 import Paginator from "../components/Paginator";
-import SubHeading from "../components/UI/SubHeading";
+import StyledText from "../components/UI/StyledText";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Button from "../components/UI/Button";
 import formatTime from "../utils/formatTime";
+import storeData from "../utils/storeData";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const store = useStore();
@@ -39,7 +40,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   }, [connector]);
 
   useEffect(() => {
-    navigation.addListener("focus", getData);
+    // navigation.addListener("focus", getData);
   }, []);
 
   const data = [
@@ -51,26 +52,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const { width } = Dimensions.get("screen");
   const imageW = width * 0.8;
   const imageH = imageW * 1.54;
-
-  const updateTokens = async () => {
-    const jsonValue = await AsyncStorage.getItem("@storage_Key");
-    if (jsonValue) {
-      const tokens = JSON.parse(jsonValue);
-      const generatedTime = tokens.generatedTime;
-      const currentTime = new Date().getTime();
-
-      setInterval(function () {
-        const minute = Math.floor(
-          ((currentTime - generatedTime) % (1000 * 60 * 60)) / (1000 * 60)
-        );
-        if (minute < 25) {
-          return;
-        } else {
-          getData();
-        }
-      }, 60 * 1000);
-    }
-  };
 
   const logInWithLens = async () => {
     setIsloading(true);
@@ -123,82 +104,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
       }
     }
   };
-  const getData = async () => {
-    setIsloading(true);
-    try {
-      const jsonValue = await AsyncStorage.getItem("@storage_Key");
-      if (jsonValue) {
-        const tokens = JSON.parse(jsonValue);
-        const isvaild = await client.query({
-          query: verifyToken,
-          variables: {
-            token: tokens.accessToken,
-          },
-        });
-        if (isvaild.data.verify) {
-          authStore.setAccessToken(tokens.accessToken);
-          const data = await client.query({
-            query: getProfile,
-            variables: {
-              ethAddress: connector.accounts[0],
-            },
-          });
-          if (!data.data.defaultProfile) {
-            return;
-          }
-          userStore.setCurrentProfile(data.data.defaultProfile);
-          setIsloading(false);
-          navigation.navigate("Root");
-        }
-        if (isvaild.data.verify === false) {
-          const refreshToken = await client.mutate({
-            mutation: refreshCurrentToken,
-            variables: {
-              rtoken: tokens.refreshToken,
-            },
-          });
-          authStore.setAccessToken(refreshToken.data.refresh.accessToken);
-          storeData(
-            refreshToken.data.refresh.accessToken,
-            refreshToken.data.refresh.refreshToken
-          );
-          const data = await client.query({
-            query: getProfile,
-            variables: {
-              ethAddress: connector.accounts[0],
-            },
-          });
-          if (!data.data.defaultProfile) {
-            return;
-          }
-          userStore.setCurrentProfile(data.data.defaultProfile);
-          navigation.navigate("Root");
-        }
-      } else {
-        setIsloading(false);
-      }
-    } catch (e) {
-      if (e instanceof Error) {
-        //yaha sb krna
-        setIsloading(false);
-      }
-    }
-  };
-  const storeData = async (accessToken: string, refreshToken: string) => {
-    try {
-      const tokens = {
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-        generatedTime: new Date().getTime(),
-      };
-      const jsonValue = JSON.stringify(tokens);
-      await AsyncStorage.setItem("@storage_Key", jsonValue);
-      updateTokens();
-    } catch (e) {
-      // saving error
-      console.log(e);
-    }
-  };
+
   const killSession = React.useCallback(() => {
     return connector.killSession();
   }, [connector]);
@@ -305,7 +211,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
                   marginVertical: 10,
                 }}
               >
-                <SubHeading
+                <StyledText
                   title="Disconnect Wallet"
                   style={{
                     color: "black",
@@ -332,7 +238,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
                 marginVertical: 30,
               }}
             >
-              <SubHeading
+              <StyledText
                 title="Connect Wallet"
                 style={{
                   color: "black",

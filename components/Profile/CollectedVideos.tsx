@@ -7,6 +7,7 @@ import getCollectVideos from "../../apollo/Queries/getCollectVideos";
 import { useAuthStore } from "../../store/Store";
 import { Feather } from "@expo/vector-icons";
 import VideoCard from "../VideoCard";
+import formatHandle from "../../utils/formatHandle";
 
 type CollectedVideosProps = {
   navigation: any;
@@ -114,7 +115,7 @@ const CollectedVideos = ({
       {collectVideos?.length === 0 && (
         <View style={{ height: 50, justifyContent: "center" }}>
           <Heading
-            title={`Looks like ${handle} has not collected any video`}
+            title={`Looks like ${formatHandle(handle)} has not collected any video`}
             style={{
               color: "gray",
               fontSize: 15,

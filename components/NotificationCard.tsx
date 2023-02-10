@@ -5,6 +5,7 @@ import formatAddress from "../utils/formatAddress";
 import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
 import Avatar from "./UI/Avatar";
+import StyledText from "./UI/StyledText";
 
 interface NotificationsProps {
   title: string;
@@ -58,15 +59,18 @@ const NotificationCard: FC<NotificationsProps> = ({
               />
             </Pressable>
             <Text style={{ color: "gray", fontSize: 14 }}>
-              <Text style={{ color: "white", fontWeight: "500" }}>
-                {notification?.wallet?.defaultProfile?.handle?.split(".")[0] ||
-                  formatAddress(notification?.wallet?.address)}{" "}
-              </Text>
-              followed you
-              <Text style={{ fontSize: 10, color: "gray" }}>
-                {" "}
-                {getDifference(notification?.createdAt)}
-              </Text>
+              <StyledText
+                title={`${
+                  notification?.wallet?.defaultProfile?.handle?.split(".")[0] ||
+                  formatAddress(notification?.wallet?.address)
+                } followed you`}
+                style={{ color: "white", fontWeight: "500" }}
+              />
+
+              <StyledText
+                title={getDifference(notification?.createdAt)}
+                style={{ fontSize: 10, color: "gray" }}
+              ></StyledText>
             </Text>
           </View>
         );

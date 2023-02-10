@@ -7,6 +7,7 @@ import Avatar from "../UI/Avatar";
 import getDifference from "../../utils/getDifference";
 import getIPFSLink from "../../utils/getIPFSLink";
 import CommentIcon from "../svg/CommentIcon";
+import StyledText from "../UI/StyledText";
 
 const CommentNotification: React.FC<NotificationCardProps> = ({
   navigation,
@@ -36,34 +37,43 @@ const CommentNotification: React.FC<NotificationCardProps> = ({
               }}
             >
               <Avatar
-                src={getIPFSLink(notification.profile?.picture.original.url)}
+                src={getIPFSLink(notification?.profile?.picture?.original?.url)}
                 height={35}
                 width={35}
               />
             </Pressable>
-            <Text style={{ color: "gray", fontSize: 14 }}>
-              <Text style={{ color: "white", fontWeight: "600" }}>
-                {notification?.profile?.handle?.split(".")[0] ||
-                  formatAddress(notification?.wallet?.address)}{" "}
-              </Text>
-              commented on your{" "}
-              {notification?.comment?.commentOn?.__typename === "Post"
-                ? "post"
-                : notification?.comment?.commentOn?.__typename === "Comment"
-                ? "comment"
-                : "mirror"}
-              <Text style={{ fontSize: 10, color: "gray" }}>
-                {" "}
-                {getDifference(notification?.createdAt)}
-              </Text>
-            </Text>
-            <View>
-              <Text style={{ color: "grey", fontSize: 12 }}>
-                {notification?.comment?.metadata?.description || notification?.comment?.metadata?.content}
-              </Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <StyledText
+                title={
+                  notification?.profile?.handle?.split(".")[0] ||
+                  formatAddress(notification?.wallet?.address)
+                }
+                style={{ color: "white", fontWeight: "500" }}
+              />
+              <StyledText
+                title={` commented on your ${
+                  notification?.comment?.commentOn?.__typename === "Post"
+                    ? "post"
+                    : notification?.comment?.commentOn?.__typename === "Comment"
+                    ? "comment"
+                    : "mirror"
+                }`}
+                style={{ color: "gray" }}
+              />
+              <StyledText
+                title={getDifference(notification?.createdAt)}
+                style={{ fontSize: 10, color: "gray" }}
+              />
             </View>
           </View>
         </View>
+        <StyledText
+          title={
+            notification?.comment?.metadata?.description ||
+            notification?.comment?.metadata?.content
+          }
+          style={{ fontSize: 10, color: "gray" }}
+        />
       </View>
     </>
   );
