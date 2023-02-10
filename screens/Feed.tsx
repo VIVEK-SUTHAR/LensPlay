@@ -8,7 +8,11 @@ import {
 } from "react-native";
 import { useState } from "react";
 import VideoCard from "../components/VideoCard";
-import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
+import useStore, {
+  useAuthStore,
+  useProfile,
+  useThemeStore,
+} from "../store/Store";
 import { RootTabScreenProps } from "../types/navigation/types";
 import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
 import AnimatedLottieView from "lottie-react-native";
@@ -22,7 +26,6 @@ import getProfile from "../apollo/Queries/getProfile";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
 import storeData from "../utils/storeData";
-import searchUser from "../api/zooTools/searchUser";
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const connector = useWalletConnect();
   const authStore = useAuthStore();
@@ -30,36 +33,21 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [callData, setCallData] = useState(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const theme = useThemeStore();
-
-  let hasAccess: boolean;
-
-  const isWaitListed = async () => {
-    const userData = await AsyncStorage.getItem("@access_Key");
-    if (userData) {
-      const user = JSON.parse(userData);
-      const data = await searchUser(user.email);
-      const handleUser = {
-        email: user.email,
-        hasAccess: data.fields.hasAccess,
-      };
-      await AsyncStorage.setItem("@access_Key", JSON.stringify(handleUser));
-      hasAccess = data.fields.hasAccess;
-    }
-  };
+  const { hasAccess } = useStore();
 
   useEffect(() => {
-    isWaitListed().then(() => {
-      if (callData && hasAccess) {
+    if (callData) {
+      if (!hasAccess) {
+        navigation.push("Loader");
+      } else {
         getData().then(() => {
           setCallData(false);
           setInterval(() => {
             updateTokens();
-          }, 10000);
+          }, 840000);
         });
-      } else {
-        navigation.navigate("Waitlist");
       }
-    });
+    }
   }, []);
 
   const updateTokens = async () => {
