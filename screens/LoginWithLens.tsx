@@ -1,44 +1,38 @@
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
 import {
   Alert,
-  Animated,
   Dimensions,
   Image,
+  SafeAreaView,
+  StatusBarIOS,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from "react-native";
-import * as React from "react";
-import { useState, useEffect } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import { client } from "../apollo/client";
-import getChallenge from "../apollo/Queries/getChallenge";
-import getAccessTokens from "../apollo/mutations/getAccessTokens";
-import getProfile from "../apollo/Queries/getProfile";
-import useStore, { useAuthStore, useProfile } from "../store/Store";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import verifyToken from "../apollo/Queries/verifyToken";
-import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
-import { StatusBar } from "expo-status-bar";
-import Paginator from "../components/Paginator";
+import Button from "../components/UI/Button";
+import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
 import { RootStackScreenProps } from "../types/navigation/types";
-import Button from "../components/UI/Button";
-import formatTime from "../utils/formatTime";
-import storeData from "../utils/storeData";
-import Heading from "../components/UI/Heading";
 import Constants from "expo-constants";
+import getProfile from "../apollo/Queries/getProfile";
+import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import { client } from "../apollo/client";
+import { useAuthStore, useProfile } from "../store/Store";
+import getChallenge from "../apollo/Queries/getChallenge";
+import getAccessTokens from "../apollo/mutations/getAccessTokens";
+import storeData from "../utils/storeData";
+import AnimatedLottieView from "lottie-react-native";
 
-const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
-  const store = useStore();
-  const authStore = useAuthStore();
-  const userStore = useProfile();
-  const [isloading, setIsloading] = useState<boolean>(false);
-  const connector = useWalletConnect();
-  const [isconnected, setIsconnected] = useState<boolean>(false);
-
+function LoginWithLens({
+  navigation,
+}: RootStackScreenProps<"LoginWithLens">) {
   const windowWidth = Dimensions.get("window").width;
-  
+  const windowHeight = Dimensions.get("window").height;
+  const [isloading, setIsloading] = useState(false);
+  const connector = useWalletConnect();
+  const userStore = useProfile();
+  const authStore = useAuthStore();
+
   const logInWithLens = async () => {
     setIsloading(true);
     const data = await client.query({
@@ -90,19 +84,13 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
       }
     }
   };
-  const killSession = React.useCallback(() => {
-    return connector.killSession();
-  }, [connector]);
-  const scrollX = React.useRef(new Animated.Value(0)).current;
+
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar
-        backgroundColor="#93E9C8"
-        style="dark"
-      />
-      <View style={{ position: "relative" }}>
+      <StatusBar backgroundColor="#93E9C8" style="dark" />
+      <View style={{ position: "relative", alignItems: "center" }}>
         <Image
-          source={require("../assets/images/Vector256.png")}
+          source={require("../assets/images/Vector258.png")}
           style={{
             width: windowWidth,
             height: windowWidth + 105,
@@ -111,21 +99,18 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           resizeMode={"contain"}
         />
         <Image
-          source={require("../assets/images/login1.png")}
-          style={{ width: windowWidth, height: 495, position: "absolute" }}
+          source={require("../assets/images/login3.png")}
+          style={{
+            width: windowWidth * 0.9,
+            height: 495,
+            position: "absolute",
+            bottom: 32,
+            right: 0,
+          }}
           resizeMode={"contain"}
         />
       </View>
       <View style={{ justifyContent: "flex-end" }}>
-        <Heading
-          title={"LensPlay"}
-          style={{
-            fontSize: 64,
-            color: "white",
-            fontWeight: "700",
-            textAlign: "center",
-          }}
-        />
         <View
           style={{
             position: "relative",
@@ -133,10 +118,11 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
             alignItems: "flex-end",
             paddingHorizontal: 34,
             marginTop: 8,
+            top: 72,
           }}
         >
           <StyledText
-            title={"See the world in a"}
+            title={"SignIn &"}
             style={{
               fontSize: 24,
               color: "white",
@@ -146,7 +132,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           />
           <View style={{ flexDirection: "row" }}>
             <StyledText
-              title={"different"}
+              title={"experience Lens"}
               style={{
                 fontSize: 24,
                 color: "#93E9C8",
@@ -155,35 +141,28 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
                 marginRight: 8,
               }}
             />
-            <StyledText
-              title={"way"}
-              style={{
-                fontSize: 24,
-                color: "white",
-                fontWeight: "500",
-                textAlign: "right",
-              }}
-            />
           </View>
         </View>
-        <View style={{ padding: 16, marginTop: 16 }}>
+        <View style={{ padding: 16, marginTop: 144 }}>
           <Button
-            onPress={() => {
-              navigation.push("ConnectWallet");
-            }}
-            title="Get Started"
+            title="Login With Lens"
             bg="#93E9C8"
             borderRadius={5}
             textStyle={{ fontWeight: "700", fontSize: 24 }}
             py={16}
+            isLoading={isloading}
+            onPress={async()=>{
+              await logInWithLens();
+              }
+            }
           />
         </View>
       </View>
     </SafeAreaView>
   );
-};
+}
 
-export default Login;
+export default LoginWithLens;
 
 const styles = StyleSheet.create({
   container: {

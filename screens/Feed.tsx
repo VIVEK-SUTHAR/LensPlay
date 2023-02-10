@@ -23,6 +23,7 @@ import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
 import storeData from "../utils/storeData";
 import searchUser from "../api/zooTools/searchUser";
+import { StatusBar } from "expo-status-bar";
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const connector = useWalletConnect();
   const authStore = useAuthStore();
@@ -142,7 +143,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
         }
       } else {
         // setIsloading(false);
-        navigation.navigate("Login");
+        navigation.replace("Login");
       }
     } catch (e) {
       if (e instanceof Error) {
@@ -162,6 +163,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   if (Feeddata) {
     return (
       <SafeAreaView style={styles.container}>
+        <StatusBar backgroundColor="black"></StatusBar>
         <FlatList
           data={Feeddata.feed.items}
           keyExtractor={(item) => item.root.id.toString()}
