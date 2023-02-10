@@ -16,13 +16,10 @@ import { RootStackScreenProps } from "../types/navigation/types";
 import Constants from "expo-constants";
 
 function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
-  const store = useStore();
   const connector = useWalletConnect();
   const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
-  const LensLogin = React.useCallback(async () => {
+  const connectWallet = React.useCallback(async () => {
     await connector.connect();
-    setIsconnected(true);
   }, [connector]);
   return (
     <SafeAreaView style={styles.container}>
@@ -93,7 +90,8 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
         </View>
         <View style={{ padding: 16, marginTop: 144 }}>
           <Button
-            onPress={() => {
+            onPress={async() => {
+              await connectWallet();
               navigation.push("LoginWithLens");
             }}
             title="Connect Wallet"

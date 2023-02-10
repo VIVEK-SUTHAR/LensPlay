@@ -36,17 +36,9 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const [isloading, setIsloading] = useState<boolean>(false);
   const connector = useWalletConnect();
   const [isconnected, setIsconnected] = useState<boolean>(false);
-  const connectWallet = React.useCallback(async () => {
-    await connector.connect();
-    setIsconnected(true);
-  }, [connector]);
 
   const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
-  // const { width } = Dimensions.get("screen");
-  // const imageW = width ;
-  // const imageH = imageW ;
-  console.log(windowWidth);
+  
   const logInWithLens = async () => {
     setIsloading(true);
     const data = await client.query({
@@ -130,7 +122,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           style={{
             fontSize: 64,
             color: "white",
-            fontWeight: "600",
+            fontWeight: "700",
             textAlign: "center",
           }}
         />

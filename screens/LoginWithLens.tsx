@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useState } from "react";
 import {
+  Alert,
   Dimensions,
   Image,
   SafeAreaView,
@@ -13,12 +14,76 @@ import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Constants from "expo-constants";
+import getProfile from "../apollo/Queries/getProfile";
+import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import { client } from "../apollo/client";
+import { useAuthStore, useProfile } from "../store/Store";
+import getChallenge from "../apollo/Queries/getChallenge";
+import getAccessTokens from "../apollo/mutations/getAccessTokens";
+import storeData from "../utils/storeData";
+import AnimatedLottieView from "lottie-react-native";
 
-export default function LoginWithLens({
+function LoginWithLens({
   navigation,
 }: RootStackScreenProps<"LoginWithLens">) {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
+  const [isloading, setIsloading] = useState(false);
+  const connector = useWalletConnect();
+  const userStore = useProfile();
+  const authStore = useAuthStore();
+
+  const logInWithLens = async () => {
+    setIsloading(true);
+    const data = await client.query({
+      query: getProfile,
+      variables: {
+        ethAddress: connector.accounts[0],
+      },
+    });
+    if (!data.data.defaultProfile) {
+      return;
+    }
+    userStore.setCurrentProfile(data.data.defaultProfile);
+    const challengeText = await client.query({
+      query: getChallenge,
+      variables: {
+        ethAddress: connector.accounts[0],
+      },
+    });
+    try {
+      const data = await connector.sendCustomRequest({
+        method: "personal_sign",
+        params: [connector.accounts[0], challengeText.data.challenge.text],
+      });
+      const address = connector.accounts[0];
+      const tokens = await client.mutate({
+        mutation: getAccessTokens,
+        variables: {
+          address: address,
+          signature: data,
+        },
+      });
+      if (tokens.data.authenticate.accessToken) {
+        authStore.setAccessToken(tokens.data.authenticate.accessToken);
+        authStore.setRefreshToken(tokens.data.authenticate.refreshToken);
+        storeData(
+          tokens.data.authenticate.accessToken,
+          tokens.data.authenticate.refreshToken
+        );
+        setIsloading(false);
+        navigation.navigate("Root");
+      } else {
+        setIsloading(false);
+        Alert.alert("Something went wrong");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+        setIsloading(false);
+      }
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -85,6 +150,11 @@ export default function LoginWithLens({
             borderRadius={5}
             textStyle={{ fontWeight: "700", fontSize: 24 }}
             py={16}
+            isLoading={isloading}
+            onPress={async()=>{
+              await logInWithLens();
+              }
+            }
           />
         </View>
       </View>
