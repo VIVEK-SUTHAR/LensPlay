@@ -62,8 +62,11 @@ export type RootStackParamList = {
   NotFound: undefined;
   Login: undefined;
   Waitlist: undefined;
+  ReportPublication: {
+    publicationId: string;
+  };
   LoginWithLens: undefined;
-  ConnectWallet:undefined;
+  ConnectWallet: undefined;
   EditProfile: {
     profile: Profile | null;
   };
