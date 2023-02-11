@@ -10,11 +10,13 @@ import React, { useEffect, useState } from "react";
 import { RootStackScreenProps } from "../types/navigation/types";
 import StyledText from "../components/UI/StyledText";
 import { dark_primary } from "../constants/Colors";
-import { useThemeStore, useToast } from "../store/Store";
+import { useAuthStore, useThemeStore, useToast } from "../store/Store";
 import Button from "../components/UI/Button";
 import Heading from "../components/UI/Heading";
 import { ToastType } from "../types/Store";
 import Dropdown from "../components/UI/Dropdown";
+import { client } from "../apollo/client";
+import reportPublication from "../apollo/mutations/reportPublication";
 
 type subreason = {
   reason: string;
@@ -42,6 +44,7 @@ const ReportPublication = ({
   const [addiText, setAddiText] = useState<string>("");
   const theme = useThemeStore();
   const toast = useToast();
+  const { accessToken } = useAuthStore();
   const reportData: RESONTYPEDATA[] = [
     {
       reason: "SENSITIVE",
@@ -63,8 +66,39 @@ const ReportPublication = ({
       return;
     }
     try {
-      toast.show("Logic baki hai dost", ToastType.INFO, true);
-    } catch (error) {}
+      const reportQuery = await client.mutate({
+        mutation: reportPublication,
+        variables: {
+          request: {
+            publicationId: route.params.publicationId,
+            reason: {
+              sensitiveReason: {
+                reason: selectedData.reason,
+                subreason: selectedSubReason.reason,
+              },
+            },
+            additionalComments: addiText ? addiText : "",
+          },
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${accessToken}`,
+          },
+        },
+      });
+      if (!reportQuery?.data?.reportPublication) {
+        toast.show("Thanks for reporting", ToastType.SUCCESS, true);
+      }
+      console.log(reportQuery.data);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error);
+      }
+    } finally {
+      setSelectedSubReason({ reason: "" });
+      setselectedData({ reason: "", subReason: [{ reason: "" }] });
+      setAddiText("");
+    }
   };
 
   return (
@@ -93,7 +127,7 @@ const ReportPublication = ({
           data={reportData}
           onSelect={setselectedData}
         />
-        {selectedData && (
+        {selectedData?.reason && (
           <Dropdown
             label="Reason"
             data={selectedData.subReason}
@@ -106,6 +140,7 @@ const ReportPublication = ({
           <TextInput
             numberOfLines={6}
             multiline={true}
+            value={addiText}
             style={styles.input}
             placeholderTextColor="gray"
             selectionColor={theme.PRIMARY}

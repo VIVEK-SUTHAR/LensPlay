@@ -119,10 +119,10 @@ const VideoPage = ({
               setisalreadyLiked={setisalreadyLiked}
               id={route.params.id}
             />
-            <MirrorButton 
-            id={route.params.id}
-            isAlreadyMirrored={isAlreadyMirrored}
-            setIsAlreadyMirrored={setIsAlreadyMirrored}
+            <MirrorButton
+              id={route.params.id}
+              isAlreadyMirrored={isAlreadyMirrored}
+              setIsAlreadyMirrored={setIsAlreadyMirrored}
             />
             <CollectButton
               publicationId={route.params.id}
@@ -135,7 +135,7 @@ const VideoPage = ({
               title={route.params.title}
               publicationId={route.params.id}
             />
-            <ReportButton />
+            <ReportButton publicationId={route.params.id} />
           </ScrollView>
           <Comment publicationId={route.params.id} />
         </View>
