@@ -137,8 +137,8 @@ const ProfileScreen = ({
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-between",
-                    alignItems: "center",
-                    marginLeft: 18,
+                    alignItems: "flex-end",
+                    marginLeft: 16,
                     marginTop: "-20%",
                     zIndex: 12,
                   }}
@@ -154,7 +154,6 @@ const ProfileScreen = ({
                       justifyContent: "flex-end",
                       marginRight: 16,
                       top: 0,
-                      marginTop: 24,
                     }}
                   >
                     <Button
@@ -165,7 +164,7 @@ const ProfileScreen = ({
                       bg={primary}
                       textStyle={{
                         fontSize: 16,
-                        fontWeight: "700",
+                        fontWeight: "600",
                         marginHorizontal: 4,
                         color: "black",
                       }}
@@ -182,7 +181,7 @@ const ProfileScreen = ({
                 </View>
                 <View
                   style={{
-                    marginHorizontal: 15,
+                    marginHorizontal: 16,
                   }}
                 >
                   <View
@@ -200,8 +199,8 @@ const ProfileScreen = ({
                           style={{
                             fontSize: 20,
                             marginTop: 8,
-                            fontWeight: "bold",
-                            color: "#FAF7F7",
+                            fontWeight: "600",
+                            color: "white",
                           }}
                         />
                         {VERIFIED_CHANNELS.includes(profile?.id) && (

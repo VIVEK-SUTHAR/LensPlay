@@ -29,7 +29,6 @@ import getMirrorVideos from "../apollo/Queries/getMirrorVideos";
 import getCollectVideos from "../apollo/Queries/getCollectVideos";
 import { StatusBar } from "expo-status-bar";
 import ProfileSkeleton from "../components/UI/ProfileSkeleton";
-import { LinearGradient } from "expo-linear-gradient";
 import { Entypo, Feather } from "@expo/vector-icons";
 import { createFreeSubscribe } from "../api";
 import { ToastType } from "../types/Store";
@@ -185,24 +184,13 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                       resizeMode: "cover",
                     }}
                   />
-                  <LinearGradient
-                    colors={["transparent", "black"]}
-                    start={{ x: 1, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={{
-                      position: "relative",
-                      height: 50,
-                      marginTop: -50,
-                      zIndex: 12,
-                    }}
-                  ></LinearGradient>
                 </View>
                 <View
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-between",
-                    alignItems: "center",
-                    marginLeft: 18,
+                    alignItems: "flex-end",
+                    marginLeft: 16,
                     marginTop: "-20%",
                     zIndex: 12,
                   }}
@@ -218,7 +206,6 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                       justifyContent: "flex-end",
                       marginRight: 16,
                       top: 0,
-                      marginTop: 24,
                     }}
                   >
                     <Button
@@ -230,7 +217,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                       bg={theme.PRIMARY}
                       textStyle={{
                         fontSize: 16,
-                        fontWeight: "700",
+                        fontWeight: "600",
                         marginHorizontal: 4,
                         color: "black",
                       }}
@@ -262,7 +249,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                 </View>
                 <View
                   style={{
-                    marginHorizontal: 15,
+                    marginHorizontal: 16,
                   }}
                 >
                   <View
@@ -281,7 +268,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                             fontSize: 20,
                             marginTop: 8,
                             fontWeight: "bold",
-                            color: "#FAF7F7",
+                            color: "white",
                           }}
                         />
                         {VERIFIED_CHANNELS.includes(profile?.id) && (
@@ -628,7 +615,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
               style={{
                 height: "auto",
               }}
-              source={require("../assets/skeleton.json")}
+              source={require("../assets/loader.json")}
             />
             {/* <Skleton />
             <Skleton />

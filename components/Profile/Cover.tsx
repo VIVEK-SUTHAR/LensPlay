@@ -1,25 +1,13 @@
-import {
-  Alert,
-  Dimensions,
-  Image,
-  Modal,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Dimensions, Image, Modal, Pressable, View } from "react-native";
 import React, { useState } from "react";
 import getIPFSLink from "../../utils/getIPFSLink";
-import { LinearGradient } from "expo-linear-gradient";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { MaterialIcons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StatusBar } from "expo-status-bar";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
-import Button from "../UI/Button";
+import { dark_primary } from "../../constants/Colors";
 type CoverProps = {
   url: string;
   navigation: any;
@@ -64,17 +52,6 @@ const Cover = ({ url, navigation }: CoverProps) => {
             resizeMode: "cover",
           }}
         />
-        <LinearGradient
-          colors={["transparent", "black"]}
-          start={{ x: 1, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={{
-            position: "relative",
-            height: 50,
-            marginTop: -50,
-            zIndex: 12,
-          }}
-        ></LinearGradient>
       </View>
       <Modal
         transparent={true}

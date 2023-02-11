@@ -88,7 +88,7 @@ const NotFound = () => {
         style={{
           height: "auto",
         }}
-        source={require("../assets/notifications.json")}
+        source={require("../assets/notfound.json")}
       />
       <View
         style={{

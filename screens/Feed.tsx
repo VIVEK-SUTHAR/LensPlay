@@ -216,7 +216,7 @@ const NotFound = ({ navigation }: { navigation: any }) => {
           style={{
             height: "auto",
           }}
-          source={require("../assets/notifications.json")}
+          source={require("../assets/notfound.json")}
         />
         <View
           style={{

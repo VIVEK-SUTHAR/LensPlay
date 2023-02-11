@@ -86,7 +86,7 @@ function RootNavigator() {
         component={Login}
         options={{ headerShown: false }}
       />
-     
+
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}

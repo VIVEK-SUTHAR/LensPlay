@@ -2,7 +2,7 @@ import { View, SafeAreaView } from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Uploadvideo from "../components/Uploadvideo";
-import GoLive from "../components/GoLive";
+// import GoLive from "../components/GoLive";
 import AnimatedLottieView from "lottie-react-native";
 import Button from "../components/UI/Button";
 import {
@@ -27,7 +27,7 @@ const UploadVideo = ({}: UploadTabParamsList) => {
         component={Uploadvideo}
         options={{ animation: "slide_from_right", animationDuration: 100 }}
       />
-      <UploadStack.Screen name="GoLive" component={GoLive} />
+      {/* <UploadStack.Screen name="GoLive" component={GoLive} /> */}
     </UploadStack.Navigator>
   );
 };

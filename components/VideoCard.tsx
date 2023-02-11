@@ -120,8 +120,8 @@ const VideoCard = ({
           >
             <StyledText
               title={formatTime(videoTime)}
-              style={{ color: "white", fontSize: 12 }}>
-            </StyledText>
+              style={{ color: "white", fontSize: 12 }}
+            ></StyledText>
           </View>
         ) : (
           <></>

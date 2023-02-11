@@ -28,8 +28,6 @@ export default function ProfileCard({
   return (
     <TouchableWithoutFeedback
       onPress={() => {
-        console.log("touch");
-
         navigation.navigate("Channel", {
           profileId: profileId,
           isFollowdByMe: isFollowed,
