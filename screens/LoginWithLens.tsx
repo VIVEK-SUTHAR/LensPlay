@@ -199,9 +199,9 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           <Button
             title="Login With Lens"
             bg="#93E9C8"
-            borderRadius={5}
-            textStyle={{ fontWeight: "800", fontSize: 24 }}
-            py={16}
+            borderRadius={16}
+            textStyle={{ fontWeight: "800", fontSize: 28 }}
+            py={12}
             isLoading={isloading}
             onPress={async () => {
               await logInWithLens();

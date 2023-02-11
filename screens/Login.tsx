@@ -59,7 +59,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         />
         <Image
           source={require("../assets/images/login1.png")}
-          style={{ width: windowWidth, height: 495, position: "absolute" }}
+          style={{ width: windowWidth, height: 495, position: "absolute", top: -30 }}
           resizeMode={"contain"}
         />
       </View>
@@ -67,9 +67,9 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         <Heading
           title={"LensPlay"}
           style={{
-            fontSize: 60,
+            fontSize: 54,
             color: "white",
-            fontWeight: "600",
+            fontWeight: "700",
             textAlign: "center",
           }}
         />
@@ -84,9 +84,9 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           <StyledText
             title={"See the world in a"}
             style={{
-              fontSize: 24,
+              fontSize: 20,
               color: "white",
-              fontWeight: "600",
+              fontWeight: "700",
               textAlign: "right",
             }}
           />
@@ -94,9 +94,9 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
             <StyledText
               title={"different"}
               style={{
-                fontSize: 24,
+                fontSize: 20,
                 color: "#93E9C8",
-                fontWeight: "600",
+                fontWeight: "700",
                 textAlign: "right",
                 marginRight: 8,
               }}
@@ -104,24 +104,24 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
             <StyledText
               title={"way"}
               style={{
-                fontSize: 24,
+                fontSize: 20,
                 color: "white",
-                fontWeight: "600",
+                fontWeight: "700",
                 textAlign: "right",
               }}
             />
           </View>
         </View>
-        <View style={{ padding: 16, marginTop: 8 }}>
+        <View style={{ padding: 24, marginTop: 20 }}>
           <Button
             onPress={async () => {
               navigation.push("ConnectWallet");
             }}
             title="Get Started"
             bg="#93E9C8"
-            borderRadius={8}
-            textStyle={{ fontWeight: "800", fontSize: 24 }}
-            py={16}
+            borderRadius={16}
+            textStyle={{ fontWeight: "800", fontSize: 28 }}
+            py={12}
           />
         </View>
       </View>
