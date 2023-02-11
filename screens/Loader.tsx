@@ -10,7 +10,7 @@ import useStore from "../store/Store";
 export default function Loader({
   navigation,
 }: RootStackScreenProps<"Waitlist">) {
-  const { handleAccess, hasAccess } = useStore();
+  const { handleAccess } = useStore();
   let isLoading: boolean = true;
 
   const isWaitListed = async () => {

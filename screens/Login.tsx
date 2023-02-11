@@ -39,61 +39,11 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
 
   const windowWidth = Dimensions.get("window").width;
 
-  const logInWithLens = async () => {
-    setIsloading(true);
-    const data = await client.query({
-      query: getProfile,
-      variables: {
-        ethAddress: connector.accounts[0],
-      },
-    });
-    if (!data.data.defaultProfile) {
-      return;
-    }
-    userStore.setCurrentProfile(data.data.defaultProfile);
-    const challengeText = await client.query({
-      query: getChallenge,
-      variables: {
-        ethAddress: connector.accounts[0],
-      },
-    });
-    try {
-      const data = await connector.sendCustomRequest({
-        method: "personal_sign",
-        params: [connector.accounts[0], challengeText.data.challenge.text],
-      });
-      const address = connector.accounts[0];
-      const tokens = await client.mutate({
-        mutation: getAccessTokens,
-        variables: {
-          address: address,
-          signature: data,
-        },
-      });
-      if (tokens.data.authenticate.accessToken) {
-        authStore.setAccessToken(tokens.data.authenticate.accessToken);
-        authStore.setRefreshToken(tokens.data.authenticate.refreshToken);
-        storeData(
-          tokens.data.authenticate.accessToken,
-          tokens.data.authenticate.refreshToken
-        );
-        setIsloading(false);
-        navigation.navigate("Root");
-      } else {
-        setIsloading(false);
-        Alert.alert("Something went wrong");
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-        setIsloading(false);
-      }
-    }
-  };
+  
   const killSession = React.useCallback(() => {
     return connector.killSession();
   }, [connector]);
-  const scrollX = React.useRef(new Animated.Value(0)).current;
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#93E9C8" style="dark" />
@@ -164,7 +114,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         </View>
         <View style={{ padding: 16, marginTop: 8 }}>
           <Button
-            onPress={() => {
+            onPress={async () => {
               navigation.push("ConnectWallet");
             }}
             title="Get Started"

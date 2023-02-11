@@ -33,7 +33,6 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
   } = CollectVideoProps;
 
   const collectPublication = async () => {
-    console.log(bannerUrl);
 
     try {
       const data = await freeCollectPublication(publicationId, accessToken);

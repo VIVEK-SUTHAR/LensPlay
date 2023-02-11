@@ -17,6 +17,7 @@ import {
   VideoMeta,
 } from "../components/VIdeo";
 import DisLikeButton from "../components/VIdeo/Actions/DisLikeButton";
+import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
 
 const VideoPage = ({
   navigation,
@@ -32,6 +33,7 @@ const VideoPage = ({
     route.params.reaction === "DOWNVOTE" ? true : false
   );
   const likedPublication = useReactionStore();
+  const [isAlreadyMirrored, setIsAlreadyMirrored] = useState<boolean>(false);
 
   const thumbup = likedPublication.likedPublication;
   const thumbdown = likedPublication.dislikedPublication;
@@ -116,6 +118,11 @@ const VideoPage = ({
               setisalreadyDisLiked={setisalreadyDisLiked}
               setisalreadyLiked={setisalreadyLiked}
               id={route.params.id}
+            />
+            <MirrorButton 
+            id={route.params.id}
+            isAlreadyMirrored={isAlreadyMirrored}
+            setIsAlreadyMirrored={setIsAlreadyMirrored}
             />
             <CollectButton
               publicationId={route.params.id}

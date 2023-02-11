@@ -172,9 +172,6 @@ const ProfileScreen = ({
                         navigation.navigate("EditProfile", {
                           profile: profile,
                         });
-                        // Linking.openURL(
-                        //   `https://www.lensfrens.xyz/${userStore.currentProfile?.handle}`
-                        // );
                       }}
                     />
                   </View>

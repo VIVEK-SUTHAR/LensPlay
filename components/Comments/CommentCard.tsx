@@ -46,8 +46,6 @@ const CommentCard = ({
   const userStore = useProfile();
   const likedComments = reactions.likedComments;
 
-  console.log(id, name);
-
   const setLike = async () => {
     if (isIndexing) return;
     if (!isalreadyDisLiked) {
