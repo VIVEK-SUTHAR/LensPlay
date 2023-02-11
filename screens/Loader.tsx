@@ -26,7 +26,7 @@ export default function Loader({
       isLoading = false;
       handleAccess(data.fields.hasAccess);
       if (data.fields.hasAccess) {
-        navigation.push("Root");
+        navigation.replace("Root");
       } else {
         navigation.push("Waitlist");
       }

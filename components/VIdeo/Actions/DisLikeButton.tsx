@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Button from "../../UI/Button";
-import { dark_primary } from "../../../constants/Colors";
+import { dark_primary, primary } from "../../../constants/Colors";
 import formatInteraction from "../../../utils/formatInteraction";
 import {
   useAuthStore,
@@ -11,6 +11,7 @@ import {
 import DisLikeIcon from "../../svg/DisLikeIcon";
 import { removeLike, addLike } from "../../../api";
 import { ToastAndroid } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
 
 type DisLikeButtonProps = {
   id: string;
@@ -82,10 +83,15 @@ const DisLikeButton = ({
       }}
       borderColor={isalreadyDisLiked ? PRIMARY : "white"}
       icon={
-        <DisLikeIcon
-          height={20}
-          width={20}
-          filled={isalreadyDisLiked ? true : false}
+        // <DisLikeIcon
+        //   height={20}
+        //   width={20}
+        //   filled={isalreadyDisLiked ? true : false}
+        // />
+        <AntDesign
+          name={isalreadyDisLiked ? "dislike1" : "dislike2"}
+          size={20}
+          color={isalreadyDisLiked ? primary : "white"}
         />
       }
     />
