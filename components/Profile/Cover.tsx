@@ -7,7 +7,7 @@ import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
-import { dark_primary } from "../../constants/Colors";
+import { dark_primary, primary } from "../../constants/Colors";
 type CoverProps = {
   url: string;
   navigation: any;
@@ -74,21 +74,26 @@ const Cover = ({ url, navigation }: CoverProps) => {
               borderRadius: 8,
               backgroundColor: "#232323",
               paddingVertical: 18,
-              paddingHorizontal: 16,
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
+              borderColor: 'red',
+              paddingLeft: 16
             }}
           >
             <Heading
               title="Do you want to log-out?"
               style={{
-                color: "white",
+                color: primary,
                 fontSize: 20,
                 marginVertical: 4,
+                textAlign: 'left'
               }}
             />
             <StyledText
               title="By doing this,next time when you open LensPlay, you need to connect your wallet again."
               style={{
-                color: "gray",
+                color: "white",
                 fontSize: 14,
                 marginVertical: 4,
               }}
@@ -97,7 +102,7 @@ const Cover = ({ url, navigation }: CoverProps) => {
               style={{
                 flexDirection: "row",
                 justifyContent: "flex-end",
-                width: "90%",
+                width: "95%",
               }}
             >
               <Pressable
@@ -133,7 +138,7 @@ const Cover = ({ url, navigation }: CoverProps) => {
                   navigation.replace("Login");
                 }}
               >
-                <StyledText title="Log out" style={{ color: "white" }} />
+                <StyledText title="Log out" style={{ color: "red" }} />
               </Pressable>
             </View>
           </View>
