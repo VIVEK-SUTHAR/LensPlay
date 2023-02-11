@@ -42,8 +42,10 @@ import UserStats from "../screens/UserStats";
 import LeaderBoard from "../screens/LeaderBoard";
 import EditProfile from "../screens/EditProfile";
 import SearchIcon from "../components/svg/SearchIcon";
+import Loader from "../screens/Loader";
 import ConnectWallet from "../screens/ConnectWallet";
 import LoginWithLens from "../screens/LoginWithLens";
+import ReportPublication from "../screens/ReportPublication";
 
 export default function Navigation() {
   return (
@@ -72,6 +74,13 @@ function RootNavigator() {
       <Stack.Screen
         name="Waitlist"
         component={Waitlist}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Loader"
+        component={Loader}
         options={{
           headerShown: false,
         }}
@@ -175,6 +184,16 @@ function RootNavigator() {
         options={{
           animation: "slide_from_bottom",
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ReportPublication"
+        component={ReportPublication}
+        options={{
+          animation: "slide_from_right",
+          headerShown: true,
+          headerTintColor: theme.PRIMARY,
+          headerTitle: "Report Video",
         }}
       />
     </Stack.Navigator>

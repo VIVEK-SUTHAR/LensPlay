@@ -1,12 +1,16 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { dark_primary } from "../../../constants/Colors";
-import { useToast } from "../../../store/Store";
-import { ToastType } from "../../../types/Store";
 import ReportIcon from "../../svg/ReportIcon";
 import Button from "../../UI/Button";
 
-const ReportButton = () => {
-  const toast = useToast();
+type ReportButtonProps = {
+  publicationId: string;
+};
+
+const ReportButton = ({ publicationId }: ReportButtonProps) => {
+  const navigation = useNavigation();
+
   return (
     <Button
       title={"Report"}
@@ -19,7 +23,9 @@ const ReportButton = () => {
       icon={<ReportIcon height={20} width={20} />}
       textStyle={{ color: "white", marginHorizontal: 4 }}
       onPress={() => {
-        toast.show("Thanks for reporting", ToastType.INFO, true);
+        navigation.navigate("ReportPublication", {
+          publicationId: publicationId,
+        });
       }}
     />
   );

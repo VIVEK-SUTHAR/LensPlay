@@ -95,6 +95,7 @@ const useStore = create((set) => ({
   isOpen: false,
   currentIndex: 0,
   profileData: null,
+  hasAccess: false,
 
   setProfiledata: (value: any) => set({ profileData: value }),
   setAccessToken: (value: string) => set({ accessToken: value }),
@@ -104,6 +105,7 @@ const useStore = create((set) => ({
   setUserFeed: (value: any) => set({ userFeed: value }),
   setIsOpen: (value: any) => set({ isOpen: value }),
   setCurrentIndex: (value: any) => set({ currentIndex: value }),
+  handleAccess: (value: boolean) => set({ hasAccess: value }),
 }));
 
 export default useStore;

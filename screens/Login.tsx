@@ -117,7 +117,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         <Heading
           title={"LensPlay"}
           style={{
-            fontSize: 56,
+            fontSize: 60,
             color: "white",
             fontWeight: "600",
             textAlign: "center",
@@ -136,17 +136,17 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
             style={{
               fontSize: 24,
               color: "white",
-              fontWeight: "500",
+              fontWeight: "600",
               textAlign: "right",
             }}
           />
-          <View style={{ flexDirection: "row" }}>
+          <View style={{ flexDirection: "row", marginTop: -4 }}>
             <StyledText
               title={"different"}
               style={{
                 fontSize: 24,
                 color: "#93E9C8",
-                fontWeight: "500",
+                fontWeight: "600",
                 textAlign: "right",
                 marginRight: 8,
               }}
@@ -156,7 +156,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
               style={{
                 fontSize: 24,
                 color: "white",
-                fontWeight: "500",
+                fontWeight: "600",
                 textAlign: "right",
               }}
             />
@@ -170,7 +170,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
             title="Get Started"
             bg="#93E9C8"
             borderRadius={8}
-            textStyle={{ fontWeight: "600", fontSize: 24 }}
+            textStyle={{ fontWeight: "800", fontSize: 24 }}
             py={16}
           />
         </View>

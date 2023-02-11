@@ -118,43 +118,97 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             marginTop: 8,
           }}
         >
-          <StyledText
-            title={"SignIn &"}
-            style={{
-              fontSize: 24,
-              color: "white",
-              fontWeight: "500",
-              textAlign: "right",
-            }}
-          />
+          <View style={{ flexDirection: 'row' }}>
+            <StyledText
+              title={"Just one"}
+              style={{
+                fontSize: 28,
+                color: "white",
+                fontWeight: "700",
+                textAlign: "right",
+                marginRight: 8,
+              }}
+            />
+            <StyledText
+              title={"click"}
+              style={{
+                fontSize: 28,
+                color: "#93E9C8",
+                fontWeight: "700",
+                textAlign: "right",
+                marginRight: 8,
+              }}
+            />
+            <StyledText
+              title={"away"}
+              style={{
+                fontSize: 28,
+                color: "white",
+                fontWeight: "700",
+                textAlign: "right",
+                marginRight: 8,
+              }}
+            />
+          </View>
           <View style={{ flexDirection: "row" }}>
             <StyledText
-              title={"experience Lens"}
+              title={"from"}
               style={{
-                fontSize: 24,
+                fontSize: 28,
+                color: 'white',
+                fontWeight: "700",
+                textAlign: "right",
+                marginRight: 8,
+              }}
+            />
+            <StyledText
+              title={"owning"}
+              style={{
+                fontSize: 28,
                 color: "#93E9C8",
-                fontWeight: "500",
+                fontWeight: "700",
+                textAlign: "right",
+                marginRight: 8,
+              }}
+            />
+            <StyledText
+              title={"your"}
+              style={{
+                fontSize: 28,
+                color: "white",
+                fontWeight: "700",
+                textAlign: "right",
+                marginRight: 8,
+              }}
+            />
+          </View>
+          <View style={{flexDirection: 'row'}}>
+          <StyledText
+              title={"content"}
+              style={{
+                fontSize: 28,
+                color: "#93E9C8",
+                fontWeight: "700",
                 textAlign: "right",
                 marginRight: 8,
               }}
             />
           </View>
         </View>
-      </View>
-      <View
-        style={{ padding: 16, position: "absolute", bottom: 0, width: "100%" }}
-      >
-        <Button
-          title="Login With Lens"
-          bg="#93E9C8"
-          borderRadius={8}
-          textStyle={{ fontWeight: "600", fontSize: 24 }}
-          py={16}
-          isLoading={isloading}
-          onPress={async () => {
-            await logInWithLens();
-          }}
-        />
+        <View style={{ padding: 16, marginTop: 44 }}>
+          <Button
+            title="Login With Lens"
+            bg="#93E9C8"
+            borderRadius={5}
+            textStyle={{ fontWeight: "800", fontSize: 24 }}
+            py={16}
+            isLoading={isloading}
+            onPress={async () => {
+              await logInWithLens();
+            }
+            }
+          />
+        </View>
       </View>
     </SafeAreaView>
   );
