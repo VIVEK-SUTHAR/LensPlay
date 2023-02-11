@@ -40,10 +40,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   useEffect(() => {
     if (callData) {
       if (!hasAccess) {
-        // console.log("adding loader");
         navigation.replace("Loader");
-        // console.log("loader is now live");
-
       } else {
         getData().then(() => {
           setCallData(false);

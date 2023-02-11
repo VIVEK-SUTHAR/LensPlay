@@ -82,8 +82,6 @@ const LinkingVideo = ({
       return;
     });
     Linking.getInitialURL().then((res) => {
-      console.log(res);
-
       const id = res?.split("/watch/")[1];
       publicationId = id ? id : "";
       getVideoById(publicationId);
