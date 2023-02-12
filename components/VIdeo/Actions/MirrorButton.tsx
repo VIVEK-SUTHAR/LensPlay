@@ -14,16 +14,18 @@ import { ToastType } from "../../../types/Store";
 
 type MirrorButtonProps = {
   id: string;
+  totalMirrors: string | number;
   isAlreadyMirrored: boolean;
-  setIsAlreadyMirrored: React.Dispatch<React.SetStateAction<boolean>>
+  setIsAlreadyMirrored: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const MirrorButton = ({
   id,
   isAlreadyMirrored,
-  setIsAlreadyMirrored
+  setIsAlreadyMirrored,
+  totalMirrors
 }: MirrorButtonProps) => {
-    const Toast = useToast();
+  const Toast = useToast();
   const authStore = useAuthStore();
   const userStore = useProfile();
   const { PRIMARY } = useThemeStore();
@@ -32,20 +34,24 @@ const MirrorButton = ({
     setIsAlreadyMirrored(true);
 
     try {
-        const data = await freeMirror(authStore.accessToken, userStore.currentProfile?.id, id);
-        if (data){
-            Toast.show("Video Mirrored", ToastType.SUCCESS, true);
-        }
+      const data = await freeMirror(
+        authStore.accessToken,
+        userStore.currentProfile?.id,
+        id
+      );
+      if (data) {
+        Toast.show("Video Mirrored", ToastType.SUCCESS, true);
+      }
     } catch (error) {
-        if (error instanceof Error) {
-            Toast.show(error.message, ToastType.ERROR, true);
-          }
+      if (error instanceof Error) {
+        Toast.show(error.message, ToastType.ERROR, true);
+      }
     }
   };
 
   return (
     <Button
-      title=""
+      title={totalMirrors?.toString()}
       onPress={onMirror}
       mx={4}
       px={16}
@@ -56,9 +62,10 @@ const MirrorButton = ({
       textStyle={{
         fontSize: 14,
         fontWeight: "500",
-        color: "white",
+        color: isAlreadyMirrored?PRIMARY:"white",
+        marginLeft:4
       }}
-    //   borderColor={isalreadyDisLiked ? PRIMARY : "white"}
+      //   borderColor={isalreadyDisLiked ? PRIMARY : "white"}
       icon={
         <MirrorIcon
           height={20}

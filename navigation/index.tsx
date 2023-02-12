@@ -167,6 +167,7 @@ function RootNavigator() {
         options={{
           animation: "slide_from_right",
           headerShown: true,
+          headerTitle:"Edit Your Channel",
           headerTintColor: theme.PRIMARY,
         }}
       />
@@ -244,14 +245,14 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
               style={{
                 backgroundColor: theme.PRIMARY,
                 marginHorizontal: 4,
-                paddingHorizontal: 8,
+                paddingHorizontal: 4,
                 paddingVertical: 2,
                 borderRadius: 10,
               }}
             >
               <StyledText
                 title="BETA"
-                style={{ color: "white", fontSize: 8, fontWeight: "600" }}
+                style={{ color: "white", fontSize: 8, fontWeight: "700" }}
               />
             </View>
           </View>

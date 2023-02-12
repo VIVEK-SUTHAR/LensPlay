@@ -2,7 +2,7 @@ import { Image, Pressable, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import getDifference from "../../utils/getDifference";
 import { useNavigation } from "@react-navigation/native";
-import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { CommentStats } from "../../types/Lens/Feed";
 import { useAuthStore, useProfile, useReactionStore } from "../../store/Store";
 import { addLike, freeMirror } from "../../api";
@@ -12,6 +12,8 @@ import extractURLs from "../../utils/extractURL";
 import Button from "../UI/Button";
 import { dark_primary, primary } from "../../constants/Colors";
 import Avatar from "../UI/Avatar";
+import CollectIcon from "../svg/CollectIcon";
+import MirrorIcon from "../svg/MirrorIcon";
 
 type CommentCardProps = {
   avatar: string;
@@ -173,7 +175,7 @@ const CommentCard = ({
               fontWeight: "500",
               marginLeft: 4,
             }}
-            icon={<Entypo name="folder-video" size={16} color={"white"} />}
+            icon={<CollectIcon height={18} width={18} />}
             onPress={() => {
               // setIsmodalopen(true);
             }}
@@ -191,7 +193,7 @@ const CommentCard = ({
               fontWeight: "500",
               marginLeft: 4,
             }}
-            icon={<AntDesign name="retweet" size={16} color="white" />}
+            icon={<MirrorIcon height={18} width={18} />}
             borderColor="#232323"
             onPress={async () => {
               try {
@@ -222,7 +224,9 @@ const CommentCard = ({
             icon={<MaterialIcons name="report" size={16} color="white" />}
             borderColor="#232323"
             onPress={() => {
-              // setIsmodalopen(true);
+              navigation.navigate("ReportPublication", {
+                publicationId: id,
+              });
             }}
           />
         </View>

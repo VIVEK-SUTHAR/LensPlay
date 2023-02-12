@@ -1,4 +1,10 @@
-import { SafeAreaView, StyleSheet, TextInput, View } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 import { dark_primary } from "../constants/Colors";
 import StyledText from "../components/UI/StyledText";
@@ -8,6 +14,7 @@ import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
 import updateChannel from "../apollo/mutations/updateChannel";
 import { client } from "../apollo/client";
+import Avatar from "../components/UI/Avatar";
 
 const EditProfile = ({
   navigation,
@@ -60,15 +67,16 @@ const EditProfile = ({
         oldProfileData: route.params.profile,
         newProfileData: userData,
       });
+      const headersList = {
+        "Content-Type": "application/json",
+      };
 
       const response = await fetch(
         "https://bundlr-upload-server.vercel.app/api/upload/profileMetadata",
         {
           method: "POST",
           body: bodyContent,
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: headersList,
         }
       );
       const metadata = await response.json();
@@ -83,61 +91,88 @@ const EditProfile = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.inputContainer}>
-        <StyledText title="Name" style={styles.textStyle} />
-        <TextInput
-          onChange={(e) => {
-            setUserData({
-              name: e.nativeEvent.text,
-              bio: userData.bio,
-            });
-          }}
-          style={styles.input}
-          placeholderTextColor="gray"
-          selectionColor={theme.PRIMARY}
-          value={userData.name}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <StyledText title="Bio" style={styles.textStyle} />
-        <TextInput
-          multiline={true}
-          numberOfLines={4}
-          style={[
-            styles.input,
-            {
-              textAlignVertical: "top",
-            },
-          ]}
-          placeholderTextColor="gray"
-          selectionColor={theme.PRIMARY}
-          value={userData.bio}
-          onChange={(e) => {
-            setUserData({
-              name: userData.name,
-              bio: e.nativeEvent.text,
-            });
-          }}
-        />
-      </View>
-      <View
-        style={[styles.inputContainer, { position: "absolute", bottom: 16 }]}
-      >
-        <Button
-          title="Update"
-          width={"100%"}
-          px={12}
-          py={8}
-          borderRadius={8}
-          textStyle={{
-            textAlign: "center",
-            fontSize: 16,
-            fontWeight: "600",
-          }}
-          isLoading={isUpdating}
-          onPress={() => uploadMetadata()}
-        />
-      </View>
+      <ScrollView style={{ width: "100%", height: "100%" }}>
+        <View style={styles.inputContainer}>
+          <StyledText title="Profile Picture" style={styles.textStyle} />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-around",
+            }}
+          >
+            <Avatar
+              src={route.params.profile?.picture?.original?.url}
+              height={96}
+              width={96}
+            />
+            <Button
+              title="Select from Gallery"
+              width={"auto"}
+              borderRadius={8}
+              px={16}
+              textStyle={{
+                color: "white",
+              }}
+              borderColor={theme.PRIMARY}
+              type="outline"
+            />
+          </View>
+        </View>
+        <View style={styles.inputContainer}>
+          <StyledText title="Name" style={styles.textStyle} />
+          <TextInput
+            onChange={(e) => {
+              setUserData({
+                name: e.nativeEvent.text,
+                bio: userData.bio,
+              });
+            }}
+            style={styles.input}
+            placeholderTextColor="gray"
+            selectionColor={theme.PRIMARY}
+            value={userData.name}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <StyledText title="Bio" style={styles.textStyle} />
+          <TextInput
+            multiline={true}
+            numberOfLines={4}
+            style={[
+              styles.input,
+              {
+                textAlignVertical: "top",
+              },
+            ]}
+            placeholderTextColor="gray"
+            selectionColor={theme.PRIMARY}
+            value={userData.bio}
+            onChange={(e) => {
+              setUserData({
+                name: userData.name,
+                bio: e.nativeEvent.text,
+              });
+            }}
+          />
+        </View>
+        <View style={[styles.inputContainer]}>
+          <Button
+            title="Update"
+            width={"100%"}
+            px={12}
+            py={8}
+            borderRadius={8}
+            textStyle={{
+              textAlign: "center",
+              fontSize: 16,
+              fontWeight: "600",
+            }}
+            isLoading={isUpdating}
+            onPress={() => uploadMetadata()}
+          />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

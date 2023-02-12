@@ -33,6 +33,7 @@ import { Entypo, Feather } from "@expo/vector-icons";
 import { createFreeSubscribe } from "../api";
 import { ToastType } from "../types/Store";
 import VERIFIED_CHANNELS from "../constants/Varified";
+import VerifiedIcon from "../components/svg/VerifiedIcon";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -274,7 +275,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                         {VERIFIED_CHANNELS.includes(profile?.id) && (
                           <View
                             style={{
-                              backgroundColor: theme.PRIMARY,
+                              backgroundColor: "transparent",
                               height: 15,
                               width: 15,
                               padding: 1,
@@ -283,7 +284,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                               marginHorizontal: 4,
                             }}
                           >
-                            <Entypo name="check" color={"white"} />
+                            <VerifiedIcon height={18} width={18} />
                           </View>
                         )}
                       </View>
