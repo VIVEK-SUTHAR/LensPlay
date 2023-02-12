@@ -14,6 +14,7 @@ import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
 import updateChannel from "../apollo/mutations/updateChannel";
 import { client } from "../apollo/client";
+import * as ImagePicker from "expo-image-picker";
 import Avatar from "../components/UI/Avatar";
 
 const EditProfile = ({
@@ -22,7 +23,11 @@ const EditProfile = ({
 }: RootStackScreenProps<"EditProfile">) => {
   const theme = useThemeStore();
 
+  const [image, setImage] = useState<null | string>(null);
+
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
+
+  const Buffer = require("buffer").Buffer;
 
   const [userData, setUserData] = useState({
     name: "",
@@ -30,6 +35,25 @@ const EditProfile = ({
   });
   const toast = useToast();
   const { accessToken } = useAuthStore();
+
+  async function selectImage() {
+		setImage(null);
+		let result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			aspect: [4, 3],
+			allowsEditing: true,
+			quality: 1,
+      base64: true
+		});
+		if (result.cancelled) {
+			toast.show("No image selected", ToastType.ERROR, true);
+		}
+		if (!result.cancelled) {
+			setImage(result.uri);
+      console.log('dream');
+      console.log(result.base64);
+		}
+	}
 
   const updateData = async (
     profileId: string | undefined,
@@ -102,7 +126,7 @@ const EditProfile = ({
             }}
           >
             <Avatar
-              src={route.params.profile?.picture?.original?.url}
+              src={image?image:route.params.profile?.picture?.original?.url}
               height={96}
               width={96}
             />
@@ -116,6 +140,7 @@ const EditProfile = ({
               }}
               borderColor={theme.PRIMARY}
               type="outline"
+              onPress={selectImage}
             />
           </View>
         </View>
