@@ -23,6 +23,8 @@ import * as ImagePicker from "expo-image-picker";
 import Avatar from "../components/UI/Avatar";
 import formatHandle from "../utils/formatHandle";
 import updateProfilePictureQuery from "../apollo/mutations/updateProfilePictureQuery";
+import getImageBlobFromUri from "../utils/getImageBlobFromUri";
+import uploadImageToIPFS from "../utils/uploadImageToIPFS";
 
 const EditProfile = ({
   navigation,
@@ -44,21 +46,13 @@ const EditProfile = ({
   const { accessToken } = useAuthStore();
   const { currentProfile } = useProfile();
   const uploadToIPFS = async () => {
-    if (image) {
-      const hash = await fetch("https://api.web3.storage/upload", {
-        method: "POST",
-        headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEQzQjZCNEYwMjIzQzNBYUJhYTNGY2FjNzc4QkYzZTcwMzk4MjZDMTEiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzYyNjY2NjY2ODIsIm5hbWUiOiJMZW5zUGxheSJ9.yvvWPFyduWg6vQ1H1_TXTpMKlHTUcqnx4Int8vuMdec",
-        },
-        body: imageBlob,
-      });
-      let json = await hash.json();
+    if (imageBlob) {
+      const imageCID = await uploadImageToIPFS(imageBlob);
       const updateOnLens = await client.mutate({
         mutation: updateProfilePictureQuery,
         variables: {
           profileId: currentProfile?.id,
-          url: `ipfs://${json.cid}`,
+          url: `ipfs://${imageCID}`,
         },
         context: {
           headers: {
@@ -80,13 +74,6 @@ const EditProfile = ({
     }
   };
 
-  const fetchImageFromUri = async (uri) => {
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    console.log(blob);
-    setImageBlob(blob);
-  };
-
   async function selectImage() {
     setImage(null);
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -101,9 +88,8 @@ const EditProfile = ({
     }
     if (!result.cancelled) {
       setImage(result.uri);
-      console.log("dream");
-      fetchImageFromUri(result.uri);
-      // setImage(imageblob);
+      const imgblob = await getImageBlobFromUri(result.uri);
+      setImageBlob(imgblob);
     }
   }
 
