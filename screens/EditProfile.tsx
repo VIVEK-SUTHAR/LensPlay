@@ -8,7 +8,12 @@ import {
 import React, { useState } from "react";
 import { dark_primary } from "../constants/Colors";
 import StyledText from "../components/UI/StyledText";
-import { useAuthStore, useThemeStore, useToast } from "../store/Store";
+import {
+  useAuthStore,
+  useProfile,
+  useThemeStore,
+  useToast,
+} from "../store/Store";
 import Button from "../components/UI/Button";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
@@ -16,6 +21,8 @@ import updateChannel from "../apollo/mutations/updateChannel";
 import { client } from "../apollo/client";
 import * as ImagePicker from "expo-image-picker";
 import Avatar from "../components/UI/Avatar";
+import formatHandle from "../utils/formatHandle";
+import updateProfilePictureQuery from "../apollo/mutations/updateProfilePictureQuery";
 
 const EditProfile = ({
   navigation,
@@ -25,9 +32,9 @@ const EditProfile = ({
 
   const [image, setImage] = useState<null | string>(null);
 
-  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [imageBlob, setImageBlob] = useState<Blob>();
 
-  const Buffer = require("buffer").Buffer;
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
   const [userData, setUserData] = useState({
     name: "",
@@ -35,6 +42,50 @@ const EditProfile = ({
   });
   const toast = useToast();
   const { accessToken } = useAuthStore();
+  const { currentProfile } = useProfile();
+  const uploadToIPFS = async () => {
+    if (image) {
+      const hash = await fetch("https://api.web3.storage/upload", {
+        method: "POST",
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEQzQjZCNEYwMjIzQzNBYUJhYTNGY2FjNzc4QkYzZTcwMzk4MjZDMTEiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzYyNjY2NjY2ODIsIm5hbWUiOiJMZW5zUGxheSJ9.yvvWPFyduWg6vQ1H1_TXTpMKlHTUcqnx4Int8vuMdec",
+        },
+        body: imageBlob,
+      });
+      let json = await hash.json();
+      const updateOnLens = await client.mutate({
+        mutation: updateProfilePictureQuery,
+        variables: {
+          profileId: currentProfile?.id,
+          url: `ipfs://${json.cid}`,
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${accessToken}`,
+          },
+        },
+      });
+      if (updateOnLens.data) {
+        if (!userData.bio.length && !userData.name.length) {
+          toast.show("Channel image updated", ToastType.SUCCESS, true);
+        }
+        if (
+          userData.bio.length > 0 ||
+          (userData.name.length > 0 && imageBlob)
+        ) {
+          return;
+        }
+      }
+    }
+  };
+
+  const fetchImageFromUri = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    console.log(blob);
+    setImageBlob(blob);
+  };
 
   async function selectImage() {
     setImage(null);
@@ -51,7 +102,8 @@ const EditProfile = ({
     if (!result.cancelled) {
       setImage(result.uri);
       console.log("dream");
-      console.log(result.base64);
+      fetchImageFromUri(result.uri);
+      // setImage(imageblob);
     }
   }
 
@@ -73,50 +125,64 @@ const EditProfile = ({
     });
     if (result.data) {
       toast.show("Channel updated successfully", ToastType.SUCCESS, true);
-      setIsUpdating(false);
     } else {
-      setIsUpdating(false);
       toast.show("Some error occured please try again", ToastType.ERROR, true);
     }
   };
 
   const uploadMetadata = async () => {
-    if (userData.name.length > 0 || userData.bio.length > 0) {
-      setUserData({
-        name: "",
-        bio: "",
-      });
-      setIsUpdating(true);
-      const bodyContent = JSON.stringify({
-        oldProfileData: route.params.profile,
-        newProfileData: userData,
-      });
-      const headersList = {
-        "Content-Type": "application/json",
-      };
+    setUserData({
+      name: "",
+      bio: "",
+    });
+    const bodyContent = JSON.stringify({
+      oldProfileData: route.params.profile,
+      newProfileData: userData,
+    });
+    const headersList = {
+      "Content-Type": "application/json",
+    };
 
-      const response = await fetch(
-        "https://bundlr-upload-server.vercel.app/api/upload/profileMetadata",
-        {
-          method: "POST",
-          body: bodyContent,
-          headers: headersList,
+    const response = await fetch(
+      "https://bundlr-upload-server.vercel.app/api/upload/profileMetadata",
+      {
+        method: "POST",
+        body: bodyContent,
+        headers: headersList,
+      }
+    );
+    const metadata = await response.json();
+    updateData(route.params.profile?.id, `https://arweave.net/${metadata.id}`);
+  };
+
+  const handleUpdate = async () => {
+    try {
+      setIsUpdating(true);
+      if (!imageBlob) {
+        if (!userData.bio && !userData.name) {
+          toast.show("Please select data", ToastType.ERROR, true);
         }
-      );
-      const metadata = await response.json();
-      updateData(
-        route.params.profile?.id,
-        `https://arweave.net/${metadata.id}`
-      );
-    } else {
-      toast.show("Please enter data", ToastType.ERROR, true);
+      } else {
+        if (imageBlob) {
+          await uploadToIPFS();
+        }
+        if (userData.name.length > 0 || userData.bio.length > 0) {
+          await uploadMetadata();
+        }
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.show("Something went wronng", ToastType.ERROR, true);
+      }
+    } finally {
+      setIsUpdating(false);
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={{ width: "100%", height: "100%" }}>
-        {/* <View style={styles.inputContainer}>
+        <View style={styles.inputContainer}>
           <StyledText title="Profile Picture" style={styles.textStyle} />
           <View
             style={{
@@ -143,7 +209,7 @@ const EditProfile = ({
               onPress={selectImage}
             />
           </View>
-        </View> */}
+        </View>
         <View style={styles.inputContainer}>
           <StyledText title="Name" style={styles.textStyle} />
           <TextInput
@@ -154,6 +220,10 @@ const EditProfile = ({
               });
             }}
             style={styles.input}
+            placeholder={
+              route.params.profile?.name ||
+              formatHandle(route.params.profile?.handle)
+            }
             placeholderTextColor="gray"
             selectionColor={theme.PRIMARY}
             value={userData.name}
@@ -170,6 +240,7 @@ const EditProfile = ({
                 textAlignVertical: "top",
               },
             ]}
+            placeholder={route.params.profile?.bio}
             placeholderTextColor="gray"
             selectionColor={theme.PRIMARY}
             value={userData.bio}
@@ -182,22 +253,22 @@ const EditProfile = ({
           />
         </View>
       </ScrollView>
-        <View style={[styles.inputContainer]}>
-          <Button
-            title="Update"
-            width={"100%"}
-            px={12}
+      <View style={[styles.inputContainer]}>
+        <Button
+          title="Update"
+          width={"100%"}
+          px={12}
           py={8}
-            borderRadius={8}
-            textStyle={{
-              textAlign: "center",
-              fontSize: 16,
-              fontWeight: "600",
-            }}
-            isLoading={isUpdating}
-            onPress={() => uploadMetadata()}
-          />
-        </View>
+          borderRadius={8}
+          textStyle={{
+            textAlign: "center",
+            fontSize: 16,
+            fontWeight: "600",
+          }}
+          isLoading={isUpdating}
+          onPress={handleUpdate}
+        />
+      </View>
     </SafeAreaView>
   );
 };
