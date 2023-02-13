@@ -37,23 +37,23 @@ const EditProfile = ({
   const { accessToken } = useAuthStore();
 
   async function selectImage() {
-		setImage(null);
-		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			aspect: [4, 3],
-			allowsEditing: true,
-			quality: 1,
-      base64: true
-		});
-		if (result.cancelled) {
-			toast.show("No image selected", ToastType.ERROR, true);
-		}
-		if (!result.cancelled) {
-			setImage(result.uri);
-      console.log('dream');
+    setImage(null);
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [4, 3],
+      allowsEditing: true,
+      quality: 1,
+      base64: true,
+    });
+    if (result.cancelled) {
+      toast.show("No image selected", ToastType.ERROR, true);
+    }
+    if (!result.cancelled) {
+      setImage(result.uri);
+      console.log("dream");
       console.log(result.base64);
-		}
-	}
+    }
+  }
 
   const updateData = async (
     profileId: string | undefined,
@@ -116,7 +116,7 @@ const EditProfile = ({
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={{ width: "100%", height: "100%" }}>
-        <View style={styles.inputContainer}>
+        {/* <View style={styles.inputContainer}>
           <StyledText title="Profile Picture" style={styles.textStyle} />
           <View
             style={{
@@ -126,7 +126,7 @@ const EditProfile = ({
             }}
           >
             <Avatar
-              src={image?image:route.params.profile?.picture?.original?.url}
+              src={image ? image : route.params.profile?.picture?.original?.url}
               height={96}
               width={96}
             />
@@ -143,7 +143,7 @@ const EditProfile = ({
               onPress={selectImage}
             />
           </View>
-        </View>
+        </View> */}
         <View style={styles.inputContainer}>
           <StyledText title="Name" style={styles.textStyle} />
           <TextInput
@@ -181,12 +181,13 @@ const EditProfile = ({
             }}
           />
         </View>
+      </ScrollView>
         <View style={[styles.inputContainer]}>
           <Button
             title="Update"
             width={"100%"}
             px={12}
-            py={8}
+          py={8}
             borderRadius={8}
             textStyle={{
               textAlign: "center",
@@ -197,7 +198,6 @@ const EditProfile = ({
             onPress={() => uploadMetadata()}
           />
         </View>
-      </ScrollView>
     </SafeAreaView>
   );
 };
