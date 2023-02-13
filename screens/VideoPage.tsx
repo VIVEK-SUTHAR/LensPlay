@@ -124,6 +124,7 @@ const VideoPage = ({
               isAlreadyMirrored={isAlreadyMirrored}
               setIsAlreadyMirrored={setIsAlreadyMirrored}
               totalMirrors={route.params.stats.totalAmountOfMirrors}
+              bannerUrl={route.params.banner}
             />
             <CollectButton
               publicationId={route.params.id}
