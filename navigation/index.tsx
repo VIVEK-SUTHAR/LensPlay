@@ -210,7 +210,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
     <BottomTab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        headerStyle: { backgroundColor: "black", elevation: 2 },
+        headerStyle: { backgroundColor: dark_primary, elevation: 2 },
         headerTitle: "",
         headerRight: () => (
           <TouchableWithoutFeedback
@@ -258,12 +258,15 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
           </View>
         ),
         tabBarStyle: {
-          paddingVertical: 2,
-          height: "auto",
-          minHeight: 55,
           backgroundColor: dark_primary,
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingTop: 6,
           borderTopColor: "transparent",
-          paddingHorizontal: 10,
+
+          marginBottom:-5,
+          minHeight: 58,
+          paddingHorizontal:5
         },
         headerShadowVisible: true,
       }}

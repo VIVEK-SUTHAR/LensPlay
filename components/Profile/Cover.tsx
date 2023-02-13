@@ -36,7 +36,8 @@ const Cover = ({ url, navigation }: CoverProps) => {
             position: "absolute",
             right: Dimensions.get("window").width * 0.05,
             zIndex: 10,
-            top: StatusBarHeight,
+            top: StatusBarHeight+10,
+            // marginVertical:4,
           }}
           onPress={async (e) => {
             setIsModalOpen(true);

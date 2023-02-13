@@ -23,6 +23,7 @@ import { EvilIcons, Feather, MaterialIcons } from "@expo/vector-icons";
 import StyledText from "../components/UI/StyledText";
 import { dark_primary } from "../constants/Colors";
 import BackIcon from "../components/svg/BackIcon";
+import { StatusBar } from "expo-status-bar";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const theme = useThemeStore();
@@ -84,6 +85,10 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
               alignItems: "center",
               width: Dimensions.get("window").width * 0.94,
               paddingHorizontal: 8,
+              backgroundColor: dark_primary,
+              borderWidth: 1,
+              borderRadius: 50,
+              paddingVertical:6
             }}
           >
             <Pressable
@@ -105,13 +110,10 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
               }}
               autoFocus={true}
               style={{
-                backgroundColor: dark_primary,
                 flex: 1,
                 color: "white",
-                borderWidth: 1,
                 paddingHorizontal: 16,
                 paddingVertical: 4,
-                borderRadius: 50,
               }}
             />
           </View>
@@ -121,6 +123,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   }, []);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+      <StatusBar style="black"/>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         {!!isSearching && (
           <>

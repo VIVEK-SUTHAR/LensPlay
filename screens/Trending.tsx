@@ -42,6 +42,7 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
   }>(tags[0]);
   const [TrendingItems, setTrendingItems] = useState<LensPublication[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  
   const theme = useThemeStore();
   const authStore = useAuthStore();
   const userStore = useProfile();

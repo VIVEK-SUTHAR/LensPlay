@@ -249,6 +249,7 @@ const ProfileScreen = ({
                     }}
                   >
                     <View
+                    
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
