@@ -78,7 +78,7 @@ const EditProfile = ({
     setImage(null);
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      aspect: [4, 3],
+      aspect: [4, 4],
       allowsEditing: true,
       quality: 1,
       base64: true,
@@ -144,10 +144,8 @@ const EditProfile = ({
   const handleUpdate = async () => {
     try {
       setIsUpdating(true);
-      if (!imageBlob) {
-        if (!userData.bio && !userData.name) {
-          toast.show("Please select data", ToastType.ERROR, true);
-        }
+      if (!imageBlob && !userData.bio && !userData.name) {
+        toast.show("Please select data", ToastType.ERROR, true);
       } else {
         if (imageBlob) {
           await uploadToIPFS();
