@@ -11,7 +11,6 @@ import {
 import Button from "../components/UI/Button";
 import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
-import useStore from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Constants from "expo-constants";
 

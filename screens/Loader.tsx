@@ -5,12 +5,12 @@ import { StatusBar } from "expo-status-bar";
 import { RootStackScreenProps } from "../types/navigation/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import searchUser from "../api/zooTools/searchUser";
-import useStore from "../store/Store";
+import { useAuthStore } from "../store/Store";
 
 export default function Loader({
   navigation,
 }: RootStackScreenProps<"Waitlist">) {
-  const { handleAccess } = useStore();
+  const { handleAccess } = useAuthStore();
   let isLoading: boolean = true;
 
   const isWaitListed = async () => {

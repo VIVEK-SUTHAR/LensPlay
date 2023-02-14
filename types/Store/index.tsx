@@ -3,8 +3,10 @@ import { Profile } from "../Lens";
 export interface IAuthStore {
   accessToken: string;
   refreshToken: string;
+  hasAccess: boolean;
   setAccessToken: (newToken: string) => void;
   setRefreshToken: (newToken: string) => void;
+  handleAccess: (newValue: boolean) => void;
 }
 export interface IThemeStore {
   PRIMARY: string;

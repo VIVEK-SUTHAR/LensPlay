@@ -15,7 +15,7 @@ import { client } from "../apollo/client";
 import getChallenge from "../apollo/Queries/getChallenge";
 import getAccessTokens from "../apollo/mutations/getAccessTokens";
 import getProfile from "../apollo/Queries/getProfile";
-import useStore, { useAuthStore, useProfile } from "../store/Store";
+import { useAuthStore, useProfile } from "../store/Store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import verifyToken from "../apollo/Queries/verifyToken";
 import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
@@ -30,7 +30,6 @@ import Heading from "../components/UI/Heading";
 import Constants from "expo-constants";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
-  const store = useStore();
   const authStore = useAuthStore();
   const userStore = useProfile();
   const [isloading, setIsloading] = useState<boolean>(false);

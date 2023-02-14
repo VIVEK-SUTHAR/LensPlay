@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 import VideoCard from "../components/VideoCard";
-import useStore, {
+import {
   useAuthStore,
   useProfile,
   useThemeStore,
@@ -36,7 +36,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [callData, setCallData] = useState(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const theme = useThemeStore();
-  const { hasAccess } = useStore();
+  const { hasAccess } = useAuthStore();
 
   useEffect(() => {
     if (callData) {
@@ -104,8 +104,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
             return;
           }
           userStore.setCurrentProfile(data.data.defaultProfile);
-          //   setIsloading(false);
-          //   navigation.navigate("Root");
         }
         if (isvaild.data.verify === false) {
           const refreshToken = await client.mutate({
