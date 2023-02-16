@@ -127,6 +127,7 @@ export type RootStackScreenProps<
 export type RootTabParamList = {
   Home: undefined;
   Trending: undefined;
+  Bytes: undefined;
   Create: undefined;
   Notifications: undefined;
   Account: undefined;

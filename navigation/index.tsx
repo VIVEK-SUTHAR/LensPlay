@@ -1,5 +1,5 @@
 //@ts-ignore
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -46,6 +46,7 @@ import Loader from "../screens/Loader";
 import ConnectWallet from "../screens/ConnectWallet";
 import LoginWithLens from "../screens/LoginWithLens";
 import ReportPublication from "../screens/ReportPublication";
+import Bytes from "../screens/Bytes";
 
 export default function Navigation() {
   return (
@@ -360,10 +361,11 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
         }}
       />
       <BottomTab.Screen
-        name="Create"
-        component={UploadVideo}
+        name="Bytes"
+        component={Bytes}
         options={{
           tabBarLabel: "",
+          headerShown: false,
           tabBarIcon: ({ focused }) => {
             return (
               <View
@@ -373,24 +375,16 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
+                  borderTopWidth: 2,
+                  borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
-                <Image
-                  source={{
-                    uri: focused ? UPLOAD_FILLED : UPLOAD_OUTLINE,
-                  }}
-                  style={{
-                    alignSelf: "center",
-                    height: 26,
-                    width: 26,
-                  }}
-                />
-                {/* <Feather
-                  name={"plus-circle"}
-                  color={focused ? theme.PRIMARY : "white"}
+                <MaterialCommunityIcons
+                  name={focused ? "movie-open-play" : "movie-open-play-outline"}
                   size={28}
-                /> */}
+                  color={focused ? theme.PRIMARY : "white"}
+                />
               </View>
             );
           },
