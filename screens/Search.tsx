@@ -1,11 +1,9 @@
 import {
   Dimensions,
-  Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from "react-native";
@@ -19,7 +17,6 @@ import { LensPublication } from "../types/Lens/Feed";
 import searchProfileQuery from "../apollo/Queries/searchProfileQuery";
 import ProfileCard from "../components/ProfileCard";
 import useDebounce from "../hooks/useDebounce";
-import { EvilIcons, Feather, MaterialIcons } from "@expo/vector-icons";
 import StyledText from "../components/UI/StyledText";
 import { dark_primary } from "../constants/Colors";
 import BackIcon from "../components/svg/BackIcon";
@@ -88,7 +85,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
               backgroundColor: dark_primary,
               borderWidth: 1,
               borderRadius: 50,
-              paddingVertical:6
+              paddingVertical: 6,
             }}
           >
             <Pressable
@@ -123,7 +120,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   }, []);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-      <StatusBar style="black"/>
+      <StatusBar backgroundColor="transparent" style="auto" />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         {!!isSearching && (
           <>

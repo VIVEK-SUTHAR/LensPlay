@@ -1,10 +1,12 @@
+import AnimatedLottieView from "lottie-react-native";
 import React, { useEffect, useState } from "react";
-import { View, Text, SafeAreaView, Dimensions } from "react-native";
+import { View, Text, SafeAreaView, Dimensions, Pressable } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import { client } from "../../apollo/client";
 import getBytes from "../../apollo/Queries/getBytes";
 import { useAuthStore, useProfile } from "../../store/Store";
 import { Root } from "../../types/Lens/Feed";
+import Heading from "../UI/Heading";
 import SingleByte from "./SingleByte";
 
 const ByteCard = () => {
@@ -13,7 +15,7 @@ const ByteCard = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const userStore = useProfile();
   const authStore = useAuthStore();
-  
+
   const handleChangeIndexValue = ({ index }: { index: number }) => {
     setCurrentIndex(index);
   };
@@ -42,7 +44,7 @@ const ByteCard = () => {
   }, []);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       {isLoading ? (
         <View
           style={{
@@ -52,7 +54,38 @@ const ByteCard = () => {
             alignItems: "center",
           }}
         >
-          <Text style={{ color: "white" }}>Loading....</Text>
+          <Pressable
+            style={{
+              height: 500,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <AnimatedLottieView
+              autoPlay
+              style={{
+                height: "auto",
+              }}
+              source={require("../../assets/loader.json")}
+            />
+            <View
+              style={{
+                alignItems: "center",
+              }}
+            >
+              <Heading
+                title="Loading Bytes for you"
+                style={{
+                  fontSize: 16,
+                  color: "white",
+                  marginVertical: 5,
+                  marginHorizontal: 15,
+                  fontWeight: "600",
+                  alignSelf: "flex-start",
+                }}
+              />
+            </View>
+          </Pressable>
         </View>
       ) : (
         <></>

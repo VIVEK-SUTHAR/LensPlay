@@ -1,13 +1,32 @@
 import React, { useState } from "react";
-import { View, Text, Dimensions, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  Dimensions,
+  TouchableOpacity,
+  Image,
+  Share,
+  Pressable,
+} from "react-native";
 import VideoPlayer from "expo-video-player";
-import { AntDesign, Entypo, Feather, Ionicons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Entypo,
+  EvilIcons,
+  Feather,
+  Ionicons,
+} from "@expo/vector-icons";
 import { ResizeMode } from "expo-av";
 import { Root } from "../../types/Lens/Feed";
 import getIPFSLink from "../../utils/getIPFSLink";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useThemeStore } from "../../store/Store";
-import { LikeButton } from "../VIdeo";
+import { LikeButton, ShareButton } from "../VIdeo";
+import MirrorIcon from "../svg/MirrorIcon";
+import CollectIcon from "../svg/CollectIcon";
+import { StatusBar } from "expo-status-bar";
+import ShareIcon from "../svg/ShareIcon";
+import CommentIcon from "../svg/CommentIcon";
 
 interface SingleByteProps {
   item: Root;
@@ -27,8 +46,15 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const bottomTabBarHeight = useBottomTabBarHeight();
-  const height = windowHeight - bottomTabBarHeight;
-  
+  const shareVideo = async () => {
+    try {
+      const result = await Share.share({
+        message: `Let's watch ${item.metadata.name} on LensPlay,here's link,https://lensplay.xyz/watch/${item.id}`,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View
@@ -40,6 +66,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
         alignItems: "center",
       }}
     >
+      <StatusBar backgroundColor="transparent" />
       <TouchableOpacity
         activeOpacity={0.9}
         onPress={() => setMute(!mute)}
@@ -122,16 +149,18 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
           position: "absolute",
           bottom: bottomTabBarHeight,
           right: 0,
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <LikeButton
-              likes={likes}
-              id={item.id}
-              setLikes={setLikes}
-              isalreadyLiked={isalreadyLiked}
-              setisalreadyDisLiked={()=>{}}
-              bytes={true}
-            />
+          likes={likes}
+          id={item.id}
+          setLikes={setLikes}
+          isalreadyLiked={isalreadyLiked}
+          setisalreadyDisLiked={() => {}}
+          bytes={true}
+        />
         <TouchableOpacity
           style={{
             padding: 10,
@@ -139,7 +168,19 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             alignItems: "center",
           }}
         >
-          <AntDesign name="retweet" style={{ color: "white", fontSize: 25 }} />
+          <EvilIcons name="comment" size={25} color="white" />
+          <Text style={{ color: "white" }}>
+            {item.stats.totalAmountOfComments}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            padding: 10,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <MirrorIcon height={23} width={23} />
           <Text style={{ color: "white" }}>
             {item.stats.totalAmountOfMirrors}
           </Text>
@@ -151,15 +192,27 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             alignItems: "center",
           }}
         >
-          <Entypo
-            name="folder-video"
-            style={{ color: "white", fontSize: 25 }}
-          />
+          <CollectIcon height={23} width={23} />
           <Text style={{ color: "white" }}>
             {item.stats.totalAmountOfCollects}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{ padding: 10 }}>
+        <TouchableOpacity
+          style={{
+            padding: 10,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onPress={shareVideo}
+        >
+          <ShareIcon height={22} width={22} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ padding: 10 }}
+          onPressIn={() => {
+            console.log("hi");
+          }}
+        >
           <Feather
             name="more-vertical"
             style={{ color: "white", fontSize: 25 }}
@@ -170,4 +223,4 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   );
 };
 
-export default SingleByte;
+export default React.memo(SingleByte);
