@@ -7,6 +7,7 @@ import { Root } from "../../types/Lens/Feed";
 import getIPFSLink from "../../utils/getIPFSLink";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useThemeStore } from "../../store/Store";
+import { LikeButton } from "../VIdeo";
 
 interface SingleByteProps {
   item: Root;
@@ -15,8 +16,11 @@ interface SingleByteProps {
 }
 
 const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
-  const [like, setLike] = useState<number>(item.stats.totalUpvotes);
+  const [likes, setLikes] = useState<number>(item.stats.totalUpvotes);
   const [mute, setMute] = useState<boolean>(false);
+  const [isalreadyLiked, setisalreadyLiked] = useState<boolean>(
+    item?.reaction === "UPVOTE" ? true : false
+  );
 
   const theme = useThemeStore();
 
@@ -24,12 +28,13 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const windowHeight = Dimensions.get("window").height;
   const bottomTabBarHeight = useBottomTabBarHeight();
   const height = windowHeight - bottomTabBarHeight;
+  
 
   return (
     <View
       style={{
         width: windowWidth,
-        height: height,
+        height: windowHeight,
         position: "relative",
         justifyContent: "center",
         alignItems: "center",
@@ -95,7 +100,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
               >
                 <Image
                   source={{
-                    uri: getIPFSLink(item.profile.picture.original.url),
+                    uri: getIPFSLink(item.profile?.picture?.original?.url),
                   }}
                   style={{
                     width: "100%",
@@ -119,22 +124,14 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
           right: 0,
         }}
       >
-        <TouchableOpacity
-          onPress={() => {
-            setLike(!like);
-          }}
-          style={{
-            padding: 10,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <AntDesign
-            name={like ? "like2" : "like1"}
-            style={{ color: like ? theme.PRIMARY : "white", fontSize: 25 }}
-          />
-          <Text style={{ color: "white" }}>{like}</Text>
-        </TouchableOpacity>
+        <LikeButton
+              likes={likes}
+              id={item.id}
+              setLikes={setLikes}
+              isalreadyLiked={isalreadyLiked}
+              setisalreadyDisLiked={()=>{}}
+              bytes={true}
+            />
         <TouchableOpacity
           style={{
             padding: 10,

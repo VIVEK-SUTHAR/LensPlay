@@ -29,6 +29,7 @@ interface ButtonProps {
   onPress?: () => void;
   icon?: any;
   disabled?: boolean;
+  bytes?: boolean;
 }
 
 const Button = (props: ButtonProps): JSX.Element => {
@@ -51,6 +52,7 @@ const Button = (props: ButtonProps): JSX.Element => {
     borderColor = "white",
     icon,
     disabled,
+    bytes=false,
     ...rest
   } = props;
 
@@ -82,7 +84,7 @@ const Button = (props: ButtonProps): JSX.Element => {
       <View
         style={{
           display: "flex",
-          flexDirection: "row",
+          flexDirection: bytes?"column":"row",
           alignItems: "center",
           borderRadius: borderRadius,
           justifyContent: textStyle ? "center" : "space-between",

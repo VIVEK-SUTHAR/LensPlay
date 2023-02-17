@@ -17,6 +17,7 @@ type LikeButtonProps = {
   isalreadyLiked: boolean;
   setisalreadyDisLiked: React.Dispatch<React.SetStateAction<boolean>>;
   setLikes: React.Dispatch<React.SetStateAction<number>>;
+  bytes?: boolean
 };
 
 const LikeButton = ({
@@ -25,6 +26,7 @@ const LikeButton = ({
   isalreadyLiked,
   setisalreadyDisLiked,
   id,
+  bytes=false
 }: LikeButtonProps) => {
   const authStore = useAuthStore();
   const userStore = useProfile();
@@ -45,6 +47,7 @@ const LikeButton = ({
         "UPVOTE"
       ).then((res) => {
         if (res.addReaction === null) {
+          console.log('liked successfully');
           likedPublication.addToReactedPublications(id, likes, thumbdown);
         }
       });
@@ -57,7 +60,7 @@ const LikeButton = ({
       mx={4}
       px={16}
       width={"auto"}
-      bg={dark_primary}
+      bg={bytes?'transparent':dark_primary}
       type={"filled"}
       borderRadius={8}
       textStyle={{
@@ -68,6 +71,7 @@ const LikeButton = ({
       }}
       borderColor={isalreadyLiked ? PRIMARY : isLiked ? PRIMARY : "white"}
       onPress={onLike}
+      bytes={bytes}
       icon={
         <LikeIcon
           height={20}

@@ -13,7 +13,7 @@ const ByteCard = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const userStore = useProfile();
   const authStore = useAuthStore();
-
+  
   const handleChangeIndexValue = ({ index }: { index: number }) => {
     setCurrentIndex(index);
   };
