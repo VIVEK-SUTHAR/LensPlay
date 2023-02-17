@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, SafeAreaView } from "react-native";
+import { View, Text, SafeAreaView, Dimensions } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import { client } from "../../apollo/client";
 import getBytes from "../../apollo/Queries/getBytes";
@@ -14,7 +14,7 @@ const ByteCard = () => {
   const userStore = useProfile();
   const authStore = useAuthStore();
 
-  const handleChangeIndexValue = ({ index }) => {
+  const handleChangeIndexValue = ({ index }: { index: number }) => {
     setCurrentIndex(index);
   };
 
@@ -64,7 +64,17 @@ const ByteCard = () => {
           onChangeIndex={handleChangeIndexValue}
           data={bytesData}
           renderItem={({ item, index }) => (
-            <SingleByte item={item} index={index} currentIndex={currentIndex} />
+            <View
+              style={{
+                height: Dimensions.get("window").height,
+              }}
+            >
+              <SingleByte
+                item={item}
+                index={index}
+                currentIndex={currentIndex}
+              />
+            </View>
           )}
         />
       ) : (

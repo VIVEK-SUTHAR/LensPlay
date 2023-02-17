@@ -23,12 +23,13 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const bottomTabBarHeight = useBottomTabBarHeight();
+  const height = windowHeight - bottomTabBarHeight;
 
   return (
     <View
       style={{
         width: windowWidth,
-        height: windowHeight,
+        height: height,
         position: "relative",
         justifyContent: "center",
         alignItems: "center",
@@ -45,9 +46,9 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
       >
         <VideoPlayer
           videoProps={{
-            source: { uri: getIPFSLink(item.metadata.media[0].original.url) },
+            source: { uri: getIPFSLink(item.metadata.media[0]?.original?.url) },
             shouldPlay: currentIndex === index ? true : false,
-            resizeMode: ResizeMode.COVER,
+            resizeMode: ResizeMode.CONTAIN,
             isMuted: mute,
           }}
           autoHidePlayer={true}

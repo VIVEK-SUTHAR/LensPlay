@@ -168,7 +168,7 @@ function RootNavigator() {
         options={{
           animation: "slide_from_right",
           headerShown: true,
-          headerTitle:"Edit Your Channel",
+          headerTitle: "Edit Your Channel",
           headerTintColor: theme.PRIMARY,
         }}
       />
@@ -265,9 +265,9 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
           paddingTop: 6,
           borderTopColor: "transparent",
 
-          marginBottom:-5,
+          marginBottom: -5,
           minHeight: 58,
-          paddingHorizontal:5
+          paddingHorizontal: 5,
         },
         headerShadowVisible: true,
       }}
@@ -375,14 +375,12 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   alignContent: "center",
                   justifyContent: "center",
                   flexDirection: "row",
-                  borderTopWidth: 2,
-                  borderTopColor: focused ? theme.PRIMARY : "transparent",
                   height: "100%",
                 }}
               >
                 <MaterialCommunityIcons
                   name={focused ? "movie-open-play" : "movie-open-play-outline"}
-                  size={28}
+                  size={24}
                   color={focused ? theme.PRIMARY : "white"}
                 />
               </View>
