@@ -5,6 +5,8 @@
  * @returns id Arweave txn id
  */
 
+import { BUNDLR_UPLOAD_API } from "../constants";
+
 async function uploadMetaDataToArweave(commentText: string, handle: string | undefined) {
 	try {
 		const headersList = {
@@ -17,7 +19,7 @@ async function uploadMetaDataToArweave(commentText: string, handle: string | und
 			handle: handle,
 		});
 
-		const response = await fetch("https://bundlr-upload-server.vercel.app/api/upload/metadata", {
+		const response = await fetch(`${BUNDLR_UPLOAD_API}/metadata`, {
 			method: "POST",
 			body: bodyContent,
 			headers: headersList,

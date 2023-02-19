@@ -15,6 +15,10 @@ const APP_LOGO = "FINAL HONE KE BAD YAHA DAL DENA KOI";
 const IPFS_GATEWAY = "https://ipfs.io/ipfs/";
 const ARWEAVE_GATEWAY = "https://arweave.net";
 
+//UPLOAD_APIS
+const IPFS_UPLOAD_API = "https://api.web3.storage/upload";
+const BUNDLR_UPLOAD_API = "https://bundlr-upload-server.vercel.app/api/upload";
+
 //Static Media
 const STATIC_ASSET =
 	"https://lens.infura-ipfs.io/ipfs/bafybeibv2kpqpjtvuj5uprvq6knnr2reb7ylq3o4bnypqjioqgxmjw2akq/5460475.webp";
@@ -38,6 +42,8 @@ export {
 	URL_REGEX,
 	ADDRESS_REGEX,
 	APP_LOGO,
+	BUNDLR_UPLOAD_API,
+	IPFS_UPLOAD_API,
 	APP_NAME,
 	DESCRIPTION,
 	ARWEAVE_GATEWAY,

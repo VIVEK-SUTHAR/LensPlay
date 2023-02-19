@@ -1,12 +1,8 @@
 import {
-  Image,
-  NativeSyntheticEvent,
-  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   TextInput,
-  TextInputChangeEventData,
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -31,8 +27,6 @@ import getImageBlobFromUri from "../utils/getImageBlobFromUri";
 import uploadImageToIPFS from "../utils/uploadImageToIPFS";
 import { Profile } from "../types/Lens";
 import Input from "../components/UI/Input";
-import getIPFSLink from "../utils/getIPFSLink";
-import { Feather } from "@expo/vector-icons";
 
 const EditProfile = ({
   navigation,
@@ -153,6 +147,7 @@ const EditProfile = ({
     const bodyContent = JSON.stringify({
       oldProfileData: route.params.profile,
       newProfileData: userData,
+      socialLinks: socialLinks,
     });
     const headersList = {
       "Content-Type": "application/json",
@@ -167,19 +162,27 @@ const EditProfile = ({
       }
     );
     const metadata = await response.json();
+    console.log(`https://arweave.net/${metadata.id}`);
     updateData(route.params.profile?.id, `https://arweave.net/${metadata.id}`);
   };
 
   const handleUpdate = async () => {
     try {
       setIsUpdating(true);
-      if (!imageBlob && !userData.bio && !userData.name) {
+      if (!imageBlob && !userData.bio && !userData.name && !socialLinks) {
         toast.show("Please select data", ToastType.ERROR, true);
       } else {
         if (imageBlob) {
           await uploadToIPFS();
         }
-        if (userData.name.length > 0 || userData.bio.length > 0) {
+        if (
+          userData.name.length > 0 ||
+          userData.bio.length > 0 ||
+          socialLinks.instagram ||
+          socialLinks.twitter ||
+          socialLinks.website ||
+          socialLinks.youtube
+        ) {
           await uploadMetadata();
         }
       }
