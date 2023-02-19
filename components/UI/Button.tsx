@@ -52,14 +52,15 @@ const Button = (props: ButtonProps): JSX.Element => {
     borderColor = "white",
     icon,
     disabled,
-    bytes=false,
+    bytes = false,
     ...rest
   } = props;
 
   var newStyle = Object.assign({}, textStyle, {
     textAlign: "center",
   });
-
+  console.log("bg");
+  
   return (
     <Pressable
       android_ripple={{
@@ -84,7 +85,7 @@ const Button = (props: ButtonProps): JSX.Element => {
       <View
         style={{
           display: "flex",
-          flexDirection: bytes?"column":"row",
+          flexDirection: bytes ? "column" : "row",
           alignItems: "center",
           borderRadius: borderRadius,
           justifyContent: textStyle ? "center" : "space-between",
@@ -102,7 +103,7 @@ const Button = (props: ButtonProps): JSX.Element => {
         }}
       >
         {isLoading ? (
-          <ActivityIndicator size={"small"} color={"black"} />
+          <ActivityIndicator size={"small"} animating={true} color={"black"} />
         ) : (
           <>
             {icon}
@@ -114,4 +115,4 @@ const Button = (props: ButtonProps): JSX.Element => {
   );
 };
 
-export default Button;
+export default React.memo(Button);

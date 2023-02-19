@@ -47,7 +47,6 @@ const CommentCard = ({
   const navigation = useNavigation();
   const userStore = useProfile();
   const likedComments = reactions.likedComments;
-
   const setLike = async () => {
     if (isIndexing) return;
     if (!isalreadyDisLiked) {
@@ -235,4 +234,4 @@ const CommentCard = ({
   );
 };
 
-export default CommentCard;
+export default React.memo(CommentCard);

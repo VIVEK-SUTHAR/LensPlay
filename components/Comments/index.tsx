@@ -9,6 +9,7 @@ import { Comments } from "../../types/Lens/Feed";
 import CommentCard from "./CommentCard";
 
 const Comment = ({ publicationId }: { publicationId: string }) => {
+
   const { data: commentData, error, loading } = useComments(publicationId);
 
   const comments: Comments[] = commentData?.publications?.items;
@@ -24,15 +25,7 @@ const Comment = ({ publicationId }: { publicationId: string }) => {
       <SafeAreaView>
         <ScrollView>
           <View>
-            <StyledText
-              title="Comments"
-              style={{
-                fontSize: 20,
-                fontWeight: "700",
-                color: "white",
-                marginBottom: 8,
-              }}
-            />
+            
             {comments.map((item: Comments) => {
               return (
                 <CommentCard

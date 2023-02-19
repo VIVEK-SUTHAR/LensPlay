@@ -11,7 +11,7 @@ type AvatarProps = {
   borderWidth?: number;
 };
 
-export default function Avatar({
+function Avatar({
   src,
   height,
   width,
@@ -43,3 +43,4 @@ export default function Avatar({
     />
   );
 }
+export default React.memo(Avatar);

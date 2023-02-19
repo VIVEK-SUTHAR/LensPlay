@@ -18,6 +18,8 @@ import {
 } from "../components/VIdeo";
 import DisLikeButton from "../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
+import CommentCard from "../components/Comments/CommentCard";
+import StyledText from "../components/UI/StyledText";
 
 const VideoPage = ({
   navigation,
@@ -34,7 +36,6 @@ const VideoPage = ({
   );
   const likedPublication = useReactionStore();
   const [isAlreadyMirrored, setIsAlreadyMirrored] = useState<boolean>(false);
-
   const thumbup = likedPublication.likedPublication;
   const thumbdown = likedPublication.dislikedPublication;
 
@@ -139,6 +140,15 @@ const VideoPage = ({
             />
             <ReportButton publicationId={route.params.id} />
           </ScrollView>
+          <StyledText
+            title="Comments"
+            style={{
+              fontSize: 20,
+              fontWeight: "700",
+              color: "white",
+              marginBottom: 8,
+            }}
+          />
           <Comment publicationId={route.params.id} />
         </View>
       </ScrollView>

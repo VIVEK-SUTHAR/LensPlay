@@ -1,11 +1,15 @@
 import {
+  Image,
+  NativeSyntheticEvent,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   TextInput,
+  TextInputChangeEventData,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { dark_primary } from "../constants/Colors";
 import StyledText from "../components/UI/StyledText";
 import {
@@ -25,6 +29,10 @@ import formatHandle from "../utils/formatHandle";
 import updateProfilePictureQuery from "../apollo/mutations/updateProfilePictureQuery";
 import getImageBlobFromUri from "../utils/getImageBlobFromUri";
 import uploadImageToIPFS from "../utils/uploadImageToIPFS";
+import { Profile } from "../types/Lens";
+import Input from "../components/UI/Input";
+import getIPFSLink from "../utils/getIPFSLink";
+import { Feather } from "@expo/vector-icons";
 
 const EditProfile = ({
   navigation,
@@ -38,12 +46,16 @@ const EditProfile = ({
 
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
+  const [coverPic, setCoverPic] = useState<string | null>();
+
   const [userData, setUserData] = useState({
     name: "",
     bio: "",
   });
+
   const toast = useToast();
   const { accessToken } = useAuthStore();
+
   const { currentProfile } = useProfile();
   const uploadToIPFS = async () => {
     if (imageBlob) {
@@ -90,6 +102,23 @@ const EditProfile = ({
       setImage(result.uri);
       const imgblob = await getImageBlobFromUri(result.uri);
       setImageBlob(imgblob);
+    }
+  }
+  async function selectCoverImage() {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [1, 1],
+      allowsEditing: true,
+      quality: 1,
+      base64: true,
+    });
+    if (result.cancelled) {
+      toast.show("No image selected", ToastType.ERROR, true);
+    }
+    if (!result.cancelled) {
+      setCoverPic(result.uri);
+      // const imgblob = await getImageBlobFromUri(result.uri);
+      // setImageBlob(imgblob);I
     }
   }
 
@@ -163,6 +192,32 @@ const EditProfile = ({
     }
   };
 
+  const [socialLinks, setSocialLinks] = useState({
+    twitter: "",
+    instagram: "",
+    youtube: "",
+    website: "",
+  });
+
+  useEffect(() => {
+    getSocialLinks(route.params.profile);
+  }, []);
+
+  function getSocialLinks(profile: Profile | null) {
+    const attributes = profile?.attributes ?? [];
+    const website = attributes.find((item) => item.key === "website")?.value;
+    const twitter = attributes.find((item) => item.key === "twitter")?.value;
+    const instagram = attributes.find((item) => item.key === "instagram")
+      ?.value;
+    const youtube = attributes.find((item) => item.key === "youtube")?.value;
+    setSocialLinks({
+      instagram: instagram || "",
+      website: website || "",
+      youtube: youtube || "",
+      twitter: twitter || "",
+    });
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={{ width: "100%", height: "100%" }}>
@@ -193,6 +248,23 @@ const EditProfile = ({
               onPress={selectImage}
             />
           </View>
+          {/* <View>
+            <StyledText title="Cover Picture" style={styles.textStyle} />
+            <View onTouchEndCapture={selectCoverImage}>
+              <Image
+                source={{
+                  uri: getIPFSLink(
+                    route.params.profile?.coverPicture?.original.url
+                  ),
+                }}
+                style={{
+                  borderRadius: 8,
+                  height: 100,
+                  width: "100%",
+                }}
+              />
+            </View>
+          </View> */}
         </View>
         <View style={styles.inputContainer}>
           <StyledText title="Name" style={styles.textStyle} />
@@ -236,6 +308,51 @@ const EditProfile = ({
             }}
           />
         </View>
+        <StyledText title="Social Links" style={styles.textStyle} />
+        <Input
+          label="Twitter"
+          value={socialLinks.twitter}
+          placeHolder={socialLinks.twitter}
+          onChange={(e) => {
+            setSocialLinks({
+              ...socialLinks,
+              twitter: e.nativeEvent.text,
+            });
+          }}
+        />
+        <Input
+          label="Instagram"
+          placeHolder={socialLinks.instagram || "Instagram @username"}
+          value={socialLinks.instagram}
+          onChange={(e) => {
+            setSocialLinks({
+              ...socialLinks,
+              instagram: e.nativeEvent.text,
+            });
+          }}
+        />
+        <Input
+          label="Youtube"
+          placeHolder={socialLinks.youtube || "Youtube link"}
+          value={socialLinks.youtube}
+          onChange={(e) => {
+            setSocialLinks({
+              ...socialLinks,
+              youtube: e.nativeEvent.text,
+            });
+          }}
+        />
+        <Input
+          label="Website"
+          value={socialLinks.website}
+          placeHolder={socialLinks.website || "https://your-site.com"}
+          onChange={(e) => {
+            setSocialLinks({
+              ...socialLinks,
+              website: e.nativeEvent.text,
+            });
+          }}
+        />
       </ScrollView>
       <View style={[styles.inputContainer]}>
         <Button
