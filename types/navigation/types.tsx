@@ -107,6 +107,9 @@ export type RootStackParamList = {
     title: string;
   };
   LinkingVideos: undefined;
+  FullImage: {
+    url: string;
+  };
 };
 
 /**

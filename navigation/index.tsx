@@ -48,6 +48,7 @@ import LoginWithLens from "../screens/LoginWithLens";
 import ReportPublication from "../screens/ReportPublication";
 import Bytes from "../screens/Bytes";
 import BytesIcon from "../components/svg/BytesIcon";
+import FullImage from "../screens/FullImage";
 
 export default function Navigation() {
   return (
@@ -197,6 +198,17 @@ function RootNavigator() {
           headerShown: true,
           headerTintColor: theme.PRIMARY,
           headerTitle: "Report Video",
+        }}
+      />
+      <Stack.Screen
+        name="FullImage"
+        component={FullImage}
+        options={{
+          animation: "fade_from_bottom",
+          headerShown: false,
+          headerStyle:{backgroundColor:"transparent"},
+          headerTintColor: theme.PRIMARY,
+          headerTitle: "",
         }}
       />
     </Stack.Navigator>
@@ -379,11 +391,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <BytesIcon
-                  height={25}
-                  width={25}
-                  filled={focused}
-                />
+                <BytesIcon height={25} width={25} filled={focused} />
               </View>
             );
           },

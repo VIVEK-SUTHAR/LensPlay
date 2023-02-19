@@ -162,7 +162,6 @@ const EditProfile = ({
       }
     );
     const metadata = await response.json();
-    console.log(`https://arweave.net/${metadata.id}`);
     updateData(route.params.profile?.id, `https://arweave.net/${metadata.id}`);
   };
 
@@ -175,14 +174,7 @@ const EditProfile = ({
         if (imageBlob) {
           await uploadToIPFS();
         }
-        if (
-          userData.name.length > 0 ||
-          userData.bio.length > 0 ||
-          socialLinks.instagram ||
-          socialLinks.twitter ||
-          socialLinks.website ||
-          socialLinks.youtube
-        ) {
+        if (canUpload()) {
           await uploadMetadata();
         }
       }
@@ -194,7 +186,16 @@ const EditProfile = ({
       setIsUpdating(false);
     }
   };
-
+  const canUpload = (): boolean => {
+    return (
+      userData.name.length > 0 ||
+      userData.bio.length > 0 ||
+      socialLinks.instagram.length > 0 ||
+      socialLinks.twitter.length > 0 ||
+      socialLinks.website.length > 0 ||
+      socialLinks.youtube.length > 0
+    );
+  };
   const [socialLinks, setSocialLinks] = useState({
     twitter: "",
     instagram: "",

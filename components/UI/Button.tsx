@@ -59,7 +59,6 @@ const Button = (props: ButtonProps): JSX.Element => {
   var newStyle = Object.assign({}, textStyle, {
     textAlign: "center",
   });
-  console.log("bg");
   
   return (
     <Pressable

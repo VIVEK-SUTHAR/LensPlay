@@ -126,13 +126,23 @@ const ProfileScreen = ({
           <>
             {Boolean(!isLoading) && (
               <View style={{}}>
-                <Cover
-                  navigation={navigation}
-                  url={
-                    userStore.currentProfile?.coverPicture?.original.url ||
-                    STATIC_ASSET
-                  }
-                />
+                <Pressable
+                  onPress={() => {
+                    navigation.navigate("FullImage", {
+                      url:
+                        userStore.currentProfile?.coverPicture?.original.url ||
+                        STATIC_ASSET,
+                    });
+                  }}
+                >
+                  <Cover
+                    navigation={navigation}
+                    url={
+                      userStore.currentProfile?.coverPicture?.original.url ||
+                      STATIC_ASSET
+                    }
+                  />
+                </Pressable>
                 <View
                   style={{
                     flexDirection: "row",
@@ -249,7 +259,6 @@ const ProfileScreen = ({
                     }}
                   >
                     <View
-                    
                       style={{
                         flexDirection: "row",
                         alignItems: "center",

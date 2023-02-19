@@ -22,38 +22,46 @@ const Cover = ({ url, navigation }: CoverProps) => {
 
   return (
     <>
-      <View
-        style={{
-          height: 180,
-          marginBottom: 34,
+      <Pressable
+        onPress={() => {
+          navigation.navigate("FullImage", {
+            url: url,
+          });
         }}
       >
-        <MaterialIcons
-          name="logout"
-          size={26}
-          color={"white"}
+        <View
           style={{
-            position: "absolute",
-            right: Dimensions.get("window").width * 0.05,
-            zIndex: 10,
-            top: StatusBarHeight+10,
-            // marginVertical:4,
+            height: 180,
+            marginBottom: 34,
           }}
-          onPress={async (e) => {
-            setIsModalOpen(true);
-          }}
-        />
-        <Image
-          source={{
-            uri: getIPFSLink(url),
-          }}
-          style={{
-            height: "100%",
-            width: "100%",
-            resizeMode: "cover",
-          }}
-        />
-      </View>
+        >
+          <MaterialIcons
+            name="logout"
+            size={26}
+            color={"white"}
+            style={{
+              position: "absolute",
+              right: Dimensions.get("window").width * 0.05,
+              zIndex: 10,
+              top: StatusBarHeight + 10,
+              // marginVertical:4,
+            }}
+            onPress={async (e) => {
+              setIsModalOpen(true);
+            }}
+          />
+          <Image
+            source={{
+              uri: getIPFSLink(url),
+            }}
+            style={{
+              height: "100%",
+              width: "100%",
+              resizeMode: "cover",
+            }}
+          />
+        </View>
+      </Pressable>
       <Modal
         transparent={true}
         statusBarTranslucent={true}
@@ -75,11 +83,11 @@ const Cover = ({ url, navigation }: CoverProps) => {
               borderRadius: 8,
               backgroundColor: "#232323",
               paddingVertical: 18,
-              flexDirection: 'column',
-              justifyContent: 'flex-start',
-              alignItems: 'flex-start',
-              borderColor: 'red',
-              paddingLeft: 16
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+              borderColor: "red",
+              paddingLeft: 16,
             }}
           >
             <Heading
@@ -88,7 +96,7 @@ const Cover = ({ url, navigation }: CoverProps) => {
                 color: primary,
                 fontSize: 20,
                 marginVertical: 4,
-                textAlign: 'left'
+                textAlign: "left",
               }}
             />
             <StyledText

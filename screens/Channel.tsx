@@ -4,6 +4,8 @@ import {
   Pressable,
   RefreshControl,
   ScrollView,
+  StatusBar,
+  Text,
   ToastAndroid,
   View,
 } from "react-native";
@@ -27,13 +29,13 @@ import { Profile } from "../types/Lens";
 import { LensPublication } from "../types/Lens/Feed";
 import getMirrorVideos from "../apollo/Queries/getMirrorVideos";
 import getCollectVideos from "../apollo/Queries/getCollectVideos";
-import { StatusBar } from "expo-status-bar";
 import ProfileSkeleton from "../components/UI/ProfileSkeleton";
 import { Entypo, Feather } from "@expo/vector-icons";
 import { createFreeSubscribe } from "../api";
 import { ToastType } from "../types/Store";
 import VERIFIED_CHANNELS from "../constants/Varified";
 import VerifiedIcon from "../components/svg/VerifiedIcon";
+import { STATIC_ASSET } from "../constants";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -152,7 +154,6 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-      <StatusBar backgroundColor={"transparent"} />
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -169,23 +170,32 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
           <>
             {Boolean(!isLoading) && (
               <View>
-                <View
-                  style={{
-                    height: 180,
-                    marginBottom: 34,
+                <Pressable
+                  onPress={(e) => {
+                    e.preventDefault();
+                    navigation.navigate("FullImage", {
+                      url: profile?.coverPicture?.original.url || STATIC_ASSET,
+                    });
                   }}
                 >
-                  <Image
-                    source={{
-                      uri: getIPFSLink(profile?.coverPicture?.original.url),
-                    }}
+                  <View
                     style={{
-                      height: "100%",
-                      width: "100%",
-                      resizeMode: "cover",
+                      height: 180,
+                      marginBottom: 34,
                     }}
-                  />
-                </View>
+                  >
+                    <Image
+                      source={{
+                        uri: getIPFSLink(profile?.coverPicture?.original.url),
+                      }}
+                      style={{
+                        height: "100%",
+                        width: "100%",
+                        resizeMode: "cover",
+                      }}
+                    />
+                  </View>
+                </Pressable>
                 <View
                   style={{
                     flexDirection: "row",
