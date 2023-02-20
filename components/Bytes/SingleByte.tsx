@@ -55,7 +55,6 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
       console.log(error);
     }
   };
-
   return (
     <View
       style={{
@@ -82,6 +81,12 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             shouldPlay: currentIndex === index ? true : false,
             resizeMode: ResizeMode.CONTAIN,
             isMuted: mute,
+            posterSource: {
+              uri: getIPFSLink(item?.metadata.cover),
+            },
+            posterStyle: {
+              resizeMode: ResizeMode.CONTAIN,
+            },
           }}
           autoHidePlayer={true}
         />

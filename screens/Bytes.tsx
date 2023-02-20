@@ -29,8 +29,8 @@ const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
           flexDirection: "row",
           justifyContent: "space-between",
           zIndex: 1,
-          paddingVertical:8,
-          paddingHorizontal:16
+          paddingVertical: 8,
+          paddingHorizontal: 16,
         }}
       >
         <Text style={{ fontSize: 20, fontWeight: "bold", color: "white" }}>

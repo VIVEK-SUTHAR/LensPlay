@@ -4,6 +4,7 @@ import getIPFSLink from "../utils/getIPFSLink";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Constants from "expo-constants";
 import { Feather } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
 const FullImage = ({
   navigation,
   route,
@@ -22,6 +23,7 @@ const FullImage = ({
     <SafeAreaView
       style={[styles.container, { backgroundColor: getRandomColor() }]}
     >
+      <StatusBar backgroundColor="transparent" style="auto" />
       <View
         style={{
           position: "absolute",
@@ -45,7 +47,7 @@ const FullImage = ({
           }}
         />
       </View>
-      <View style={{ width: "100%", height: 250, aspectRatio: 2 }}>
+      <View style={{ width: "100%", height: 300, aspectRatio: 2 }}>
         <Image
           source={{ uri: getIPFSLink(route.params.url) }}
           style={{

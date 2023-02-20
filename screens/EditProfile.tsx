@@ -1,8 +1,9 @@
 import {
+  Image,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  TextInput,
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -27,30 +28,35 @@ import getImageBlobFromUri from "../utils/getImageBlobFromUri";
 import uploadImageToIPFS from "../utils/uploadImageToIPFS";
 import { Profile } from "../types/Lens";
 import Input from "../components/UI/Input";
+import getIPFSLink from "../utils/getIPFSLink";
+import { Feather } from "@expo/vector-icons";
+import TextArea from "../components/UI/TextArea";
+import { STATIC_ASSET } from "../constants";
 
 const EditProfile = ({
   navigation,
   route,
 }: RootStackScreenProps<"EditProfile">) => {
-  const theme = useThemeStore();
-
-  const [image, setImage] = useState<null | string>(null);
-
-  const [imageBlob, setImageBlob] = useState<Blob>();
-
-  const [isUpdating, setIsUpdating] = useState<boolean>(false);
-
-  const [coverPic, setCoverPic] = useState<string | null>();
-
   const [userData, setUserData] = useState({
     name: "",
     bio: "",
   });
+  const [socialLinks, setSocialLinks] = useState({
+    twitter: "",
+    instagram: "",
+    youtube: "",
+    website: "",
+  });
+  const [image, setImage] = useState<null | string>(null);
+  const [coverPic, setCoverPic] = useState<string | null>();
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [coverImageBlob, setCoverImageBlob] = useState<Blob>();
+  const [imageBlob, setImageBlob] = useState<Blob>();
 
   const toast = useToast();
   const { accessToken } = useAuthStore();
-
   const { currentProfile } = useProfile();
+
   const uploadToIPFS = async () => {
     if (imageBlob) {
       const imageCID = await uploadImageToIPFS(imageBlob);
@@ -99,20 +105,20 @@ const EditProfile = ({
     }
   }
   async function selectCoverImage() {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    let coverresult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       aspect: [1, 1],
       allowsEditing: true,
       quality: 1,
       base64: true,
     });
-    if (result.cancelled) {
+    if (coverresult.cancelled) {
       toast.show("No image selected", ToastType.ERROR, true);
     }
-    if (!result.cancelled) {
-      setCoverPic(result.uri);
-      // const imgblob = await getImageBlobFromUri(result.uri);
-      // setImageBlob(imgblob);I
+    if (!coverresult.cancelled) {
+      setCoverPic(coverresult.uri);
+      const imgblob = await getImageBlobFromUri(coverresult.uri);
+      setCoverImageBlob(imgblob);
     }
   }
 
@@ -133,6 +139,10 @@ const EditProfile = ({
       },
     });
     if (result.data) {
+      setUserData({
+        name: "",
+        bio: "",
+      });
       toast.show("Channel updated successfully", ToastType.SUCCESS, true);
     } else {
       toast.show("Some error occured please try again", ToastType.ERROR, true);
@@ -140,14 +150,17 @@ const EditProfile = ({
   };
 
   const uploadMetadata = async () => {
-    setUserData({
-      name: "",
-      bio: "",
-    });
+    let coverURI = route.params.profile?.coverPicture?.original.url;
+
+    if (coverImageBlob) {
+      coverURI = await uploadImageToIPFS(coverImageBlob);
+    }
+
     const bodyContent = JSON.stringify({
       oldProfileData: route.params.profile,
       newProfileData: userData,
       socialLinks: socialLinks,
+      coverImage: `ipfs://${coverURI}`,
     });
     const headersList = {
       "Content-Type": "application/json",
@@ -196,12 +209,6 @@ const EditProfile = ({
       socialLinks.youtube.length > 0
     );
   };
-  const [socialLinks, setSocialLinks] = useState({
-    twitter: "",
-    instagram: "",
-    youtube: "",
-    website: "",
-  });
 
   useEffect(() => {
     getSocialLinks(route.params.profile);
@@ -225,84 +232,96 @@ const EditProfile = ({
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={{ width: "100%", height: "100%" }}>
-        <View style={styles.inputContainer}>
-          <StyledText title="Profile Picture" style={styles.textStyle} />
+        <Pressable
+          onPress={selectCoverImage}
+          style={{
+            height: 140,
+            width: "100%",
+            marginBottom: 34,
+          }}
+        >
           <View
             style={{
-              flexDirection: "row",
+              position: "absolute",
+              height: "100%",
+              width: "100%",
+              backgroundColor: "rgba(255,255,255,0.02)",
+              zIndex: 4,
+              justifyContent: "center",
               alignItems: "center",
-              justifyContent: "space-around",
             }}
           >
-            <Avatar
-              src={image ? image : route.params.profile?.picture?.original?.url}
-              height={96}
-              width={96}
-            />
-            <Button
-              title="Select from Gallery"
-              width={"auto"}
-              borderRadius={8}
-              px={16}
-              textStyle={{
-                color: "white",
-              }}
-              borderColor={theme.PRIMARY}
-              type="outline"
-              onPress={selectImage}
-            />
+            <Feather name="edit" size={28} color={"white"} />
           </View>
-          {/* <View>
-            <StyledText title="Cover Picture" style={styles.textStyle} />
-            <View onTouchEndCapture={selectCoverImage}>
-              <Image
-                source={{
-                  uri: getIPFSLink(
-                    route.params.profile?.coverPicture?.original.url
-                  ),
-                }}
-                style={{
-                  borderRadius: 8,
-                  height: 100,
-                  width: "100%",
-                }}
-              />
-            </View>
-          </View> */}
-        </View>
-        <View style={styles.inputContainer}>
-          <StyledText title="Name" style={styles.textStyle} />
-          <TextInput
+          <Image
+            source={{
+              uri:
+                coverPic ||
+                getIPFSLink(route.params.profile?.coverPicture?.original.url),
+            }}
+            style={{
+              opacity: 0.5,
+              height: "100%",
+              width: "100%",
+              resizeMode: "cover",
+            }}
+          />
+        </Pressable>
+        <Pressable
+          onPress={selectImage}
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+            marginLeft: 8,
+            marginTop: "-20%",
+            zIndex: 12,
+          }}
+        >
+          <View
+            style={{
+              position: "absolute",
+              height: 90,
+              width: 90,
+              borderRadius: 50,
+              backgroundColor: "rgba(255,255,255,0.09)",
+              zIndex: 45,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Feather name="edit" size={28} color={"white"} />
+          </View>
+          <Avatar
+            src={
+              image ||
+              route.params.profile?.picture?.original?.url ||
+              STATIC_ASSET
+            }
+            height={90}
+            opacity={0.5}
+            width={90}
+            borderRadius={50}
+          />
+        </Pressable>
+        <View style={{ padding: 16 }}>
+          <Input
+            label="Name"
+            value={userData.name}
+            placeHolder={
+              route.params.profile?.name ||
+              formatHandle(route.params.profile?.handle)
+            }
             onChange={(e) => {
               setUserData({
                 name: e.nativeEvent.text,
                 bio: userData.bio,
               });
             }}
-            style={styles.input}
-            placeholder={
-              route.params.profile?.name ||
-              formatHandle(route.params.profile?.handle)
-            }
-            placeholderTextColor="gray"
-            selectionColor={theme.PRIMARY}
-            value={userData.name}
           />
-        </View>
-        <View style={styles.inputContainer}>
-          <StyledText title="Bio" style={styles.textStyle} />
-          <TextInput
-            multiline={true}
-            numberOfLines={4}
-            style={[
-              styles.input,
-              {
-                textAlignVertical: "top",
-              },
-            ]}
-            placeholder={route.params.profile?.bio}
-            placeholderTextColor="gray"
-            selectionColor={theme.PRIMARY}
+          <TextArea
+            label="Bio"
+            placeHolder={route.params.profile?.bio || "What describes you..."}
             value={userData.bio}
             onChange={(e) => {
               setUserData({
@@ -311,52 +330,52 @@ const EditProfile = ({
               });
             }}
           />
+          <StyledText title="Social Links" style={styles.textStyle} />
+          <Input
+            label="Twitter"
+            value={socialLinks.twitter}
+            placeHolder={socialLinks.twitter}
+            onChange={(e) => {
+              setSocialLinks({
+                ...socialLinks,
+                twitter: e.nativeEvent.text,
+              });
+            }}
+          />
+          <Input
+            label="Instagram"
+            placeHolder={socialLinks.instagram || "Instagram @username"}
+            value={socialLinks.instagram}
+            onChange={(e) => {
+              setSocialLinks({
+                ...socialLinks,
+                instagram: e.nativeEvent.text,
+              });
+            }}
+          />
+          <Input
+            label="Youtube"
+            placeHolder={socialLinks.youtube || "Youtube link"}
+            value={socialLinks.youtube}
+            onChange={(e) => {
+              setSocialLinks({
+                ...socialLinks,
+                youtube: e.nativeEvent.text,
+              });
+            }}
+          />
+          <Input
+            label="Website"
+            value={socialLinks.website}
+            placeHolder={socialLinks.website || "https://your-site.com"}
+            onChange={(e) => {
+              setSocialLinks({
+                ...socialLinks,
+                website: e.nativeEvent.text,
+              });
+            }}
+          />
         </View>
-        <StyledText title="Social Links" style={styles.textStyle} />
-        <Input
-          label="Twitter"
-          value={socialLinks.twitter}
-          placeHolder={socialLinks.twitter}
-          onChange={(e) => {
-            setSocialLinks({
-              ...socialLinks,
-              twitter: e.nativeEvent.text,
-            });
-          }}
-        />
-        <Input
-          label="Instagram"
-          placeHolder={socialLinks.instagram || "Instagram @username"}
-          value={socialLinks.instagram}
-          onChange={(e) => {
-            setSocialLinks({
-              ...socialLinks,
-              instagram: e.nativeEvent.text,
-            });
-          }}
-        />
-        <Input
-          label="Youtube"
-          placeHolder={socialLinks.youtube || "Youtube link"}
-          value={socialLinks.youtube}
-          onChange={(e) => {
-            setSocialLinks({
-              ...socialLinks,
-              youtube: e.nativeEvent.text,
-            });
-          }}
-        />
-        <Input
-          label="Website"
-          value={socialLinks.website}
-          placeHolder={socialLinks.website || "https://your-site.com"}
-          onChange={(e) => {
-            setSocialLinks({
-              ...socialLinks,
-              website: e.nativeEvent.text,
-            });
-          }}
-        />
       </ScrollView>
       <View style={[styles.inputContainer]}>
         <Button
@@ -385,7 +404,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "black",
     alignItems: "center",
-    padding: 16,
   },
   textStyle: {
     color: "white",
@@ -395,7 +413,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: "100%",
-    marginVertical: 8,
+    paddingHorizontal: 16,
   },
   input: {
     backgroundColor: dark_primary,

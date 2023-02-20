@@ -9,6 +9,7 @@ type AvatarProps = {
   borderRadius?: number;
   borderColor?: string;
   borderWidth?: number;
+  opacity?: number;
 };
 
 function Avatar({
@@ -18,6 +19,7 @@ function Avatar({
   borderRadius = 500,
   borderColor = "transparent",
   borderWidth = 0,
+  opacity = 1,
 }: AvatarProps) {
   return (
     <Image
@@ -32,6 +34,7 @@ function Avatar({
         }`,
       }}
       style={{
+        opacity: opacity,
         height: height,
         width: width,
         borderRadius: borderRadius,
