@@ -85,7 +85,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
               backgroundColor: dark_primary,
               borderWidth: 1,
               borderRadius: 50,
-              paddingVertical: 6,
+              paddingVertical: 4,
             }}
           >
             <Pressable
@@ -95,7 +95,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
               }}
               style={{ marginRight: 8 }}
             >
-              <BackIcon height={24} width={24} />
+              <BackIcon height={20} width={20} />
             </Pressable>
             <TextInput
               placeholder="Search by channel"
@@ -109,8 +109,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
               style={{
                 flex: 1,
                 color: "white",
-                paddingHorizontal: 16,
-                paddingVertical: 4,
+                fontSize: 12,
               }}
             />
           </View>

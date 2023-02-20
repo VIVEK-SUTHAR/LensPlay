@@ -4,9 +4,9 @@ export default gql`
     explorePublications(
       request: {
         publicationTypes: [POST, MIRROR]
-        sources: ["lenstube-bytes"]
         sortCriteria: LATEST
         metadata: { mainContentFocus: VIDEO }
+        timestamp: null
       }
     ) {
       items {

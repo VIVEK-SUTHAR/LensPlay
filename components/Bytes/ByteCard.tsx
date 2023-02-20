@@ -1,6 +1,6 @@
 import AnimatedLottieView from "lottie-react-native";
 import React, { useEffect, useState } from "react";
-import { View, Text, SafeAreaView, Dimensions, Pressable } from "react-native";
+import { View, SafeAreaView, Dimensions, Pressable } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import { client } from "../../apollo/client";
 import getBytes from "../../apollo/Queries/getBytes";

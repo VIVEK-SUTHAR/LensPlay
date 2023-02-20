@@ -87,8 +87,6 @@ export const useReactionStore = create<IReactionStore>((set) => ({
     }));
   },
 }));
-const useStore = create((set) => ({
-}));
+const useStore = create((set) => ({}));
 
 export default useStore;
-

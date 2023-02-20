@@ -60,7 +60,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
     <View
       style={{
         width: windowWidth,
-        height: windowHeight,
+        height: windowHeight - bottomTabBarHeight,
         position: "relative",
         justifyContent: "center",
         alignItems: "center",
@@ -180,18 +180,6 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             alignItems: "center",
           }}
         >
-          <MirrorIcon height={23} width={23} />
-          <Text style={{ color: "white" }}>
-            {item.stats.totalAmountOfMirrors}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            padding: 10,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
           <CollectIcon height={23} width={23} />
           <Text style={{ color: "white" }}>
             {item.stats.totalAmountOfCollects}
@@ -206,17 +194,6 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
           onPress={shareVideo}
         >
           <ShareIcon height={22} width={22} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{ padding: 10 }}
-          onPressIn={() => {
-            console.log("hi");
-          }}
-        >
-          <Feather
-            name="more-vertical"
-            style={{ color: "white", fontSize: 25 }}
-          />
         </TouchableOpacity>
       </View>
     </View>
