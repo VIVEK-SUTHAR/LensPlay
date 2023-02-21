@@ -74,26 +74,22 @@ const ProfileScreen = ({
     const youtube = userStore.currentProfile?.attributes?.find(
       (item) => item.key === "youtube"
     )?.value;
-    
+
     const insta = userStore.currentProfile?.attributes?.find(
       (item) => item.key === "instagram"
-      )?.value;
-      const website = userStore.currentProfile?.attributes?.find(
-        (item) => item.key === "website"
-        )?.value;
-        
-   
-        setLinks({
-          insta:insta,
-          site:website,
-          twitter:twitter,
-          yt:youtube
-    
-        })
-   
-    
+    )?.value;
+    const website = userStore.currentProfile?.attributes?.find(
+      (item) => item.key === "website"
+    )?.value;
+
+    setLinks({
+      insta: insta,
+      site: website,
+      twitter: twitter,
+      yt: youtube,
+    });
+
     console.log(links);
-    
   }
 
   useEffect(() => {
@@ -306,30 +302,35 @@ const ProfileScreen = ({
                       flexDirection: "row",
                     }}
                   >
-                    {links.twitter.length > 0 ? (
-                      <View
+                    {links.twitter?.length > 0 ? (
+                      <Pressable
                         style={{
                           flexDirection: "row",
                           alignItems: "center",
-                          marginHorizontal: 8,
+                        }}
+                        onPress={(e) => {
+                          e.preventDefault();
+                          Linking.openURL(
+                            `https://twitter.com/${links.twitter}`
+                          );
                         }}
                       >
                         <Twitter height={24} width={24} filled={true} />
                         <StyledText
-                          style={{ color: "white" }}
-                          title={links.twitter}
+                          style={{ color: "white", marginRight: 4 }}
+                          title={`@${links.twitter}`}
                         ></StyledText>
-                      </View>
+                      </Pressable>
                     ) : (
                       <></>
                     )}
-                    {links.yt.length > 0 ? (
+                    {links.yt?.length > 0 ? (
                       <View
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
                         <YouTube height={24} width={24} filled={true} />
                         <StyledText
-                          style={{ color: "white" }}
+                          style={{ color: "white", marginRight: 4 }}
                           title={links.yt}
                         ></StyledText>
                       </View>
@@ -346,33 +347,36 @@ const ProfileScreen = ({
                       flexDirection: "row",
                     }}
                   >
-                    {links.insta ? (
+                    {links.insta?.length > 0 ? (
                       <View
                         style={{
                           flexDirection: "row",
                           alignItems: "center",
-                          marginHorizontal: 8,
                         }}
                       >
                         <Instagram height={24} width={24} filled={true} />
                         <StyledText
-                          style={{ color: "white" }}
+                          style={{ color: "white", marginRight: 4 }}
                           title={links.insta}
                         ></StyledText>
                       </View>
                     ) : (
                       <></>
                     )}
-                    {links.site.length > 0 ? (
-                      <View
+                    {links.site?.length > 0 ? (
+                      <Pressable
                         style={{ flexDirection: "row", alignItems: "center" }}
+                        onPress={(e) => {
+                          e.preventDefault();
+                          Linking.openURL(links.site);
+                        }}
                       >
                         <Website height={24} width={24} filled={true} />
                         <StyledText
-                          style={{ color: "white" }}
+                          style={{ color: "white", marginLeft: 4 }}
                           title={links.site}
                         ></StyledText>
-                      </View>
+                      </Pressable>
                     ) : (
                       <></>
                     )}

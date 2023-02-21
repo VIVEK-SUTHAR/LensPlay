@@ -36,6 +36,10 @@ import { ToastType } from "../types/Store";
 import VERIFIED_CHANNELS from "../constants/Varified";
 import VerifiedIcon from "../components/svg/VerifiedIcon";
 import { STATIC_ASSET } from "../constants";
+import Twitter from "../components/svg/Twitter";
+import YouTube from "../components/svg/YouTube";
+import Instagram from "../components/svg/Instagram";
+import Website from "../components/svg/Website";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -47,7 +51,12 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [alreadyFollowing, setAlreadyFollowing] = useState<boolean | undefined>(
     route.params.isFollowdByMe
   );
-
+  const [links, setLinks] = useState({
+    twitter: "",
+    insta: "",
+    yt: "",
+    site: "",
+  });
   const theme = useThemeStore();
   const authStore = useAuthStore();
   const toast = useToast();
@@ -80,6 +89,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
         },
       });
       setProfile(profiledata.data.profile);
+      getLinks();
       const getUserVideos = await client.query({
         query: getPublications,
         variables: {
@@ -151,6 +161,27 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       setRefreshing(false);
     });
   }, []);
+
+  function getLinks() {
+    const twitter = profile?.attributes?.find((item) => item.key === "twitter")
+      ?.value;
+    const youtube = profile?.attributes?.find((item) => item.key === "youtube")
+      ?.value;
+
+    const insta = profile?.attributes?.find((item) => item.key === "instagram")
+      ?.value;
+    const website = profile?.attributes?.find((item) => item.key === "website")
+      ?.value;
+
+    setLinks({
+      insta: insta,
+      site: website,
+      twitter: twitter,
+      yt: youtube,
+    });
+
+    console.log(links);
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -322,6 +353,94 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                   ) : (
                     <></>
                   )}
+                  <View
+                    style={{
+                      // backgroundColor:"red",
+                      marginVertical: 4,
+                      // height:45,
+                      width: "100%",
+                      flexDirection: "row",
+                    }}
+                  >
+                    {links.twitter?.length > 0 ? (
+                      <Pressable
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                        onPress={(e) => {
+                          e.preventDefault();
+                          Linking.openURL(
+                            `https://twitter.com/${links.twitter}`
+                          );
+                        }}
+                      >
+                        <Twitter height={24} width={24} filled={true} />
+                        <StyledText
+                          style={{ color: "white", marginRight: 4 }}
+                          title={`@${links.twitter}`}
+                        ></StyledText>
+                      </Pressable>
+                    ) : (
+                      <></>
+                    )}
+                    {links.yt?.length > 0 ? (
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <YouTube height={24} width={24} filled={true} />
+                        <StyledText
+                          style={{ color: "white", marginRight: 4 }}
+                          title={links.yt}
+                        ></StyledText>
+                      </View>
+                    ) : (
+                      <></>
+                    )}
+                  </View>
+                  <View
+                    style={{
+                      // backgroundColor:"red",
+                      marginVertical: 4,
+                      // height:45,
+                      width: "100%",
+                      flexDirection: "row",
+                    }}
+                  >
+                    {links.insta?.length > 0 ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Instagram height={24} width={24} filled={true} />
+                        <StyledText
+                          style={{ color: "white", marginRight: 4 }}
+                          title={links.insta}
+                        ></StyledText>
+                      </View>
+                    ) : (
+                      <></>
+                    )}
+                    {links.site?.length > 0 ? (
+                      <Pressable
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                        onPress={(e) => {
+                          e.preventDefault();
+                          Linking.openURL(links.site);
+                        }}
+                      >
+                        <Website height={24} width={24} filled={true} />
+                        <StyledText
+                          style={{ color: "white", marginLeft: 4 }}
+                          title={links.site}
+                        ></StyledText>
+                      </Pressable>
+                    ) : (
+                      <></>
+                    )}
+                  </View>
                   <View
                     style={{
                       backgroundColor: "white",
