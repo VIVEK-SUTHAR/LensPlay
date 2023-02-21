@@ -11,7 +11,11 @@ import {
 import { useEffect, useState } from "react";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
-import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
+import useStore, {
+  useAuthStore,
+  useProfile,
+  useThemeStore,
+} from "../store/Store";
 import getIPFSLink from "../utils/getIPFSLink";
 import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
@@ -34,6 +38,11 @@ import CollectedVideos from "../components/Profile/CollectedVideos";
 import { Entypo, Feather } from "@expo/vector-icons";
 import VERIFIED_CHANNELS from "../constants/Varified";
 import formatHandle from "../utils/formatHandle";
+import Twitter from "../components/svg/Twitter";
+import BackIcon from "../components/svg/BackIcon";
+import YouTube from "../components/svg/YouTube";
+import Instagram from "../components/svg/Instagram";
+import Website from "../components/svg/Website";
 const ProfileScreen = ({
   navigation,
   route,
@@ -48,6 +57,44 @@ const ProfileScreen = ({
   const theme = useThemeStore();
   const authStore = useAuthStore();
   const userStore = useProfile();
+
+  const [links, setLinks] = useState({
+    twitter: "",
+    insta: "",
+    yt: "",
+    site: "",
+  });
+  useEffect(() => {
+    getLinks();
+  }, []);
+  function getLinks() {
+    const twitter = userStore.currentProfile?.attributes?.find(
+      (item) => item.key === "twitter"
+    )?.value;
+    const youtube = userStore.currentProfile?.attributes?.find(
+      (item) => item.key === "youtube"
+    )?.value;
+    
+    const insta = userStore.currentProfile?.attributes?.find(
+      (item) => item.key === "instagram"
+      )?.value;
+      const website = userStore.currentProfile?.attributes?.find(
+        (item) => item.key === "website"
+        )?.value;
+        
+   
+        setLinks({
+          insta:insta,
+          site:website,
+          twitter:twitter,
+          yt:youtube
+    
+        })
+   
+    
+    console.log(links);
+    
+  }
 
   useEffect(() => {
     getProfleInfo();
@@ -250,6 +297,86 @@ const ProfileScreen = ({
                   ) : (
                     <></>
                   )}
+                  <View
+                    style={{
+                      // backgroundColor:"red",
+                      marginVertical: 4,
+                      // height:45,
+                      width: "100%",
+                      flexDirection: "row",
+                    }}
+                  >
+                    {links.twitter.length > 0 ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginHorizontal: 8,
+                        }}
+                      >
+                        <Twitter height={24} width={24} filled={true} />
+                        <StyledText
+                          style={{ color: "white" }}
+                          title={links.twitter}
+                        ></StyledText>
+                      </View>
+                    ) : (
+                      <></>
+                    )}
+                    {links.yt.length > 0 ? (
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <YouTube height={24} width={24} filled={true} />
+                        <StyledText
+                          style={{ color: "white" }}
+                          title={links.yt}
+                        ></StyledText>
+                      </View>
+                    ) : (
+                      <></>
+                    )}
+                  </View>
+                  <View
+                    style={{
+                      // backgroundColor:"red",
+                      marginVertical: 4,
+                      // height:45,
+                      width: "100%",
+                      flexDirection: "row",
+                    }}
+                  >
+                    {links.insta ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginHorizontal: 8,
+                        }}
+                      >
+                        <Instagram height={24} width={24} filled={true} />
+                        <StyledText
+                          style={{ color: "white" }}
+                          title={links.insta}
+                        ></StyledText>
+                      </View>
+                    ) : (
+                      <></>
+                    )}
+                    {links.site.length > 0 ? (
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <Website height={24} width={24} filled={true} />
+                        <StyledText
+                          style={{ color: "white" }}
+                          title={links.site}
+                        ></StyledText>
+                      </View>
+                    ) : (
+                      <></>
+                    )}
+                  </View>
                   <View
                     style={{
                       backgroundColor: "white",
