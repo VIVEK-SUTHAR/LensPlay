@@ -1,48 +1,15 @@
-import {
-  Alert,
-  Animated,
-  Dimensions,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Dimensions, Image, StyleSheet, View } from "react-native";
 import * as React from "react";
-import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import { client } from "../apollo/client";
-import getChallenge from "../apollo/Queries/getChallenge";
-import getAccessTokens from "../apollo/mutations/getAccessTokens";
-import getProfile from "../apollo/Queries/getProfile";
-import { useAuthStore, useProfile } from "../store/Store";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import verifyToken from "../apollo/Queries/verifyToken";
-import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
 import { StatusBar } from "expo-status-bar";
-import Paginator from "../components/Paginator";
 import StyledText from "../components/UI/StyledText";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Button from "../components/UI/Button";
-import formatTime from "../utils/formatTime";
-import storeData from "../utils/storeData";
 import Heading from "../components/UI/Heading";
 import Constants from "expo-constants";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
-  const authStore = useAuthStore();
-  const userStore = useProfile();
-  const [isloading, setIsloading] = useState<boolean>(false);
-  const connector = useWalletConnect();
-  const [isconnected, setIsconnected] = useState<boolean>(false);
-
   const windowWidth = Dimensions.get("window").width;
-
-  
-  const killSession = React.useCallback(() => {
-    return connector.killSession();
-  }, [connector]);
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#93E9C8" style="dark" />
@@ -58,7 +25,12 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         />
         <Image
           source={require("../assets/images/login1.png")}
-          style={{ width: windowWidth, height: 495, position: "absolute", top: -30 }}
+          style={{
+            width: windowWidth,
+            height: 495,
+            position: "absolute",
+            top: -30,
+          }}
           resizeMode={"contain"}
         />
       </View>
