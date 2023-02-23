@@ -7,6 +7,7 @@ import {
   RootStackScreenProps,
   RootTabScreenProps,
 } from "../types/navigation/types";
+import Loop from "../components/Loop";
 const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
@@ -46,6 +47,7 @@ const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
         />
       </View>
       <ByteCard />
+      {/* <Loop /> */}
     </View>
   );
 };
