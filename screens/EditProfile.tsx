@@ -75,6 +75,7 @@ const EditProfile = ({
       if (updateOnLens.data) {
         if (!userData.bio.length && !userData.name.length) {
           toast.show("Channel image updated", ToastType.SUCCESS, true);
+          navigation.goBack();
         }
         if (
           userData.bio.length > 0 ||
@@ -95,12 +96,12 @@ const EditProfile = ({
       quality: 1,
       base64: true,
     });
-    if (result.cancelled) {
+    if (result.canceled) {
       toast.show("No image selected", ToastType.ERROR, true);
     }
-    if (!result.cancelled) {
-      setImage(result.uri);
-      const imgblob = await getImageBlobFromUri(result.uri);
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      const imgblob = await getImageBlobFromUri(result.assets[0].uri);
       setImageBlob(imgblob);
     }
   }
@@ -112,12 +113,12 @@ const EditProfile = ({
       quality: 1,
       base64: true,
     });
-    if (coverresult.cancelled) {
+    if (coverresult.canceled) {
       toast.show("No image selected", ToastType.ERROR, true);
     }
-    if (!coverresult.cancelled) {
+    if (!coverresult.canceled) {
       setCoverPic(coverresult.uri);
-      const imgblob = await getImageBlobFromUri(coverresult.uri);
+      const imgblob = await getImageBlobFromUri(coverresult.assets[0].uri);
       setCoverImageBlob(imgblob);
     }
   }
@@ -144,6 +145,7 @@ const EditProfile = ({
         bio: "",
       });
       toast.show("Channel updated successfully", ToastType.SUCCESS, true);
+      navigation.goBack();
     } else {
       toast.show("Some error occured please try again", ToastType.ERROR, true);
     }

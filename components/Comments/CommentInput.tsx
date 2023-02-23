@@ -90,6 +90,7 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
         placeholder="What's in your mind"
         style={{ flex: 1, color: "white" }}
         selectionColor={PRIMARY}
+        value={commentText}
         onFocus={(e) => {
           setIsFocused((state) => !state);
         }}
