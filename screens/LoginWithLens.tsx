@@ -20,6 +20,7 @@ import getChallenge from "../apollo/Queries/getChallenge";
 import getAccessTokens from "../apollo/mutations/getAccessTokens";
 import storeData from "../utils/storeData";
 import AnimatedLottieView from "lottie-react-native";
+import { MotiImage } from "moti/build";
 
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const windowWidth = Dimensions.get("window").width;
@@ -100,7 +101,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             width: windowWidth * 0.9,
             height: windowHeight / 2 + 100,
             position: "absolute",
-            bottom: 30,
+            bottom: 20,
           }}
           resizeMode={"contain"}
         />

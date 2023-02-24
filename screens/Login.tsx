@@ -8,6 +8,7 @@ import Button from "../components/UI/Button";
 import Heading from "../components/UI/Heading";
 import Constants from "expo-constants";
 import { AntDesign } from "@expo/vector-icons";
+import { MotiView } from "moti/build";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const windowWidth = Dimensions.get("window").width;
@@ -41,7 +42,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         <Heading
           title={"LensPlay"}
           style={{
-            fontSize: 54,
+            fontSize: 64,
             color: "white",
             fontWeight: "600",
             textAlign: "center",

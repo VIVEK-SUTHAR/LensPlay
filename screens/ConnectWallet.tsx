@@ -12,6 +12,7 @@ import Button from "../components/UI/Button";
 import StyledText from "../components/UI/StyledText";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Constants from "expo-constants";
+import { MotiView } from "moti";
 
 function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   const connector = useWalletConnect();
@@ -53,7 +54,18 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           marginTop: 48,
         }}
       >
-        <View
+        <MotiView
+          from={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{
+            type: "timing",
+            duration: 1500,
+            delay: 100,
+          }}
           style={{
             flexDirection: "row",
             alignItems: "flex-start",
@@ -80,8 +92,21 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
               marginLeft: 8,
             }}
           />
-        </View>
-        <View style={{ flexDirection: "row", paddingHorizontal: 36 }}>
+        </MotiView>
+        <MotiView
+          from={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{
+            type: "timing",
+            duration: 1500,
+            delay: 200,
+          }}
+          style={{ flexDirection: "row", paddingHorizontal: 36 }}
+        >
           <StyledText
             title={"User"}
             style={{
@@ -101,8 +126,21 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
               marginLeft: 8,
             }}
           />
-        </View>
-        <View style={{ flexDirection: "row", paddingHorizontal: 36 }}>
+        </MotiView>
+        <MotiView
+          from={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{
+            type: "timing",
+            duration: 1500,
+            delay: 300,
+          }}
+          style={{ flexDirection: "row", paddingHorizontal: 36 }}
+        >
           <StyledText
             title={"Social"}
             style={{
@@ -122,7 +160,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
               marginLeft: 8,
             }}
           />
-        </View>
+        </MotiView>
       </View>
       <View
         style={{
