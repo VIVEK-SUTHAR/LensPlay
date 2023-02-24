@@ -18,6 +18,7 @@ import Trending from "../screens/Trending";
 import Notification from "../screens/Notification";
 import UploadVideo from "../screens/UploadVideo";
 import Search from "../screens/Search";
+import Settings from "../screens/Settings";
 import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
 import Channel from "../screens/Channel";
@@ -37,7 +38,7 @@ import Avatar from "../components/UI/Avatar";
 import getIPFSLink from "../utils/getIPFSLink";
 import linking from "./LinkingConfiguration";
 import LinkingVideo from "../screens/LinkingVideo";
-import { dark_primary } from "../constants/Colors";
+import { dark_primary, primary } from "../constants/Colors";
 import UserStats from "../screens/UserStats";
 import LeaderBoard from "../screens/LeaderBoard";
 import EditProfile from "../screens/EditProfile";
@@ -49,6 +50,7 @@ import ReportPublication from "../screens/ReportPublication";
 import Bytes from "../screens/Bytes";
 import BytesIcon from "../components/svg/BytesIcon";
 import FullImage from "../screens/FullImage";
+import CloseIcon from "../components/svg/CloseIcon";
 
 export default function Navigation() {
   return (
@@ -201,12 +203,22 @@ function RootNavigator() {
         }}
       />
       <Stack.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          animation: "slide_from_bottom",
+          headerShown: true,
+          headerTintColor:primary,
+          headerTitle: "Settingssss",
+        }}
+      />
+      <Stack.Screen
         name="FullImage"
         component={FullImage}
         options={{
           animation: "fade_from_bottom",
           headerShown: false,
-          headerStyle:{backgroundColor:"transparent"},
+          headerStyle: { backgroundColor: "transparent" },
           headerTintColor: theme.PRIMARY,
           headerTitle: "",
         }}
@@ -227,21 +239,38 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
         headerStyle: { backgroundColor: dark_primary, elevation: 2 },
         headerTitle: "",
         headerRight: () => (
-          <TouchableWithoutFeedback
-            onPress={() => {
-              navigation.navigate("Search");
-            }}
-          >
-            <View
-              style={{
-                paddingHorizontal: 10,
-                flexDirection: "row",
-                alignItems: "center",
+          <View style={{flexDirection:"row"}} >
+            <TouchableWithoutFeedback
+              onPress={() => {
+                navigation.navigate("Search");
               }}
             >
-              <SearchIcon width={24} height={24} />
-            </View>
-          </TouchableWithoutFeedback>
+              <View
+                style={{
+                  paddingHorizontal: 10,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <SearchIcon width={24} height={24} />
+              </View>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                navigation.navigate("Settings");
+              }}
+            >
+              <View
+                style={{
+                  paddingHorizontal: 10,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <CloseIcon width={24} height={24} />
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
         ),
         headerLeft: () => (
           <View
