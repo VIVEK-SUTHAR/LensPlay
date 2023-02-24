@@ -25,13 +25,12 @@ import { ToastType } from "../types/Store";
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-  const [isloading, setIsloading] = useState(false);
+  const [isloading, setIsloading] = useState<boolean>(false);
+  const [hasHandle, setHasHandle] = useState<boolean>(true);
   const connector = useWalletConnect();
   const userStore = useProfile();
   const authStore = useAuthStore();
   const toast = useToast();
-
-  let hasHandle: boolean = true;
 
   const logInWithLens = async () => {
     setIsloading(true);
@@ -43,7 +42,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
     });
     if (!data.data.defaultProfile) {
       setIsloading(false);
-      hasHandle = false;
+      setHasHandle(false);
       toast.show("Please claim your handle", ToastType.ERROR, true);
       return;
     }
