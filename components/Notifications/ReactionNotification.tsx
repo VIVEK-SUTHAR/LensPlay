@@ -68,7 +68,8 @@ const ReactionNotification: React.FC<NotificationCardProps> = ({
             <View>
               <StyledText
                 title={extractURLs(
-                  notification?.publication?.metadata?.description
+                  notification?.publication?.metadata?.description ||
+                  notification?.publication?.metadata?.content
                 )}
                 style={{ fontSize: 12, color: "gray" }}
               />

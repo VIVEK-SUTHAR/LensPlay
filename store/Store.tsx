@@ -1,3 +1,4 @@
+import { ColorValue } from "react-native";
 import create from "zustand";
 import {
   DisLikeObject,
@@ -28,6 +29,7 @@ export const useProfile = create<UserStore>((set) => ({
 
 export const useThemeStore = create<IThemeStore>((set) => ({
   PRIMARY: "#2AD95C",
+  DARK_PRIMARY: "#1A1A1A",
   setPrimaryColor: (newPrimaryColor: string) =>
     set({ PRIMARY: newPrimaryColor }),
 }));
