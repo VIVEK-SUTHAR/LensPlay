@@ -108,7 +108,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           resizeMode={"contain"}
         />
       </View>
-      <View style={{ justifyContent: "flex-end", marginTop: 48 }}>
+      <View style={{ justifyContent: "flex-end", marginTop: 36 }}>
         <View
           style={{
             position: "relative",
@@ -118,7 +118,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             marginTop: 8,
           }}
         >
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: "row" }}>
             <StyledText
               title={"Just one"}
               style={{
@@ -155,7 +155,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
               title={"from"}
               style={{
                 fontSize: 28,
-                color: 'white',
+                color: "white",
                 fontWeight: "700",
                 textAlign: "right",
                 marginRight: 8,
@@ -182,8 +182,8 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
               }}
             />
           </View>
-          <View style={{flexDirection: 'row'}}>
-          <StyledText
+          <View style={{ flexDirection: "row" }}>
+            <StyledText
               title={"content"}
               style={{
                 fontSize: 28,
@@ -195,20 +195,26 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             />
           </View>
         </View>
-        <View style={{ padding: 16, marginTop: 44 }}>
-          <Button
-            title="Login With Lens"
-            bg="#93E9C8"
-            borderRadius={16}
-            textStyle={{ fontWeight: "800", fontSize: 28 }}
-            py={12}
-            isLoading={isloading}
-            onPress={async () => {
-              await logInWithLens();
-            }
-            }
-          />
-        </View>
+      </View>
+      <View
+        style={{
+          paddingHorizontal: 16,
+          position: "absolute",
+          bottom: 16,
+          width: "100%",
+        }}
+      >
+        <Button
+          title="Login With Lens"
+          bg="#93E9C8"
+          borderRadius={50}
+          textStyle={{ fontWeight: "600", fontSize: 20 }}
+          py={12}
+          isLoading={isloading}
+          onPress={async () => {
+            await logInWithLens();
+          }}
+        />
       </View>
     </SafeAreaView>
   );
