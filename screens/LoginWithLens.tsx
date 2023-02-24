@@ -5,12 +5,10 @@ import {
   Dimensions,
   Image,
   SafeAreaView,
-  StatusBarIOS,
   StyleSheet,
   View,
 } from "react-native";
 import Button from "../components/UI/Button";
-import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Constants from "expo-constants";
@@ -91,7 +89,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           source={require("../assets/images/Vector258.png")}
           style={{
             width: windowWidth,
-            height: windowWidth + 105,
+            height: windowWidth + 100,
             marginTop: -Constants.statusBarHeight / 2,
           }}
           resizeMode={"contain"}
@@ -100,10 +98,9 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           source={require("../assets/images/login3.png")}
           style={{
             width: windowWidth * 0.9,
-            height: 495,
+            height: windowHeight / 2 + 100,
             position: "absolute",
-            bottom: 32,
-            right: 0,
+            bottom: 30,
           }}
           resizeMode={"contain"}
         />
