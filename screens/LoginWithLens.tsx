@@ -15,12 +15,12 @@ import Constants from "expo-constants";
 import getProfile from "../apollo/Queries/getProfile";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { client } from "../apollo/client";
-import { useAuthStore, useProfile } from "../store/Store";
+import { useAuthStore, useProfile, useToast } from "../store/Store";
 import getChallenge from "../apollo/Queries/getChallenge";
 import getAccessTokens from "../apollo/mutations/getAccessTokens";
 import storeData from "../utils/storeData";
-import AnimatedLottieView from "lottie-react-native";
-import { MotiImage } from "moti/build";
+import { Linking } from "react-native";
+import { ToastType } from "../types/Store";
 
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const windowWidth = Dimensions.get("window").width;
@@ -29,6 +29,9 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const connector = useWalletConnect();
   const userStore = useProfile();
   const authStore = useAuthStore();
+  const toast = useToast();
+
+  let hasHandle: boolean = true;
 
   const logInWithLens = async () => {
     setIsloading(true);
@@ -39,6 +42,9 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
       },
     });
     if (!data.data.defaultProfile) {
+      setIsloading(false);
+      hasHandle = false;
+      toast.show("Please claim your handle", ToastType.ERROR, true);
       return;
     }
     userStore.setCurrentProfile(data.data.defaultProfile);
@@ -202,17 +208,31 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           width: "100%",
         }}
       >
-        <Button
-          title="Login With Lens"
-          bg="#93E9C8"
-          borderRadius={50}
-          textStyle={{ fontWeight: "600", fontSize: 20 }}
-          py={12}
-          isLoading={isloading}
-          onPress={async () => {
-            await logInWithLens();
-          }}
-        />
+        {hasHandle ? (
+          <Button
+            title="Login With Lens"
+            bg="#93E9C8"
+            borderRadius={50}
+            textStyle={{ fontWeight: "600", fontSize: 20 }}
+            py={12}
+            isLoading={isloading}
+            onPress={async () => {
+              await logInWithLens();
+            }}
+          />
+        ) : (
+          <Button
+            title="Claim Lens Handle"
+            bg="#93E9C8"
+            borderRadius={50}
+            textStyle={{ fontWeight: "600", fontSize: 20 }}
+            py={12}
+            isLoading={isloading}
+            onPress={() => {
+              Linking.openURL("http://claim.lens.xyz/");
+            }}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
