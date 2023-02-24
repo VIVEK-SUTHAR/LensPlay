@@ -9,6 +9,7 @@ import {
   PanResponder,
   Platform,
   StyleSheet,
+  ScrollView,
 } from "react-native";
 
 const SUPPORTED_ORIENTATIONS = [
@@ -137,6 +138,7 @@ class RBSheet extends Component {
         transparent
         animationType={animationType}
         visible={modalVisible}
+        statusBarTranslucent={true}
         supportedOrientations={SUPPORTED_ORIENTATIONS}
         onRequestClose={() => {
           if (closeOnPressBack) this.setModalVisible(false);
@@ -152,6 +154,7 @@ class RBSheet extends Component {
             activeOpacity={1}
             onPress={() => (closeOnPressMask ? this.close() : null)}
           />
+
           <Animated.View
             {...(!dragFromTopOnly && this.panResponder.panHandlers)}
             style={[
@@ -160,6 +163,10 @@ class RBSheet extends Component {
               { height: animatedHeight },
               customStyles.container,
             ]}
+            onResponderStart={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+            }}
           >
             {closeOnDragDown && (
               <View
@@ -171,6 +178,7 @@ class RBSheet extends Component {
                 />
               </View>
             )}
+
             {children}
           </Animated.View>
         </KeyboardAvoidingView>
@@ -201,7 +209,7 @@ RBSheet.defaultProps = {
   minClosingHeight: 0,
   openDuration: 300,
   closeDuration: 200,
-  closeOnDragDown: false,
+  closeOnDragDown: true,
   dragFromTopOnly: false,
   closeOnPressMask: true,
   closeOnPressBack: true,
@@ -217,14 +225,14 @@ export default RBSheet;
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: "#00000077",
+    backgroundColor: "rgba(0,0,0,0.3)",
   },
   mask: {
     flex: 1,
     backgroundColor: "transparent",
   },
   container: {
-    backgroundColor: "#fff",
+    backgroundColor: "#1a1a1a",
     width: "100%",
     height: 0,
     borderTopLeftRadius: 24,
@@ -241,6 +249,6 @@ const styles = StyleSheet.create({
     height: 5,
     borderRadius: 5,
     margin: 10,
-    backgroundColor: "#ccc",
+    backgroundColor: "lightgray",
   },
 });

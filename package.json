@@ -68,7 +68,9 @@
 		"arrowParens": "always",
 		"bracketSameLine": false,
 		"jsxSingleQuote": false,
-		"useTabs": true
+		"useTabs": true,
+		"bracketSpacing": true,
+		"quoteProps":"consistent"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.19.3",
