@@ -132,6 +132,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
               placeholderTextColor={"white"}
               selectionColor={"white"}
               onChange={(e) => {
+                setIsRecommended(false);
                 setKeyword(e.nativeEvent.text);
                 onDebounce();
               }}

@@ -44,7 +44,7 @@ const Cover = ({ url, navigation }: CoverProps) => {
               right: Dimensions.get("window").width * 0.05,
               zIndex: 10,
               top: StatusBarHeight + 10,
-              // marginVertical:4,
+              marginVertical:4,
             }}
             onPress={async (e) => {
               setIsModalOpen(true);
@@ -87,7 +87,7 @@ const Cover = ({ url, navigation }: CoverProps) => {
               justifyContent: "flex-start",
               alignItems: "flex-start",
               borderColor: "red",
-              paddingLeft: 16,
+              paddingHorizontal: 28,
             }}
           >
             <Heading
@@ -112,6 +112,7 @@ const Cover = ({ url, navigation }: CoverProps) => {
                 flexDirection: "row",
                 justifyContent: "flex-end",
                 width: "95%",
+                marginTop: 8
               }}
             >
               <Pressable
