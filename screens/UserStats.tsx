@@ -1,10 +1,8 @@
 import {
   View,
-  Text,
   SafeAreaView,
   StyleSheet,
   Dimensions,
-  Pressable,
   FlatList,
 } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
@@ -13,16 +11,15 @@ import { useProfile, useThemeStore } from "../store/Store";
 import { useFollowers } from "../hooks/useFeed";
 import ProfileCard from "../components/ProfileCard";
 import { useFollowing } from "../hooks/useFeed";
-import StyledText from "../components/UI/StyledText";
 import Heading from "../components/UI/Heading";
 import { Feather } from "@expo/vector-icons";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import ProfileCardSkeleton from "../components/UI/ProfileCardSkeleton";
+const StatsTab = createMaterialTopTabNavigator();
 
 const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
   const [headerTitle, setHeaderTitle] = useState<string>("Subscribers");
-  const [isSubscribers, setIsSubscribers] = useState<boolean>(true);
-
   const theme = useThemeStore();
-
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "",
@@ -38,7 +35,7 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
             <Feather
               name="arrow-left"
               color={theme.PRIMARY}
-              size={22}
+              size={24}
               onPress={() => {
                 navigation.goBack();
               }}
@@ -47,9 +44,10 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
               title={`Your ${headerTitle}`}
               style={{
                 color: theme.PRIMARY,
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: "500",
                 marginHorizontal: 4,
+                marginBottom: 4
               }}
             />
           </View>
@@ -60,111 +58,49 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.topBarTab}>
-        <Pressable
-          android_ripple={{
-            radius: 10,
-            color: "gray",
+      <StatsTab.Navigator
+        screenOptions={{
+          tabBarActiveTintColor: theme.PRIMARY,
+          tabBarStyle: {
+            backgroundColor: "black",
+          },
+          tabBarPressColor: theme.PRIMARY,
+          tabBarIndicatorStyle: {
+            borderRadius: 4,
+            backgroundColor: theme.PRIMARY,
+          },
+          tabBarLabelStyle: {
+            textTransform: "capitalize",
+            fontSize: 14,
+          },
+        }}
+      >
+        <StatsTab.Screen
+          name="Subscribers"
+          component={SuscriberList}
+          options={{
+            tabBarLabel: "Subscribers",
           }}
-          style={[
-            styles.tab,
-            {
-              borderBottomWidth: isSubscribers ? 1 : 0,
-              borderBottomColor: isSubscribers ? theme.PRIMARY : "red",
-            },
-          ]}
-          onPress={() => {
-            setIsSubscribers(true);
-            setHeaderTitle("Subscribers");
-          }}
-        >
-          <StyledText
-            title="Subscribers"
-            style={{
-              color: isSubscribers ? theme.PRIMARY : "white",
-              fontWeight: isSubscribers ? "700" : "400",
-            }}
-          ></StyledText>
-        </Pressable>
-        <Pressable
-          android_ripple={{
-            radius: 10,
-            color: "gray",
-          }}
-          style={[
-            styles.tab,
-            {
-              borderBottomWidth: !isSubscribers ? 1 : 0,
-              borderBottomColor: !isSubscribers ? theme.PRIMARY : "transparent",
-            },
-          ]}
-          onPress={() => {
-            setIsSubscribers(false);
-            setHeaderTitle("Subscriptions");
-          }}
-        >
-          <StyledText
-            title="Subscriptions"
-            style={{
-              color: !isSubscribers ? theme.PRIMARY : "white",
-              fontWeight: !isSubscribers ? "700" : "400",
-            }}
-          />
-        </Pressable>
-      </View>
-      {isSubscribers ? (
-        <SuscriberList
-          isSubscribers={isSubscribers}
-          setScreen={setIsSubscribers}
         />
-      ) : (
-        <SubscriptionsList
-          isSubscribers={isSubscribers}
-          setScreen={setIsSubscribers}
+        <StatsTab.Screen
+          name="Subscriptions"
+          component={SubscriptionsList}
+          options={{
+            tabBarLabel: "Subscriptions",
+          }}
         />
-      )}
+      </StatsTab.Navigator>
     </SafeAreaView>
   );
 };
-
-type TabProps = {
-  isSubscribers: boolean;
-  setScreen: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-const SuscriberList = ({ isSubscribers, setScreen }: TabProps) => {
+const SuscriberList = () => {
   const { currentProfile } = useProfile();
   const { data, error, loading } = useFollowers(currentProfile?.id);
-  const [pagey, setPagey] = useState<number>(0);
-  if (loading) {
-    return (
-      <>
-        <ProfileCardSkeleton />
-        <ProfileCardSkeleton />
-        <ProfileCardSkeleton />
-        <ProfileCardSkeleton />
-        <ProfileCardSkeleton />
-        <ProfileCardSkeleton />
-        <ProfileCardSkeleton />
-        <ProfileCardSkeleton />
-        <ProfileCardSkeleton />
-      </>
-    );
-  }
+  if (loading) return <Loader />;
+
   if (data) {
     return (
-      <View
-        onTouchStart={(e) => {
-          setPagey(e.nativeEvent.pageX);
-        }}
-        onTouchEnd={(e) => {
-          if (pagey - e.nativeEvent.pageX > 10) {
-            if (isSubscribers) {
-              setScreen(false);
-            }
-          }
-        }}
-      >
+      <View style={{ backgroundColor: "black", minHeight: '100%' }}>
         <FlatList
           data={data?.followers?.items}
           keyExtractor={(_, index) => index.toString()}
@@ -188,73 +124,48 @@ const SuscriberList = ({ isSubscribers, setScreen }: TabProps) => {
   return <></>;
 };
 
-const SubscriptionsList = ({ isSubscribers, setScreen }: TabProps) => {
+const SubscriptionsList = () => {
   const { currentProfile } = useProfile();
   const { data, error, loading } = useFollowing(currentProfile?.ownedBy);
-  const [pagex, setPagex] = useState(0);
-
-  if (loading) {
-    return (
-      <>
-        <ProfileCardSkeleton />
-        <ProfileCardSkeleton />
-        <ProfileCardSkeleton />
-        <ProfileCardSkeleton />
-        <ProfileCardSkeleton />
-        <ProfileCardSkeleton />
-        <ProfileCardSkeleton />
-        <ProfileCardSkeleton />
-        <ProfileCardSkeleton />
-      </>
-    );
-  }
-
+  if (loading) return <Loader />;
   if (data) {
     return (
-      <>
-        <View
-          onTouchStart={(e) => {
-            setPagex(e.nativeEvent.pageX);
+      <View style={{ backgroundColor: "black", minHeight: '100%' }}>
+        <FlatList
+          data={data.following.items}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({ item }) => {
+            return (
+              <ProfileCard
+                handle={item?.profile?.handle}
+                profileName={item?.profile?.name}
+                profileIcon={item?.profile?.picture?.original?.url}
+                profileId={item?.profile?.id}
+                owner={item?.profile?.handle}
+                isFollowed={item?.profile?.isFollowedByMe}
+              />
+            );
           }}
-          onTouchEnd={(e) => {
-            if (
-              pagex - e.nativeEvent.pageX > 0 ||
-              pagex - e.nativeEvent.pageX < 0
-            ) {
-              if (!isSubscribers) {
-                setScreen(true);
-              }
-            }
-          }}
-        >
-          <FlatList
-            data={data.following.items}
-            keyExtractor={(_, index) => index.toString()}
-            renderItem={({ item }) => {
-              return (
-                <ProfileCard
-                  handle={item?.profile?.handle}
-                  profileName={item?.profile?.name}
-                  profileIcon={item?.profile?.picture?.original?.url}
-                  profileId={item?.profile?.id}
-                  owner={item?.profile?.handle}
-                  isFollowed={item?.profile?.isFollowedByMe}
-                />
-              );
-            }}
-          />
-        </View>
-      </>
+        />
+      </View>
     );
   }
   return <></>;
 };
 
-const ProfileCardSkeleton = () => {
+
+const Loader = () => {
   return (
-    <View style={styles.SkletonContainer}>
-      <View style={styles.SkletonAvatar} />
-      <View style={styles.SkletonText}></View>
+    <View style={{ backgroundColor: "black", flex: 1 }}>
+      <ProfileCardSkeleton/>
+      <ProfileCardSkeleton />
+      <ProfileCardSkeleton />
+      <ProfileCardSkeleton />
+      <ProfileCardSkeleton />
+      <ProfileCardSkeleton />
+      <ProfileCardSkeleton />
+      <ProfileCardSkeleton />
+      <ProfileCardSkeleton />
     </View>
   );
 };
@@ -296,5 +207,4 @@ const styles = StyleSheet.create({
     backgroundColor: "#232323",
   },
 });
-
 export default UserStats;

@@ -1,8 +1,10 @@
-import { Share } from "react-native";
-import React from "react";
+import { Dimensions, Share } from "react-native";
+import React, { useRef } from "react";
 import Button from "../../UI/Button";
 import { dark_primary } from "../../../constants/Colors";
 import ShareIcon from "../../svg/ShareIcon";
+import RBSheet from "../../UI/BottomSheet";
+import StyledText from "../../UI/StyledText";
 
 type ShareButtonProps = {
   title: string;
@@ -18,20 +20,43 @@ const ShareButton = ({ title, publicationId }: ShareButtonProps) => {
       });
     } catch (error) {}
   };
-
+  const ref = useRef();
   return (
-    <Button
-      title={"Share"}
-      mx={4}
-      px={10}
-      width={"auto"}
-      bg={dark_primary}
-      type={"filled"}
-      borderRadius={8}
-      icon={<ShareIcon height={20} width={20} />}
-      onPress={shareVideo}
-      textStyle={{ color: "white", marginHorizontal: 4 }}
-    />
+    <>
+      <RBSheet
+        ref={ref}
+        height={Dimensions.get("window").height /1.5}
+        closeOnDragDown={true}
+        closeOnPressMask={true}
+        customStyles={{
+          wrapper: {
+            backgroundColor: "transparent",
+          },
+          container: {
+            backgroundColor: "#1A1A1A",
+          },
+          draggableIcon: {
+            backgroundColor: "red",
+          },
+        }}
+      >
+        {/* <YourOwnComponent /> */}
+      </RBSheet>
+
+      <Button
+        title={"Share"}
+        mx={4}
+        px={10}
+        width={"auto"}
+        bg={dark_primary}
+        type={"filled"}
+        borderRadius={8}
+        icon={<ShareIcon height={20} width={20} />}
+        // onPress={shareVideo}
+        onPress={() => ref.current.open()}
+        textStyle={{ color: "white", marginHorizontal: 4 }}
+      />
+    </>
   );
 };
 

@@ -37,7 +37,6 @@ import Avatar from "../components/UI/Avatar";
 import getIPFSLink from "../utils/getIPFSLink";
 import linking from "./LinkingConfiguration";
 import LinkingVideo from "../screens/LinkingVideo";
-import { dark_primary } from "../constants/Colors";
 import UserStats from "../screens/UserStats";
 import LeaderBoard from "../screens/LeaderBoard";
 import EditProfile from "../screens/EditProfile";
@@ -133,7 +132,7 @@ function RootNavigator() {
         options={{
           animation: "slide_from_left",
           headerShown: false,
-          headerTintColor: theme.PRIMARY,
+          headerTintColor: theme.PRIMARY.toString(),
         }}
       />
       <Stack.Screen
@@ -142,7 +141,7 @@ function RootNavigator() {
         options={{
           animation: "slide_from_right",
           headerShown: true,
-          headerTintColor: theme.PRIMARY,
+          headerTintColor: theme.PRIMARY.toString(),
           headerTitle: "Your videos",
         }}
       />
@@ -236,7 +235,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
     <BottomTab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        headerStyle: { backgroundColor: dark_primary, elevation: 2 },
+        headerStyle: { backgroundColor: theme.DARK_PRIMARY, elevation: 2 },
         headerTitle: "",
         headerRight: () => (
           <TouchableWithoutFeedback
@@ -284,7 +283,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
           </View>
         ),
         tabBarStyle: {
-          backgroundColor: dark_primary,
+          backgroundColor: theme.DARK_PRIMARY,
           alignItems: "center",
           justifyContent: "space-between",
           paddingTop: 6,

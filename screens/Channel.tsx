@@ -89,7 +89,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
         },
       });
       setProfile(profiledata.data.profile);
-      getLinks();
+      getLinks(profiledata.data.profile);
       const getUserVideos = await client.query({
         query: getPublications,
         variables: {
@@ -162,7 +162,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
     });
   }, []);
 
-  function getLinks() {
+  function getLinks(profile) {
     const twitter = profile?.attributes?.find((item) => item.key === "twitter")
       ?.value;
     const youtube = profile?.attributes?.find((item) => item.key === "youtube")
@@ -180,7 +180,6 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       yt: youtube,
     });
 
-    console.log(links);
   }
 
   return (

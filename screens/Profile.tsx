@@ -43,6 +43,7 @@ import BackIcon from "../components/svg/BackIcon";
 import YouTube from "../components/svg/YouTube";
 import Instagram from "../components/svg/Instagram";
 import Website from "../components/svg/Website";
+import VerifiedIcon from "../components/svg/VerifiedIcon";
 const ProfileScreen = ({
   navigation,
   route,
@@ -241,7 +242,7 @@ const ProfileScreen = ({
                     }}
                   >
                     <View>
-                      <View
+                       <View
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
                         <Heading
@@ -249,14 +250,14 @@ const ProfileScreen = ({
                           style={{
                             fontSize: 20,
                             marginTop: 8,
-                            fontWeight: "600",
+                            fontWeight: "bold",
                             color: "white",
                           }}
                         />
                         {VERIFIED_CHANNELS.includes(profile?.id) && (
                           <View
                             style={{
-                              backgroundColor: theme.PRIMARY,
+                              backgroundColor: "transparent",
                               height: 15,
                               width: 15,
                               padding: 1,
@@ -265,7 +266,7 @@ const ProfileScreen = ({
                               marginHorizontal: 4,
                             }}
                           >
-                            <Entypo name="check" color={"white"} />
+                            <VerifiedIcon height={18} width={18} />
                           </View>
                         )}
                       </View>

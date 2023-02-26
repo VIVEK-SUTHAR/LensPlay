@@ -1,10 +1,13 @@
 import React from "react";
 import {
   NativeSyntheticEvent,
+  StyleProp,
   StyleSheet,
   TextInput,
   TextInputChangeEventData,
+  TextStyle,
   View,
+  ViewStyle,
 } from "react-native";
 import { dark_primary } from "../../constants/Colors";
 import { useThemeStore } from "../../store/Store";
@@ -15,6 +18,7 @@ interface InputProps {
   onChange: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void;
   placeHolder: string;
   value: string;
+  style?: StyleProp<TextStyle | ViewStyle>;
 }
 
 const Input = ({ label, onChange, placeHolder, value }: InputProps) => {

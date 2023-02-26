@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -31,7 +31,9 @@ import CommentIcon from "../svg/CommentIcon";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
 import Heading from "../UI/Heading";
-
+import RBSheet from "../UI/BottomSheet";
+import Comment from "../Comments";
+import Button from "../UI/Button";
 interface SingleByteProps {
   item: Root;
   index: number;
@@ -44,8 +46,8 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const [isalreadyLiked, setisalreadyLiked] = useState<boolean>(
     item?.reaction === "UPVOTE" ? true : false
   );
-
-  const theme = useThemeStore();
+  const commentSheetRef = useRef(null);
+  const collectSheetRef = useRef(null);
 
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
@@ -61,6 +63,56 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   };
   return (
     <>
+      <RBSheet
+        ref={commentSheetRef}
+        height={Dimensions.get("window").height / 1.8}
+      >
+        <StyledText
+          title="Comments"
+          style={{
+            color: "white",
+            alignSelf: "flex-start",
+            marginLeft: Dimensions.get("window").width * 0.06,
+            fontSize: 16,
+            fontWeight: "500",
+          }}
+        />
+        <Comment publicationId={item.id} />
+      </RBSheet>
+      <RBSheet
+        ref={collectSheetRef}
+        height={Dimensions.get("window").height / 1.8}
+      >
+        <View
+          style={{
+            maxWidth: "100%",
+            height: 300,
+            marginTop: 32,
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Image
+            source={{
+              uri: getIPFSLink(item?.metadata?.cover),
+            }}
+            style={{
+              height: 180,
+              borderRadius: 8,
+              width: Dimensions.get("screen").width - 48,
+              resizeMode: "cover",
+            }}
+            progressiveRenderingEnabled={true}
+          />
+          <Button
+            title={`Collect the Shot for free`}
+            width={"90%"}
+            py={12}
+            textStyle={{ fontSize: 20, fontWeight: "700", textAlign: "center" }}
+            // onPress={collectPublication}
+          />
+        </View>
+      </RBSheet>
       <View
         style={{
           width: windowWidth,
@@ -189,6 +241,10 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
               justifyContent: "center",
               alignItems: "center",
             }}
+            onPress={(e) => {
+              e.preventDefault();
+              commentSheetRef?.current?.open();
+            }}
           >
             <EvilIcons name="comment" size={25} color="white" />
             <Text style={{ color: "white" }}>
@@ -200,6 +256,10 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
               padding: 10,
               justifyContent: "center",
               alignItems: "center",
+            }}
+            onPress={(e) => {
+              e.preventDefault();
+              collectSheetRef?.current?.open();
             }}
           >
             <CollectIcon height={23} width={23} />
