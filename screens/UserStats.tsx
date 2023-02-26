@@ -14,6 +14,7 @@ import { useFollowing } from "../hooks/useFeed";
 import Heading from "../components/UI/Heading";
 import { Feather } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import ProfileCardSkeleton from "../components/UI/ProfileCardSkeleton";
 const StatsTab = createMaterialTopTabNavigator();
 
 const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
@@ -34,7 +35,7 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
             <Feather
               name="arrow-left"
               color={theme.PRIMARY}
-              size={22}
+              size={24}
               onPress={() => {
                 navigation.goBack();
               }}
@@ -43,9 +44,10 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
               title={`Your ${headerTitle}`}
               style={{
                 color: theme.PRIMARY,
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: "500",
                 marginHorizontal: 4,
+                marginBottom: 4
               }}
             />
           </View>
@@ -98,7 +100,7 @@ const SuscriberList = () => {
 
   if (data) {
     return (
-      <View style={{ backgroundColor: "black" }}>
+      <View style={{ backgroundColor: "black", minHeight: '100%' }}>
         <FlatList
           data={data?.followers?.items}
           keyExtractor={(_, index) => index.toString()}
@@ -128,7 +130,7 @@ const SubscriptionsList = () => {
   if (loading) return <Loader />;
   if (data) {
     return (
-      <View style={{ backgroundColor: "black" }}>
+      <View style={{ backgroundColor: "black", minHeight: '100%' }}>
         <FlatList
           data={data.following.items}
           keyExtractor={(_, index) => index.toString()}
@@ -151,19 +153,11 @@ const SubscriptionsList = () => {
   return <></>;
 };
 
-const ProfileCardSkeleton = () => {
-  return (
-    <View style={styles.SkletonContainer}>
-      <View style={styles.SkletonAvatar} />
-      <View style={styles.SkletonText}></View>
-    </View>
-  );
-};
 
 const Loader = () => {
   return (
     <View style={{ backgroundColor: "black", flex: 1 }}>
-      <ProfileCardSkeleton />
+      <ProfileCardSkeleton/>
       <ProfileCardSkeleton />
       <ProfileCardSkeleton />
       <ProfileCardSkeleton />
