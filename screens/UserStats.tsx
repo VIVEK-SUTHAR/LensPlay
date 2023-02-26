@@ -15,6 +15,7 @@ import Heading from "../components/UI/Heading";
 import { Feather } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import ProfileCardSkeleton from "../components/UI/ProfileCardSkeleton";
+import Icon from "../components/Icon";
 const StatsTab = createMaterialTopTabNavigator();
 
 const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
@@ -32,14 +33,7 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
               justifyContent: "center",
             }}
           >
-            <Feather
-              name="arrow-left"
-              color={theme.PRIMARY}
-              size={24}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
+            <Icon name="arrowLeft" color={theme.PRIMARY} />
             <Heading
               title={`Your ${headerTitle}`}
               style={{
@@ -47,7 +41,7 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
                 fontSize: 24,
                 fontWeight: "500",
                 marginHorizontal: 4,
-                marginBottom: 4
+                marginBottom: 4,
               }}
             />
           </View>
@@ -100,7 +94,7 @@ const SuscriberList = () => {
 
   if (data) {
     return (
-      <View style={{ backgroundColor: "black", minHeight: '100%' }}>
+      <View style={{ backgroundColor: "black", minHeight: "100%" }}>
         <FlatList
           data={data?.followers?.items}
           keyExtractor={(_, index) => index.toString()}
@@ -130,7 +124,7 @@ const SubscriptionsList = () => {
   if (loading) return <Loader />;
   if (data) {
     return (
-      <View style={{ backgroundColor: "black", minHeight: '100%' }}>
+      <View style={{ backgroundColor: "black", minHeight: "100%" }}>
         <FlatList
           data={data.following.items}
           keyExtractor={(_, index) => index.toString()}
@@ -153,11 +147,10 @@ const SubscriptionsList = () => {
   return <></>;
 };
 
-
 const Loader = () => {
   return (
     <View style={{ backgroundColor: "black", flex: 1 }}>
-      <ProfileCardSkeleton/>
+      <ProfileCardSkeleton />
       <ProfileCardSkeleton />
       <ProfileCardSkeleton />
       <ProfileCardSkeleton />

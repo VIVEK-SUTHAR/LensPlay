@@ -6,25 +6,15 @@ import {
   TouchableOpacity,
   Image,
   Share,
-  Pressable,
-  ImageBackground,
 } from "react-native";
 import VideoPlayer from "expo-video-player";
-import {
-  AntDesign,
-  Entypo,
-  EvilIcons,
-  Feather,
-  Ionicons,
-} from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { ResizeMode } from "expo-av";
 import { Root } from "../../types/Lens/Feed";
 import getIPFSLink from "../../utils/getIPFSLink";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useThemeStore } from "../../store/Store";
 import { LikeButton, ShareButton } from "../VIdeo";
-import MirrorIcon from "../svg/MirrorIcon";
-import CollectIcon from "../svg/CollectIcon";
 import { StatusBar } from "expo-status-bar";
 import ShareIcon from "../svg/ShareIcon";
 import CommentIcon from "../svg/CommentIcon";
@@ -34,6 +24,8 @@ import Heading from "../UI/Heading";
 import RBSheet from "../UI/BottomSheet";
 import Comment from "../Comments";
 import Button from "../UI/Button";
+import Icon from "../Icon";
+
 interface SingleByteProps {
   item: Root;
   index: number;
@@ -141,12 +133,19 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
               shouldPlay: currentIndex === index ? true : false,
               resizeMode: ResizeMode.CONTAIN,
               isMuted: mute,
+
               posterSource: {
                 uri: getIPFSLink(item?.metadata.cover),
               },
               posterStyle: {
                 resizeMode: ResizeMode.CONTAIN,
               },
+            }}
+            icon={{
+              size: 48,
+              play: <Icon name="play" size={48} />,
+              pause: <Icon name="pause" size={52} />,
+              replay: <Icon name="replay" size={48} />,
             }}
             autoHidePlayer={true}
           />
@@ -246,7 +245,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
               commentSheetRef?.current?.open();
             }}
           >
-            <EvilIcons name="comment" size={25} color="white" />
+            <Icon name="comment" />
             <Text style={{ color: "white" }}>
               {item.stats.totalAmountOfComments}
             </Text>
@@ -262,7 +261,8 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
               collectSheetRef?.current?.open();
             }}
           >
-            <CollectIcon height={23} width={23} />
+            <Icon name="collect" />
+
             <Text style={{ color: "white" }}>
               {item.stats.totalAmountOfCollects}
             </Text>
@@ -276,7 +276,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             }}
             onPress={shareVideo}
           >
-            <ShareIcon height={22} width={22} />
+            <Icon name="share" />
           </TouchableOpacity>
         </View>
       </View>

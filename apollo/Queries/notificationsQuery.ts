@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
   export default gql`
 		query Notifications($pid: ProfileId!, $next: Cursor) {
-			result: notifications(request: { profileId: $pid, limit: 10, cursor: $next }) {
+			result: notifications(request: { profileId: $pid, cursor: $next }) {
 				items {
 					... on NewFollowerNotification {
 						notificationId

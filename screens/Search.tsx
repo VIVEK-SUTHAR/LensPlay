@@ -18,7 +18,7 @@ import searchProfileQuery from "../apollo/Queries/searchProfileQuery";
 import ProfileCard from "../components/ProfileCard";
 import useDebounce from "../hooks/useDebounce";
 import StyledText from "../components/UI/StyledText";
-import { dark_primary, primary } from "../constants/Colors";
+import { dark_primary } from "../constants/Colors";
 import BackIcon from "../components/svg/BackIcon";
 import { StatusBar } from "expo-status-bar";
 import Heading from "../components/UI/Heading";
@@ -78,13 +78,12 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
       try {
         const data = await client.query({
           query: recommendedProfiles,
-          variables: {
-          },
+          variables: {},
           context: {
             headers: {
               "x-access-token": `Bearer ${authStore.accessToken}`,
-            }
-          }
+            },
+          },
         });
         setRecommended(data.data.recommendedProfiles);
       } catch (error) {
@@ -93,11 +92,11 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
         }
       }
     }
-  }
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     getRecommendedProfiles();
-  },[])
+  }, []);
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: { backgroundColor: "black" },
@@ -156,45 +155,45 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <StatusBar backgroundColor="transparent" style="auto" />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-
         {isRecommended && (
-          (
-            <View style={{ marginHorizontal: 20, marginVertical: 10 }}>
-              <Heading title={'Recommended Channels'} style={{
-                color: 'white',
+          <View style={{ marginHorizontal: 20, marginVertical: 10 }}>
+            <Heading
+              title={"Recommended Channels"}
+              style={{
+                color: "white",
                 fontSize: 20,
-                fontWeight: '600'
-              }} />
-              {recommended.length === 0 && (
-                <>
-                  <ProfileCardSkeleton />
-                  <ProfileCardSkeleton />
-                  <ProfileCardSkeleton />
-                  <ProfileCardSkeleton />
-                  <ProfileCardSkeleton />
-                  <ProfileCardSkeleton />
-                  <ProfileCardSkeleton />
-                  <ProfileCardSkeleton />
-                  <ProfileCardSkeleton />
-                  <ProfileCardSkeleton />
-                </>
-              )}
+                fontWeight: "600",
+              }}
+            />
+            {recommended.length === 0 && (
+              <>
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+              </>
+            )}
 
-              {recommended.map((item, index) => {
-                return (
-                  <ProfileCard
-                    key={index}
-                    profileIcon={item?.picture?.original?.url}
-                    profileName={item?.name || item?.id}
-                    profileId={item?.id}
-                    isFollowed={item?.isFollowedByMe}
-                    handle={item?.handle}
-                    owner={item?.ownedBy}
-                  />
-                );
-              })}
-            </View>
-          )
+            {recommended.map((item, index) => {
+              return (
+                <ProfileCard
+                  key={index}
+                  profileIcon={item?.picture?.original?.url}
+                  profileName={item?.name || item?.id}
+                  profileId={item?.id}
+                  isFollowed={item?.isFollowedByMe}
+                  handle={item?.handle}
+                  owner={item?.ownedBy}
+                />
+              );
+            })}
+          </View>
         )}
         {!!isSearching && (
           <>

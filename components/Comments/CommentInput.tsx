@@ -12,7 +12,7 @@ import uploadMetaDataToArweave from "../../utils/uploadMetaToArweave";
 import { ToastType } from "../../types/Store";
 import { client } from "../../apollo/client";
 import createCommentViaDispatcher from "../../apollo/mutations/createCommentViaDispatcher";
-import { Feather } from "@expo/vector-icons";
+import Icon from "../Icon";
 
 type CommentInputProps = {
   publicationId: string;
@@ -126,7 +126,7 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
           }}
           onPressIn={publishComment}
         >
-          <Feather
+          <Icon
             name="send"
             color={commentText.length === 0 ? "gray" : PRIMARY}
             size={24}

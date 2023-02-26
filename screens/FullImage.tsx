@@ -3,8 +3,8 @@ import React from "react";
 import getIPFSLink from "../utils/getIPFSLink";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Constants from "expo-constants";
-import { Feather } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
+import Icon from "../components/Icon";
 const FullImage = ({
   navigation,
   route,
@@ -37,15 +37,7 @@ const FullImage = ({
           paddingHorizontal: 16,
         }}
       >
-        <Feather
-          name="arrow-left"
-          size={28}
-          color={"white"}
-          onPress={(e) => {
-            e.preventDefault();
-            navigation.goBack();
-          }}
-        />
+        <Icon name="arrowLeft" />
       </View>
       <View style={{ width: "100%", height: 300, aspectRatio: 2 }}>
         <Image

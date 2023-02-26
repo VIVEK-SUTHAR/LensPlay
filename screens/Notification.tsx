@@ -14,7 +14,7 @@ import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import { RootTabScreenProps } from "../types/navigation/types";
 import useNotifications from "../hooks/useFeed";
 
-const Navigation = ({ navigation }: RootTabScreenProps<"Notifications">) => {
+const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const theme = useThemeStore();
@@ -55,7 +55,7 @@ const Navigation = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   }
 };
 
-export default Navigation;
+export default Notifications;
 
 const Loader = () => {
   return (

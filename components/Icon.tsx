@@ -11,40 +11,46 @@ const LensIcon = createIconSetFromIcoMoon(
 
 type IconProps = {
   name:
-    | "home-filled"
-    | "home-outline"
-    | "arrow-right"
-    | "back"
+    | "home_filled"
+    | "home_outline"
+    | "arrowForward"
+    | "arrowLeft"
     | "mirror"
-    | "chat-alt-3"
+    | "chat"
     | "close"
     | "collect"
     | "comment"
     | "discord"
     | "edit"
-    | "explore-filled"
-    | "explore-outline"
-    | "go-to"
+    | "compass_filled"
+    | "compass_outline"
     | "instagram"
     | "like"
     | "dislike"
     | "logout"
     | "mention"
-    | "messages"
-    | "new-follow"
-    | "notifications"
+    | "mail"
+    | "follow"
+    | "notification_outline"
+    | "notification_filled"
     | "play"
     | "pause"
     | "replay"
     | "report"
     | "search"
-    | "senf"
+    | "send"
     | "settings"
     | "share"
-    | "shots"
+    | "shots_outline"
+    | "shots_filled"
     | "twitter"
     | "upload"
-    | "youtube";
+    | "youtube"
+    | "link"
+    | "verified"
+    | "arrowDown"
+    | "star"
+    | "referal";
   size?: number;
   color?: string;
   style?: StyleProp<TextStyle>;
@@ -55,7 +61,6 @@ export default function Icon({
   size = 26,
   color = "white",
   style,
-  fill,
 }: IconProps) {
   const [fontsLoaded] = useFonts({
     IcoMoon: require("../assets/fonts/icomoon.ttf"),

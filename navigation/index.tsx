@@ -1,11 +1,10 @@
 //@ts-ignore
-import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import * as React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
-import * as React from "react";
-import { Image, TouchableWithoutFeedback, View } from "react-native";
+import { TouchableWithoutFeedback, View } from "react-native";
 import VideoPage from "../screens/VideoPage";
 import Feed from "../screens/Feed";
 import Login from "../screens/Login";
@@ -15,8 +14,6 @@ import {
   RootTabParamList,
 } from "../types/navigation/types";
 import Trending from "../screens/Trending";
-import Notification from "../screens/Notification";
-import UploadVideo from "../screens/UploadVideo";
 import Search from "../screens/Search";
 import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
@@ -25,14 +22,6 @@ import { useProfile, useThemeStore } from "../store/Store";
 import ProfileScreen from "../screens/Profile";
 import UserVideos from "../screens/UserVideos";
 import Waitlist from "../screens/Waitlist";
-import {
-  HOME_FILLED,
-  HOME_OUTLINE,
-  NOTI_FILLED,
-  NOTI_OUTLINE,
-  UPLOAD_FILLED,
-  UPLOAD_OUTLINE,
-} from "../components/Icons";
 import Avatar from "../components/UI/Avatar";
 import getIPFSLink from "../utils/getIPFSLink";
 import linking from "./LinkingConfiguration";
@@ -40,19 +29,15 @@ import LinkingVideo from "../screens/LinkingVideo";
 import UserStats from "../screens/UserStats";
 import LeaderBoard from "../screens/LeaderBoard";
 import EditProfile from "../screens/EditProfile";
-import SearchIcon from "../components/svg/SearchIcon";
 import Loader from "../screens/Loader";
 import ConnectWallet from "../screens/ConnectWallet";
 import LoginWithLens from "../screens/LoginWithLens";
 import ReportPublication from "../screens/ReportPublication";
 import Bytes from "../screens/Bytes";
-import BytesIcon from "../components/svg/BytesIcon";
 import FullImage from "../screens/FullImage";
-<<<<<<< HEAD
 import ShotsComment from "../screens/ShotsComment";
-=======
 import Icon from "../components/Icon";
->>>>>>> e086d7e (icons loaded)
+import Notifications from "../screens/Notification";
 
 export default function Navigation() {
   return (
@@ -254,7 +239,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                 alignItems: "center",
               }}
             >
-              <SearchIcon width={24} height={24} />
+              <Icon name="search" />
             </View>
           </TouchableWithoutFeedback>
         ),
@@ -300,35 +285,6 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
         headerShadowVisible: true,
       }}
     >
-      {/* {NavigationItems.map((item, index) => (
-        <BottomTab.Screen
-          key={index}
-          name={item.name}
-          component={Feed}
-          options={{
-            tabBarLabel: "",
-            tabBarIcon: ({ focused }) => {
-              return (
-                <View
-                  style={{
-                    padding: 5,
-                    width: 45,
-                    alignContent: "center",
-                    justifyContent: "center",
-                    flexDirection: "row",
-                    borderTopWidth: focused ? 2 : 0,
-                    borderTopColor: focused ? theme.PRIMARY : "transparent",
-                    height: "100%",
-                  }}
-                >
-                  {item.icon}
-                </View>
-              );
-            },
-          }}
-        />
-      ))} */}
-
       <BottomTab.Screen
         name="Home"
         component={Feed}
@@ -346,17 +302,10 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                {/* <Image
-                  source={{
-                    uri: focused ? HOME_FILLED : HOME_OUTLINE,
-                  }}
-                  style={{
-                    alignSelf: "center",
-                    height: 26,
-                    width: 26,
-                  }}
-                /> */}
-                <Icon name={focused ? "home-filled" : "home-outline"}  fill="red" />
+                <Icon
+                  name={focused ? "home_filled" : "home_outline"}
+                  color={focused ? theme.PRIMARY : "white"}
+                />
               </View>
             );
           },
@@ -380,8 +329,9 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                 }}
               >
                 <Icon
-                  name={focused ? "explore-filled" : "explore-outline"}
+                  name={focused ? "compass_filled" : "compass_outline"}
                   size={24}
+                  color={focused ? theme.PRIMARY : "white"}
                 />
               </View>
             );
@@ -406,7 +356,11 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <Icon name="shots" color="red" />
+                <Icon
+                  name={focused ? "shots_filled" : "shots_outline"}
+                  color={focused ? theme.PRIMARY : "white"}
+                  size={24}
+                />
               </View>
             );
           },
@@ -414,10 +368,9 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
       />
       <BottomTab.Screen
         name="Notifications"
-        component={Notification}
+        component={Notifications}
         options={{
           tabBarLabel: "",
-          // tabBarBadge:1000,
           tabBarIcon: ({ focused }) => {
             return (
               <View
@@ -430,7 +383,12 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <Icon name="notifications" />
+                <Icon
+                  name={
+                    focused ? "notification_filled" : "notification_outline"
+                  }
+                  color={focused ? theme.PRIMARY : "white"}
+                />
               </View>
             );
           },

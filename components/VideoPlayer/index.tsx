@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { setStatusBarHidden } from "expo-status-bar";
-import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ResizeMode } from "expo-av";
-import { Dimensions, Image, Text, View } from "react-native";
+import { Dimensions, View } from "react-native";
 import { primary } from "../../constants/Colors";
 import * as ScreenOrientation from "expo-screen-orientation";
 import VideoPlayer from "expo-video-player";
 import getIPFSLink from "../../utils/getIPFSLink";
-import { PLAY_FILLED } from "../Icons";
 import StyledText from "../UI/StyledText";
+import Icon from "../Icon";
+import { useThemeStore } from "../../store/Store";
 
 interface VideoPlayerProps {
   url: string;
@@ -29,6 +29,7 @@ function Player({
   setInFullscreen,
   setIsMute,
 }: VideoPlayerProps) {
+  const { PRIMARY } = useThemeStore();
   return (
     <VideoPlayer
       style={{
@@ -55,16 +56,9 @@ function Player({
       }}
       icon={{
         size: 48,
-        play: (
-          <Image
-            source={{ uri: PLAY_FILLED }}
-            style={{ height: 48, width: 48 }}
-          />
-        ),
-        pause: <AntDesign name="pause" color={primary} size={36} />,
-        replay: (
-          <MaterialCommunityIcons name="replay" size={48} color={primary} />
-        ),
+        play: <Icon name="play" size={48} color={PRIMARY} />,
+        pause: <Icon name="pause" size={52} color={PRIMARY} />,
+        replay: <Icon name="replay" color={PRIMARY} size={48} />,
       }}
       header={
         <View
@@ -85,12 +79,6 @@ function Player({
               paddingVertical: 8,
             }}
           />
-          {/* <Feather
-            name="settings"
-            size={26}
-            color={"white"}
-            style={{ alignSelf: "flex-end", marginHorizontal: 8 }}
-          /> */}
         </View>
       }
       videoProps={{

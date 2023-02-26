@@ -11,11 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
-import useStore, {
-  useAuthStore,
-  useProfile,
-  useThemeStore,
-} from "../store/Store";
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import getIPFSLink from "../utils/getIPFSLink";
 import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
@@ -35,15 +31,10 @@ import AllVideos from "../components/Profile/AllVideos";
 import MirroredVideos from "../components/Profile/MirroredVideos";
 import getPublications from "../apollo/Queries/getPublications";
 import CollectedVideos from "../components/Profile/CollectedVideos";
-import { Entypo, Feather } from "@expo/vector-icons";
 import VERIFIED_CHANNELS from "../constants/Varified";
 import formatHandle from "../utils/formatHandle";
-import Twitter from "../components/svg/Twitter";
-import BackIcon from "../components/svg/BackIcon";
-import YouTube from "../components/svg/YouTube";
-import Instagram from "../components/svg/Instagram";
-import Website from "../components/svg/Website";
 import VerifiedIcon from "../components/svg/VerifiedIcon";
+import Icon from "../components/Icon";
 const ProfileScreen = ({
   navigation,
   route,
@@ -171,7 +162,8 @@ const ProfileScreen = ({
             {Boolean(!isLoading) && (
               <View style={{}}>
                 <Pressable
-                  onPress={() => {
+                  onPress={(e) => {
+                    e.stopPropagation();
                     navigation.navigate("FullImage", {
                       url:
                         userStore.currentProfile?.coverPicture?.original.url ||
@@ -242,7 +234,7 @@ const ProfileScreen = ({
                     }}
                   >
                     <View>
-                       <View
+                      <View
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
                         <Heading
@@ -258,15 +250,19 @@ const ProfileScreen = ({
                           <View
                             style={{
                               backgroundColor: "transparent",
-                              height: 15,
-                              width: 15,
+                              height: "auto",
+                              width: "auto",
                               padding: 1,
                               borderRadius: 8,
                               marginTop: 8,
                               marginHorizontal: 4,
                             }}
                           >
-                            <VerifiedIcon height={18} width={18} />
+                            <Icon
+                              name="verified"
+                              size={18}
+                              color={theme.PRIMARY}
+                            />
                           </View>
                         )}
                       </View>
@@ -296,9 +292,7 @@ const ProfileScreen = ({
                   )}
                   <View
                     style={{
-                      // backgroundColor:"red",
                       marginVertical: 4,
-                      // height:45,
                       width: "100%",
                       flexDirection: "row",
                     }}
@@ -316,7 +310,7 @@ const ProfileScreen = ({
                           );
                         }}
                       >
-                        <Twitter height={24} width={24} filled={true} />
+                        <Icon name="twitter" color="gray" size={20} />
                         <StyledText
                           style={{ color: "white", marginRight: 4 }}
                           title={`@${links.twitter}`}
@@ -329,7 +323,8 @@ const ProfileScreen = ({
                       <View
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
-                        <YouTube height={24} width={24} filled={true} />
+                        <Icon name="youtube" color="gray" size={20} />
+
                         <StyledText
                           style={{ color: "white", marginRight: 4 }}
                           title={links.yt}
@@ -355,7 +350,8 @@ const ProfileScreen = ({
                           alignItems: "center",
                         }}
                       >
-                        <Instagram height={24} width={24} filled={true} />
+                        <Icon name="instagram" color="gray" size={20} />
+
                         <StyledText
                           style={{ color: "white", marginRight: 4 }}
                           title={links.insta}
@@ -372,7 +368,7 @@ const ProfileScreen = ({
                           Linking.openURL(links.site);
                         }}
                       >
-                        <Website height={24} width={24} filled={true} />
+                        <Icon name="link" color="gray" size={20} />
                         <StyledText
                           style={{ color: "white", marginLeft: 4 }}
                           title={links.site}
