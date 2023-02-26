@@ -51,6 +51,7 @@ import Bytes from "../screens/Bytes";
 import BytesIcon from "../components/svg/BytesIcon";
 import FullImage from "../screens/FullImage";
 import CloseIcon from "../components/svg/CloseIcon";
+import BugReport from "../screens/BugReport";
 
 export default function Navigation() {
   return (
@@ -208,8 +209,17 @@ function RootNavigator() {
         options={{
           animation: "slide_from_bottom",
           headerShown: true,
-          headerTintColor:primary,
-          headerTitle: "Settingssss",
+          headerTintColor:theme.PRIMARY,
+          headerTitle: "Settings",
+        }}
+      />
+      <Stack.Screen
+        name="BugReport"
+        component={BugReport}
+        options={{
+          animation: "slide_from_right",
+          headerShown: true,
+          headerTintColor: theme.PRIMARY,
         }}
       />
       <Stack.Screen

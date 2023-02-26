@@ -22,6 +22,7 @@ import { useProfile } from "../store/Store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Constants from "expo-constants";
+import BugReport from "./BugReport";
 const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
   const userStore = useProfile();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -153,7 +154,10 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
             </View>
           </Modal>
         </View>
-        <View
+        <Pressable
+          onPress={() => {
+            navigation.navigate("BugReport");
+          }}
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -176,7 +180,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
               paddingHorizontal: 12,
             }}
           ></StyledText>
-        </View>
+        </Pressable>
         <View
           style={{
             flexDirection: "row",
@@ -193,6 +197,54 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
           />
           <StyledText
             title="Terms and Conditions"
+            style={{
+              color: "white",
+              fontSize: 16,
+              paddingVertical: 24,
+              paddingHorizontal: 12,
+            }}
+          ></StyledText>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 12,
+            borderBottomColor: dark_primary,
+            borderBottomWidth: 1,
+          }}
+        >
+          <MaterialIcons
+            name="contact-support"
+            size={24}
+            style={{ color: "white" }}
+          />
+          <StyledText
+            title="Contact Us"
+            style={{
+              color: "white",
+              fontSize: 16,
+              paddingVertical: 24,
+              paddingHorizontal: 12,
+            }}
+          ></StyledText>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 12,
+            borderBottomColor: dark_primary,
+            borderBottomWidth: 1,
+          }}
+        >
+          <MaterialIcons
+            name="policy"
+            size={24}
+            style={{ color: "white" }}
+          />
+          <StyledText
+            title="Privacy Policy"
             style={{
               color: "white",
               fontSize: 16,
