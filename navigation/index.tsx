@@ -48,7 +48,11 @@ import ReportPublication from "../screens/ReportPublication";
 import Bytes from "../screens/Bytes";
 import BytesIcon from "../components/svg/BytesIcon";
 import FullImage from "../screens/FullImage";
+<<<<<<< HEAD
 import ShotsComment from "../screens/ShotsComment";
+=======
+import Icon from "../components/Icon";
+>>>>>>> e086d7e (icons loaded)
 
 export default function Navigation() {
   return (
@@ -342,7 +346,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <Image
+                {/* <Image
                   source={{
                     uri: focused ? HOME_FILLED : HOME_OUTLINE,
                   }}
@@ -351,7 +355,8 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                     height: 26,
                     width: 26,
                   }}
-                />
+                /> */}
+                <Icon name={focused ? "home-filled" : "home-outline"}  fill="red" />
               </View>
             );
           },
@@ -374,10 +379,9 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <Ionicons
-                  name={focused ? "compass" : "compass-outline"}
-                  color={focused ? theme.PRIMARY : "white"}
-                  size={28}
+                <Icon
+                  name={focused ? "explore-filled" : "explore-outline"}
+                  size={24}
                 />
               </View>
             );
@@ -402,7 +406,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <BytesIcon height={25} width={25} filled={focused} />
+                <Icon name="shots" color="red" />
               </View>
             );
           },
@@ -413,6 +417,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
         component={Notification}
         options={{
           tabBarLabel: "",
+          // tabBarBadge:1000,
           tabBarIcon: ({ focused }) => {
             return (
               <View
@@ -425,16 +430,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   height: "100%",
                 }}
               >
-                <Image
-                  source={{
-                    uri: focused ? NOTI_FILLED : NOTI_OUTLINE,
-                  }}
-                  style={{
-                    alignSelf: "center",
-                    height: 26,
-                    width: 26,
-                  }}
-                />
+                <Icon name="notifications" />
               </View>
             );
           },

@@ -15,6 +15,7 @@ import Drawer from "../../UI/Drawer";
 import { Dimensions, Image, View } from "react-native";
 import getIPFSLink from "../../../utils/getIPFSLink";
 import RBSheet from "../../UI/BottomSheet";
+import Icon from "../../Icon";
 
 type MirrorButtonProps = {
   id: string;
@@ -108,13 +109,8 @@ const MirrorButton = ({
           marginLeft: 4,
         }}
         //   borderColor={isalreadyDisLiked ? PRIMARY : "white"}
-        icon={
-          <MirrorIcon
-            height={20}
-            width={20}
-            filled={isAlreadyMirrored ? true : false}
-          />
-        }
+        icon={<Icon name="mirror" size={20} color={"white"} />}
+          
       />
     </>
   );

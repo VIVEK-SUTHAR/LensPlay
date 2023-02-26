@@ -9,6 +9,7 @@ import { dark_primary, dark_secondary } from "../../../constants/Colors";
 import CollectIcon from "../../svg/CollectIcon";
 import getIPFSLink from "../../../utils/getIPFSLink";
 import RBSheet from "../../UI/BottomSheet";
+import Icon from "../../Icon";
 
 type CollectVideoPrpos = {
   totalCollects: number;
@@ -91,7 +92,7 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
         type={"filled"}
         borderRadius={8}
         onPress={() => ref.current.open()}
-        icon={<CollectIcon height={20} width={20} filled={true} />}
+        icon={<Icon name="collect" size={20} color={"white"} />}
         textStyle={{ color: "white", marginHorizontal: 4 }}
       />
     </>

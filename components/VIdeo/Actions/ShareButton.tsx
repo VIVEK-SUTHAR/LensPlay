@@ -5,6 +5,7 @@ import { dark_primary } from "../../../constants/Colors";
 import ShareIcon from "../../svg/ShareIcon";
 import RBSheet from "../../UI/BottomSheet";
 import StyledText from "../../UI/StyledText";
+import Icon from "../../Icon";
 
 type ShareButtonProps = {
   title: string;
@@ -51,7 +52,7 @@ const ShareButton = ({ title, publicationId }: ShareButtonProps) => {
         bg={dark_primary}
         type={"filled"}
         borderRadius={8}
-        icon={<ShareIcon height={20} width={20} />}
+        icon={<Icon name="share" size={20} />}
         // onPress={shareVideo}
         onPress={() => ref.current.open()}
         textStyle={{ color: "white", marginHorizontal: 4 }}
