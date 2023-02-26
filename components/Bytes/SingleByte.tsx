@@ -28,6 +28,9 @@ import CollectIcon from "../svg/CollectIcon";
 import { StatusBar } from "expo-status-bar";
 import ShareIcon from "../svg/ShareIcon";
 import CommentIcon from "../svg/CommentIcon";
+import Avatar from "../UI/Avatar";
+import StyledText from "../UI/StyledText";
+import Heading from "../UI/Heading";
 
 interface SingleByteProps {
   item: Root;
@@ -61,7 +64,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
       <View
         style={{
           width: windowWidth,
-          height: windowHeight,
+          height: windowHeight - bottomTabBarHeight,
           position: "relative",
           justifyContent: "center",
           alignItems: "center",
@@ -118,43 +121,47 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
         >
           <View style={{ marginVertical: 10 }}>
             <TouchableOpacity style={{ width: "auto", maxWidth: 250 }}>
-              <Text
-                style={{ color: "white", fontSize: 14, marginHorizontal: 10 }}
+              <Heading
+                style={{
+                  color: "white",
+                  fontSize: 16,
+                  fontWeight: "600",
+                }}
+                numberOfLines={1}
+                title={item.metadata.name}
+              />
+              <StyledText
+                style={{
+                  color: "gray",
+                  fontSize: 12,
+                  fontWeight: "500",
+                }}
                 numberOfLines={2}
-              >
-                {item.metadata.name}
-              </Text>
+                title={item.metadata.description}
+              />
               <View
                 style={{
                   width: "auto",
                   flexDirection: "row",
                   alignItems: "center",
+                  marginTop: 8,
                 }}
               >
-                <View
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: 100,
-                    backgroundColor: "white",
-                    margin: 10,
-                  }}
-                >
-                  <Image
-                    source={{
-                      uri: getIPFSLink(item.profile?.picture?.original?.url),
-                    }}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      resizeMode: "cover",
-                      borderRadius: 100,
-                    }}
+                <Avatar
+                  src={item.profile?.picture?.original?.url}
+                  height={40}
+                  width={40}
+                />
+                <View style={{ marginLeft: 8 }}>
+                  <StyledText
+                    style={{ color: "white", fontSize: 16, fontWeight: "500" }}
+                    title={item.profile.name || item.profile.id}
+                  />
+                  <StyledText
+                    style={{ color: "gray", fontSize: 12, fontWeight: "500" }}
+                    title={item.profile.handle}
                   />
                 </View>
-                <Text style={{ color: "white", fontSize: 16 }}>
-                  {item.profile.name || item.profile.handle}
-                </Text>
               </View>
             </TouchableOpacity>
           </View>

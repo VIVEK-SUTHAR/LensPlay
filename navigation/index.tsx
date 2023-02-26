@@ -49,6 +49,7 @@ import ReportPublication from "../screens/ReportPublication";
 import Bytes from "../screens/Bytes";
 import BytesIcon from "../components/svg/BytesIcon";
 import FullImage from "../screens/FullImage";
+import ShotsComment from "../screens/ShotsComment";
 
 export default function Navigation() {
   return (
@@ -206,9 +207,20 @@ function RootNavigator() {
         options={{
           animation: "fade_from_bottom",
           headerShown: false,
-          headerStyle:{backgroundColor:"transparent"},
+          headerStyle: { backgroundColor: "transparent" },
           headerTintColor: theme.PRIMARY,
           headerTitle: "",
+        }}
+      />
+      <Stack.Screen
+        name="ShotsComment"
+        component={ShotsComment}
+        options={{
+          animation: "slide_from_right",
+          headerShown: false,
+          headerStyle: { backgroundColor: "transparent" },
+          headerTintColor: theme.PRIMARY,
+          headerTitle: "Comments",
         }}
       />
     </Stack.Navigator>
