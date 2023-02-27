@@ -106,8 +106,8 @@ const Button = (props: ButtonProps): JSX.Element => {
           <ActivityIndicator size={"small"} animating={true} color={"black"} />
         ) : (
           <>
-            <StyledText title={title} style={newStyle} />
             {icon}
+            <StyledText title={title} style={newStyle} />
           </>
         )}
       </View>

@@ -74,6 +74,7 @@ const ReactionNotification: React.FC<NotificationCardProps> = ({
                   notification?.publication?.metadata?.description ||
                     notification?.publication?.metadata?.content
                 )}
+                numberOfLines={2}
                 style={{ fontSize: 12, color: "gray" }}
               />
             </View>

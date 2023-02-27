@@ -1,15 +1,13 @@
 import { Dimensions, Image, View } from "react-native";
 import React, { useRef, useState } from "react";
-import Drawer from "../../UI/Drawer";
 import { useAuthStore, useThemeStore, useToast } from "../../../store/Store";
 import { freeCollectPublication } from "../../../api";
 import Button from "../../UI/Button";
 import { ToastType } from "../../../types/Store";
-import { dark_primary, dark_secondary } from "../../../constants/Colors";
-import CollectIcon from "../../svg/CollectIcon";
 import getIPFSLink from "../../../utils/getIPFSLink";
 import RBSheet from "../../UI/BottomSheet";
 import Icon from "../../Icon";
+
 
 type CollectVideoPrpos = {
   totalCollects: number;
@@ -27,6 +25,7 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
 
   const toast = useToast();
   const { accessToken } = useAuthStore();
+  const { DARK_PRIMARY } = useThemeStore();
   const ref = useRef();
   const {
     title,
@@ -36,19 +35,22 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
     videoUrl,
     hasCollected
   } = CollectVideoProps;
-
   const collectPublication = async () => {
     try {
+      console.log(accessToken);
+
       const data = await freeCollectPublication(publicationId, accessToken);
       if (data) {
         toast.show("Collect Submitted", ToastType.SUCCESS, true);
+        ref?.current?.close();
       }
     } catch (error) {
       if (error instanceof Error) {
         toast.show(error.message, ToastType.ERROR, true);
+        ref?.current?.close();
       }
     } finally {
-      setIsModalOpen(false);
+      ref?.current?.close();
     }
   };
 
@@ -91,11 +93,11 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
         mx={4}
         px={8}
         width={"auto"}
-        bg={dark_primary}
+        bg={DARK_PRIMARY}
         type={"filled"}
         borderRadius={8}
         onPress={() => { 
-          hasCollected ? (toast.show('You have already collected the post', ToastType.ERROR, true)) : ref.current.open() }}
+          hasCollected ? (toast.show('You have already collected the post', ToastType.ERROR, true)) : ref?.current?.open() }}
         icon={<Icon name="collect" size={20} color={hasCollected ? PRIMARY : "white"} />}
         textStyle={{ color: hasCollected ? PRIMARY : "white", marginHorizontal: 4 }}
       />

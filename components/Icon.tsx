@@ -51,7 +51,9 @@ type IconProps = {
     | "arrowDown"
     | "star"
     | "copy"
-    | "referal";
+    | "referal"
+    | "report"
+    | "success";
   size?: number;
   color?: string;
   style?: StyleProp<TextStyle>;
