@@ -132,6 +132,7 @@ const VideoPage = ({
               title={route.params.uploadedBy}
               totalCollects={PublicationStats.totalAmountOfCollects}
               videoUrl={route.params.playbackId}
+              hasCollected={route?.params?.hasCollectedByMe}
             />
             <ShareButton
               title={route.params.title}

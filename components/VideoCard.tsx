@@ -32,6 +32,7 @@ type videoPageProp = {
   height?: number;
   attributes: Attribute | Attribute[];
   ethAddress?: string;
+  hasCollectedByMe: boolean;
 };
 
 const VideoCard = ({
@@ -51,6 +52,7 @@ const VideoCard = ({
   height = 200,
   attributes,
   ethAddress,
+  hasCollectedByMe
 }: videoPageProp) => {
   const [videoTime, setVideoTime] = React.useState<string>();
 
@@ -85,6 +87,7 @@ const VideoCard = ({
               reaction: reaction,
               isFollowdByMe: isFollowdByMe,
               description: description,
+              hasCollectedByMe: hasCollectedByMe
             });
           }}
         >

@@ -1,7 +1,7 @@
 import { Dimensions, Image, View } from "react-native";
 import React, { useRef, useState } from "react";
 import Drawer from "../../UI/Drawer";
-import { useAuthStore, useToast } from "../../../store/Store";
+import { useAuthStore, useThemeStore, useToast } from "../../../store/Store";
 import { freeCollectPublication } from "../../../api";
 import Button from "../../UI/Button";
 import { ToastType } from "../../../types/Store";
@@ -17,11 +17,13 @@ type CollectVideoPrpos = {
   title: string;
   videoUrl: string;
   bannerUrl: string;
+  hasCollected: boolean;
 };
 
 const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(true);
+  const { PRIMARY } = useThemeStore();
 
   const toast = useToast();
   const { accessToken } = useAuthStore();
@@ -32,6 +34,7 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
     publicationId,
     totalCollects,
     videoUrl,
+    hasCollected
   } = CollectVideoProps;
 
   const collectPublication = async () => {
@@ -91,9 +94,10 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
         bg={dark_primary}
         type={"filled"}
         borderRadius={8}
-        onPress={() => ref.current.open()}
-        icon={<Icon name="collect" size={20} color={"white"} />}
-        textStyle={{ color: "white", marginHorizontal: 4 }}
+        onPress={() => { 
+          hasCollected ? (toast.show('You have already collected the post', ToastType.ERROR, true)) : ref.current.open() }}
+        icon={<Icon name="collect" size={20} color={hasCollected ? PRIMARY : "white"} />}
+        textStyle={{ color: hasCollected ? PRIMARY : "white", marginHorizontal: 4 }}
       />
     </>
   );

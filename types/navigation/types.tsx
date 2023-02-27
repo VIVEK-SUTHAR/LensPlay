@@ -93,6 +93,7 @@ export type RootStackParamList = {
     banner: string;
     description: string;
     avatar: string;
+    hasCollectedByMe: boolean;
   };
   Channel: {
     profileId: string;
