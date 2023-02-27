@@ -63,7 +63,6 @@ export type RootStackParamList = {
   Login: undefined;
   Waitlist: undefined;
   Loader: undefined;
-  ShotsComment: undefined;
   ReportPublication: {
     publicationId: string;
   };
@@ -107,6 +106,9 @@ export type RootStackParamList = {
     videos: LensPublication[];
     title: string;
   };
+  ShotsComment: {
+    publicationId: string;
+  }
   LinkingVideos: undefined;
   FullImage: {
     url: string;

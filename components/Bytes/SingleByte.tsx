@@ -25,6 +25,7 @@ import RBSheet from "../UI/BottomSheet";
 import Comment from "../Comments";
 import Button from "../UI/Button";
 import Icon from "../Icon";
+import { useNavigation } from "@react-navigation/native";
 
 interface SingleByteProps {
   item: Root;
@@ -33,6 +34,8 @@ interface SingleByteProps {
 }
 
 const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
+  const navigation = useNavigation();
+
   const [likes, setLikes] = useState<number>(item.stats.totalUpvotes);
   const [mute, setMute] = useState<boolean>(false);
   const [isalreadyLiked, setisalreadyLiked] = useState<boolean>(
@@ -242,7 +245,9 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             }}
             onPress={(e) => {
               e.preventDefault();
-              commentSheetRef?.current?.open();
+              navigation.navigate("ShotsComment", {
+                publicationId:item.id
+              });
             }}
           >
             <Icon name="comment" />

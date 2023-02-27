@@ -205,8 +205,8 @@ function RootNavigator() {
         component={ShotsComment}
         options={{
           animation: "slide_from_right",
-          headerShown: false,
-          headerStyle: { backgroundColor: "transparent" },
+          headerShown: true,
+          headerStyle: { backgroundColor: "black" },
           headerTintColor: theme.PRIMARY,
           headerTitle: "Comments",
         }}
