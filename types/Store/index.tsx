@@ -11,7 +11,7 @@ export interface IAuthStore {
 }
 export interface IThemeStore {
   PRIMARY: string;
-  DARK_PRIMARY:string;
+  DARK_PRIMARY: string;
   setPrimaryColor: (newPrimaryColor: string) => void;
 }
 export interface UserStore {
@@ -53,4 +53,16 @@ export interface LikeObject {
 
 export interface DisLikeObject {
   id: number | string;
+}
+
+export interface OptimisticStore {
+  optimitisticComment: OptimitisticComment;
+  setOptimitisticComment: (newState: OptimitisticComment) => void;
+}
+
+export interface OptimitisticComment {
+  commentText: string;
+  handle: string;
+  username: string;
+  isIndexing: boolean;
 }
