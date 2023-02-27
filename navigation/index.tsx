@@ -217,8 +217,9 @@ function RootNavigator() {
         name="BugReport"
         component={BugReport}
         options={{
-          animation: "slide_from_right",
+          animation:"fade_from_bottom",
           headerShown: true,
+          statusBarAnimation:"",
           headerTintColor: theme.PRIMARY,
         }}
       />

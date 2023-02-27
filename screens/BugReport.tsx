@@ -5,8 +5,9 @@ import {
   Pressable,
   StyleSheet,
   Image,
+  KeyboardAvoidingView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { SafeAreaView } from "react-native-safe-area-context";
 import StyledText from "../components/UI/StyledText";
@@ -15,13 +16,19 @@ import * as ImagePicker from "expo-image-picker";
 import uploadImageToIPFS from "../utils/uploadImageToIPFS";
 import getImageBlobFromUri from "../utils/getImageBlobFromUri";
 import Button from "../components/UI/Button";
+import { dark_primary, dark_secondary } from "../constants/Colors";
+import Dropdown from "../components/UI/Dropdown";
+import { ToastType } from "../types/Store";
+import { useThemeStore } from "../store/Store";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
+import CloseIcon from "../components/svg/CloseIcon";
 
 export type BugCategory = {
-  bugType: string;
+  reason: string;
 };
 
 const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
-  const [BugInfo, setBugInfo] = useState("");
+  // const [BugInfo, setBugInfo] = useState("");
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [BugData, setBugData] = useState({
     bugType: "",
@@ -44,76 +51,100 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
       setimage(coverresult.assets[0].uri);
     }
   }
-
+  const [selectData, setselectData] = useState<BugCategory>({reason:"UI"});
+  
+  useEffect(() => {
+    setBugData({
+      ...BugData,
+      bugType:selectData?.reason
+    })
+    // console.log();
+    // console.log(selectData);
+    
+  }, [selectData])
+  
   const reportData: BugCategory[] = [
     {
-      bugType: "SENSITIVE",
-      // subReason: [{ reason: "NSFW" }, { reason: "OFFENSIVE" }],
+      reason: "UI",
     },
     {
-      bugType: "ILLEGAL",
-      // subReason: [{ reason: "ANIMAL_ABUSE" }, { reason: "HUMAN_ABUSE" }],
+      reason: "Feature",
     },
     {
-      bugType: "FRAUD",
-      // subReason: [{ reason: "SCAM" }, { reason: "IMPERSONATION" }],
+      reason: "Other",
     },
   ];
   async function sendReportData() {
+    if (!selectData?.reason) {
+      toast.show("Please select type and reason", ToastType.ERROR, true);
+      return;
+    }
     console.log(BugData);
-    setIsUpdating(true)
-    // let imgLink = "";
+    setIsUpdating(true);
     if (image) {
       const blob = await getImageBlobFromUri(image);
       const hash = await uploadImageToIPFS(blob);
-      // imgLink = `https://ipfs.io/ipfs/${hash}`;
       setBugData({
         ...BugData,
-      imgLink :`https://ipfs.io/ipfs/${hash}`,
+        imgLink: `https://ipfs.io/ipfs/${hash}`,
       });
     }
     let bodyContent = JSON.stringify(BugData);
+    console.log(BugData);
+    
     let response = await fetch(
       "https://bundlr-upload-server.vercel.app/api/report",
       {
         method: "POST",
         body: bodyContent,
-        headers:{
-          "Content-Type":"application/json"
-        }
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
     );
-
+    
     let data = await response.text();
-    setIsUpdating(false)
+    setIsUpdating(false);
     console.log(data);
   }
 
-  const [selectedData, setselectedData] = useState<BugCategory>();
-
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-      <ScrollView>
-        <Pressable
+    <KeyboardAvoidingView style={styles.container}>
+      <ScrollView >
+        <View
           style={{
-            borderWidth: 2,
-            position: "absolute",
             width: "100%",
-            top: 0,
           }}
         >
           <StyledText
             title="Tell us where you found bug,we'll be happy to fix it"
-            style={{ color: "white", fontSize: 16 }}
+            style={{ color: "white" }}
           />
-        </Pressable>
+        </View>
+        <Dropdown
+          label="Bug Category"
+          data={reportData}
+          onSelect={setselectData}
+        />
         <View>
-          {image && <Image source={{ uri: image }} style={styles.image} />}
+          {image && (
+            <View>
+              {/* {" "} */}
+              <MaterialIcons
+                onPress={()=>{setimage(null)}}
+                name="close"
+                size={26}
+                style={{ color: "white",marginTop:4,position:"absolute",zIndex:2,right:24 }}
+              />
+              {/* <CloseIcon width={24} height={24} /> */}
+              <Image source={{ uri: image }} style={styles.image} />
+            </View>
+          )}
           {!image && (
             <Pressable
               style={[
                 styles.image,
-                { backgroundColor: "gray", justifyContent: "center" },
+                { backgroundColor: dark_primary, justifyContent: "center" },
               ]}
               onPress={selectSS}
             >
@@ -176,13 +207,18 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
           onPress={sendReportData}
         />
       </ScrollView>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
 export default BugReport;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "black",
+    alignItems: "center",
+  },
   image: {
     width: "90%",
     borderRadius: 8,
