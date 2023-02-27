@@ -27,6 +27,7 @@ import getIPFSLink from "../utils/getIPFSLink";
 import TextArea from "../components/UI/TextArea";
 import { STATIC_ASSET } from "../constants";
 import Icon from "../components/Icon";
+import canUploadToArweave from "../utils/canUploadToArweave";
 
 const EditProfile = ({
   navigation,
@@ -96,6 +97,7 @@ const EditProfile = ({
     if (!result.cancelled) {
       setImage(result.uri);
       const imgblob = await getImageBlobFromUri(result.uri);
+      console.log(canUploadToArweave(imgblob));
       setImageBlob(imgblob);
     }
   }

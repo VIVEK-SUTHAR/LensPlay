@@ -38,6 +38,7 @@ interface SingleByteProps {
 const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const navigation = useNavigation();
   const toast = useToast();
+  const {PRIMARY} = useThemeStore();
 
   const [likes, setLikes] = useState<number>(item.stats.totalUpvotes);
   const [mute, setMute] = useState<boolean>(false);
@@ -51,6 +52,10 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const bottomTabBarHeight = useBottomTabBarHeight();
+  const [collected, setCollected] = useState<boolean>(item?.hasCollectedByMe);
+  console.log(item?.hasCollectedByMe);
+  
+  const [totalCollects,setTotalCollects] = useState(item.stats.totalAmountOfCollects);
   const shareVideo = async () => {
     try {
       const result = await Share.share({
@@ -64,9 +69,10 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const collectPublication = async () => {
     try {
       const data = await freeCollectPublication(item.id, accessToken);
-      console.log(data);
       if (data) {
         toast.show("Collect Submitted", ToastType.SUCCESS, true);
+        setCollected(true);
+        setTotalCollects(prev=>prev+1);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -284,12 +290,15 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             }}
             onPress={(e) => {
               e.preventDefault();
-              collectSheetRef?.current?.open();
+              collected?(toast.show('You have already collected this shot', ToastType.ERROR, true)):(
+              collectSheetRef?.current?.open()
+              )
+              
             }}
           >
-            <Icon name="collect" />
-            <Text style={{ color: "white" }}>
-              {item.stats.totalAmountOfCollects}
+            <Icon name="collect" color={collected?PRIMARY:"white" }/>
+            <Text style={{ color: collected?PRIMARY:"white" }}>
+              {totalCollects}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity

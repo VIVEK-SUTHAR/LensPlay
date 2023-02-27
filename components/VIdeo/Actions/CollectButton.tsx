@@ -35,6 +35,8 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
     videoUrl,
     hasCollected
   } = CollectVideoProps;
+  
+  
   const collectPublication = async () => {
     try {
       console.log(accessToken);
