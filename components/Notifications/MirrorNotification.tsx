@@ -73,6 +73,7 @@ const MirrorNotification = ({
                 title={extractURLs(
                   notification?.publication?.metadata?.description
                 )}
+                numberOfLines={2}
                 style={{ color: "grey", fontSize: 12 }}
               />
             </View>

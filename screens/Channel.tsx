@@ -309,14 +309,18 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                             style={{
                               backgroundColor: "transparent",
                               height: "auto",
-                              width: 'auto',
+                              width: "auto",
                               padding: 1,
                               borderRadius: 8,
                               marginTop: 8,
                               marginHorizontal: 4,
                             }}
                           >
-                              <Icon name="verified" size={18} color={theme.PRIMARY} />
+                            <Icon
+                              name="verified"
+                              size={18}
+                              color={theme.PRIMARY}
+                            />
                           </View>
                         )}
                       </View>
@@ -366,9 +370,9 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                           );
                         }}
                       >
-                        <Icon name="twitter" size={20} color="gray" />
+                        <Icon name="twitter" size={16} color="#1DA1F2" />
                         <StyledText
-                          style={{ color: "white", marginRight: 4 }}
+                          style={{ color: theme.PRIMARY, marginRight: 4 }}
                           title={`@${links.twitter}`}
                         ></StyledText>
                       </Pressable>
@@ -380,10 +384,10 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
                         {/* <YouTube height={24} width={24} filled={true} /> */}
-                        <Icon name="youtube" size={20} color="gray" />
+                        <Icon name="youtube" size={16} color="#FF0000" />
 
                         <StyledText
-                          style={{ color: "white", marginRight: 4 }}
+                          style={{ color:theme.PRIMARY, marginRight: 4 }}
                           title={links.yt}
                         ></StyledText>
                       </View>
@@ -407,10 +411,10 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                           alignItems: "center",
                         }}
                       >
-                        <Icon name="instagram" size={20} color="gray" />
+                        <Icon name="instagram" size={16} color="#405DE6" />
 
                         <StyledText
-                          style={{ color: "white", marginRight: 4 }}
+                          style={{ color:theme.PRIMARY, marginRight: 4 }}
                           title={links.insta}
                         ></StyledText>
                       </View>
@@ -425,9 +429,9 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                           Linking.openURL(links.site);
                         }}
                       >
-                        <Icon name="link" size={20} color="gray" />
+                        <Icon name="link" size={16} color="white" />
                         <StyledText
-                          style={{ color: "white", marginLeft: 4 }}
+                          style={{ color: theme.PRIMARY, marginLeft: 4 }}
                           title={links.site}
                         ></StyledText>
                       </Pressable>

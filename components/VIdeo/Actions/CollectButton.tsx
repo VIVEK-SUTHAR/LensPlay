@@ -1,12 +1,9 @@
 import { Dimensions, Image, View } from "react-native";
-import React, { useRef, useState } from "react";
-import Drawer from "../../UI/Drawer";
-import { useAuthStore, useToast } from "../../../store/Store";
+import React, { useRef } from "react";
+import { useAuthStore, useThemeStore, useToast } from "../../../store/Store";
 import { freeCollectPublication } from "../../../api";
 import Button from "../../UI/Button";
 import { ToastType } from "../../../types/Store";
-import { dark_primary, dark_secondary } from "../../../constants/Colors";
-import CollectIcon from "../../svg/CollectIcon";
 import getIPFSLink from "../../../utils/getIPFSLink";
 import RBSheet from "../../UI/BottomSheet";
 import Icon from "../../Icon";
@@ -20,11 +17,9 @@ type CollectVideoPrpos = {
 };
 
 const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isMute, setIsMute] = useState<boolean>(true);
-
   const toast = useToast();
   const { accessToken } = useAuthStore();
+  const { DARK_PRIMARY } = useThemeStore();
   const ref = useRef();
   const {
     title,
@@ -33,19 +28,22 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
     totalCollects,
     videoUrl,
   } = CollectVideoProps;
-
   const collectPublication = async () => {
     try {
+      console.log(accessToken);
+
       const data = await freeCollectPublication(publicationId, accessToken);
       if (data) {
         toast.show("Collect Submitted", ToastType.SUCCESS, true);
+        ref?.current?.close();
       }
     } catch (error) {
       if (error instanceof Error) {
         toast.show(error.message, ToastType.ERROR, true);
+        ref?.current?.close();
       }
     } finally {
-      setIsModalOpen(false);
+      ref?.current?.close();
     }
   };
 
@@ -88,10 +86,10 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
         mx={4}
         px={8}
         width={"auto"}
-        bg={dark_primary}
+        bg={DARK_PRIMARY}
         type={"filled"}
         borderRadius={8}
-        onPress={() => ref.current.open()}
+        onPress={() => ref?.current?.open()}
         icon={<Icon name="collect" size={20} color={"white"} />}
         textStyle={{ color: "white", marginHorizontal: 4 }}
       />

@@ -63,6 +63,14 @@ const CollectNotification: React.FC<NotificationCardProps> = ({
             </View>
           </View>
         </View>
+        <StyledText
+          title={
+            notification?.collectedPublication?.metadata?.content ||
+            notification?.collectedPublication?.metadata?.description
+          }
+          numberOfLines={2}
+          style={{ fontSize: 10, color: "gray" }}
+        />
       </View>
     </>
   );

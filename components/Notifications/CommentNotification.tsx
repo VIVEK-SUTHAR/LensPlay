@@ -73,6 +73,7 @@ const CommentNotification: React.FC<NotificationCardProps> = ({
             notification?.comment?.metadata?.description ||
             notification?.comment?.metadata?.content
           }
+          numberOfLines={2}
           style={{ fontSize: 10, color: "gray" }}
         />
       </View>

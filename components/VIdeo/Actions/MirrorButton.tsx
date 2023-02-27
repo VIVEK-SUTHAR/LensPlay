@@ -1,17 +1,14 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import Button from "../../UI/Button";
 import { dark_primary } from "../../../constants/Colors";
 import {
   useAuthStore,
   useProfile,
-  useReactionStore,
   useThemeStore,
   useToast,
 } from "../../../store/Store";
-import MirrorIcon from "../../svg/MirrorIcon";
 import { freeMirror } from "../../../api";
 import { ToastType } from "../../../types/Store";
-import Drawer from "../../UI/Drawer";
 import { Dimensions, Image, View } from "react-native";
 import getIPFSLink from "../../../utils/getIPFSLink";
 import RBSheet from "../../UI/BottomSheet";
@@ -39,20 +36,20 @@ const MirrorButton = ({
   const ref = useRef();
   const onMirror = async () => {
     setIsAlreadyMirrored(true);
-
     try {
       const data = await freeMirror(
         authStore.accessToken,
         userStore.currentProfile?.id,
         id
       );
-      setIsModalOpen(false);
       if (data) {
-        Toast.show("Video Mirrored", ToastType.SUCCESS, true);
+        Toast.show("Mirror submitted", ToastType.SUCCESS, true);
+        ref.current?.close();
       }
     } catch (error) {
       if (error instanceof Error) {
         Toast.show(error.message, ToastType.ERROR, true);
+        ref?.current?.close();
       }
     }
   };
@@ -94,7 +91,7 @@ const MirrorButton = ({
       <Button
         title={totalMirrors?.toString()}
         onPress={() => {
-          ref.current.open();
+          ref.current?.open();
         }}
         mx={4}
         px={16}
@@ -109,8 +106,13 @@ const MirrorButton = ({
           marginLeft: 4,
         }}
         //   borderColor={isalreadyDisLiked ? PRIMARY : "white"}
-        icon={<Icon name="mirror" size={20} color={"white"} />}
-          
+        icon={
+          <Icon
+            name="mirror"
+            size={20}
+            color={isAlreadyMirrored ? PRIMARY : "white"}
+          />
+        }
       />
     </>
   );

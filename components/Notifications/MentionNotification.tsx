@@ -5,6 +5,7 @@ import getDifference from "../../utils/getDifference";
 import formatAddress from "../../utils/formatAddress";
 import Avatar from "../UI/Avatar";
 import Icon from "../Icon";
+import { STATIC_ASSET } from "../../constants";
 
 const MentionNotification = ({
   navigation,
@@ -36,7 +37,7 @@ const MentionNotification = ({
               <Avatar
                 src={
                   notification?.mentionPublication?.profile?.picture?.original
-                    ?.url
+                    ?.url || STATIC_ASSET
                 }
                 height={35}
                 width={35}
@@ -58,7 +59,7 @@ const MentionNotification = ({
               </Text>
             </Text>
             <View>
-              <Text style={{ color: "grey", fontSize: 12 }}>
+              <Text numberOfLines={2} style={{ color: "grey", fontSize: 12 }}>
                 {notification?.mentionPublication?.metadata?.description}
               </Text>
             </View>
