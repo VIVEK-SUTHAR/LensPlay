@@ -265,7 +265,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
               }}
             >
               <StyledText
-                title="BETA"
+                title="ALPHA"
                 style={{ color: "white", fontSize: 8, fontWeight: "700" }}
               />
             </View>
@@ -277,7 +277,6 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
           justifyContent: "space-between",
           paddingTop: 6,
           borderTopColor: "transparent",
-
           marginBottom: -5,
           minHeight: 58,
           paddingHorizontal: 5,
@@ -305,6 +304,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                 <Icon
                   name={focused ? "home_filled" : "home_outline"}
                   color={focused ? theme.PRIMARY : "white"}
+                  // size={24}
                 />
               </View>
             );
@@ -330,8 +330,8 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
               >
                 <Icon
                   name={focused ? "compass_filled" : "compass_outline"}
-                  size={24}
                   color={focused ? theme.PRIMARY : "white"}
+                  size={24}
                 />
               </View>
             );

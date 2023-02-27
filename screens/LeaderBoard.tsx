@@ -18,6 +18,7 @@ import { ToastType } from "../types/Store";
 import { StatusBar } from "expo-status-bar";
 import RefferalIcon from "../components/svg/RefferalIcon";
 import PointsIcon from "../components/svg/PointsIcon";
+import Icon from "../components/Icon";
 
 export default function LeaderBoard({
   navigation,
@@ -126,7 +127,7 @@ export default function LeaderBoard({
             width: "48%",
           }}
         >
-          <PointsIcon width={34} height={34} />
+          <Icon name="star" size={28} color="#5C7CFA" />
           <StyledText
             title="Points"
             style={{
@@ -156,7 +157,7 @@ export default function LeaderBoard({
             width: "48%",
           }}
         >
-          <RefferalIcon width={34} height={34} />
+          <Icon name="referal" size={28} color="#339AF0" />
           <StyledText
             title="Refferal"
             style={{
@@ -229,7 +230,7 @@ export default function LeaderBoard({
             toast.show("Link copied", ToastType.SUCCESS, true);
           }}
         >
-          <CopyIcon width={16} height={16} />
+          <Icon name="copy" size={24} color="black" />
         </Pressable>
       </View>
     </View>

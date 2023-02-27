@@ -21,7 +21,7 @@ const MentionNotification = ({
           alignItems: "center",
         }}
       >
-        <Icon name="mention" color="#6bd841" size={24} />
+        <Icon name="mention" color="#CC5DE8" size={24} />
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>

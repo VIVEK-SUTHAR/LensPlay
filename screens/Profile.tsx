@@ -240,7 +240,7 @@ const ProfileScreen = ({
                         <Heading
                           title={profile?.name}
                           style={{
-                            fontSize: 20,
+                            fontSize: 16,
                             marginTop: 8,
                             fontWeight: "bold",
                             color: "white",
@@ -269,8 +269,7 @@ const ProfileScreen = ({
                       <StyledText
                         title={formatHandle(profile?.handle)}
                         style={{
-                          fontSize: 14,
-                          lineHeight: 16,
+                          fontSize: 12,
                           fontWeight: "500",
                           color: "gray",
                         }}
@@ -310,11 +309,15 @@ const ProfileScreen = ({
                           );
                         }}
                       >
-                        <Icon name="twitter" color="gray" size={20} />
+                        <Icon name="twitter" color="#1DA1F2" size={16} />
                         <StyledText
-                          style={{ color: "white", marginRight: 4 }}
+                          style={{
+                            color: primary,
+                            marginRight: 4,
+                            fontSize: 12,
+                          }}
                           title={`@${links.twitter}`}
-                        ></StyledText>
+                        />
                       </Pressable>
                     ) : (
                       <></>
@@ -323,12 +326,15 @@ const ProfileScreen = ({
                       <View
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
-                        <Icon name="youtube" color="gray" size={20} />
-
+                        <Icon name="youtube" color="#FF0000" size={16} />
                         <StyledText
-                          style={{ color: "white", marginRight: 4 }}
+                          style={{
+                            color: primary,
+                            marginLeft: 4,
+                            fontSize: 12,
+                          }}
                           title={links.yt}
-                        ></StyledText>
+                        />
                       </View>
                     ) : (
                       <></>
@@ -337,7 +343,7 @@ const ProfileScreen = ({
                   <View
                     style={{
                       // backgroundColor:"red",
-                      marginVertical: 4,
+                      marginVertical: 2,
                       // height:45,
                       width: "100%",
                       flexDirection: "row",
@@ -350,12 +356,15 @@ const ProfileScreen = ({
                           alignItems: "center",
                         }}
                       >
-                        <Icon name="instagram" color="gray" size={20} />
-
+                        <Icon name="instagram" color="#405DE6" size={16} />
                         <StyledText
-                          style={{ color: "white", marginRight: 4 }}
+                          style={{
+                            color: primary,
+                            marginRight: 4,
+                            fontSize: 12,
+                          }}
                           title={links.insta}
-                        ></StyledText>
+                        />
                       </View>
                     ) : (
                       <></>
@@ -368,11 +377,15 @@ const ProfileScreen = ({
                           Linking.openURL(links.site);
                         }}
                       >
-                        <Icon name="link" color="gray" size={20} />
+                        <Icon name="link" color="white" size={16} />
                         <StyledText
-                          style={{ color: "white", marginLeft: 4 }}
+                          style={{
+                            color: primary,
+                            marginLeft: 4,
+                            fontSize: 12,
+                          }}
                           title={links.site}
-                        ></StyledText>
+                        />
                       </Pressable>
                     ) : (
                       <></>

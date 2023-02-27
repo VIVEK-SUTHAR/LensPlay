@@ -24,7 +24,7 @@ const FollowNotification: React.FC<NotificationCardProps> = ({
           alignItems: "center",
         }}
       >
-        <Icon name="follow" size={30} />
+        <Icon name="follow" size={30} color="#5C7CFA" />
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>

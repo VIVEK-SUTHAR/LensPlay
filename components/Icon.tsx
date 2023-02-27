@@ -50,6 +50,7 @@ type IconProps = {
     | "verified"
     | "arrowDown"
     | "star"
+    | "copy"
     | "referal";
   size?: number;
   color?: string;

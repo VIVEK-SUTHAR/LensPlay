@@ -13,7 +13,7 @@ import { ResizeMode } from "expo-av";
 import { Root } from "../../types/Lens/Feed";
 import getIPFSLink from "../../utils/getIPFSLink";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { useThemeStore } from "../../store/Store";
+import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
 import { LikeButton, ShareButton } from "../VIdeo";
 import { StatusBar } from "expo-status-bar";
 import ShareIcon from "../svg/ShareIcon";
@@ -26,6 +26,8 @@ import Comment from "../Comments";
 import Button from "../UI/Button";
 import Icon from "../Icon";
 import { useNavigation } from "@react-navigation/native";
+import { freeCollectPublication } from "../../api";
+import { ToastType } from "../../types/Store";
 
 interface SingleByteProps {
   item: Root;
@@ -35,6 +37,7 @@ interface SingleByteProps {
 
 const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const navigation = useNavigation();
+  const toast = useToast();
 
   const [likes, setLikes] = useState<number>(item.stats.totalUpvotes);
   const [mute, setMute] = useState<boolean>(false);
@@ -43,6 +46,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   );
   const commentSheetRef = useRef(null);
   const collectSheetRef = useRef(null);
+  const { accessToken } = useAuthStore();
 
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
@@ -56,6 +60,23 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
       console.log(error);
     }
   };
+
+  const collectPublication = async () => {
+    try {
+      const data = await freeCollectPublication(item.id, accessToken);
+      console.log(data);
+      if (data) {
+        toast.show("Collect Submitted", ToastType.SUCCESS, true);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.show(error.message, ToastType.ERROR, true);
+      }
+    } finally {
+      //
+    }
+  };
+
   return (
     <>
       <RBSheet
@@ -104,7 +125,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             width={"90%"}
             py={12}
             textStyle={{ fontSize: 20, fontWeight: "700", textAlign: "center" }}
-            // onPress={collectPublication}
+            onPress={collectPublication}
           />
         </View>
       </RBSheet>
@@ -246,7 +267,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             onPress={(e) => {
               e.preventDefault();
               navigation.navigate("ShotsComment", {
-                publicationId:item.id
+                publicationId: item.id,
               });
             }}
           >
@@ -267,7 +288,6 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             }}
           >
             <Icon name="collect" />
-
             <Text style={{ color: "white" }}>
               {item.stats.totalAmountOfCollects}
             </Text>
