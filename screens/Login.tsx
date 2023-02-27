@@ -7,9 +7,13 @@ import { RootStackScreenProps } from "../types/navigation/types";
 import Button from "../components/UI/Button";
 import Heading from "../components/UI/Heading";
 import Constants from "expo-constants";
+import { AntDesign } from "@expo/vector-icons";
+import { MotiView } from "moti/build";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#93E9C8" style="dark" />
@@ -18,7 +22,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           source={require("../assets/images/Vector256.png")}
           style={{
             width: windowWidth,
-            height: windowWidth + 105,
+            height: windowWidth + 100,
             marginTop: -Constants.statusBarHeight / 2,
           }}
           resizeMode={"contain"}
@@ -27,7 +31,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           source={require("../assets/images/login1.png")}
           style={{
             width: windowWidth,
-            height: 495,
+            height: windowHeight / 2 + 100,
             position: "absolute",
             top: -30,
           }}
@@ -38,9 +42,9 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         <Heading
           title={"LensPlay"}
           style={{
-            fontSize: 54,
+            fontSize: 64,
             color: "white",
-            fontWeight: "700",
+            fontWeight: "600",
             textAlign: "center",
           }}
         />
@@ -57,7 +61,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
             style={{
               fontSize: 20,
               color: "white",
-              fontWeight: "700",
+              fontWeight: "500",
               textAlign: "right",
             }}
           />
@@ -67,7 +71,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
               style={{
                 fontSize: 20,
                 color: "#93E9C8",
-                fontWeight: "700",
+                fontWeight: "500",
                 textAlign: "right",
                 marginRight: 8,
               }}
@@ -77,24 +81,32 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
               style={{
                 fontSize: 20,
                 color: "white",
-                fontWeight: "700",
+                fontWeight: "500",
                 textAlign: "right",
               }}
             />
           </View>
         </View>
-        <View style={{ padding: 24, marginTop: 20 }}>
-          <Button
-            onPress={async () => {
-              navigation.push("ConnectWallet");
-            }}
-            title="Get Started"
-            bg="#93E9C8"
-            borderRadius={16}
-            textStyle={{ fontWeight: "800", fontSize: 28 }}
-            py={12}
-          />
-        </View>
+      </View>
+      <View
+        style={{
+          paddingHorizontal: 16,
+          position: "absolute",
+          bottom: 16,
+          width: "100%",
+        }}
+      >
+        <Button
+          onPress={async () => {
+            navigation.push("ConnectWallet");
+          }}
+          title="Get Started"
+          bg="#93E9C8"
+          borderRadius={50}
+          textStyle={{ fontWeight: "600", fontSize: 20 }}
+          py={12}
+          icon={<AntDesign name="arrowright" size={20} color="black" />}
+        />
       </View>
     </SafeAreaView>
   );

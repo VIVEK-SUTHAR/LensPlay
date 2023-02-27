@@ -66,7 +66,6 @@ const VideoCard = ({
     <View
       style={{
         margin: 10,
-        backgroundColor: "#111111",
         borderRadius: 10,
         width: width,
       }}
@@ -139,12 +138,13 @@ const VideoCard = ({
       >
         <View
           style={{
-            padding: 10,
+            paddingVertical: 10,
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
           }}
         >
+          <Avatar src={getIPFSLink(avatar)} height={40} width={40} />
           <View style={{ flex: 0.95 }}>
             <Heading
               title={title}
@@ -157,7 +157,6 @@ const VideoCard = ({
               numberOfLines={1}
             />
           </View>
-          <Avatar src={getIPFSLink(avatar)} height={40} width={40} />
         </View>
       </TouchableWithoutFeedback>
     </View>

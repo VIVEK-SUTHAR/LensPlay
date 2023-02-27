@@ -7,6 +7,8 @@ import Toast from "./components/Toast";
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
+import "react-native-reanimated";
+// import "react-native-gesture-handler";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -17,7 +19,7 @@ export default function App() {
   } else {
     return (
       <SafeAreaProvider>
-        <Toast/>
+        <Toast />
         <ApolloProvider client={client}>
           <Navigation colorScheme={colorScheme} />
           <StatusBar style="auto" />
