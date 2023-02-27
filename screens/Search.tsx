@@ -21,6 +21,9 @@ import StyledText from "../components/UI/StyledText";
 import { dark_primary } from "../constants/Colors";
 import BackIcon from "../components/svg/BackIcon";
 import { StatusBar } from "expo-status-bar";
+import Heading from "../components/UI/Heading";
+import recommendedProfiles from "../apollo/Queries/recommendedProfiles";
+import ProfileCardSkeleton from "../components/UI/ProfileCardSkeleton";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const theme = useThemeStore();
@@ -29,6 +32,8 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const [searchPostResult, setSearchPostResult] = useState<LensPublication[]>(
     []
   );
+  const [recommended, setRecommended] = useState<LensPublication[]>([]);
+  const [isRecommended, setIsRecommended] = useState<boolean>(true);
   const [keyword, setKeyword] = useState<string>("");
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isfound, setIsfound] = useState<boolean>(true);
@@ -67,6 +72,31 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
     onDebounce();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
+
+  const getRecommendedProfiles = async () => {
+    if (!isSearching) {
+      try {
+        const data = await client.query({
+          query: recommendedProfiles,
+          variables: {},
+          context: {
+            headers: {
+              "x-access-token": `Bearer ${authStore.accessToken}`,
+            },
+          },
+        });
+        setRecommended(data.data.recommendedProfiles);
+      } catch (error) {
+        if (error instanceof Error) {
+          console.log(error);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    getRecommendedProfiles();
+  }, []);
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: { backgroundColor: "black" },
@@ -102,14 +132,18 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
               placeholderTextColor={"white"}
               selectionColor={"white"}
               onChange={(e) => {
+                setIsRecommended(false);
                 setKeyword(e.nativeEvent.text);
                 onDebounce();
               }}
-              autoFocus={true}
+              // autoFocus={true}
               style={{
                 flex: 1,
                 color: "white",
                 fontSize: 12,
+              }}
+              onBlur={() => {
+                setIsRecommended(false);
               }}
             />
           </View>
@@ -121,6 +155,46 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <StatusBar backgroundColor="transparent" style="auto" />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
+        {isRecommended && (
+          <View style={{ marginHorizontal: 20, marginVertical: 10 }}>
+            <Heading
+              title={"Recommended Channels"}
+              style={{
+                color: "white",
+                fontSize: 20,
+                fontWeight: "600",
+              }}
+            />
+            {recommended.length === 0 && (
+              <>
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+                <ProfileCardSkeleton />
+              </>
+            )}
+
+            {recommended.map((item, index) => {
+              return (
+                <ProfileCard
+                  key={index}
+                  profileIcon={item?.picture?.original?.url}
+                  profileName={item?.name || item?.id}
+                  profileId={item?.id}
+                  isFollowed={item?.isFollowedByMe}
+                  handle={item?.handle}
+                  owner={item?.ownedBy}
+                />
+              );
+            })}
+          </View>
+        )}
         {!!isSearching && (
           <>
             <AnimatedLottieView

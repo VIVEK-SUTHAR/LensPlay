@@ -6,8 +6,8 @@ import { LensPublication } from "../../types/Lens/Feed";
 import { useAuthStore } from "../../store/Store";
 import Heading from "../UI/Heading";
 import VideoCard from "../VideoCard";
-import { Feather } from "@expo/vector-icons";
 import formatHandle from "../../utils/formatHandle";
+import Icon from "../Icon";
 
 type MirroredVideosProps = {
   profileId: string | undefined;
@@ -72,8 +72,8 @@ const MirroredVideos = ({
             });
           }}
         >
-          <Feather
-            name={`chevron-right`}
+          <Icon
+            name="arrowForward"
             size={24}
             color="white"
             style={{
@@ -117,7 +117,9 @@ const MirroredVideos = ({
       {mirrorVideos?.length === 0 && (
         <View style={{ height: 50, justifyContent: "center" }}>
           <Heading
-            title={`Seems like ${formatHandle(handle)} has not mirrored any video`}
+            title={`Seems like ${formatHandle(
+              handle
+            )} has not mirrored any video`}
             style={{
               color: "gray",
               fontSize: 14,

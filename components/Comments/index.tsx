@@ -4,12 +4,10 @@ import { useComments } from "../../hooks/useFeed";
 import Heading from "../UI/Heading";
 import AnimatedLottieView from "lottie-react-native";
 import CommentSkeleton from "../UI/CommentSkeleton";
-import StyledText from "../UI/StyledText";
 import { Comments } from "../../types/Lens/Feed";
 import CommentCard from "./CommentCard";
 
 const Comment = ({ publicationId }: { publicationId: string }) => {
-
   const { data: commentData, error, loading } = useComments(publicationId);
 
   const comments: Comments[] = commentData?.publications?.items;
@@ -25,7 +23,6 @@ const Comment = ({ publicationId }: { publicationId: string }) => {
       <SafeAreaView>
         <ScrollView>
           <View>
-            
             {comments.map((item: Comments) => {
               return (
                 <CommentCard

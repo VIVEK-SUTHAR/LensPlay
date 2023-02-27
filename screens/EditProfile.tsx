@@ -9,12 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { dark_primary } from "../constants/Colors";
 import StyledText from "../components/UI/StyledText";
-import {
-  useAuthStore,
-  useProfile,
-  useThemeStore,
-  useToast,
-} from "../store/Store";
+import { useAuthStore, useProfile, useToast } from "../store/Store";
 import Button from "../components/UI/Button";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
@@ -29,9 +24,9 @@ import uploadImageToIPFS from "../utils/uploadImageToIPFS";
 import { Profile } from "../types/Lens";
 import Input from "../components/UI/Input";
 import getIPFSLink from "../utils/getIPFSLink";
-import { Feather } from "@expo/vector-icons";
 import TextArea from "../components/UI/TextArea";
 import { STATIC_ASSET } from "../constants";
+import Icon from "../components/Icon";
 
 const EditProfile = ({
   navigation,
@@ -251,7 +246,7 @@ const EditProfile = ({
               alignItems: "center",
             }}
           >
-            <Feather name="edit" size={28} color={"white"} />
+            <Icon name="edit" />
           </View>
           <Image
             source={{
@@ -290,7 +285,7 @@ const EditProfile = ({
               alignItems: "center",
             }}
           >
-            <Feather name="edit" size={28} color={"white"} />
+            <Icon name="edit" />
           </View>
           <Avatar
             src={
@@ -299,7 +294,6 @@ const EditProfile = ({
               STATIC_ASSET
             }
             height={90}
-            opacity={0.5}
             width={90}
             borderRadius={50}
           />

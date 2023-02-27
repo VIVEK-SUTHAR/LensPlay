@@ -1,13 +1,15 @@
 import { Dimensions, Image, View } from "react-native";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Drawer from "../../UI/Drawer";
 import { useAuthStore, useToast } from "../../../store/Store";
 import { freeCollectPublication } from "../../../api";
 import Button from "../../UI/Button";
 import { ToastType } from "../../../types/Store";
-import { dark_primary } from "../../../constants/Colors";
+import { dark_primary, dark_secondary } from "../../../constants/Colors";
 import CollectIcon from "../../svg/CollectIcon";
 import getIPFSLink from "../../../utils/getIPFSLink";
+import RBSheet from "../../UI/BottomSheet";
+import Icon from "../../Icon";
 
 type CollectVideoPrpos = {
   totalCollects: number;
@@ -23,7 +25,7 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
 
   const toast = useToast();
   const { accessToken } = useAuthStore();
-
+  const ref = useRef();
   const {
     title,
     bannerUrl,
@@ -33,7 +35,6 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
   } = CollectVideoProps;
 
   const collectPublication = async () => {
-
     try {
       const data = await freeCollectPublication(publicationId, accessToken);
       if (data) {
@@ -50,49 +51,38 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
 
   return (
     <>
-      <Drawer isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+      <RBSheet ref={ref} height={Dimensions.get("window").height / 1.85}>
         <View
           style={{
-            width: "100%",
-            height: "100%",
-            opacity: 1,
+            maxWidth: "100%",
+            height: 300,
+            marginTop: 32,
             alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          <View style={{ maxWidth: "90%", height: 300, marginTop: 32 }}>
-            <Image
-              source={{
-                uri: getIPFSLink(bannerUrl),
-              }}
-              style={{
-                height: 180,
-                borderRadius: 8,
-                width: Dimensions.get("screen").width - 48,
-                resizeMode: "cover",
-              }}
-              progressiveRenderingEnabled={true}
-            />
-          </View>
-          {/* <Heading
-            title={`Uploaded by ${title}`}
-            style={{
-              textAlign: "center",
-              fontSize: 16,
-              color: "white",
-              fontWeight: "600",
-              marginVertical: 12,
+          <Image
+            source={{
+              uri: getIPFSLink(bannerUrl),
             }}
-          /> */}
+            style={{
+              height: 180,
+              borderRadius: 8,
+              width: Dimensions.get("screen").width - 48,
+              resizeMode: "cover",
+            }}
+            progressiveRenderingEnabled={true}
+          />
           <Button
             title={`Collect the video for free`}
             width={"90%"}
             py={12}
-            my={4}
             textStyle={{ fontSize: 20, fontWeight: "700", textAlign: "center" }}
             onPress={collectPublication}
           />
         </View>
-      </Drawer>
+      </RBSheet>
+
       <Button
         title={`${totalCollects || 0} Collects`}
         mx={4}
@@ -101,10 +91,8 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
         bg={dark_primary}
         type={"filled"}
         borderRadius={8}
-        onPress={() => {
-          setIsModalOpen(true);
-        }}
-        icon={<CollectIcon height={20} width={20} filled={true} />}
+        onPress={() => ref.current.open()}
+        icon={<Icon name="collect" size={20} color={"white"} />}
         textStyle={{ color: "white", marginHorizontal: 4 }}
       />
     </>

@@ -106,6 +106,9 @@ export type RootStackParamList = {
     videos: LensPublication[];
     title: string;
   };
+  ShotsComment: {
+    publicationId: string;
+  }
   LinkingVideos: undefined;
   FullImage: {
     url: string;

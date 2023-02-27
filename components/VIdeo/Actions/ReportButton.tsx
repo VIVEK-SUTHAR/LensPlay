@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { dark_primary } from "../../../constants/Colors";
+import Icon from "../../Icon";
 import ReportIcon from "../../svg/ReportIcon";
 import Button from "../../UI/Button";
 
@@ -20,7 +21,7 @@ const ReportButton = ({ publicationId }: ReportButtonProps) => {
       bg={dark_primary}
       type={"filled"}
       borderRadius={8}
-      icon={<ReportIcon height={20} width={20} />}
+      icon={<Icon name="report" size={20}/>}
       textStyle={{ color: "white", marginHorizontal: 4 }}
       onPress={() => {
         navigation.navigate("ReportPublication", {

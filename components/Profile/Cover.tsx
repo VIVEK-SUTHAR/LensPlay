@@ -2,12 +2,12 @@ import { Dimensions, Image, Modal, Pressable, View } from "react-native";
 import React, { useState } from "react";
 import getIPFSLink from "../../utils/getIPFSLink";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import { MaterialIcons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
 import { dark_primary, primary } from "../../constants/Colors";
+import Icon from "../Icon";
 type CoverProps = {
   url: string;
   navigation: any;
@@ -34,20 +34,17 @@ const Cover = ({ url, navigation }: CoverProps) => {
             height: 180,
             marginBottom: 34,
           }}
+          onTouchStart={(e) => {
+            setIsModalOpen(true);
+          }}
         >
-          <MaterialIcons
+          <Icon
             name="logout"
-            size={26}
-            color={"white"}
             style={{
               position: "absolute",
               right: Dimensions.get("window").width * 0.05,
-              zIndex: 10,
+              zIndex: 100,
               top: StatusBarHeight + 10,
-              // marginVertical:4,
-            }}
-            onPress={async (e) => {
-              setIsModalOpen(true);
             }}
           />
           <Image
@@ -87,7 +84,7 @@ const Cover = ({ url, navigation }: CoverProps) => {
               justifyContent: "flex-start",
               alignItems: "flex-start",
               borderColor: "red",
-              paddingLeft: 16,
+              paddingHorizontal: 28,
             }}
           >
             <Heading
@@ -112,6 +109,7 @@ const Cover = ({ url, navigation }: CoverProps) => {
                 flexDirection: "row",
                 justifyContent: "flex-end",
                 width: "95%",
+                marginTop: 8
               }}
             >
               <Pressable

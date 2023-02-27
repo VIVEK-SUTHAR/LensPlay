@@ -1,12 +1,9 @@
-import { View, Text, Dimensions } from "react-native";
+import { View, Text, Dimensions, Pressable } from "react-native";
 import React from "react";
-import { Feather } from "@expo/vector-icons";
 import ByteCard from "../components/Bytes/ByteCard";
 import Constants from "expo-constants";
-import {
-  RootStackScreenProps,
-  RootTabScreenProps,
-} from "../types/navigation/types";
+import { RootTabScreenProps } from "../types/navigation/types";
+import Icon from "../components/Icon";
 const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
@@ -36,14 +33,14 @@ const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
         <Text style={{ fontSize: 20, fontWeight: "bold", color: "white" }}>
           Bytes
         </Text>
-        <Feather
-          name="search"
-          style={{ fontSize: 25, color: "white" }}
+        <Pressable
           onPress={(e) => {
             e.preventDefault();
             navigation.navigate("Search");
           }}
-        />
+        >
+          <Icon name="search" size={25} />
+        </Pressable>
       </View>
       <ByteCard />
     </View>

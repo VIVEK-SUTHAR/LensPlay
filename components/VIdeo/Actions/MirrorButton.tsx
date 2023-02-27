@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Button from "../../UI/Button";
 import { dark_primary } from "../../../constants/Colors";
 import {
@@ -14,6 +14,8 @@ import { ToastType } from "../../../types/Store";
 import Drawer from "../../UI/Drawer";
 import { Dimensions, Image, View } from "react-native";
 import getIPFSLink from "../../../utils/getIPFSLink";
+import RBSheet from "../../UI/BottomSheet";
+import Icon from "../../Icon";
 
 type MirrorButtonProps = {
   id: string;
@@ -28,14 +30,13 @@ const MirrorButton = ({
   isAlreadyMirrored,
   setIsAlreadyMirrored,
   totalMirrors,
-  bannerUrl
+  bannerUrl,
 }: MirrorButtonProps) => {
   const Toast = useToast();
   const authStore = useAuthStore();
   const userStore = useProfile();
   const { PRIMARY } = useThemeStore();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const ref = useRef();
   const onMirror = async () => {
     setIsAlreadyMirrored(true);
 
@@ -58,39 +59,28 @@ const MirrorButton = ({
 
   return (
     <>
-      <Drawer isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+      <RBSheet ref={ref} height={Dimensions.get("window").height / 1.85}>
         <View
           style={{
-            width: "100%",
-            height: "100%",
-            opacity: 1,
+            maxWidth: "100%",
+            height: 300,
+            marginTop: 32,
             alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          <View style={{ maxWidth: "90%", height: 300, marginTop: 32 }}>
-            <Image
-              source={{
-                uri: getIPFSLink(bannerUrl),
-              }}
-              style={{
-                height: 180,
-                borderRadius: 8,
-                width: Dimensions.get("screen").width - 48,
-                resizeMode: "cover",
-              }}
-              progressiveRenderingEnabled={true}
-            />
-          </View>
-          {/* <Heading
-            title={`Uploaded by ${title}`}
-            style={{
-              textAlign: "center",
-              fontSize: 16,
-              color: "white",
-              fontWeight: "600",
-              marginVertical: 12,
+          <Image
+            source={{
+              uri: getIPFSLink(bannerUrl),
             }}
-          /> */}
+            style={{
+              height: 180,
+              borderRadius: 8,
+              width: Dimensions.get("screen").width - 48,
+              resizeMode: "cover",
+            }}
+            progressiveRenderingEnabled={true}
+          />
           <Button
             title={`Mirror the video for free`}
             width={"90%"}
@@ -100,33 +90,28 @@ const MirrorButton = ({
             onPress={onMirror}
           />
         </View>
-      </Drawer>
-    <Button
-      title={totalMirrors?.toString()}
-      onPress={()=>{
-        setIsModalOpen(true);
-      }}
-      mx={4}
-      px={16}
-      width={"auto"}
-      bg={dark_primary}
-      type={"filled"}
-      borderRadius={8}
-      textStyle={{
-        fontSize: 14,
-        fontWeight: "500",
-        color: isAlreadyMirrored?PRIMARY:"white",
-        marginLeft:4
-      }}
-      //   borderColor={isalreadyDisLiked ? PRIMARY : "white"}
-      icon={
-        <MirrorIcon
-          height={20}
-          width={20}
-          filled={isAlreadyMirrored ? true : false}
-        />
-      }
-    />
+      </RBSheet>
+      <Button
+        title={totalMirrors?.toString()}
+        onPress={() => {
+          ref.current.open();
+        }}
+        mx={4}
+        px={16}
+        width={"auto"}
+        bg={dark_primary}
+        type={"filled"}
+        borderRadius={8}
+        textStyle={{
+          fontSize: 14,
+          fontWeight: "500",
+          color: isAlreadyMirrored ? PRIMARY : "white",
+          marginLeft: 4,
+        }}
+        //   borderColor={isalreadyDisLiked ? PRIMARY : "white"}
+        icon={<Icon name="mirror" size={20} color={"white"} />}
+          
+      />
     </>
   );
 };
