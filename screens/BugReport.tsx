@@ -20,8 +20,8 @@ import { dark_primary, dark_secondary } from "../constants/Colors";
 import Dropdown from "../components/UI/Dropdown";
 import { ToastType } from "../types/Store";
 import { useThemeStore } from "../store/Store";
-import { Feather, MaterialIcons } from "@expo/vector-icons";
 import Icon from "../components/Icon";
+import { StatusBar } from "expo-status-bar";
 
 export type BugCategory = {
   reason: string;
@@ -109,6 +109,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
 
   return (
     <KeyboardAvoidingView style={styles.container}>
+      <StatusBar backgroundColor="black" style="auto" />
       <ScrollView>
         <View
           style={{

@@ -15,6 +15,7 @@ type IconProps = {
     | "home_outline"
     | "arrowForward"
     | "arrowLeft"
+    | "bug"
     | "mirror"
     | "chat"
     | "close"
