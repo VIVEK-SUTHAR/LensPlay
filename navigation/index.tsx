@@ -15,6 +15,7 @@ import {
 } from "../types/navigation/types";
 import Trending from "../screens/Trending";
 import Search from "../screens/Search";
+import Settings from "../screens/Settings";
 import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
 import Channel from "../screens/Channel";
@@ -35,6 +36,7 @@ import LoginWithLens from "../screens/LoginWithLens";
 import ReportPublication from "../screens/ReportPublication";
 import Bytes from "../screens/Bytes";
 import FullImage from "../screens/FullImage";
+import BugReport from "../screens/BugReport";
 import ShotsComment from "../screens/ShotsComment";
 import Icon from "../components/Icon";
 import Notifications from "../screens/Notification";
@@ -190,6 +192,26 @@ function RootNavigator() {
         }}
       />
       <Stack.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          animation: "slide_from_bottom",
+          headerShown: true,
+          headerTintColor: theme.PRIMARY,
+          headerTitle: "Settings",
+        }}
+      />
+      <Stack.Screen
+        name="BugReport"
+        component={BugReport}
+        options={{
+          animation: "fade_from_bottom",
+          headerShown: true,
+          statusBarAnimation: "",
+          headerTintColor: theme.PRIMARY,
+        }}
+      />
+      <Stack.Screen
         name="FullImage"
         component={FullImage}
         options={{
@@ -227,21 +249,38 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
         headerStyle: { backgroundColor: theme.DARK_PRIMARY, elevation: 2 },
         headerTitle: "",
         headerRight: () => (
-          <TouchableWithoutFeedback
-            onPress={() => {
-              navigation.navigate("Search");
-            }}
-          >
-            <View
-              style={{
-                paddingHorizontal: 10,
-                flexDirection: "row",
-                alignItems: "center",
+          <View style={{ flexDirection: "row" }}>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                navigation.navigate("Search");
               }}
             >
-              <Icon name="search" />
-            </View>
-          </TouchableWithoutFeedback>
+              <View
+                style={{
+                  paddingHorizontal: 10,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <SearchIcon width={24} height={24} />
+              </View>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                navigation.navigate("Settings");
+              }}
+            >
+              <View
+                style={{
+                  paddingHorizontal: 10,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                {/* <CloseIcon width={24} height={24} /> */}
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
         ),
         headerLeft: () => (
           <View
