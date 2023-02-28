@@ -36,9 +36,7 @@ type SettingsItemProps = {
 };
 const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
   const Wallet = useWalletConnect();
-
   const SettingItemsList: SettingsItemProps[] = [
     {
       icon: <Icon name="bug" />,
@@ -188,28 +186,13 @@ function SocialMediaBadge({ icon, name, link }: SocialMediaBadgeProps) {
         borderless: true,
         radius: 15,
       }}
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: dark_primary,
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        borderRadius: 50,
-      }}
+      style={styles.badgeContainer}
       onPress={() => {
         Linking.openURL(link);
       }}
     >
       {icon}
-      <StyledText
-        title={name}
-        style={{
-          color: "white",
-          fontSize: 14,
-          fontWeight: "600",
-          marginLeft: 8,
-        }}
-      />
+      <StyledText title={name} style={styles.badgeText} />
     </Pressable>
   );
 }
@@ -238,25 +221,11 @@ const Item: FC<SettingsItemProps> = (item: SettingsItemProps) => {
       android_ripple={{
         color: RIPPLE_COLOR,
       }}
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: 12,
-        borderBottomColor: dark_primary,
-        borderBottomWidth: 1,
-      }}
+      style={styles.itemContainer}
       onPress={item.onPress}
     >
       {item.icon}
-      <StyledText
-        title={item.label}
-        style={{
-          color: "white",
-          fontSize: 16,
-          paddingVertical: 24,
-          paddingHorizontal: 12,
-        }}
-      ></StyledText>
+      <StyledText title={item.label} style={styles.itemText} />
     </Pressable>
   );
 };
@@ -266,6 +235,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
+  },
+  badgeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: dark_primary,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 50,
+  },
+  itemContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    borderBottomColor: dark_primary,
+    borderBottomWidth: 1,
   },
   socilaMediaContainer: {
     flexDirection: "row",
@@ -285,5 +269,17 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     borderColor: "red",
     paddingLeft: 16,
+  },
+  itemText: {
+    color: "white",
+    fontSize: 16,
+    paddingVertical: 24,
+    paddingHorizontal: 12,
+  },
+  badgeText: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "600",
+    marginLeft: 8,
   },
 });

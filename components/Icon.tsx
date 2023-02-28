@@ -61,13 +61,7 @@ type IconProps = {
   color?: string;
   style?: StyleProp<TextStyle>;
 };
-
-export default function Icon({
-  name,
-  size = 26,
-  color = "white",
-  style,
-}: IconProps) {
+function CustomIcon({ name, size = 26, color = "white", style }: IconProps) {
   const [fontsLoaded] = useFonts({
     IcoMoon: require("../assets/fonts/icomoon.ttf"),
   });
@@ -75,6 +69,7 @@ export default function Icon({
   if (!fontsLoaded) {
     return null;
   }
-
   return <LensIcon name={name} size={size} color={color} style={style} />;
 }
+const Icon = React.memo(CustomIcon);
+export default Icon;
