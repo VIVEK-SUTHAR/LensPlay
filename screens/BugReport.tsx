@@ -71,6 +71,8 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
       reason: "Other",
     },
   ];
+
+  const [imgupdate, setimgupdate] = useState(null);
   async function sendReportData() {
     if (!BugData.bugType) {
       toast.show("Please select bug-type", ToastType.ERROR, true);
@@ -81,35 +83,46 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
       if (image) {
         const blob = await getImageBlobFromUri(image);
         const hash = await uploadImageToIPFS(blob);
+        console.log(hash);
         setBugData({
           ...BugData,
           imgLink: `https://ipfs.io/ipfs/${hash}`,
         });
+        setimgupdate(hash);
+        console.log(BugData.imgLink);
       }
-      let bodyContent = JSON.stringify(BugData);
-      console.log(BugData);
-
-      let response = await fetch(
-        "https://bundlr-upload-server.vercel.app/api/report",
-        {
-          method: "POST",
-          body: bodyContent,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.ok) {
-        let data = await response.text();
-        setIsUpdating(false);
-        toast.show("Thanks for reporting bug", ToastType.SUCCESS, true);
-      }
+      // uploadtobundler();
     } catch (error) {
     } finally {
       setIsUpdating(false);
     }
   }
+  useEffect(() => {
+    if (image) {
+      uploadtobundler();
+    }
+  }, [imgupdate]);
 
+  async function uploadtobundler() {
+    let bodyContent = JSON.stringify(BugData);
+    console.log(BugData);
+
+    let response = await fetch(
+      "https://bundlr-upload-server.vercel.app/api/report",
+      {
+        method: "POST",
+        body: bodyContent,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (true) {
+      let data = await response.text();
+      setIsUpdating(false);
+      toast.show("Thanks for reporting bug", ToastType.SUCCESS, true);
+    }
+  }
   return (
     <KeyboardAvoidingView style={styles.container}>
       <StatusBar backgroundColor="black" style="auto" />
@@ -201,7 +214,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
                 ...BugData,
                 email: e.nativeEvent.text,
               });
-              console.log(BugData.description);
+              console.log(BugData.email);
             }}
           />
         </View>
