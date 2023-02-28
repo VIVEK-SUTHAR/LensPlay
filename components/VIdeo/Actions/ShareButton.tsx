@@ -53,8 +53,7 @@ const ShareButton = ({ title, publicationId }: ShareButtonProps) => {
         type={"filled"}
         borderRadius={8}
         icon={<Icon name="share" size={20} />}
-        // onPress={shareVideo}
-        onPress={() => ref.current.open()}
+        onPress={shareVideo}
         textStyle={{ color: "white", marginHorizontal: 4 }}
       />
     </>

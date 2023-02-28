@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   Image,
   Share,
+  Pressable,
+  ScrollView,
 } from "react-native";
 import VideoPlayer from "expo-video-player";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,10 +16,8 @@ import { Root } from "../../types/Lens/Feed";
 import getIPFSLink from "../../utils/getIPFSLink";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
-import { LikeButton, ShareButton } from "../VIdeo";
+import { LikeButton } from "../VIdeo";
 import { StatusBar } from "expo-status-bar";
-import ShareIcon from "../svg/ShareIcon";
-import CommentIcon from "../svg/CommentIcon";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
 import Heading from "../UI/Heading";
@@ -28,6 +28,7 @@ import Icon from "../Icon";
 import { useNavigation } from "@react-navigation/native";
 import { freeCollectPublication } from "../../api";
 import { ToastType } from "../../types/Store";
+import { dark_primary } from "../../constants/Colors";
 
 interface SingleByteProps {
   item: Root;
@@ -38,14 +39,14 @@ interface SingleByteProps {
 const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const navigation = useNavigation();
   const toast = useToast();
-  const {PRIMARY} = useThemeStore();
+  const { PRIMARY } = useThemeStore();
 
   const [likes, setLikes] = useState<number>(item.stats.totalUpvotes);
   const [mute, setMute] = useState<boolean>(false);
   const [isalreadyLiked, setisalreadyLiked] = useState<boolean>(
     item?.reaction === "UPVOTE" ? true : false
   );
-  const commentSheetRef = useRef(null);
+  const descriptionRef = useRef(null);
   const collectSheetRef = useRef(null);
   const { accessToken } = useAuthStore();
 
@@ -54,8 +55,10 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const bottomTabBarHeight = useBottomTabBarHeight();
   const [collected, setCollected] = useState<boolean>(item?.hasCollectedByMe);
   console.log(item?.hasCollectedByMe);
-  
-  const [totalCollects,setTotalCollects] = useState(item.stats.totalAmountOfCollects);
+
+  const [totalCollects, setTotalCollects] = useState(
+    item.stats.totalAmountOfCollects
+  );
   const shareVideo = async () => {
     try {
       const result = await Share.share({
@@ -72,7 +75,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
       if (data) {
         toast.show("Collect Submitted", ToastType.SUCCESS, true);
         setCollected(true);
-        setTotalCollects(prev=>prev+1);
+        setTotalCollects((prev) => prev + 1);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -86,20 +89,29 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   return (
     <>
       <RBSheet
-        ref={commentSheetRef}
-        height={Dimensions.get("window").height / 1.8}
+        ref={descriptionRef}
+        height={Dimensions.get("window").height / 2}
       >
-        <StyledText
-          title="Comments"
-          style={{
-            color: "white",
-            alignSelf: "flex-start",
-            marginLeft: Dimensions.get("window").width * 0.06,
-            fontSize: 16,
-            fontWeight: "500",
-          }}
-        />
-        <Comment publicationId={item.id} />
+        <ScrollView style={{ padding: 8 }}>
+          <Heading
+            title={item?.metadata?.name}
+            style={{
+              fontSize: 18,
+              fontWeight: "600",
+              color: "white",
+            }}
+          />
+          <StyledText
+            title={
+              item?.metadata?.description ||
+              item?.metadata?.content ||
+              "No description provided by creator"
+            }
+            style={{
+              color: "white",
+            }}
+          />
+        </ScrollView>
       </RBSheet>
       <RBSheet
         ref={collectSheetRef}
@@ -138,7 +150,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
       <View
         style={{
           width: windowWidth,
-          height: windowHeight - bottomTabBarHeight,
+          height: windowHeight - 20,
           position: "relative",
           justifyContent: "center",
           alignItems: "center",
@@ -201,25 +213,31 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
           }}
         >
           <View style={{ marginVertical: 10 }}>
-            <TouchableOpacity style={{ width: "auto", maxWidth: 250 }}>
-              <Heading
-                style={{
-                  color: "white",
-                  fontSize: 16,
-                  fontWeight: "600",
+            <View style={{ width: "auto", maxWidth: 250 }}>
+              <Pressable
+                onPress={() => {
+                  descriptionRef.current.open();
                 }}
-                numberOfLines={1}
-                title={item.metadata.name}
-              />
-              <StyledText
-                style={{
-                  color: "gray",
-                  fontSize: 12,
-                  fontWeight: "500",
-                }}
-                numberOfLines={2}
-                title={item.metadata.description}
-              />
+              >
+                <Heading
+                  style={{
+                    color: "white",
+                    fontSize: 16,
+                    fontWeight: "600",
+                  }}
+                  numberOfLines={1}
+                  title={item.metadata.name}
+                />
+                <StyledText
+                  style={{
+                    color: "gray",
+                    fontSize: 12,
+                    fontWeight: "500",
+                  }}
+                  numberOfLines={2}
+                  title={item.metadata.description}
+                />
+              </Pressable>
               <View
                 style={{
                   width: "auto",
@@ -244,7 +262,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
                   />
                 </View>
               </View>
-            </TouchableOpacity>
+            </View>
           </View>
         </View>
         <View
@@ -277,7 +295,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
               });
             }}
           >
-            <Icon name="comment" />
+            <Icon name="comment" size={32} />
             <Text style={{ color: "white" }}>
               {item.stats.totalAmountOfComments}
             </Text>
@@ -290,14 +308,21 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             }}
             onPress={(e) => {
               e.preventDefault();
-              collected?(toast.show('You have already collected this shot', ToastType.ERROR, true)):(
-              collectSheetRef?.current?.open()
-              )
-              
+              collected
+                ? toast.show(
+                    "You have already collected this shot",
+                    ToastType.ERROR,
+                    true
+                  )
+                : collectSheetRef?.current?.open();
             }}
           >
-            <Icon name="collect" color={collected?PRIMARY:"white" }/>
-            <Text style={{ color: collected?PRIMARY:"white" }}>
+            <Icon
+              name="collect"
+              color={collected ? PRIMARY : "white"}
+              size={28}
+            />
+            <Text style={{ color: collected ? PRIMARY : "white" }}>
               {totalCollects}
             </Text>
           </TouchableOpacity>
@@ -310,7 +335,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             }}
             onPress={shareVideo}
           >
-            <Icon name="share" />
+            <Icon name="share" size={28} />
           </TouchableOpacity>
         </View>
       </View>

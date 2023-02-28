@@ -15,9 +15,10 @@ interface Props {
   label: string;
   data: Array<{ label: string; value: string }>;
   onSelect: (item: { label: string; value: string }) => void;
+  width: string;
 }
 
-const Dropdown: FC<Props> = ({ label, data, onSelect }) => {
+const Dropdown: FC<Props> = ({ label, data, onSelect,width }) => {
   const DropdownButton = useRef();
   const [visible, setVisible] = useState<boolean>(false);
   const [selected, setSelected] = useState(undefined);
@@ -89,6 +90,7 @@ const Dropdown: FC<Props> = ({ label, data, onSelect }) => {
         style={[
           styles.button,
           {
+            width:width,
             borderColor: visible ? "#2A9D5C" : "transparent",
             borderWidth: 1,
           },
@@ -107,7 +109,7 @@ const Dropdown: FC<Props> = ({ label, data, onSelect }) => {
 
 const styles = StyleSheet.create({
   button: {
-    width: "100%",
+    // width: "100%",
     marginVertical: 4,
     flexDirection: "row",
     alignItems: "center",

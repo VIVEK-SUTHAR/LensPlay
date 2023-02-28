@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { RootStackScreenProps } from "../types/navigation/types";
-import { SafeAreaView } from "react-native-safe-area-context";
 import StyledText from "../components/UI/StyledText";
 import TextArea from "../components/UI/TextArea";
 import * as ImagePicker from "expo-image-picker";
@@ -19,7 +18,7 @@ import Button from "../components/UI/Button";
 import { dark_primary, dark_secondary } from "../constants/Colors";
 import Dropdown from "../components/UI/Dropdown";
 import { ToastType } from "../types/Store";
-import { useThemeStore } from "../store/Store";
+import { useThemeStore, useToast } from "../store/Store";
 import Icon from "../components/Icon";
 import { StatusBar } from "expo-status-bar";
 
@@ -29,6 +28,7 @@ export type BugCategory = {
 
 const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
   // const [BugInfo, setBugInfo] = useState("");
+  const toast = useToast();
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [BugData, setBugData] = useState({
     bugType: "",
@@ -51,15 +51,13 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
       setimage(coverresult.assets[0].uri);
     }
   }
-  const [selectData, setselectData] = useState<BugCategory>({ reason: "UI" });
+  const [selectData, setselectData] = useState<BugCategory>({ reason: "" });
 
   useEffect(() => {
     setBugData({
       ...BugData,
       bugType: selectData?.reason,
     });
-    // console.log();
-    // console.log(selectData);
   }, [selectData]);
 
   const reportData: BugCategory[] = [
@@ -74,11 +72,10 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
     },
   ];
   async function sendReportData() {
-    if (!selectData?.reason) {
-      toast.show("Please select type and reason", ToastType.ERROR, true);
+    if (!BugData.bugType) {
+      toast.show("Please select bug-type", ToastType.ERROR, true);
       return;
     }
-    console.log(BugData);
     setIsUpdating(true);
     if (image) {
       const blob = await getImageBlobFromUri(image);
@@ -101,16 +98,16 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
         },
       }
     );
-
-    let data = await response.text();
-    setIsUpdating(false);
-    console.log(data);
+    if (response.ok) {
+      setIsUpdating(false);
+      toast.show("Thanks for reporting bug", ToastType.SUCCESS, true);
+    }
   }
 
   return (
     <KeyboardAvoidingView style={styles.container}>
       <StatusBar backgroundColor="black" style="auto" />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View
           style={{
             width: "100%",
@@ -125,6 +122,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
           label="Bug Category"
           data={reportData}
           onSelect={setselectData}
+          width={"100%"}
         />
         <View>
           {image && (
@@ -136,9 +134,9 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
                   style={{
                     color: "white",
                     position: "absolute",
-                    zIndex: 2,
+                    zIndex: 10,
                     right: 8,
-                    top: 4,
+                    top: 10,
                   }}
                 />
               </Pressable>
@@ -236,6 +234,5 @@ const styles = StyleSheet.create({
     height: 280,
     marginTop: 8,
     alignSelf: "center",
-    zIndex: 1,
   },
 });

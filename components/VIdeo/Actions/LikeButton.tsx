@@ -76,7 +76,7 @@ const LikeButton = ({
       icon={
         <Icon
           name="like"
-          size={20}
+          size={bytes?28:20}
           color={isalreadyLiked || isLiked ? PRIMARY : "white"}
         />
       }
