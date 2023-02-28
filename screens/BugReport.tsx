@@ -76,31 +76,37 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
       toast.show("Please select bug-type", ToastType.ERROR, true);
       return;
     }
-    setIsUpdating(true);
-    if (image) {
-      const blob = await getImageBlobFromUri(image);
-      const hash = await uploadImageToIPFS(blob);
-      setBugData({
-        ...BugData,
-        imgLink: `https://ipfs.io/ipfs/${hash}`,
-      });
-    }
-    let bodyContent = JSON.stringify(BugData);
-    console.log(BugData);
-
-    let response = await fetch(
-      "https://bundlr-upload-server.vercel.app/api/report",
-      {
-        method: "POST",
-        body: bodyContent,
-        headers: {
-          "Content-Type": "application/json",
-        },
+    try {
+      setIsUpdating(true);
+      if (image) {
+        const blob = await getImageBlobFromUri(image);
+        const hash = await uploadImageToIPFS(blob);
+        setBugData({
+          ...BugData,
+          imgLink: `https://ipfs.io/ipfs/${hash}`,
+        });
       }
-    );
-    if (response.ok) {
+      let bodyContent = JSON.stringify(BugData);
+      console.log(BugData);
+
+      let response = await fetch(
+        "https://bundlr-upload-server.vercel.app/api/report",
+        {
+          method: "POST",
+          body: bodyContent,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.ok) {
+        let data = await response.text();
+        setIsUpdating(false);
+        toast.show("Thanks for reporting bug", ToastType.SUCCESS, true);
+      }
+    } catch (error) {
+    } finally {
       setIsUpdating(false);
-      toast.show("Thanks for reporting bug", ToastType.SUCCESS, true);
     }
   }
 

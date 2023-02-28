@@ -11,11 +11,13 @@ const LensIcon = createIconSetFromIcoMoon(
 
 type IconProps = {
   name:
-    | "home_filled"
-    | "home_outline"
     | "arrowForward"
     | "arrowLeft"
+    | "home_filled"
+    | "home_outline"
     | "bug"
+    | "terms"
+    | "policy"
     | "mirror"
     | "chat"
     | "close"
