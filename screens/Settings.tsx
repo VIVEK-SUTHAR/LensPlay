@@ -4,51 +4,74 @@ import { RootStackScreenProps } from "../types/navigation/types";
 import { SafeAreaView } from "react-native-safe-area-context";
 import StyledText from "../components/UI/StyledText";
 import Heading from "../components/UI/Heading";
-import { dark_primary } from "../constants/Colors";
+import { dark_primary, primary } from "../constants/Colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Icon from "../components/Icon";
 import { StatusBar } from "expo-status-bar";
+
+type SocialMediaBadgeProps = {
+  icon: JSX.Element;
+  name: string;
+  link: string;
+};
+
+function SocialMediaBadge({ icon, name, link }: SocialMediaBadgeProps) {
+  return (
+    <Pressable
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: dark_primary,
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: 50,
+      }}
+      onPress={() => {
+        Linking.openURL(link);
+      }}
+    >
+      {icon}
+      <StyledText
+        title={name}
+        style={{
+          color: "white",
+          fontSize: 14,
+          fontWeight: "600",
+          marginLeft: 8,
+        }}
+      />
+    </Pressable>
+  );
+}
+
+const SocialMedia: SocialMediaBadgeProps[] = [
+  {
+    icon: <Icon name="discord" size={16} color="#7289da" />,
+    name: "Discord",
+    link: "https://discord.gg/tgrzS4Actz",
+  },
+  {
+    icon: <Icon name="twitter" size={16} color="#1DA1F2" />,
+    name: "Twitter",
+    link: "https://twitter.com/lensplayxyz",
+  },
+  {
+    icon: <Icon name="link" size={16} color="#2AD95C" />,
+    name: "website",
+    link: "https://lensplay.xyz/",
+  },
+];
+
 const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
   const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
-
   const Wallet = useWalletConnect();
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <StatusBar backgroundColor="black" style="auto" />
-      <View
-        style={{ borderWidth: 2, position: "absolute", width: "100%", top: 0 }}
-      >
-        <Pressable
-          android_ripple={{
-            color: RIPPLE_COLOR,
-          }}
-          style={{
-            paddingHorizontal: 12,
-            flexDirection: "row",
-            alignItems: "center",
-            borderWidth: 1,
-            borderBottomColor: dark_primary,
-          }}
-          onPress={async () => {
-            setIsModalOpen(true);
-          }}
-        >
-          <Icon name="logout" size={24} />
-          <StyledText
-            title="Logout"
-            style={{
-              color: "white",
-              fontSize: 16,
-              borderBottomWidth: 1,
-              borderColor: dark_primary,
-              paddingVertical: 24,
-              paddingHorizontal: 12,
-            }}
-          ></StyledText>
-        </Pressable>
+      <View style={{ borderWidth: 2, width: "100%" }}>
         <Pressable
           android_ripple={{
             color: RIPPLE_COLOR,
@@ -148,6 +171,52 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
             }}
           ></StyledText>
         </Pressable>
+        <Pressable
+          android_ripple={{
+            color: RIPPLE_COLOR,
+          }}
+          style={{
+            paddingHorizontal: 12,
+            flexDirection: "row",
+            alignItems: "center",
+            borderWidth: 1,
+            borderBottomColor: dark_primary,
+          }}
+          onPress={async () => {
+            setIsModalOpen(true);
+          }}
+        >
+          <Icon name="logout" size={24} />
+          <StyledText
+            title="Logout"
+            style={{
+              color: "white",
+              fontSize: 16,
+              borderBottomWidth: 1,
+              borderColor: dark_primary,
+              paddingVertical: 24,
+              paddingHorizontal: 12,
+            }}
+          ></StyledText>
+        </Pressable>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-evenly",
+          position: "absolute",
+          bottom: 16,
+          width: "100%",
+        }}
+      >
+        {SocialMedia.map((el, index) => (
+          <SocialMediaBadge
+            key={index}
+            icon={el.icon}
+            name={el.name}
+            link={el.link}
+          />
+        ))}
       </View>
       <Modal
         transparent={true}
