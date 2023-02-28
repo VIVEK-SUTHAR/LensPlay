@@ -23,6 +23,7 @@ import { StatusBar } from "expo-status-bar";
 import Heading from "../components/UI/Heading";
 import recommendedProfiles from "../apollo/Queries/recommendedProfiles";
 import ProfileCardSkeleton from "../components/UI/ProfileCardSkeleton";
+import Icon from "../components/Icon";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const theme = useThemeStore();
@@ -124,7 +125,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
               }}
               style={{ marginRight: 8 }}
             >
-              <BackIcon height={20} width={20} />
+              <Icon name="arrowLeft" size={20} />
             </Pressable>
             <TextInput
               placeholder="Search by channel"
