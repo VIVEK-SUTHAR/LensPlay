@@ -195,6 +195,7 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
                   reaction={item?.reaction}
                   description={item.metadata.description}
                   attributes={item?.metadata?.attributes}
+                  hasCollectedByMe={item?.hasCollectedByMe}
                 />
               );
             })}

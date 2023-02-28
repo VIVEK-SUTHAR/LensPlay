@@ -8,11 +8,14 @@ import getDifference from "../../utils/getDifference";
 import extractURLs from "../../utils/extractURL";
 import LikeIcon from "../svg/LikeIcon";
 import StyledText from "../UI/StyledText";
+import Icon from "../Icon";
+import { useThemeStore } from "../../store/Store";
 
 const ReactionNotification: React.FC<NotificationCardProps> = ({
   navigation,
   notification,
 }) => {
+  const { PRIMARY } = useThemeStore();
   return (
     <>
       <View
@@ -24,7 +27,7 @@ const ReactionNotification: React.FC<NotificationCardProps> = ({
           alignItems: "center",
         }}
       >
-        <LikeIcon filled={true} width={24} height={24} />
+        <Icon name="like" color={PRIMARY} />
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -68,8 +71,10 @@ const ReactionNotification: React.FC<NotificationCardProps> = ({
             <View>
               <StyledText
                 title={extractURLs(
-                  notification?.publication?.metadata?.description
+                  notification?.publication?.metadata?.description ||
+                    notification?.publication?.metadata?.content
                 )}
+                numberOfLines={2}
                 style={{ fontSize: 12, color: "gray" }}
               />
             </View>

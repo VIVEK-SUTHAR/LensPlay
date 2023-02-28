@@ -14,6 +14,8 @@ import { dark_primary, primary } from "../../constants/Colors";
 import Avatar from "../UI/Avatar";
 import CollectIcon from "../svg/CollectIcon";
 import MirrorIcon from "../svg/MirrorIcon";
+import Icon from "../Icon";
+import { CollectButton } from "../VIdeo";
 
 type CommentCardProps = {
   avatar: string;
@@ -153,14 +155,13 @@ const CommentCard = ({
               paddingEnd: 16,
             }}
             icon={
-              <AntDesign
-                name={isalreadyDisLiked ? "like1" : "like2"}
+              <Icon
+                name="like"
                 size={16}
                 color={isalreadyDisLiked ? primary : "white"}
               />
             }
           />
-
           <Button
             title={stats?.totalAmountOfCollects}
             py={4}
@@ -174,7 +175,7 @@ const CommentCard = ({
               fontWeight: "500",
               marginLeft: 4,
             }}
-            icon={<CollectIcon height={18} width={18} />}
+            icon={<Icon name="collect" size={20} />}
             onPress={() => {
               // setIsmodalopen(true);
             }}
@@ -192,7 +193,7 @@ const CommentCard = ({
               fontWeight: "500",
               marginLeft: 4,
             }}
-            icon={<MirrorIcon height={18} width={18} />}
+            icon={<Icon name="mirror" size={20} />}
             borderColor="#232323"
             onPress={async () => {
               try {
@@ -220,7 +221,7 @@ const CommentCard = ({
               fontWeight: "500",
               marginLeft: 4,
             }}
-            icon={<MaterialIcons name="report" size={16} color="white" />}
+            icon={<Icon name="report" size={20} />}
             borderColor="#232323"
             onPress={() => {
               navigation.navigate("ReportPublication", {

@@ -11,11 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
-import useStore, {
-  useAuthStore,
-  useProfile,
-  useThemeStore,
-} from "../store/Store";
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import getIPFSLink from "../utils/getIPFSLink";
 import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
@@ -35,14 +31,10 @@ import AllVideos from "../components/Profile/AllVideos";
 import MirroredVideos from "../components/Profile/MirroredVideos";
 import getPublications from "../apollo/Queries/getPublications";
 import CollectedVideos from "../components/Profile/CollectedVideos";
-import { Entypo, Feather } from "@expo/vector-icons";
 import VERIFIED_CHANNELS from "../constants/Varified";
 import formatHandle from "../utils/formatHandle";
-import Twitter from "../components/svg/Twitter";
-import BackIcon from "../components/svg/BackIcon";
-import YouTube from "../components/svg/YouTube";
-import Instagram from "../components/svg/Instagram";
-import Website from "../components/svg/Website";
+import VerifiedIcon from "../components/svg/VerifiedIcon";
+import Icon from "../components/Icon";
 const ProfileScreen = ({
   navigation,
   route,
@@ -170,7 +162,8 @@ const ProfileScreen = ({
             {Boolean(!isLoading) && (
               <View style={{}}>
                 <Pressable
-                  onPress={() => {
+                  onPress={(e) => {
+                    e.stopPropagation();
                     navigation.navigate("FullImage", {
                       url:
                         userStore.currentProfile?.coverPicture?.original.url ||
@@ -247,33 +240,36 @@ const ProfileScreen = ({
                         <Heading
                           title={profile?.name}
                           style={{
-                            fontSize: 20,
+                            fontSize: 16,
                             marginTop: 8,
-                            fontWeight: "600",
+                            fontWeight: "bold",
                             color: "white",
                           }}
                         />
                         {VERIFIED_CHANNELS.includes(profile?.id) && (
                           <View
                             style={{
-                              backgroundColor: theme.PRIMARY,
-                              height: 15,
-                              width: 15,
+                              backgroundColor: "transparent",
+                              height: "auto",
+                              width: "auto",
                               padding: 1,
                               borderRadius: 8,
                               marginTop: 8,
                               marginHorizontal: 4,
                             }}
                           >
-                            <Entypo name="check" color={"white"} />
+                            <Icon
+                              name="verified"
+                              size={18}
+                              color={theme.PRIMARY}
+                            />
                           </View>
                         )}
                       </View>
                       <StyledText
                         title={formatHandle(profile?.handle)}
                         style={{
-                          fontSize: 14,
-                          lineHeight: 16,
+                          fontSize: 12,
                           fontWeight: "500",
                           color: "gray",
                         }}
@@ -295,9 +291,7 @@ const ProfileScreen = ({
                   )}
                   <View
                     style={{
-                      // backgroundColor:"red",
                       marginVertical: 4,
-                      // height:45,
                       width: "100%",
                       flexDirection: "row",
                     }}
@@ -315,11 +309,15 @@ const ProfileScreen = ({
                           );
                         }}
                       >
-                        <Twitter height={24} width={24} filled={true} />
+                        <Icon name="twitter" color="#1DA1F2" size={16} />
                         <StyledText
-                          style={{ color: "white", marginRight: 4 }}
+                          style={{
+                            color: primary,
+                            marginRight: 4,
+                            fontSize: 12,
+                          }}
                           title={`@${links.twitter}`}
-                        ></StyledText>
+                        />
                       </Pressable>
                     ) : (
                       <></>
@@ -328,11 +326,15 @@ const ProfileScreen = ({
                       <View
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
-                        <YouTube height={24} width={24} filled={true} />
+                        <Icon name="youtube" color="#FF0000" size={16} />
                         <StyledText
-                          style={{ color: "white", marginRight: 4 }}
+                          style={{
+                            color: primary,
+                            marginLeft: 4,
+                            fontSize: 12,
+                          }}
                           title={links.yt}
-                        ></StyledText>
+                        />
                       </View>
                     ) : (
                       <></>
@@ -341,7 +343,7 @@ const ProfileScreen = ({
                   <View
                     style={{
                       // backgroundColor:"red",
-                      marginVertical: 4,
+                      marginVertical: 2,
                       // height:45,
                       width: "100%",
                       flexDirection: "row",
@@ -354,11 +356,15 @@ const ProfileScreen = ({
                           alignItems: "center",
                         }}
                       >
-                        <Instagram height={24} width={24} filled={true} />
+                        <Icon name="instagram" color="#405DE6" size={16} />
                         <StyledText
-                          style={{ color: "white", marginRight: 4 }}
+                          style={{
+                            color: primary,
+                            marginRight: 4,
+                            fontSize: 12,
+                          }}
                           title={links.insta}
-                        ></StyledText>
+                        />
                       </View>
                     ) : (
                       <></>
@@ -371,11 +377,15 @@ const ProfileScreen = ({
                           Linking.openURL(links.site);
                         }}
                       >
-                        <Website height={24} width={24} filled={true} />
+                        <Icon name="link" color="white" size={16} />
                         <StyledText
-                          style={{ color: "white", marginLeft: 4 }}
+                          style={{
+                            color: primary,
+                            marginLeft: 4,
+                            fontSize: 12,
+                          }}
                           title={links.site}
-                        ></StyledText>
+                        />
                       </Pressable>
                     ) : (
                       <></>

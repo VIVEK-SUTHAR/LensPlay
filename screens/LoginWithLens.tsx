@@ -5,31 +5,32 @@ import {
   Dimensions,
   Image,
   SafeAreaView,
-  StatusBarIOS,
   StyleSheet,
   View,
 } from "react-native";
 import Button from "../components/UI/Button";
-import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Constants from "expo-constants";
 import getProfile from "../apollo/Queries/getProfile";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { client } from "../apollo/client";
-import { useAuthStore, useProfile } from "../store/Store";
+import { useAuthStore, useProfile, useToast } from "../store/Store";
 import getChallenge from "../apollo/Queries/getChallenge";
 import getAccessTokens from "../apollo/mutations/getAccessTokens";
 import storeData from "../utils/storeData";
-import AnimatedLottieView from "lottie-react-native";
+import { Linking } from "react-native";
+import { ToastType } from "../types/Store";
 
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-  const [isloading, setIsloading] = useState(false);
+  const [isloading, setIsloading] = useState<boolean>(false);
+  const [hasHandle, setHasHandle] = useState<boolean>(true);
   const connector = useWalletConnect();
   const userStore = useProfile();
   const authStore = useAuthStore();
+  const toast = useToast();
 
   const logInWithLens = async () => {
     setIsloading(true);
@@ -40,6 +41,9 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
       },
     });
     if (!data.data.defaultProfile) {
+      setIsloading(false);
+      setHasHandle(false);
+      toast.show("Please claim your handle", ToastType.ERROR, true);
       return;
     }
     userStore.setCurrentProfile(data.data.defaultProfile);
@@ -91,7 +95,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           source={require("../assets/images/Vector258.png")}
           style={{
             width: windowWidth,
-            height: windowWidth + 105,
+            height: windowWidth + 100,
             marginTop: -Constants.statusBarHeight / 2,
           }}
           resizeMode={"contain"}
@@ -100,15 +104,14 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           source={require("../assets/images/login3.png")}
           style={{
             width: windowWidth * 0.9,
-            height: 495,
+            height: windowHeight / 2 + 100,
             position: "absolute",
-            bottom: 32,
-            right: 0,
+            bottom: 20,
           }}
           resizeMode={"contain"}
         />
       </View>
-      <View style={{ justifyContent: "flex-end", marginTop: 48 }}>
+      <View style={{ justifyContent: "flex-end", marginTop: 36 }}>
         <View
           style={{
             position: "relative",
@@ -118,7 +121,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             marginTop: 8,
           }}
         >
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: "row" }}>
             <StyledText
               title={"Just one"}
               style={{
@@ -155,7 +158,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
               title={"from"}
               style={{
                 fontSize: 28,
-                color: 'white',
+                color: "white",
                 fontWeight: "700",
                 textAlign: "right",
                 marginRight: 8,
@@ -182,8 +185,8 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
               }}
             />
           </View>
-          <View style={{flexDirection: 'row'}}>
-          <StyledText
+          <View style={{ flexDirection: "row" }}>
+            <StyledText
               title={"content"}
               style={{
                 fontSize: 28,
@@ -195,20 +198,40 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             />
           </View>
         </View>
-        <View style={{ padding: 16, marginTop: 44 }}>
+      </View>
+      <View
+        style={{
+          paddingHorizontal: 16,
+          position: "absolute",
+          bottom: 16,
+          width: "100%",
+        }}
+      >
+        {hasHandle ? (
           <Button
             title="Login With Lens"
             bg="#93E9C8"
-            borderRadius={16}
-            textStyle={{ fontWeight: "800", fontSize: 28 }}
+            borderRadius={50}
+            textStyle={{ fontWeight: "600", fontSize: 20 }}
             py={12}
             isLoading={isloading}
             onPress={async () => {
               await logInWithLens();
-            }
-            }
+            }}
           />
-        </View>
+        ) : (
+          <Button
+            title="Claim Lens Handle"
+            bg="#93E9C8"
+            borderRadius={50}
+            textStyle={{ fontWeight: "600", fontSize: 20 }}
+            py={12}
+            isLoading={isloading}
+            onPress={() => {
+              Linking.openURL("http://claim.lens.xyz/");
+            }}
+          />
+        )}
       </View>
     </SafeAreaView>
   );

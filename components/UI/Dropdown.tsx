@@ -1,4 +1,3 @@
-import { SimpleLineIcons } from "@expo/vector-icons";
 import React, { FC, ReactElement, useRef, useState } from "react";
 import {
   FlatList,
@@ -9,6 +8,7 @@ import {
   View,
 } from "react-native";
 import { dark_primary } from "../../constants/Colors";
+import Icon from "../Icon";
 import StyledText from "./StyledText";
 
 interface Props {
@@ -99,7 +99,7 @@ const Dropdown: FC<Props> = ({ label, data, onSelect }) => {
         <Text style={styles.buttonText}>
           {(selected && selected.reason) || label}
         </Text>
-        <SimpleLineIcons name="arrow-down" color={"white"} />
+        <Icon name="arrowDown" size={16} />
       </TouchableOpacity>
     </View>
   );

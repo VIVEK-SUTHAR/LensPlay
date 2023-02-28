@@ -3,7 +3,6 @@ import * as React from "react";
 import {
   Image,
   StyleSheet,
-  Text,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -32,6 +31,7 @@ type videoPageProp = {
   height?: number;
   attributes: Attribute | Attribute[];
   ethAddress?: string;
+  hasCollectedByMe: boolean;
 };
 
 const VideoCard = ({
@@ -51,6 +51,7 @@ const VideoCard = ({
   height = 200,
   attributes,
   ethAddress,
+  hasCollectedByMe,
 }: videoPageProp) => {
   const [videoTime, setVideoTime] = React.useState<string>();
 
@@ -66,7 +67,6 @@ const VideoCard = ({
     <View
       style={{
         margin: 10,
-        backgroundColor: "#111111",
         borderRadius: 10,
         width: width,
       }}
@@ -86,6 +86,7 @@ const VideoCard = ({
               reaction: reaction,
               isFollowdByMe: isFollowdByMe,
               description: description,
+              hasCollectedByMe: hasCollectedByMe,
             });
           }}
         >
@@ -100,7 +101,7 @@ const VideoCard = ({
               height: "100%",
               width: "100%",
               borderRadius: 10,
-              resizeMode: "contain",
+              resizeMode: "cover",
             }}
           />
         </TouchableWithoutFeedback>
@@ -139,12 +140,13 @@ const VideoCard = ({
       >
         <View
           style={{
-            padding: 10,
+            paddingVertical: 10,
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
           }}
         >
+          <Avatar src={getIPFSLink(avatar)} height={40} width={40} />
           <View style={{ flex: 0.95 }}>
             <Heading
               title={title}
@@ -157,7 +159,6 @@ const VideoCard = ({
               numberOfLines={1}
             />
           </View>
-          <Avatar src={getIPFSLink(avatar)} height={40} width={40} />
         </View>
       </TouchableWithoutFeedback>
     </View>

@@ -8,6 +8,7 @@ import getDifference from "../../utils/getDifference";
 import getIPFSLink from "../../utils/getIPFSLink";
 import CommentIcon from "../svg/CommentIcon";
 import StyledText from "../UI/StyledText";
+import Icon from "../Icon";
 
 const CommentNotification: React.FC<NotificationCardProps> = ({
   navigation,
@@ -24,7 +25,7 @@ const CommentNotification: React.FC<NotificationCardProps> = ({
           alignItems: "center",
         }}
       >
-        <CommentIcon height={20} width={20} />
+        <Icon name="comment" color="cyan" />
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -72,6 +73,7 @@ const CommentNotification: React.FC<NotificationCardProps> = ({
             notification?.comment?.metadata?.description ||
             notification?.comment?.metadata?.content
           }
+          numberOfLines={2}
           style={{ fontSize: 10, color: "gray" }}
         />
       </View>

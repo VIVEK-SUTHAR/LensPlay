@@ -1,3 +1,4 @@
+import { ColorValue } from "react-native";
 import create from "zustand";
 import {
   DisLikeObject,
@@ -5,6 +6,8 @@ import {
   IReactionStore,
   IThemeStore,
   LikeObject,
+  OptimisticStore,
+  OptimitisticComment,
   ToastProps,
   ToastType,
   UserStore,
@@ -28,6 +31,7 @@ export const useProfile = create<UserStore>((set) => ({
 
 export const useThemeStore = create<IThemeStore>((set) => ({
   PRIMARY: "#2AD95C",
+  DARK_PRIMARY: "#1A1A1A",
   setPrimaryColor: (newPrimaryColor: string) =>
     set({ PRIMARY: newPrimaryColor }),
 }));
@@ -87,6 +91,26 @@ export const useReactionStore = create<IReactionStore>((set) => ({
     }));
   },
 }));
+
+export const useOptimisticStore = create<OptimisticStore>((set) => ({
+  optimitisticComment: {
+    commentText: "",
+    handle: "",
+    isIndexing: false,
+    username: "",
+  },
+  setOptimitisticComment: (newState: OptimitisticComment) => {
+    set({
+      optimitisticComment: {
+        commentText: newState.commentText,
+        handle: newState.handle,
+        isIndexing: newState.isIndexing,
+        username: newState.username,
+      },
+    });
+  },
+}));
+
 const useStore = create((set) => ({}));
 
 export default useStore;

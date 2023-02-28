@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import getIPFSLink from "../../utils/getIPFSLink";
 import {
   useAuthStore,
+  useOptimisticStore,
   useProfile,
   useThemeStore,
   useToast,
@@ -12,13 +13,15 @@ import uploadMetaDataToArweave from "../../utils/uploadMetaToArweave";
 import { ToastType } from "../../types/Store";
 import { client } from "../../apollo/client";
 import createCommentViaDispatcher from "../../apollo/mutations/createCommentViaDispatcher";
-import { Feather } from "@expo/vector-icons";
+import Icon from "../Icon";
 
 type CommentInputProps = {
   publicationId: string;
 };
 
 const CommentInput = ({ publicationId }: CommentInputProps) => {
+  const { optimitisticComment, setOptimitisticComment } = useOptimisticStore();
+
   const [commentText, setCommentText] = useState<string>("");
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
@@ -34,6 +37,12 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
     }
     try {
       toast.show("Comment submitted", ToastType.SUCCESS, true);
+      setOptimitisticComment({
+        commentText: commentText,
+        handle: currentProfile?.handle,
+        isIndexing: true,
+        username: currentProfile?.name,
+      });
       setCommentText("");
       const contenturi = await uploadMetaDataToArweave(
         commentText,
@@ -126,7 +135,7 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
           }}
           onPressIn={publishComment}
         >
-          <Feather
+          <Icon
             name="send"
             color={commentText.length === 0 ? "gray" : PRIMARY}
             size={24}

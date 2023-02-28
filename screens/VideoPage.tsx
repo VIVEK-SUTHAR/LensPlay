@@ -18,7 +18,6 @@ import {
 } from "../components/VIdeo";
 import DisLikeButton from "../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
-import CommentCard from "../components/Comments/CommentCard";
 import StyledText from "../components/UI/StyledText";
 
 const VideoPage = ({
@@ -133,6 +132,7 @@ const VideoPage = ({
               title={route.params.uploadedBy}
               totalCollects={PublicationStats.totalAmountOfCollects}
               videoUrl={route.params.playbackId}
+              hasCollected={route?.params?.hasCollectedByMe}
             />
             <ShareButton
               title={route.params.title}
