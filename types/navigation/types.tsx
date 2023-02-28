@@ -109,11 +109,13 @@ export type RootStackParamList = {
   };
   ShotsComment: {
     publicationId: string;
-  }
+  };
   LinkingVideos: undefined;
   FullImage: {
     url: string;
   };
+  Settings: undefined;
+  BugReport: undefined;
 };
 
 /**

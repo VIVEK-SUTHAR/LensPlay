@@ -107,7 +107,7 @@ const Dropdown: FC<Props> = ({ label, data, onSelect }) => {
 
 const styles = StyleSheet.create({
   button: {
-    width: "90%",
+    width: "100%",
     marginVertical: 4,
     flexDirection: "row",
     alignItems: "center",

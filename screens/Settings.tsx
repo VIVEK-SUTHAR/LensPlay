@@ -1,17 +1,7 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  Modal,
-  Dimensions,
-} from "react-native";
+import { View, StyleSheet, Pressable, Modal } from "react-native";
 import React, { useState } from "react";
 import { RootStackScreenProps } from "../types/navigation/types";
-import {
-  SafeAreaFrameContext,
-  SafeAreaView,
-} from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import StyledText from "../components/UI/StyledText";
 import Heading from "../components/UI/Heading";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
@@ -23,6 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Constants from "expo-constants";
 import BugReport from "./BugReport";
+import Icon from "../components/Icon";
 const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
   const userStore = useProfile();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -46,8 +37,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
             borderBottomColor: dark_primary,
           }}
         >
-          <MaterialIcons name="logout" size={24} style={{ color: "white" }} />
-
+          <Icon name="logout" size={24} />
           <StyledText
             title="Logout"
             onPress={async () => {
@@ -171,6 +161,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
             size={24}
             style={{ color: "white" }}
           />
+          {/* <Icon name="bug" size={24}/> */}
           <StyledText
             title="Report a bug"
             style={{
@@ -238,11 +229,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
             borderBottomWidth: 1,
           }}
         >
-          <MaterialIcons
-            name="policy"
-            size={24}
-            style={{ color: "white" }}
-          />
+          <MaterialIcons name="policy" size={24} style={{ color: "white" }} />
           <StyledText
             title="Privacy Policy"
             style={{

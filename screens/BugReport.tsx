@@ -21,7 +21,7 @@ import Dropdown from "../components/UI/Dropdown";
 import { ToastType } from "../types/Store";
 import { useThemeStore } from "../store/Store";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
-import CloseIcon from "../components/svg/CloseIcon";
+import Icon from "../components/Icon";
 
 export type BugCategory = {
   reason: string;
@@ -51,18 +51,17 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
       setimage(coverresult.assets[0].uri);
     }
   }
-  const [selectData, setselectData] = useState<BugCategory>({reason:"UI"});
-  
+  const [selectData, setselectData] = useState<BugCategory>({ reason: "UI" });
+
   useEffect(() => {
     setBugData({
       ...BugData,
-      bugType:selectData?.reason
-    })
+      bugType: selectData?.reason,
+    });
     // console.log();
     // console.log(selectData);
-    
-  }, [selectData])
-  
+  }, [selectData]);
+
   const reportData: BugCategory[] = [
     {
       reason: "UI",
@@ -91,7 +90,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
     }
     let bodyContent = JSON.stringify(BugData);
     console.log(BugData);
-    
+
     let response = await fetch(
       "https://bundlr-upload-server.vercel.app/api/report",
       {
@@ -102,7 +101,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
         },
       }
     );
-    
+
     let data = await response.text();
     setIsUpdating(false);
     console.log(data);
@@ -110,7 +109,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
 
   return (
     <KeyboardAvoidingView style={styles.container}>
-      <ScrollView >
+      <ScrollView>
         <View
           style={{
             width: "100%",
@@ -129,14 +128,19 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
         <View>
           {image && (
             <View>
-              {/* {" "} */}
-              <MaterialIcons
-                onPress={()=>{setimage(null)}}
-                name="close"
-                size={26}
-                style={{ color: "white",marginTop:4,position:"absolute",zIndex:2,right:24 }}
-              />
-              {/* <CloseIcon width={24} height={24} /> */}
+              <Pressable onPress={() => setimage(null)}>
+                <Icon
+                  name="close"
+                  size={24}
+                  style={{
+                    color: "white",
+                    position: "absolute",
+                    zIndex: 2,
+                    right: 8,
+                    top: 4,
+                  }}
+                />
+              </Pressable>
               <Image source={{ uri: image }} style={styles.image} />
             </View>
           )}
@@ -144,7 +148,12 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
             <Pressable
               style={[
                 styles.image,
-                { backgroundColor: dark_primary, justifyContent: "center" },
+                {
+                  backgroundColor: dark_primary,
+                  justifyContent: "center",
+                  width: "100%",
+                  marginTop: 8,
+                },
               ]}
               onPress={selectSS}
             >
@@ -193,10 +202,11 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
         </View>
 
         <Button
-          title="Update"
+          title="Report a bug"
           width={"100%"}
           px={12}
           py={8}
+          my={16}
           borderRadius={8}
           textStyle={{
             textAlign: "center",
@@ -220,9 +230,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   image: {
-    width: "90%",
+    width: "100%",
     borderRadius: 8,
     height: 280,
+    marginTop: 8,
     alignSelf: "center",
+    zIndex: 1,
   },
 });

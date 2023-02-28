@@ -39,7 +39,7 @@ type IconProps = {
     | "report"
     | "search"
     | "send"
-    | "settings"
+    | "setting"
     | "share"
     | "shots_outline"
     | "shots_filled"

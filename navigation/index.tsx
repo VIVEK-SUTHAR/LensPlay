@@ -262,7 +262,7 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
                   alignItems: "center",
                 }}
               >
-                <SearchIcon width={24} height={24} />
+                <Icon name="search" size={24} />
               </View>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback
@@ -272,12 +272,12 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
             >
               <View
                 style={{
-                  paddingHorizontal: 10,
+                  paddingHorizontal: 8,
                   flexDirection: "row",
                   alignItems: "center",
                 }}
               >
-                {/* <CloseIcon width={24} height={24} /> */}
+                <Icon name="setting" size={24} />
               </View>
             </TouchableWithoutFeedback>
           </View>
