@@ -19,7 +19,6 @@ import ProfileCard from "../components/ProfileCard";
 import useDebounce from "../hooks/useDebounce";
 import StyledText from "../components/UI/StyledText";
 import { dark_primary } from "../constants/Colors";
-import BackIcon from "../components/svg/BackIcon";
 import { StatusBar } from "expo-status-bar";
 import Heading from "../components/UI/Heading";
 import recommendedProfiles from "../apollo/Queries/recommendedProfiles";

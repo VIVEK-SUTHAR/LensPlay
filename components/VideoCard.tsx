@@ -3,7 +3,6 @@ import * as React from "react";
 import {
   Image,
   StyleSheet,
-  Text,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -52,7 +51,7 @@ const VideoCard = ({
   height = 200,
   attributes,
   ethAddress,
-  hasCollectedByMe
+  hasCollectedByMe,
 }: videoPageProp) => {
   const [videoTime, setVideoTime] = React.useState<string>();
 
@@ -87,7 +86,7 @@ const VideoCard = ({
               reaction: reaction,
               isFollowdByMe: isFollowdByMe,
               description: description,
-              hasCollectedByMe: hasCollectedByMe
+              hasCollectedByMe: hasCollectedByMe,
             });
           }}
         >
@@ -102,7 +101,7 @@ const VideoCard = ({
               height: "100%",
               width: "100%",
               borderRadius: 10,
-              resizeMode: "contain",
+              resizeMode: "cover",
             }}
           />
         </TouchableWithoutFeedback>

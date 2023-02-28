@@ -12,7 +12,6 @@ import { useFollowers } from "../hooks/useFeed";
 import ProfileCard from "../components/ProfileCard";
 import { useFollowing } from "../hooks/useFeed";
 import Heading from "../components/UI/Heading";
-import { Feather } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import ProfileCardSkeleton from "../components/UI/ProfileCardSkeleton";
 import Icon from "../components/Icon";
@@ -87,7 +86,7 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
     </SafeAreaView>
   );
 };
-const SuscriberList = () => {
+const Suscribers = () => {
   const { currentProfile } = useProfile();
   const { data, error, loading } = useFollowers(currentProfile?.id);
   if (loading) return <Loader />;
@@ -117,8 +116,9 @@ const SuscriberList = () => {
   }
   return <></>;
 };
+const SuscriberList = React.memo(Suscribers);
 
-const SubscriptionsList = () => {
+const Subscriptions = () => {
   const { currentProfile } = useProfile();
   const { data, error, loading } = useFollowing(currentProfile?.ownedBy);
   if (loading) return <Loader />;
@@ -146,6 +146,8 @@ const SubscriptionsList = () => {
   }
   return <></>;
 };
+
+const SubscriptionsList = React.memo(Subscriptions);
 
 const Loader = () => {
   return (

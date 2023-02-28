@@ -8,9 +8,6 @@ import {
 import React from "react";
 import { dark_primary } from "../../constants/Colors";
 import { StatusBar } from "expo-status-bar";
-import { useThemeStore } from "../../store/Store";
-import Heading from "./Heading";
-import CloseIcon from "../svg/CloseIcon";
 
 interface DrawerProps {
   children: React.ReactNode;
