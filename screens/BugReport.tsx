@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   ScrollView,
   Pressable,
   StyleSheet,
@@ -20,9 +19,11 @@ import Button from "../components/UI/Button";
 import { dark_primary, dark_secondary } from "../constants/Colors";
 import Dropdown from "../components/UI/Dropdown";
 import { ToastType } from "../types/Store";
-import { useThemeStore, useToast } from "../store/Store";
+import { useProfile, useThemeStore, useToast } from "../store/Store";
 import Icon from "../components/Icon";
 import { StatusBar } from "expo-status-bar";
+import Input from "../components/UI/Input";
+import canUploadToArweave from "../utils/canUploadToArweave";
 
 export type BugCategory = {
   reason: string;
@@ -30,13 +31,16 @@ export type BugCategory = {
 
 const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
   const toast = useToast();
+
+  const { currentProfile } = useProfile();
+
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [BugData, setBugData] = useState({
     bugType: "",
     description: "",
     email: "",
     imgLink: "",
-    username: "",
+    username: currentProfile?.handle,
   });
   const [image, setimage] = useState(null);
 
@@ -100,6 +104,17 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
         if (response.ok) {
           let data = await response.text();
           setIsUpdating(false);
+          setBugData({
+            bugType: "",
+            description: "",
+            email: "",
+            imgLink: "",
+            username: currentProfile?.handle,
+          });
+          setselectData({reason: "Bug Category"});
+          if(image){
+            setimage(null)
+          }
           toast.show("Thanks for reporting bug", ToastType.SUCCESS, true);
         }
         console.log(hash);
@@ -160,17 +175,6 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
               ]}
               onPress={selectSS}
             >
-              {/* <Icon
-                  name="bug"
-                  size={44}
-                  style={{
-                    color: "white",
-                    position: "absolute",
-                    zIndex: 3,
-                    right: 8,
-                    top: 10,
-                  }}
-                /> */}
               <StyledText
                 title="Select Screenshot"
                 style={{ color: "white", alignSelf: "center" }}
@@ -189,19 +193,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
               console.log(BugData.description);
             }}
           />
-          <TextArea
-            label="Your lens handle name"
-            placeHolder={"@developer.lens"}
-            value={BugData.username}
-            onChange={(e) => {
-              setBugData({
-                ...BugData,
-                username: e.nativeEvent.text,
-              });
-              console.log(BugData.username);
-            }}
-          />
-          <TextArea
+          <Input
             label="Your email"
             placeHolder={"abc@gmail.com"}
             value={BugData.email}
