@@ -6,6 +6,8 @@ import {
   StyleSheet,
   Image,
   KeyboardAvoidingView,
+  Touchable,
+  TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { RootStackScreenProps } from "../types/navigation/types";
@@ -27,7 +29,6 @@ export type BugCategory = {
 };
 
 const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
-  // const [BugInfo, setBugInfo] = useState("");
   const toast = useToast();
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [BugData, setBugData] = useState({
@@ -72,7 +73,6 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
     },
   ];
 
-  const [imgupdate, setimgupdate] = useState(null);
   async function sendReportData() {
     if (!BugData.bugType) {
       toast.show("Please select bug-type", ToastType.ERROR, true);
@@ -83,44 +83,31 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
       if (image) {
         const blob = await getImageBlobFromUri(image);
         const hash = await uploadImageToIPFS(blob);
-        console.log(hash);
-        setBugData({
+        let bodyContent = JSON.stringify({
           ...BugData,
           imgLink: `https://ipfs.io/ipfs/${hash}`,
         });
-        setimgupdate(hash);
-        console.log(BugData.imgLink);
+        let response = await fetch(
+          "https://bundlr-upload-server.vercel.app/api/report",
+          {
+            method: "POST",
+            body: bodyContent,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (response.ok) {
+          let data = await response.text();
+          setIsUpdating(false);
+          toast.show("Thanks for reporting bug", ToastType.SUCCESS, true);
+        }
+        console.log(hash);
       }
-      // uploadtobundler();
+      console.log(BugData);
     } catch (error) {
     } finally {
       setIsUpdating(false);
-    }
-  }
-  useEffect(() => {
-    if (image) {
-      uploadtobundler();
-    }
-  }, [imgupdate]);
-
-  async function uploadtobundler() {
-    let bodyContent = JSON.stringify(BugData);
-    console.log(BugData);
-
-    let response = await fetch(
-      "https://bundlr-upload-server.vercel.app/api/report",
-      {
-        method: "POST",
-        body: bodyContent,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (true) {
-      let data = await response.text();
-      setIsUpdating(false);
-      toast.show("Thanks for reporting bug", ToastType.SUCCESS, true);
     }
   }
   return (
@@ -146,16 +133,14 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
         <View>
           {image && (
             <View>
-              <Pressable onPress={() => setimage(null)}>
+              <Pressable
+                onPress={() => setimage(null)}
+                style={{ position: "absolute", zIndex: 1, right: 16, top: 14 }}>
                 <Icon
                   name="close"
                   size={24}
                   style={{
                     color: "white",
-                    position: "absolute",
-                    zIndex: 10,
-                    right: 8,
-                    top: 10,
                   }}
                 />
               </Pressable>
@@ -175,6 +160,17 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
               ]}
               onPress={selectSS}
             >
+              {/* <Icon
+                  name="bug"
+                  size={44}
+                  style={{
+                    color: "white",
+                    position: "absolute",
+                    zIndex: 3,
+                    right: 8,
+                    top: 10,
+                  }}
+                /> */}
               <StyledText
                 title="Select Screenshot"
                 style={{ color: "white", alignSelf: "center" }}
@@ -253,5 +249,6 @@ const styles = StyleSheet.create({
     height: 280,
     marginTop: 8,
     alignSelf: "center",
+    zIndex: 0,
   },
 });
