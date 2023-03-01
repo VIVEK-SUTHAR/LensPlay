@@ -4,8 +4,6 @@ import {
   Pressable,
   RefreshControl,
   ScrollView,
-  StatusBar,
-  Text,
   ToastAndroid,
   View,
 } from "react-native";
@@ -20,7 +18,6 @@ import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
 import getPublications from "../apollo/Queries/getPublications";
 import Avatar from "../components/UI/Avatar";
-import convertDate from "../utils/formateDate";
 import AnimatedLottieView from "lottie-react-native";
 import extractURLs from "../utils/extractURL";
 import { RootStackScreenProps } from "../types/navigation/types";
@@ -30,16 +27,12 @@ import { LensPublication } from "../types/Lens/Feed";
 import getMirrorVideos from "../apollo/Queries/getMirrorVideos";
 import getCollectVideos from "../apollo/Queries/getCollectVideos";
 import ProfileSkeleton from "../components/UI/ProfileSkeleton";
-import { Entypo, Feather } from "@expo/vector-icons";
 import { createFreeSubscribe } from "../api";
 import { ToastType } from "../types/Store";
 import VERIFIED_CHANNELS from "../constants/Varified";
 import VerifiedIcon from "../components/svg/VerifiedIcon";
 import { STATIC_ASSET } from "../constants";
-import Twitter from "../components/svg/Twitter";
-import YouTube from "../components/svg/YouTube";
-import Instagram from "../components/svg/Instagram";
-import Website from "../components/svg/Website";
+import Icon from "../components/Icon";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -89,7 +82,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
         },
       });
       setProfile(profiledata.data.profile);
-      getLinks();
+      getLinks(profiledata.data.profile);
       const getUserVideos = await client.query({
         query: getPublications,
         variables: {
@@ -162,7 +155,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
     });
   }, []);
 
-  function getLinks() {
+  function getLinks(profile) {
     const twitter = profile?.attributes?.find((item) => item.key === "twitter")
       ?.value;
     const youtube = profile?.attributes?.find((item) => item.key === "youtube")
@@ -179,8 +172,6 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       twitter: twitter,
       yt: youtube,
     });
-
-    console.log(links);
   }
 
   return (
@@ -317,15 +308,19 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                           <View
                             style={{
                               backgroundColor: "transparent",
-                              height: 15,
-                              width: 15,
+                              height: "auto",
+                              width: "auto",
                               padding: 1,
                               borderRadius: 8,
                               marginTop: 8,
                               marginHorizontal: 4,
                             }}
                           >
-                            <VerifiedIcon height={18} width={18} />
+                            <Icon
+                              name="verified"
+                              size={18}
+                              color={theme.PRIMARY}
+                            />
                           </View>
                         )}
                       </View>
@@ -375,9 +370,9 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                           );
                         }}
                       >
-                        <Twitter height={24} width={24} filled={true} />
+                        <Icon name="twitter" size={16} color="#1DA1F2" />
                         <StyledText
-                          style={{ color: "white", marginRight: 4 }}
+                          style={{ color: theme.PRIMARY, marginRight: 4 }}
                           title={`@${links.twitter}`}
                         ></StyledText>
                       </Pressable>
@@ -388,9 +383,11 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                       <View
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
-                        <YouTube height={24} width={24} filled={true} />
+                        {/* <YouTube height={24} width={24} filled={true} /> */}
+                        <Icon name="youtube" size={16} color="#FF0000" />
+
                         <StyledText
-                          style={{ color: "white", marginRight: 4 }}
+                          style={{ color:theme.PRIMARY, marginRight: 4 }}
                           title={links.yt}
                         ></StyledText>
                       </View>
@@ -414,9 +411,10 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                           alignItems: "center",
                         }}
                       >
-                        <Instagram height={24} width={24} filled={true} />
+                        <Icon name="instagram" size={16} color="#405DE6" />
+
                         <StyledText
-                          style={{ color: "white", marginRight: 4 }}
+                          style={{ color:theme.PRIMARY, marginRight: 4 }}
                           title={links.insta}
                         ></StyledText>
                       </View>
@@ -431,9 +429,9 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                           Linking.openURL(links.site);
                         }}
                       >
-                        <Website height={24} width={24} filled={true} />
+                        <Icon name="link" size={16} color="white" />
                         <StyledText
-                          style={{ color: "white", marginLeft: 4 }}
+                          style={{ color: theme.PRIMARY, marginLeft: 4 }}
                           title={links.site}
                         ></StyledText>
                       </Pressable>
@@ -501,14 +499,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                             });
                           }}
                         >
-                          <Feather
-                            name={`chevron-right`}
-                            size={24}
-                            color="white"
-                            style={{
-                              display: allVideos?.length > 0 ? "flex" : "none",
-                            }}
-                          />
+                          <Icon name="arrowForward" />
                         </Pressable>
                       </Pressable>
                       <ScrollView
@@ -584,15 +575,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                             });
                           }}
                         >
-                          <Feather
-                            name={`chevron-right`}
-                            size={24}
-                            color="white"
-                            style={{
-                              display:
-                                mirrorVideos?.length > 0 ? "flex" : "none",
-                            }}
-                          />
+                          <Icon name="arrowForward" />
                         </Pressable>
                       </View>
                       <ScrollView
@@ -670,15 +653,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                           });
                         }}
                       >
-                        <Feather
-                          name={`chevron-right`}
-                          size={24}
-                          color="white"
-                          style={{
-                            display:
-                              collectVideos?.length > 0 ? "flex" : "none",
-                          }}
-                        />
+                        <Icon name="arrowForward" />
                       </Pressable>
                     </View>
                     <ScrollView

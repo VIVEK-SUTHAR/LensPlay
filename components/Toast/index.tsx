@@ -4,6 +4,7 @@ import Constants from "expo-constants";
 import { useToast } from "../../store/Store";
 import { ToastType } from "../../types/Store";
 import { MaterialIcons } from "@expo/vector-icons";
+import Icon from "../Icon";
 
 const StatusBarHeight = Constants.statusBarHeight;
 
@@ -73,13 +74,13 @@ const Toast = () => {
         },
       ]}
     >
-      <MaterialIcons
+      <Icon
         name={
           toastStore.type === ToastType.ERROR
-            ? "error-outline"
+            ? "report"
             : toastStore.type === ToastType.INFO
-            ? "info-outline"
-            : "check-circle-outline"
+            ? "info"
+            : "success"
         }
         color={"white"}
         style={{ marginHorizontal: 2 }}

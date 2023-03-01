@@ -3,10 +3,7 @@ import React, { useEffect, useState } from "react";
 import { LensPublication } from "../../types/Lens/Feed";
 import VideoCard from "../VideoCard";
 import Heading from "../UI/Heading";
-import { Feather } from "@expo/vector-icons";
-import { client } from "../../apollo/client";
-import getPublications from "../../apollo/Queries/getPublications";
-import { useAuthStore } from "../../store/Store";
+import Icon from "../Icon";
 
 type AllVideosProps = {
   profileId: string | undefined;
@@ -46,8 +43,8 @@ const AllVideos = ({
             });
           }}
         >
-          <Feather
-            name={`chevron-right`}
+          <Icon
+            name="arrowForward"
             size={24}
             color="white"
             style={{

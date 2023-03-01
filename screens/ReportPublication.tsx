@@ -126,9 +126,11 @@ const ReportPublication = ({
           label="Select Type"
           data={reportData}
           onSelect={setselectedData}
+          width={"90%"}
         />
         {selectedData?.reason && (
           <Dropdown
+            width={"90%"}
             label="Reason"
             data={selectedData.subReason}
             onSelect={setSelectedSubReason}

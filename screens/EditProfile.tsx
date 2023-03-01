@@ -9,12 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { dark_primary } from "../constants/Colors";
 import StyledText from "../components/UI/StyledText";
-import {
-  useAuthStore,
-  useProfile,
-  useThemeStore,
-  useToast,
-} from "../store/Store";
+import { useAuthStore, useProfile, useToast } from "../store/Store";
 import Button from "../components/UI/Button";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
@@ -29,9 +24,10 @@ import uploadImageToIPFS from "../utils/uploadImageToIPFS";
 import { Profile } from "../types/Lens";
 import Input from "../components/UI/Input";
 import getIPFSLink from "../utils/getIPFSLink";
-import { Feather } from "@expo/vector-icons";
 import TextArea from "../components/UI/TextArea";
 import { STATIC_ASSET } from "../constants";
+import Icon from "../components/Icon";
+import canUploadToArweave from "../utils/canUploadToArweave";
 
 const EditProfile = ({
   navigation,
@@ -75,7 +71,6 @@ const EditProfile = ({
       if (updateOnLens.data) {
         if (!userData.bio.length && !userData.name.length) {
           toast.show("Channel image updated", ToastType.SUCCESS, true);
-          navigation.goBack();
         }
         if (
           userData.bio.length > 0 ||
@@ -96,12 +91,13 @@ const EditProfile = ({
       quality: 1,
       base64: true,
     });
-    if (result.canceled) {
+    if (result.cancelled) {
       toast.show("No image selected", ToastType.ERROR, true);
     }
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-      const imgblob = await getImageBlobFromUri(result.assets[0].uri);
+    if (!result.cancelled) {
+      setImage(result.uri);
+      const imgblob = await getImageBlobFromUri(result.uri);
+      console.log(canUploadToArweave(imgblob));
       setImageBlob(imgblob);
     }
   }
@@ -113,12 +109,12 @@ const EditProfile = ({
       quality: 1,
       base64: true,
     });
-    if (coverresult.canceled) {
+    if (coverresult.cancelled) {
       toast.show("No image selected", ToastType.ERROR, true);
     }
-    if (!coverresult.canceled) {
+    if (!coverresult.cancelled) {
       setCoverPic(coverresult.uri);
-      const imgblob = await getImageBlobFromUri(coverresult.assets[0].uri);
+      const imgblob = await getImageBlobFromUri(coverresult.uri);
       setCoverImageBlob(imgblob);
     }
   }
@@ -145,7 +141,6 @@ const EditProfile = ({
         bio: "",
       });
       toast.show("Channel updated successfully", ToastType.SUCCESS, true);
-      navigation.goBack();
     } else {
       toast.show("Some error occured please try again", ToastType.ERROR, true);
     }
@@ -253,7 +248,7 @@ const EditProfile = ({
               alignItems: "center",
             }}
           >
-            <Feather name="edit" size={28} color={"white"} />
+            <Icon name="edit" />
           </View>
           <Image
             source={{
@@ -292,7 +287,7 @@ const EditProfile = ({
               alignItems: "center",
             }}
           >
-            <Feather name="edit" size={28} color={"white"} />
+            <Icon name="edit" />
           </View>
           <Avatar
             src={
@@ -301,7 +296,6 @@ const EditProfile = ({
               STATIC_ASSET
             }
             height={90}
-            opacity={0.5}
             width={90}
             borderRadius={50}
           />

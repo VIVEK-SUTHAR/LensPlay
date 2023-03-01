@@ -58,8 +58,9 @@ const Button = (props: ButtonProps): JSX.Element => {
 
   var newStyle = Object.assign({}, textStyle, {
     textAlign: "center",
+    // marginRight: 8,
   });
-  
+
   return (
     <Pressable
       android_ripple={{

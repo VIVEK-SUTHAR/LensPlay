@@ -3,12 +3,9 @@ import {
   RefreshControl,
   SafeAreaView,
   StyleSheet,
-  Text,
-  View,
 } from "react-native";
 import React, { useLayoutEffect } from "react";
 import { useThemeStore } from "../store/Store";
-import NewVideoCard from "../components/NewVideoCard";
 import VideoCard from "../components/VideoCard";
 
 const UserVideos = ({ navigation, route }) => {

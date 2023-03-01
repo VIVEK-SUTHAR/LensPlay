@@ -9,17 +9,20 @@ import {
   View,
 } from "react-native";
 import Button from "../components/UI/Button";
-import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Constants from "expo-constants";
+import { MotiView } from "moti";
 
 function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   const connector = useWalletConnect();
   const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
+
   const connectWallet = React.useCallback(async () => {
     await connector.connect();
   }, [connector]);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#93E9C8" style="dark" />
@@ -28,7 +31,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           source={require("../assets/images/Vector257.png")}
           style={{
             width: windowWidth,
-            height: windowWidth + 105,
+            height: windowWidth + 100,
             marginTop: -Constants.statusBarHeight / 2,
           }}
           resizeMode={"contain"}
@@ -37,9 +40,9 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           source={require("../assets/images/login2.png")}
           style={{
             width: windowWidth * 0.9,
-            height: 495,
+            height: windowHeight / 2 + 100,
             position: "absolute",
-            bottom: 32,
+            bottom: 30,
             right: 0,
           }}
           resizeMode={"contain"}
@@ -48,16 +51,26 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
       <View
         style={{
           justifyContent: "center",
-          marginTop: 0,
+          marginTop: 48,
         }}
       >
-        <View
+        <MotiView
+          from={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{
+            type: "timing",
+            duration: 1500,
+            delay: 100,
+          }}
           style={{
             flexDirection: "row",
             alignItems: "flex-start",
             paddingHorizontal: 34,
             marginTop: 0,
-            top: 64,
           }}
         >
           <StyledText
@@ -65,7 +78,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             style={{
               fontSize: 28,
               color: "white",
-              fontWeight: "700",
+              fontWeight: "600",
               textAlign: "right",
             }}
           />
@@ -74,19 +87,32 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             style={{
               fontSize: 28,
               color: "#93E9C8",
-              fontWeight: "700",
+              fontWeight: "600",
               textAlign: "right",
               marginLeft: 8,
             }}
           />
-        </View>
-        <View style={{ flexDirection: "row", paddingHorizontal: 36, top: 64 }}>
+        </MotiView>
+        <MotiView
+          from={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{
+            type: "timing",
+            duration: 1500,
+            delay: 200,
+          }}
+          style={{ flexDirection: "row", paddingHorizontal: 36 }}
+        >
           <StyledText
             title={"User"}
             style={{
               fontSize: 28,
               color: "white",
-              fontWeight: "700",
+              fontWeight: "600",
               textAlign: "right",
             }}
           />
@@ -95,19 +121,32 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             style={{
               fontSize: 28,
               color: "#93E9C8",
-              fontWeight: "700",
+              fontWeight: "600",
               textAlign: "right",
               marginLeft: 8,
             }}
           />
-        </View>
-        <View style={{ flexDirection: "row", paddingHorizontal: 36, top: 64 }}>
+        </MotiView>
+        <MotiView
+          from={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{
+            type: "timing",
+            duration: 1500,
+            delay: 300,
+          }}
+          style={{ flexDirection: "row", paddingHorizontal: 36 }}
+        >
           <StyledText
             title={"Social"}
             style={{
               fontSize: 28,
               color: "white",
-              fontWeight: "700",
+              fontWeight: "600",
               textAlign: "right",
             }}
           />
@@ -116,25 +155,32 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             style={{
               fontSize: 28,
               color: "#93E9C8",
-              fontWeight: "700",
+              fontWeight: "600",
               textAlign: "right",
               marginLeft: 8,
             }}
           />
-        </View>
-        <View style={{ padding: 16, marginTop: 84 }}>
-          <Button
-            onPress={async() => {
-              await connectWallet();
-              navigation.push("LoginWithLens");
-            }}
-            title="Connect Wallet"
-            bg="#93E9C8"
-            borderRadius={16}
-            textStyle={{ fontWeight: "800", fontSize: 28 }}
-            py={12}
-          />
-        </View>
+        </MotiView>
+      </View>
+      <View
+        style={{
+          paddingHorizontal: 16,
+          position: "absolute",
+          bottom: 16,
+          width: "100%",
+        }}
+      >
+        <Button
+          onPress={async () => {
+            await connectWallet();
+            navigation.push("LoginWithLens");
+          }}
+          title="Connect Wallet"
+          bg="#93E9C8"
+          borderRadius={50}
+          textStyle={{ fontWeight: "600", fontSize: 20 }}
+          py={12}
+        />
       </View>
     </SafeAreaView>
   );

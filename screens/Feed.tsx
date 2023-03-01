@@ -181,6 +181,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
                 description={item?.root?.metadata?.description}
                 attributes={item?.root?.metadata?.attributes}
                 ethAddress={item?.root?.profile?.ownedBy}
+                hasCollectedByMe={item?.root?.hasCollectedByMe}
               />
             );
           }}

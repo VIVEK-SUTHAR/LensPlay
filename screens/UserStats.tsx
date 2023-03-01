@@ -12,8 +12,9 @@ import { useFollowers } from "../hooks/useFeed";
 import ProfileCard from "../components/ProfileCard";
 import { useFollowing } from "../hooks/useFeed";
 import Heading from "../components/UI/Heading";
-import { Feather } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import ProfileCardSkeleton from "../components/UI/ProfileCardSkeleton";
+import Icon from "../components/Icon";
 const StatsTab = createMaterialTopTabNavigator();
 
 const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
@@ -31,21 +32,15 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
               justifyContent: "center",
             }}
           >
-            <Feather
-              name="arrow-left"
-              color={theme.PRIMARY}
-              size={22}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
+            <Icon name="arrowLeft" color={theme.PRIMARY} />
             <Heading
               title={`Your ${headerTitle}`}
               style={{
                 color: theme.PRIMARY,
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: "500",
                 marginHorizontal: 4,
+                marginBottom: 4,
               }}
             />
           </View>
@@ -91,14 +86,14 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
     </SafeAreaView>
   );
 };
-const SuscriberList = () => {
+const Suscribers = () => {
   const { currentProfile } = useProfile();
   const { data, error, loading } = useFollowers(currentProfile?.id);
   if (loading) return <Loader />;
 
   if (data) {
     return (
-      <View style={{ backgroundColor: "black" }}>
+      <View style={{ backgroundColor: "black", minHeight: "100%" }}>
         <FlatList
           data={data?.followers?.items}
           keyExtractor={(_, index) => index.toString()}
@@ -121,14 +116,15 @@ const SuscriberList = () => {
   }
   return <></>;
 };
+const SuscriberList = React.memo(Suscribers);
 
-const SubscriptionsList = () => {
+const Subscriptions = () => {
   const { currentProfile } = useProfile();
   const { data, error, loading } = useFollowing(currentProfile?.ownedBy);
   if (loading) return <Loader />;
   if (data) {
     return (
-      <View style={{ backgroundColor: "black" }}>
+      <View style={{ backgroundColor: "black", minHeight: "100%" }}>
         <FlatList
           data={data.following.items}
           keyExtractor={(_, index) => index.toString()}
@@ -151,14 +147,7 @@ const SubscriptionsList = () => {
   return <></>;
 };
 
-const ProfileCardSkeleton = () => {
-  return (
-    <View style={styles.SkletonContainer}>
-      <View style={styles.SkletonAvatar} />
-      <View style={styles.SkletonText}></View>
-    </View>
-  );
-};
+const SubscriptionsList = React.memo(Subscriptions);
 
 const Loader = () => {
   return (

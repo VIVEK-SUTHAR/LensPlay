@@ -1,4 +1,3 @@
-import { SimpleLineIcons } from "@expo/vector-icons";
 import React, { FC, ReactElement, useRef, useState } from "react";
 import {
   FlatList,
@@ -9,15 +8,17 @@ import {
   View,
 } from "react-native";
 import { dark_primary } from "../../constants/Colors";
+import Icon from "../Icon";
 import StyledText from "./StyledText";
 
 interface Props {
   label: string;
   data: Array<{ label: string; value: string }>;
   onSelect: (item: { label: string; value: string }) => void;
+  width: string;
 }
 
-const Dropdown: FC<Props> = ({ label, data, onSelect }) => {
+const Dropdown: FC<Props> = ({ label, data, onSelect,width }) => {
   const DropdownButton = useRef();
   const [visible, setVisible] = useState<boolean>(false);
   const [selected, setSelected] = useState(undefined);
@@ -89,6 +90,7 @@ const Dropdown: FC<Props> = ({ label, data, onSelect }) => {
         style={[
           styles.button,
           {
+            width:width,
             borderColor: visible ? "#2A9D5C" : "transparent",
             borderWidth: 1,
           },
@@ -99,7 +101,7 @@ const Dropdown: FC<Props> = ({ label, data, onSelect }) => {
         <Text style={styles.buttonText}>
           {(selected && selected.reason) || label}
         </Text>
-        <SimpleLineIcons name="arrow-down" color={"white"} />
+        <Icon name="arrowDown" size={16} />
       </TouchableOpacity>
     </View>
   );
@@ -107,7 +109,7 @@ const Dropdown: FC<Props> = ({ label, data, onSelect }) => {
 
 const styles = StyleSheet.create({
   button: {
-    width: "90%",
+    // width: "100%",
     marginVertical: 4,
     flexDirection: "row",
     alignItems: "center",

@@ -1,14 +1,13 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import NotificationCardProps, { CollectedPublication } from "./index.d";
-import { dark_secondary } from "../../constants/Colors";
-import { Entypo } from "@expo/vector-icons";
 import getIPFSLink from "../../utils/getIPFSLink";
 import formatAddress from "../../utils/formatAddress";
 import getDifference from "../../utils/getDifference";
 import Avatar from "../UI/Avatar";
 import CollectIcon from "../svg/CollectIcon";
 import StyledText from "../UI/StyledText";
+import Icon from "../Icon";
 
 const CollectNotification: React.FC<NotificationCardProps> = ({
   navigation,
@@ -25,7 +24,7 @@ const CollectNotification: React.FC<NotificationCardProps> = ({
           alignItems: "center",
         }}
       >
-        <CollectIcon height={20} width={20} />
+        <Icon name="collect" color="coral" size={24} />
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -64,6 +63,14 @@ const CollectNotification: React.FC<NotificationCardProps> = ({
             </View>
           </View>
         </View>
+        <StyledText
+          title={
+            notification?.collectedPublication?.metadata?.content ||
+            notification?.collectedPublication?.metadata?.description
+          }
+          numberOfLines={2}
+          style={{ fontSize: 10, color: "gray" }}
+        />
       </View>
     </>
   );

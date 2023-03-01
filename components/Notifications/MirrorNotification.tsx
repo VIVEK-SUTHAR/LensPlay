@@ -8,6 +8,7 @@ import { AntDesign } from "@expo/vector-icons";
 import extractURLs from "../../utils/extractURL";
 import StyledText from "../UI/StyledText";
 import { STATIC_ASSET } from "../../constants";
+import Icon from "../Icon";
 
 const MirrorNotification = ({
   navigation,
@@ -24,7 +25,7 @@ const MirrorNotification = ({
           alignItems: "center",
         }}
       >
-        <AntDesign name="retweet" size={24} color={"#6bd841"} />
+        <Icon name="mirror" color={"#6bd841"} />
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -72,6 +73,7 @@ const MirrorNotification = ({
                 title={extractURLs(
                   notification?.publication?.metadata?.description
                 )}
+                numberOfLines={2}
                 style={{ color: "grey", fontSize: 12 }}
               />
             </View>

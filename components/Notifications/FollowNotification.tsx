@@ -1,6 +1,5 @@
 import { Pressable, Text, View } from "react-native";
 import React from "react";
-import { AntDesign } from "@expo/vector-icons";
 import getDifference from "../../utils/getDifference";
 import formatAddress from "../../utils/formatAddress";
 import NotificationCardProps from "./index.d";
@@ -8,6 +7,7 @@ import Avatar from "../UI/Avatar";
 import getIPFSLink from "../../utils/getIPFSLink";
 import FollowIcon from "../svg/FollowIcon";
 import StyledText from "../UI/StyledText";
+import Icon from "../Icon";
 
 const FollowNotification: React.FC<NotificationCardProps> = ({
   navigation,
@@ -24,8 +24,7 @@ const FollowNotification: React.FC<NotificationCardProps> = ({
           alignItems: "center",
         }}
       >
-        {/* <AntDesign name="adduser" size={24} color={"#9a76e0"} /> */}
-        <FollowIcon width={32} height={32} />
+        <Icon name="follow" size={30} color="#5C7CFA" />
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>

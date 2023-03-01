@@ -4,8 +4,8 @@ import NotificationCardProps from "./index.d";
 import getDifference from "../../utils/getDifference";
 import formatAddress from "../../utils/formatAddress";
 import Avatar from "../UI/Avatar";
-import { Octicons } from "@expo/vector-icons";
-import MentionIcon from "../svg/MentionIcon";
+import Icon from "../Icon";
+import { STATIC_ASSET } from "../../constants";
 
 const MentionNotification = ({
   navigation,
@@ -22,8 +22,7 @@ const MentionNotification = ({
           alignItems: "center",
         }}
       >
-        {/* <Octicons name="mention" size={24} color={"#6bd841"} /> */}
-        <MentionIcon width={24} height={24} />
+        <Icon name="mention" color="#CC5DE8" size={24} />
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -38,7 +37,7 @@ const MentionNotification = ({
               <Avatar
                 src={
                   notification?.mentionPublication?.profile?.picture?.original
-                    ?.url
+                    ?.url || STATIC_ASSET
                 }
                 height={35}
                 width={35}
@@ -60,7 +59,7 @@ const MentionNotification = ({
               </Text>
             </Text>
             <View>
-              <Text style={{ color: "grey", fontSize: 12 }}>
+              <Text numberOfLines={2} style={{ color: "grey", fontSize: 12 }}>
                 {notification?.mentionPublication?.metadata?.description}
               </Text>
             </View>

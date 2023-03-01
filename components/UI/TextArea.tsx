@@ -38,6 +38,7 @@ const TextArea = ({
         placeholderTextColor="gray"
         selectionColor={PRIMARY}
         value={value}
+        textAlignVertical="top"
       />
     </View>
   );

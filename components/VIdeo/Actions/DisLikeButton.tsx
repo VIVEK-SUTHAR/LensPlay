@@ -12,6 +12,7 @@ import DisLikeIcon from "../../svg/DisLikeIcon";
 import { removeLike, addLike } from "../../../api";
 import { ToastAndroid } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import Icon from "../../Icon";
 
 type DisLikeButtonProps = {
   id: string;
@@ -88,10 +89,10 @@ const DisLikeButton = ({
         //   width={20}
         //   filled={isalreadyDisLiked ? true : false}
         // />
-        <AntDesign
-          name={isalreadyDisLiked ? "dislike1" : "dislike2"}
+       <Icon
+          name="dislike"
           size={20}
-          color={isalreadyDisLiked ? primary : "white"}
+          color={isalreadyDisLiked? PRIMARY : "white"}
         />
       }
     />

@@ -8,6 +8,7 @@ import { useAuthStore } from "../../store/Store";
 import { Feather } from "@expo/vector-icons";
 import VideoCard from "../VideoCard";
 import formatHandle from "../../utils/formatHandle";
+import Icon from "../Icon";
 
 type CollectedVideosProps = {
   navigation: any;
@@ -70,8 +71,8 @@ const CollectedVideos = ({
             });
           }}
         >
-          <Feather
-            name={`chevron-right`}
+          <Icon
+            name="arrowForward"
             size={24}
             color="white"
             style={{
@@ -115,7 +116,9 @@ const CollectedVideos = ({
       {collectVideos?.length === 0 && (
         <View style={{ height: 50, justifyContent: "center" }}>
           <Heading
-            title={`Looks like ${formatHandle(handle)} has not collected any video`}
+            title={`Looks like ${formatHandle(
+              handle
+            )} has not collected any video`}
             style={{
               color: "gray",
               fontSize: 15,
