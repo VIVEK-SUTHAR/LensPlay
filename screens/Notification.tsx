@@ -105,6 +105,80 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
               />
             )}
           />
+          <Tab.Screen
+            name="Collect"
+            children={() => (
+              <FlatList
+                style={{
+                  backgroundColor: "black",
+                }}
+                data={data.result.items}
+                keyExtractor={(_, index) => index.toString()}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => {
+                      setRefreshing(true);
+                      refetch({
+                        pid: userStore.currentProfile?.id,
+                      }).then(() => setRefreshing(false));
+                    }}
+                    colors={[theme.PRIMARY]}
+                    progressBackgroundColor={"black"}
+                  />
+                }
+                renderItem={({ item }) => {
+                  if (
+                    item.__typename === NotificationTypes.COLLECT_NOTIFICATION
+                  ) {
+                    return (
+                      <NotificationCard
+                        navigation={navigation}
+                        notification={item}
+                      />
+                    );
+                  }
+                }}
+              />
+            )}
+          />
+          <Tab.Screen
+            name="Follow"
+            children={() => (
+              <FlatList
+                style={{
+                  backgroundColor: "black",
+                }}
+                data={data.result.items}
+                keyExtractor={(_, index) => index.toString()}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => {
+                      setRefreshing(true);
+                      refetch({
+                        pid: userStore.currentProfile?.id,
+                      }).then(() => setRefreshing(false));
+                    }}
+                    colors={[theme.PRIMARY]}
+                    progressBackgroundColor={"black"}
+                  />
+                }
+                renderItem={({ item }) => {
+                  if (
+                    item.__typename === NotificationTypes.FOLLOW_NOTIFICATION
+                  ) {
+                    return (
+                      <NotificationCard
+                        navigation={navigation}
+                        notification={item}
+                      />
+                    );
+                  }
+                }}
+              />
+            )}
+          />
         </Tabs>
       </SafeAreaView>
     );
