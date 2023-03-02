@@ -13,7 +13,7 @@ const getIPFSLink = (url: string | undefined): string => {
     ? url
     : url?.includes("ipfs://")
       ? `${IPFS_GATEWAY}${url?.split("//")[1]}`
-      : url;
+      : url?.includes("ar://") ? `${ARWEAVE_GATEWAY}/${url?.split("ar://")[1]}`:url;
   return LINK;
 };
 export default getIPFSLink;
