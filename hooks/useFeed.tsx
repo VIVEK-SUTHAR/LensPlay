@@ -6,6 +6,7 @@ import getFollowers from "../apollo/Queries/getFollowers";
 import getFollowing from "../apollo/Queries/getFollowing";
 import getPublications from "../apollo/Queries/getPublications";
 import getTrendingPublication from "../apollo/Queries/getTrendingPublication";
+import isMirrored from "../apollo/Queries/isMirrored";
 import notificationsQuery from "../apollo/Queries/notificationsQuery";
 import searchProfileQuery from "../apollo/Queries/searchProfileQuery";
 import { useAuthStore, useProfile } from "../store/Store";
@@ -151,7 +152,7 @@ const useNotifications = () => {
     refetch,
     startPolling,
     previousData,
-    fetchMore
+    fetchMore,
   } = useQuery(notificationsQuery, {
     variables: {
       pid: activeProfile.currentProfile?.id,
@@ -168,6 +169,21 @@ const useNotifications = () => {
   });
   return { data, error, loading, refetch, startPolling, previousData };
 };
+
+const useIsMirrored = (publid: string) => {
+  const { currentProfile } = useProfile();
+
+  const { data, error } = useQuery(isMirrored, {
+    variables: {
+      pubid: publid,
+      id: currentProfile?.id,
+    },
+    fetchPolicy: "network-only",
+    refetchWritePolicy: "merge",
+  });
+  return { data, error };
+};
+
 export default useNotifications;
 
 export {
@@ -175,6 +191,7 @@ export {
   useExplorePublication,
   useUserPublication,
   useComments,
+  useIsMirrored,
   useFollowers,
   useFollowing,
   useSearchProfile,

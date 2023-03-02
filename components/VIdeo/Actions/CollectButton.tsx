@@ -39,8 +39,6 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
   
   const collectPublication = async () => {
     try {
-      console.log(accessToken);
-
       const data = await freeCollectPublication(publicationId, accessToken);
       if (data) {
         toast.show("Collect Submitted", ToastType.SUCCESS, true);

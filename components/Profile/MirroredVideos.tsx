@@ -107,6 +107,7 @@ const MirroredVideos = ({
                   isFollowdByMe={item.profile.isFollowedByMe}
                   reaction={item?.reaction}
                   width={300}
+                  hasCollectedByMe={item?.hasCollectedByMe}
                   height={150}
                   attributes={item?.metadata?.attributes}
                 />

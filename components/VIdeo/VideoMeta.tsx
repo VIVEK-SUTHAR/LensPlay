@@ -88,7 +88,7 @@ const VideoMeta = (props: VideoMetaProps) => {
         <View style={{ marginTop: 8, flexDirection: "row" }}>
           <StyledText
             title={description}
-            style={{ color: "white", fontSize: 14 }}
+            style={{ color: "white", fontSize: 14,maxWidth:"92%" }}
             numberOfLines={1}
           />
           {description?.length > 0 && (

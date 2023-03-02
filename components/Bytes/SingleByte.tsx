@@ -54,8 +54,6 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const windowHeight = Dimensions.get("window").height;
   const bottomTabBarHeight = useBottomTabBarHeight();
   const [collected, setCollected] = useState<boolean>(item?.hasCollectedByMe);
-  console.log(item?.hasCollectedByMe);
-
   const [totalCollects, setTotalCollects] = useState(
     item.stats.totalAmountOfCollects
   );
@@ -70,6 +68,8 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   };
 
   const collectPublication = async () => {
+    console.log(item.id);
+
     try {
       const data = await freeCollectPublication(item.id, accessToken);
       if (data) {
@@ -80,6 +80,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
     } catch (error) {
       if (error instanceof Error) {
         toast.show(error.message, ToastType.ERROR, true);
+        collectSheetRef?.current?.close();
       }
     } finally {
       //

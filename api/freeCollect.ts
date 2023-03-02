@@ -6,18 +6,14 @@
  * `onrejected`: error message with valid reason
  *
  */
-
-async function freeCollectPublication(
-  publicationId: string,
-  accessToken: string
-): Promise<any> {
-  try {
-    let headersList = {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + accessToken,
-    };
-    let gqlBody = {
-      query: `mutation ProxyAction($pubId: InternalPublicationId!) {
+async function freeCollectPublication(publicationId: string, accessToken: string): Promise<any> {
+	try {
+		let headersList = {
+			"Content-Type": "application/json",
+			"Authorization": "Bearer " + accessToken,
+		};
+		let gqlBody = {
+			query: `mutation ProxyAction($pubId: InternalPublicationId!) {
   proxyAction(request: {
     collect: {
       freeCollect: {
@@ -26,33 +22,35 @@ async function freeCollectPublication(
     }
   })
 }`,
-      variables: { pubId: publicationId },
-    };
-    let bodyContent = JSON.stringify(gqlBody);
-    let response = await fetch("https://api-mumbai.lens.dev", {
-      method: "POST",
-      body: bodyContent,
-      headers: headersList,
-    });
-    let data = await response.json();
-    if (data?.data?.proxyAction) {
-      return data?.data?.proxyAction;
-    }
-    else if (data?.errors) {
-      if (data?.errors[0].message === "Can only collect if the publication has a `FreeCollectModule` set") {
-        throw new Error('You can\'t collect this post');
-      }
-      else if (data?.errors[0].message === "You have already collected this publication") {
-        throw new Error("You have already collected this post");
-      }
-      else {
-        throw new Error('Something wen\'t wrong');
-      }
-    }
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
-  }
+			variables: { pubId: publicationId },
+		};
+		let bodyContent = JSON.stringify(gqlBody);
+		let response = await fetch("https://api-mumbai.lens.dev", {
+			method: "POST",
+			body: bodyContent,
+			headers: headersList,
+		});
+		let data = await response.json();
+		if (data?.data?.proxyAction) {
+			return data?.data?.proxyAction;
+		} else if (data?.errors) {
+			if (
+				data?.errors[0].message ===
+				"Can only collect if the publication has a `FreeCollectModule` set"
+			) {
+				throw new Error("You can't collect this post");
+			} else if (data?.errors[0].message === "You have already collected this publication") {
+				throw new Error("You have already collected this post");
+			} else if (data?.errors[0]?.message?.includes("must follow")) {
+				throw new Error("Subscribe to collect the post");
+			} else {
+				throw new Error("Something wen't wrong");
+			}
+		}
+	} catch (error) {
+		if (error instanceof Error) {
+			throw new Error(error.message);
+		}
+	}
 }
 export default freeCollectPublication;
