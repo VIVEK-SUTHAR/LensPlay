@@ -1,28 +1,19 @@
-import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, SafeAreaView, StyleSheet, View } from "react-native";
 import React from "react";
 import getIPFSLink from "../utils/getIPFSLink";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import Icon from "../components/Icon";
+
 const FullImage = ({
   navigation,
   route,
 }: RootStackScreenProps<"FullImage">) => {
-  function getRandomColor() {
-    const letters = "0123456789ABCDEF";
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
   const StatusBarHeight = Constants.statusBarHeight;
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: getRandomColor() }]}
-    >
+    <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="auto" />
       <View
         style={{
@@ -37,7 +28,13 @@ const FullImage = ({
           paddingHorizontal: 16,
         }}
       >
-        <Icon name="arrowLeft" />
+        <Pressable
+          onPress={() => {
+            navigation.pop();
+          }}
+        >
+          <Icon name="arrowLeft" />
+        </Pressable>
       </View>
       <View style={{ width: "100%", height: 300, aspectRatio: 2 }}>
         <Image
