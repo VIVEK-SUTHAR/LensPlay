@@ -9,7 +9,7 @@ import { Root } from "../../types/Lens/Feed";
 import Heading from "../UI/Heading";
 import SingleByte from "./SingleByte";
 
-const ByteCard = () => {
+const ByteCard = ({ navigation }: { navigation: any }) => {
   const [bytesData, setBytesData] = useState<Root[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);

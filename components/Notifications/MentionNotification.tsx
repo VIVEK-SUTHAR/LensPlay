@@ -13,6 +13,7 @@ const MentionNotification = ({
 }: NotificationCardProps) => {
   return (
     <>
+      
       <View
         style={{
           height: 35,

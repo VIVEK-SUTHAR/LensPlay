@@ -31,7 +31,7 @@ const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
         }}
       >
         <Text style={{ fontSize: 20, fontWeight: "bold", color: "white" }}>
-          Bytes
+          Shots
         </Text>
         <Pressable
           onPress={(e) => {
@@ -42,7 +42,7 @@ const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
           <Icon name="search" size={25} />
         </Pressable>
       </View>
-      <ByteCard />
+      <ByteCard navigation={navigation} />
     </View>
   );
 };

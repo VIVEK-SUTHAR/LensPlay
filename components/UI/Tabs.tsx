@@ -11,20 +11,25 @@ export default function Tabs({ children }: { children: ReactNode }) {
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: "500",
-          color: "white",
           textTransform: "capitalize",
         },
         tabBarItemStyle: {
           width: "auto",
           height: "auto",
           display: "flex",
+          flexDirection:"row",
           alignItems: "center",
           justifyContent: "center",
         },
+        tabBarActiveTintColor:"white",
+        tabBarInactiveTintColor:"gray",
         tabBarStyle: { backgroundColor: "transparent" },
         tabBarIndicatorStyle: {
           backgroundColor: primary,
           height: 3,
+          borderTopLeftRadius: 4,
+          borderTopRightRadius:4,
+      
         },
       }}
     >

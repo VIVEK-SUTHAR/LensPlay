@@ -41,14 +41,15 @@ async function freeCollectPublication(publicationId: string, accessToken: string
 				throw new Error("You can't collect this post");
 			} else if (data?.errors[0].message === "You have already collected this publication") {
 				throw new Error("You have already collected this post");
-			} else if (data?.errors[0]?.message?.includes("must follow")) {
-				throw new Error("Subscribe to collect the post");
+			
 			} else {
 				throw new Error("Something wen't wrong");
 			}
 		}
 	} catch (error) {
 		if (error instanceof Error) {
+			console.log(error);
+			
 			throw new Error(error.message);
 		}
 	}

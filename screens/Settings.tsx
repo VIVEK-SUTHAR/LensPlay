@@ -14,6 +14,7 @@ import { dark_primary } from "../constants/Colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Icon from "../components/Icon";
+import Constants  from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import {
   LENSPLAY_DISCORD,
@@ -93,6 +94,9 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
             link={el.link}
           />
         ))}
+      </View>
+      <View style={styles.appVersionContainer}>
+        <StyledText title={`LensPlay v1.0.0`} style={{ color: "gray",fontSize:10 }} />
       </View>
       <Modal
         transparent={true}
@@ -255,7 +259,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
     position: "absolute",
-    bottom: 16,
+    bottom: 18,
     width: "100%",
   },
   logOutContainer: {
@@ -281,5 +285,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     marginLeft: 8,
+  },
+  appVersionContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
   },
 });

@@ -16,6 +16,8 @@ import useNotifications from "../hooks/useFeed";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Tabs from "../components/UI/Tabs";
 import { NotificationTypes } from "../components/Notifications/index.d";
+import Icon from "../components/Icon";
+import StyledText from "../components/UI/StyledText";
 
 const Tab = createMaterialTopTabNavigator();
 
