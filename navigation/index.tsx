@@ -195,7 +195,7 @@ function RootNavigator() {
         name="Settings"
         component={Settings}
         options={{
-          animation: "slide_from_bottom",
+          animation: "slide_from_right",
           headerShown: true,
           headerTintColor: theme.PRIMARY,
           headerTitle: "Settings",
