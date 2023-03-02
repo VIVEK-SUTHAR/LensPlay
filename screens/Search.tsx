@@ -40,7 +40,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const debouncedValue = useDebounce<string>(keyword, 500);
 
   const onDebounce = async () => {
-    if (keyword.trim().length) {
+    if (keyword.trim().length > 0) {
       try {
         const result = await client.query({
           query: searchProfileQuery,
@@ -59,7 +59,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
         }
       } catch (error) {
         if (error instanceof Error) {
-          console.log(error);
           setIsSearching(false);
         }
       } finally {
@@ -70,7 +69,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 
   useEffect(() => {
     onDebounce();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
 
   const getRecommendedProfiles = async () => {
@@ -97,6 +95,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   useEffect(() => {
     getRecommendedProfiles();
   }, []);
+
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: { backgroundColor: "black" },
@@ -179,7 +178,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                 <ProfileCardSkeleton />
               </>
             )}
-
             {recommended.map((item, index) => {
               return (
                 <ProfileCard
@@ -247,7 +245,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
           </>
         ) : (
           <>
-            {!!!isfound && (
+            {!isfound && (
               <>
                 <AnimatedLottieView
                   autoPlay
@@ -270,21 +268,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                       marginHorizontal: 15,
                       fontWeight: "600",
                       textAlign: "center",
-                    }}
-                  />
-                  <Button
-                    title="Continue browsing..."
-                    width={"auto"}
-                    type="outline"
-                    borderColor={theme.PRIMARY}
-                    px={16}
-                    textStyle={{
-                      color: "white",
-                      fontSize: 20,
-                      fontWeight: "600",
-                    }}
-                    onPress={() => {
-                      navigation.navigate("Root");
                     }}
                   />
                 </View>
