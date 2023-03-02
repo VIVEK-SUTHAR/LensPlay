@@ -40,7 +40,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const debouncedValue = useDebounce<string>(keyword, 500);
 
   const onDebounce = async () => {
-    if (keyword.trim().length) {
+    if (keyword.trim().length > 0) {
       try {
         const result = await client.query({
           query: searchProfileQuery,
@@ -59,7 +59,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
         }
       } catch (error) {
         if (error instanceof Error) {
-          console.log(error);
           setIsSearching(false);
         }
       } finally {
@@ -70,7 +69,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 
   useEffect(() => {
     onDebounce();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
 
   const getRecommendedProfiles = async () => {
@@ -97,6 +95,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   useEffect(() => {
     getRecommendedProfiles();
   }, []);
+
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: { backgroundColor: "black" },
@@ -151,18 +150,20 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
       },
     });
   }, []);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <StatusBar backgroundColor="transparent" style="auto" />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         {isRecommended && (
-          <View style={{ marginHorizontal: 20, marginVertical: 10 }}>
+          <View style={{ marginVertical: 10 }}>
             <Heading
               title={"Recommended Channels"}
               style={{
                 color: "white",
                 fontSize: 20,
                 fontWeight: "600",
+                marginHorizontal: 20,
               }}
             />
             {recommended.length === 0 && (
@@ -179,7 +180,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                 <ProfileCardSkeleton />
               </>
             )}
-
             {recommended.map((item, index) => {
               return (
                 <ProfileCard
@@ -224,30 +224,28 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
           </>
         )}
         {searchPostResult.length > 0 ? (
-          <>
-            <View
-              style={{
-                padding: 10,
-              }}
-            >
-              {searchPostResult.map((item, index) => {
-                return (
-                  <ProfileCard
-                    key={index}
-                    profileIcon={item?.picture?.original?.url}
-                    profileName={item?.name || item?.profileId}
-                    profileId={item?.profileId}
-                    isFollowed={item?.isFollowedByMe}
-                    handle={item?.handle}
-                    owner={item?.ownedBy}
-                  />
-                );
-              })}
-            </View>
-          </>
+          <View
+            style={{
+              padding: 10,
+            }}
+          >
+            {searchPostResult.map((item, index) => {
+              return (
+                <ProfileCard
+                  key={index}
+                  profileIcon={item?.picture?.original?.url}
+                  profileName={item?.name || item?.profileId}
+                  profileId={item?.profileId}
+                  isFollowed={item?.isFollowedByMe}
+                  handle={item?.handle}
+                  owner={item?.ownedBy}
+                />
+              );
+            })}
+          </View>
         ) : (
           <>
-            {!!!isfound && (
+            {!isfound && (
               <>
                 <AnimatedLottieView
                   autoPlay
@@ -262,7 +260,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                   }}
                 >
                   <StyledText
-                    title=" No profile found 😔"
+                    title=" No profile found"
                     style={{
                       fontSize: 18,
                       color: "white",
@@ -270,21 +268,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                       marginHorizontal: 15,
                       fontWeight: "600",
                       textAlign: "center",
-                    }}
-                  />
-                  <Button
-                    title="Continue browsing..."
-                    width={"auto"}
-                    type="outline"
-                    borderColor={theme.PRIMARY}
-                    px={16}
-                    textStyle={{
-                      color: "white",
-                      fontSize: 20,
-                      fontWeight: "600",
-                    }}
-                    onPress={() => {
-                      navigation.navigate("Root");
                     }}
                   />
                 </View>

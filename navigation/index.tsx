@@ -207,7 +207,7 @@ function RootNavigator() {
         options={{
           animation: "fade_from_bottom",
           headerShown: true,
-          headerTitle:"Report a Bug",
+          headerTitle: "Report a Bug",
           headerTintColor: theme.PRIMARY,
         }}
       />

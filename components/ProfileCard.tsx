@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { TouchableWithoutFeedback, View } from "react-native";
+import { Pressable, TouchableWithoutFeedback, View } from "react-native";
 import { dark_primary } from "../constants/Colors";
 import formatHandle from "../utils/formatHandle";
 import Avatar from "./UI/Avatar";
@@ -26,7 +26,7 @@ export default function ProfileCard({
 }: ProfileCardProps) {
   const navigation = useNavigation();
   return (
-    <TouchableWithoutFeedback
+    <Pressable
       onPress={() => {
         navigation.navigate("Channel", {
           profileId: profileId,
@@ -72,6 +72,6 @@ export default function ProfileCard({
           />
         </View>
       </View>
-    </TouchableWithoutFeedback>
+    </Pressable>
   );
 }

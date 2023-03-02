@@ -33,6 +33,7 @@ import VERIFIED_CHANNELS from "../constants/Varified";
 import VerifiedIcon from "../components/svg/VerifiedIcon";
 import { STATIC_ASSET } from "../constants";
 import Icon from "../components/Icon";
+import formatHandle from "../utils/formatHandle";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -296,9 +297,9 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
                         <Heading
-                          title={profile?.name}
+                          title={profile?.name || profile?.id}
                           style={{
-                            fontSize: 20,
+                            fontSize: 16,
                             marginTop: 8,
                             fontWeight: "bold",
                             color: "white",
@@ -325,10 +326,9 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                         )}
                       </View>
                       <StyledText
-                        title={`@${profile?.handle}`}
+                        title={formatHandle(profile?.handle)}
                         style={{
-                          fontSize: 14,
-                          lineHeight: 16,
+                          fontSize: 12,
                           fontWeight: "500",
                           color: "gray",
                         }}
@@ -387,7 +387,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                         <Icon name="youtube" size={16} color="#FF0000" />
 
                         <StyledText
-                          style={{ color:theme.PRIMARY, marginRight: 4 }}
+                          style={{ color: theme.PRIMARY, marginRight: 4 }}
                           title={links.yt}
                         ></StyledText>
                       </View>
@@ -414,7 +414,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                         <Icon name="instagram" size={16} color="#405DE6" />
 
                         <StyledText
-                          style={{ color:theme.PRIMARY, marginRight: 4 }}
+                          style={{ color: theme.PRIMARY, marginRight: 4 }}
                           title={links.insta}
                         ></StyledText>
                       </View>
