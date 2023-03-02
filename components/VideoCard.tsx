@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { useActivePublication } from "../store/Store";
 import { Attribute } from "../types/Lens/Feed";
 import formatTime from "../utils/formatTime";
 import getDifference from "../utils/getDifference";
@@ -51,10 +52,11 @@ const VideoCard = ({
   height = 200,
   attributes,
   ethAddress,
+  item,
   hasCollectedByMe,
 }: videoPageProp) => {
   const [videoTime, setVideoTime] = React.useState<string>();
-
+  const { setActivePublication } = useActivePublication();
   React.useEffect(() => {
     const time = attributes?.filter((item) => {
       if (item?.traitType === "durationInSeconds") {
@@ -74,6 +76,7 @@ const VideoCard = ({
       <View style={{ height: height }}>
         <TouchableWithoutFeedback
           onPress={() => {
+            setActivePublication(item);
             navigation.navigate("VideoPage", {
               title: title,
               id: id,

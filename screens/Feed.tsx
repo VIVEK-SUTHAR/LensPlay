@@ -8,11 +8,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 import VideoCard from "../components/VideoCard";
-import {
-  useAuthStore,
-  useProfile,
-  useThemeStore,
-} from "../store/Store";
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import { RootTabScreenProps } from "../types/navigation/types";
 import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
 import AnimatedLottieView from "lottie-react-native";
@@ -165,6 +161,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
           renderItem={({ item }) => {
             return (
               <VideoCard
+                item={item?.root}
                 id={item?.root?.id}
                 title={item?.root?.metadata?.name}
                 date={item.root.createdAt}

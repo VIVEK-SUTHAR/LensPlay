@@ -1,6 +1,6 @@
 import { View, ScrollView, SafeAreaView, BackHandler } from "react-native";
 import React, { useEffect } from "react";
-import { useReactionStore } from "../store/Store";
+import { useActivePublication, useReactionStore } from "../store/Store";
 import { useState } from "react";
 import { setStatusBarHidden } from "expo-status-bar";
 import * as ScreenOrientation from "expo-screen-orientation";
@@ -73,13 +73,15 @@ const VideoPage = ({
   }, []);
 
   const PublicationStats = route.params.stats;
-
+  const { activePublication } = useActivePublication();
+  console.log(activePublication?.metadata);
+  
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <Player
-        poster={route.params.banner}
+        poster={activePublication?.metadata?.cover}
         title={route.params.title}
-        url={route.params.playbackId}
+        url={activePublication?.metadata?.media[0].original?.url}
         inFullscreen={inFullscreen}
         isMute={isMute}
         setInFullscreen={setInFullsreen}
