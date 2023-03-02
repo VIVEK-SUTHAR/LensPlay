@@ -14,6 +14,10 @@ const UserVideos = ({ navigation, route }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: route.params.title,
+      headerTitleStyle: {
+        fontSize: 16,
+        fontWeight: "600",
+      },
     });
   }, []);
   return (
