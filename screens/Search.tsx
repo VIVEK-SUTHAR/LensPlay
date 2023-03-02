@@ -150,18 +150,20 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
       },
     });
   }, []);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <StatusBar backgroundColor="transparent" style="auto" />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         {isRecommended && (
-          <View style={{ marginHorizontal: 20, marginVertical: 10 }}>
+          <View style={{ marginVertical: 10 }}>
             <Heading
               title={"Recommended Channels"}
               style={{
                 color: "white",
                 fontSize: 20,
                 fontWeight: "600",
+                marginHorizontal: 20,
               }}
             />
             {recommended.length === 0 && (
@@ -222,27 +224,25 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
           </>
         )}
         {searchPostResult.length > 0 ? (
-          <>
-            <View
-              style={{
-                padding: 10,
-              }}
-            >
-              {searchPostResult.map((item, index) => {
-                return (
-                  <ProfileCard
-                    key={index}
-                    profileIcon={item?.picture?.original?.url}
-                    profileName={item?.name || item?.profileId}
-                    profileId={item?.profileId}
-                    isFollowed={item?.isFollowedByMe}
-                    handle={item?.handle}
-                    owner={item?.ownedBy}
-                  />
-                );
-              })}
-            </View>
-          </>
+          <View
+            style={{
+              padding: 10,
+            }}
+          >
+            {searchPostResult.map((item, index) => {
+              return (
+                <ProfileCard
+                  key={index}
+                  profileIcon={item?.picture?.original?.url}
+                  profileName={item?.name || item?.profileId}
+                  profileId={item?.profileId}
+                  isFollowed={item?.isFollowedByMe}
+                  handle={item?.handle}
+                  owner={item?.ownedBy}
+                />
+              );
+            })}
+          </View>
         ) : (
           <>
             {!isfound && (
@@ -260,7 +260,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                   }}
                 >
                   <StyledText
-                    title=" No profile found 😔"
+                    title=" No profile found"
                     style={{
                       fontSize: 18,
                       color: "white",

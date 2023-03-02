@@ -58,7 +58,6 @@ const Button = (props: ButtonProps): JSX.Element => {
 
   var newStyle = Object.assign({}, textStyle, {
     textAlign: "center",
-    marginRight: 8,
   });
 
   return (
@@ -107,7 +106,17 @@ const Button = (props: ButtonProps): JSX.Element => {
         ) : (
           <>
             <StyledText title={title} style={newStyle} />
-            {icon}
+            {icon ? (
+              <View
+                style={{
+                  marginLeft: 8,
+                }}
+              >
+                {icon}
+              </View>
+            ) : (
+              <></>
+            )}
           </>
         )}
       </View>

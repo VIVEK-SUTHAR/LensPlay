@@ -297,7 +297,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
                         <Heading
-                          title={profile?.name}
+                          title={profile?.name || profile?.id}
                           style={{
                             fontSize: 16,
                             marginTop: 8,
