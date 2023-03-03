@@ -143,6 +143,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 
   if (!Feeddata) return <NotFound navigation={navigation} />;
 
+
   if (Feeddata) {
     return (
       <SafeAreaView style={styles.container}>
@@ -159,26 +160,28 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
             />
           }
           renderItem={({ item }) => {
+            const publication = {
+              item: item?.root,
+              id: item?.root?.id,
+              title: item?.root?.metadata?.name,
+              date: item.root.createdAt,
+              playbackId: item?.root?.metadata?.media[0]?.original?.url,
+              banner: item?.root?.metadata?.cover,
+              avatar: item?.root?.profile?.picture?.original?.url,
+              uploadedBy: item?.root?.profile?.name || item.root.profile.handle,
+              stats: item?.root?.stats,
+              isFollowdByMe: item.root.profile.isFollowedByMe,
+              profileId: item?.root?.profile?.id,
+              reaction: item?.root?.reaction,
+              description: item?.root?.metadata?.description,
+              attributes: item?.root?.metadata?.attributes,
+              ethAddress: item?.root?.profile?.ownedBy,
+              hasCollectedByMe: item?.root?.hasCollectedByMe
+            }
             return (
               <VideoCard
-                item={item?.root}
+              publication={publication}
                 id={item?.root?.id}
-                title={item?.root?.metadata?.name}
-                date={item.root.createdAt}
-                playbackId={item?.root?.metadata?.media[0]?.original?.url}
-                banner={item?.root?.metadata?.cover}
-                avatar={item?.root?.profile?.picture?.original?.url}
-                uploadedBy={
-                  item?.root?.profile?.name || item.root.profile.handle
-                }
-                stats={item?.root?.stats}
-                isFollowdByMe={item.root.profile.isFollowedByMe}
-                profileId={item?.root?.profile?.id}
-                reaction={item?.root?.reaction}
-                description={item?.root?.metadata?.description}
-                attributes={item?.root?.metadata?.attributes}
-                ethAddress={item?.root?.profile?.ownedBy}
-                hasCollectedByMe={item?.root?.hasCollectedByMe}
               />
             );
           }}
