@@ -17,7 +17,6 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import Tabs from "../components/UI/Tabs";
 import { NotificationTypes } from "../components/Notifications/index.d";
 import Icon from "../components/Icon";
-import StyledText from "../components/UI/StyledText";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -41,6 +40,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
         <Tabs>
           <Tab.Screen
             name="All"
+         
             children={() => (
               <FlatList
                 style={{
@@ -70,43 +70,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
               />
             )}
           />
-          <Tab.Screen
-            name="Mention"
-            children={() => (
-              <FlatList
-                style={{
-                  backgroundColor: "black",
-                }}
-                data={data.result.items}
-                keyExtractor={(_, index) => index.toString()}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={() => {
-                      setRefreshing(true);
-                      refetch({
-                        pid: userStore.currentProfile?.id,
-                      }).then(() => setRefreshing(false));
-                    }}
-                    colors={[theme.PRIMARY]}
-                    progressBackgroundColor={"black"}
-                  />
-                }
-                renderItem={({ item }) => {
-                  if (
-                    item.__typename === NotificationTypes.MENTION_NOTIFICATION
-                  ) {
-                    return (
-                      <NotificationCard
-                        navigation={navigation}
-                        notification={item}
-                      />
-                    );
-                  }
-                }}
-              />
-            )}
-          />
+
           <Tab.Screen
             name="Collect"
             children={() => (
@@ -145,6 +109,43 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
             )}
           />
           <Tab.Screen
+            name="Comment"
+            children={() => (
+              <FlatList
+                style={{
+                  backgroundColor: "black",
+                }}
+                data={data.result.items}
+                keyExtractor={(_, index) => index.toString()}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => {
+                      setRefreshing(true);
+                      refetch({
+                        pid: userStore.currentProfile?.id,
+                      }).then(() => setRefreshing(false));
+                    }}
+                    colors={[theme.PRIMARY]}
+                    progressBackgroundColor={"black"}
+                  />
+                }
+                renderItem={({ item }) => {
+                  if (
+                    item.__typename === NotificationTypes.COMMENT_NOTIFICATION
+                  ) {
+                    return (
+                      <NotificationCard
+                        navigation={navigation}
+                        notification={item}
+                      />
+                    );
+                  }
+                }}
+              />
+            )}
+          />
+          <Tab.Screen
             name="Follow"
             children={() => (
               <FlatList
@@ -169,6 +170,43 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
                 renderItem={({ item }) => {
                   if (
                     item.__typename === NotificationTypes.FOLLOW_NOTIFICATION
+                  ) {
+                    return (
+                      <NotificationCard
+                        navigation={navigation}
+                        notification={item}
+                      />
+                    );
+                  }
+                }}
+              />
+            )}
+          />
+          <Tab.Screen
+            name="Mention"
+            children={() => (
+              <FlatList
+                style={{
+                  backgroundColor: "black",
+                }}
+                data={data.result.items}
+                keyExtractor={(_, index) => index.toString()}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => {
+                      setRefreshing(true);
+                      refetch({
+                        pid: userStore.currentProfile?.id,
+                      }).then(() => setRefreshing(false));
+                    }}
+                    colors={[theme.PRIMARY]}
+                    progressBackgroundColor={"black"}
+                  />
+                }
+                renderItem={({ item }) => {
+                  if (
+                    item.__typename === NotificationTypes.MENTION_NOTIFICATION
                   ) {
                     return (
                       <NotificationCard

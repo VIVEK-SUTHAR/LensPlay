@@ -6,32 +6,37 @@
  */
 
 async function getProxyActionStatus(
-  proxyId: string,
-  accessToken: string
-): Promise<any> {
-  try {
-    let headersList = {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + accessToken,
-    };
+	proxyId: string,
+	accessToken: string
+): Promise<boolean | undefined> {
+	try {
+		let headersList = {
+			"Content-Type": "application/json",
+			"Authorization": "Bearer " + accessToken,
+		};
 
-    let gqlBody = {
-      query: PROXY_ACTION_STATUS_QUERY,
-      variables: { proxyId: proxyId },
-    };
-    let bodyContent = JSON.stringify(gqlBody);
-    let response = await fetch("https://api-mumbai.lens.dev/", {
-      method: "POST",
-      body: bodyContent,
-      headers: headersList,
-    });
-    let data = await response.json();
-    return data;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
-  }
+		let gqlBody = {
+			query: PROXY_ACTION_STATUS_QUERY,
+			variables: { proxyId: proxyId },
+		};
+		let bodyContent = JSON.stringify(gqlBody);
+		let response = await fetch("https://api-mumbai.lens.dev/", {
+			method: "POST",
+			body: bodyContent,
+			headers: headersList,
+		});
+		let data = await response.json();
+		if (data?.result?.__typename === "ProxyActionStatusResult") {
+			return true;
+		}
+		if (data?.result?.__typename === "ProxyActionError") {
+			return false;
+		}
+	} catch (error) {
+		if (error instanceof Error) {
+			return false;
+		}
+	}
 }
 export default getProxyActionStatus;
 

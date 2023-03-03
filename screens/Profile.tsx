@@ -5,12 +5,9 @@ import {
   RefreshControl,
   SafeAreaView,
   ScrollView,
-  ToastAndroid,
   View,
 } from "react-native";
 import { useEffect, useState } from "react";
-import { client } from "../apollo/client";
-import getUserProfile from "../apollo/Queries/getUserProfile";
 import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import getIPFSLink from "../utils/getIPFSLink";
 import Heading from "../components/UI/Heading";
@@ -20,7 +17,6 @@ import extractURLs from "../utils/extractURL";
 import { RootTabScreenProps } from "../types/navigation/types";
 import ProfileSkeleton from "../components/UI/ProfileSkeleton";
 import { LensPublication } from "../types/Lens/Feed";
-import { Profile } from "../types/Lens";
 import Button from "../components/UI/Button";
 import { StatusBar } from "expo-status-bar";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
@@ -29,27 +25,25 @@ import Cover from "../components/Profile/Cover";
 import { STATIC_ASSET } from "../constants";
 import AllVideos from "../components/Profile/AllVideos";
 import MirroredVideos from "../components/Profile/MirroredVideos";
-import getPublications from "../apollo/Queries/getPublications";
 import CollectedVideos from "../components/Profile/CollectedVideos";
 import VERIFIED_CHANNELS from "../constants/Varified";
 import formatHandle from "../utils/formatHandle";
-import VerifiedIcon from "../components/svg/VerifiedIcon";
 import Icon from "../components/Icon";
-const ProfileScreen = ({
-  navigation,
-  route,
-}: RootTabScreenProps<"Account">) => {
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [allVideos, setallVideos] = useState<LensPublication[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+import { useUserProfile, useUserPublication } from "../hooks/useFeed";
+const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [afterScroll, setafterScroll] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
-
   const wallet = useWalletConnect();
   const theme = useThemeStore();
-  const authStore = useAuthStore();
   const userStore = useProfile();
-
+  const { loading, data: Profile, error, refetch } = useUserProfile(
+    userStore?.currentProfile?.id
+  );
+  const {
+    data: AllVideosData,
+    error: AllVideoError,
+    loading: AllVideosLoading,
+  } = useUserPublication(userStore?.currentProfile?.id);
   const [links, setLinks] = useState({
     twitter: "",
     insta: "",
@@ -58,6 +52,13 @@ const ProfileScreen = ({
   });
   useEffect(() => {
     getLinks();
+  }, []);
+  const onRefresh = React.useCallback(async() => {
+    setRefreshing(true);
+    await refetch({
+      id: userStore?.currentProfile?.id,
+    })
+    setRefreshing(false)
   }, []);
   function getLinks() {
     const twitter = userStore.currentProfile?.attributes?.find(
@@ -80,386 +81,318 @@ const ProfileScreen = ({
       twitter: twitter,
       yt: youtube,
     });
-
-    console.log(links);
   }
 
-  useEffect(() => {
-    getProfleInfo();
-  }, [navigation]);
-
-  const getProfleInfo = async () => {
-    setIsLoading(true);
-    try {
-      const profiledata = await client.query({
-        query: getUserProfile,
-        variables: {
-          id: userStore.currentProfile?.id,
-        },
-      });
-      setProfile(profiledata.data.profile);
-      getAllVideos();
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const getAllVideos = async () => {
-    try {
-      const data = await client.query({
-        query: getPublications,
-        variables: {
-          id: userStore.currentProfile?.id,
-        },
-        context: {
-          headers: {
-            "x-access-token": `Bearer ${authStore.accessToken}`,
-          },
-        },
-      });
-      setallVideos(data.data.publications.items);
-    } catch (error) {
-      setallVideos([]);
-    }
-  };
-
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    getProfleInfo().then(() => {
-      if (profile == profile) {
-        ToastAndroid.show("Profile is Up-to date", ToastAndroid.SHORT);
-      }
-      setRefreshing(false);
-    });
-  }, []);
-
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-      <StatusBar backgroundColor={afterScroll > 5 ? "black" : "transparent"} />
-      <ScrollView
-        onScroll={(event) => {
-          setafterScroll(event.nativeEvent.contentOffset.y);
-        }}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            colors={[theme.PRIMARY]}
-            progressBackgroundColor={"black"}
-            onRefresh={onRefresh}
-          />
-        }
-      >
-        {isLoading ? (
-          <>
-            <ProfileSkeleton />
-          </>
-        ) : (
-          <>
-            {Boolean(!isLoading) && (
-              <View style={{}}>
-                <Pressable
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    navigation.navigate("FullImage", {
-                      url:
-                        userStore.currentProfile?.coverPicture?.original.url ||
-                        STATIC_ASSET,
+  if (loading) return <ProfileSkeleton />;
+  if (Profile) {
+    const profile = Profile?.profile;
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+        <StatusBar
+          backgroundColor={afterScroll > 5 ? "black" : "transparent"}
+        />
+        <ScrollView
+          onScroll={(event) => {
+            setafterScroll(event.nativeEvent.contentOffset.y);
+          }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              colors={[theme.PRIMARY]}
+              progressBackgroundColor={"black"}
+              onRefresh={onRefresh}
+            />
+          }
+        >
+          <View>
+            <Pressable
+              onPress={(e) => {
+                navigation.navigate("FullImage", {
+                  url:
+                    userStore.currentProfile?.coverPicture?.original.url ||
+                    STATIC_ASSET,
+                });
+              }}
+            >
+              <Cover
+                navigation={navigation}
+                url={
+                  userStore.currentProfile?.coverPicture?.original.url ||
+                  STATIC_ASSET
+                }
+              />
+            </Pressable>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "flex-end",
+                marginLeft: 16,
+                marginTop: "-20%",
+                zIndex: 12,
+              }}
+            >
+              <Avatar
+                src={getIPFSLink(profile?.picture.original.url)}
+                height={90}
+                width={90}
+                borderRadius={50}
+              />
+              <View
+                style={{
+                  justifyContent: "flex-end",
+                  marginRight: 16,
+                  top: 0,
+                }}
+              >
+                <Button
+                  title={"Edit Channel"}
+                  width={"auto"}
+                  px={16}
+                  py={8}
+                  bg={primary}
+                  textStyle={{
+                    fontSize: 16,
+                    fontWeight: "600",
+                    marginHorizontal: 4,
+                    color: "black",
+                  }}
+                  onPress={() => {
+                    navigation.navigate("EditProfile", {
+                      profile: profile,
                     });
                   }}
-                >
-                  <Cover
-                    navigation={navigation}
-                    url={
-                      userStore.currentProfile?.coverPicture?.original.url ||
-                      STATIC_ASSET
-                    }
+                />
+              </View>
+            </View>
+            <View
+              style={{
+                marginHorizontal: 16,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Heading
+                      title={profile?.name}
+                      style={{
+                        fontSize: 16,
+                        marginTop: 8,
+                        fontWeight: "bold",
+                        color: "white",
+                      }}
+                    />
+                    {VERIFIED_CHANNELS.includes(profile?.id) && (
+                      <View
+                        style={{
+                          backgroundColor: "transparent",
+                          height: "auto",
+                          width: "auto",
+                          padding: 1,
+                          borderRadius: 8,
+                          marginTop: 8,
+                          marginHorizontal: 4,
+                        }}
+                      >
+                        <Icon name="verified" size={18} color={theme.PRIMARY} />
+                      </View>
+                    )}
+                  </View>
+                  <StyledText
+                    title={formatHandle(profile?.handle)}
+                    style={{
+                      fontSize: 12,
+                      fontWeight: "500",
+                      color: "gray",
+                    }}
                   />
-                </Pressable>
+                </View>
+              </View>
+              {profile?.bio ? (
+                <StyledText
+                  title={extractURLs(profile?.bio)}
+                  style={{
+                    fontSize: 16,
+                    color: "#E9E8E8",
+                    textAlign: "left",
+                    marginTop: 4,
+                  }}
+                />
+              ) : (
+                <></>
+              )}
+              <View
+                style={{
+                  marginVertical: 4,
+                  width: "100%",
+                  flexDirection: "row",
+                }}
+              >
+                {links.twitter?.length > 0 ? (
+                  <Pressable
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                    onPress={(e) => {
+                      e.preventDefault();
+                      Linking.openURL(`https://twitter.com/${links.twitter}`);
+                    }}
+                  >
+                    <Icon name="twitter" color="#1DA1F2" size={16} />
+                    <StyledText
+                      style={{
+                        color: primary,
+                        marginRight: 4,
+                        fontSize: 12,
+                      }}
+                      title={`@${links.twitter}`}
+                    />
+                  </Pressable>
+                ) : (
+                  <></>
+                )}
+                {links.yt?.length > 0 ? (
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Icon name="youtube" color="#FF0000" size={16} />
+                    <StyledText
+                      style={{
+                        color: primary,
+                        marginLeft: 4,
+                        fontSize: 12,
+                      }}
+                      title={links.yt}
+                    />
+                  </View>
+                ) : (
+                  <></>
+                )}
+              </View>
+              <View
+                style={{
+                  // backgroundColor:"red",
+                  marginVertical: 2,
+                  // height:45,
+                  width: "100%",
+                  flexDirection: "row",
+                }}
+              >
+                {links.insta?.length > 0 ? (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Icon name="instagram" color="#405DE6" size={16} />
+                    <StyledText
+                      style={{
+                        color: primary,
+                        marginRight: 4,
+                        fontSize: 12,
+                      }}
+                      title={links.insta}
+                    />
+                  </View>
+                ) : (
+                  <></>
+                )}
+                {links.site?.length > 0 ? (
+                  <Pressable
+                    style={{ flexDirection: "row", alignItems: "center" }}
+                    onPress={(e) => {
+                      e.preventDefault();
+                      Linking.openURL(links.site);
+                    }}
+                  >
+                    <Icon name="link" color="white" size={16} />
+                    <StyledText
+                      style={{
+                        color: primary,
+                        marginLeft: 4,
+                        fontSize: 12,
+                      }}
+                      title={links.site}
+                    />
+                  </Pressable>
+                ) : (
+                  <></>
+                )}
+              </View>
+              <View
+                style={{
+                  backgroundColor: "white",
+                  borderRadius: 8,
+                  paddingVertical: 8,
+                  marginTop: 16,
+                }}
+              >
                 <View
                   style={{
                     flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "flex-end",
-                    marginLeft: 16,
-                    marginTop: "-20%",
-                    zIndex: 12,
+                    alignItems: "center",
+                    justifyContent: "space-around",
+                    paddingHorizontal: 16,
                   }}
                 >
-                  <Avatar
-                    src={getIPFSLink(profile?.picture.original.url)}
-                    height={90}
-                    width={90}
-                    borderRadius={50}
-                  />
-                  <View
-                    style={{
-                      justifyContent: "flex-end",
-                      marginRight: 16,
-                      top: 0,
+                  <Pressable
+                    android_ripple={{
+                      radius: 45,
+                      color: "gray",
+                    }}
+                    onPress={() => {
+                      navigation.navigate("UserStats", {
+                        profileId: userStore.currentProfile?.id,
+                      });
                     }}
                   >
-                    <Button
-                      title={"Edit Channel"}
-                      width={"auto"}
-                      px={16}
-                      py={8}
-                      bg={primary}
-                      textStyle={{
-                        fontSize: 16,
-                        fontWeight: "600",
-                        marginHorizontal: 4,
-                        color: "black",
-                      }}
-                      onPress={() => {
-                        navigation.navigate("EditProfile", {
-                          profile: profile,
-                        });
-                      }}
-                    />
-                  </View>
-                </View>
-                <View
-                  style={{
-                    marginHorizontal: 16,
-                  }}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <View>
-                      <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
-                      >
-                        <Heading
-                          title={profile?.name}
-                          style={{
-                            fontSize: 16,
-                            marginTop: 8,
-                            fontWeight: "bold",
-                            color: "white",
-                          }}
-                        />
-                        {VERIFIED_CHANNELS.includes(profile?.id) && (
-                          <View
-                            style={{
-                              backgroundColor: "transparent",
-                              height: "auto",
-                              width: "auto",
-                              padding: 1,
-                              borderRadius: 8,
-                              marginTop: 8,
-                              marginHorizontal: 4,
-                            }}
-                          >
-                            <Icon
-                              name="verified"
-                              size={18}
-                              color={theme.PRIMARY}
-                            />
-                          </View>
-                        )}
-                      </View>
-                      <StyledText
-                        title={formatHandle(profile?.handle)}
-                        style={{
-                          fontSize: 12,
-                          fontWeight: "500",
-                          color: "gray",
-                        }}
-                      />
-                    </View>
-                  </View>
-                  {profile?.bio ? (
                     <StyledText
-                      title={extractURLs(profile?.bio)}
-                      style={{
-                        fontSize: 16,
-                        color: "#E9E8E8",
-                        textAlign: "left",
-                        marginTop: 4,
-                      }}
+                      title={`${profile?.stats?.totalFollowers} • Subscribers`}
+                      style={{ fontSize: 16, fontWeight: "600" }}
                     />
-                  ) : (
-                    <></>
-                  )}
+                  </Pressable>
                   <View
                     style={{
-                      marginVertical: 4,
-                      width: "100%",
-                      flexDirection: "row",
+                      height: 24,
+                      backgroundColor: "black",
+                      width: 2,
                     }}
-                  >
-                    {links.twitter?.length > 0 ? (
-                      <Pressable
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                        onPress={(e) => {
-                          e.preventDefault();
-                          Linking.openURL(
-                            `https://twitter.com/${links.twitter}`
-                          );
-                        }}
-                      >
-                        <Icon name="twitter" color="#1DA1F2" size={16} />
-                        <StyledText
-                          style={{
-                            color: primary,
-                            marginRight: 4,
-                            fontSize: 12,
-                          }}
-                          title={`@${links.twitter}`}
-                        />
-                      </Pressable>
-                    ) : (
-                      <></>
-                    )}
-                    {links.yt?.length > 0 ? (
-                      <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
-                      >
-                        <Icon name="youtube" color="#FF0000" size={16} />
-                        <StyledText
-                          style={{
-                            color: primary,
-                            marginLeft: 4,
-                            fontSize: 12,
-                          }}
-                          title={links.yt}
-                        />
-                      </View>
-                    ) : (
-                      <></>
-                    )}
-                  </View>
-                  <View
-                    style={{
-                      // backgroundColor:"red",
-                      marginVertical: 2,
-                      // height:45,
-                      width: "100%",
-                      flexDirection: "row",
-                    }}
-                  >
-                    {links.insta?.length > 0 ? (
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Icon name="instagram" color="#405DE6" size={16} />
-                        <StyledText
-                          style={{
-                            color: primary,
-                            marginRight: 4,
-                            fontSize: 12,
-                          }}
-                          title={links.insta}
-                        />
-                      </View>
-                    ) : (
-                      <></>
-                    )}
-                    {links.site?.length > 0 ? (
-                      <Pressable
-                        style={{ flexDirection: "row", alignItems: "center" }}
-                        onPress={(e) => {
-                          e.preventDefault();
-                          Linking.openURL(links.site);
-                        }}
-                      >
-                        <Icon name="link" color="white" size={16} />
-                        <StyledText
-                          style={{
-                            color: primary,
-                            marginLeft: 4,
-                            fontSize: 12,
-                          }}
-                          title={links.site}
-                        />
-                      </Pressable>
-                    ) : (
-                      <></>
-                    )}
-                  </View>
-                  <View
-                    style={{
-                      backgroundColor: "white",
-                      borderRadius: 8,
-                      paddingVertical: 8,
-                      marginTop: 16,
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-around",
-                        paddingHorizontal: 16,
-                      }}
-                    >
-                      <Pressable
-                        android_ripple={{
-                          radius: 45,
-                          color: "gray",
-                        }}
-                        onPress={() => {
-                          navigation.navigate("UserStats", {
-                            profileId: userStore.currentProfile?.id,
-                          });
-                        }}
-                      >
-                        <StyledText
-                          title={`${profile?.stats?.totalFollowers} • Subscribers`}
-                          style={{ fontSize: 16, fontWeight: "600" }}
-                        />
-                      </Pressable>
-                      <View
-                        style={{
-                          height: 24,
-                          backgroundColor: "black",
-                          width: 2,
-                        }}
-                      ></View>
-                      <StyledText
-                        title={`${allVideos?.length} • Videos`}
-                        style={{ fontSize: 16, fontWeight: "600" }}
-                      />
-                    </View>
-                  </View>
-                  <View style={{ marginTop: 24 }}>
-                    <AllVideos
-                      Videos={allVideos}
-                      profileId={userStore.currentProfile?.id}
-                      navigation={navigation}
-                    />
-                    <MirroredVideos
-                      navigation={navigation}
-                      profileId={userStore.currentProfile?.id}
-                      handle={userStore.currentProfile?.handle}
-                    />
-                    <CollectedVideos
-                      ethAddress={wallet.accounts[0]}
-                      handle={userStore.currentProfile?.handle || ""}
-                      navigation={navigation}
-                    />
-                  </View>
+                  ></View>
+                  <StyledText
+                    title={`${AllVideosData?.publications?.items?.length} • Videos`}
+                    style={{ fontSize: 16, fontWeight: "600" }}
+                  />
                 </View>
               </View>
-            )}
-          </>
-        )}
-      </ScrollView>
-    </SafeAreaView>
-  );
+              <View style={{ marginTop: 24 }}>
+                {AllVideosData && (
+                  <AllVideos
+                    Videos={AllVideosData?.publications?.items}
+                    profileId={userStore.currentProfile?.id}
+                    navigation={navigation}
+                  />
+                )}
+                <MirroredVideos
+                  navigation={navigation}
+                  profileId={userStore.currentProfile?.id}
+                  handle={userStore.currentProfile?.handle}
+                />
+                <CollectedVideos
+                  ethAddress={wallet.accounts[0]}
+                  handle={userStore.currentProfile?.handle || ""}
+                  navigation={navigation}
+                />
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
 };
 export default ProfileScreen;

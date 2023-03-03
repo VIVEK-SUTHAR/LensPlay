@@ -14,6 +14,7 @@ import { ToastType } from "../../types/Store";
 import { client } from "../../apollo/client";
 import createCommentViaDispatcher from "../../apollo/mutations/createCommentViaDispatcher";
 import Icon from "../Icon";
+import { getProxyActionStatus } from "../../api";
 
 type CommentInputProps = {
   publicationId: string;
@@ -61,6 +62,29 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
           },
         },
       });
+      if (data?.createCommentViaDispatcher?.__typename === "RelayerResult") {
+        while (true) {
+          const status = await getProxyActionStatus(
+            data?.createCommentViaDispatcher?.txId,
+            accessToken
+          );
+          if (status) {
+            setOptimitisticComment({
+              ...optimitisticComment,
+              isIndexing: false,
+            });
+            break;
+          }
+          if (!status) {
+            setOptimitisticComment({
+              ...optimitisticComment,
+              isIndexing: false,
+            });
+            break;
+          }
+          await new Promise((r) => setTimeout(r, 2000));
+        }
+      }
       if (errors) {
         toast.show("Something went wrong", ToastType.ERROR, true);
         return;

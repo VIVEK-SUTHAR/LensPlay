@@ -4,8 +4,10 @@ import getComments from "../apollo/Queries/getComments";
 import getFeed from "../apollo/Queries/getFeed";
 import getFollowers from "../apollo/Queries/getFollowers";
 import getFollowing from "../apollo/Queries/getFollowing";
+import getMirrorVideos from "../apollo/Queries/getMirrorVideos";
 import getPublications from "../apollo/Queries/getPublications";
 import getTrendingPublication from "../apollo/Queries/getTrendingPublication";
+import getUserProfile from "../apollo/Queries/getUserProfile";
 import isMirrored from "../apollo/Queries/isMirrored";
 import notificationsQuery from "../apollo/Queries/notificationsQuery";
 import searchProfileQuery from "../apollo/Queries/searchProfileQuery";
@@ -52,7 +54,7 @@ const useExplorePublication = () => {
   return { data, error, loading };
 };
 
-const useUserPublication = (publicationId: string) => {
+const useUserPublication = (publicationId: string | undefined) => {
   const { accessToken } = useAuthStore();
 
   const { data, error, loading } = useQuery(getPublications, {
@@ -183,6 +185,37 @@ const useIsMirrored = (publid: string) => {
   });
   return { data, error };
 };
+
+export const useUserProfile = (profileId: string) => {
+  const { data, error, loading,refetch } = useQuery(getUserProfile, {
+    variables: {
+      id: profileId,
+    },
+    fetchPolicy: "network-only",
+    nextFetchPolicy: "cache-and-network",
+    pollInterval: 5000,
+  });
+  return { data, error, loading,refetch };
+};
+
+export const useUserMirrors = (profileId: string) => {
+  const {accessToken } = useAuthStore();
+  const { data, error, loading } = useQuery(getMirrorVideos, {
+    variables: {
+      id: profileId,
+    },
+     context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+      },
+    },
+    fetchPolicy: "network-only",
+    nextFetchPolicy: "cache-and-network",
+    pollInterval: 5000,
+  });
+  return { data, error, loading };
+};
+
 
 export default useNotifications;
 
