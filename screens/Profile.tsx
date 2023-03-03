@@ -53,12 +53,12 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   useEffect(() => {
     getLinks();
   }, []);
-  const onRefresh = React.useCallback(async() => {
+  const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
     await refetch({
       id: userStore?.currentProfile?.id,
-    })
-    setRefreshing(false)
+    });
+    setRefreshing(false);
   }, []);
   function getLinks() {
     const twitter = userStore.currentProfile?.attributes?.find(
@@ -258,17 +258,30 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   <></>
                 )}
                 {links.yt?.length > 0 ? (
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Icon name="youtube" color="#FF0000" size={16} />
-                    <StyledText
-                      style={{
-                        color: primary,
-                        marginLeft: 4,
-                        fontSize: 12,
-                      }}
-                      title={links.yt}
-                    />
-                  </View>
+                  <Pressable
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                    onPress={(e) => {
+                      e.preventDefault();
+                      Linking.openURL(`https://www.youtube.com/@${links.yt}`);
+                    }}
+                  >
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center" }}
+                    >
+                      <Icon name="youtube" color="#FF0000" size={16} />
+                      <StyledText
+                        style={{
+                          color: primary,
+                          marginLeft: 4,
+                          fontSize: 12,
+                        }}
+                        title={links.yt}
+                      />
+                    </View>
+                  </Pressable>
                 ) : (
                   <></>
                 )}
@@ -283,22 +296,35 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 }}
               >
                 {links.insta?.length > 0 ? (
-                  <View
+                  <Pressable
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
                     }}
+                    onPress={(e) => {
+                      e.preventDefault();
+                      Linking.openURL(
+                        `https://www.instagram.com/${links.insta}`
+                      );
+                    }}
                   >
-                    <Icon name="instagram" color="#405DE6" size={16} />
-                    <StyledText
+                    <View
                       style={{
-                        color: primary,
-                        marginRight: 4,
-                        fontSize: 12,
+                        flexDirection: "row",
+                        alignItems: "center",
                       }}
-                      title={links.insta}
-                    />
-                  </View>
+                    >
+                      <Icon name="instagram" color="#405DE6" size={16} />
+                      <StyledText
+                        style={{
+                          color: primary,
+                          marginRight: 4,
+                          fontSize: 12,
+                        }}
+                        title={links.insta}
+                      />
+                    </View>
+                  </Pressable>
                 ) : (
                   <></>
                 )}
