@@ -14,7 +14,7 @@ import { dark_primary } from "../constants/Colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Icon from "../components/Icon";
-import Constants  from "expo-constants";
+import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import {
   LENSPLAY_DISCORD,
@@ -47,8 +47,13 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
       },
     },
     {
-      icon: <Icon name="terms" />,
+      icon: <Icon name="policy" />,
       label: "Terms and Conditions",
+      onPress: () => {},
+    },
+    {
+      icon: <Icon name="terms" />,
+      label: "Privacy Policy",
       onPress: () => {},
     },
     {
@@ -57,11 +62,6 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
       onPress: () => {
         Linking.openURL(`mailto:${OFFICIAL_EMAIL}`);
       },
-    },
-    {
-      icon: <Icon name="policy" />,
-      label: "Privacy Policy",
-      onPress: () => {},
     },
     {
       icon: <Icon name="logout" />,
@@ -85,18 +85,29 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
           />
         );
       })}
-      <View style={styles.socilaMediaContainer}>
-        {SocialMedia.map((el, index) => (
-          <SocialMediaBadge
-            key={index}
-            icon={el.icon}
-            name={el.name}
-            link={el.link}
+      <View
+        style={{
+          position: "absolute",
+          bottom: 16,
+          width: "100%",
+        }}
+      >
+        <View style={styles.socilaMediaContainer}>
+          {SocialMedia.map((el, index) => (
+            <SocialMediaBadge
+              key={index}
+              icon={el.icon}
+              name={el.name}
+              link={el.link}
+            />
+          ))}
+        </View>
+        <View style={styles.appVersionContainer}>
+          <StyledText
+            title={`${Constants.expoConfig?.name} v${Constants.expoConfig?.version}`}
+            style={{ color: "gray", fontSize: 10 }}
           />
-        ))}
-      </View>
-      <View style={styles.appVersionContainer}>
-        <StyledText title={`LensPlay v1.0.0`} style={{ color: "gray",fontSize:10 }} />
+        </View>
       </View>
       <Modal
         transparent={true}
@@ -258,8 +269,6 @@ const styles = StyleSheet.create({
   socilaMediaContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
-    position: "absolute",
-    bottom: 18,
     width: "100%",
   },
   logOutContainer: {
@@ -288,9 +297,7 @@ const styles = StyleSheet.create({
   },
   appVersionContainer: {
     flexDirection: "row",
-    justifyContent: "space-evenly",
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
+    justifyContent: "flex-end",
+    margin: 16,
   },
 });

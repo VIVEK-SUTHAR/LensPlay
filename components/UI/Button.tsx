@@ -10,7 +10,6 @@ import {
 import React from "react";
 import StyledText from "./StyledText";
 import { useThemeStore } from "../../store/Store";
-import Heading from "./Heading";
 interface ButtonProps {
   title: string;
   type?: "outline" | "filled";

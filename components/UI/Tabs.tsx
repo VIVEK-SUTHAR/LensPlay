@@ -2,7 +2,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import React, { ReactNode } from "react";
 import { primary } from "../../constants/Colors";
 
-const Tab = createMaterialTopTabNavigator();
+export const Tab = createMaterialTopTabNavigator();
 
 export default function Tabs({ children }: { children: ReactNode }) {
   return (
@@ -17,19 +17,18 @@ export default function Tabs({ children }: { children: ReactNode }) {
           width: "auto",
           height: "auto",
           display: "flex",
-          flexDirection:"row",
+          flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
         },
-        tabBarActiveTintColor:"white",
-        tabBarInactiveTintColor:"gray",
+        tabBarActiveTintColor: "white",
+        tabBarInactiveTintColor: "gray",
         tabBarStyle: { backgroundColor: "transparent" },
         tabBarIndicatorStyle: {
           backgroundColor: primary,
           height: 3,
           borderTopLeftRadius: 4,
-          borderTopRightRadius:4,
-      
+          borderTopRightRadius: 4,
         },
       }}
     >

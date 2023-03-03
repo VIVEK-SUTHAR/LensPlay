@@ -13,12 +13,9 @@ import Skleton from "../components/Notifications/Skleton";
 import { useProfile, useThemeStore } from "../store/Store";
 import { RootTabScreenProps } from "../types/navigation/types";
 import useNotifications from "../hooks/useFeed";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import Tabs from "../components/UI/Tabs";
+import Tabs, { Tab } from "../components/UI/Tabs";
 import { NotificationTypes } from "../components/Notifications/index.d";
 import Icon from "../components/Icon";
-
-const Tab = createMaterialTopTabNavigator();
 
 const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -40,7 +37,6 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
         <Tabs>
           <Tab.Screen
             name="All"
-         
             children={() => (
               <FlatList
                 style={{
@@ -70,7 +66,6 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
               />
             )}
           />
-
           <Tab.Screen
             name="Collect"
             children={() => (
