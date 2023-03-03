@@ -380,17 +380,28 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                       <></>
                     )}
                     {links.yt?.length > 0 ? (
-                      <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
+                      <Pressable
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                        onPress={(e) => {
+                          e.preventDefault();
+                          Linking.openURL(
+                            `https://www.youtube.com/@${links.yt}`
+                          );
+                        }}
                       >
-                        {/* <YouTube height={24} width={24} filled={true} /> */}
-                        <Icon name="youtube" size={16} color="#FF0000" />
-
-                        <StyledText
-                          style={{ color: theme.PRIMARY, marginRight: 4 }}
-                          title={links.yt}
-                        ></StyledText>
-                      </View>
+                        <View
+                          style={{ flexDirection: "row", alignItems: "center" }}
+                        >
+                          <Icon name="youtube" size={16} color="#FF0000" />
+                          <StyledText
+                            style={{ color: theme.PRIMARY, marginRight: 4 }}
+                            title={links.yt}
+                          ></StyledText>
+                        </View>
+                      </Pressable>
                     ) : (
                       <></>
                     )}
@@ -405,19 +416,32 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     }}
                   >
                     {links.insta?.length > 0 ? (
-                      <View
+                      <Pressable
                         style={{
                           flexDirection: "row",
                           alignItems: "center",
                         }}
+                        onPress={(e) => {
+                          e.preventDefault();
+                          Linking.openURL(
+                            `https://www.instagram.com/${links.insta}`
+                          );
+                        }}
                       >
-                        <Icon name="instagram" size={16} color="#405DE6" />
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Icon name="instagram" size={16} color="#405DE6" />
 
-                        <StyledText
-                          style={{ color: theme.PRIMARY, marginRight: 4 }}
-                          title={links.insta}
-                        ></StyledText>
-                      </View>
+                          <StyledText
+                            style={{ color: theme.PRIMARY, marginRight: 4 }}
+                            title={links.insta}
+                          ></StyledText>
+                        </View>
+                      </Pressable>
                     ) : (
                       <></>
                     )}
