@@ -27,6 +27,7 @@ interface ButtonProps {
   borderRadius?: number;
   onPress?: () => void;
   icon?: any;
+  iconPosition?: "left" | "right";
   disabled?: boolean;
   bytes?: boolean;
 }
@@ -50,6 +51,7 @@ const Button = (props: ButtonProps): JSX.Element => {
     onPress,
     borderColor = "white",
     icon,
+    iconPosition = "left",
     disabled,
     bytes = false,
     ...rest
@@ -104,8 +106,19 @@ const Button = (props: ButtonProps): JSX.Element => {
           <ActivityIndicator size={"small"} animating={true} color={"black"} />
         ) : (
           <>
+            {icon && iconPosition === "left" ? (
+              <View
+                style={{
+                  marginRight: 8,
+                }}
+              >
+                {icon}
+              </View>
+            ) : (
+              <></>
+            )}
             <StyledText title={title} style={newStyle} />
-            {icon ? (
+            {icon && iconPosition === "right" ? (
               <View
                 style={{
                   marginLeft: 8,

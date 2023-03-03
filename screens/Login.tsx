@@ -106,6 +106,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           textStyle={{ fontWeight: "600", fontSize: 20 }}
           py={12}
           icon={<AntDesign name="arrowright" size={20} color="black" />}
+          iconPosition="right"
         />
       </View>
     </SafeAreaView>
