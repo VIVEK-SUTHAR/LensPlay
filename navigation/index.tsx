@@ -26,7 +26,6 @@ import Waitlist from "../screens/Waitlist";
 import Avatar from "../components/UI/Avatar";
 import getIPFSLink from "../utils/getIPFSLink";
 import linking from "./LinkingConfiguration";
-import LinkingVideo from "../screens/LinkingVideo";
 import UserStats from "../screens/UserStats";
 import LeaderBoard from "../screens/LeaderBoard";
 import EditProfile from "../screens/EditProfile";
@@ -40,6 +39,7 @@ import BugReport from "../screens/BugReport";
 import ShotsComment from "../screens/ShotsComment";
 import Icon from "../components/Icon";
 import Notifications from "../screens/Notification";
+import LinkingVideo from "../screens/LinkingVideo";
 
 export default function Navigation() {
   return (
@@ -137,7 +137,7 @@ function RootNavigator() {
         }}
       />
       <Stack.Screen
-        name="LinkingVideos"
+        name="LinkingVideo"
         component={LinkingVideo}
         options={{
           animation: "slide_from_right",

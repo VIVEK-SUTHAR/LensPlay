@@ -113,14 +113,25 @@ const config: ExpoConfig = {
 			foregroundImage: "./assets/images/adaptive-icon.png",
 			backgroundColor: "#000000",
 		},
+		intentFilters: [
+			{
+				action: "VIEW",
+				data: [
+					{
+						scheme: "lensplay",
+					},
+				],
+				category: ["BROWSABLE", "DEFAULT"],
+			},
+		],
 	},
 	web: {
 		favicon: "./assets/images/favicon.png",
 	},
 	extra: {
-		// eas: {
-		// 	projectId: "c3c41aca-6bdd-4196-a006-a524dcf26c4e",
-		// },
+		eas: {
+			projectId: "c3c41aca-6bdd-4196-a006-a524dcf26c4e",
+		},
 	},
 	plugins: [
 		[

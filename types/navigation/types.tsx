@@ -110,7 +110,7 @@ export type RootStackParamList = {
   ShotsComment: {
     publicationId: string;
   };
-  LinkingVideos: undefined;
+  LinkingVideo: undefined;
   FullImage: {
     url: string;
     source: "avatar" | "cover";

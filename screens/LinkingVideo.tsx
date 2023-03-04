@@ -3,12 +3,10 @@ import {
   Share,
   ScrollView,
   SafeAreaView,
-  ToastAndroid,
   BackHandler,
   TextInput,
-  Text,
-  Linking,
   Pressable,
+  AppState,
 } from "react-native";
 import {
   AntDesign,
@@ -44,6 +42,7 @@ import { Comments } from "../types/Lens/Feed";
 import CommentSkeleton from "../components/UI/CommentSkeleton";
 import AnimatedLottieView from "lottie-react-native";
 import CommentCard from "../components/Comments/CommentCard";
+import * as Linking from "expo-linking";
 
 const LinkingVideo = ({
   navigation,
@@ -59,6 +58,7 @@ const LinkingVideo = ({
   const [videoData, setVideoData] = useState<LensPublication>();
   const [isFocused, setIsFocused] = useState(false);
   const [comments, setComments] = useState<Comments[]>([]);
+  const [initialUrl, setInitialUrl] = useState(null);
 
   const theme = useThemeStore();
   const authStore = useAuthStore();
@@ -74,22 +74,30 @@ const LinkingVideo = ({
   }
 
   useEffect(() => {
-    let publicationId = "";
-    Linking.addEventListener("url", (event) => {
-      const id = event?.url?.split("/watch/")[1];
-      publicationId = id;
-      getVideoById(publicationId);
-      return;
-    });
-    Linking.getInitialURL().then((res) => {
-      const id = res?.split("/watch/")[1];
-      publicationId = id ? id : "";
-      getVideoById(publicationId);
-      return;
-    });
+    const handleUrl = async () => {
+      const initialUrl = await Linking.getInitialURL();
+      setInitialUrl(initialUrl);
+      const link = Linking.addEventListener("url", (e) => {});
+    };
+    handleUrl();
+    Linking.addEventListener("url", handleUrl);
     BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
   }, []);
-
+  useEffect(() => {
+    // If there is an initial URL, parse and handle it
+    if (initialUrl) {
+      handleDeepLink(initialUrl);
+    }
+  }, [initialUrl]);
+  const handleDeepLink = (url) => {
+    const { hostname, path, queryParams } = Linking.parse(initialUrl);
+    let id = path?.split("/watch/")[1];
+    getVideoById(id);
+    if (path === "/watch") {
+      console.log(path);
+    } else if (path === "/item") {
+    }
+  };
   async function fetchComments(publicationId: string): Promise<void> {
     try {
       const data = await client.query({
@@ -131,6 +139,7 @@ const LinkingVideo = ({
         },
       });
       setVideoData(feed.data.publication);
+
       fetchComments(pubId);
 
       return feed;
