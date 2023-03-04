@@ -14,7 +14,7 @@ const linking: LinkingOptions<RootStackParamList> = {
 		screens: {
 			NotFound: "*",
 			Channel: {
-				path: "channel",
+				path: "channel/:id",
 				parse: { id: String },
 			},
 			LinkingVideo: {

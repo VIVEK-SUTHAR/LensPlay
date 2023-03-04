@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
-import { TouchableWithoutFeedback, View } from "react-native";
+import { AppState, TouchableWithoutFeedback, View } from "react-native";
 import VideoPage from "../screens/VideoPage";
 import Feed from "../screens/Feed";
 import Login from "../screens/Login";
@@ -40,7 +40,7 @@ import ShotsComment from "../screens/ShotsComment";
 import Icon from "../components/Icon";
 import Notifications from "../screens/Notification";
 import LinkingVideo from "../screens/LinkingVideo";
-
+import * as Linking from "expo-linking";
 export default function Navigation() {
   return (
     <>
@@ -242,6 +242,38 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
   const theme = useThemeStore();
   const user = useProfile();
+
+  React.useEffect(() => {
+    const handle = async () => {
+      const url = await Linking.getInitialURL();
+      handleNavigation(url);
+    };
+    handle();
+    AppState.addEventListener("change", handle);
+    Linking.addEventListener("url", (e) => {
+      handleNavigation(e.url);
+    });
+  }, []);
+
+  function handleNavigation(url: string | null) {
+    if (!url) return;
+    const LINK = url;
+    if (url?.includes("/watch/")) {
+      const video_id = LINK?.split("/watch/")[1];
+      navigation.navigate("LinkingVideo", {
+        id: video_id,
+      });
+      return;
+    }
+    if (url?.includes("/channel/")) {
+      const profile_id = LINK?.split("/channel/")[1];
+      navigation.navigate("Channel", {
+        profileId: profile_id,
+      });
+      return;
+    }
+  }
+
   return (
     <BottomTab.Navigator
       initialRouteName="Home"

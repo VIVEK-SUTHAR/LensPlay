@@ -47,7 +47,7 @@ import * as Linking from "expo-linking";
 const LinkingVideo = ({
   navigation,
   route,
-}: RootStackScreenProps<"LinkingVideos">) => {
+}: RootStackScreenProps<"LinkingVideo">) => {
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
   const [descOpen, setDescOpen] = useState<boolean>(false);
   const [ismodalopen, setIsmodalopen] = useState<boolean>(false);
@@ -74,30 +74,10 @@ const LinkingVideo = ({
   }
 
   useEffect(() => {
-    const handleUrl = async () => {
-      const initialUrl = await Linking.getInitialURL();
-      setInitialUrl(initialUrl);
-      const link = Linking.addEventListener("url", (e) => {});
-    };
-    handleUrl();
-    Linking.addEventListener("url", handleUrl);
     BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+    getVideoById(route?.params?.id);
   }, []);
-  useEffect(() => {
-    // If there is an initial URL, parse and handle it
-    if (initialUrl) {
-      handleDeepLink(initialUrl);
-    }
-  }, [initialUrl]);
-  const handleDeepLink = (url) => {
-    const { hostname, path, queryParams } = Linking.parse(initialUrl);
-    let id = path?.split("/watch/")[1];
-    getVideoById(id);
-    if (path === "/watch") {
-      console.log(path);
-    } else if (path === "/item") {
-    }
-  };
+
   async function fetchComments(publicationId: string): Promise<void> {
     try {
       const data = await client.query({
