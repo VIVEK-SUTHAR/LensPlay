@@ -113,6 +113,7 @@ export type RootStackParamList = {
   LinkingVideos: undefined;
   FullImage: {
     url: string;
+    source: "avatar" | "cover";
   };
   Settings: undefined;
   BugReport: undefined;

@@ -12,7 +12,7 @@ type ProfileCardProps = {
   profileName: string;
   handle: string;
   owner: string;
-  isFollowed: boolean;
+  isFollowed: boolean ;
   profileId: string;
 };
 

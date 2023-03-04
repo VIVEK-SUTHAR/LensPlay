@@ -229,12 +229,21 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     zIndex: 12,
                   }}
                 >
-                  <Avatar
-                    src={profile?.picture?.original?.url}
-                    height={90}
-                    width={90}
-                    borderRadius={50}
-                  />
+                  <Pressable
+                    onPress={(e) => {
+                      navigation.navigate("FullImage", {
+                        url: getIPFSLink(profile?.picture.original.url),
+                        source: "avatar",
+                      });
+                    }}
+                  >
+                    <Avatar
+                      src={profile?.picture?.original?.url}
+                      height={90}
+                      width={90}
+                      borderRadius={50}
+                    />
+                  </Pressable>
                   <View
                     style={{
                       justifyContent: "flex-end",
