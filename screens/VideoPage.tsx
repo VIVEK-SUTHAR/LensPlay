@@ -24,17 +24,16 @@ const VideoPage = ({
   navigation,
   route,
 }: RootStackScreenProps<"VideoPage">) => {
-  const publication = useActivePublication();
-  const activePublication = publication.activePublication;
-  const PublicationStats = activePublication?.root?.stats;
-  const [likes, setLikes] = useState<number>(activePublication?.root?.stats?.totalUpvotes);
+  const {activePublication} = useActivePublication();
+  const PublicationStats = activePublication?.stats;
+  const [likes, setLikes] = useState<number>(activePublication?.stats?.totalUpvotes);
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(false);
   const [isalreadyLiked, setisalreadyLiked] = useState<boolean>(
-    activePublication?.root?.reaction === "UPVOTE" ? true : false
+    activePublication?.reaction === "UPVOTE" ? true : false
   );
   const [isalreadyDisLiked, setisalreadyDisLiked] = useState<boolean>(
-    activePublication?.root?.reaction === "DOWNVOTE" ? true : false
+    activePublication?.reaction === "DOWNVOTE" ? true : false
   );
   const likedPublication = useReactionStore();
   const [isAlreadyMirrored, setIsAlreadyMirrored] = useState<boolean>(false);
@@ -75,18 +74,13 @@ const VideoPage = ({
     BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
   }, []);
 
-
-  console.log('hua')
-  console.log(activePublication);
-  
-  // console.log(activePublication?.metadata);
   
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <Player
-        poster={activePublication?.root?.metadata?.cover}
-        title={activePublication?.root?.metadata?.name}
-        url={activePublication?.root?.metadata?.media[0]?.original?.url}
+        poster={activePublication?.metadata?.cover}
+        title={activePublication?.metadata?.name}
+        url={activePublication?.metadata?.media[0]?.original?.url}
         inFullscreen={inFullscreen}
         isMute={isMute}
         setInFullscreen={setInFullsreen}
@@ -95,14 +89,14 @@ const VideoPage = ({
       <ScrollView>
         <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
           <VideoMeta
-            title={activePublication?.root?.metadata?.name}
-            description={activePublication?.root?.metadata?.description}
+            title={activePublication?.metadata?.name}
+            description={activePublication?.metadata?.description}
           />
           <VideoCreator
-            profileId={activePublication?.root?.profile?.id}
-            avatarLink={activePublication?.root?.profile?.picture?.original?.url}
-            uploadedBy={activePublication?.root?.profile?.name || activePublication.root.profile.handle}
-            alreadyFollowing={activePublication?.root?.profile?.isFollowedByMe || false}
+            profileId={activePublication?.profile?.id}
+            avatarLink={activePublication?.profile?.picture?.original?.url}
+            uploadedBy={activePublication?.profile?.name || activePublication?.profile?.handle}
+            alreadyFollowing={activePublication?.profile?.isFollowedByMe || false}
           />
           <ScrollView
             style={{
@@ -113,7 +107,7 @@ const VideoPage = ({
           >
             <LikeButton
               likes={likes}
-              id={activePublication?.root?.id}
+              id={activePublication?.id}
               setLikes={setLikes}
               isalreadyLiked={isalreadyLiked}
               setisalreadyDisLiked={setisalreadyDisLiked}
@@ -124,28 +118,28 @@ const VideoPage = ({
               isalreadyDisLiked={isalreadyDisLiked}
               setisalreadyDisLiked={setisalreadyDisLiked}
               setisalreadyLiked={setisalreadyLiked}
-              id={activePublication?.root?.id}
+              id={activePublication?.id}
             />
             <MirrorButton
-              id={activePublication?.root?.id}
+              id={activePublication?.id}
               isAlreadyMirrored={isAlreadyMirrored}
               setIsAlreadyMirrored={setIsAlreadyMirrored}
-              totalMirrors={activePublication.root?.stats?.totalAmountOfMirrors}
-              bannerUrl={activePublication?.root?.metadata?.cover}
+              totalMirrors={activePublication.stats?.totalAmountOfMirrors}
+              bannerUrl={activePublication?.metadata?.cover}
             />
             <CollectButton
-              publicationId={activePublication?.root?.id}
-              bannerUrl={activePublication?.root?.metadata?.cover}
-              title={activePublication?.root?.profile?.name || activePublication.root.profile.handle}
+              publicationId={activePublication?.id}
+              bannerUrl={activePublication?.metadata?.cover}
+              title={activePublication?.profile?.name || activePublication.root.profile.handle}
               totalCollects={PublicationStats.totalAmountOfCollects}
-              videoUrl={activePublication?.root?.metadata?.media[0]?.original?.url}
-              hasCollected={activePublication?.root?.hasCollectedByMe}
+              videoUrl={activePublication?.metadata?.media[0]?.original?.url}
+              hasCollected={activePublication?.hasCollectedByMe}
             />
             <ShareButton
-              title={activePublication?.root?.profile?.name || activePublication.root.profile.handle}
-              publicationId={activePublication?.root?.id}
+              title={activePublication?.profile?.name || activePublication.root.profile.handle}
+              publicationId={activePublication?.id}
             />
-            <ReportButton publicationId={activePublication?.root?.id} />
+            <ReportButton publicationId={activePublication?.id} />
           </ScrollView>
           <StyledText
             title="Comments"
@@ -156,10 +150,10 @@ const VideoPage = ({
               marginBottom: 8,
             }}
           />
-          <Comment publicationId={activePublication?.root?.id} />
+          <Comment publicationId={activePublication?.id} />
         </View>
       </ScrollView>
-      <CommentInput publicationId={activePublication?.root?.id} />
+      <CommentInput publicationId={activePublication?.id} />
     </SafeAreaView>
   );
 };

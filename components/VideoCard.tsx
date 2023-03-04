@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import { useActivePublication } from "../store/Store";
-import { Attribute } from "../types/Lens/Feed";
+import { Attribute, FeedItem, LensPublication, Root } from "../types/Lens/Feed";
 import formatTime from "../utils/formatTime";
 import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
@@ -16,23 +16,10 @@ import Heading from "./UI/Heading";
 import StyledText from "./UI/StyledText";
 
 type videoPageProp = {
-  title: string;
-  banner: string;
-  avatar: string;
-  profileId: string;
-  uploadedBy: string;
-  playbackId: string;
+  publication: Root;
   id: string;
-  stats: {};
-  date: string | Date;
-  reaction: string | null;
-  isFollowdByMe?: boolean;
-  description: string;
-  width?: string | number;
-  height?: number;
-  attributes: Attribute | Attribute[];
-  ethAddress?: string;
-  hasCollectedByMe: boolean;
+  height?: number | string;
+  width?: number | string;
 };
 
 const VideoCard = ({
@@ -44,7 +31,7 @@ const VideoCard = ({
   const [videoTime, setVideoTime] = React.useState<string>();
   const { setActivePublication } = useActivePublication();
   React.useEffect(() => {
-    const time = publication?.root?.metadata?.attributes.filter((item) => {
+    const time = publication?.metadata?.attributes.filter((item) => {
       if (item?.traitType === "durationInSeconds") {
         setVideoTime(item?.value);
       }
@@ -70,7 +57,7 @@ const VideoCard = ({
             progressiveRenderingEnabled={true}
             source={{
               uri:
-                getIPFSLink(publication?.root?.metadata?.cover) ||
+                getIPFSLink(publication?.metadata?.cover) ||
                 "https://assets.lenstube.xyz/images/coverGradient.jpeg",
             }}
             style={{
@@ -108,10 +95,10 @@ const VideoCard = ({
         onPress={() => {
           setActivePublication(publication);
           navigation.navigate("Channel", {
-            profileId: publication?.root?.profile?.id,
-            isFollowdByMe: publication.root?.profile?.isFollowedByMe,
-            name: publication.root?.profile?.name || publication.root.profile.handle,
-            ethAddress: publication?.root?.profile?.ownedBy,
+            profileId: publication?.profile?.id,
+            isFollowdByMe: publication?.profile?.isFollowedByMe,
+            name: publication?.profile?.name || publication?.profile?.handle,
+            ethAddress: publication?.profile?.ownedBy,
           });
         }}
       >
@@ -123,15 +110,15 @@ const VideoCard = ({
             alignItems: "center",
           }}
         >
-          <Avatar src={getIPFSLink(publication?.root?.profile?.picture?.original?.url)} height={40} width={40} />
+          <Avatar src={getIPFSLink(publication?.profile?.picture?.original?.url)} height={40} width={40} />
           <View style={{ flex: 0.95 }}>
             <Heading
-              title={publication?.root?.metadata?.name}
+              title={publication?.metadata?.name}
               style={{ fontSize: 16, fontWeight: "600", color: "white" }}
               numberOfLines={1}
             />
             <StyledText
-              title={`By ${publication?.root?.profile?.name || publication?.root?.profile?.handle} ${getDifference(publication?.root?.createdAt)}`}
+              title={`By ${publication?.profile?.name || publication?.profile?.handle} ${getDifference(publication?.createdAt)}`}
               style={{ fontSize: 12, color: "gray" }}
               numberOfLines={1}
             />

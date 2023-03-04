@@ -178,21 +178,8 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
             TrendingItems?.map((item: LensPublication, index) => {
               return (
                 <VideoCard
-                  key={index}
+                publication={item}
                   id={item?.id}
-                  date={item?.createdAt}
-                  title={item?.metadata?.name}
-                  isFollowdByMe={item?.profile?.isFollowedByMe}
-                  banner={item?.metadata?.cover}
-                  avatar={item?.profile?.picture?.original?.url}
-                  uploadedBy={item?.profile?.handle}
-                  profileId={item?.profile?.id}
-                  stats={item?.stats}
-                  playbackId={item?.metadata?.media[0]?.original?.url}
-                  reaction={item?.reaction}
-                  description={item.metadata.description}
-                  attributes={item?.metadata?.attributes}
-                  hasCollectedByMe={item?.hasCollectedByMe}
                 />
               );
             })}

@@ -154,7 +154,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
-              onRefresh={() => {}}
+              onRefresh={() => { }}
               colors={[theme.PRIMARY]}
               progressBackgroundColor={"black"}
             />
@@ -162,7 +162,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
           renderItem={({ item }) => {
             return (
               <VideoCard
-              publication={item}
+                publication={item?.root}
                 id={item?.root?.id}
               />
             );
