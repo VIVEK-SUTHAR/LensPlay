@@ -44,7 +44,7 @@ const VideoCard = ({
   const [videoTime, setVideoTime] = React.useState<string>();
   const { setActivePublication } = useActivePublication();
   React.useEffect(() => {
-    const time = publication?.attributes?.filter((item) => {
+    const time = publication?.root?.metadata?.attributes.filter((item) => {
       if (item?.traitType === "durationInSeconds") {
         setVideoTime(item?.value);
       }
@@ -70,7 +70,7 @@ const VideoCard = ({
             progressiveRenderingEnabled={true}
             source={{
               uri:
-                getIPFSLink(publication.banner) ||
+                getIPFSLink(publication?.root?.metadata?.cover) ||
                 "https://assets.lenstube.xyz/images/coverGradient.jpeg",
             }}
             style={{
@@ -106,11 +106,12 @@ const VideoCard = ({
       </View>
       <TouchableWithoutFeedback
         onPress={() => {
+          setActivePublication(publication);
           navigation.navigate("Channel", {
-            profileId: publication.profileId,
-            isFollowdByMe: publication.isFollowdByMe,
-            name: publication.uploadedBy,
-            ethAddress: publication.ethAddress,
+            profileId: publication?.root?.profile?.id,
+            isFollowdByMe: publication.root?.profile?.isFollowedByMe,
+            name: publication.root?.profile?.name || publication.root.profile.handle,
+            ethAddress: publication?.root?.profile?.ownedBy,
           });
         }}
       >
@@ -122,15 +123,15 @@ const VideoCard = ({
             alignItems: "center",
           }}
         >
-          <Avatar src={getIPFSLink(publication.avatar)} height={40} width={40} />
+          <Avatar src={getIPFSLink(publication?.root?.profile?.picture?.original?.url)} height={40} width={40} />
           <View style={{ flex: 0.95 }}>
             <Heading
-              title={publication.title}
+              title={publication?.root?.metadata?.name}
               style={{ fontSize: 16, fontWeight: "600", color: "white" }}
               numberOfLines={1}
             />
             <StyledText
-              title={`By ${publication.uploadedBy} ${getDifference(publication.date)}`}
+              title={`By ${publication?.root?.profile?.name || publication?.root?.profile?.handle} ${getDifference(publication?.root?.createdAt)}`}
               style={{ fontSize: 12, color: "gray" }}
               numberOfLines={1}
             />

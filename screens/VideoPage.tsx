@@ -26,15 +26,15 @@ const VideoPage = ({
 }: RootStackScreenProps<"VideoPage">) => {
   const publication = useActivePublication();
   const activePublication = publication.activePublication;
-  const PublicationStats = activePublication.stats;
-  const [likes, setLikes] = useState<number>(activePublication.stats?.totalUpvotes);
+  const PublicationStats = activePublication?.root?.stats;
+  const [likes, setLikes] = useState<number>(activePublication?.root?.stats?.totalUpvotes);
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(false);
   const [isalreadyLiked, setisalreadyLiked] = useState<boolean>(
-    activePublication.reaction === "UPVOTE" ? true : false
+    activePublication?.root?.reaction === "UPVOTE" ? true : false
   );
   const [isalreadyDisLiked, setisalreadyDisLiked] = useState<boolean>(
-    activePublication.reaction === "DOWNVOTE" ? true : false
+    activePublication?.root?.reaction === "DOWNVOTE" ? true : false
   );
   const likedPublication = useReactionStore();
   const [isAlreadyMirrored, setIsAlreadyMirrored] = useState<boolean>(false);
@@ -84,9 +84,9 @@ const VideoPage = ({
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <Player
-        poster={activePublication?.banner}
-        title={activePublication?.title}
-        url={activePublication?.playbackId}
+        poster={activePublication?.root?.metadata?.cover}
+        title={activePublication?.root?.metadata?.name}
+        url={activePublication?.root?.metadata?.media[0]?.original?.url}
         inFullscreen={inFullscreen}
         isMute={isMute}
         setInFullscreen={setInFullsreen}
@@ -95,14 +95,14 @@ const VideoPage = ({
       <ScrollView>
         <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
           <VideoMeta
-            title={activePublication.title}
-            description={activePublication.description}
+            title={activePublication?.root?.metadata?.name}
+            description={activePublication?.root?.metadata?.description}
           />
           <VideoCreator
-            profileId={activePublication.profileId}
-            avatarLink={activePublication.avatar}
-            uploadedBy={activePublication.uploadedBy}
-            alreadyFollowing={activePublication.isFollowdByMe || false}
+            profileId={activePublication?.root?.profile?.id}
+            avatarLink={activePublication?.root?.profile?.picture?.original?.url}
+            uploadedBy={activePublication?.root?.profile?.name || activePublication.root.profile.handle}
+            alreadyFollowing={activePublication?.root?.profile?.isFollowedByMe || false}
           />
           <ScrollView
             style={{
@@ -113,7 +113,7 @@ const VideoPage = ({
           >
             <LikeButton
               likes={likes}
-              id={activePublication.id}
+              id={activePublication?.root?.id}
               setLikes={setLikes}
               isalreadyLiked={isalreadyLiked}
               setisalreadyDisLiked={setisalreadyDisLiked}
@@ -124,28 +124,28 @@ const VideoPage = ({
               isalreadyDisLiked={isalreadyDisLiked}
               setisalreadyDisLiked={setisalreadyDisLiked}
               setisalreadyLiked={setisalreadyLiked}
-              id={activePublication.id}
+              id={activePublication?.root?.id}
             />
             <MirrorButton
-              id={activePublication.id}
+              id={activePublication?.root?.id}
               isAlreadyMirrored={isAlreadyMirrored}
               setIsAlreadyMirrored={setIsAlreadyMirrored}
-              totalMirrors={activePublication.stats.totalAmountOfMirrors}
-              bannerUrl={activePublication.banner}
+              totalMirrors={activePublication.root?.stats?.totalAmountOfMirrors}
+              bannerUrl={activePublication?.root?.metadata?.cover}
             />
             <CollectButton
-              publicationId={activePublication.id}
-              bannerUrl={activePublication.banner}
-              title={activePublication.uploadedBy}
+              publicationId={activePublication?.root?.id}
+              bannerUrl={activePublication?.root?.metadata?.cover}
+              title={activePublication?.root?.profile?.name || activePublication.root.profile.handle}
               totalCollects={PublicationStats.totalAmountOfCollects}
-              videoUrl={activePublication.playbackId}
-              hasCollected={route?.params?.hasCollectedByMe}
+              videoUrl={activePublication?.root?.metadata?.media[0]?.original?.url}
+              hasCollected={activePublication?.root?.hasCollectedByMe}
             />
             <ShareButton
-              title={activePublication.title}
-              publicationId={activePublication.id}
+              title={activePublication?.root?.profile?.name || activePublication.root.profile.handle}
+              publicationId={activePublication?.root?.id}
             />
-            <ReportButton publicationId={activePublication.id} />
+            <ReportButton publicationId={activePublication?.root?.id} />
           </ScrollView>
           <StyledText
             title="Comments"
@@ -156,10 +156,10 @@ const VideoPage = ({
               marginBottom: 8,
             }}
           />
-          <Comment publicationId={activePublication.id} />
+          <Comment publicationId={activePublication?.root?.id} />
         </View>
       </ScrollView>
-      <CommentInput publicationId={activePublication.id} />
+      <CommentInput publicationId={activePublication?.root?.id} />
     </SafeAreaView>
   );
 };
