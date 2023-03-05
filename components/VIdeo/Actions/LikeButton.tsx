@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../../UI/Button";
 import { dark_primary } from "../../../constants/Colors";
 import formatInteraction from "../../../utils/formatInteraction";
@@ -8,39 +8,105 @@ import {
   useReactionStore,
   useThemeStore,
 } from "../../../store/Store";
-import LikeIcon from "../../svg/LikeIcon";
 import { addLike } from "../../../api";
 import Icon from "../../Icon";
 
 type LikeButtonProps = {
   id: string;
-  likes: number;
-  isalreadyLiked: boolean;
-  setisalreadyDisLiked: React.Dispatch<React.SetStateAction<boolean>>;
-  setLikes: React.Dispatch<React.SetStateAction<number>>;
+  like: number;
+  isalreadyLiked: string | null;
   bytes?: boolean;
 };
 
 const LikeButton = ({
-  likes,
-  setLikes,
+  like,
   isalreadyLiked,
-  setisalreadyDisLiked,
   id,
   bytes = false,
 }: LikeButtonProps) => {
   const authStore = useAuthStore();
   const userStore = useProfile();
+  const [isAlreadyLiked, setisAlreadyLiked] = useState<boolean>(isalreadyLiked === "UPVOTE" ? true : false);
+  let clicked = false;
   const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [likes, setLikes] = useState<number>(like);
   const { PRIMARY } = useThemeStore();
   const likedPublication = useReactionStore();
   const thumbdown = likedPublication.dislikedPublication;
+  const thumbup = likedPublication.likedPublication;
+
+  const checkAlreadyDislike = () => {
+      if(isAlreadyLiked && !clicked){
+        console.log(clicked, 'clicked');
+        
+        likedPublication.addToReactedPublications(id, likes, thumbdown);
+        console.log('already liked nhi hona');
+      }
+  };
+
+  const checkClicked = () => {
+    thumbdown.map((publication) => {
+      if (publication.id === id){
+        clicked = true;
+      }
+    })
+    thumbup.map((publication) => {
+      if (publication.id === id){
+        clicked = true;
+      }
+    })
+  }
+
+  useEffect(() => {
+    checkClicked();
+  },[]);
+ 
+  useEffect(() => {
+    thumbup.map((publication) => {
+      if(isAlreadyLiked){
+        if (publication.id === id) {
+          setIsLiked(true);
+          // clicked = true;
+        }
+      }
+      else if(!isAlreadyLiked || !isLiked){
+        if (publication.id === id) {
+          setIsLiked(true);
+          setLikes(publication.likes + 1);
+          // clicked = true;
+        }
+      }
+    });
+      thumbdown.map((publication) => {
+        if(isLiked || clicked){
+          if (publication.id === id) {
+            setIsLiked(false);
+            setisAlreadyLiked(false);
+            setLikes(prev => prev - 1);
+            console.log('likes after dislike', like)
+            clicked = true;
+          }
+        }
+        else{
+          if (publication.id === id) {
+            setIsLiked(false);
+            setisAlreadyLiked(false);
+            clicked = true;
+          }
+        }
+        
+      })
+
+  },[thumbdown,thumbup])
+
+ 
+
+  useEffect(() => {
+    checkAlreadyDislike();
+  }, [clicked]);
 
   const onLike = async () => {
-    if (!isalreadyLiked && !isLiked) {
-      setLikes((prev) => prev + 1);
-      setIsLiked(true);
-      setisalreadyDisLiked(false);
+    if (!isAlreadyLiked ) {
       addLike(
         authStore.accessToken,
         userStore.currentProfile?.id,
@@ -48,11 +114,11 @@ const LikeButton = ({
         "UPVOTE"
       ).then((res) => {
         if (res.addReaction === null) {
-          console.log("liked successfully");
           likedPublication.addToReactedPublications(id, likes, thumbdown);
         }
       });
     }
+    
   };
 
   return (
@@ -67,17 +133,17 @@ const LikeButton = ({
       textStyle={{
         fontSize: 14,
         fontWeight: "500",
-        color: isalreadyLiked ? PRIMARY : isLiked ? PRIMARY : "white",
+        color: isLiked ? PRIMARY : "white",
         marginLeft: 4,
       }}
-      borderColor={isalreadyLiked ? PRIMARY : isLiked ? PRIMARY : "white"}
+      borderColor={isLiked || isalreadyLiked ? PRIMARY : "white"}
       onPress={onLike}
       bytes={bytes}
       icon={
         <Icon
           name="like"
           size={bytes?28:20}
-          color={isalreadyLiked || isLiked ? PRIMARY : "white"}
+          color={isLiked || isAlreadyLiked? PRIMARY : "white"}
         />
       }
     />

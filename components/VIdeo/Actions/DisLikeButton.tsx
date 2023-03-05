@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../../UI/Button";
 import { dark_primary, primary } from "../../../constants/Colors";
 import formatInteraction from "../../../utils/formatInteraction";
@@ -8,43 +8,76 @@ import {
   useReactionStore,
   useThemeStore,
 } from "../../../store/Store";
-import DisLikeIcon from "../../svg/DisLikeIcon";
 import { removeLike, addLike } from "../../../api";
 import { ToastAndroid } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
 import Icon from "../../Icon";
 
 type DisLikeButtonProps = {
   id: string;
-  isalreadyLiked: boolean;
-  isalreadyDisLiked: boolean;
-  setisalreadyLiked: React.Dispatch<React.SetStateAction<boolean>>;
-  setisalreadyDisLiked: React.Dispatch<React.SetStateAction<boolean>>;
-  setLikes: React.Dispatch<React.SetStateAction<number>>;
+  isalreadyDisLiked: string | null;
 };
 
 const DisLikeButton = ({
-  setLikes,
-  isalreadyLiked,
-  setisalreadyLiked,
-  setisalreadyDisLiked,
   isalreadyDisLiked,
   id,
 }: DisLikeButtonProps) => {
   const authStore = useAuthStore();
   const userStore = useProfile();
-  const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [isAlreadyDisliked, setIsAlreadyDisliked] = useState<boolean>(isalreadyDisLiked === "DOWNVOTE" ? true : false);
+  const [isDisliked, setIsDisliked] = useState<boolean>(false);
+  // const [clicked, setClicked] = useState<Boolean>(false);
+  var clicked = false;
   const { PRIMARY } = useThemeStore();
   const likedPublication = useReactionStore();
   const thumbup = likedPublication.likedPublication;
+  const thumbdown = likedPublication.dislikedPublication;
+
+  const checkAlreadyDislike = () => {
+    if (isAlreadyDisliked && !clicked){
+        likedPublication.addToDislikedPublications(id, thumbup);
+    }
+  }
+
+  const checkFirstClick = () => {
+    thumbdown.map((publication)=>{
+      if (publication.id === id) {
+        clicked = true;
+      }
+    })
+    thumbup.map((publication)=>{
+      if (publication.id === id) {
+        clicked = true;
+      }
+    })
+  }
+
+  useEffect(() => {
+    checkFirstClick();
+  }, [])
+  useEffect(() => {
+    checkAlreadyDislike();
+  }, [clicked])
+
+  useEffect(()=>{
+    thumbdown.map((publication) => {
+      if (publication.id === id) {
+        setIsDisliked(true);
+        clicked = true;
+      }
+    });
+    thumbup.map((publication) => {
+      if (publication.id === id) {
+        setIsDisliked(false);
+        setIsAlreadyDisliked(false);
+        clicked = true;
+      }
+    })
+  }, [thumbup, thumbdown])
+  
 
   const onDislike = async () => {
-    if (!isalreadyDisLiked) {
-      if (isalreadyLiked || isLiked) {
-        setLikes((prev) => prev - 1);
-        setisalreadyLiked(false);
-      }
-      setisalreadyDisLiked(true);
+    
+      setIsDisliked(true);
       addLike(
         authStore.accessToken,
         userStore.currentProfile?.id,
@@ -53,6 +86,7 @@ const DisLikeButton = ({
       ).then((res) => {
         if (res) {
           if (res.addReaction === null) {
+            console.log('disliked succesfully')
             likedPublication.addToDislikedPublications(id, thumbup);
           }
         }
@@ -64,7 +98,7 @@ const DisLikeButton = ({
             ToastAndroid.show("Can't react to post", ToastAndroid.SHORT);
           }
         });
-    }
+    
   };
 
   return (
@@ -82,7 +116,7 @@ const DisLikeButton = ({
         fontWeight: "500",
         color: "white",
       }}
-      borderColor={isalreadyDisLiked ? PRIMARY : "white"}
+      borderColor={isDisliked || isAlreadyDisliked? PRIMARY : "white"}
       icon={
         // <DisLikeIcon
         //   height={20}
@@ -92,7 +126,7 @@ const DisLikeButton = ({
        <Icon
           name="dislike"
           size={20}
-          color={isalreadyDisLiked? PRIMARY : "white"}
+          color={isDisliked || isAlreadyDisliked? PRIMARY : "white"}
         />
       }
     />

@@ -24,41 +24,13 @@ const VideoPage = ({
   navigation,
   route,
 }: RootStackScreenProps<"VideoPage">) => {
-  const [likes, setLikes] = useState<number>(route.params.stats?.totalUpvotes);
+  
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(false);
-  const [isalreadyLiked, setisalreadyLiked] = useState<boolean>(
-    route.params.reaction === "UPVOTE" ? true : false
-  );
-  const [isalreadyDisLiked, setisalreadyDisLiked] = useState<boolean>(
-    route.params.reaction === "DOWNVOTE" ? true : false
-  );
+  
   const likedPublication = useReactionStore();
   const [isAlreadyMirrored, setIsAlreadyMirrored] = useState<boolean>(false);
-  const thumbup = likedPublication.likedPublication;
-  const thumbdown = likedPublication.dislikedPublication;
 
-  useEffect(() => {
-    thumbup.map((publication) => {
-      if (publication.id === route.params.id) {
-        setisalreadyLiked(true);
-        setisalreadyDisLiked(false);
-        setLikes(publication.likes + 1);
-      }
-    });
-    thumbdown.map((publication) => {
-      if (publication.id === route.params.id) {
-        if (isalreadyLiked) {
-          setisalreadyDisLiked(true);
-          setisalreadyLiked(false);
-          setLikes((prev) => prev - 1);
-        } else {
-          setisalreadyDisLiked(true);
-          setisalreadyLiked(false);
-        }
-      }
-    });
-  }, [navigation, route.params.playbackId]);
 
   function handleBackButtonClick() {
     setStatusBarHidden(false, "fade");
@@ -70,11 +42,14 @@ const VideoPage = ({
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+    console.log(route?.params?.reaction);
+    console.log(route.params.stats?.totalUpvotes);
+    
+    
   }, []);
 
   const PublicationStats = route.params.stats;
   const { activePublication } = useActivePublication();
-  console.log(activePublication?.metadata);
   
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -107,18 +82,12 @@ const VideoPage = ({
             showsHorizontalScrollIndicator={false}
           >
             <LikeButton
-              likes={likes}
+              like={route.params.stats?.totalUpvotes}
               id={route.params.id}
-              setLikes={setLikes}
-              isalreadyLiked={isalreadyLiked}
-              setisalreadyDisLiked={setisalreadyDisLiked}
+              isalreadyLiked={route.params.reaction}
             />
             <DisLikeButton
-              isalreadyLiked={isalreadyLiked}
-              setLikes={setLikes}
-              isalreadyDisLiked={isalreadyDisLiked}
-              setisalreadyDisLiked={setisalreadyDisLiked}
-              setisalreadyLiked={setisalreadyLiked}
+              isalreadyDisLiked={route.params.reaction}
               id={route.params.id}
             />
             <MirrorButton
