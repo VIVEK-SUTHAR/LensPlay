@@ -69,16 +69,20 @@ const LikeButton = ({
           // clicked = true;
         }
       }
-      else if(!isAlreadyLiked || !isLiked){
+      else if(!isLiked){
         if (publication.id === id) {
+          console.log(isLiked);
+          
           setIsLiked(true);
-          setLikes(publication.likes + 1);
+          setLikes(prev => prev + 1);
+          console.log('like hua');
+          
           // clicked = true;
         }
       }
     });
       thumbdown.map((publication) => {
-        if(isLiked || clicked){
+        if(isLiked){
           if (publication.id === id) {
             setIsLiked(false);
             setisAlreadyLiked(false);
@@ -106,7 +110,7 @@ const LikeButton = ({
   }, [clicked]);
 
   const onLike = async () => {
-    if (!isAlreadyLiked ) {
+    if (!isAlreadyLiked && !isLiked ) {
       addLike(
         authStore.accessToken,
         userStore.currentProfile?.id,
@@ -114,7 +118,9 @@ const LikeButton = ({
         "UPVOTE"
       ).then((res) => {
         if (res.addReaction === null) {
-          likedPublication.addToReactedPublications(id, likes, thumbdown);
+          if (!isLiked){
+            likedPublication.addToReactedPublications(id, likes, thumbdown);
+          }
         }
       });
     }

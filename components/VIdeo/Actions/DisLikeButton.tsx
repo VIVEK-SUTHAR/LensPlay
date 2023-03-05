@@ -77,27 +77,29 @@ const DisLikeButton = ({
 
   const onDislike = async () => {
     
-      setIsDisliked(true);
-      addLike(
-        authStore.accessToken,
-        userStore.currentProfile?.id,
-        id,
-        "DOWNVOTE"
-      ).then((res) => {
-        if (res) {
-          if (res.addReaction === null) {
-            console.log('disliked succesfully')
-            likedPublication.addToDislikedPublications(id, thumbup);
-          }
-        }
-      });
-      removeLike(authStore.accessToken, userStore.currentProfile?.id, id)
-        .then((res) => {})
-        .catch((error) => {
-          if (error instanceof Error) {
-            ToastAndroid.show("Can't react to post", ToastAndroid.SHORT);
+      if(!isDisliked){
+        addLike(
+          authStore.accessToken,
+          userStore.currentProfile?.id,
+          id,
+          "DOWNVOTE"
+        ).then((res) => {
+          if (res) {
+            if (res.addReaction === null) {
+              console.log('disliked succesfully')
+                likedPublication.addToDislikedPublications(id, thumbup);
+            }
           }
         });
+        removeLike(authStore.accessToken, userStore.currentProfile?.id, id)
+          .then((res) => {})
+          .catch((error) => {
+            if (error instanceof Error) {
+              ToastAndroid.show("Can't react to post", ToastAndroid.SHORT);
+            }
+          });
+      }
+        setIsDisliked(true);
     
   };
 
