@@ -56,7 +56,7 @@ const DisLikeButton = ({
   }, [])
   useEffect(() => {
     checkAlreadyDislike();
-  }, [clicked])
+  }, [])
 
   useEffect(()=>{
     thumbdown.map((publication) => {

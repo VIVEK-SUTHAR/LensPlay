@@ -26,24 +26,27 @@ const LikeButton = ({
 }: LikeButtonProps) => {
   const authStore = useAuthStore();
   const userStore = useProfile();
+  //variable to keep track of whether the publication is already liked or not
   const [isAlreadyLiked, setisAlreadyLiked] = useState<boolean>(isalreadyLiked === "UPVOTE" ? true : false);
+  //variable to track whether the video is opened before or not
   let clicked = false;
+  //variable to check locally whether the video is liked or not
   const [isLiked, setIsLiked] = useState<boolean>(false);
+  //variable that keeps track of number of likes
   const [likes, setLikes] = useState<number>(like);
   const { PRIMARY } = useThemeStore();
   const likedPublication = useReactionStore();
   const thumbdown = likedPublication.dislikedPublication;
   const thumbup = likedPublication.likedPublication;
 
-  const checkAlreadyDislike = () => {
+  //function to add the publication in thumbup array if it has been already liked
+  const checkAlreadyLike = () => {
       if(isAlreadyLiked && !clicked){
-        console.log(clicked, 'clicked');
-        
         likedPublication.addToReactedPublications(id, likes, thumbdown);
-        console.log('already liked nhi hona');
       }
   };
 
+  //function to check if the publication is clicked before or not
   const checkClicked = () => {
     thumbdown.map((publication) => {
       if (publication.id === id){
@@ -61,41 +64,44 @@ const LikeButton = ({
     checkClicked();
   },[]);
  
+  //this useEffect checks for any change in liked and disliked array and based on that changes the variables like, isLiked, isAlreadyLiked.
   useEffect(() => {
     thumbup.map((publication) => {
+      //check first if the video is already liked and if it is then update the local variable liked
       if(isAlreadyLiked){
         if (publication.id === id) {
           setIsLiked(true);
-          // clicked = true;
         }
       }
+      //else if the video is not liked yet but exist in the like array then add the like count and set the local variable to true
       else if(!isLiked){
+        
+        
         if (publication.id === id) {
-          console.log(isLiked);
-          
           setIsLiked(true);
           setLikes(prev => prev + 1);
           console.log('like hua');
-          
           // clicked = true;
         }
       }
     });
       thumbdown.map((publication) => {
+        //if there is publication in dislike array and if the isLiked is true than set isLiked, isAlreadyLiked to true and decrement the likes variable.
         if(isLiked){
           if (publication.id === id) {
             setIsLiked(false);
             setisAlreadyLiked(false);
             setLikes(prev => prev - 1);
             console.log('likes after dislike', like)
-            clicked = true;
+            // clicked = true;
           }
         }
+        //else if the publication is in the disliked array then false all the variables 
         else{
           if (publication.id === id) {
             setIsLiked(false);
             setisAlreadyLiked(false);
-            clicked = true;
+            // clicked = true;
           }
         }
         
@@ -106,8 +112,8 @@ const LikeButton = ({
  
 
   useEffect(() => {
-    checkAlreadyDislike();
-  }, [clicked]);
+    checkAlreadyLike();
+  }, []);
 
   const onLike = async () => {
     if (!isAlreadyLiked && !isLiked ) {
