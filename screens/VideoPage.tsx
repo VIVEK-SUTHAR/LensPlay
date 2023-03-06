@@ -74,14 +74,13 @@ const VideoPage = ({
 
   const PublicationStats = route.params.stats;
   const { activePublication } = useActivePublication();
-  console.log(activePublication?.metadata);
-  
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <Player
-        poster={activePublication?.metadata?.cover}
+        poster={route.params.banner}
         title={route.params.title}
-        url={activePublication?.metadata?.media[0].original?.url}
+        url={route.params.playbackId}
         inFullscreen={inFullscreen}
         isMute={isMute}
         setInFullscreen={setInFullsreen}
