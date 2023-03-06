@@ -130,13 +130,13 @@ const VideoPage = ({
             <CollectButton
               publicationId={activePublication?.id}
               bannerUrl={activePublication?.metadata?.cover}
-              title={activePublication?.profile?.name || activePublication.root.profile.handle}
+              title={activePublication?.profile?.name || activePublication?.profile?.handle}
               totalCollects={PublicationStats.totalAmountOfCollects}
               videoUrl={activePublication?.metadata?.media[0]?.original?.url}
               hasCollected={activePublication?.hasCollectedByMe}
             />
             <ShareButton
-              title={activePublication?.profile?.name || activePublication.root.profile.handle}
+              title={activePublication?.profile?.name || activePublication?.profile.handle}
               publicationId={activePublication?.id}
             />
             <ReportButton publicationId={activePublication?.id} />
