@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import { useActivePublication } from "../store/Store";
-import { Attribute } from "../types/Lens/Feed";
+import { Attribute, FeedItem, LensPublication, Root } from "../types/Lens/Feed";
 import formatTime from "../utils/formatTime";
 import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
@@ -16,49 +16,23 @@ import Heading from "./UI/Heading";
 import StyledText from "./UI/StyledText";
 
 type videoPageProp = {
-  title: string;
-  banner: string;
-  avatar: string;
-  profileId: string;
-  uploadedBy: string;
-  playbackId: string;
+  publication: Root;
   id: string;
-  stats: {};
-  date: string | Date;
-  reaction: string | null;
-  isFollowdByMe?: boolean;
-  description: string;
-  width?: string | number;
-  height?: number;
-  attributes: Attribute | Attribute[];
-  ethAddress?: string;
-  hasCollectedByMe: boolean;
+  height?: number | string;
+  width?: number | string;
 };
 
 const VideoCard = ({
   id,
-  banner,
-  title,
-  avatar,
-  profileId,
-  uploadedBy,
-  playbackId,
-  stats,
-  date,
-  reaction,
-  isFollowdByMe,
-  description,
   width = "auto",
   height = 200,
-  attributes,
-  ethAddress,
-  item,
-  hasCollectedByMe,
+  publication
 }: videoPageProp) => {
   const [videoTime, setVideoTime] = React.useState<string>();
   const { setActivePublication } = useActivePublication();
+  
   React.useEffect(() => {
-    const time = attributes?.filter((item) => {
+    const time = publication?.metadata?.attributes.filter((item) => {
       if (item?.traitType === "durationInSeconds") {
         setVideoTime(item?.value);
       }
@@ -76,28 +50,15 @@ const VideoCard = ({
       <View style={{ height: height }}>
         <TouchableWithoutFeedback
           onPress={() => {
-            setActivePublication(item);
-            navigation.navigate("VideoPage", {
-              title: title,
-              id: id,
-              uploadedBy: uploadedBy,
-              playbackId: playbackId,
-              profileId: profileId,
-              avatar: avatar,
-              banner: banner,
-              stats: stats,
-              reaction: reaction,
-              isFollowdByMe: isFollowdByMe,
-              description: description,
-              hasCollectedByMe: hasCollectedByMe,
-            });
+            setActivePublication(publication);
+            navigation.navigate("VideoPage");
           }}
         >
           <Image
             progressiveRenderingEnabled={true}
             source={{
               uri:
-                getIPFSLink(banner) ||
+                getIPFSLink(publication?.metadata?.cover) ||
                 "https://assets.lenstube.xyz/images/coverGradient.jpeg",
             }}
             style={{
@@ -133,11 +94,12 @@ const VideoCard = ({
       </View>
       <TouchableWithoutFeedback
         onPress={() => {
+          setActivePublication(publication);
           navigation.navigate("Channel", {
-            profileId: profileId,
-            isFollowdByMe: isFollowdByMe,
-            name: uploadedBy,
-            ethAddress: ethAddress,
+            profileId: publication?.profile?.id,
+            isFollowdByMe: publication?.profile?.isFollowedByMe,
+            name: publication?.profile?.name || publication?.profile?.handle,
+            ethAddress: publication?.profile?.ownedBy,
           });
         }}
       >
@@ -149,15 +111,15 @@ const VideoCard = ({
             alignItems: "center",
           }}
         >
-          <Avatar src={getIPFSLink(avatar)} height={40} width={40} />
+          <Avatar src={getIPFSLink(publication?.profile?.picture?.original?.url)} height={40} width={40} />
           <View style={{ flex: 0.95 }}>
             <Heading
-              title={title}
+              title={publication?.metadata?.name}
               style={{ fontSize: 16, fontWeight: "600", color: "white" }}
               numberOfLines={1}
             />
             <StyledText
-              title={`By ${uploadedBy} ${getDifference(date)}`}
+              title={`By ${publication?.profile?.name || publication?.profile?.handle} ${getDifference(publication?.createdAt)}`}
               style={{ fontSize: 12, color: "gray" }}
               numberOfLines={1}
             />

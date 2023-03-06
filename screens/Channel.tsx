@@ -544,25 +544,28 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                           allVideos.map((item: LensPublication) => {
                             return (
                               <VideoCard
-                                key={item?.id}
+                                // key={item?.id}
                                 id={item?.id}
-                                date={item?.createdAt}
-                                banner={item?.metadata?.cover}
-                                title={item?.metadata?.name}
-                                avatar={item?.profile?.picture?.original?.url}
-                                playbackId={
-                                  item?.metadata?.media[0]?.original?.url
-                                }
-                                uploadedBy={item?.profile?.name}
-                                profileId={item?.profile?.id}
-                                stats={item?.stats}
-                                isFollowdByMe={item.profile.isFollowedByMe}
-                                reaction={item?.reaction}
-                                width={300}
+                                publication={item}
                                 height={150}
-                                description={item?.metadata?.description}
-                                ethAddress={item?.profile.ownedBy}
-                                attributes={item?.metadata?.attributes}
+                              width={300}
+                                // date={item?.createdAt}
+                                // banner={item?.metadata?.cover}
+                                // title={item?.metadata?.name}
+                                // avatar={item?.profile?.picture?.original?.url}
+                                // playbackId={
+                                //   item?.metadata?.media[0]?.original?.url
+                                // }
+                                // uploadedBy={item?.profile?.name}
+                                // profileId={item?.profile?.id}
+                                // stats={item?.stats}
+                                // isFollowdByMe={item.profile.isFollowedByMe}
+                                // reaction={item?.reaction}
+                                // width={300}
+                                // height={150}
+                                // description={item?.metadata?.description}
+                                // ethAddress={item?.profile.ownedBy}
+                                // attributes={item?.metadata?.attributes}
                               />
                             );
                           })}
@@ -621,25 +624,29 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                             if (item?.appId?.includes("lenstube")) {
                               return (
                                 <VideoCard
-                                  key={item?.id}
+                                  // key={item?.id}
+                                  // id={item?.id}
+                                  // date={item?.createdAt}
+                                  // banner={item?.metadata?.cover}
+                                  // title={item?.metadata?.name}
+                                  // avatar={item?.profile?.picture?.original?.url}
+                                  // playbackId={
+                                  //   item?.metadata?.media[0]?.original?.url
+                                  // }
+                                  // uploadedBy={item?.profile?.name}
+                                  // profileId={item?.profile?.id}
+                                  // stats={item?.stats}
+                                  // isFollowdByMe={item.profile.isFollowedByMe}
+                                  // reaction={item?.reaction}
+                                  // width={300}
+                                  // height={150}
+                                  // ethAddress={item?.profile.ownedBy}
+                                  // description={item?.metadata?.description}
+                                  // attributes={item?.metadata?.attributes}
                                   id={item?.id}
-                                  date={item?.createdAt}
-                                  banner={item?.metadata?.cover}
-                                  title={item?.metadata?.name}
-                                  avatar={item?.profile?.picture?.original?.url}
-                                  playbackId={
-                                    item?.metadata?.media[0]?.original?.url
-                                  }
-                                  uploadedBy={item?.profile?.name}
-                                  profileId={item?.profile?.id}
-                                  stats={item?.stats}
-                                  isFollowdByMe={item.profile.isFollowedByMe}
-                                  reaction={item?.reaction}
-                                  width={300}
-                                  height={150}
-                                  ethAddress={item?.profile.ownedBy}
-                                  description={item?.metadata?.description}
-                                  attributes={item?.metadata?.attributes}
+                                publication={item}
+                                height={150}
+                              width={300}
                                 />
                               );
                             }
@@ -698,25 +705,29 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                         collectVideos.map((item: LensPublication) => {
                           return (
                             <VideoCard
-                              key={item?.id}
+                              // key={item?.id}
+                              // id={item?.id}
+                              // date={item?.createdAt}
+                              // banner={item?.metadata?.cover}
+                              // title={item?.metadata?.name}
+                              // avatar={item?.profile?.picture?.original?.url}
+                              // playbackId={
+                              //   item?.metadata?.media[0]?.original?.url
+                              // }
+                              // uploadedBy={item?.profile?.name}
+                              // profileId={item?.profile?.id}
+                              // stats={item?.stats}
+                              // isFollowdByMe={item.profile.isFollowedByMe}
+                              // reaction={item?.reaction}
+                              // width={300}
+                              // height={150}
+                              // description={item?.metadata?.description}
+                              // ethAddress={item?.profile.ownedBy}
+                              // attributes={item?.metadata?.attributes}
                               id={item?.id}
-                              date={item?.createdAt}
-                              banner={item?.metadata?.cover}
-                              title={item?.metadata?.name}
-                              avatar={item?.profile?.picture?.original?.url}
-                              playbackId={
-                                item?.metadata?.media[0]?.original?.url
-                              }
-                              uploadedBy={item?.profile?.name}
-                              profileId={item?.profile?.id}
-                              stats={item?.stats}
-                              isFollowdByMe={item.profile.isFollowedByMe}
-                              reaction={item?.reaction}
-                              width={300}
+                              publication={item}
                               height={150}
-                              description={item?.metadata?.description}
-                              ethAddress={item?.profile.ownedBy}
-                              attributes={item?.metadata?.attributes}
+                              width={300}
                             />
                           );
                         })}

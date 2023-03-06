@@ -25,6 +25,7 @@ import Icon from "../components/Icon";
 import searchPublicationQuery from "../apollo/Queries/searchPublicationQuery";
 import Tabs, { Tab } from "../components/UI/Tabs";
 import { Profile } from "../types/Lens";
+import VideoCard from "../components/VideoCard";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const { DARK_PRIMARY } = useThemeStore();
@@ -226,17 +227,15 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                   }}
                   data={searchPostResult}
                   keyExtractor={(_, index) => index.toString()}
-                  renderItem={({ item }) => (
+                  renderItem={({ item, index }) => (
                     <View
                       style={{
                         backgroundColor: "black",
-                        paddingHorizontal: 16,
+                        // paddingHorizontal: 16,
                         paddingVertical: 8,
-                        borderWidth: 2,
-                        borderBottomColor: DARK_PRIMARY,
                       }}
                     >
-                      <Heading
+                      {/* <Heading
                         title={item?.metadata?.name}
                         style={{
                           fontSize: 16,
@@ -244,7 +243,8 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                           color: "white",
                         }}
                         numberOfLines={1}
-                      />
+                      /> */}
+                      <VideoCard publication={item} id={index.toString()}/>
                     </View>
                   )}
                 />

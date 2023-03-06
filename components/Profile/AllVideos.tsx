@@ -63,23 +63,10 @@ const AllVideos = ({
             
             return (
               <VideoCard
-                key={item?.id}
+                publication={item}
                 id={item?.id}
-                date={item?.createdAt}
-                banner={item?.metadata?.cover}
-                title={item?.metadata?.name}
-                avatar={item?.profile?.picture?.original?.url}
-                playbackId={item?.metadata?.media[0]?.original?.url}
-                ethAddress={item?.profile.ownedBy}
-                description={item?.metadata?.description}
-                uploadedBy={item?.profile?.name}
-                profileId={item?.profile?.id}
-                stats={item?.stats}
-                isFollowdByMe={item.profile.isFollowedByMe}
-                reaction={item?.reaction}
-                width={300}
                 height={150}
-                attributes={item?.metadata?.attributes}
+                width={300}
               />
             );
           })}
