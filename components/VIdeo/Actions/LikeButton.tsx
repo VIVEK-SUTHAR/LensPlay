@@ -78,8 +78,8 @@ const LikeButton = ({
         
         
         if (publication.id === id) {
-          setIsLiked(true);
           setLikes(prev => prev + 1);
+          setIsLiked(true);
           console.log('like hua');
           // clicked = true;
         }
@@ -95,6 +95,15 @@ const LikeButton = ({
             console.log('likes after dislike', like)
             // clicked = true;
           }
+        }
+        else if (!isLiked && clicked){
+          if(publication.id === id){
+            setIsLiked(false);
+            setisAlreadyLiked(false);
+            setLikes(prev => prev - 1);
+            console.log('yeh aya naa');
+          }
+            
         }
         //else if the publication is in the disliked array then false all the variables 
         else{
