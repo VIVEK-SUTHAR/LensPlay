@@ -18,9 +18,11 @@ import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import {
   LENSPLAY_DISCORD,
+  LENSPLAY_PRIVACY,
   LENSPLAY_SITE,
   LENSPLAY_TWITTER,
   OFFICIAL_EMAIL,
+  LENSPLAY_TERMS
 } from "../constants";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
@@ -49,12 +51,16 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
     {
       icon: <Icon name="policy" />,
       label: "Terms and Conditions",
-      onPress: () => {},
+      onPress: () => {
+        Linking.openURL(LENSPLAY_TERMS);
+      },
     },
     {
       icon: <Icon name="terms" />,
       label: "Privacy Policy",
-      onPress: () => {},
+      onPress: () => {
+        Linking.openURL(LENSPLAY_PRIVACY);
+      },
     },
     {
       icon: <Icon name="mail" />,
