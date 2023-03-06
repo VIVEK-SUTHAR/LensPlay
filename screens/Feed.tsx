@@ -99,6 +99,9 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
           if (!data.data.defaultProfile) {
             return;
           }
+          refetch({
+            id: data?.data?.defaultProfile?.id,
+          });
           userStore.setCurrentProfile(data.data.defaultProfile);
         }
         if (isvaild.data.verify === false) {
@@ -123,6 +126,9 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
             return;
           }
           userStore.setCurrentProfile(data.data.defaultProfile);
+          refetch({
+            id: data?.data?.defaultProfile?.id,
+          });
         }
       } else {
         // setIsloading(false);
@@ -135,7 +141,14 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
     }
   };
 
-  const { data: Feeddata, error, loading } = useFeed();
+  const { data: Feeddata, error, loading, refetch } = useFeed();
+  useEffect(() => {
+    if (error || !Feeddata) {
+      refetch({
+        id: userStore?.currentProfile?.id,
+      });
+    }
+  }, [userStore?.currentProfile]);
   if (callData) return <Loader />;
   if (!callData && loading) return <Loader />;
 
