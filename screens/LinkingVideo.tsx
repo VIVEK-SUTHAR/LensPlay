@@ -75,6 +75,8 @@ const LinkingVideo = ({
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+    console.log(route.params.id);
+
     getVideoById(route?.params?.id);
   }, []);
 

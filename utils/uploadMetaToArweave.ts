@@ -10,7 +10,7 @@ import { BUNDLR_UPLOAD_API } from "../constants";
 async function uploadMetaDataToArweave(commentText: string, handle: string | undefined) {
 	try {
 		const headersList = {
-			Accept: "*/*",
+			"Accept": "*/*",
 			"Content-Type": "application/json",
 		};
 

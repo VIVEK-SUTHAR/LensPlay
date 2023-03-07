@@ -1,6 +1,6 @@
 import React from "react";
 import { Linking, Text } from "react-native";
-import { MENTION_REGEX, URL_REGEX } from "../constants";
+import { IS_MAINNET, MENTION_REGEX, URL_REGEX } from "../constants";
 import { primary } from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import StyledText from "../components/UI/StyledText";
@@ -11,17 +11,34 @@ import StyledText from "../components/UI/StyledText";
  * @returns Same text with URLs highlighted
  */
 
+const checkIsLensTubeLink = (url: string) => {
+  const lenstube = IS_MAINNET
+    ? /\bhttps:\/\/lenstube\.xyz\/watch\/\b/
+    : /https:\/\/testnet\.lenstube\.xyz\/watch\//;
+
+  const isLentubeLink = lenstube.test(url);
+  if (isLentubeLink) {
+    return true;
+  } else {
+    // Linking.openURL(url);
+    return false;
+  }
+};
 function extractURLs(txt: string | undefined) {
   const navigation = useNavigation();
   const renderText = (txt: string | undefined) =>
     txt?.split(" ").map((part, index) =>
       URL_REGEX.test(part) ? (
         <StyledText
-          title={part+" "}
+          title={part + " "}
           key={index}
           style={{ color: primary, textDecorationLine: "underline" }}
           onPress={() => {
-            Linking.openURL(part);
+            checkIsLensTubeLink(part)
+              ? navigation.navigate("LinkingVideo", {
+                  id: part.split("/watch/")[1],
+                })
+              : Linking.openURL(part);
           }}
         />
       ) : (
