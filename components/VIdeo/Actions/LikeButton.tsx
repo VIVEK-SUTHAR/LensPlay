@@ -80,8 +80,6 @@ const LikeButton = ({
         if (publication.id === id) {
           setLikes(prev => prev + 1);
           setIsLiked(true);
-          console.log('like hua');
-          // clicked = true;
         }
       }
     });
@@ -92,16 +90,13 @@ const LikeButton = ({
             setIsLiked(false);
             setisAlreadyLiked(false);
             setLikes(prev => prev - 1);
-            console.log('likes after dislike', like)
-            // clicked = true;
           }
         }
-        else if (!isLiked && clicked){
+        else if (!isLiked && clicked && likes != 0){
           if(publication.id === id){
             setIsLiked(false);
             setisAlreadyLiked(false);
             setLikes(prev => prev - 1);
-            console.log('yeh aya naa');
           }
             
         }
@@ -110,7 +105,6 @@ const LikeButton = ({
           if (publication.id === id) {
             setIsLiked(false);
             setisAlreadyLiked(false);
-            // clicked = true;
           }
         }
         

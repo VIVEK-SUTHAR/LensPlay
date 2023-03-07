@@ -56,7 +56,6 @@ export const useReactionStore = create<IReactionStore>((set) => ({
     for (var i = 0; i < dislikedPublication.length; i++) {
       if (dislikedPublication[i].id === publicationId) {
         dislikedPublication.splice(i, 1);
-        console.log('removed from disliked publication', dislikedPublication, publicationId)
       }
     }
     set((state) => ({
@@ -74,7 +73,6 @@ export const useReactionStore = create<IReactionStore>((set) => ({
     for (var i = 0; i < likedPublication.length; i++) {
       if (likedPublication[i].id === publicationId) {
         likedPublication.splice(i, 1);
-        console.log('removed from liked publication', likedPublication, publicationId);  
       }
     }
     set((state) => ({

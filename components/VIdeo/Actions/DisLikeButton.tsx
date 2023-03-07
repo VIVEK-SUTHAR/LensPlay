@@ -86,7 +86,6 @@ const DisLikeButton = ({
         ).then((res) => {
           if (res) {
             if (res.addReaction === null) {
-              console.log('disliked succesfully')
                 likedPublication.addToDislikedPublications(id, thumbup);
             }
           }
@@ -120,11 +119,6 @@ const DisLikeButton = ({
       }}
       borderColor={isDisliked || isAlreadyDisliked? PRIMARY : "white"}
       icon={
-        // <DisLikeIcon
-        //   height={20}
-        //   width={20}
-        //   filled={isalreadyDisLiked ? true : false}
-        // />
        <Icon
           name="dislike"
           size={20}

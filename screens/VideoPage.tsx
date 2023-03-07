@@ -28,7 +28,6 @@ const VideoPage = ({
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(false);
   
-  const likedPublication = useReactionStore();
   const [isAlreadyMirrored, setIsAlreadyMirrored] = useState<boolean>(false);
 
 
