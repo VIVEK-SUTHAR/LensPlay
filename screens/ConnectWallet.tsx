@@ -1,5 +1,7 @@
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
+import { MotiView } from "moti";
 import React from "react";
 import {
   Dimensions,
@@ -11,8 +13,6 @@ import {
 import Button from "../components/UI/Button";
 import StyledText from "../components/UI/StyledText";
 import { RootStackScreenProps } from "../types/navigation/types";
-import Constants from "expo-constants";
-import { MotiView } from "moti";
 
 function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   const connector = useWalletConnect();
@@ -25,8 +25,8 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="#93E9C8" style="dark" />
-      <View style={{ position: "relative", alignItems: "center" }}>
+      <StatusBar backgroundColor="transparent" style="light" />
+      {/* <View style={{ position: "relative", alignItems: "center" }}>
         <Image
           source={require("../assets/images/Vector257.png")}
           style={{
@@ -47,11 +47,75 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           }}
           resizeMode={"contain"}
         />
+      </View> */}
+
+      <View style={{justifyContent:"center",alignItems:"center",top:"25%"}} >
+        <MotiView
+          from={{
+            transform: [{ scale: 0 }],
+          }}
+          animate={{
+            transform: [{ scale: 1 }],
+          }}
+          transition={{
+            delay: 100,
+          }}
+          style={styles.shape1}
+        >
+          <MotiView
+            style={styles.smallShape1}
+            from={{ opacity: 0 }}
+            transition={{ delay: 1000 }}
+            animate={{ opacity: 1 }}
+          />
+        </MotiView>
+        <MotiView
+          style={styles.shape2}
+          from={{
+            transform: [{ scale: 0 }],
+          }}
+          animate={{
+            transform: [{ scale: 1 }],
+          }}
+          transition={{
+            delay: 200,
+          }}
+        >
+          <MotiView
+            style={styles.smallShape2}
+            from={{ opacity: 0 }}
+            transition={{ delay: 1100 }}
+            animate={{ opacity: 1 }}
+          />
+        </MotiView>
+        <MotiView
+          style={styles.shape3}
+          from={{
+            transform: [{ scale: 0 }],
+          }}
+          animate={{
+            transform: [{ scale: 1 }],
+          }}
+          transition={{
+            delay: 300,
+          }}
+        >
+          <MotiView
+            style={styles.smallShape3}
+            from={{ opacity: 0 }}
+            transition={{ delay: 800 }}
+            animate={{ opacity: 1 }}
+          />
+        </MotiView>
+        {/*  */}
       </View>
+      
+
       <View
         style={{
           justifyContent: "center",
           marginTop: 48,
+          top: "30%",
         }}
       >
         <MotiView
@@ -86,7 +150,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             title={"Composable,"}
             style={{
               fontSize: 28,
-              color: "#93E9C8",
+              color: "#01B35A",
               fontWeight: "600",
               textAlign: "right",
               marginLeft: 8,
@@ -120,7 +184,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             title={"Owned,"}
             style={{
               fontSize: 28,
-              color: "#93E9C8",
+              color: "#01B35A",
               fontWeight: "600",
               textAlign: "right",
               marginLeft: 8,
@@ -154,7 +218,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             title={"Graph."}
             style={{
               fontSize: 28,
-              color: "#93E9C8",
+              color: "#01B35A",
               fontWeight: "600",
               textAlign: "right",
               marginLeft: 8,
@@ -176,10 +240,11 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             navigation.push("LoginWithLens");
           }}
           title="Connect Wallet"
-          bg="#93E9C8"
-          borderRadius={50}
-          textStyle={{ fontWeight: "600", fontSize: 20 }}
-          py={12}
+          bg="#333333"
+          borderRadius={10}
+          textStyle={{ fontWeight: "800", fontSize: 24, color: "white" }}
+          py={10}
+          iconPosition="right"
         />
       </View>
     </SafeAreaView>
@@ -191,5 +256,64 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
+  },
+
+  shape1: {
+    width: 150,
+    height: 50,
+    backgroundColor: "#56CBF9",
+    borderRadius: 50,
+    position: "relative",
+    zIndex: -1,
+    justifyContent: "center",
+    paddingLeft: 8,
+    paddingVertical: 10,
+  },
+  shape2: {
+    width: 290,
+    height: 50,
+    backgroundColor: "#EBDD4E",
+    borderRadius: 50,
+    position: "relative",
+    zIndex: -1,
+    justifyContent: "center",
+    paddingLeft: 8,
+    paddingVertical: 10,
+    marginVertical: 20,
+  },
+  shape3: {
+    width: 210,
+    height: 50,
+    backgroundColor: "#9EF01A",
+    borderRadius: 50,
+    position: "relative",
+    zIndex: -1,
+    justifyContent: "center",
+    paddingLeft: 8,
+    paddingVertical: 10,
+  },
+  smallShape1: {
+    width: 30,
+    height: 30,
+    backgroundColor: "#4C9CF0",
+    borderRadius: 50,
+    position: "relative",
+    zIndex: 1,
+  },
+  smallShape2: {
+    width: 30,
+    height: 30,
+    backgroundColor: "#E5B63D",
+    borderRadius: 50,
+    position: "relative",
+    zIndex: 1,
+  },
+  smallShape3: {
+    width: 30,
+    height: 30,
+    backgroundColor: "#4FB10D",
+    borderRadius: 50,
+    position: "relative",
+    zIndex: 1,
   },
 });

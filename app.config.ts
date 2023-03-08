@@ -91,7 +91,7 @@ const config: ExpoConfig = {
 	scheme: "lensplay",
 	userInterfaceStyle: "automatic",
 	splash: {
-		image: "./assets/images/icon.png",
+		image: "./assets/images/adaptive-icon.png",
 		resizeMode: "contain",
 		backgroundColor: "#000000",
 	},
@@ -129,9 +129,9 @@ const config: ExpoConfig = {
 		favicon: "./assets/images/favicon.png",
 	},
 	extra: {
-		eas: {
-			projectId: "c3c41aca-6bdd-4196-a006-a524dcf26c4e",
-		},
+		// eas: {
+		// 	projectId: "c3c41aca-6bdd-4196-a006-a524dcf26c4e",
+		// },
 	},
 	plugins: [
 		[
