@@ -29,38 +29,9 @@ const VideoPage = ({
   const [likes, setLikes] = useState<number>(activePublication?.stats?.totalUpvotes);
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(false);
-  const [isalreadyLiked, setisalreadyLiked] = useState<boolean>(
-    activePublication?.reaction === "UPVOTE" ? true : false
-  );
-  const [isalreadyDisLiked, setisalreadyDisLiked] = useState<boolean>(
-    activePublication?.reaction === "DOWNVOTE" ? true : false
-  );
-  const likedPublication = useReactionStore();
+  
   const [isAlreadyMirrored, setIsAlreadyMirrored] = useState<boolean>(false);
-  const thumbup = likedPublication.likedPublication;
-  const thumbdown = likedPublication.dislikedPublication;
 
-  useEffect(() => {
-    thumbup.map((publication) => {
-      if (publication.id === activePublication.id) {
-        setisalreadyLiked(true);
-        setisalreadyDisLiked(false);
-        setLikes(publication.likes + 1);
-      }
-    });
-    thumbdown.map((publication) => {
-      if (publication.id === activePublication.id) {
-        if (isalreadyLiked) {
-          setisalreadyDisLiked(true);
-          setisalreadyLiked(false);
-          setLikes((prev) => prev - 1);
-        } else {
-          setisalreadyDisLiked(true);
-          setisalreadyLiked(false);
-        }
-      }
-    });
-  }, [navigation, activePublication.playbackId]);
 
   function handleBackButtonClick() {
     setStatusBarHidden(false, "fade");
@@ -72,6 +43,8 @@ const VideoPage = ({
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+    
+    
   }, []);
 
   // const PublicationStats = route.params.stats;
@@ -108,18 +81,12 @@ const VideoPage = ({
             showsHorizontalScrollIndicator={false}
           >
             <LikeButton
-              likes={likes}
+              like={activePublication?.stats?.totalUpvotes}
               id={activePublication?.id}
-              setLikes={setLikes}
-              isalreadyLiked={isalreadyLiked}
-              setisalreadyDisLiked={setisalreadyDisLiked}
+              isalreadyLiked={activePublication?.reaction}
             />
             <DisLikeButton
-              isalreadyLiked={isalreadyLiked}
-              setLikes={setLikes}
-              isalreadyDisLiked={isalreadyDisLiked}
-              setisalreadyDisLiked={setisalreadyDisLiked}
-              setisalreadyLiked={setisalreadyLiked}
+              isalreadyDisLiked={activePublication?.reaction}
               id={activePublication?.id}
             />
             <MirrorButton
