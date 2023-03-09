@@ -4,7 +4,12 @@ import getDifference from "../../utils/getDifference";
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { CommentStats } from "../../types/Lens/Feed";
-import { useAuthStore, useProfile, useReactionStore } from "../../store/Store";
+import {
+  useAuthStore,
+  useProfile,
+  useReactionStore,
+  useToast,
+} from "../../store/Store";
 import { addLike, freeMirror } from "../../api";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
@@ -16,6 +21,8 @@ import CollectIcon from "../svg/CollectIcon";
 import MirrorIcon from "../svg/MirrorIcon";
 import Icon from "../Icon";
 import { CollectButton } from "../VIdeo";
+import { useGuestStore } from "../../store/GuestStore";
+import { ToastType } from "../../types/Store";
 
 type CommentCardProps = {
   avatar: string;
@@ -49,6 +56,9 @@ const CommentCard = ({
   const navigation = useNavigation();
   const userStore = useProfile();
   const likedComments = reactions.likedComments;
+  const { isGuest } = useGuestStore();
+  const toast = useToast();
+
   const setLike = async () => {
     if (isIndexing) return;
     if (!isalreadyDisLiked) {
@@ -141,6 +151,10 @@ const CommentCard = ({
           <Button
             title={likes}
             onPress={() => {
+              if (isGuest) {
+                toast.show("Please Login", ToastType.ERROR, true);
+                return;
+              }
               setLike();
               setisalreadyDisLiked(true);
             }}
@@ -177,6 +191,10 @@ const CommentCard = ({
             }}
             icon={<Icon name="collect" size={20} />}
             onPress={() => {
+              if (isGuest) {
+                toast.show("Please Login", ToastType.ERROR, true);
+                return;
+              }
               // setIsmodalopen(true);
             }}
           />
@@ -196,6 +214,10 @@ const CommentCard = ({
             icon={<Icon name="mirror" size={20} />}
             borderColor="#232323"
             onPress={async () => {
+              if (isGuest) {
+                toast.show("Please Login", ToastType.ERROR, true);
+                return;
+              }
               try {
                 if (isIndexing) return;
                 await freeMirror(

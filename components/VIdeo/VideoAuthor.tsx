@@ -7,6 +7,7 @@ import StyledText from "../UI/StyledText";
 import { ToastType } from "../../types/Store";
 import { createFreeSubscribe } from "../../api";
 import Button from "../UI/Button";
+import { useGuestStore } from "../../store/GuestStore";
 
 type VideoCreatorProps = {
   avatarLink: string;
@@ -23,8 +24,13 @@ const VideoCreator = (props: VideoCreatorProps) => {
   const { accessToken } = useAuthStore();
   const { PRIMARY } = useThemeStore();
   const toast = useToast();
+  const { isGuest } = useGuestStore();
 
   const followCreator = async () => {
+    if (isGuest) {
+      toast.show("Please Login", ToastType.ERROR, true);
+      return;
+    }
     if (following) {
       toast.show("Currently not supported", ToastType.ERROR, true);
       return;

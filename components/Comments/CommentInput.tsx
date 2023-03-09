@@ -15,6 +15,7 @@ import { client } from "../../apollo/client";
 import createCommentViaDispatcher from "../../apollo/mutations/createCommentViaDispatcher";
 import Icon from "../Icon";
 import { getProxyActionStatus } from "../../api";
+import { useGuestStore } from "../../store/GuestStore";
 
 type CommentInputProps = {
   publicationId: string;
@@ -30,8 +31,13 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
   const { PRIMARY } = useThemeStore();
+  const { isGuest } = useGuestStore();
 
   async function publishComment() {
+    if (isGuest) {
+      toast.show("Please Login", ToastType.ERROR, true);
+      return;
+    }
     if (commentText.length === 0) {
       toast.show("Please type something", ToastType.ERROR, true);
       return;

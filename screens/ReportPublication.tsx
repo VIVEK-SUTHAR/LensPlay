@@ -17,6 +17,7 @@ import { ToastType } from "../types/Store";
 import Dropdown from "../components/UI/Dropdown";
 import { client } from "../apollo/client";
 import reportPublication from "../apollo/mutations/reportPublication";
+import { useGuestStore } from "../store/GuestStore";
 
 type subreason = {
   reason: string;
@@ -45,6 +46,8 @@ const ReportPublication = ({
   const theme = useThemeStore();
   const toast = useToast();
   const { accessToken } = useAuthStore();
+  const { isGuest } = useGuestStore();
+
   const reportData: RESONTYPEDATA[] = [
     {
       reason: "SENSITIVE",
@@ -63,6 +66,10 @@ const ReportPublication = ({
   const handleReport = async () => {
     if (!selectedData?.reason || !selectedSubReason?.reason) {
       toast.show("Please select type and reason", ToastType.ERROR, true);
+      return;
+    }
+    if (isGuest) {
+      toast.show("Please Login", ToastType.ERROR, true);
       return;
     }
     try {

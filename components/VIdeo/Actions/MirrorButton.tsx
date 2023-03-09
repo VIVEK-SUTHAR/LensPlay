@@ -14,6 +14,7 @@ import getIPFSLink from "../../../utils/getIPFSLink";
 import RBSheet from "../../UI/BottomSheet";
 import Icon from "../../Icon";
 import { useIsMirrored } from "../../../hooks/useFeed";
+import { useGuestStore } from "../../../store/GuestStore";
 
 type MirrorButtonProps = {
   id: string;
@@ -35,6 +36,7 @@ const MirrorButton = ({
   const userStore = useProfile();
   const { PRIMARY } = useThemeStore();
   const ref = useRef();
+  const { isGuest } = useGuestStore();
 
   const { data, error } = useIsMirrored(id);
 
@@ -52,7 +54,6 @@ const MirrorButton = ({
       ref.current?.close();
       return;
     }
-
     setIsAlreadyMirrored(true);
     try {
       const data = await freeMirror(
@@ -109,6 +110,10 @@ const MirrorButton = ({
       <Button
         title={totalMirrors?.toString()}
         onPress={() => {
+          if (isGuest) {
+            Toast.show("Please Login", ToastType.ERROR, true);
+            return;
+          }
           ref.current?.open();
         }}
         mx={4}
