@@ -22,8 +22,9 @@ import {
   LENSPLAY_SITE,
   LENSPLAY_TWITTER,
   OFFICIAL_EMAIL,
-  LENSPLAY_TERMS
+  LENSPLAY_TERMS,
 } from "../constants";
+import { useGuestStore } from "../store/GuestStore";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
@@ -40,6 +41,8 @@ type SettingsItemProps = {
 const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const Wallet = useWalletConnect();
+  const { isGuest } = useGuestStore();
+
   const SettingItemsList: SettingsItemProps[] = [
     {
       icon: <Icon name="bug" />,
@@ -82,14 +85,18 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="black" style="auto" />
       {SettingItemsList.map((item, index) => {
-        return (
-          <SettingsItem
-            key={index}
-            icon={item.icon}
-            label={item.label}
-            onPress={item.onPress}
-          />
-        );
+        if (isGuest && item.label === "Logout") {
+          return;
+        } else {
+          return (
+            <SettingsItem
+              key={index}
+              icon={item.icon}
+              label={item.label}
+              onPress={item.onPress}
+            />
+          );
+        }
       })}
       <View
         style={{

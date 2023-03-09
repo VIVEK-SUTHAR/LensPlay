@@ -25,6 +25,7 @@ import storeData from "../utils/storeData";
 import searchUser from "../api/zooTools/searchUser";
 import { StatusBar } from "expo-status-bar";
 import { dark_primary } from "../constants/Colors";
+import { useGuestStore } from "../store/GuestStore";
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const connector = useWalletConnect();
   const authStore = useAuthStore();
@@ -33,6 +34,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const theme = useThemeStore();
   const { hasAccess } = useAuthStore();
+  const { isGuest, profileId } = useGuestStore();
 
   useEffect(() => {
     if (callData) {
@@ -142,20 +144,21 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   };
 
   const { data: Feeddata, error, loading, refetch } = useFeed();
+
   useEffect(() => {
     if (error || !Feeddata) {
       refetch({
-        id: userStore?.currentProfile?.id,
+        id: isGuest ? profileId : userStore?.currentProfile?.id,
       });
     }
   }, [userStore?.currentProfile]);
+
   if (callData) return <Loader />;
   if (!callData && loading) return <Loader />;
 
   if (error) return <NotFound navigation={navigation} />;
 
   if (!Feeddata) return <NotFound navigation={navigation} />;
-
 
   if (Feeddata) {
     return (
@@ -167,18 +170,13 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
-              onRefresh={() => { }}
+              onRefresh={() => {}}
               colors={[theme.PRIMARY]}
               progressBackgroundColor={"black"}
             />
           }
           renderItem={({ item }) => {
-            return (
-              <VideoCard
-                publication={item?.root}
-                id={item?.root?.id}
-              />
-            );
+            return <VideoCard publication={item?.root} id={item?.root?.id} />;
           }}
         />
       </SafeAreaView>

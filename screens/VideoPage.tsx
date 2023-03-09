@@ -1,6 +1,9 @@
 import { View, ScrollView, SafeAreaView, BackHandler } from "react-native";
 import React, { useEffect } from "react";
-import useStore, { useActivePublication, useReactionStore } from "../store/Store";
+import useStore, {
+  useActivePublication,
+  useReactionStore,
+} from "../store/Store";
 import { useState } from "react";
 import { setStatusBarHidden } from "expo-status-bar";
 import * as ScreenOrientation from "expo-screen-orientation";
@@ -24,14 +27,15 @@ const VideoPage = ({
   navigation,
   route,
 }: RootStackScreenProps<"VideoPage">) => {
-  const {activePublication} = useActivePublication();
+  const { activePublication } = useActivePublication();
   const PublicationStats = activePublication?.stats;
-  const [likes, setLikes] = useState<number>(activePublication?.stats?.totalUpvotes);
+  const [likes, setLikes] = useState<number>(
+    activePublication?.stats?.totalUpvotes
+  );
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(false);
-  
-  const [isAlreadyMirrored, setIsAlreadyMirrored] = useState<boolean>(false);
 
+  const [isAlreadyMirrored, setIsAlreadyMirrored] = useState<boolean>(false);
 
   function handleBackButtonClick() {
     setStatusBarHidden(false, "fade");
@@ -43,8 +47,6 @@ const VideoPage = ({
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
-    
-    
   }, []);
 
   // const PublicationStats = route.params.stats;
@@ -70,8 +72,13 @@ const VideoPage = ({
           <VideoCreator
             profileId={activePublication?.profile?.id}
             avatarLink={activePublication?.profile?.picture?.original?.url}
-            uploadedBy={activePublication?.profile?.name || activePublication?.profile?.handle}
-            alreadyFollowing={activePublication?.profile?.isFollowedByMe || false}
+            uploadedBy={
+              activePublication?.profile?.name ||
+              activePublication?.profile?.handle
+            }
+            alreadyFollowing={
+              activePublication?.profile?.isFollowedByMe || false
+            }
           />
           <ScrollView
             style={{
@@ -99,13 +106,19 @@ const VideoPage = ({
             <CollectButton
               publicationId={activePublication?.id}
               bannerUrl={activePublication?.metadata?.cover}
-              title={activePublication?.profile?.name || activePublication?.profile?.handle}
+              title={
+                activePublication?.profile?.name ||
+                activePublication?.profile?.handle
+              }
               totalCollects={PublicationStats.totalAmountOfCollects}
               videoUrl={activePublication?.metadata?.media[0]?.original?.url}
               hasCollected={activePublication?.hasCollectedByMe}
             />
             <ShareButton
-              title={activePublication?.profile?.name || activePublication?.profile.handle}
+              title={
+                activePublication?.profile?.name ||
+                activePublication?.profile.handle
+              }
               publicationId={activePublication?.id}
             />
             <ReportButton publicationId={activePublication?.id} />

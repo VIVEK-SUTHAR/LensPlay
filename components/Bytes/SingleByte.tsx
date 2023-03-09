@@ -152,7 +152,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
       <View
         style={{
           width: windowWidth,
-          height: windowHeight - 20,
+          height: windowHeight - bottomTabBarHeight,
           position: "relative",
           justifyContent: "center",
           alignItems: "center",

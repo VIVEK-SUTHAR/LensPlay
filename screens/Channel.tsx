@@ -34,6 +34,7 @@ import VerifiedIcon from "../components/svg/VerifiedIcon";
 import { STATIC_ASSET } from "../constants";
 import Icon from "../components/Icon";
 import formatHandle from "../utils/formatHandle";
+import { useGuestStore } from "../store/GuestStore";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -54,6 +55,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const theme = useThemeStore();
   const authStore = useAuthStore();
   const toast = useToast();
+  const { isGuest } = useGuestStore();
 
   useEffect(() => {
     let profileId = "";
@@ -108,6 +110,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       setIsLoading(false);
     }
   };
+
   const getUserMirrors = async (id: string | undefined) => {
     try {
       const getMirrorVideo = await client.query({
@@ -128,6 +131,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       setmirrorVideos([]);
     }
   };
+
   const getUserCollects = async () => {
     try {
       const getCollectVideo = await client.query({
@@ -146,6 +150,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       setcollectVideos([]);
     }
   };
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getProfleInfo(route.params.profileId).then(() => {
@@ -265,6 +270,10 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                         color: "black",
                       }}
                       onPress={async () => {
+                        if (isGuest) {
+                          toast.show("Please Login", ToastType.ERROR, true);
+                          return;
+                        }
                         try {
                           const data = await createFreeSubscribe(
                             route.params.profileId,
@@ -548,7 +557,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                                 id={item?.id}
                                 publication={item}
                                 height={150}
-                              width={300}
+                                width={300}
                                 // date={item?.createdAt}
                                 // banner={item?.metadata?.cover}
                                 // title={item?.metadata?.name}
@@ -644,9 +653,9 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                                   // description={item?.metadata?.description}
                                   // attributes={item?.metadata?.attributes}
                                   id={item?.id}
-                                publication={item}
-                                height={150}
-                              width={300}
+                                  publication={item}
+                                  height={150}
+                                  width={300}
                                 />
                               );
                             }
