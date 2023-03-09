@@ -38,6 +38,9 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 
   useEffect(() => {
     if (callData) {
+      if (isGuest){
+        return;
+      }
       if (!hasAccess) {
         navigation.replace("Loader");
       } else {

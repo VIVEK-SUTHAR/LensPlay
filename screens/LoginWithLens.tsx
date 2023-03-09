@@ -147,12 +147,12 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         </View>
       </View>
 
-      <View style={{ justifyContent: "flex-end"}}>
+      <View style={{ justifyContent: "flex-end", marginTop: 80}}>
         <View
           style={{
             flexDirection: "column",
             alignItems: "flex-end",
-            paddingHorizontal: 34,
+            paddingHorizontal: 28,
           }}
         >
           <MotiView
@@ -183,7 +183,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
               title={"click"}
               style={{
                 fontSize: 28,
-                color: "#01B35A",
+                color: "#56CBF9",
                 fontWeight: "600",
                 textAlign: "right",
                 marginRight: 8,
@@ -228,7 +228,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
               title={"owning"}
               style={{
                 fontSize: 28,
-                color: "#01B35A",
+                color: "#9EF01A",
                 fontWeight: "600",
                 textAlign: "right",
                 marginRight: 8,
@@ -263,7 +263,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
               title={"content"}
               style={{
                 fontSize: 28,
-                color: "#01B35A",
+                color: "#FFC600",
                 fontWeight: "600",
                 textAlign: "right",
                 marginRight: 8,

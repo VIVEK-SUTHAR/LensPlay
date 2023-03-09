@@ -12,13 +12,15 @@ import {
 } from "react-native";
 import Button from "../components/UI/Button";
 import StyledText from "../components/UI/StyledText";
-import { primary } from "../constants/Colors";
+import { dark_primary, primary } from "../constants/Colors";
 import { RootStackScreenProps } from "../types/navigation/types";
+import { useGuestStore } from "../store/GuestStore";
 
 function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   const connector = useWalletConnect();
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
+  const { handleGuest, isGuest } = useGuestStore();
 
   const connectWallet = React.useCallback(async () => {
     await connector.connect();
@@ -29,7 +31,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
       <StatusBar backgroundColor="transparent" style="light" />
 
       <View
-        style={{ justifyContent: "center", alignItems: "center", paddingTop: 160}}
+        style={{ justifyContent: "center", alignItems: "center", paddingTop: 160 }}
       >
         <MotiView
           from={{
@@ -94,7 +96,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
       <View
         style={{
           justifyContent: "center",
-          marginTop: 60,
+          marginTop: 150,
         }}
       >
         <MotiView
@@ -112,12 +114,12 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           style={{
             flexDirection: "row",
             alignItems: "flex-start",
-            paddingHorizontal: 34,
+            paddingHorizontal: 28,
             marginTop: 0,
           }}
         >
           <StyledText
-            title={"Fully"}
+            title={"Connect"}
             style={{
               fontSize: 28,
               color: "white",
@@ -126,10 +128,10 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             }}
           />
           <StyledText
-            title={"Composable,"}
+            title={"&"}
             style={{
               fontSize: 28,
-              color: "#01B35A",
+              color: "#56CBF9",
               fontWeight: "600",
               textAlign: "right",
               marginLeft: 8,
@@ -148,10 +150,10 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             duration: 1500,
             delay: 200,
           }}
-          style={{ flexDirection: "row", paddingHorizontal: 36 }}
+          style={{ flexDirection: "row", paddingHorizontal: 28 }}
         >
           <StyledText
-            title={"User"}
+            title={"Explore"}
             style={{
               fontSize: 28,
               color: "white",
@@ -160,17 +162,17 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             }}
           />
           <StyledText
-            title={"Owned,"}
+            title={"Lensplay"}
             style={{
               fontSize: 28,
-              color: "#01B35A",
+              color: "white",
               fontWeight: "600",
               textAlign: "right",
               marginLeft: 8,
             }}
           />
         </MotiView>
-        <MotiView
+        {/* <MotiView
           from={{
             opacity: 0,
           }}
@@ -182,7 +184,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             duration: 1500,
             delay: 300,
           }}
-          style={{ flexDirection: "row", paddingHorizontal: 36 }}
+          style={{ flexDirection: "row", paddingHorizontal: 28 }}
         >
           <StyledText
             title={"Social"}
@@ -197,13 +199,40 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             title={"Graph."}
             style={{
               fontSize: 28,
-              color: "#01B35A",
+              color: "#9EF01A",
               fontWeight: "600",
               textAlign: "right",
               marginLeft: 8,
             }}
           />
-        </MotiView>
+        </MotiView> */}
+      </View>
+      <View
+        style={{
+          paddingHorizontal: 16,
+          width: "100%",
+          marginTop: 10
+        }}
+      >
+       <Button
+          onPress={async () => {
+            await connectWallet();
+            navigation.push("LoginWithLens");
+          }}
+          title="Connect Wallet"
+          bg={primary}
+          borderRadius={8}
+          textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
+          py={8}
+          iconPosition="right"
+        /> 
+      </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20 }}>
+        <View style={{ flex: 1, height: 2, backgroundColor: 'white', borderRadius: 20 }} />
+        <View>
+          <StyledText title={'OR'} style={{ width: 45, textAlign: 'center', color: 'white', fontSize: 16, fontWeight: '600' }} />
+        </View>
+        <View style={{ flex: 1, height: 2, backgroundColor: 'white', borderRadius: 20 }} />
       </View>
       <View
         style={{
@@ -213,13 +242,15 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
       >
         <Button
           onPress={async () => {
-            await connectWallet();
-            navigation.push("LoginWithLens");
+            handleGuest(true);
+            console.log(isGuest);
+            
+            navigation.navigate("Root")
           }}
-          title="Connect Wallet"
-          bg={primary}
+          title="Continue as Guest"
+          bg={dark_primary}
           borderRadius={8}
-          textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
+          textStyle={{ fontWeight: "600", fontSize: 20, color: "white" }}
           py={8}
           iconPosition="right"
         />

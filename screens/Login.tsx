@@ -111,7 +111,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
                   title={"different"}
                   style={{
                     fontSize: 20,
-                    color: "#01B35A",
+                    color: "#56CBF9",
                     textAlign: "right",
                     marginRight: 8,
                   }}
