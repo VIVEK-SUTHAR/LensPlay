@@ -19,6 +19,7 @@ import getProfile from "../apollo/Queries/getProfile";
 import Icon from "../components/Icon";
 import Button from "../components/UI/Button";
 import StyledText from "../components/UI/StyledText";
+import { primary } from "../constants/Colors";
 import { useAuthStore, useProfile, useToast } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
@@ -94,25 +95,12 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
       <StatusBar backgroundColor="transparent" style="light" />
       <View
         style={{
-          flexDirection: "row",
-          marginTop: "70%",
-          justifyContent: "center",
+          flexDirection: "column",
+          justifyContent: "space-evenly",
+          alignItems: 'center',
+          paddingTop: 160
         }}
       >
-        <MotiView
-          from={{
-            transform: [{ scale: 0 }],
-          }}
-          animate={{
-            transform: [{ scale: 1 }],
-          }}
-          transition={{
-            delay: 400,
-          }}
-          style={styles.circle1}
-        >
-          <Icon name="mirror" size={44} />
-        </MotiView>
         <MotiView
           style={styles.circle2}
           from={{
@@ -127,51 +115,44 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         >
           <Icon name="collect" size={44} color="white" />
         </MotiView>
-        <MotiView
-          style={styles.circle3}
-          from={{
-            transform: [{ scale: 0 }],
-          }}
-          animate={{
-            transform: [{ scale: 1 }],
-          }}
-          transition={{
-            delay: 450,
-          }}
-        >
-          <Icon name="follow" size={44} />
-        </MotiView>
+        <View style={styles.bottomCircles}>
+          <MotiView
+            from={{
+              transform: [{ scale: 0 }],
+            }}
+            animate={{
+              transform: [{ scale: 1 }],
+            }}
+            transition={{
+              delay: 400,
+            }}
+            style={styles.circle1}
+          >
+            <Icon name="mirror" size={44} />
+          </MotiView>
+          <MotiView
+            style={styles.circle3}
+            from={{
+              transform: [{ scale: 0 }],
+            }}
+            animate={{
+              transform: [{ scale: 1 }],
+            }}
+            transition={{
+              delay: 450,
+            }}
+          >
+            <Icon name="follow" size={44} />
+          </MotiView>
+        </View>
       </View>
-      {/* <View style={{ position: "relative", alignItems: "center" }}>
-<Image
-source={require("../assets/images/Vector258.png")}
-style={{
-width: windowWidth,
-height: windowWidth + 100,
-marginTop: -Constants.statusBarHeight / 2,
-}}
-resizeMode={"contain"}
-/>
-<Image
-source={require("../assets/images/login3.png")}
-style={{
-width: windowWidth * 0.9,
-height: windowHeight / 2 + 100,
-position: "absolute",
-bottom: 20,
-}}
-resizeMode={"contain"}
-/>
-</View> */}
 
-      <View style={{ justifyContent: "flex-end", top: "24%" }}>
+      <View style={{ justifyContent: "flex-end"}}>
         <View
           style={{
-            position: "relative",
             flexDirection: "column",
             alignItems: "flex-end",
             paddingHorizontal: 34,
-            marginTop: 8,
           }}
         >
           <MotiView
@@ -295,18 +276,16 @@ resizeMode={"contain"}
       <View
         style={{
           paddingHorizontal: 16,
-          position: "absolute",
-          bottom: 16,
           width: "100%",
         }}
       >
         {hasHandle ? (
           <Button
             title="Login With Lens"
-            bg="#333333"
-            borderRadius={10}
-            textStyle={{ fontWeight: "800", fontSize: 24, color: "white" }}
-            py={10}
+            bg={primary}
+            borderRadius={8}
+            textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
+            py={8}
             iconPosition="right"
             isLoading={isloading}
             onPress={async () => {
@@ -316,7 +295,7 @@ resizeMode={"contain"}
         ) : (
           <Button
             title="Claim Lens Handle"
-            bg="#93E9C8"
+            bg={primary}
             borderRadius={50}
             textStyle={{ fontWeight: "600", fontSize: 20 }}
             py={12}
@@ -330,58 +309,48 @@ resizeMode={"contain"}
     </SafeAreaView>
 
 
-);
+  );
 }
 
 export default LoginWithLens;
 
 const styles = StyleSheet.create({
-container: {
-flex: 1,
-backgroundColor: "black",
-},
-circle1: {
-display: "flex",
-width: 100,
-height: 100,
-backgroundColor: "#9EF01A",
-borderRadius: 50,
-position: "relative",
-zIndex: -1,
-justifyContent: "center",
-alignItems: "center",
-// paddingLeft: 8,
-paddingVertical: 10,
-top: "20%",
-marginRight: "5%",
-},
-circle2: {
-display: "flex",
-bottom: "30%",
-width: 100,
-height: 100,
-backgroundColor: "#56CBF9",
-borderRadius: 50,
-position: "absolute",
-zIndex: -1,
-justifyContent: "center",
-alignItems: "center",
-// paddingLeft: 8,
-paddingVertical: 10,
-},
-circle3: {
-display: "flex",
-width: 100,
-height: 100,
-backgroundColor: "#FFC600",
-borderRadius: 50,
-position: "relative",
-zIndex: -1,
-justifyContent: "center",
-alignItems: "center",
-// paddingLeft: 8,
-paddingVertical: 10,
-top: "20%",
-marginLeft: "5%",
-},
+  container: {
+    flex: 1,
+    backgroundColor: "black",
+    justifyContent: 'space-between',
+    paddingBottom: 16
+  },
+  bottomCircles: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: 230
+  },
+  circle1: {
+    display: "flex",
+    width: 100,
+    height: 100,
+    backgroundColor: "#9EF01A",
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  circle2: {
+    display: "flex",
+    width: 100,
+    height: 100,
+    backgroundColor: "#56CBF9",
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  circle3: {
+    display: "flex",
+    width: 100,
+    height: 100,
+    backgroundColor: "#FFC600",
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
