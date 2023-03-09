@@ -92,23 +92,10 @@ const MirroredVideos = ({
             if (item?.appId?.includes("lenstube")) {
               return (
                 <VideoCard
-                  key={item?.id}
-                  id={item?.id}
-                  date={item?.createdAt}
-                  banner={item?.metadata?.cover}
-                  ethAddress={item?.profile.ownedBy}
-                  description={item?.metadata?.description}
-                  title={item?.metadata?.name}
-                  avatar={item?.profile?.picture?.original?.url}
-                  playbackId={item?.metadata?.media[0]?.original?.url}
-                  uploadedBy={item?.profile?.name}
-                  profileId={item?.profile?.id}
-                  stats={item?.stats}
-                  isFollowdByMe={item.profile.isFollowedByMe}
-                  reaction={item?.reaction}
-                  width={300}
-                  height={150}
-                  attributes={item?.metadata?.attributes}
+                publication={item}
+                id={item?.id}
+                height={150}
+                width={300}
                 />
               );
             }

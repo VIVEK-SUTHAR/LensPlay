@@ -85,13 +85,13 @@ const withPackageVisibility: ConfigPlugin = (config) => {
 const config: ExpoConfig = {
 	name: "LensPlay",
 	slug: "LensPlay",
-	version: "0.0.1",
+	version: "0.0.2",
 	orientation: "portrait",
 	icon: "./assets/images/icon.png",
 	scheme: "lensplay",
 	userInterfaceStyle: "automatic",
 	splash: {
-		image: "./assets/images/icon.png",
+		image: "./assets/images/adaptive-icon.png",
 		resizeMode: "contain",
 		backgroundColor: "#000000",
 	},
@@ -113,6 +113,17 @@ const config: ExpoConfig = {
 			foregroundImage: "./assets/images/adaptive-icon.png",
 			backgroundColor: "#000000",
 		},
+		intentFilters: [
+			{
+				action: "VIEW",
+				data: [
+					{
+						scheme: "lensplay",
+					},
+				],
+				category: ["BROWSABLE", "DEFAULT"],
+			},
+		],
 	},
 	web: {
 		favicon: "./assets/images/favicon.png",

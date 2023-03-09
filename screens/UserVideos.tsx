@@ -14,6 +14,10 @@ const UserVideos = ({ navigation, route }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: route.params.title,
+      headerTitleStyle: {
+        fontSize: 16,
+        fontWeight: "600",
+      },
     });
   }, []);
   return (
@@ -31,19 +35,9 @@ const UserVideos = ({ navigation, route }) => {
         renderItem={({ item }) => (
           <>
             <VideoCard
+              publication={item}
               id={item?.id}
-              title={item?.metadata?.name}
-              date={item.createdAt}
-              playbackId={item?.metadata?.media[0]?.original?.url}
-              banner={item?.metadata?.cover}
-              avatar={item?.profile?.picture?.original?.url}
-              uploadedBy={item?.profile?.name || item?.profile?.handle}
-              stats={item?.stats}
-              isFollowdByMe={item.profile.isFollowedByMe}
-              profileId={item?.profile?.id}
-              reaction={item?.reaction}
-              description={item?.metadata?.description}
-              attributes={item?.metadata?.attributes}
+
             />
           </>
         )}

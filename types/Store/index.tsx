@@ -66,3 +66,9 @@ export interface OptimitisticComment {
   username: string;
   isIndexing: boolean;
 }
+
+export interface IGuestStore {
+  isGuest: boolean;
+  profileId: string;
+  handleGuest: (isGuest: boolean) => void;
+}

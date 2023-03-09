@@ -33,6 +33,8 @@ import VERIFIED_CHANNELS from "../constants/Varified";
 import VerifiedIcon from "../components/svg/VerifiedIcon";
 import { STATIC_ASSET } from "../constants";
 import Icon from "../components/Icon";
+import formatHandle from "../utils/formatHandle";
+import { useGuestStore } from "../store/GuestStore";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -53,6 +55,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const theme = useThemeStore();
   const authStore = useAuthStore();
   const toast = useToast();
+  const { isGuest } = useGuestStore();
 
   useEffect(() => {
     let profileId = "";
@@ -107,6 +110,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       setIsLoading(false);
     }
   };
+
   const getUserMirrors = async (id: string | undefined) => {
     try {
       const getMirrorVideo = await client.query({
@@ -127,6 +131,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       setmirrorVideos([]);
     }
   };
+
   const getUserCollects = async () => {
     try {
       const getCollectVideo = await client.query({
@@ -145,6 +150,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       setcollectVideos([]);
     }
   };
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getProfleInfo(route.params.profileId).then(() => {
@@ -228,12 +234,21 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     zIndex: 12,
                   }}
                 >
-                  <Avatar
-                    src={profile?.picture?.original?.url}
-                    height={90}
-                    width={90}
-                    borderRadius={50}
-                  />
+                  <Pressable
+                    onPress={(e) => {
+                      navigation.navigate("FullImage", {
+                        url: getIPFSLink(profile?.picture.original.url),
+                        source: "avatar",
+                      });
+                    }}
+                  >
+                    <Avatar
+                      src={profile?.picture?.original?.url}
+                      height={90}
+                      width={90}
+                      borderRadius={50}
+                    />
+                  </Pressable>
                   <View
                     style={{
                       justifyContent: "flex-end",
@@ -255,6 +270,10 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                         color: "black",
                       }}
                       onPress={async () => {
+                        if (isGuest) {
+                          toast.show("Please Login", ToastType.ERROR, true);
+                          return;
+                        }
                         try {
                           const data = await createFreeSubscribe(
                             route.params.profileId,
@@ -296,9 +315,9 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
                         <Heading
-                          title={profile?.name}
+                          title={profile?.name || profile?.id}
                           style={{
-                            fontSize: 20,
+                            fontSize: 16,
                             marginTop: 8,
                             fontWeight: "bold",
                             color: "white",
@@ -325,10 +344,9 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                         )}
                       </View>
                       <StyledText
-                        title={`@${profile?.handle}`}
+                        title={formatHandle(profile?.handle)}
                         style={{
-                          fontSize: 14,
-                          lineHeight: 16,
+                          fontSize: 12,
                           fontWeight: "500",
                           color: "gray",
                         }}
@@ -380,17 +398,28 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                       <></>
                     )}
                     {links.yt?.length > 0 ? (
-                      <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
+                      <Pressable
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                        onPress={(e) => {
+                          e.preventDefault();
+                          Linking.openURL(
+                            `https://www.youtube.com/@${links.yt}`
+                          );
+                        }}
                       >
-                        {/* <YouTube height={24} width={24} filled={true} /> */}
-                        <Icon name="youtube" size={16} color="#FF0000" />
-
-                        <StyledText
-                          style={{ color:theme.PRIMARY, marginRight: 4 }}
-                          title={links.yt}
-                        ></StyledText>
-                      </View>
+                        <View
+                          style={{ flexDirection: "row", alignItems: "center" }}
+                        >
+                          <Icon name="youtube" size={16} color="#FF0000" />
+                          <StyledText
+                            style={{ color: theme.PRIMARY, marginRight: 4 }}
+                            title={links.yt}
+                          ></StyledText>
+                        </View>
+                      </Pressable>
                     ) : (
                       <></>
                     )}
@@ -405,19 +434,32 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     }}
                   >
                     {links.insta?.length > 0 ? (
-                      <View
+                      <Pressable
                         style={{
                           flexDirection: "row",
                           alignItems: "center",
                         }}
+                        onPress={(e) => {
+                          e.preventDefault();
+                          Linking.openURL(
+                            `https://www.instagram.com/${links.insta}`
+                          );
+                        }}
                       >
-                        <Icon name="instagram" size={16} color="#405DE6" />
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Icon name="instagram" size={16} color="#405DE6" />
 
-                        <StyledText
-                          style={{ color:theme.PRIMARY, marginRight: 4 }}
-                          title={links.insta}
-                        ></StyledText>
-                      </View>
+                          <StyledText
+                            style={{ color: theme.PRIMARY, marginRight: 4 }}
+                            title={links.insta}
+                          ></StyledText>
+                        </View>
+                      </Pressable>
                     ) : (
                       <></>
                     )}
@@ -511,25 +553,28 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                           allVideos.map((item: LensPublication) => {
                             return (
                               <VideoCard
-                                key={item?.id}
+                                // key={item?.id}
                                 id={item?.id}
-                                date={item?.createdAt}
-                                banner={item?.metadata?.cover}
-                                title={item?.metadata?.name}
-                                avatar={item?.profile?.picture?.original?.url}
-                                playbackId={
-                                  item?.metadata?.media[0]?.original?.url
-                                }
-                                uploadedBy={item?.profile?.name}
-                                profileId={item?.profile?.id}
-                                stats={item?.stats}
-                                isFollowdByMe={item.profile.isFollowedByMe}
-                                reaction={item?.reaction}
-                                width={300}
+                                publication={item}
                                 height={150}
-                                description={item?.metadata?.description}
-                                ethAddress={item?.profile.ownedBy}
-                                attributes={item?.metadata?.attributes}
+                                width={300}
+                                // date={item?.createdAt}
+                                // banner={item?.metadata?.cover}
+                                // title={item?.metadata?.name}
+                                // avatar={item?.profile?.picture?.original?.url}
+                                // playbackId={
+                                //   item?.metadata?.media[0]?.original?.url
+                                // }
+                                // uploadedBy={item?.profile?.name}
+                                // profileId={item?.profile?.id}
+                                // stats={item?.stats}
+                                // isFollowdByMe={item.profile.isFollowedByMe}
+                                // reaction={item?.reaction}
+                                // width={300}
+                                // height={150}
+                                // description={item?.metadata?.description}
+                                // ethAddress={item?.profile.ownedBy}
+                                // attributes={item?.metadata?.attributes}
                               />
                             );
                           })}
@@ -588,25 +633,29 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                             if (item?.appId?.includes("lenstube")) {
                               return (
                                 <VideoCard
-                                  key={item?.id}
+                                  // key={item?.id}
+                                  // id={item?.id}
+                                  // date={item?.createdAt}
+                                  // banner={item?.metadata?.cover}
+                                  // title={item?.metadata?.name}
+                                  // avatar={item?.profile?.picture?.original?.url}
+                                  // playbackId={
+                                  //   item?.metadata?.media[0]?.original?.url
+                                  // }
+                                  // uploadedBy={item?.profile?.name}
+                                  // profileId={item?.profile?.id}
+                                  // stats={item?.stats}
+                                  // isFollowdByMe={item.profile.isFollowedByMe}
+                                  // reaction={item?.reaction}
+                                  // width={300}
+                                  // height={150}
+                                  // ethAddress={item?.profile.ownedBy}
+                                  // description={item?.metadata?.description}
+                                  // attributes={item?.metadata?.attributes}
                                   id={item?.id}
-                                  date={item?.createdAt}
-                                  banner={item?.metadata?.cover}
-                                  title={item?.metadata?.name}
-                                  avatar={item?.profile?.picture?.original?.url}
-                                  playbackId={
-                                    item?.metadata?.media[0]?.original?.url
-                                  }
-                                  uploadedBy={item?.profile?.name}
-                                  profileId={item?.profile?.id}
-                                  stats={item?.stats}
-                                  isFollowdByMe={item.profile.isFollowedByMe}
-                                  reaction={item?.reaction}
-                                  width={300}
+                                  publication={item}
                                   height={150}
-                                  ethAddress={item?.profile.ownedBy}
-                                  description={item?.metadata?.description}
-                                  attributes={item?.metadata?.attributes}
+                                  width={300}
                                 />
                               );
                             }
@@ -665,25 +714,29 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                         collectVideos.map((item: LensPublication) => {
                           return (
                             <VideoCard
-                              key={item?.id}
+                              // key={item?.id}
+                              // id={item?.id}
+                              // date={item?.createdAt}
+                              // banner={item?.metadata?.cover}
+                              // title={item?.metadata?.name}
+                              // avatar={item?.profile?.picture?.original?.url}
+                              // playbackId={
+                              //   item?.metadata?.media[0]?.original?.url
+                              // }
+                              // uploadedBy={item?.profile?.name}
+                              // profileId={item?.profile?.id}
+                              // stats={item?.stats}
+                              // isFollowdByMe={item.profile.isFollowedByMe}
+                              // reaction={item?.reaction}
+                              // width={300}
+                              // height={150}
+                              // description={item?.metadata?.description}
+                              // ethAddress={item?.profile.ownedBy}
+                              // attributes={item?.metadata?.attributes}
                               id={item?.id}
-                              date={item?.createdAt}
-                              banner={item?.metadata?.cover}
-                              title={item?.metadata?.name}
-                              avatar={item?.profile?.picture?.original?.url}
-                              playbackId={
-                                item?.metadata?.media[0]?.original?.url
-                              }
-                              uploadedBy={item?.profile?.name}
-                              profileId={item?.profile?.id}
-                              stats={item?.stats}
-                              isFollowdByMe={item.profile.isFollowedByMe}
-                              reaction={item?.reaction}
-                              width={300}
+                              publication={item}
                               height={150}
-                              description={item?.metadata?.description}
-                              ethAddress={item?.profile.ownedBy}
-                              attributes={item?.metadata?.attributes}
+                              width={300}
                             />
                           );
                         })}

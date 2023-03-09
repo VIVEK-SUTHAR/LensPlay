@@ -14,6 +14,8 @@ import { ToastType } from "../../types/Store";
 import { client } from "../../apollo/client";
 import createCommentViaDispatcher from "../../apollo/mutations/createCommentViaDispatcher";
 import Icon from "../Icon";
+import { getProxyActionStatus } from "../../api";
+import { useGuestStore } from "../../store/GuestStore";
 
 type CommentInputProps = {
   publicationId: string;
@@ -29,8 +31,13 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
   const { PRIMARY } = useThemeStore();
+  const { isGuest } = useGuestStore();
 
   async function publishComment() {
+    if (isGuest) {
+      toast.show("Please Login", ToastType.ERROR, true);
+      return;
+    }
     if (commentText.length === 0) {
       toast.show("Please type something", ToastType.ERROR, true);
       return;
@@ -61,6 +68,29 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
           },
         },
       });
+      if (data?.createCommentViaDispatcher?.__typename === "RelayerResult") {
+        while (true) {
+          const status = await getProxyActionStatus(
+            data?.createCommentViaDispatcher?.txId,
+            accessToken
+          );
+          if (status) {
+            setOptimitisticComment({
+              ...optimitisticComment,
+              isIndexing: false,
+            });
+            break;
+          }
+          if (!status) {
+            setOptimitisticComment({
+              ...optimitisticComment,
+              isIndexing: false,
+            });
+            break;
+          }
+          await new Promise((r) => setTimeout(r, 2000));
+        }
+      }
       if (errors) {
         toast.show("Something went wrong", ToastType.ERROR, true);
         return;

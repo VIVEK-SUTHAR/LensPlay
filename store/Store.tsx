@@ -111,6 +111,15 @@ export const useOptimisticStore = create<OptimisticStore>((set) => ({
   },
 }));
 
+export const useActivePublication = create((set) => ({
+  activePublication: null,
+  setActivePublication: (newPublication) => {
+    set({
+      activePublication: newPublication,
+    });
+  },
+}));
+
 const useStore = create((set) => ({}));
 
 export default useStore;

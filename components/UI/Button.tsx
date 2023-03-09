@@ -10,7 +10,6 @@ import {
 import React from "react";
 import StyledText from "./StyledText";
 import { useThemeStore } from "../../store/Store";
-import Heading from "./Heading";
 interface ButtonProps {
   title: string;
   type?: "outline" | "filled";
@@ -28,6 +27,7 @@ interface ButtonProps {
   borderRadius?: number;
   onPress?: () => void;
   icon?: any;
+  iconPosition?: "left" | "right";
   disabled?: boolean;
   bytes?: boolean;
 }
@@ -51,6 +51,7 @@ const Button = (props: ButtonProps): JSX.Element => {
     onPress,
     borderColor = "white",
     icon,
+    iconPosition = "left",
     disabled,
     bytes = false,
     ...rest
@@ -58,7 +59,6 @@ const Button = (props: ButtonProps): JSX.Element => {
 
   var newStyle = Object.assign({}, textStyle, {
     textAlign: "center",
-    // marginRight: 8,
   });
 
   return (
@@ -106,8 +106,29 @@ const Button = (props: ButtonProps): JSX.Element => {
           <ActivityIndicator size={"small"} animating={true} color={"black"} />
         ) : (
           <>
-            {icon}
+            {icon && iconPosition === "left" ? (
+              <View
+                style={{
+                  marginRight: 8,
+                }}
+              >
+                {icon}
+              </View>
+            ) : (
+              <></>
+            )}
             <StyledText title={title} style={newStyle} />
+            {icon && iconPosition === "right" ? (
+              <View
+                style={{
+                  marginLeft: 8,
+                }}
+              >
+                {icon}
+              </View>
+            ) : (
+              <></>
+            )}
           </>
         )}
       </View>

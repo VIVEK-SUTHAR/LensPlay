@@ -7,7 +7,7 @@ import { ToastType } from "../../../types/Store";
 import getIPFSLink from "../../../utils/getIPFSLink";
 import RBSheet from "../../UI/BottomSheet";
 import Icon from "../../Icon";
-
+import { useGuestStore } from "../../../store/GuestStore";
 
 type CollectVideoPrpos = {
   totalCollects: number;
@@ -22,25 +22,23 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(true);
   const { PRIMARY } = useThemeStore();
-
   const toast = useToast();
   const { accessToken } = useAuthStore();
   const { DARK_PRIMARY } = useThemeStore();
   const ref = useRef();
+  const { isGuest } = useGuestStore();
+
   const {
     title,
     bannerUrl,
     publicationId,
     totalCollects,
     videoUrl,
-    hasCollected
+    hasCollected,
   } = CollectVideoProps;
-  
-  
+
   const collectPublication = async () => {
     try {
-      console.log(accessToken);
-
       const data = await freeCollectPublication(publicationId, accessToken);
       if (data) {
         toast.show("Collect Submitted", ToastType.SUCCESS, true);
@@ -98,10 +96,30 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
         bg={DARK_PRIMARY}
         type={"filled"}
         borderRadius={8}
-        onPress={() => { 
-          hasCollected ? (toast.show('You have already collected the post', ToastType.ERROR, true)) : ref?.current?.open() }}
-        icon={<Icon name="collect" size={20} color={hasCollected ? PRIMARY : "white"} />}
-        textStyle={{ color: hasCollected ? PRIMARY : "white", marginHorizontal: 4 }}
+        onPress={() => {
+          if (isGuest) {
+            toast.show("Please Login", ToastType.ERROR, true);
+            return;
+          }
+          hasCollected
+            ? toast.show(
+                "You have already collected the post",
+                ToastType.ERROR,
+                true
+              )
+            : ref?.current?.open();
+        }}
+        icon={
+          <Icon
+            name="collect"
+            size={20}
+            color={hasCollected ? PRIMARY : "white"}
+          />
+        }
+        textStyle={{
+          color: hasCollected ? PRIMARY : "white",
+          marginHorizontal: 4,
+        }}
       />
     </>
   );

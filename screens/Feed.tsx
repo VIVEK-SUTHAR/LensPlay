@@ -8,11 +8,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 import VideoCard from "../components/VideoCard";
-import {
-  useAuthStore,
-  useProfile,
-  useThemeStore,
-} from "../store/Store";
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import { RootTabScreenProps } from "../types/navigation/types";
 import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
 import AnimatedLottieView from "lottie-react-native";
@@ -29,6 +25,7 @@ import storeData from "../utils/storeData";
 import searchUser from "../api/zooTools/searchUser";
 import { StatusBar } from "expo-status-bar";
 import { dark_primary } from "../constants/Colors";
+import { useGuestStore } from "../store/GuestStore";
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const connector = useWalletConnect();
   const authStore = useAuthStore();
@@ -37,9 +34,13 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const theme = useThemeStore();
   const { hasAccess } = useAuthStore();
+  const { isGuest, profileId } = useGuestStore();
 
   useEffect(() => {
     if (callData) {
+      if (isGuest){
+        return;
+      }
       if (!hasAccess) {
         navigation.replace("Loader");
       } else {
@@ -103,6 +104,9 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
           if (!data.data.defaultProfile) {
             return;
           }
+          refetch({
+            id: data?.data?.defaultProfile?.id,
+          });
           userStore.setCurrentProfile(data.data.defaultProfile);
         }
         if (isvaild.data.verify === false) {
@@ -127,6 +131,9 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
             return;
           }
           userStore.setCurrentProfile(data.data.defaultProfile);
+          refetch({
+            id: data?.data?.defaultProfile?.id,
+          });
         }
       } else {
         // setIsloading(false);
@@ -139,7 +146,16 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
     }
   };
 
-  const { data: Feeddata, error, loading } = useFeed();
+  const { data: Feeddata, error, loading, refetch } = useFeed();
+
+  useEffect(() => {
+    if (error || !Feeddata) {
+      refetch({
+        id: isGuest ? profileId : userStore?.currentProfile?.id,
+      });
+    }
+  }, [userStore?.currentProfile]);
+
   if (callData) return <Loader />;
   if (!callData && loading) return <Loader />;
 
@@ -163,27 +179,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
             />
           }
           renderItem={({ item }) => {
-            return (
-              <VideoCard
-                id={item?.root?.id}
-                title={item?.root?.metadata?.name}
-                date={item.root.createdAt}
-                playbackId={item?.root?.metadata?.media[0]?.original?.url}
-                banner={item?.root?.metadata?.cover}
-                avatar={item?.root?.profile?.picture?.original?.url}
-                uploadedBy={
-                  item?.root?.profile?.name || item.root.profile.handle
-                }
-                stats={item?.root?.stats}
-                isFollowdByMe={item.root.profile.isFollowedByMe}
-                profileId={item?.root?.profile?.id}
-                reaction={item?.root?.reaction}
-                description={item?.root?.metadata?.description}
-                attributes={item?.root?.metadata?.attributes}
-                ethAddress={item?.root?.profile?.ownedBy}
-                hasCollectedByMe={item?.root?.hasCollectedByMe}
-              />
-            );
+            return <VideoCard publication={item?.root} id={item?.root?.id} />;
           }}
         />
       </SafeAreaView>

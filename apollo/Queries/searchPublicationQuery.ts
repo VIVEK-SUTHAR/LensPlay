@@ -128,12 +128,14 @@ export default gql`
     totalAmountOfMirrors
     totalAmountOfCollects
     totalAmountOfComments
+    totalUpvotes
   }
 
   fragment MetadataOutputFields on MetadataOutput {
     name
     description
     content
+    cover:image
     media {
       original {
         ...MediaFields

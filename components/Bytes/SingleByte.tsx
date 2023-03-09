@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import VideoPlayer from "expo-video-player";
 import { Ionicons } from "@expo/vector-icons";
-import { ResizeMode } from "expo-av";
+import { ResizeMode, Video } from "expo-av";
 import { Root } from "../../types/Lens/Feed";
 import getIPFSLink from "../../utils/getIPFSLink";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
@@ -21,14 +21,12 @@ import { StatusBar } from "expo-status-bar";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
 import Heading from "../UI/Heading";
-import RBSheet from "../UI/BottomSheet";
-import Comment from "../Comments";
+import RBSheet, { BottomSheetType } from "../UI/BottomSheet";
 import Button from "../UI/Button";
 import Icon from "../Icon";
 import { useNavigation } from "@react-navigation/native";
 import { freeCollectPublication } from "../../api";
 import { ToastType } from "../../types/Store";
-import { dark_primary } from "../../constants/Colors";
 
 interface SingleByteProps {
   item: Root;
@@ -37,28 +35,29 @@ interface SingleByteProps {
 }
 
 const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
-  const navigation = useNavigation();
-  const toast = useToast();
-  const { PRIMARY } = useThemeStore();
-
   const [likes, setLikes] = useState<number>(item.stats.totalUpvotes);
   const [mute, setMute] = useState<boolean>(false);
   const [isalreadyLiked, setisalreadyLiked] = useState<boolean>(
     item?.reaction === "UPVOTE" ? true : false
   );
-  const descriptionRef = useRef(null);
-  const collectSheetRef = useRef(null);
+  const [totalCollects, setTotalCollects] = useState<number>(
+    item.stats.totalAmountOfCollects
+  );
+  const navigation = useNavigation();
+  const { PRIMARY } = useThemeStore();
+  const toast = useToast();
+  const ref = useRef<Video>(null);
+  const descriptionRef = useRef<BottomSheetType>(null);
+  const collectSheetRef = useRef<BottomSheetType>(null);
   const { accessToken } = useAuthStore();
+  const bottomTabBarHeight = useBottomTabBarHeight();
 
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-  const bottomTabBarHeight = useBottomTabBarHeight();
   const [collected, setCollected] = useState<boolean>(item?.hasCollectedByMe);
-  console.log(item?.hasCollectedByMe);
-
-  const [totalCollects, setTotalCollects] = useState(
-    item.stats.totalAmountOfCollects
-  );
+  navigation.addListener("blur", (e) => {
+    ref.current?.pauseAsync();
+  });
   const shareVideo = async () => {
     try {
       const result = await Share.share({
@@ -70,6 +69,8 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   };
 
   const collectPublication = async () => {
+    console.log(item.id);
+
     try {
       const data = await freeCollectPublication(item.id, accessToken);
       if (data) {
@@ -80,6 +81,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
     } catch (error) {
       if (error instanceof Error) {
         toast.show(error.message, ToastType.ERROR, true);
+        collectSheetRef?.current?.close();
       }
     } finally {
       //
@@ -150,7 +152,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
       <View
         style={{
           width: windowWidth,
-          height: windowHeight - 20,
+          height: windowHeight - bottomTabBarHeight,
           position: "relative",
           justifyContent: "center",
           alignItems: "center",
@@ -169,6 +171,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
           <VideoPlayer
             defaultControlsVisible={false}
             videoProps={{
+              ref: ref,
               source: {
                 uri: getIPFSLink(item.metadata.media[0]?.original?.url),
               },
@@ -216,7 +219,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             <View style={{ width: "auto", maxWidth: 250 }}>
               <Pressable
                 onPress={() => {
-                  descriptionRef.current.open();
+                  descriptionRef?.current?.open();
                 }}
               >
                 <Heading

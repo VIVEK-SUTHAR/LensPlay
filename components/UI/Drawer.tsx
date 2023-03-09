@@ -66,7 +66,6 @@ const Drawer = ({ children, isOpen, setIsOpen }: DrawerProps) => {
                 setIsOpen(false);
               }}
             >
-              <CloseIcon width={20} height={20} />
             </Pressable>
           </View>
           {children}

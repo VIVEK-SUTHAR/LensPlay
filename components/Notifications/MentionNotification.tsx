@@ -6,6 +6,7 @@ import formatAddress from "../../utils/formatAddress";
 import Avatar from "../UI/Avatar";
 import Icon from "../Icon";
 import { STATIC_ASSET } from "../../constants";
+import extractURLs from "../../utils/extractURL";
 
 const MentionNotification = ({
   navigation,
@@ -60,7 +61,10 @@ const MentionNotification = ({
             </Text>
             <View>
               <Text numberOfLines={2} style={{ color: "grey", fontSize: 12 }}>
-                {notification?.mentionPublication?.metadata?.description}
+                {extractURLs(
+                  notification?.mentionPublication?.metadata?.description ||
+                    notification?.mentionPublication?.metadata?.content
+                )}
               </Text>
             </View>
           </View>

@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import React from "react";
 import NotificationCardProps, { NotificationTypes } from "./index.d";
 import CollectNotification from "./CollectNotification";
@@ -52,26 +52,30 @@ const NotificationCard = ({
         );
       case NotificationTypes.MENTION_NOTIFICATION:
         return (
+
           <MentionNotification
             navigation={navigation}
             notification={notification}
-          />
+            />
         );
     }
   };
   return (
     <>
-      <View
+      <Pressable
+        android_ripple={{
+          borderless: false,
+          color:"rgba(255,255,255,0.1)"
+        }}
         style={{
           flexDirection: "row",
-          padding: 8,
-          marginVertical: 2,
+          padding: 12,
           borderBottomWidth: 1,
           borderBottomColor: dark_primary,
         }}
       >
         {getNotification()}
-      </View>
+      </Pressable>
     </>
   );
 };

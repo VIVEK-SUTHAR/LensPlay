@@ -15,7 +15,7 @@ function formatInteraction(value: number) {
         result = (value/1000).toFixed(2) + 'K';
     }
     else{
-        result = value.toString();
+        result = value?.toString();
     }
     return result;
 

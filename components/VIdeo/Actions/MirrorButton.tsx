@@ -13,6 +13,8 @@ import { Dimensions, Image, View } from "react-native";
 import getIPFSLink from "../../../utils/getIPFSLink";
 import RBSheet from "../../UI/BottomSheet";
 import Icon from "../../Icon";
+import { useIsMirrored } from "../../../hooks/useFeed";
+import { useGuestStore } from "../../../store/GuestStore";
 
 type MirrorButtonProps = {
   id: string;
@@ -34,7 +36,24 @@ const MirrorButton = ({
   const userStore = useProfile();
   const { PRIMARY } = useThemeStore();
   const ref = useRef();
+  const { isGuest } = useGuestStore();
+
+  const { data, error } = useIsMirrored(id);
+
+  const typename = data?.publication?.__typename;
+  const color =
+    typename === "Post"
+      ? data?.publication?.mirrors?.length > 0
+        ? PRIMARY
+        : "white"
+      : "white";
+
   const onMirror = async () => {
+    if (isAlreadyMirrored || data?.publication?.mirrors?.length > 0) {
+      Toast.show("Already mirrored", ToastType.ERROR, true);
+      ref.current?.close();
+      return;
+    }
     setIsAlreadyMirrored(true);
     try {
       const data = await freeMirror(
@@ -91,6 +110,10 @@ const MirrorButton = ({
       <Button
         title={totalMirrors?.toString()}
         onPress={() => {
+          if (isGuest) {
+            Toast.show("Please Login", ToastType.ERROR, true);
+            return;
+          }
           ref.current?.open();
         }}
         mx={4}
@@ -102,7 +125,10 @@ const MirrorButton = ({
         textStyle={{
           fontSize: 14,
           fontWeight: "500",
-          color: isAlreadyMirrored ? PRIMARY : "white",
+          color:
+            isAlreadyMirrored || data?.publication?.mirrors?.length > 0
+              ? PRIMARY
+              : "white",
           marginLeft: 4,
         }}
         //   borderColor={isalreadyDisLiked ? PRIMARY : "white"}
@@ -110,7 +136,11 @@ const MirrorButton = ({
           <Icon
             name="mirror"
             size={20}
-            color={isAlreadyMirrored ? PRIMARY : "white"}
+            color={
+              isAlreadyMirrored || data?.publication?.mirrors?.length > 0
+                ? PRIMARY
+                : "white"
+            }
           />
         }
       />

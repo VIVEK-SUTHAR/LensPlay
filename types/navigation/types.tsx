@@ -5,7 +5,7 @@ import {
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Profile } from "../Lens/index";
-import { LensPublication, VideoPageStats } from "../Lens/Feed";
+import { FeedItem, LensPublication, VideoPageStats } from "../Lens/Feed";
 
 /**
  
@@ -81,19 +81,10 @@ export type RootStackParamList = {
     profileId?: string;
   };
   VideoPage: {
-    publicationId: string;
-    isFollowdByMe?: boolean;
+    publication: Pick<FeedItem, 'root'>;
     id: string;
-    playbackId: string;
-    reaction: string | null;
-    stats: VideoPageStats;
-    profileId: string;
-    title: string;
-    uploadedBy: string;
-    banner: string;
-    description: string;
-    avatar: string;
-    hasCollectedByMe: boolean;
+    height: number | string;
+    width: number | string;
   };
   Channel: {
     profileId: string;
@@ -110,9 +101,12 @@ export type RootStackParamList = {
   ShotsComment: {
     publicationId: string;
   };
-  LinkingVideos: undefined;
+  LinkingVideo: {
+    id: string;
+  };
   FullImage: {
     url: string;
+    source: "avatar" | "cover";
   };
   Settings: undefined;
   BugReport: undefined;

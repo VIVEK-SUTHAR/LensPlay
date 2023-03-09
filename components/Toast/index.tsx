@@ -90,6 +90,7 @@ const Toast = () => {
         style={{
           fontSize: 16,
           color: "white",
+          fontWeight: "500",
           textAlign: "center",
           marginHorizontal: 2,
         }}
@@ -108,7 +109,6 @@ const styles = StyleSheet.create({
     height: 40,
     flexDirection: "row",
     top: StatusBarHeight + 20,
-    // bottom: StatusBarHeight * 2,
     width: "auto",
     alignSelf: "center",
     justifyContent: "space-between",
@@ -116,8 +116,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 100,
     borderRadius: 100,
-    // borderColor: "#2AD95C",
-    // borderWidth: 1,
     backgroundColor: "black",
   },
 });

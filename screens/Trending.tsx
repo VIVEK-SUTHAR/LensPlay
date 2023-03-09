@@ -12,6 +12,7 @@ import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
 import { LensPublication } from "../types/Lens/Feed";
 import { RootTabScreenProps } from "../types/navigation/types";
 import StyledText from "../components/UI/StyledText";
+import { dark_primary } from "../constants/Colors";
 const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
   const tags = [
     {
@@ -104,7 +105,7 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
               style={{
                 marginHorizontal: 4,
                 backgroundColor: `${
-                  currentTag.name === item.name ? theme.PRIMARY : "transparent"
+                  currentTag.name === item.name ? theme.PRIMARY : dark_primary
                 }`,
                 width: "auto",
                 maxHeight: 34,
@@ -112,19 +113,15 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
                 paddingVertical: 6,
                 justifyContent: "center",
                 alignItems: "center",
-                borderRadius: 16,
-                borderColor: `${
-                  currentTag.name === item.name ? theme.PRIMARY : "white"
-                }`,
-                borderWidth: 1,
+                borderRadius: 8,
               }}
             >
               <StyledText
                 title={item.name.replace(/_/g, " ")}
                 style={{
                   fontSize: 12,
-                  fontWeight: "500",
-                  color: "white",
+                  fontWeight: "600",
+                  color: `${currentTag.name === item.name ? "black" : "white"}`,
                 }}
               />
             </Pressable>
@@ -181,21 +178,8 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
             TrendingItems?.map((item: LensPublication, index) => {
               return (
                 <VideoCard
-                  key={index}
+                publication={item}
                   id={item?.id}
-                  date={item?.createdAt}
-                  title={item?.metadata?.name}
-                  isFollowdByMe={item?.profile?.isFollowedByMe}
-                  banner={item?.metadata?.cover}
-                  avatar={item?.profile?.picture?.original?.url}
-                  uploadedBy={item?.profile?.handle}
-                  profileId={item?.profile?.id}
-                  stats={item?.stats}
-                  playbackId={item?.metadata?.media[0]?.original?.url}
-                  reaction={item?.reaction}
-                  description={item.metadata.description}
-                  attributes={item?.metadata?.attributes}
-                  hasCollectedByMe={item?.hasCollectedByMe}
                 />
               );
             })}

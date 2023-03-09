@@ -3,12 +3,10 @@ import {
   Share,
   ScrollView,
   SafeAreaView,
-  ToastAndroid,
   BackHandler,
   TextInput,
-  Text,
-  Linking,
   Pressable,
+  AppState,
 } from "react-native";
 import {
   AntDesign,
@@ -44,11 +42,12 @@ import { Comments } from "../types/Lens/Feed";
 import CommentSkeleton from "../components/UI/CommentSkeleton";
 import AnimatedLottieView from "lottie-react-native";
 import CommentCard from "../components/Comments/CommentCard";
+import * as Linking from "expo-linking";
 
 const LinkingVideo = ({
   navigation,
   route,
-}: RootStackScreenProps<"LinkingVideos">) => {
+}: RootStackScreenProps<"LinkingVideo">) => {
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
   const [descOpen, setDescOpen] = useState<boolean>(false);
   const [ismodalopen, setIsmodalopen] = useState<boolean>(false);
@@ -59,6 +58,7 @@ const LinkingVideo = ({
   const [videoData, setVideoData] = useState<LensPublication>();
   const [isFocused, setIsFocused] = useState(false);
   const [comments, setComments] = useState<Comments[]>([]);
+  const [initialUrl, setInitialUrl] = useState(null);
 
   const theme = useThemeStore();
   const authStore = useAuthStore();
@@ -74,20 +74,10 @@ const LinkingVideo = ({
   }
 
   useEffect(() => {
-    let publicationId = "";
-    Linking.addEventListener("url", (event) => {
-      const id = event?.url?.split("/watch/")[1];
-      publicationId = id;
-      getVideoById(publicationId);
-      return;
-    });
-    Linking.getInitialURL().then((res) => {
-      const id = res?.split("/watch/")[1];
-      publicationId = id ? id : "";
-      getVideoById(publicationId);
-      return;
-    });
     BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+    console.log(route.params.id);
+
+    getVideoById(route?.params?.id);
   }, []);
 
   async function fetchComments(publicationId: string): Promise<void> {
@@ -131,6 +121,7 @@ const LinkingVideo = ({
         },
       });
       setVideoData(feed.data.publication);
+
       fetchComments(pubId);
 
       return feed;

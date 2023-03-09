@@ -1,6 +1,9 @@
 import { View, ScrollView, SafeAreaView, BackHandler } from "react-native";
 import React, { useEffect } from "react";
-import { useReactionStore } from "../store/Store";
+import useStore, {
+  useActivePublication,
+  useReactionStore,
+} from "../store/Store";
 import { useState } from "react";
 import { setStatusBarHidden } from "expo-status-bar";
 import * as ScreenOrientation from "expo-screen-orientation";
@@ -24,41 +27,15 @@ const VideoPage = ({
   navigation,
   route,
 }: RootStackScreenProps<"VideoPage">) => {
-  const [likes, setLikes] = useState<number>(route.params.stats?.totalUpvotes);
+  const { activePublication } = useActivePublication();
+  const PublicationStats = activePublication?.stats;
+  const [likes, setLikes] = useState<number>(
+    activePublication?.stats?.totalUpvotes
+  );
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(false);
-  const [isalreadyLiked, setisalreadyLiked] = useState<boolean>(
-    route.params.reaction === "UPVOTE" ? true : false
-  );
-  const [isalreadyDisLiked, setisalreadyDisLiked] = useState<boolean>(
-    route.params.reaction === "DOWNVOTE" ? true : false
-  );
-  const likedPublication = useReactionStore();
-  const [isAlreadyMirrored, setIsAlreadyMirrored] = useState<boolean>(false);
-  const thumbup = likedPublication.likedPublication;
-  const thumbdown = likedPublication.dislikedPublication;
 
-  useEffect(() => {
-    thumbup.map((publication) => {
-      if (publication.id === route.params.id) {
-        setisalreadyLiked(true);
-        setisalreadyDisLiked(false);
-        setLikes(publication.likes + 1);
-      }
-    });
-    thumbdown.map((publication) => {
-      if (publication.id === route.params.id) {
-        if (isalreadyLiked) {
-          setisalreadyDisLiked(true);
-          setisalreadyLiked(false);
-          setLikes((prev) => prev - 1);
-        } else {
-          setisalreadyDisLiked(true);
-          setisalreadyLiked(false);
-        }
-      }
-    });
-  }, [navigation, route.params.playbackId]);
+  const [isAlreadyMirrored, setIsAlreadyMirrored] = useState<boolean>(false);
 
   function handleBackButtonClick() {
     setStatusBarHidden(false, "fade");
@@ -72,14 +49,15 @@ const VideoPage = ({
     BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
   }, []);
 
-  const PublicationStats = route.params.stats;
+  // const PublicationStats = route.params.stats;
+  // const { activePublication } = useActivePublication();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <Player
-        poster={route.params.banner}
-        title={route.params.title}
-        url={route.params.playbackId}
+        poster={activePublication?.metadata?.cover}
+        title={activePublication?.metadata?.name}
+        url={activePublication?.metadata?.media[0]?.original?.url}
         inFullscreen={inFullscreen}
         isMute={isMute}
         setInFullscreen={setInFullsreen}
@@ -88,14 +66,19 @@ const VideoPage = ({
       <ScrollView>
         <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
           <VideoMeta
-            title={route.params.title}
-            description={route.params.description}
+            title={activePublication?.metadata?.name}
+            description={activePublication?.metadata?.description}
           />
           <VideoCreator
-            profileId={route.params.profileId}
-            avatarLink={route.params.avatar}
-            uploadedBy={route.params.uploadedBy}
-            alreadyFollowing={route.params.isFollowdByMe || false}
+            profileId={activePublication?.profile?.id}
+            avatarLink={activePublication?.profile?.picture?.original?.url}
+            uploadedBy={
+              activePublication?.profile?.name ||
+              activePublication?.profile?.handle
+            }
+            alreadyFollowing={
+              activePublication?.profile?.isFollowedByMe || false
+            }
           />
           <ScrollView
             style={{
@@ -105,40 +88,40 @@ const VideoPage = ({
             showsHorizontalScrollIndicator={false}
           >
             <LikeButton
-              likes={likes}
-              id={route.params.id}
-              setLikes={setLikes}
-              isalreadyLiked={isalreadyLiked}
-              setisalreadyDisLiked={setisalreadyDisLiked}
+              like={activePublication?.stats?.totalUpvotes}
+              id={activePublication?.id}
+              isalreadyLiked={activePublication?.reaction}
             />
             <DisLikeButton
-              isalreadyLiked={isalreadyLiked}
-              setLikes={setLikes}
-              isalreadyDisLiked={isalreadyDisLiked}
-              setisalreadyDisLiked={setisalreadyDisLiked}
-              setisalreadyLiked={setisalreadyLiked}
-              id={route.params.id}
+              isalreadyDisLiked={activePublication?.reaction}
+              id={activePublication?.id}
             />
             <MirrorButton
-              id={route.params.id}
+              id={activePublication?.id}
               isAlreadyMirrored={isAlreadyMirrored}
               setIsAlreadyMirrored={setIsAlreadyMirrored}
-              totalMirrors={route.params.stats.totalAmountOfMirrors}
-              bannerUrl={route.params.banner}
+              totalMirrors={activePublication.stats?.totalAmountOfMirrors}
+              bannerUrl={activePublication?.metadata?.cover}
             />
             <CollectButton
-              publicationId={route.params.id}
-              bannerUrl={route.params.banner}
-              title={route.params.uploadedBy}
+              publicationId={activePublication?.id}
+              bannerUrl={activePublication?.metadata?.cover}
+              title={
+                activePublication?.profile?.name ||
+                activePublication?.profile?.handle
+              }
               totalCollects={PublicationStats.totalAmountOfCollects}
-              videoUrl={route.params.playbackId}
-              hasCollected={route?.params?.hasCollectedByMe}
+              videoUrl={activePublication?.metadata?.media[0]?.original?.url}
+              hasCollected={activePublication?.hasCollectedByMe}
             />
             <ShareButton
-              title={route.params.title}
-              publicationId={route.params.id}
+              title={
+                activePublication?.profile?.name ||
+                activePublication?.profile.handle
+              }
+              publicationId={activePublication?.id}
             />
-            <ReportButton publicationId={route.params.id} />
+            <ReportButton publicationId={activePublication?.id} />
           </ScrollView>
           <StyledText
             title="Comments"
@@ -149,10 +132,10 @@ const VideoPage = ({
               marginBottom: 8,
             }}
           />
-          <Comment publicationId={route.params.id} />
+          <Comment publicationId={activePublication?.id} />
         </View>
       </ScrollView>
-      <CommentInput publicationId={route.params.id} />
+      <CommentInput publicationId={activePublication?.id} />
     </SafeAreaView>
   );
 };

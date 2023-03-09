@@ -14,13 +14,17 @@ import { dark_primary } from "../constants/Colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Icon from "../components/Icon";
+import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import {
   LENSPLAY_DISCORD,
+  LENSPLAY_PRIVACY,
   LENSPLAY_SITE,
   LENSPLAY_TWITTER,
   OFFICIAL_EMAIL,
+  LENSPLAY_TERMS,
 } from "../constants";
+import { useGuestStore } from "../store/GuestStore";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
@@ -37,6 +41,8 @@ type SettingsItemProps = {
 const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const Wallet = useWalletConnect();
+  const { isGuest } = useGuestStore();
+
   const SettingItemsList: SettingsItemProps[] = [
     {
       icon: <Icon name="bug" />,
@@ -46,9 +52,18 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
       },
     },
     {
-      icon: <Icon name="terms" />,
+      icon: <Icon name="policy" />,
       label: "Terms and Conditions",
-      onPress: () => {},
+      onPress: () => {
+        Linking.openURL(LENSPLAY_TERMS);
+      },
+    },
+    {
+      icon: <Icon name="terms" />,
+      label: "Privacy Policy",
+      onPress: () => {
+        Linking.openURL(LENSPLAY_PRIVACY);
+      },
     },
     {
       icon: <Icon name="mail" />,
@@ -56,11 +71,6 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
       onPress: () => {
         Linking.openURL(`mailto:${OFFICIAL_EMAIL}`);
       },
-    },
-    {
-      icon: <Icon name="policy" />,
-      label: "Privacy Policy",
-      onPress: () => {},
     },
     {
       icon: <Icon name="logout" />,
@@ -75,24 +85,42 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="black" style="auto" />
       {SettingItemsList.map((item, index) => {
-        return (
-          <SettingsItem
-            key={index}
-            icon={item.icon}
-            label={item.label}
-            onPress={item.onPress}
-          />
-        );
+        if (isGuest && item.label === "Logout") {
+          return;
+        } else {
+          return (
+            <SettingsItem
+              key={index}
+              icon={item.icon}
+              label={item.label}
+              onPress={item.onPress}
+            />
+          );
+        }
       })}
-      <View style={styles.socilaMediaContainer}>
-        {SocialMedia.map((el, index) => (
-          <SocialMediaBadge
-            key={index}
-            icon={el.icon}
-            name={el.name}
-            link={el.link}
+      <View
+        style={{
+          position: "absolute",
+          bottom: 16,
+          width: "100%",
+        }}
+      >
+        <View style={styles.socilaMediaContainer}>
+          {SocialMedia.map((el, index) => (
+            <SocialMediaBadge
+              key={index}
+              icon={el.icon}
+              name={el.name}
+              link={el.link}
+            />
+          ))}
+        </View>
+        <View style={styles.appVersionContainer}>
+          <StyledText
+            title={`${Constants.expoConfig?.name} v${Constants.expoConfig?.version}`}
+            style={{ color: "gray", fontSize: 10 }}
           />
-        ))}
+        </View>
       </View>
       <Modal
         transparent={true}
@@ -254,8 +282,6 @@ const styles = StyleSheet.create({
   socilaMediaContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
-    position: "absolute",
-    bottom: 16,
     width: "100%",
   },
   logOutContainer: {
@@ -281,5 +307,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     marginLeft: 8,
+  },
+  appVersionContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    margin: 16,
   },
 });

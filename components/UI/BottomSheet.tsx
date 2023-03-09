@@ -9,7 +9,6 @@ import {
   PanResponder,
   Platform,
   StyleSheet,
-  ScrollView,
 } from "react-native";
 
 const SUPPORTED_ORIENTATIONS = [
@@ -36,6 +35,10 @@ function BottomSheet() {
   ).current;
 }
 
+export type BottomSheetType = {
+  open: () => void;
+  close: () => void;
+};
 class RBSheet extends Component {
   constructor(props) {
     super(props);
