@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import Button from "../components/UI/Button";
 import StyledText from "../components/UI/StyledText";
+import { primary } from "../constants/Colors";
 import { RootStackScreenProps } from "../types/navigation/types";
 
 function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
@@ -49,7 +50,9 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
         />
       </View> */}
 
-      <View style={{justifyContent:"center",alignItems:"center",top:"25%"}} >
+      <View
+        style={{ justifyContent: "center", alignItems: "center", top: "25%" }}
+      >
         <MotiView
           from={{
             transform: [{ scale: 0 }],
@@ -109,7 +112,6 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
         </MotiView>
         {/*  */}
       </View>
-      
 
       <View
         style={{
@@ -240,10 +242,10 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             navigation.push("LoginWithLens");
           }}
           title="Connect Wallet"
-          bg="#333333"
-          borderRadius={10}
-          textStyle={{ fontWeight: "800", fontSize: 24, color: "white" }}
-          py={10}
+          bg={primary}
+          borderRadius={8}
+          textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
+          py={8}
           iconPosition="right"
         />
       </View>
@@ -257,7 +259,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "black",
   },
-
   shape1: {
     width: 150,
     height: 50,
