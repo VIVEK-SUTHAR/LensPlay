@@ -26,7 +26,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           justifyContent: "space-evenly",
         }}
       >
-        <View style={{ alignItems: "center" }}>
+        <View style={{ alignItems: "center", marginTop: 16 }}>
           <View>
             <MotiView
               style={styles.box1}
@@ -34,7 +34,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{
                 type: "timing",
-                duration: 350,
+                duration: 500,
                 delay: 450,
               }}
             >
@@ -195,16 +195,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   box1: {
-    width: 144,
-    height: 144,
+    width: 196,
+    height: 196,
     backgroundColor: "#56CBF9",
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
   },
   box2: {
-    width: 66,
-    height: 66,
+    width: 96,
+    height: 96,
     backgroundColor: "#EBDD4E",
     borderRadius: 8,
     alignItems: "center",
@@ -212,8 +212,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   box3: {
-    width: 66,
-    height: 66,
+    width: 96,
+    height: 96,
     backgroundColor: "#9EF01A",
     borderRadius: 8,
     alignItems: "center",

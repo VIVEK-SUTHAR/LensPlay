@@ -27,31 +27,9 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="light" />
-      {/* <View style={{ position: "relative", alignItems: "center" }}>
-        <Image
-          source={require("../assets/images/Vector257.png")}
-          style={{
-            width: windowWidth,
-            height: windowWidth + 100,
-            marginTop: -Constants.statusBarHeight / 2,
-          }}
-          resizeMode={"contain"}
-        />
-        <Image
-          source={require("../assets/images/login2.png")}
-          style={{
-            width: windowWidth * 0.9,
-            height: windowHeight / 2 + 100,
-            position: "absolute",
-            bottom: 30,
-            right: 0,
-          }}
-          resizeMode={"contain"}
-        />
-      </View> */}
 
       <View
-        style={{ justifyContent: "center", alignItems: "center", top: "25%" }}
+        style={{ justifyContent: "center", alignItems: "center", paddingTop: 160}}
       >
         <MotiView
           from={{
@@ -116,8 +94,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
       <View
         style={{
           justifyContent: "center",
-          marginTop: 48,
-          top: "30%",
+          marginTop: 60,
         }}
       >
         <MotiView
@@ -231,9 +208,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
       <View
         style={{
           paddingHorizontal: 16,
-          position: "absolute",
-          bottom: 16,
-          width: "100%",
+          width: "100%"
         }}
       >
         <Button
@@ -258,6 +233,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
+    justifyContent: 'space-between',
+    paddingVertical: 16
   },
   shape1: {
     width: 150,
