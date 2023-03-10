@@ -26,6 +26,7 @@ import searchUser from "../api/zooTools/searchUser";
 import { StatusBar } from "expo-status-bar";
 import { dark_primary } from "../constants/Colors";
 import { useGuestStore } from "../store/GuestStore";
+import PleaseLogin from "../components/PleaseLogin";
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const connector = useWalletConnect();
   const authStore = useAuthStore();
@@ -38,7 +39,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 
   useEffect(() => {
     if (callData) {
-      if (isGuest){
+      if (isGuest) {
         return;
       }
       if (!hasAccess) {
@@ -156,11 +157,10 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
     }
   }, [userStore?.currentProfile]);
 
+  if (isGuest) return <PleaseLogin />;
   if (callData) return <Loader />;
   if (!callData && loading) return <Loader />;
-
   if (error) return <NotFound navigation={navigation} />;
-
   if (!Feeddata) return <NotFound navigation={navigation} />;
 
   if (Feeddata) {

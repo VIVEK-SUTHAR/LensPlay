@@ -1,4 +1,3 @@
-import { ColorValue } from "react-native";
 import create from "zustand";
 import {
   DisLikeObject,

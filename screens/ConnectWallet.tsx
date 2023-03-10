@@ -31,7 +31,11 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
       <StatusBar backgroundColor="transparent" style="light" />
 
       <View
-        style={{ justifyContent: "center", alignItems: "center", paddingTop: 160 }}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          paddingTop: 160,
+        }}
       >
         <MotiView
           from={{
@@ -211,10 +215,10 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
         style={{
           paddingHorizontal: 16,
           width: "100%",
-          marginTop: 10
+          marginTop: 10,
         }}
       >
-       <Button
+        <Button
           onPress={async () => {
             await connectWallet();
             navigation.push("LoginWithLens");
@@ -225,27 +229,54 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
           py={8}
           iconPosition="right"
-        /> 
+        />
       </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20 }}>
-        <View style={{ flex: 1, height: 2, backgroundColor: 'white', borderRadius: 20 }} />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 20,
+        }}
+      >
+        <View
+          style={{
+            flex: 1,
+            height: 2,
+            backgroundColor: "white",
+            borderRadius: 20,
+          }}
+        />
         <View>
-          <StyledText title={'OR'} style={{ width: 45, textAlign: 'center', color: 'white', fontSize: 16, fontWeight: '600' }} />
+          <StyledText
+            title={"OR"}
+            style={{
+              width: 45,
+              textAlign: "center",
+              color: "white",
+              fontSize: 16,
+              fontWeight: "600",
+            }}
+          />
         </View>
-        <View style={{ flex: 1, height: 2, backgroundColor: 'white', borderRadius: 20 }} />
+        <View
+          style={{
+            flex: 1,
+            height: 2,
+            backgroundColor: "white",
+            borderRadius: 20,
+          }}
+        />
       </View>
       <View
         style={{
           paddingHorizontal: 16,
-          width: "100%"
+          width: "100%",
         }}
       >
         <Button
           onPress={async () => {
             handleGuest(true);
-            console.log(isGuest);
-            
-            navigation.navigate("Root")
+            navigation.navigate("Root");
           }}
           title="Continue as Guest"
           bg={dark_primary}
@@ -264,8 +295,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
-    justifyContent: 'space-between',
-    paddingVertical: 16
+    justifyContent: "space-between",
+    paddingVertical: 16,
   },
   shape1: {
     width: 150,

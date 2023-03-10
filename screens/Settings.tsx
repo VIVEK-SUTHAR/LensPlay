@@ -74,9 +74,9 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
     },
     {
       icon: <Icon name="logout" />,
-      label: "Logout",
+      label: isGuest ? "Login" : "Logout",
       onPress: () => {
-        setIsModalOpen(true);
+        isGuest ? navigation.push("Login") : setIsModalOpen(true);
       },
     },
   ];
@@ -85,18 +85,14 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="black" style="auto" />
       {SettingItemsList.map((item, index) => {
-        if (isGuest && item.label === "Logout") {
-          return;
-        } else {
-          return (
-            <SettingsItem
-              key={index}
-              icon={item.icon}
-              label={item.label}
-              onPress={item.onPress}
-            />
-          );
-        }
+        return (
+          <SettingsItem
+            key={index}
+            icon={item.icon}
+            label={item.label}
+            onPress={item.onPress}
+          />
+        );
       })}
       <View
         style={{

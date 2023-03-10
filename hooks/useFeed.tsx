@@ -187,7 +187,7 @@ const useIsMirrored = (publid: string) => {
 };
 
 export const useUserProfile = (profileId: string) => {
-  const { data, error, loading,refetch } = useQuery(getUserProfile, {
+  const { data, error, loading, refetch } = useQuery(getUserProfile, {
     variables: {
       id: profileId,
     },
@@ -195,16 +195,16 @@ export const useUserProfile = (profileId: string) => {
     nextFetchPolicy: "cache-and-network",
     pollInterval: 5000,
   });
-  return { data, error, loading,refetch };
+  return { data, error, loading, refetch };
 };
 
 export const useUserMirrors = (profileId: string) => {
-  const {accessToken } = useAuthStore();
+  const { accessToken } = useAuthStore();
   const { data, error, loading } = useQuery(getMirrorVideos, {
     variables: {
       id: profileId,
     },
-     context: {
+    context: {
       headers: {
         "x-access-token": `Bearer ${accessToken}`,
       },
@@ -215,7 +215,6 @@ export const useUserMirrors = (profileId: string) => {
   });
   return { data, error, loading };
 };
-
 
 export default useNotifications;
 
