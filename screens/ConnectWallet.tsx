@@ -220,6 +220,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
       >
         <Button
           onPress={async () => {
+            handleGuest(false);
             await connectWallet();
             navigation.push("LoginWithLens");
           }}

@@ -48,33 +48,18 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
   const theme = useThemeStore();
   const authStore = useAuthStore();
   const userStore = useProfile();
-  const { isGuest } = useGuestStore();
+  const { isGuest, profileId } = useGuestStore();
 
   async function getTrendingData() {
     try {
-      if (isGuest) {
-        const trendingData = await client.query({
-          query: getGuestTrending,
-          variables: {
-            sortBy: currentTag.name,
-          },
-        });
-        setTrendingItems(trendingData.data.explorePublications.items);
-      } else {
         const trendingData = await client.query({
           query: getTrendingPublication,
           variables: {
-            id: userStore.currentProfile?.id,
+            id: isGuest?profileId:userStore.currentProfile?.id,
             sortBy: currentTag.name,
-          },
-          context: {
-            headers: {
-              "x-access-token": `Bearer ${authStore.accessToken}`,
-            },
           },
         });
         setTrendingItems(trendingData.data.explorePublications.items);
-      }
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Something went wrong", { cause: error.cause });

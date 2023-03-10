@@ -4,13 +4,10 @@ import ByteCard from "../components/Bytes/ByteCard";
 import Constants from "expo-constants";
 import { RootTabScreenProps } from "../types/navigation/types";
 import Icon from "../components/Icon";
-import PleaseLogin from "../components/PleaseLogin";
-import { useGuestStore } from "../store/GuestStore";
 const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const StatusBarHeight = Constants.statusBarHeight;
-  const { isGuest } = useGuestStore();
   return (
     <View
       style={{
@@ -45,7 +42,7 @@ const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
           <Icon name="search" size={25} />
         </Pressable>
       </View>
-      {isGuest ? <PleaseLogin /> : <ByteCard navigation={navigation} />}
+      <ByteCard navigation={navigation} />
     </View>
   );
 };
