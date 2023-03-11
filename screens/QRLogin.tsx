@@ -8,6 +8,8 @@ import { useAuthStore, useProfile } from "../store/Store";
 import storeData from "../utils/storeData";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
+import searchUser from "../api/zooTools/searchUser";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const QRLogin = ({ navigation }) => {
   const [showScanner, setShowScanner] = useState<boolean>(false);
@@ -58,10 +60,33 @@ const QRLogin = ({ navigation }) => {
             id: JSON.parse(data.data).profileId,
           },
         });
-        authStore.setIsViaDeskTop(true);
-        userStore.setCurrentProfile(profiledata.data.profile);
-        console.log(JSON.parse(data.data).accessToken);
-        navigation.navigate("Root");
+        
+        const access = await searchUser(profiledata.data.profile.ownedBy);
+        console.log(access);
+        
+        if (!(access.statusCode === 404)) {
+          const handleUser = {
+            email: access.email,
+            hasAccess: access.fields.hasAccess,
+          };
+          await AsyncStorage.setItem("@access_Key", JSON.stringify(handleUser));
+          if (access.fields.hasAccess) {
+            authStore.setIsViaDeskTop(true);
+            userStore.setCurrentProfile(profiledata.data.profile);
+            navigation.navigate("Root");
+          }
+          if (!access.fields.hasAccess) {
+            navigation.push("LeaderBoard", {
+              referralsCount: access.referralsCount,
+              rankingPoints: access.rankingPoints,
+              rankingPosition: access.rankingPosition,
+              refferalLink: `https://form.waitlistpanda.com/go/${access.listId}?ref=${access.id}`,
+            });
+          }
+        }
+        else{
+          navigation.navigate("JoinWaitlist");
+        }
       } catch (error) {
         console.log(error);
       }

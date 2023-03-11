@@ -25,7 +25,7 @@ import {
   LENSPLAY_TERMS,
 } from "../constants";
 import { useGuestStore } from "../store/GuestStore";
-import { useAuthStore } from "../store/Store";
+import { useAuthStore, useProfile } from "../store/Store";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
@@ -44,6 +44,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
   const Wallet = useWalletConnect();
   const { isGuest } = useGuestStore();
   const { viaDeskTop } = useAuthStore();
+  const userStore = useProfile();
   const SettingItemsList: SettingsItemProps[] = [
     {
       icon: <Icon name="bug" />,
@@ -188,10 +189,12 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                   if (viaDeskTop) {
                     setIsModalOpen(false);
                     await AsyncStorage.removeItem("@storage_Key");
+                    userStore.setCurrentProfile(null);
                     navigation.replace("Login");
                   } else {
                     setIsModalOpen(false);
                     await AsyncStorage.removeItem("@storage_Key");
+                    userStore.setCurrentProfile(null);
                     await Wallet.killSession();
                     navigation.replace("Login");
                   }

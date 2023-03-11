@@ -2,7 +2,7 @@ import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import { MotiView } from "moti";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Dimensions,
   Image,
@@ -17,11 +17,13 @@ import { RootStackScreenProps } from "../types/navigation/types";
 import { useGuestStore } from "../store/GuestStore";
 import searchUser from "../api/zooTools/searchUser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import RBSheet from "../components/UI/BottomSheet";
 
 function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   const connector = useWalletConnect();
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
+  const ref = useRef();
   const { handleGuest, isGuest } = useGuestStore();
 
   const connectWallet = React.useCallback(async () => {
@@ -54,6 +56,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="light" />
+
 
       <View
         style={{
@@ -119,9 +122,110 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             animate={{ opacity: 1 }}
           />
         </MotiView>
-        {/*  */}
       </View>
 
+      <RBSheet ref={ref} height={Dimensions.get("window").height / 2.1}>
+        <View
+          style={{
+            maxWidth: "100%",
+            height: 280,
+            marginTop: 32,
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <View
+            style={{
+              paddingHorizontal: 16,
+              width: "100%",
+              marginTop: 10,
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              height: '100%'
+            }}
+          >
+            <StyledText
+              title="Connect with your lens handle linked wallet"
+              style={{
+                color: primary,
+                marginTop: 4,
+                textAlign: "left",
+                fontSize: 26,
+                fontWeight: '600'
+              }}
+            />
+            <View style={{marginTop: 16}}>
+            <Button
+              onPress={async () => {
+                handleGuest(false);
+                await connectWallet();
+                ref?.current?.close();
+                navigation.push("LoginWithLens");
+              }}
+              title="Connect Mobile Wallet"
+              bg={primary}
+              borderRadius={8}
+              textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
+              py={8}
+              iconPosition="right"
+            />
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                // paddingHorizontal: 10,
+                marginTop: 20,
+              }}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  height: 2,
+                  backgroundColor: "white",
+                  borderRadius: 20,
+                }}
+              />
+              <View>
+                <StyledText
+                  title={"OR"}
+                  style={{
+                    width: 45,
+                    textAlign: "center",
+                    color: "white",
+                    fontSize: 16,
+                    fontWeight: "600",
+                  }}
+                />
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  height: 2,
+                  backgroundColor: "white",
+                  borderRadius: 20,
+                }}
+              />
+            </View>
+
+            <Button
+              onPress={async () => {
+                handleGuest(false);
+                ref?.current?.close();
+                navigation.push("QRLogin");
+              }}
+              title="Connect Desktop Wallet"
+              bg={"white"}
+              my={20}
+              borderRadius={8}
+              textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
+              py={8}
+              iconPosition="right"
+            />
+            </View>
+          </View>
+        </View>
+      </RBSheet>
       <View
         style={{
           justifyContent: "center",
@@ -245,33 +349,10 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
       >
         <Button
           onPress={async () => {
-            handleGuest(false);
-            await connectWallet();
-            // navigation.push("LoginWithLens");
+            ref?.current?.open();
           }}
           title="Connect Wallet"
           bg={primary}
-          borderRadius={8}
-          textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
-          py={8}
-          iconPosition="right"
-        />
-        <StyledText
-          title="Don't have Mobile wallet?"
-          style={{
-            color: "gray",
-            marginTop: 4,
-            textAlign: "center",
-          }}
-        />
-        <Button
-          onPress={async () => {
-            handleGuest(false);
-            navigation.push("QRLogin");
-          }}
-          title="Login on Desktop"
-          bg={"white"}
-          my={8}
           borderRadius={8}
           textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
           py={8}
