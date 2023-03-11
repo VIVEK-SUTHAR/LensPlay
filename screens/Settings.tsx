@@ -25,6 +25,7 @@ import {
   LENSPLAY_TERMS,
 } from "../constants";
 import { useGuestStore } from "../store/GuestStore";
+import { useAuthStore } from "../store/Store";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
@@ -42,7 +43,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const Wallet = useWalletConnect();
   const { isGuest } = useGuestStore();
-
+  const { viaDeskTop } = useAuthStore();
   const SettingItemsList: SettingsItemProps[] = [
     {
       icon: <Icon name="bug" />,
@@ -184,10 +185,16 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                   radius: 30,
                 }}
                 onPress={async () => {
-                  setIsModalOpen(false);
-                  await AsyncStorage.removeItem("@storage_Key");
-                  await Wallet.killSession();
-                  navigation.replace("Login");
+                  if (viaDeskTop) {
+                    setIsModalOpen(false);
+                    await AsyncStorage.removeItem("@storage_Key");
+                    navigation.replace("Login");
+                  } else {
+                    setIsModalOpen(false);
+                    await AsyncStorage.removeItem("@storage_Key");
+                    await Wallet.killSession();
+                    navigation.replace("Login");
+                  }
                 }}
               >
                 <StyledText title="Log Out" style={{ color: "red" }} />

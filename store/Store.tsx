@@ -21,6 +21,8 @@ export const useAuthStore = create<IAuthStore>((set) => ({
     set({ accessToken: newRefreshToken }),
   hasAccess: false,
   handleAccess: (value: boolean) => set({ hasAccess: value }),
+  viaDeskTop: false,
+  setIsViaDeskTop:(newstate:boolean)=>set({viaDeskTop:newstate})
 }));
 
 export const useProfile = create<UserStore>((set) => ({

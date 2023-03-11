@@ -100,7 +100,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
       <View
         style={{
           justifyContent: "center",
-          marginTop: 150,
+          marginTop: 120,
         }}
       >
         <MotiView
@@ -226,6 +226,27 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           }}
           title="Connect Wallet"
           bg={primary}
+          borderRadius={8}
+          textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
+          py={8}
+          iconPosition="right"
+        />
+        <StyledText
+          title="Don't have Mobile wallet?"
+          style={{
+            color: "gray",
+            marginTop: 4,
+            textAlign: "center",
+          }}
+        />
+        <Button
+          onPress={async () => {
+            handleGuest(false);
+            navigation.push("QRLogin");
+          }}
+          title="Login on Desktop"
+          bg={"white"}
+          my={8}
           borderRadius={8}
           textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
           py={8}
