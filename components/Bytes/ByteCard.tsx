@@ -25,7 +25,7 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
   async function getBytesData() {
     try {
       const bytesdata = await client.query({
-        query: getBytes,
+        query: getBytes,  
         variables: {
           id: isGuest?profileId:userStore.currentProfile?.id,
         },

@@ -61,13 +61,13 @@ const styles = StyleSheet.create({
   imageStyle: {
     height: "100%",
     width: "100%",
-    resizeMode: "cover",
+    resizeMode: "contain",
   },
   avatarStyle: {
     height: "100%",
     width: "90%",
     alignSelf: "center",
-    resizeMode: "contain",
-    borderRadius: 500,
+    resizeMode: "cover",
+    borderRadius: 8,
   },
 });

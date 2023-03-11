@@ -43,16 +43,29 @@ const QRLogin = ({ navigation }) => {
       instruction: "3. Scan QR and Explore LensPlay",
     },
   ];
+  var CryptoJS = require("crypto-js");
+  async function encryptData(data: string) {
+    var ciphertext = CryptoJS.AES.encrypt(data, "secret key 123").toString();
+    return ciphertext;
+  }
+
+  async function decryptData(data: string) {
+    var bytes = CryptoJS.AES.decrypt(data, "secret key 123");
+    var originalText = bytes.toString(CryptoJS.enc.Utf8);
+    return originalText;
+  }
 
   const handleBarcodeScanned = async (data) => {
     if (data) {
       try {
+          const accessToken=await decryptData(JSON.parse(data.data).accessToken)
+          const refreshToken=await decryptData(JSON.parse(data.data).refreshToken)
         storeData(
-          JSON.parse(data.data).accessToken,
-          JSON.parse(data.data).refreshToken
+          accessToken,
+          refreshToken
         );
-        authStore.setAccessToken(JSON.parse(data.data).accessToken);
-        authStore.setRefreshToken(JSON.parse(data.data).refreshToken);
+        authStore.setAccessToken(accessToken);
+        authStore.setRefreshToken(refreshToken);
         setShowScanner(false);
         const profiledata = await client.query({
           query: getUserProfile,

@@ -150,7 +150,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   src={getIPFSLink(profile?.picture.original.url)}
                   height={90}
                   width={90}
-                  borderRadius={50}
+                  borderRadius={100}
                 />
               </Pressable>
               <View

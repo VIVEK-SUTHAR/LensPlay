@@ -14,7 +14,7 @@ const VideoCardSkeleton = ({ width = "auto" }: videoCardProps) => {
         borderRadius: 10,
         margin: 10,
         backgroundColor: '#111111',
-        width: width
+        width: width,
       }}
     >
       <View
@@ -26,11 +26,11 @@ const VideoCardSkeleton = ({ width = "auto" }: videoCardProps) => {
       ></View>
       <View
         style={{
-          padding: 10,
-          flexDirection: "row",
-          justifyContent: "space-between",
+          paddingVertical: 10,
+          flexDirection: "row-reverse",
+          justifyContent: "flex-end",
           alignItems: "center",
-          backgroundColor: "#111111",
+          backgroundColor: "black",
           borderBottomLeftRadius: 10,
           borderBottomRightRadius: 10,
         }}
@@ -38,8 +38,9 @@ const VideoCardSkeleton = ({ width = "auto" }: videoCardProps) => {
         <View
           style={{
             flexDirection: "column",
-            justifyContent: "center",
             alignItems: "flex-start",
+            marginRight:4,
+            paddingHorizontal:16
           }}
         >
           <View

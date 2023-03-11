@@ -41,18 +41,15 @@ const ProfileSkeleton = () => {
       >
         <View
           style={{
-            // padding:30,
             height: 90,
             width: 90,
             borderRadius: 50,
-            // justifyContent: "center",
             backgroundColor: "white",
           }}
         />
         <View
           style={{
             position: "relative",
-            // justifyContent: "flex-end",
             height: 36,
             width: 108,
             marginTop: 44,
@@ -66,7 +63,6 @@ const ProfileSkeleton = () => {
         style={{
           justifyContent: "space-between",
           marginLeft: 12,
-          // alignItems: "center",
         }}
       >
         <View
@@ -196,21 +192,6 @@ const ProfileSkeleton = () => {
           </ScrollView>
         </View>
       </View>
-      {/* <View style={{ paddingVertical: 10 }}>
-        <View style={{ paddingVertical: 10 }}>
-          <Heading
-            title="Videos"
-            style={{
-              fontSize: 20,
-              fontWeight: "700",
-              color: "white",
-            }}
-          />
-          <VideoCardSkeleton />
-          <VideoCardSkeleton />
-          <VideoCardSkeleton />
-        </View>
-      </View> */}
     </View>
   );
 };
