@@ -5,9 +5,11 @@ export interface IAuthStore {
   accessToken: string;
   refreshToken: string;
   hasAccess: boolean;
+  viaDeskTop: boolean;
   setAccessToken: (newToken: string) => void;
   setRefreshToken: (newToken: string) => void;
   handleAccess: (newValue: boolean) => void;
+  setIsViaDeskTop:(newValue: boolean)=> void;
 }
 export interface IThemeStore {
   PRIMARY: string;

@@ -42,6 +42,7 @@ import Notifications from "../screens/Notification";
 import LinkingVideo from "../screens/LinkingVideo";
 import * as Linking from "expo-linking";
 import JoinWaitlist from "../screens/JoinWaitlist";
+import QRLogin from "../screens/QRLogin";
 export default function Navigation() {
   return (
     <>
@@ -243,6 +244,17 @@ function RootNavigator() {
           headerStyle: { backgroundColor: "black" },
           headerTintColor: theme.PRIMARY,
           headerTitle: "",
+          }}
+       />
+       <Stack.Screen
+        name="QRLogin"
+        component={QRLogin}
+        options={{
+          animation: "fade_from_bottom",
+          headerShown: true,
+          headerStyle: { backgroundColor: "black" },
+          headerTintColor: theme.PRIMARY,
+          headerTitle: "Desktop Login",
         }}
       />
     </Stack.Navigator>

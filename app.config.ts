@@ -141,6 +141,12 @@ const config: ExpoConfig = {
 					"The app accesses your gallery to let you share them with your friends on Lens",
 			},
 		],
+		[
+			"expo-barcode-scanner",
+			{
+				cameraPermission: "Allow LensPlay to access camera for QR Code Scanning",
+			},
+		],
 	],
 };
 
