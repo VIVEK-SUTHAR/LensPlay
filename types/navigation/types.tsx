@@ -63,6 +63,7 @@ export type RootStackParamList = {
   Login: undefined;
   Waitlist: undefined;
   Loader: undefined;
+  JoinWaitlist: undefined;
   ReportPublication: {
     publicationId: string;
   };

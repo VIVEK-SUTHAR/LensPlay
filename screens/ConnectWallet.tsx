@@ -2,7 +2,7 @@ import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import { MotiView } from "moti";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Dimensions,
   Image,
@@ -15,6 +15,8 @@ import StyledText from "../components/UI/StyledText";
 import { dark_primary, primary } from "../constants/Colors";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { useGuestStore } from "../store/GuestStore";
+import searchUser from "../api/zooTools/searchUser";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   const connector = useWalletConnect();
@@ -23,7 +25,30 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   const { handleGuest, isGuest } = useGuestStore();
 
   const connectWallet = React.useCallback(async () => {
-    await connector.connect();
+    const data = await connector.connect();
+    const access = await searchUser(data.accounts[0]);
+    if (!(access.statusCode === 404)) {
+      const handleUser = {
+        email: access.email,
+        hasAccess: access.fields.hasAccess,
+      };
+      await AsyncStorage.setItem("@access_Key", JSON.stringify(handleUser));
+      if (access.fields.hasAccess) {
+        navigation.push("LoginWithLens");
+      }
+      if (!access.fields.hasAccess) {
+        navigation.push("LeaderBoard", {
+          referralsCount: access.referralsCount,
+          rankingPoints: access.rankingPoints,
+          rankingPosition: access.rankingPosition,
+          refferalLink: `https://form.waitlistpanda.com/go/${access.listId}?ref=${access.id}`,
+        });
+      }
+    }
+    else {
+      navigation.navigate("JoinWaitlist");
+    }
+
   }, [connector]);
 
   return (
@@ -222,7 +247,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           onPress={async () => {
             handleGuest(false);
             await connectWallet();
-            navigation.push("LoginWithLens");
+            // navigation.push("LoginWithLens");
           }}
           title="Connect Wallet"
           bg={primary}

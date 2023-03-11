@@ -37,23 +37,41 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const { hasAccess } = useAuthStore();
   const { isGuest, profileId } = useGuestStore();
 
+
+  const checkAccess = async () => {
+    const userData = await AsyncStorage.getItem("@access_Key");
+    if (userData){
+      getData().then(() => {
+        setCallData(false);
+        setInterval(() => {
+          updateTokens();
+        }, 840000);
+      });
+    }
+    else {
+      navigation.navigate('Login');
+    }
+  }
+
   useEffect(() => {
     if (callData) {
       if (isGuest) {
         return;
       }
-      if (!hasAccess) {
-        navigation.replace("Loader");
-      } else {
-        getData().then(() => {
-          setCallData(false);
-          setInterval(() => {
-            updateTokens();
-          }, 840000);
-        });
-      }
+      checkAccess();
+      // if (!hasAccess) {
+      //   navigation.replace("Loader");
+      // } else {
+      //   getData().then(() => {
+      //     setCallData(false);
+      //     setInterval(() => {
+      //       updateTokens();
+      //     }, 840000);
+      //   });
+      // }
     }
   }, []);
+
 
   const updateTokens = async () => {
     const jsonValue = await AsyncStorage.getItem("@storage_Key");
