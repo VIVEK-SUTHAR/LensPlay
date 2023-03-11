@@ -41,6 +41,7 @@ import Icon from "../components/Icon";
 import Notifications from "../screens/Notification";
 import LinkingVideo from "../screens/LinkingVideo";
 import * as Linking from "expo-linking";
+import JoinWaitlist from "../screens/JoinWaitlist";
 export default function Navigation() {
   return (
     <>
@@ -231,6 +232,17 @@ function RootNavigator() {
           headerStyle: { backgroundColor: "black" },
           headerTintColor: theme.PRIMARY,
           headerTitle: "Comments",
+        }}
+      />
+      <Stack.Screen
+        name="JoinWaitlist"
+        component={JoinWaitlist}
+        options={{
+          animation: "slide_from_right",
+          headerShown: false,
+          headerStyle: { backgroundColor: "black" },
+          headerTintColor: theme.PRIMARY,
+          headerTitle: "",
         }}
       />
     </Stack.Navigator>

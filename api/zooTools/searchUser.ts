@@ -1,11 +1,11 @@
-async function searchUser(email: string) {
+async function searchUser(address: string) {
     const headersList = {
         "Content-Type": "application/json",
         Authorization: "Bearer zootools-api-token-4f6a024c-84ae-4eb6-b3b8-e525994c4f4e",
     };
 
     const bodyContent = JSON.stringify({
-        "email": email
+        "cryptoAddress": address
     });
 
     try {
