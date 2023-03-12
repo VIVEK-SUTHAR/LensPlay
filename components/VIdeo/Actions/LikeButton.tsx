@@ -138,7 +138,8 @@ const LikeButton = ({
       });
     }
   };
-
+  console.log(formatInteraction(like));
+  
   return (
     <Button
       title={formatInteraction(likes) || "0"}
