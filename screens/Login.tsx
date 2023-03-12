@@ -3,7 +3,14 @@ import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import { MotiImage, MotiView } from "moti";
 import * as React from "react";
-import { Dimensions, Image, Linking, StyleSheet, Text, View } from "react-native";
+import {
+  Dimensions,
+  Image,
+  Linking,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "../components/Icon";
 import Button from "../components/UI/Button";
@@ -81,16 +88,15 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           }}
         >
           <View>
-            <Text
-              // title={"LensPlay"}
+            <Heading
+              title="LensPlay"
               style={{
                 fontSize: 64,
                 color: "white",
-                fontWeight: "600",
+                fontWeight: "700",
                 textAlign: "center",
-                fontFamily:"Raleway_Bold"
               }}
-            >LensPlay</Text>
+            />
             <View
               style={{
                 flexDirection: "column",
