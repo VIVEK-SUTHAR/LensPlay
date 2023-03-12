@@ -86,7 +86,6 @@ const EditProfile = ({
     setImage(null);
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      aspect: [4, 4],
       allowsEditing: true,
       quality: 1,
       base64: true,
