@@ -111,15 +111,13 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
             imgLink: "",
             username: currentProfile?.handle,
           });
-          setselectData({reason: "Bug Category"});
-          if(image){
-            setimage(null)
+          setselectData({ reason: "Bug Category" });
+          if (image) {
+            setimage(null);
           }
           toast.show("Thanks for reporting bug", ToastType.SUCCESS, true);
         }
-        console.log(hash);
       }
-      console.log(BugData);
     } catch (error) {
     } finally {
       setIsUpdating(false);
@@ -150,7 +148,8 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
             <View>
               <Pressable
                 onPress={() => setimage(null)}
-                style={{ position: "absolute", zIndex: 1, right: 16, top: 14 }}>
+                style={{ position: "absolute", zIndex: 1, right: 16, top: 14 }}
+              >
                 <Icon
                   name="close"
                   size={24}
@@ -190,7 +189,6 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
                 ...BugData,
                 description: e.nativeEvent.text,
               });
-              console.log(BugData.description);
             }}
           />
           <Input
@@ -202,7 +200,6 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
                 ...BugData,
                 email: e.nativeEvent.text,
               });
-              console.log(BugData.email);
             }}
           />
         </View>

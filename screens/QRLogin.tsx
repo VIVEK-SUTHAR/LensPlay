@@ -16,10 +16,12 @@ import Icon from "../components/Icon";
 import Button from "../components/UI/Button";
 import StyledText from "../components/UI/StyledText";
 import { useAuthStore, useProfile } from "../store/Store";
+import { RootStackScreenProps } from "../types/navigation/types";
+import decryptData from "../utils/decryptData";
 import extractURLs from "../utils/extractURL";
 import storeData from "../utils/storeData";
 
-const QRLogin = ({ navigation }) => {
+const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
   const [showScanner, setShowScanner] = useState<boolean>(false);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const authStore = useAuthStore();
@@ -86,17 +88,6 @@ const QRLogin = ({ navigation }) => {
       instruction: "3. Scan QR and Explore LensPlay",
     },
   ];
-  var CryptoJS = require("crypto-js");
-  async function encryptData(data: string) {
-    var ciphertext = CryptoJS.AES.encrypt(data, "secret key 123").toString();
-    return ciphertext;
-  }
-
-  async function decryptData(data: string) {
-    var bytes = CryptoJS.AES.decrypt(data, "secret key 123");
-    var originalText = bytes.toString(CryptoJS.enc.Utf8);
-    return originalText;
-  }
 
   const handleBarcodeScanned = async (data) => {
     if (data) {
@@ -107,14 +98,17 @@ const QRLogin = ({ navigation }) => {
         const refreshToken = await decryptData(
           JSON.parse(data.data).refreshToken
         );
-        storeData(accessToken, refreshToken);
+
+        const profileId = JSON.parse(data.data).profileId;
+
+        storeData(accessToken, refreshToken, profileId);
         authStore.setAccessToken(accessToken);
         authStore.setRefreshToken(refreshToken);
         setShowScanner(false);
         const profiledata = await client.query({
           query: getUserProfile,
           variables: {
-            id: JSON.parse(data.data).profileId,
+            id: profileId,
           },
         });
         const access = await searchUser(profiledata.data.profile.ownedBy);

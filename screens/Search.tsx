@@ -104,8 +104,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
     }
   };
 
-  console.log(searchType);
-
   useEffect(() => {
     onDebounce();
   }, [debouncedValue, searchType]);

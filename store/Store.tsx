@@ -22,12 +22,14 @@ export const useAuthStore = create<IAuthStore>((set) => ({
   hasAccess: false,
   handleAccess: (value: boolean) => set({ hasAccess: value }),
   viaDeskTop: false,
-  setIsViaDeskTop:(newstate:boolean)=>set({viaDeskTop:newstate})
+  setIsViaDeskTop: (newstate: boolean) => set({ viaDeskTop: newstate }),
 }));
 
 export const useProfile = create<UserStore>((set) => ({
   currentProfile: null,
+  userAddress: null,
   setCurrentProfile: (newProfile) => set({ currentProfile: newProfile }),
+  setUserAddress: (address) => set({ userAddress: address }),
 }));
 
 export const useThemeStore = create<IThemeStore>((set) => ({

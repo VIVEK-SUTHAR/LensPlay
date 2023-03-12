@@ -97,7 +97,6 @@ const EditProfile = ({
     if (!result.cancelled) {
       setImage(result.uri);
       const imgblob = await getImageBlobFromUri(result.uri);
-      console.log(canUploadToArweave(imgblob));
       setImageBlob(imgblob);
     }
   }

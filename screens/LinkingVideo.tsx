@@ -43,7 +43,14 @@ import CommentSkeleton from "../components/UI/CommentSkeleton";
 import AnimatedLottieView from "lottie-react-native";
 import CommentCard from "../components/Comments/CommentCard";
 import * as Linking from "expo-linking";
-import { CollectButton, LikeButton, ReportButton, ShareButton, VideoCreator, VideoMeta } from "../components/VIdeo";
+import {
+  CollectButton,
+  LikeButton,
+  ReportButton,
+  ShareButton,
+  VideoCreator,
+  VideoMeta,
+} from "../components/VIdeo";
 import DisLikeButton from "../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
 import CommentInput from "../components/Comments/CommentInput";
@@ -81,8 +88,6 @@ const LinkingVideo = ({
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
-    // console.log(route.params.id);
-
     getVideoById(route?.params?.id);
   }, []);
 
@@ -110,8 +115,8 @@ const LinkingVideo = ({
     }
   }
 
-  const [activePublication, setactivePublication] = useState(null)
-  
+  const [activePublication, setactivePublication] = useState(null);
+
   const getVideoById = async (pubId: string) => {
     setIsLoading(true);
     try {
@@ -123,17 +128,16 @@ const LinkingVideo = ({
         context: {
           headers: {
             "x-access-token": authStore.accessToken
-            ? `Bearer ${authStore.accessToken}`
-            : "",
+              ? `Bearer ${authStore.accessToken}`
+              : "",
           },
         },
       });
-      
+
       setactivePublication(feed.data.publication);
-      
+
       fetchComments(pubId);
-      console.log(typeof(feed.data.publication.stats.totalUpvotes)+" hiii");
-      
+
       return feed;
     } catch (error) {
       if (error instanceof Error) {
@@ -156,8 +160,9 @@ const LinkingVideo = ({
       }
     }
   };
-    if(!isLoading){
-      return <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+  if (!isLoading) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
         <View
           style={{
             height: 280,
@@ -228,9 +233,10 @@ const LinkingVideo = ({
           />
         </View>
       </SafeAreaView>
-    }
-      return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+    );
+  }
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <Player
         poster={activePublication?.metadata?.cover}
         title={activePublication?.metadata?.name}
@@ -314,7 +320,6 @@ const LinkingVideo = ({
       </ScrollView>
       <CommentInput publicationId={activePublication?.id} />
     </SafeAreaView>
-
   );
 };
 

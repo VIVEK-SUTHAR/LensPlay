@@ -22,11 +22,12 @@ import getProfile from "../apollo/Queries/getProfile";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
 import storeData from "../utils/storeData";
-import searchUser from "../api/zooTools/searchUser";
 import { StatusBar } from "expo-status-bar";
 import { dark_primary } from "../constants/Colors";
 import { useGuestStore } from "../store/GuestStore";
 import PleaseLogin from "../components/PleaseLogin";
+import getUserProfile from "../apollo/Queries/getUserProfile";
+
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const connector = useWalletConnect();
   const authStore = useAuthStore();
@@ -37,32 +38,29 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const { hasAccess } = useAuthStore();
   const { isGuest, profileId } = useGuestStore();
 
-
   const checkAccess = async () => {
     const userData = await AsyncStorage.getItem("@access_Key");
-    if (userData){
+    if (userData) {
       getData().then(() => {
         setCallData(false);
         setInterval(() => {
           updateTokens();
         }, 840000);
       });
+    } else {
+      navigation.navigate("Login");
     }
-    else {
-      navigation.navigate('Login');
-    }
-  }
+  };
 
   useEffect(() => {
     if (callData) {
       if (isGuest) {
-        navigation.navigate("Trending")
+        navigation.navigate("Trending");
         return;
       }
       checkAccess();
     }
   }, []);
-
 
   const updateTokens = async () => {
     const jsonValue = await AsyncStorage.getItem("@storage_Key");
@@ -86,7 +84,8 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
         authStore.setAccessToken(refreshToken.data.refresh.accessToken);
         storeData(
           refreshToken.data.refresh.accessToken,
-          refreshToken.data.refresh.refreshToken
+          refreshToken.data.refresh.refreshToken,
+          userStore?.currentProfile?.id
         );
       }
     }
@@ -104,11 +103,19 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
           },
         });
         if (isvaild.data.verify) {
+          const userProfileId = tokens.profileId;
+          const profiledata = await client.query({
+            query: getUserProfile,
+            variables: {
+              id: userProfileId,
+            },
+          });
           authStore.setAccessToken(tokens.accessToken);
           const data = await client.query({
             query: getProfile,
             variables: {
-              ethAddress: connector.accounts[0],
+              ethAddress:
+                connector.accounts[0] || profiledata.data.profile.ownedBy,
             },
           });
           if (!data.data.defaultProfile) {
@@ -129,7 +136,8 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
           authStore.setAccessToken(refreshToken.data.refresh.accessToken);
           storeData(
             refreshToken.data.refresh.accessToken,
-            refreshToken.data.refresh.refreshToken
+            refreshToken.data.refresh.refreshToken,
+            tokens.profileId
           );
           const data = await client.query({
             query: getProfile,

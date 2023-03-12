@@ -182,9 +182,8 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           }}
           title="Get Started"
           bg={primary}
-          borderRadius={8}
           textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
-          py={8}
+          py={12}
           icon={<AntDesign name="arrowright" size={20} />}
           iconPosition="right"
         />

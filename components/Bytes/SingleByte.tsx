@@ -69,8 +69,6 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   };
 
   const collectPublication = async () => {
-    console.log(item.id);
-
     try {
       const data = await freeCollectPublication(item.id, accessToken);
       if (data) {

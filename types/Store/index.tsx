@@ -9,7 +9,7 @@ export interface IAuthStore {
   setAccessToken: (newToken: string) => void;
   setRefreshToken: (newToken: string) => void;
   handleAccess: (newValue: boolean) => void;
-  setIsViaDeskTop:(newValue: boolean)=> void;
+  setIsViaDeskTop: (newValue: boolean) => void;
 }
 export interface IThemeStore {
   PRIMARY: string;
@@ -18,7 +18,9 @@ export interface IThemeStore {
 }
 export interface UserStore {
   currentProfile: Profile | null;
+  userAddress: string | null;
   setCurrentProfile: (currentProfile: Profile | null) => void;
+  setUserAddress: (address: string) => void;
 }
 
 export interface ToastProps {

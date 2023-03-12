@@ -74,7 +74,8 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         authStore.setRefreshToken(tokens.data.authenticate.refreshToken);
         storeData(
           tokens.data.authenticate.accessToken,
-          tokens.data.authenticate.refreshToken
+          tokens.data.authenticate.refreshToken,
+          userStore.currentProfile?.id
         );
         setIsloading(false);
         navigation.navigate("Root");
@@ -97,8 +98,8 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         style={{
           flexDirection: "column",
           justifyContent: "space-evenly",
-          alignItems: 'center',
-          paddingTop: 160
+          alignItems: "center",
+          paddingTop: 160,
         }}
       >
         <MotiView
@@ -147,7 +148,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         </View>
       </View>
 
-      <View style={{ justifyContent: "flex-end", marginTop: 80}}>
+      <View style={{ justifyContent: "flex-end", marginTop: 80 }}>
         <View
           style={{
             flexDirection: "column",
@@ -307,8 +308,6 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         )}
       </View>
     </SafeAreaView>
-
-
   );
 }
 
@@ -318,13 +317,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
-    justifyContent: 'space-between',
-    paddingBottom: 16
+    justifyContent: "space-between",
+    paddingBottom: 16,
   },
   bottomCircles: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: 230
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: 230,
   },
   circle1: {
     display: "flex",

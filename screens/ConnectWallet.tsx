@@ -18,6 +18,7 @@ import searchUser from "../api/zooTools/searchUser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RBSheet from "../components/UI/BottomSheet";
 import Icon from "../components/Icon";
+import Heading from "../components/UI/Heading";
 
 function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   const connector = useWalletConnect();
@@ -121,36 +122,42 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
         </MotiView>
       </View>
 
-      <RBSheet ref={ref} height={Dimensions.get("window").height / 2.1}>
+      <RBSheet ref={ref} height={Dimensions.get("window").height / 2}>
         <View
           style={{
             maxWidth: "100%",
-            height: 280,
-            marginTop: 32,
+            height: Dimensions.get("window").height / 2.4,
             alignItems: "center",
-            justifyContent: "space-between",
           }}
         >
           <View
             style={{
               paddingHorizontal: 16,
               width: "100%",
-              marginTop: 10,
-              flexDirection: "column",
               justifyContent: "space-between",
               height: "100%",
+              marginTop: 16,
             }}
           >
-            <StyledText
-              title="Connect with your lens handle linked wallet"
-              style={{
-                color: primary,
-                marginTop: 4,
-                textAlign: "left",
-                fontSize: 26,
-                fontWeight: "600",
-              }}
-            />
+            <View>
+              <Heading
+                title="Connect Wallet"
+                style={{
+                  color: "white",
+                  fontSize: 24,
+                  fontWeight: "600",
+                }}
+              />
+              <StyledText
+                title="Connect with your lens handle linked wallet"
+                style={{
+                  color: "gray",
+                  textAlign: "left",
+                  fontSize: 16,
+                  fontWeight: "500",
+                }}
+              />
+            </View>
             <View style={{ marginTop: 16 }}>
               <Button
                 onPress={async () => {
@@ -160,26 +167,24 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
                 }}
                 title="Connect Mobile Wallet"
                 bg={primary}
-                borderRadius={8}
                 textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
-                py={8}
+                py={12}
                 icon={<Icon name="wallet" color="black" />}
                 iconPosition="left"
               />
-
               <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  // paddingHorizontal: 10,
-                  marginTop: 20,
+                  marginTop: 16,
+                  paddingHorizontal: 64,
                 }}
               >
                 <View
                   style={{
                     flex: 1,
                     height: 2,
-                    backgroundColor: "white",
+                    backgroundColor: "gray",
                     borderRadius: 20,
                   }}
                 />
@@ -189,7 +194,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
                     style={{
                       width: 45,
                       textAlign: "center",
-                      color: "white",
+                      color: "gray",
                       fontSize: 16,
                       fontWeight: "600",
                     }}
@@ -199,7 +204,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
                   style={{
                     flex: 1,
                     height: 2,
-                    backgroundColor: "white",
+                    backgroundColor: "gray",
                     borderRadius: 20,
                   }}
                 />
@@ -213,11 +218,10 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
                 }}
                 title="Connect Desktop Wallet"
                 bg={"white"}
-                my={20}
-                borderRadius={8}
+                my={16}
                 textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
-                py={8}
-                icon={<Icon name="desktop" color="black" />}
+                py={12}
+                icon={<Icon name="desktop" color="black" size={24} />}
                 iconPosition="left"
               />
             </View>
@@ -317,10 +321,9 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           }}
           title="Connect Wallet"
           bg={primary}
-          borderRadius={8}
           textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
-          py={8}
-          icon={<Icon name="wallet" color="black" />}
+          py={12}
+          icon={<Icon name="wallet" color="black" size={24} />}
           iconPosition="left"
         />
       </View>
@@ -328,14 +331,14 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
         style={{
           flexDirection: "row",
           alignItems: "center",
-          paddingHorizontal: 20,
+          paddingHorizontal: 64,
         }}
       >
         <View
           style={{
             flex: 1,
             height: 2,
-            backgroundColor: "white",
+            backgroundColor: "gray",
             borderRadius: 20,
           }}
         />
@@ -345,7 +348,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             style={{
               width: 45,
               textAlign: "center",
-              color: "white",
+              color: "gray",
               fontSize: 16,
               fontWeight: "600",
             }}
@@ -355,7 +358,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           style={{
             flex: 1,
             height: 2,
-            backgroundColor: "white",
+            backgroundColor: "gray",
             borderRadius: 20,
           }}
         />
@@ -373,10 +376,9 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           }}
           title="Continue as Guest"
           bg={dark_primary}
-          borderRadius={8}
           textStyle={{ fontWeight: "600", fontSize: 20, color: "white" }}
-          py={8}
-          icon={<Icon name="referal" color="white" />}
+          py={12}
+          icon={<Icon name="referal" color="white" size={24} />}
           iconPosition="left"
         />
       </View>
