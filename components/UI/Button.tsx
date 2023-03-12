@@ -109,7 +109,7 @@ const Button = (props: ButtonProps): JSX.Element => {
             {icon && iconPosition === "left" ? (
               <View
                 style={{
-                  marginRight: bytes ? 0 : 8,
+                  marginRight: bytes || title.length === 0 ? 0 : 8,
                 }}
               >
                 {icon}

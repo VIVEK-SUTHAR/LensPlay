@@ -60,7 +60,6 @@ const AllVideos = ({
       >
         {Boolean(Videos) &&
           Videos.map((item: LensPublication) => {
-            
             return (
               <VideoCard
                 publication={item}
@@ -78,7 +77,6 @@ const AllVideos = ({
             style={{
               color: "gray",
               fontSize: 14,
-              textAlign: "center",
             }}
           ></Heading>
         </View>

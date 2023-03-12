@@ -91,10 +91,10 @@ const CollectedVideos = ({
             if (item?.appId?.includes("lenstube")) {
               return (
                 <VideoCard
-                publication={item}
-                id={item?.id}
-                height={150}
-                width={300}
+                  publication={item}
+                  id={item?.id}
+                  height={150}
+                  width={300}
                 />
               );
             }

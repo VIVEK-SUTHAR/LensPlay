@@ -12,10 +12,9 @@ import { useFollowers } from "../hooks/useFeed";
 import ProfileCard from "../components/ProfileCard";
 import { useFollowing } from "../hooks/useFeed";
 import Heading from "../components/UI/Heading";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import ProfileCardSkeleton from "../components/UI/ProfileCardSkeleton";
 import Icon from "../components/Icon";
-const StatsTab = createMaterialTopTabNavigator();
+import Tabs, { Tab } from "../components/UI/Tabs";
 
 const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
   const [headerTitle, setHeaderTitle] = useState<string>("Subscribers");
@@ -37,10 +36,9 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
               title={`Your ${headerTitle}`}
               style={{
                 color: theme.PRIMARY,
-                fontSize: 24,
-                fontWeight: "500",
-                marginHorizontal: 4,
-                marginBottom: 4,
+                fontSize: 16,
+                fontWeight: "600",
+                marginHorizontal: 16,
               }}
             />
           </View>
@@ -51,38 +49,32 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatsTab.Navigator
-        screenOptions={{
-          tabBarActiveTintColor: theme.PRIMARY,
-          tabBarStyle: {
-            backgroundColor: "black",
-          },
-          tabBarPressColor: theme.PRIMARY,
-          tabBarIndicatorStyle: {
-            borderRadius: 4,
-            backgroundColor: theme.PRIMARY,
-          },
-          tabBarLabelStyle: {
-            textTransform: "capitalize",
-            fontSize: 14,
-          },
-        }}
-      >
-        <StatsTab.Screen
+      <Tabs>
+        <Tab.Screen
           name="Subscribers"
           component={SuscriberList}
+          listeners={{
+            focus: () => {
+              setHeaderTitle("Subscribers");
+            },
+          }}
           options={{
             tabBarLabel: "Subscribers",
           }}
         />
-        <StatsTab.Screen
+        <Tab.Screen
           name="Subscriptions"
           component={SubscriptionsList}
+          listeners={{
+            focus: () => {
+              setHeaderTitle("Subscriptions");
+            },
+          }}
           options={{
             tabBarLabel: "Subscriptions",
           }}
         />
-      </StatsTab.Navigator>
+      </Tabs>
     </SafeAreaView>
   );
 };

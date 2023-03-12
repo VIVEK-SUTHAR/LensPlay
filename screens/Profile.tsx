@@ -410,7 +410,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   />
                 </View>
               </View>
-              <View style={{ marginTop: 24 }}>
+              <View style={{ marginVertical: 24 }}>
                 {AllVideosData && (
                   <AllVideos
                     Videos={AllVideosData?.publications?.items}

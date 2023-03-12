@@ -7,8 +7,12 @@ import {
 import React, { useLayoutEffect } from "react";
 import { useThemeStore } from "../store/Store";
 import VideoCard from "../components/VideoCard";
+import { RootStackScreenProps } from "../types/navigation/types";
 
-const UserVideos = ({ navigation, route }) => {
+const UserVideos = ({
+  navigation,
+  route,
+}: RootStackScreenProps<"YourVideos">) => {
   const videos = route.params.videos;
   const theme = useThemeStore();
   useLayoutEffect(() => {
@@ -34,11 +38,7 @@ const UserVideos = ({ navigation, route }) => {
         }
         renderItem={({ item }) => (
           <>
-            <VideoCard
-              publication={item}
-              id={item?.id}
-
-            />
+            <VideoCard publication={item} id={item?.id} />
           </>
         )}
       />
