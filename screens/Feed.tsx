@@ -68,7 +68,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
       const tokens = JSON.parse(jsonValue);
       const generatedTime = tokens.generatedTime;
       const currentTime = new Date().getTime();
-
       const minute = Math.floor(
         ((currentTime - generatedTime) % (1000 * 60 * 60)) / (1000 * 60)
       );
