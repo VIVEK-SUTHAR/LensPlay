@@ -12,6 +12,7 @@ import {
 import searchUser from "../api/zooTools/searchUser";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
+import Icon from "../components/Icon";
 import Button from "../components/UI/Button";
 import StyledText from "../components/UI/StyledText";
 import { useAuthStore, useProfile } from "../store/Store";
@@ -176,6 +177,7 @@ const QRLogin = ({ navigation }) => {
             borderRadius={8}
             textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
             py={8}
+            icon={<Icon name="qr" color="black" />}
             iconPosition="right"
           />
         </View>

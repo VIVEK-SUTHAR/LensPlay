@@ -17,6 +17,7 @@ import { useGuestStore } from "../store/GuestStore";
 import searchUser from "../api/zooTools/searchUser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RBSheet from "../components/UI/BottomSheet";
+import Icon from "../components/Icon";
 
 function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   const connector = useWalletConnect();
@@ -162,7 +163,8 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
                 borderRadius={8}
                 textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
                 py={8}
-                iconPosition="right"
+                icon={<Icon name="wallet" color="black" />}
+                iconPosition="left"
               />
 
               <View
@@ -215,7 +217,8 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
                 borderRadius={8}
                 textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
                 py={8}
-                iconPosition="right"
+                icon={<Icon name="desktop" color="black" />}
+                iconPosition="left"
               />
             </View>
           </View>
@@ -300,40 +303,6 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             }}
           />
         </MotiView>
-        {/* <MotiView
-          from={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          transition={{
-            type: "timing",
-            duration: 1500,
-            delay: 300,
-          }}
-          style={{ flexDirection: "row", paddingHorizontal: 28 }}
-        >
-          <StyledText
-            title={"Social"}
-            style={{
-              fontSize: 28,
-              color: "white",
-              fontWeight: "600",
-              textAlign: "right",
-            }}
-          />
-          <StyledText
-            title={"Graph."}
-            style={{
-              fontSize: 28,
-              color: "#9EF01A",
-              fontWeight: "600",
-              textAlign: "right",
-              marginLeft: 8,
-            }}
-          />
-        </MotiView> */}
       </View>
       <View
         style={{
@@ -351,7 +320,8 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           borderRadius={8}
           textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
           py={8}
-          iconPosition="right"
+          icon={<Icon name="wallet" color="black" />}
+          iconPosition="left"
         />
       </View>
       <View
@@ -406,7 +376,8 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           borderRadius={8}
           textStyle={{ fontWeight: "600", fontSize: 20, color: "white" }}
           py={8}
-          iconPosition="right"
+          icon={<Icon name="referal" color="white" />}
+          iconPosition="left"
         />
       </View>
     </SafeAreaView>

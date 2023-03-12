@@ -109,6 +109,7 @@ export type RootStackParamList = {
     url: string;
     source: "avatar" | "cover";
   };
+  QRLogin: undefined;
   Settings: undefined;
   BugReport: undefined;
 };
