@@ -48,6 +48,7 @@ import DisLikeButton from "../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
 import CommentInput from "../components/Comments/CommentInput";
 import Comment from "../components/Comments";
+import VideoPage from "./VideoPage";
 
 const LinkingVideo = ({
   navigation,
@@ -155,8 +156,78 @@ const LinkingVideo = ({
       }
     }
   };
-    if(isLoading){
-      return <CommentSkeleton/>
+    if(!isLoading){
+      return <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+        <View
+          style={{
+            height: 280,
+            backgroundColor: "gray",
+          }}
+        ></View>
+        <View
+          style={{
+            flexDirection: "row",
+            marginVertical: 15,
+            justifyContent: "space-between",
+            paddingHorizontal: 5,
+          }}
+        >
+          <View
+            style={{ height: 15, width: 150, backgroundColor: "gray" }}
+          ></View>
+          <View
+            style={{ height: 15, width: 35, backgroundColor: "gray" }}
+          ></View>
+        </View>
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            paddingVertical: 4,
+            justifyContent: "space-between",
+            marginTop: 8,
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View
+              style={{
+                height: 40,
+                width: 40,
+                borderRadius: 50,
+                backgroundColor: "gray",
+              }}
+            ></View>
+            <View style={{ marginHorizontal: 8 }}>
+              <View
+                style={{ height: 8, width: 100, backgroundColor: "gray" }}
+              ></View>
+              <View
+                style={{
+                  height: 8,
+                  width: 45,
+                  backgroundColor: "gray",
+                  marginVertical: 8,
+                }}
+              ></View>
+            </View>
+          </View>
+          <Button
+            title={"Subscribe"}
+            width={"auto"}
+            px={16}
+            py={8}
+            type={"filled"}
+            bg={"gray"}
+            textStyle={{
+              fontSize: 16,
+              fontWeight: "700",
+              marginHorizontal: 4,
+              color: "black",
+            }}
+            onPress={async () => {}}
+          />
+        </View>
+      </SafeAreaView>
     }
       return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>

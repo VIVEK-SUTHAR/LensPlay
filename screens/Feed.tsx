@@ -60,16 +60,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
         return;
       }
       checkAccess();
-      // if (!hasAccess) {
-      //   navigation.replace("Loader");
-      // } else {
-      //   getData().then(() => {
-      //     setCallData(false);
-      //     setInterval(() => {
-      //       updateTokens();
-      //     }, 840000);
-      //   });
-      // }
     }
   }, []);
 
