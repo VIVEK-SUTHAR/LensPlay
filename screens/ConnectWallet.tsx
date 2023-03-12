@@ -1,8 +1,7 @@
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import { MotiView } from "moti";
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import {
   Dimensions,
   Image,
@@ -46,17 +45,14 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           refferalLink: `https://form.waitlistpanda.com/go/${access.listId}?ref=${access.id}`,
         });
       }
-    }
-    else {
+    } else {
       navigation.navigate("JoinWaitlist");
     }
-
   }, [connector]);
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="light" />
-
 
       <View
         style={{
@@ -139,9 +135,9 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
               paddingHorizontal: 16,
               width: "100%",
               marginTop: 10,
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              height: '100%'
+              flexDirection: "column",
+              justifyContent: "space-between",
+              height: "100%",
             }}
           >
             <StyledText
@@ -151,77 +147,76 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
                 marginTop: 4,
                 textAlign: "left",
                 fontSize: 26,
-                fontWeight: '600'
+                fontWeight: "600",
               }}
             />
-            <View style={{marginTop: 16}}>
-            <Button
-              onPress={async () => {
-                handleGuest(false);
-                await connectWallet();
-                ref?.current?.close();
-                navigation.push("LoginWithLens");
-              }}
-              title="Connect Mobile Wallet"
-              bg={primary}
-              borderRadius={8}
-              textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
-              py={8}
-              iconPosition="right"
-            />
+            <View style={{ marginTop: 16 }}>
+              <Button
+                onPress={async () => {
+                  handleGuest(false);
+                  await connectWallet();
+                  ref?.current?.close();
+                }}
+                title="Connect Mobile Wallet"
+                bg={primary}
+                borderRadius={8}
+                textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
+                py={8}
+                iconPosition="right"
+              />
 
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                // paddingHorizontal: 10,
-                marginTop: 20,
-              }}
-            >
               <View
                 style={{
-                  flex: 1,
-                  height: 2,
-                  backgroundColor: "white",
-                  borderRadius: 20,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  // paddingHorizontal: 10,
+                  marginTop: 20,
                 }}
-              />
-              <View>
-                <StyledText
-                  title={"OR"}
+              >
+                <View
                   style={{
-                    width: 45,
-                    textAlign: "center",
-                    color: "white",
-                    fontSize: 16,
-                    fontWeight: "600",
+                    flex: 1,
+                    height: 2,
+                    backgroundColor: "white",
+                    borderRadius: 20,
+                  }}
+                />
+                <View>
+                  <StyledText
+                    title={"OR"}
+                    style={{
+                      width: 45,
+                      textAlign: "center",
+                      color: "white",
+                      fontSize: 16,
+                      fontWeight: "600",
+                    }}
+                  />
+                </View>
+                <View
+                  style={{
+                    flex: 1,
+                    height: 2,
+                    backgroundColor: "white",
+                    borderRadius: 20,
                   }}
                 />
               </View>
-              <View
-                style={{
-                  flex: 1,
-                  height: 2,
-                  backgroundColor: "white",
-                  borderRadius: 20,
-                }}
-              />
-            </View>
 
-            <Button
-              onPress={async () => {
-                handleGuest(false);
-                ref?.current?.close();
-                navigation.push("QRLogin");
-              }}
-              title="Connect Desktop Wallet"
-              bg={"white"}
-              my={20}
-              borderRadius={8}
-              textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
-              py={8}
-              iconPosition="right"
-            />
+              <Button
+                onPress={async () => {
+                  handleGuest(false);
+                  ref?.current?.close();
+                  navigation.push("QRLogin");
+                }}
+                title="Connect Desktop Wallet"
+                bg={"white"}
+                my={20}
+                borderRadius={8}
+                textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
+                py={8}
+                iconPosition="right"
+              />
             </View>
           </View>
         </View>

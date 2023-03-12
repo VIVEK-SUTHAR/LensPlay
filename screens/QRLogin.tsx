@@ -1,36 +1,78 @@
-import { Dimensions, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
-import StyledText from "../components/UI/StyledText";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BarCodeScanner } from "expo-barcode-scanner";
-import Button from "../components/UI/Button";
-import extractURLs from "../utils/extractURL";
-import { useAuthStore, useProfile } from "../store/Store";
-import storeData from "../utils/storeData";
+import React, { useEffect, useState } from "react";
+import {
+  Dimensions,
+  Linking,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import searchUser from "../api/zooTools/searchUser";
 import { client } from "../apollo/client";
 import getUserProfile from "../apollo/Queries/getUserProfile";
-import searchUser from "../api/zooTools/searchUser";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import Button from "../components/UI/Button";
+import StyledText from "../components/UI/StyledText";
+import { useAuthStore, useProfile } from "../store/Store";
+import extractURLs from "../utils/extractURL";
+import storeData from "../utils/storeData";
 
 const QRLogin = ({ navigation }) => {
   const [showScanner, setShowScanner] = useState<boolean>(false);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
-  const [profileId, setprofileId] = useState("");
   const authStore = useAuthStore();
   const userStore = useProfile();
   useEffect(() => {
-    const getBarCodeScannerPermissions = async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === "granted");
-    };
-
     getBarCodeScannerPermissions();
   }, []);
-
+  const getBarCodeScannerPermissions = async () => {
+    const { status } = await BarCodeScanner.requestPermissionsAsync();
+    setHasPermission(status === "granted");
+    if (status === "denied") {
+      Linking.openSettings();
+    }
+  };
   if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>;
+    return (
+      <SafeAreaView style={styles.conatiner}>
+        <StyledText
+          title="Requesting Camera Permission..."
+          style={{ fontSize: 20, color: "white", alignSelf: "center" }}
+        />
+      </SafeAreaView>
+    );
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    return (
+      <SafeAreaView style={styles.conatiner}>
+        <StyledText
+          title="Please give camera permission,in order to scan QR"
+          style={{ fontSize: 20, color: "white", alignSelf: "center" }}
+        />
+        <View
+          style={{
+            height: "50%",
+            width: "80%",
+            alignSelf: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            onPress={() => {
+              getBarCodeScannerPermissions();
+            }}
+            title="Grant Permission"
+            bg={"white"}
+            my={8}
+            borderRadius={8}
+            textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
+            py={8}
+            iconPosition="right"
+          />
+        </View>
+      </SafeAreaView>
+    );
   }
   const LoginSteps = [
     {
@@ -58,12 +100,13 @@ const QRLogin = ({ navigation }) => {
   const handleBarcodeScanned = async (data) => {
     if (data) {
       try {
-          const accessToken=await decryptData(JSON.parse(data.data).accessToken)
-          const refreshToken=await decryptData(JSON.parse(data.data).refreshToken)
-        storeData(
-          accessToken,
-          refreshToken
+        const accessToken = await decryptData(
+          JSON.parse(data.data).accessToken
         );
+        const refreshToken = await decryptData(
+          JSON.parse(data.data).refreshToken
+        );
+        storeData(accessToken, refreshToken);
         authStore.setAccessToken(accessToken);
         authStore.setRefreshToken(refreshToken);
         setShowScanner(false);
@@ -73,10 +116,7 @@ const QRLogin = ({ navigation }) => {
             id: JSON.parse(data.data).profileId,
           },
         });
-        
         const access = await searchUser(profiledata.data.profile.ownedBy);
-        console.log(access);
-        
         if (!(access.statusCode === 404)) {
           const handleUser = {
             email: access.email,
@@ -96,99 +136,51 @@ const QRLogin = ({ navigation }) => {
               refferalLink: `https://form.waitlistpanda.com/go/${access.listId}?ref=${access.id}`,
             });
           }
-        }
-        else{
+        } else {
           navigation.navigate("JoinWaitlist");
         }
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     }
   };
 
   return (
-    <>
-      <SafeAreaView style={styles.conatiner}>
-        <View
-          style={{
-            paddingHorizontal: 16,
-          }}
-        >
+    <SafeAreaView style={styles.conatiner}>
+      <View style={styles.padding16}>
+        <StyledText title="Follow below steps" style={styles.stepsHeader} />
+        {LoginSteps.map((item) => (
           <StyledText
-            title="Follow below steps"
-            style={{
-              color: "white",
-              fontSize: 16,
-              fontWeight: "600",
-              marginVertical: 4,
-            }}
+            title={extractURLs(item.instruction)}
+            style={styles.stepInstruction}
           />
-          {LoginSteps.map((item) => (
-            <StyledText
-              title={extractURLs(item.instruction)}
-              style={{ color: "white", fontSize: 14, fontWeight: "600" }}
-            />
-          ))}
+        ))}
+      </View>
+      {showScanner ? (
+        <BarCodeScanner
+          children={
+            <View style={styles.qrOverlayContainer}>
+              <View style={styles.qrBlock}></View>
+            </View>
+          }
+          onBarCodeScanned={handleBarcodeScanned}
+          style={StyleSheet.absoluteFillObject}
+        />
+      ) : (
+        <View style={styles.buttonContainer}>
+          <Button
+            onPress={() => {
+              setShowScanner(true);
+            }}
+            title="Scan QR"
+            bg={"white"}
+            my={8}
+            borderRadius={8}
+            textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
+            py={8}
+            iconPosition="right"
+          />
         </View>
-        {/* {data && <StyledText title={data} style={{ color: "whiteu" }} />} */}
-        {showScanner ? (
-          <BarCodeScanner
-            children={
-              <View
-                style={{
-                  position: "absolute",
-                  marginTop: Dimensions.get("screen").height * 0.137,
-                  height: "68.8%",
-                  width: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <View
-                  style={{
-                    height: 200,
-                    width: 200,
-                    backgroundColor: "transparent",
-                    borderColor: "white",
-                    borderRadius: 4,
-                    borderWidth: 2,
-                  }}
-                ></View>
-              </View>
-            }
-            onBarCodeScanned={handleBarcodeScanned}
-            style={[
-              StyleSheet.absoluteFillObject,
-              {
-                borderRadius: 78,
-              },
-            ]}
-          />
-        ) : (
-          <View
-            style={{
-              width: "90%",
-              height: "80%",
-              justifyContent: "center",
-              alignSelf: "center",
-            }}
-          >
-            <Button
-              onPress={() => {
-                setShowScanner(true);
-              }}
-              title="Scan QR"
-              bg={"white"}
-              my={8}
-              borderRadius={8}
-              textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
-              py={8}
-              iconPosition="right"
-            />
-          </View>
-        )}
-      </SafeAreaView>
-    </>
+      )}
+    </SafeAreaView>
   );
 };
 
@@ -198,5 +190,37 @@ const styles = StyleSheet.create({
   conatiner: {
     flex: 1,
     backgroundColor: "black",
+  },
+  padding16: {
+    paddingHorizontal: 16,
+  },
+  stepsHeader: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+    marginVertical: 4,
+  },
+  stepInstruction: { color: "white", fontSize: 14, fontWeight: "600" },
+  qrOverlayContainer: {
+    position: "absolute",
+    marginTop: Dimensions.get("screen").height * 0.137,
+    height: "68.8%",
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  qrBlock: {
+    height: 200,
+    width: 200,
+    backgroundColor: "transparent",
+    borderColor: "white",
+    borderRadius: 4,
+    borderWidth: 2,
+  },
+  buttonContainer: {
+    width: "90%",
+    height: "80%",
+    justifyContent: "center",
+    alignSelf: "center",
   },
 });
