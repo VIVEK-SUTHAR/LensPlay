@@ -92,6 +92,7 @@ const DisLikeButton = ({ isalreadyDisLiked, id }: DisLikeButtonProps) => {
       ).then((res) => {
         if (res) {
           if (res.addReaction === null) {
+            setIsDisliked(true);
             likedPublication.addToDislikedPublications(id, thumbup);
           }
         }

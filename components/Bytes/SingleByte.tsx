@@ -278,11 +278,9 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
           }}
         >
           <LikeButton
-            likes={likes}
+            like={likes}
             id={item.id}
-            setLikes={setLikes}
-            isalreadyLiked={isalreadyLiked}
-            setisalreadyDisLiked={() => {}}
+            isalreadyLiked={item?.reaction}
             bytes={true}
           />
           <TouchableOpacity

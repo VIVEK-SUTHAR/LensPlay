@@ -74,21 +74,6 @@ const LikeButton = ({
 
   //this useEffect checks for any change in liked and disliked array and based on that changes the variables like, isLiked, isAlreadyLiked.
   useEffect(() => {
-    thumbup.map((publication) => {
-      //check first if the video is already liked and if it is then update the local variable liked
-      if (isAlreadyLiked) {
-        if (publication.id === id) {
-          setIsLiked(true);
-        }
-      }
-      //else if the video is not liked yet but exist in the like array then add the like count and set the local variable to true
-      else if (!isLiked) {
-        if (publication.id === id) {
-          setLikes((prev) => prev + 1);
-          setIsLiked(true);
-        }
-      }
-    });
     thumbdown.map((publication) => {
       //if there is publication in dislike array and if the isLiked is true than set isLiked, isAlreadyLiked to true and decrement the likes variable.
       if (isLiked) {
@@ -112,6 +97,20 @@ const LikeButton = ({
         }
       }
     });
+    thumbup.map((publication) => {
+      //check first if the video is already liked and if it is then update the local variable liked
+      if (isAlreadyLiked) {
+        if (publication.id === id) {
+          setIsLiked(true);
+        }
+      }
+      //else if the video is not liked yet but exist in the like array then add the like count and set the local variable to true
+      else if (!isLiked) {
+        if (publication.id === id) {
+          setIsLiked(true);
+        }
+      }
+    });
   }, [thumbdown, thumbup]);
 
   useEffect(() => {
@@ -131,6 +130,8 @@ const LikeButton = ({
       ).then((res) => {
         if (res.addReaction === null) {
           if (!isLiked) {
+            setIsLiked(true);
+            setLikes((prev=>prev+1));
             likedPublication.addToReactedPublications(id, likes, thumbdown);
           }
         }
