@@ -56,6 +56,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   useEffect(() => {
     if (callData) {
       if (isGuest) {
+        navigation.navigate("Trending")
         return;
       }
       checkAccess();
