@@ -18,7 +18,9 @@ export interface IThemeStore {
 }
 export interface UserStore {
   currentProfile: Profile | null;
+  userProfileId: string | null;
   setCurrentProfile: (currentProfile: Profile | null) => void;
+  setUserProfileId: (profileId: string) => void;
 }
 
 export interface ToastProps {

@@ -82,7 +82,7 @@ export type RootStackParamList = {
     profileId?: string;
   };
   VideoPage: {
-    publication: Pick<FeedItem, 'root'>;
+    publication: Pick<FeedItem, "root">;
     id: string;
     height: number | string;
     width: number | string;

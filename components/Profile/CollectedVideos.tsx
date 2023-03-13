@@ -13,7 +13,7 @@ import Icon from "../Icon";
 type CollectedVideosProps = {
   navigation: any;
   handle: string;
-  ethAddress: string;
+  ethAddress: string | undefined;
 };
 
 const CollectedVideos = ({

@@ -27,7 +27,9 @@ export const useAuthStore = create<IAuthStore>((set) => ({
 
 export const useProfile = create<UserStore>((set) => ({
   currentProfile: null,
+  userProfileId: null,
   setCurrentProfile: (newProfile) => set({ currentProfile: newProfile }),
+  setUserProfileId: (profileId) => set({ userProfileId: profileId }),
 }));
 
 export const useThemeStore = create<IThemeStore>((set) => ({

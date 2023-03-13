@@ -16,6 +16,7 @@ import Icon from "../components/Icon";
 import Button from "../components/UI/Button";
 import StyledText from "../components/UI/StyledText";
 import { useAuthStore, useProfile } from "../store/Store";
+import { QRData } from "../types";
 import { RootStackScreenProps } from "../types/navigation/types";
 import decryptData from "../utils/decryptData";
 import extractURLs from "../utils/extractURL";
@@ -24,11 +25,13 @@ import storeData from "../utils/storeData";
 const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
   const [showScanner, setShowScanner] = useState<boolean>(false);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
-  const authStore = useAuthStore();
-  const userStore = useProfile();
+  const { setAccessToken, setRefreshToken, setIsViaDeskTop } = useAuthStore();
+  const { setCurrentProfile, setUserProfileId } = useProfile();
+
   useEffect(() => {
     getBarCodeScannerPermissions();
   }, []);
+
   const getBarCodeScannerPermissions = async () => {
     const { status } = await BarCodeScanner.requestPermissionsAsync();
     setHasPermission(status === "granted");
@@ -36,6 +39,7 @@ const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
       Linking.openSettings();
     }
   };
+
   if (hasPermission === null) {
     return (
       <SafeAreaView style={styles.conatiner}>
@@ -77,6 +81,7 @@ const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
       </SafeAreaView>
     );
   }
+
   const LoginSteps = [
     {
       instruction: "1. Go to https://lensplay.xyz/connect",
@@ -89,7 +94,7 @@ const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
     },
   ];
 
-  const handleBarcodeScanned = async (data) => {
+  const handleBarcodeScanned = async (data: QRData) => {
     if (data) {
       try {
         const accessToken = await decryptData(
@@ -102,8 +107,9 @@ const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
         const profileId = JSON.parse(data.data).profileId;
 
         storeData(accessToken, refreshToken, profileId);
-        authStore.setAccessToken(accessToken);
-        authStore.setRefreshToken(refreshToken);
+        setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
+        setUserProfileId(profileId);
         setShowScanner(false);
         const profiledata = await client.query({
           query: getUserProfile,
@@ -119,8 +125,8 @@ const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
           };
           await AsyncStorage.setItem("@access_Key", JSON.stringify(handleUser));
           if (access.fields.hasAccess) {
-            authStore.setIsViaDeskTop(true);
-            userStore.setCurrentProfile(profiledata.data.profile);
+            setIsViaDeskTop(true);
+            setCurrentProfile(profiledata.data.profile);
             navigation.navigate("Root");
           }
           if (!access.fields.hasAccess) {

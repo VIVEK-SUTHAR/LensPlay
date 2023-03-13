@@ -131,15 +131,13 @@ const LikeButton = ({
         if (res.addReaction === null) {
           if (!isLiked) {
             setIsLiked(true);
-            setLikes((prev=>prev+1));
+            setLikes((prev) => prev + 1);
             likedPublication.addToReactedPublications(id, likes, thumbdown);
           }
         }
       });
     }
   };
-  console.log(formatInteraction(like));
-  
   return (
     <Button
       title={formatInteraction(likes) || "0"}

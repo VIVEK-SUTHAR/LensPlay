@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const storeData = async (
   accessToken: string,
   refreshToken: string,
-  profileId: string
+  profileId: string | undefined
 ) => {
   try {
     const tokens = {

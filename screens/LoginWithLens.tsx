@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
@@ -31,7 +32,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const [isloading, setIsloading] = useState<boolean>(false);
   const [hasHandle, setHasHandle] = useState<boolean>(true);
   const connector = useWalletConnect();
-  const userStore = useProfile();
+  const { setCurrentProfile, userProfileId, setUserProfileId } = useProfile();
   const authStore = useAuthStore();
   const toast = useToast();
 
@@ -43,13 +44,16 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         ethAddress: connector.accounts[0],
       },
     });
+
     if (!data.data.defaultProfile) {
       setIsloading(false);
       setHasHandle(false);
       toast.show("Please claim your handle", ToastType.ERROR, true);
       return;
     }
-    userStore.setCurrentProfile(data.data.defaultProfile);
+    setCurrentProfile(data.data.defaultProfile);
+    setUserProfileId(data.data.defaultProfile.id);
+
     const challengeText = await client.query({
       query: getChallenge,
       variables: {
@@ -75,7 +79,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         storeData(
           tokens.data.authenticate.accessToken,
           tokens.data.authenticate.refreshToken,
-          userStore.currentProfile?.id
+          userProfileId
         );
         setIsloading(false);
         navigation.navigate("Root");
@@ -284,9 +288,8 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           <Button
             title="Login With Lens"
             bg={primary}
-            borderRadius={8}
             textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
-            py={8}
+            py={12}
             iconPosition="right"
             isLoading={isloading}
             onPress={async () => {

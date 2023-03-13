@@ -13,13 +13,14 @@ import notificationsQuery from "../apollo/Queries/notificationsQuery";
 import searchProfileQuery from "../apollo/Queries/searchProfileQuery";
 import { useAuthStore, useProfile } from "../store/Store";
 import { FeedData } from "../types/Lens/Feed";
+
 const useFeed = () => {
   const { accessToken } = useAuthStore();
-  const { currentProfile } = useProfile();
+  const { userProfileId } = useProfile();
 
   const { data, error, loading, refetch } = useQuery<FeedData>(getFeed, {
     variables: {
-      id: currentProfile?.id,
+      id: userProfileId,
     },
     context: {
       headers: {
@@ -145,8 +146,9 @@ const useSearchProfile = (profile: string) => {
   return { data, error, loading };
 };
 const useNotifications = () => {
-  const activeProfile = useProfile();
+  const { userProfileId } = useProfile();
   const { accessToken } = useAuthStore();
+
   const {
     data,
     error,
@@ -157,7 +159,7 @@ const useNotifications = () => {
     fetchMore,
   } = useQuery(notificationsQuery, {
     variables: {
-      pid: activeProfile.currentProfile?.id,
+      pid: userProfileId,
     },
     fetchPolicy: "cache-and-network",
     initialFetchPolicy: "network-only",
@@ -186,7 +188,7 @@ const useIsMirrored = (publid: string) => {
   return { data, error };
 };
 
-export const useUserProfile = (profileId: string) => {
+export const useUserProfile = (profileId: string | undefined) => {
   const { data, error, loading, refetch } = useQuery(getUserProfile, {
     variables: {
       id: profileId,
