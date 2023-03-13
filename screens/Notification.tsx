@@ -15,19 +15,20 @@ import { RootTabScreenProps } from "../types/navigation/types";
 import useNotifications from "../hooks/useFeed";
 import Tabs, { Tab } from "../components/UI/Tabs";
 import { NotificationTypes } from "../components/Notifications/index.d";
+import { useGuestStore } from "../store/GuestStore";
+import PleaseLogin from "../components/PleaseLogin";
 
 const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
-
   const theme = useThemeStore();
   const userStore = useProfile();
+  const { isGuest } = useGuestStore();
 
   const { data, error, loading, refetch } = useNotifications();
 
   if (error) console.log(error);
-
+  if (isGuest) return <PleaseLogin />;
   if (loading) return <Loader />;
-
   if (!data) return <NotFound />;
 
   const NotificationTabs = [
