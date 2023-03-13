@@ -123,6 +123,30 @@ const config: ExpoConfig = {
 				],
 				category: ["BROWSABLE", "DEFAULT"],
 			},
+			{
+				action: "VIEW",
+				autoVerify: true,
+				data: [
+					{
+						scheme: "https",
+						host: "www.lensplay.xyz",
+						pathPrefix: "/watch/",
+					},
+				],
+				category: ["BROWSABLE", "DEFAULT"],
+			},
+			{
+				action: "VIEW",
+				autoVerify: true,
+				data: [
+					{
+						scheme: "https",
+						host: "www.lensplay.xyz",
+						pathPrefix: "/channel/",
+					},
+				],
+				category: ["BROWSABLE", "DEFAULT"],
+			},
 		],
 	},
 	web: {
@@ -130,7 +154,7 @@ const config: ExpoConfig = {
 	},
 	extra: {
 		// eas: {
-		// 	projectId: "c3c41aca-6bdd-4196-a006-a524dcf26c4e",
+		// projectId: "c3c41aca-6bdd-4196-a006-a52s4dcf26c4e",
 		// },
 	},
 	plugins: [

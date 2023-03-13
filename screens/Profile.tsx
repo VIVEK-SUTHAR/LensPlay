@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+  Dimensions,
   Linking,
   Pressable,
   RefreshControl,
@@ -424,7 +425,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   handle={userStore.currentProfile?.handle}
                 />
                 <CollectedVideos
-                  ethAddress={wallet.accounts[0]}
+                  ethAddress={userStore.currentProfile?.ownedBy}
                   handle={userStore.currentProfile?.handle || ""}
                   navigation={navigation}
                 />

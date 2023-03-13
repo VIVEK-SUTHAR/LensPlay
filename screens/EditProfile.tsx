@@ -102,9 +102,9 @@ const EditProfile = ({
   async function selectCoverImage() {
     let coverresult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      aspect: [1, 1],
       allowsEditing: true,
       quality: 1,
+      aspect: [2, 1],
       base64: true,
     });
     if (coverresult.cancelled) {

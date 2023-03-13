@@ -182,7 +182,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   if (Feeddata) {
     return (
       <SafeAreaView style={styles.container}>
-        <StatusBar backgroundColor={dark_primary}></StatusBar>
+        <StatusBar backgroundColor={"black"}></StatusBar>
         <FlatList
           data={Feeddata.feed.items}
           keyExtractor={(item) => item.root.id.toString()}
