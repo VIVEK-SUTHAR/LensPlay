@@ -11,6 +11,7 @@ import Icon from "../components/Icon";
 import Button from "../components/UI/Button";
 import StyledText from "../components/UI/StyledText";
 import { useAuthStore, useProfile, useToast } from "../store/Store";
+import { QRdata } from "../types";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
 import decryptData from "../utils/decryptData";
@@ -105,21 +106,18 @@ const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
     }
   }
 
-  const handleBarcodeScanned = async (data) => {
+  const handleBarcodeScanned = async (data: QRdata) => {
     if (data) {
       setShowScanner(false);
       try {
         const signature = JSON.parse(data.data).signature;
         const address = JSON.parse(data.data).address;
         if (!signature && !address) {
-          toast.show("QR Expired,Please regenerate", ToastType.ERROR, true);
+          toast.show("QR Expired, Please regenerate", ToastType.ERROR, true);
           return;
         }
-
         const decryptedSignature = await decryptData(signature);
-
         const userData = await handleWaitlist(address);
-        console.log(userData);
 
         if (!userData.fields.hasAccess) {
           navigation.replace("LeaderBoard", {
@@ -134,14 +132,13 @@ const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
           navigation.replace("JoinWaitlist");
           return;
         }
+
         if (userData.fields.hasAccess) {
           console.log("here");
           const tokens = await getTokens({
             address,
-            signature:decryptedSignature,
+            signature: decryptedSignature,
           });
-          console.log(tokens?.accessToken);
-
           setAccessToken(tokens?.accessToken);
           setRefreshToken(tokens?.refreshToken);
           await storeTokens(tokens?.accessToken, tokens?.refreshToken, true);
