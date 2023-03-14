@@ -19,6 +19,8 @@ const getTokens = async (
   } catch (error) {
     if (error instanceof Error) {
       console.log("[Error]:Error in authencitating ");
+      console.log(error);
+      
       throw new Error("[Error]:Error in authencitating ", {
         cause: error.message,
       });

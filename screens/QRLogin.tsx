@@ -107,41 +107,47 @@ const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
 
   const handleBarcodeScanned = async (data) => {
     if (data) {
+      setShowScanner(false);
       try {
-        const signature = await decryptData(JSON.parse(data.data).signature);
+        const signature = JSON.parse(data.data).signature;
         const address = JSON.parse(data.data).address;
+        if (!signature && !address) {
+          toast.show("QR Expired,Please regenerate", ToastType.ERROR, true);
+          return;
+        }
 
-        // const userData = await handleWaitlist(address);
+        const decryptedSignature = await decryptData(signature);
 
-        // if (!userData.fields.hasAccess) {
-        //   navigation.replace("LeaderBoard", {
-        //     referralsCount: userData.referralsCount,
-        //     rankingPoints: userData.rankingPoints,
-        //     rankingPosition: userData.rankingPosition,
-        //     refferalLink: `https://form.waitlistpanda.com/go/${userData.listId}?ref=${userData.id}`,
-        //   });
-        // }
+        const userData = await handleWaitlist(address);
+        console.log(userData);
 
-        // if (userData?.statusCode === 404) {
-        //   navigation.replace("JoinWaitlist");
-        //   return;
-        // }
+        if (!userData.fields.hasAccess) {
+          navigation.replace("LeaderBoard", {
+            referralsCount: userData.referralsCount,
+            rankingPoints: userData.rankingPoints,
+            rankingPosition: userData.rankingPosition,
+            refferalLink: `https://form.waitlistpanda.com/go/${userData.listId}?ref=${userData.id}`,
+          });
+        }
 
-        // if (signature && userData.fields.hasAccess) {
-        //   const tokens = await getTokens({
-        //     address: address,
-        //     signature: signature,
-        //   });
-        //   console.log(tokens);
+        if (userData?.statusCode === 404) {
+          navigation.replace("JoinWaitlist");
+          return;
+        }
+        if (userData.fields.hasAccess) {
+          console.log("here");
+          const tokens = await getTokens({
+            address,
+            signature:decryptedSignature,
+          });
+          console.log(tokens?.accessToken);
 
-        //   setAccessToken(tokens?.accessToken);
-        //   setRefreshToken(tokens?.refreshToken);
-        //   await storeTokens(tokens?.accessToken, tokens?.refreshToken, true);
-        //   await HandleDefaultProfile(address);
-        //   // navigation.replace("Root");
-        // } else {
-        //   toast.show("Something went wrong", ToastType.ERROR, true);
-        // }
+          setAccessToken(tokens?.accessToken);
+          setRefreshToken(tokens?.refreshToken);
+          await storeTokens(tokens?.accessToken, tokens?.refreshToken, true);
+          await HandleDefaultProfile(address);
+          navigation.navigate("Root");
+        }
       } catch (error) {
         console.log("[Error]:Error in QR Login");
         throw new Error("[Error]:Error in QR Login", {
