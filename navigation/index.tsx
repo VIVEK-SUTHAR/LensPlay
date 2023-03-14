@@ -41,16 +41,10 @@ import LinkingVideo from "../screens/LinkingVideo";
 import * as Linking from "expo-linking";
 import JoinWaitlist from "../screens/JoinWaitlist";
 import QRLogin from "../screens/QRLogin";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import { useGuestStore } from "../store/GuestStore";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { client } from "../apollo/client";
-import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
-import storeData from "../utils/storeTokens";
-import verifyToken from "../apollo/Queries/verifyToken";
-import getUserProfile from "../apollo/Queries/getUserProfile";
-import getProfile from "../apollo/Queries/getProfile";
 import Loader from "../screens/Loader";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import getAccessFromRefresh from "../utils/lens/getAccessFromRefresh";
+import storeTokens from "../utils/storeTokens";
 
 export default function Navigation() {
   return (
@@ -269,6 +263,7 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
   const theme = useThemeStore();
   const user = useProfile();
+  const { setAccessToken } = useAuthStore();
 
   React.useEffect(() => {
     const handle = async () => {
@@ -280,6 +275,9 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
     Linking.addEventListener("url", (e) => {
       handleNavigation(e.url);
     });
+    setInterval(() => {
+      updateTokens();
+    }, 840000);
   }, []);
 
   function handleNavigation(url: string | null) {
@@ -300,6 +298,26 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
       return;
     }
   }
+
+  const updateTokens = async () => {
+    const userTokens = await AsyncStorage.getItem("@user_tokens");
+    if (userTokens) {
+      const tokens = JSON.parse(userTokens);
+      const generatedTime = tokens.generatedTime;
+      const currentTime = new Date().getTime();
+
+      const minute = Math.floor(
+        ((currentTime - generatedTime) % (1000 * 60 * 60)) / (1000 * 60)
+      );
+      if (minute < 25) {
+        return;
+      } else {
+        const newTokens = await getAccessFromRefresh(tokens.refreshToken);
+        setAccessToken(newTokens?.accessToken);
+        storeTokens(newTokens?.accessToken, newTokens?.refreshToken);
+      }
+    }
+  };
 
   return (
     <BottomTab.Navigator

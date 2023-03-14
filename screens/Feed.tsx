@@ -23,13 +23,10 @@ import PleaseLogin from "../components/PleaseLogin";
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const theme = useThemeStore();
-  const {accessToken } = useAuthStore();
+  const { accessToken } = useAuthStore();
   const { isGuest } = useGuestStore();
-  console.log(accessToken);
-  
-  const { data: Feeddata, error, loading, refetch } = useFeed();
 
-  console.log(error, "error");
+  const { data: Feeddata, error, loading, refetch } = useFeed();
 
   if (isGuest) return <PleaseLogin />;
   if (loading) return <Loader />;

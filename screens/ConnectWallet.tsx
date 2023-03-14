@@ -16,6 +16,8 @@ import { ToastType } from "../types/Store";
 import handleWaitlist from "../utils/handleWaitlist";
 import getDefaultProfile from "../utils/lens/getDefaultProfile";
 
+// https://eth-mainnet.alchemyapi.io/v2/5Kt3LOs7L13vV5L68P94MERVJM0baCSv
+
 function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   const connector = useWalletConnect();
   const ref = useRef();
@@ -40,15 +42,23 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
     setIsloading(true);
     try {
       if (walletData) {
-        const hasAccess = await handleWaitlist(
-          navigation,
-          walletData.accounts[0]
-        );
-        if (hasAccess) {
+        const userData = await handleWaitlist(walletData.accounts[0]);
+        if (!userData.fields.hasAccess) {
+          navigation.replace("LeaderBoard", {
+            referralsCount: userData.referralsCount,
+            rankingPoints: userData.rankingPoints,
+            rankingPosition: userData.rankingPosition,
+            refferalLink: `https://form.waitlistpanda.com/go/${userData.listId}?ref=${userData.id}`,
+          });
+        }
+
+        if (userData.statusCode === 404) {
+          navigation.replace("JoinWaitlist");
+        }
+
+        if (userData.fields.hasAccess) {
           await HandleDefaultProfile(walletData.accounts[0]);
           navigation.push("LoginWithLens");
-        } else {
-          navigation.replace("JoinWaitlist");
         }
       } else {
         toast.show("Something went wrong", ToastType.ERROR, true);
