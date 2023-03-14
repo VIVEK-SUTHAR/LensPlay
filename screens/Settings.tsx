@@ -192,17 +192,19 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                   radius: 30,
                 }}
                 onPress={async () => {
-                  if (!Wallet.accounts[0]) {
-                    setIsModalOpen(false);
-                    await AsyncStorage.removeItem("@user_tokens");
-                    userStore.setCurrentProfile(null);
-                    navigation.replace("Login");
-                  } else {
-                    setIsModalOpen(false);
-                    await AsyncStorage.removeItem("@user_tokens");
-                    userStore.setCurrentProfile(null);
-                    await Wallet.killSession();
-                    navigation.replace("Login");
+                  const userTokens = await AsyncStorage.getItem("@user_tokens");
+                  await AsyncStorage.removeItem("@user_tokens");
+                  userStore.setCurrentProfile(null);
+
+                  if (userTokens) {
+                    const tokens = JSON.parse(userTokens);
+                    if (tokens.viaDesktop) {
+                      navigation.replace("Login");
+                    }
+                    if (!tokens.viaDesktop) {
+                      await Wallet.killSession();
+                      navigation.replace("Login");
+                    }
                   }
                 }}
               >

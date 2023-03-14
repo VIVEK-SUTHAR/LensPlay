@@ -45,7 +45,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         });
         setAccessToken(tokens?.accessToken);
         setRefreshToken(tokens?.refreshToken);
-        await storeTokens(tokens?.accessToken, tokens?.refreshToken);
+        await storeTokens(tokens?.accessToken, tokens?.refreshToken, false);
         navigation.replace("Root");
       } else {
         toast.show("Something went wrong", ToastType.ERROR, true);

@@ -1,11 +1,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const storeTokens = async (accessToken: string, refreshToken: string) => {
+const storeTokens = async (
+  accessToken: string,
+  refreshToken: string,
+  viaDesktop?: boolean
+) => {
   try {
     const tokens = {
       accessToken: accessToken,
       refreshToken: refreshToken,
       generatedTime: new Date().getTime(),
+      viaDesktop: viaDesktop,
     };
     const jsonValue = JSON.stringify(tokens);
     await AsyncStorage.setItem("@user_tokens", jsonValue);

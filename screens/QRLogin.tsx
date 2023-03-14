@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import React, { useEffect, useState } from "react";
 import {
@@ -6,27 +5,27 @@ import {
   Linking,
   SafeAreaView,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
-import searchUser from "../api/zooTools/searchUser";
-import { client } from "../apollo/client";
-import getUserProfile from "../apollo/Queries/getUserProfile";
 import Icon from "../components/Icon";
 import Button from "../components/UI/Button";
 import StyledText from "../components/UI/StyledText";
-import { useAuthStore, useProfile } from "../store/Store";
-import { QRData } from "../types";
+import { useAuthStore, useProfile, useToast } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
+import { ToastType } from "../types/Store";
 import decryptData from "../utils/decryptData";
 import extractURLs from "../utils/extractURL";
-import storeData from "../utils/storeTokens";
+import handleWaitlist from "../utils/handleWaitlist";
+import getDefaultProfile from "../utils/lens/getDefaultProfile";
+import getTokens from "../utils/lens/getTokens";
+import storeTokens from "../utils/storeTokens";
 
 const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
   const [showScanner, setShowScanner] = useState<boolean>(false);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const { setAccessToken, setRefreshToken, setIsViaDeskTop } = useAuthStore();
-  const { setCurrentProfile, setUserProfileId } = useProfile();
+  const { setCurrentProfile, setHasHandle } = useProfile();
+  const toast = useToast();
 
   useEffect(() => {
     getBarCodeScannerPermissions();
@@ -94,53 +93,61 @@ const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
     },
   ];
 
-  const handleBarcodeScanned = async (data: QRData) => {
+  async function HandleDefaultProfile(adress: string) {
+    const userDefaultProfile = await getDefaultProfile(adress);
+    console.log(userDefaultProfile, "profile");
+
+    if (userDefaultProfile) {
+      setHasHandle(true);
+      setCurrentProfile(userDefaultProfile);
+    } else {
+      setHasHandle(false);
+    }
+  }
+
+  const handleBarcodeScanned = async (data) => {
     if (data) {
       try {
-        const accessToken = await decryptData(
-          JSON.parse(data.data).accessToken
-        );
-        const refreshToken = await decryptData(
-          JSON.parse(data.data).refreshToken
-        );
+        const signature = await decryptData(JSON.parse(data.data).signature);
+        const address = JSON.parse(data.data).address;
 
-        const profileId = JSON.parse(data.data).profileId;
+        // const userData = await handleWaitlist(address);
 
-        storeData(accessToken, refreshToken, profileId);
-        setAccessToken(accessToken);
-        setRefreshToken(refreshToken);
-        setUserProfileId(profileId);
-        setShowScanner(false);
-        const profiledata = await client.query({
-          query: getUserProfile,
-          variables: {
-            id: profileId,
-          },
+        // if (!userData.fields.hasAccess) {
+        //   navigation.replace("LeaderBoard", {
+        //     referralsCount: userData.referralsCount,
+        //     rankingPoints: userData.rankingPoints,
+        //     rankingPosition: userData.rankingPosition,
+        //     refferalLink: `https://form.waitlistpanda.com/go/${userData.listId}?ref=${userData.id}`,
+        //   });
+        // }
+
+        // if (userData?.statusCode === 404) {
+        //   navigation.replace("JoinWaitlist");
+        //   return;
+        // }
+
+        // if (signature && userData.fields.hasAccess) {
+        //   const tokens = await getTokens({
+        //     address: address,
+        //     signature: signature,
+        //   });
+        //   console.log(tokens);
+
+        //   setAccessToken(tokens?.accessToken);
+        //   setRefreshToken(tokens?.refreshToken);
+        //   await storeTokens(tokens?.accessToken, tokens?.refreshToken, true);
+        //   await HandleDefaultProfile(address);
+        //   // navigation.replace("Root");
+        // } else {
+        //   toast.show("Something went wrong", ToastType.ERROR, true);
+        // }
+      } catch (error) {
+        console.log("[Error]:Error in QR Login");
+        throw new Error("[Error]:Error in QR Login", {
+          cause: error,
         });
-        const access = await searchUser(profiledata.data.profile.ownedBy);
-        if (!(access.statusCode === 404)) {
-          const handleUser = {
-            email: access.email,
-            hasAccess: access.fields.hasAccess,
-          };
-          await AsyncStorage.setItem("@waitlist", JSON.stringify(handleUser));
-          if (access.fields.hasAccess) {
-            setIsViaDeskTop(true);
-            setCurrentProfile(profiledata.data.profile);
-            navigation.navigate("Root");
-          }
-          if (!access.fields.hasAccess) {
-            navigation.push("LeaderBoard", {
-              referralsCount: access.referralsCount,
-              rankingPoints: access.rankingPoints,
-              rankingPosition: access.rankingPosition,
-              refferalLink: `https://form.waitlistpanda.com/go/${access.listId}?ref=${access.id}`,
-            });
-          }
-        } else {
-          navigation.navigate("JoinWaitlist");
-        }
-      } catch (error) {}
+      }
     }
   };
 

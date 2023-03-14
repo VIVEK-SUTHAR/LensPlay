@@ -59,6 +59,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 
           if (userData?.statusCode === 404) {
             navigation.replace("JoinWaitlist");
+            return;
           }
 
           if (userData.fields.hasAccess) {
