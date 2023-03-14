@@ -27,6 +27,8 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 
   const { data: Feeddata, error, loading, refetch } = useFeed();
 
+  console.log(error, "error");
+
   if (isGuest) return <PleaseLogin />;
   if (loading) return <Loader />;
   if (error) return <NotFound navigation={navigation} />;

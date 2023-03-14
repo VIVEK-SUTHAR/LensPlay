@@ -194,12 +194,12 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                 onPress={async () => {
                   if (!Wallet.accounts[0]) {
                     setIsModalOpen(false);
-                    await AsyncStorage.removeItem("@storage_Key");
+                    await AsyncStorage.removeItem("@user_tokens");
                     userStore.setCurrentProfile(null);
                     navigation.replace("Login");
                   } else {
                     setIsModalOpen(false);
-                    await AsyncStorage.removeItem("@storage_Key");
+                    await AsyncStorage.removeItem("@user_tokens");
                     userStore.setCurrentProfile(null);
                     await Wallet.killSession();
                     navigation.replace("Login");

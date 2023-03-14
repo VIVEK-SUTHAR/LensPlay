@@ -1,3 +1,5 @@
+import * as Clipboard from "expo-clipboard";
+import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import {
   BackHandler,
@@ -7,18 +9,13 @@ import {
   Vibration,
   View,
 } from "react-native";
-import { dark_primary } from "../constants/Colors";
-import CopyIcon from "../components/svg/CopyIcon";
+import Icon from "../components/Icon";
 import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
-import { RootStackScreenProps } from "../types/navigation/types";
-import * as Clipboard from "expo-clipboard";
+import { dark_primary } from "../constants/Colors";
 import { useToast } from "../store/Store";
+import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
-import { StatusBar } from "expo-status-bar";
-import RefferalIcon from "../components/svg/RefferalIcon";
-import PointsIcon from "../components/svg/PointsIcon";
-import Icon from "../components/Icon";
 
 export default function LeaderBoard({
   navigation,

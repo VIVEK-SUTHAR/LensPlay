@@ -1,54 +1,65 @@
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
 import { MotiView } from "moti";
-import React, { useRef } from "react";
-import {
-  Dimensions,
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  View,
-} from "react-native";
+import React, { useCallback, useRef, useState } from "react";
+import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
+import Icon from "../components/Icon";
+import RBSheet from "../components/UI/BottomSheet";
 import Button from "../components/UI/Button";
+import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
 import { dark_primary, primary } from "../constants/Colors";
-import { RootStackScreenProps } from "../types/navigation/types";
 import { useGuestStore } from "../store/GuestStore";
-import searchUser from "../api/zooTools/searchUser";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import RBSheet from "../components/UI/BottomSheet";
-import Icon from "../components/Icon";
-import Heading from "../components/UI/Heading";
+import { useProfile, useToast } from "../store/Store";
+import { RootStackScreenProps } from "../types/navigation/types";
+import { ToastType } from "../types/Store";
+import handleWaitlist from "../utils/handleWaitlist";
+import getDefaultProfile from "../utils/lens/getDefaultProfile";
 
 function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   const connector = useWalletConnect();
-  const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
   const ref = useRef();
-  const { handleGuest, isGuest } = useGuestStore();
+  const { handleGuest } = useGuestStore();
+  const toast = useToast();
+  const { setCurrentProfile, setHasHandle } = useProfile();
+  const [isloading, setIsloading] = useState<boolean>(false);
 
-  const connectWallet = React.useCallback(async () => {
-    const data = await connector.connect();
-    const access = await searchUser(data.accounts[0]);
-    if (!(access.statusCode === 404)) {
-      const handleUser = {
-        email: access.email,
-        hasAccess: access.fields.hasAccess,
-      };
-      await AsyncStorage.setItem("@access_Key", JSON.stringify(handleUser));
-      if (access.fields.hasAccess) {
-        navigation.push("LoginWithLens");
-      }
-      if (!access.fields.hasAccess) {
-        navigation.push("LeaderBoard", {
-          referralsCount: access.referralsCount,
-          rankingPoints: access.rankingPoints,
-          rankingPosition: access.rankingPosition,
-          refferalLink: `https://form.waitlistpanda.com/go/${access.listId}?ref=${access.id}`,
-        });
-      }
+  async function HandleDefaultProfile(adress: string) {
+    const userDefaultProfile = await getDefaultProfile(adress);
+
+    if (userDefaultProfile) {
+      setHasHandle(true);
+      setCurrentProfile(userDefaultProfile);
     } else {
-      navigation.navigate("JoinWaitlist");
+      setHasHandle(false);
+    }
+  }
+
+  const connectWallet = useCallback(async () => {
+    const walletData = await connector.connect();
+    setIsloading(true);
+    try {
+      if (walletData) {
+        const hasAccess = await handleWaitlist(
+          navigation,
+          walletData.accounts[0]
+        );
+        if (hasAccess) {
+          await HandleDefaultProfile(walletData.accounts[0]);
+          navigation.push("LoginWithLens");
+        } else {
+          navigation.replace("JoinWaitlist");
+        }
+      } else {
+        toast.show("Something went wrong", ToastType.ERROR, true);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log("[Error]:Error in connect wallet");
+        console.log(error);
+      }
+    } finally {
+      setIsloading(false);
     }
   }, [connector]);
 
@@ -171,6 +182,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
                 py={12}
                 icon={<Icon name="wallet" color="black" />}
                 iconPosition="left"
+                isLoading={isloading}
               />
               <View
                 style={{

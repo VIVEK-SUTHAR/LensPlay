@@ -20,7 +20,7 @@ import { QRData } from "../types";
 import { RootStackScreenProps } from "../types/navigation/types";
 import decryptData from "../utils/decryptData";
 import extractURLs from "../utils/extractURL";
-import storeData from "../utils/storeData";
+import storeData from "../utils/storeTokens";
 
 const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
   const [showScanner, setShowScanner] = useState<boolean>(false);
@@ -123,7 +123,7 @@ const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
             email: access.email,
             hasAccess: access.fields.hasAccess,
           };
-          await AsyncStorage.setItem("@access_Key", JSON.stringify(handleUser));
+          await AsyncStorage.setItem("@waitlist", JSON.stringify(handleUser));
           if (access.fields.hasAccess) {
             setIsViaDeskTop(true);
             setCurrentProfile(profiledata.data.profile);

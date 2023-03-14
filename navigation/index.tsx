@@ -46,10 +46,11 @@ import { useGuestStore } from "../store/GuestStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { client } from "../apollo/client";
 import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
-import storeData from "../utils/storeData";
+import storeData from "../utils/storeTokens";
 import verifyToken from "../apollo/Queries/verifyToken";
 import getUserProfile from "../apollo/Queries/getUserProfile";
 import getProfile from "../apollo/Queries/getProfile";
+import Loader from "../screens/Loader";
 
 export default function Navigation() {
   return (
@@ -66,145 +67,6 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
   const theme = useThemeStore();
-  const connector = useWalletConnect();
-  const { setAccessToken, setRefreshToken } = useAuthStore();
-  const {
-    currentProfile,
-    setCurrentProfile,
-    setUserProfileId,
-    userProfileId,
-  } = useProfile();
-  const [callData, setCallData] = React.useState(true);
-  const { isGuest } = useGuestStore();
-  const navigation = useNavigation();
-
-  const checkAccess = async () => {
-    const userData = await AsyncStorage.getItem("@access_Key");
-
-    const userTokens = await AsyncStorage.getItem("@storage_Key");
-    if (userTokens) {
-      const tokens = JSON.parse(userTokens);
-      setAccessToken(tokens.accessToken);
-      setRefreshToken(tokens.refreshToken);
-      setUserProfileId(tokens.profileId);
-    }
-
-    if (userData) {
-      getData().then(() => {
-        setCallData(false);
-        setInterval(() => {
-          updateTokens();
-        }, 840000);
-      });
-    } else {
-      navigation.navigate("Login");
-    }
-  };
-
-  React.useEffect(() => {
-    if (callData) {
-      if (isGuest) {
-        return;
-      }
-      checkAccess();
-    }
-  }, []);
-
-  const updateTokens = async () => {
-    const jsonValue = await AsyncStorage.getItem("@storage_Key");
-    if (jsonValue) {
-      const tokens = JSON.parse(jsonValue);
-      const generatedTime = tokens.generatedTime;
-      const currentTime = new Date().getTime();
-      const minute = Math.floor(
-        ((currentTime - generatedTime) % (1000 * 60 * 60)) / (1000 * 60)
-      );
-      if (minute < 25) {
-        return;
-      } else {
-        const refreshToken = await client.mutate({
-          mutation: refreshCurrentToken,
-          variables: {
-            rtoken: tokens.refreshToken,
-          },
-        });
-        setAccessToken(refreshToken.data.refresh.accessToken);
-        setRefreshToken(refreshToken.data.refresh.refreshToken);
-        storeData(
-          refreshToken.data.refresh.accessToken,
-          refreshToken.data.refresh.refreshToken,
-          currentProfile?.id
-        );
-      }
-    }
-  };
-
-  const getData = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem("@storage_Key");
-      if (jsonValue) {
-        const tokens = JSON.parse(jsonValue);
-        const isvaild = await client.query({
-          query: verifyToken,
-          variables: {
-            token: tokens.accessToken,
-          },
-        });
-        if (isvaild.data.verify) {
-          const userProfileId = tokens.profileId;
-          const profiledata = await client.query({
-            query: getUserProfile,
-            variables: {
-              id: userProfileId,
-            },
-          });
-          setAccessToken(tokens.accessToken);
-          const data = await client.query({
-            query: getProfile,
-            variables: {
-              ethAddress:
-                connector.accounts[0] || profiledata.data.profile.ownedBy,
-            },
-          });
-          if (!data.data.defaultProfile) {
-            return;
-          }
-          setCurrentProfile(data.data.defaultProfile);
-        }
-        if (isvaild.data.verify === false) {
-          const refreshToken = await client.mutate({
-            mutation: refreshCurrentToken,
-            variables: {
-              rtoken: tokens.refreshToken,
-            },
-          });
-          setAccessToken(refreshToken.data.refresh.accessToken);
-          storeData(
-            refreshToken.data.refresh.accessToken,
-            refreshToken.data.refresh.refreshToken,
-            tokens.profileId
-          );
-          const data = await client.query({
-            query: getProfile,
-            variables: {
-              ethAddress: connector.accounts[0],
-            },
-          });
-          if (!data.data.defaultProfile) {
-            return;
-          }
-          setCurrentProfile(data.data.defaultProfile);
-        }
-      } else {
-        // setIsloading(false);
-        navigation.navigate("Login");
-      }
-    } catch (e) {
-      if (e instanceof Error) {
-        console.log("Something went wrong", e);
-      }
-    }
-  };
 
   return (
     <Stack.Navigator
@@ -213,7 +75,7 @@ function RootNavigator() {
           backgroundColor: "black",
         },
       }}
-      initialRouteName={"Root"}
+      initialRouteName={"Loader"}
     >
       <Stack.Screen
         name="LeaderBoard"
@@ -388,6 +250,14 @@ function RootNavigator() {
           headerStyle: { backgroundColor: "black" },
           headerTintColor: theme.PRIMARY,
           headerTitle: "Desktop Login",
+        }}
+      />
+      <Stack.Screen
+        name="Loader"
+        component={Loader}
+        options={{
+          animation: "none",
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

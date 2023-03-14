@@ -1,22 +1,14 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import { MotiView } from "moti";
 import React, { useState } from "react";
 import {
-  Alert,
   Dimensions,
-  Image,
   Linking,
   SafeAreaView,
   StyleSheet,
   View,
 } from "react-native";
-import { client } from "../apollo/client";
-import getAccessTokens from "../apollo/mutations/getAccessTokens";
-import getChallenge from "../apollo/Queries/getChallenge";
-import getProfile from "../apollo/Queries/getProfile";
 import Icon from "../components/Icon";
 import Button from "../components/UI/Button";
 import StyledText from "../components/UI/StyledText";
@@ -24,74 +16,48 @@ import { primary } from "../constants/Colors";
 import { useAuthStore, useProfile, useToast } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
-import storeData from "../utils/storeData";
+import generateChallenge from "../utils/lens/getChallenge";
+import getTokens from "../utils/lens/getTokens";
+import storeTokens from "../utils/storeTokens";
 
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
-  const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
   const [isloading, setIsloading] = useState<boolean>(false);
-  const [hasHandle, setHasHandle] = useState<boolean>(true);
+  const { hasHandle } = useProfile();
   const connector = useWalletConnect();
-  const { setCurrentProfile, userProfileId, setUserProfileId } = useProfile();
-  const authStore = useAuthStore();
   const toast = useToast();
+  const { setAccessToken, setRefreshToken } = useAuthStore();
 
-  const logInWithLens = async () => {
+  const loginWithLens = async () => {
     setIsloading(true);
-    const data = await client.query({
-      query: getProfile,
-      variables: {
-        ethAddress: connector.accounts[0],
-      },
-    });
-
-    if (!data.data.defaultProfile) {
-      setIsloading(false);
-      setHasHandle(false);
-      toast.show("Please claim your handle", ToastType.ERROR, true);
-      return;
-    }
-    setCurrentProfile(data.data.defaultProfile);
-    setUserProfileId(data.data.defaultProfile.id);
-
-    const challengeText = await client.query({
-      query: getChallenge,
-      variables: {
-        ethAddress: connector.accounts[0],
-      },
-    });
     try {
-      const data = await connector.sendCustomRequest({
-        method: "personal_sign",
-        params: [connector.accounts[0], challengeText.data.challenge.text],
-      });
       const address = connector.accounts[0];
-      const tokens = await client.mutate({
-        mutation: getAccessTokens,
-        variables: {
-          address: address,
-          signature: data,
-        },
+      const challange = await generateChallenge({
+        address: address,
       });
-      if (tokens.data.authenticate.accessToken) {
-        authStore.setAccessToken(tokens.data.authenticate.accessToken);
-        authStore.setRefreshToken(tokens.data.authenticate.refreshToken);
-        storeData(
-          tokens.data.authenticate.accessToken,
-          tokens.data.authenticate.refreshToken,
-          userProfileId
-        );
-        setIsloading(false);
-        navigation.navigate("Root");
+      const signature = await connector.sendCustomRequest({
+        method: "personal_sign",
+        params: [address, challange?.text],
+      });
+      if (signature) {
+        const tokens = await getTokens({
+          address: address,
+          signature: signature,
+        });
+        setAccessToken(tokens?.accessToken);
+        setRefreshToken(tokens?.refreshToken);
+        console.log(tokens?.accessToken, tokens?.refreshToken);
+        await storeTokens(tokens?.accessToken, tokens?.refreshToken);
+        navigation.replace("Root");
       } else {
-        setIsloading(false);
-        Alert.alert("Something went wrong");
+        toast.show("Something went wrong", ToastType.ERROR, true);
       }
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
-        setIsloading(false);
+        console.log("[Error]:Error in login with lens");
+        console.log(error);
       }
+    } finally {
+      setIsloading(false);
     }
   };
 
@@ -293,7 +259,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             iconPosition="right"
             isLoading={isloading}
             onPress={async () => {
-              await logInWithLens();
+              await loginWithLens();
             }}
           />
         ) : (

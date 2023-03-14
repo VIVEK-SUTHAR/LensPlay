@@ -16,11 +16,14 @@ import { FeedData } from "../types/Lens/Feed";
 
 const useFeed = () => {
   const { accessToken } = useAuthStore();
-  const { userProfileId } = useProfile();
+  const { currentProfile } = useProfile();
+
+  console.log(accessToken, "usefeed");
+  console.log(currentProfile?.id);
 
   const { data, error, loading, refetch } = useQuery<FeedData>(getFeed, {
     variables: {
-      id: userProfileId,
+      id: currentProfile?.id,
     },
     context: {
       headers: {
@@ -146,7 +149,7 @@ const useSearchProfile = (profile: string) => {
   return { data, error, loading };
 };
 const useNotifications = () => {
-  const { userProfileId } = useProfile();
+  const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
 
   const {
@@ -159,7 +162,7 @@ const useNotifications = () => {
     fetchMore,
   } = useQuery(notificationsQuery, {
     variables: {
-      pid: userProfileId,
+      pid: currentProfile?.id,
     },
     fetchPolicy: "cache-and-network",
     initialFetchPolicy: "network-only",

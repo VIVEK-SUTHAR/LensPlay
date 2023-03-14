@@ -1,5 +1,4 @@
-import { ColorValue } from "react-native";
-import { Profile } from "../Lens";
+import { Profile } from "../generated";
 
 export interface IAuthStore {
   accessToken: string;
@@ -18,9 +17,9 @@ export interface IThemeStore {
 }
 export interface UserStore {
   currentProfile: Profile | null;
-  userProfileId: string | null;
+  hasHandle: boolean | null;
   setCurrentProfile: (currentProfile: Profile | null) => void;
-  setUserProfileId: (profileId: string) => void;
+  setHasHandle: (hasHandle: boolean) => void;
 }
 
 export interface ToastProps {

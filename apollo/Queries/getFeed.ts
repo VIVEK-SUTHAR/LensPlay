@@ -1,547 +1,547 @@
 import { gql } from "@apollo/client";
 
 export default gql`
-	query Feed($id: ProfileId!) {
-		feed(
-			request: {
-				profileId: $id
-				metadata: { mainContentFocus: VIDEO }
-				limit: 50
-				sources: ["lenstube"]
-			}
-		) {
-			items {
-				root {
-					... on Post {
-						...PostFields
-					}
+  query Feed($id: ProfileId!) {
+    feed(
+      request: {
+        profileId: $id
+        metadata: { mainContentFocus: VIDEO }
+        limit: 50
+        sources: ["lenstube"]
+      }
+    ) {
+      items {
+        root {
+          ... on Post {
+            ...PostFields
+          }
 
-					... on Comment {
-						...CommentFields
-					}
-				}
+          ... on Comment {
+            ...CommentFields
+          }
+        }
 
-				electedMirror {
-					mirrorId
+        electedMirror {
+          mirrorId
 
-					profile {
-						id
+          profile {
+            id
 
-						handle
-					}
+            handle
+          }
 
-					timestamp
-				}
+          timestamp
+        }
 
-				mirrors {
-					profile {
-						id
+        mirrors {
+          profile {
+            id
 
-						handle
-					}
+            handle
+          }
 
-					timestamp
-				}
+          timestamp
+        }
 
-				collects {
-					profile {
-						id
+        collects {
+          profile {
+            id
 
-						handle
-					}
+            handle
+          }
 
-					timestamp
-				}
+          timestamp
+        }
 
-				reactions {
-					profile {
-						id
+        reactions {
+          profile {
+            id
 
-						handle
-					}
+            handle
+          }
 
-					reaction
+          reaction
 
-					timestamp
-				}
+          timestamp
+        }
 
-				comments {
-					...CommentFields
-				}
-			}
+        comments {
+          ...CommentFields
+        }
+      }
 
-			pageInfo {
-				prev
+      pageInfo {
+        prev
 
-				next
+        next
 
-				totalCount
-			}
-		}
-	}
+        totalCount
+      }
+    }
+  }
 
-	fragment MediaFields on Media {
-		url
+  fragment MediaFields on Media {
+    url
 
-		mimeType
-	}
+    mimeType
+  }
 
-	fragment ProfileFields on Profile {
-		id
+  fragment ProfileFields on Profile {
+    id
 
-		name
+    name
 
-		bio
+    bio
 
-		attributes {
-			displayType
+    attributes {
+      displayType
 
-			traitType
+      traitType
 
-			key
+      key
 
-			value
-		}
+      value
+    }
 
-		isFollowedByMe
+    isFollowedByMe
 
-		isFollowing(who: null)
+    isFollowing(who: null)
 
-		followNftAddress
+    followNftAddress
 
-		metadata
+    metadata
 
-		isDefault
+    isDefault
 
-		handle
+    handle
 
-		picture {
-			... on NftImage {
-				contractAddress
+    picture {
+      ... on NftImage {
+        contractAddress
 
-				tokenId
+        tokenId
 
-				uri
+        uri
 
-				verified
-			}
+        verified
+      }
 
-			... on MediaSet {
-				original {
-					...MediaFields
-				}
-			}
-		}
+      ... on MediaSet {
+        original {
+          ...MediaFields
+        }
+      }
+    }
 
-		coverPicture {
-			... on NftImage {
-				contractAddress
+    coverPicture {
+      ... on NftImage {
+        contractAddress
 
-				tokenId
+        tokenId
 
-				uri
+        uri
 
-				verified
-			}
+        verified
+      }
 
-			... on MediaSet {
-				original {
-					...MediaFields
-				}
-			}
-		}
+      ... on MediaSet {
+        original {
+          ...MediaFields
+        }
+      }
+    }
 
-		ownedBy
+    ownedBy
 
-		dispatcher {
-			address
-			canUseRelay
-		}
+    dispatcher {
+      address
+      canUseRelay
+    }
 
-		stats {
-			totalFollowers
+    stats {
+      totalFollowers
 
-			totalFollowing
+      totalFollowing
 
-			totalPosts
+      totalPosts
 
-			totalComments
+      totalComments
 
-			totalMirrors
+      totalMirrors
 
-			totalPublications
+      totalPublications
 
-			totalCollects
-		}
+      totalCollects
+    }
 
-		followModule {
-			...FollowModuleFields
-		}
-	}
+    followModule {
+      ...FollowModuleFields
+    }
+  }
 
-	fragment PublicationStatsFields on PublicationStats {
-		totalAmountOfMirrors
+  fragment PublicationStatsFields on PublicationStats {
+    totalAmountOfMirrors
 
-		totalAmountOfCollects
+    totalAmountOfCollects
 
-		totalAmountOfComments
+    totalAmountOfComments
 
-		totalUpvotes
+    totalUpvotes
 
-		totalDownvotes
-	}
+    totalDownvotes
+  }
 
-	fragment MetadataOutputFields on MetadataOutput {
-		name
+  fragment MetadataOutputFields on MetadataOutput {
+    name
 
-		description
+    description
 
-		content
+    content
 
-		media {
-			original {
-				...MediaFields
-			}
-		}
-		cover: image
-		attributes {
-			displayType
+    media {
+      original {
+        ...MediaFields
+      }
+    }
+    cover: image
+    attributes {
+      displayType
 
-			traitType
+      traitType
 
-			value
-		}
-	}
+      value
+    }
+  }
 
-	fragment Erc20Fields on Erc20 {
-		name
+  fragment Erc20Fields on Erc20 {
+    name
 
-		symbol
+    symbol
 
-		decimals
+    decimals
 
-		address
-	}
+    address
+  }
 
-	fragment PostFields on Post {
-		id
+  fragment PostFields on Post {
+    id
 
-		profile {
-			...ProfileFields
-		}
+    profile {
+      ...ProfileFields
+    }
 
-		stats {
-			...PublicationStatsFields
-		}
+    stats {
+      ...PublicationStatsFields
+    }
 
-		metadata {
-			...MetadataOutputFields
-		}
+    metadata {
+      ...MetadataOutputFields
+    }
 
-		createdAt
+    createdAt
 
-		collectModule {
-			...CollectModuleFields
-		}
+    collectModule {
+      ...CollectModuleFields
+    }
 
-		referenceModule {
-			...ReferenceModuleFields
-		}
+    referenceModule {
+      ...ReferenceModuleFields
+    }
 
-		appId
+    appId
 
-		hidden
+    hidden
 
-		reaction(request: { profileId: $id })
+    reaction(request: { profileId: $id })
 
-		mirrors(by: null)
+    mirrors(by: null)
 
-		hasCollectedByMe
-	}
+    hasCollectedByMe
+  }
 
-	fragment MirrorBaseFields on Mirror {
-		id
+  fragment MirrorBaseFields on Mirror {
+    id
 
-		profile {
-			...ProfileFields
-		}
+    profile {
+      ...ProfileFields
+    }
 
-		stats {
-			...PublicationStatsFields
-		}
+    stats {
+      ...PublicationStatsFields
+    }
 
-		metadata {
-			...MetadataOutputFields
-		}
+    metadata {
+      ...MetadataOutputFields
+    }
 
-		createdAt
+    createdAt
 
-		collectModule {
-			...CollectModuleFields
-		}
+    collectModule {
+      ...CollectModuleFields
+    }
 
-		referenceModule {
-			...ReferenceModuleFields
-		}
+    referenceModule {
+      ...ReferenceModuleFields
+    }
 
-		appId
+    appId
 
-		hidden
+    hidden
 
-		reaction(request: null)
+    reaction(request: null)
 
-		hasCollectedByMe
-	}
+    hasCollectedByMe
+  }
 
-	fragment CommentBaseFields on Comment {
-		id
+  fragment CommentBaseFields on Comment {
+    id
 
-		profile {
-			...ProfileFields
-		}
+    profile {
+      ...ProfileFields
+    }
 
-		stats {
-			...PublicationStatsFields
-		}
+    stats {
+      ...PublicationStatsFields
+    }
 
-		metadata {
-			...MetadataOutputFields
-		}
+    metadata {
+      ...MetadataOutputFields
+    }
 
-		createdAt
+    createdAt
 
-		collectModule {
-			...CollectModuleFields
-		}
+    collectModule {
+      ...CollectModuleFields
+    }
 
-		referenceModule {
-			...ReferenceModuleFields
-		}
+    referenceModule {
+      ...ReferenceModuleFields
+    }
 
-		appId
+    appId
 
-		collectedBy {
-			...WalletFields
-		}
+    collectedBy {
+      ...WalletFields
+    }
 
-		hidden
+    hidden
 
-		reaction(request: { profileId: $id })
+    reaction(request: { profileId: $id })
 
-		mirrors(by: $id)
+    mirrors(by: $id)
 
-		hasCollectedByMe
-	}
+    hasCollectedByMe
+  }
 
-	fragment CommentFields on Comment {
-		...CommentBaseFields
+  fragment CommentFields on Comment {
+    ...CommentBaseFields
 
-		mainPost {
-			... on Post {
-				...PostFields
-			}
+    mainPost {
+      ... on Post {
+        ...PostFields
+      }
 
-			... on Mirror {
-				...MirrorBaseFields
+      ... on Mirror {
+        ...MirrorBaseFields
 
-				mirrorOf {
-					... on Post {
-						...PostFields
-					}
+        mirrorOf {
+          ... on Post {
+            ...PostFields
+          }
 
-					... on Comment {
-						...CommentMirrorOfFields
-					}
-				}
-			}
-		}
-	}
+          ... on Comment {
+            ...CommentMirrorOfFields
+          }
+        }
+      }
+    }
+  }
 
-	fragment CommentMirrorOfFields on Comment {
-		...CommentBaseFields
+  fragment CommentMirrorOfFields on Comment {
+    ...CommentBaseFields
 
-		mainPost {
-			... on Post {
-				...PostFields
-			}
+    mainPost {
+      ... on Post {
+        ...PostFields
+      }
 
-			... on Mirror {
-				...MirrorBaseFields
-			}
-		}
-	}
+      ... on Mirror {
+        ...MirrorBaseFields
+      }
+    }
+  }
 
-	fragment WalletFields on Wallet {
-		address
+  fragment WalletFields on Wallet {
+    address
 
-		defaultProfile {
-			...ProfileFields
-		}
-	}
+    defaultProfile {
+      ...ProfileFields
+    }
+  }
 
-	fragment FollowModuleFields on FollowModule {
-		... on FeeFollowModuleSettings {
-			type
+  fragment FollowModuleFields on FollowModule {
+    ... on FeeFollowModuleSettings {
+      type
 
-			amount {
-				asset {
-					name
+      amount {
+        asset {
+          name
 
-					symbol
+          symbol
 
-					decimals
+          decimals
 
-					address
-				}
+          address
+        }
 
-				value
-			}
+        value
+      }
 
-			recipient
-		}
+      recipient
+    }
 
-		... on ProfileFollowModuleSettings {
-			type
+    ... on ProfileFollowModuleSettings {
+      type
 
-			contractAddress
-		}
+      contractAddress
+    }
 
-		... on RevertFollowModuleSettings {
-			type
+    ... on RevertFollowModuleSettings {
+      type
 
-			contractAddress
-		}
+      contractAddress
+    }
 
-		... on UnknownFollowModuleSettings {
-			type
+    ... on UnknownFollowModuleSettings {
+      type
 
-			contractAddress
+      contractAddress
 
-			followModuleReturnData
-		}
-	}
+      followModuleReturnData
+    }
+  }
 
-	fragment CollectModuleFields on CollectModule {
-		__typename
+  fragment CollectModuleFields on CollectModule {
+    __typename
 
-		... on FreeCollectModuleSettings {
-			type
+    ... on FreeCollectModuleSettings {
+      type
 
-			followerOnly
+      followerOnly
 
-			contractAddress
-		}
+      contractAddress
+    }
 
-		... on FeeCollectModuleSettings {
-			type
+    ... on FeeCollectModuleSettings {
+      type
 
-			amount {
-				asset {
-					...Erc20Fields
-				}
+      amount {
+        asset {
+          ...Erc20Fields
+        }
 
-				value
-			}
+        value
+      }
 
-			recipient
+      recipient
 
-			referralFee
-		}
+      referralFee
+    }
 
-		... on LimitedFeeCollectModuleSettings {
-			type
+    ... on LimitedFeeCollectModuleSettings {
+      type
 
-			collectLimit
+      collectLimit
 
-			amount {
-				asset {
-					...Erc20Fields
-				}
+      amount {
+        asset {
+          ...Erc20Fields
+        }
 
-				value
-			}
+        value
+      }
 
-			recipient
+      recipient
 
-			referralFee
-		}
+      referralFee
+    }
 
-		... on LimitedTimedFeeCollectModuleSettings {
-			type
+    ... on LimitedTimedFeeCollectModuleSettings {
+      type
 
-			collectLimit
+      collectLimit
 
-			amount {
-				asset {
-					...Erc20Fields
-				}
+      amount {
+        asset {
+          ...Erc20Fields
+        }
 
-				value
-			}
+        value
+      }
 
-			recipient
+      recipient
 
-			referralFee
+      referralFee
 
-			endTimestamp
-		}
+      endTimestamp
+    }
 
-		... on RevertCollectModuleSettings {
-			type
-		}
+    ... on RevertCollectModuleSettings {
+      type
+    }
 
-		... on TimedFeeCollectModuleSettings {
-			type
+    ... on TimedFeeCollectModuleSettings {
+      type
 
-			amount {
-				asset {
-					...Erc20Fields
-				}
+      amount {
+        asset {
+          ...Erc20Fields
+        }
 
-				value
-			}
+        value
+      }
 
-			recipient
+      recipient
 
-			referralFee
+      referralFee
 
-			endTimestamp
-		}
+      endTimestamp
+    }
 
-		... on UnknownCollectModuleSettings {
-			type
+    ... on UnknownCollectModuleSettings {
+      type
 
-			contractAddress
+      contractAddress
 
-			collectModuleReturnData
-		}
-	}
+      collectModuleReturnData
+    }
+  }
 
-	fragment ReferenceModuleFields on ReferenceModule {
-		... on FollowOnlyReferenceModuleSettings {
-			type
+  fragment ReferenceModuleFields on ReferenceModule {
+    ... on FollowOnlyReferenceModuleSettings {
+      type
 
-			contractAddress
-		}
+      contractAddress
+    }
 
-		... on UnknownReferenceModuleSettings {
-			type
+    ... on UnknownReferenceModuleSettings {
+      type
 
-			contractAddress
+      contractAddress
 
-			referenceModuleReturnData
-		}
+      referenceModuleReturnData
+    }
 
-		... on DegreesOfSeparationReferenceModuleSettings {
-			type
+    ... on DegreesOfSeparationReferenceModuleSettings {
+      type
 
-			contractAddress
+      contractAddress
 
-			commentsRestricted
+      commentsRestricted
 
-			mirrorsRestricted
+      mirrorsRestricted
 
-			degreesOfSeparation
-		}
-	}
+      degreesOfSeparation
+    }
+  }
 `;
