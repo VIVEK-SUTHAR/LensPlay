@@ -4,7 +4,7 @@ import { Profile, Scalars } from "../../types/generated";
 
 const getDefaultProfile = async (
   ethAddress: Scalars["EthereumAddress"]
-): Promise<Profile | null> => {
+): Promise<Profile | undefined> => {
   try {
     const result = await client.query({
       query: getProfile,
@@ -16,9 +16,9 @@ const getDefaultProfile = async (
     return result.data.defaultProfile;
   } catch (error) {
     console.log("[Error]:Error in getting default profile");
-    throw new Error("[Error]:Error in getting default profile", {
-      cause: error,
-    });
+    // throw new Error("[Error]:Error in getting default profile", {
+    //   cause: error,
+    // });
   }
 };
 

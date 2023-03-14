@@ -2,7 +2,9 @@ import { client } from "../../apollo/client";
 import verifyToken from "../../apollo/Queries/verifyToken";
 import { Scalars } from "../../types/generated";
 
-const verifyTokens = async (accessToken: Scalars["Jwt"]): Promise<boolean> => {
+const verifyTokens = async (
+  accessToken: Scalars["Jwt"]
+): Promise<boolean | undefined> => {
   try {
     const result = await client.query({
       query: verifyToken,
@@ -12,10 +14,12 @@ const verifyTokens = async (accessToken: Scalars["Jwt"]): Promise<boolean> => {
     });
     return result.data.verify;
   } catch (error) {
-    console.log("[Error]:Error in verify Tokens");
-    throw new Error("[Error]:Error in verifing tokens", {
-      cause: error,
-    });
+    if (error instanceof Error) {
+      console.log("[Error]:Error in verify Tokens");
+    }
+    // throw new Error("[Error]:Error in verifing tokens", {
+    //   cause: error,
+    // });
   }
 };
 

@@ -16,12 +16,12 @@ const getAccessFromRefresh = async (
   } catch (error) {
     if (error instanceof Error) {
       console.log("[Error]:Error in refreshing new tokens ");
-      throw new Error(
-        "[Error]:Error in refreshing new tokens using refresh token ",
-        {
-          cause: error.message,
-        }
-      );
+      // throw new Error(
+      //   "[Error]:Error in refreshing new tokens using refresh token ",
+      //   {
+      //     cause: error.message,
+      //   }
+      // );
     }
   }
 };

@@ -16,9 +16,9 @@ export interface IThemeStore {
   setPrimaryColor: (newPrimaryColor: string) => void;
 }
 export interface UserStore {
-  currentProfile: Profile | null;
+  currentProfile: Profile | undefined;
   hasHandle: boolean | null;
-  setCurrentProfile: (currentProfile: Profile | null) => void;
+  setCurrentProfile: (currentProfile: Profile | undefined) => void;
   setHasHandle: (hasHandle: boolean) => void;
 }
 
