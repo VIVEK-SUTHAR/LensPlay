@@ -13,7 +13,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
   const getLocalStorage = async () => {
     try {
       const waitList = await AsyncStorage.getItem("@waitlist");
-      const userTokens = await AsyncStorage.getItem("@user_Tokens");
+      const userTokens = await AsyncStorage.getItem("@user_tokens");
       if (userTokens) {
         const accessToken = JSON.parse(userTokens).accessToken;
         const refreshToken = JSON.parse(userTokens).refreshToken;
@@ -21,6 +21,8 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
           const isvalidTokens = await verifyTokens(accessToken);
           if (isvalidTokens) {
             const address = JSON.parse(waitList).address;
+            console.log(address);
+            
             const hasAccess = await handleWaitlist(navigation, address);
             if (hasAccess) {
               navigation.replace("Root");
@@ -33,9 +35,13 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
             navigation.replace("Root");
           }
         } else {
+          console.log("not waitlist");
+          
           navigation.replace("Login");
         }
       } else {
+        console.log("not tokens");
+        
         navigation.replace("Login");
       }
     } catch (error) {

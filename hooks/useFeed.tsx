@@ -15,11 +15,8 @@ import { useAuthStore, useProfile } from "../store/Store";
 import { FeedData } from "../types/Lens/Feed";
 
 const useFeed = () => {
-  const { accessToken } = useAuthStore();
+  const { accessToken, refreshToken } = useAuthStore();
   const { currentProfile } = useProfile();
-
-  console.log(accessToken, "usefeed");
-  console.log(currentProfile?.id);
 
   const { data, error, loading, refetch } = useQuery<FeedData>(getFeed, {
     variables: {

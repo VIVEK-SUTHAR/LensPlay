@@ -18,7 +18,7 @@ export const useAuthStore = create<IAuthStore>((set) => ({
     set({ accessToken: newAccessToken }),
   refreshToken: "",
   setRefreshToken: (newRefreshToken: string) =>
-    set({ accessToken: newRefreshToken }),
+    set({refreshToken: newRefreshToken }),
   hasAccess: false,
   handleAccess: (value: boolean) => set({ hasAccess: value }),
   viaDeskTop: false,

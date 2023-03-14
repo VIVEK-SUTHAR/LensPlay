@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 import VideoCard from "../components/VideoCard";
-import { useThemeStore } from "../store/Store";
+import { useAuthStore, useThemeStore } from "../store/Store";
 import { RootTabScreenProps } from "../types/navigation/types";
 import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
 import AnimatedLottieView from "lottie-react-native";
@@ -23,8 +23,10 @@ import PleaseLogin from "../components/PleaseLogin";
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const theme = useThemeStore();
+  const {accessToken } = useAuthStore();
   const { isGuest } = useGuestStore();
-
+  console.log(accessToken);
+  
   const { data: Feeddata, error, loading, refetch } = useFeed();
 
   console.log(error, "error");
