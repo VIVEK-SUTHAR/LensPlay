@@ -193,6 +193,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
                 icon={<Icon name="wallet" color="black" />}
                 iconPosition="left"
                 isLoading={isloading}
+                animated={true}
               />
               <View
                 style={{
@@ -245,6 +246,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
                 py={12}
                 icon={<Icon name="desktop" color="black" size={24} />}
                 iconPosition="left"
+                animated={true}
               />
             </View>
           </View>
@@ -347,6 +349,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           py={12}
           icon={<Icon name="wallet" color="black" size={24} />}
           iconPosition="left"
+          animated={true}
         />
       </View>
       <View
@@ -402,6 +405,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           py={12}
           icon={<Icon name="referal" color="white" size={24} />}
           iconPosition="left"
+          animated={true}
         />
       </View>
     </SafeAreaView>

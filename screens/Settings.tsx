@@ -194,7 +194,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                 onPress={async () => {
                   const userTokens = await AsyncStorage.getItem("@user_tokens");
                   await AsyncStorage.removeItem("@user_tokens");
-                  userStore.setCurrentProfile(null);
+                  userStore.setCurrentProfile(undefined);
 
                   if (userTokens) {
                     const tokens = JSON.parse(userTokens);

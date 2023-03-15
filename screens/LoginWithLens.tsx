@@ -260,6 +260,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             onPress={async () => {
               await loginWithLens();
             }}
+            animated={true}
           />
         ) : (
           <Button

@@ -73,8 +73,8 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
               const newTokens = await getAccessFromRefresh(refreshToken);
               const address = JSON.parse(waitList).address;
               await HandleDefaultProfile(address);
-              setAccessToken(accessToken);
-              setRefreshToken(refreshToken);
+              setAccessToken(newTokens?.accessToken);
+              setRefreshToken(newTokens?.refreshToken);
               await storeTokens(
                 newTokens?.accessToken,
                 newTokens?.refreshToken

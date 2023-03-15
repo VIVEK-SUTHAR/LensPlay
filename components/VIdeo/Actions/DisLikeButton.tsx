@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Button from "../../UI/Button";
-import { dark_primary, primary } from "../../../constants/Colors";
-import formatInteraction from "../../../utils/formatInteraction";
+import { dark_primary } from "../../../constants/Colors";
 import {
   useAuthStore,
   useProfile,
@@ -26,10 +25,7 @@ const DisLikeButton = ({ isalreadyDisLiked, id }: DisLikeButtonProps) => {
   const { isGuest } = useGuestStore();
   const toast = useToast();
   const { PRIMARY } = useThemeStore();
-  const {videopageStats, setVideoPageStats} = useReactionStore();
-  // console.log(isalreadyDisLiked);
-  // console.log(videopageStats.isDisliked, 'video');
-  
+  const { videopageStats, setVideoPageStats } = useReactionStore();
 
   const onDislike = async () => {
     if (isGuest) {
@@ -37,22 +33,20 @@ const DisLikeButton = ({ isalreadyDisLiked, id }: DisLikeButtonProps) => {
       return;
     }
     if (!isalreadyDisLiked && !isGuest) {
-      console.log('here');
-      
       const data = await addLike(
         authStore.accessToken,
         userStore.currentProfile?.id,
         id,
         "DOWNVOTE"
       );
-      console.log(data);
-      
-      const res = await removeLike(authStore.accessToken, userStore.currentProfile?.id, id);
-      if (res?.removeReaction === null){
-        setVideoPageStats(false, true, videopageStats.likeCount - 1)
+      const res = await removeLike(
+        authStore.accessToken,
+        userStore.currentProfile?.id,
+        id
+      );
+      if (res?.removeReaction === null) {
+        setVideoPageStats(false, true, videopageStats.likeCount - 1);
       }
-      console.log(res);
-      
     }
   };
 

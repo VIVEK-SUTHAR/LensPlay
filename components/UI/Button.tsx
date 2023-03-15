@@ -58,7 +58,7 @@ const Button = (props: ButtonProps): JSX.Element => {
     disabled,
     bytes = false,
     animated = false,
-    scale=0.9,
+    scale = 0.9,
     ...rest
   } = props;
 
@@ -93,7 +93,7 @@ const Button = (props: ButtonProps): JSX.Element => {
         if (!animated) return;
         Animated.timing(scaleRef, {
           toValue: scale,
-          duration: 100,
+          duration: 50,
           useNativeDriver: true,
         }).start();
       }}
@@ -102,7 +102,7 @@ const Button = (props: ButtonProps): JSX.Element => {
         if (!animated) return;
         Animated.timing(scaleRef, {
           toValue: 1,
-          duration: 100,
+          duration: 50,
           useNativeDriver: true,
         }).start();
       }}

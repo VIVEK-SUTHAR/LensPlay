@@ -186,6 +186,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           py={12}
           icon={<AntDesign name="arrowright" size={20} />}
           iconPosition="right"
+          animated={true}
         />
       </View>
     </SafeAreaView>
