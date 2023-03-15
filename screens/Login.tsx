@@ -3,7 +3,14 @@ import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import { MotiImage, MotiView } from "moti";
 import * as React from "react";
-import { Dimensions, Image, Linking, StyleSheet, View } from "react-native";
+import {
+  Dimensions,
+  Image,
+  Linking,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "../components/Icon";
 import Button from "../components/UI/Button";
@@ -82,11 +89,11 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         >
           <View>
             <Heading
-              title={"LensPlay"}
+              title="LensPlay"
               style={{
                 fontSize: 64,
                 color: "white",
-                fontWeight: "600",
+                fontWeight: "700",
                 textAlign: "center",
               }}
             />
@@ -175,11 +182,11 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           }}
           title="Get Started"
           bg={primary}
-          borderRadius={8}
           textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
-          py={8}
+          py={12}
           icon={<AntDesign name="arrowright" size={20} />}
           iconPosition="right"
+          animated={true}
         />
       </View>
     </SafeAreaView>

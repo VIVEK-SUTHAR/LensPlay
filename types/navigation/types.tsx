@@ -63,6 +63,7 @@ export type RootStackParamList = {
   Login: undefined;
   Waitlist: undefined;
   Loader: undefined;
+  JoinWaitlist: undefined;
   ReportPublication: {
     publicationId: string;
   };
@@ -79,9 +80,10 @@ export type RootStackParamList = {
   };
   UserStats: {
     profileId?: string;
+    activeTab: string;
   };
   VideoPage: {
-    publication: Pick<FeedItem, 'root'>;
+    publication: Pick<FeedItem, "root">;
     id: string;
     height: number | string;
     width: number | string;
@@ -108,6 +110,7 @@ export type RootStackParamList = {
     url: string;
     source: "avatar" | "cover";
   };
+  QRLogin: undefined;
   Settings: undefined;
   BugReport: undefined;
 };

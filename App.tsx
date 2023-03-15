@@ -1,18 +1,15 @@
 import { ApolloProvider } from "@apollo/client";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { client } from "./apollo/client";
 import Toast from "./components/Toast";
 import useCachedResources from "./hooks/useCachedResources";
-import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 import "react-native-reanimated";
-// import "react-native-gesture-handler";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
-  const colorScheme = useColorScheme();
 
   if (!isLoadingComplete) {
     return null;
@@ -21,7 +18,7 @@ export default function App() {
       <SafeAreaProvider>
         <Toast />
         <ApolloProvider client={client}>
-          <Navigation colorScheme={colorScheme} />
+          <Navigation />
           <StatusBar style="auto" />
         </ApolloProvider>
       </SafeAreaProvider>

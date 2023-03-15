@@ -1,179 +1,67 @@
-import React, { useEffect } from "react";
+import { StatusBar } from "expo-status-bar";
+import AnimatedLottieView from "lottie-react-native";
+import React, { useState } from "react";
 import {
   FlatList,
   RefreshControl,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
-  View,
+  View
 } from "react-native";
-import { useState } from "react";
+import PleaseLogin from "../components/PleaseLogin";
+import Button from "../components/UI/Button";
+import Heading from "../components/UI/Heading";
+import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
 import VideoCard from "../components/VideoCard";
+import { useFeed } from "../hooks/useFeed";
+import { useGuestStore } from "../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import { RootTabScreenProps } from "../types/navigation/types";
-import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
-import AnimatedLottieView from "lottie-react-native";
-import Heading from "../components/UI/Heading";
-import Button from "../components/UI/Button";
-import { useFeed } from "../hooks/useFeed";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { client } from "../apollo/client";
-import verifyToken from "../apollo/Queries/verifyToken";
-import getProfile from "../apollo/Queries/getProfile";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import refreshCurrentToken from "../apollo/mutations/refreshCurrentToken";
-import storeData from "../utils/storeData";
-import searchUser from "../api/zooTools/searchUser";
-import { StatusBar } from "expo-status-bar";
-import { dark_primary } from "../constants/Colors";
-import { useGuestStore } from "../store/GuestStore";
+
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
-  const connector = useWalletConnect();
-  const authStore = useAuthStore();
-  const userStore = useProfile();
-  const [callData, setCallData] = useState(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const theme = useThemeStore();
-  const { hasAccess } = useAuthStore();
-  const { isGuest, profileId } = useGuestStore();
-
-  useEffect(() => {
-    if (callData) {
-      if (isGuest){
-        return;
-      }
-      if (!hasAccess) {
-        navigation.replace("Loader");
-      } else {
-        getData().then(() => {
-          setCallData(false);
-          setInterval(() => {
-            updateTokens();
-          }, 840000);
-        });
-      }
-    }
-  }, []);
-
-  const updateTokens = async () => {
-    const jsonValue = await AsyncStorage.getItem("@storage_Key");
-    if (jsonValue) {
-      const tokens = JSON.parse(jsonValue);
-      const generatedTime = tokens.generatedTime;
-      const currentTime = new Date().getTime();
-
-      const minute = Math.floor(
-        ((currentTime - generatedTime) % (1000 * 60 * 60)) / (1000 * 60)
-      );
-      if (minute < 25) {
-        return;
-      } else {
-        const refreshToken = await client.mutate({
-          mutation: refreshCurrentToken,
-          variables: {
-            rtoken: tokens.refreshToken,
-          },
-        });
-        authStore.setAccessToken(refreshToken.data.refresh.accessToken);
-        storeData(
-          refreshToken.data.refresh.accessToken,
-          refreshToken.data.refresh.refreshToken
-        );
-      }
-    }
-  };
-
-  const getData = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem("@storage_Key");
-      if (jsonValue) {
-        const tokens = JSON.parse(jsonValue);
-        const isvaild = await client.query({
-          query: verifyToken,
-          variables: {
-            token: tokens.accessToken,
-          },
-        });
-        if (isvaild.data.verify) {
-          authStore.setAccessToken(tokens.accessToken);
-          const data = await client.query({
-            query: getProfile,
-            variables: {
-              ethAddress: connector.accounts[0],
-            },
-          });
-          if (!data.data.defaultProfile) {
-            return;
-          }
-          refetch({
-            id: data?.data?.defaultProfile?.id,
-          });
-          userStore.setCurrentProfile(data.data.defaultProfile);
-        }
-        if (isvaild.data.verify === false) {
-          const refreshToken = await client.mutate({
-            mutation: refreshCurrentToken,
-            variables: {
-              rtoken: tokens.refreshToken,
-            },
-          });
-          authStore.setAccessToken(refreshToken.data.refresh.accessToken);
-          storeData(
-            refreshToken.data.refresh.accessToken,
-            refreshToken.data.refresh.refreshToken
-          );
-          const data = await client.query({
-            query: getProfile,
-            variables: {
-              ethAddress: connector.accounts[0],
-            },
-          });
-          if (!data.data.defaultProfile) {
-            return;
-          }
-          userStore.setCurrentProfile(data.data.defaultProfile);
-          refetch({
-            id: data?.data?.defaultProfile?.id,
-          });
-        }
-      } else {
-        // setIsloading(false);
-        navigation.replace("Login");
-      }
-    } catch (e) {
-      if (e instanceof Error) {
-        console.log("Something went wrong", e);
-      }
-    }
-  };
-
+  const {accessToken,refreshToken } = useAuthStore();
+  const { isGuest } = useGuestStore();
+  const { currentProfile } = useProfile();
   const { data: Feeddata, error, loading, refetch } = useFeed();
+  
+  if (error) {
+    console.log(error);
+    console.log(accessToken);
+    
+    refetch({ id: currentProfile?.id });
+  }
 
-  useEffect(() => {
-    if (error || !Feeddata) {
-      refetch({
-        id: isGuest ? profileId : userStore?.currentProfile?.id,
+  const onRefresh = () => {
+    setRefreshing(true);
+    try {
+      refetch({ id: currentProfile?.id }).then((res) => {
+        setRefreshing(false);
       });
+    } catch (error) {
+    } finally {
+      setRefreshing(false);
     }
-  }, [userStore?.currentProfile]);
+  };
 
-  if (callData) return <Loader />;
-  if (!callData && loading) return <Loader />;
-
+  if (isGuest) return <PleaseLogin />;
+  if (loading) return <Loader />;
   if (error) return <NotFound navigation={navigation} />;
-
-  if (!Feeddata) return <NotFound navigation={navigation} />;
+  if (!Feeddata && !loading) return <NotFound navigation={navigation} />;
 
   if (Feeddata) {
     return (
       <SafeAreaView style={styles.container}>
-        <StatusBar backgroundColor={dark_primary}></StatusBar>
+        <StatusBar backgroundColor={"black"}></StatusBar>
         <FlatList
           data={Feeddata.feed.items}
           keyExtractor={(item) => item.root.id.toString()}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
-              onRefresh={() => {}}
+              onRefresh={onRefresh}
               colors={[theme.PRIMARY]}
               progressBackgroundColor={"black"}
             />
@@ -247,11 +135,13 @@ const NotFound = ({ navigation }: { navigation: any }) => {
 
 const Loader = () => (
   <SafeAreaView style={styles.container}>
-    <VideoCardSkeleton />
-    <VideoCardSkeleton />
-    <VideoCardSkeleton />
-    <VideoCardSkeleton />
-    <VideoCardSkeleton />
+    <ScrollView>
+      <VideoCardSkeleton />
+      <VideoCardSkeleton />
+      <VideoCardSkeleton />
+      <VideoCardSkeleton />
+      <VideoCardSkeleton />
+    </ScrollView>
   </SafeAreaView>
 );
 

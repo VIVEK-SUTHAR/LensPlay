@@ -1,13 +1,14 @@
-import { ColorValue } from "react-native";
-import { Profile } from "../Lens";
+import { Profile } from "../generated";
 
 export interface IAuthStore {
   accessToken: string;
   refreshToken: string;
   hasAccess: boolean;
+  viaDeskTop: boolean;
   setAccessToken: (newToken: string) => void;
   setRefreshToken: (newToken: string) => void;
   handleAccess: (newValue: boolean) => void;
+  setIsViaDeskTop: (newValue: boolean) => void;
 }
 export interface IThemeStore {
   PRIMARY: string;
@@ -15,8 +16,10 @@ export interface IThemeStore {
   setPrimaryColor: (newPrimaryColor: string) => void;
 }
 export interface UserStore {
-  currentProfile: Profile | null;
-  setCurrentProfile: (currentProfile: Profile | null) => void;
+  currentProfile: Profile | undefined;
+  hasHandle: boolean | null;
+  setCurrentProfile: (currentProfile: Profile | undefined) => void;
+  setHasHandle: (hasHandle: boolean) => void;
 }
 
 export interface ToastProps {
@@ -32,20 +35,32 @@ export enum ToastType {
   INFO = "INFO",
 }
 export interface IReactionStore {
-  likedPublication: LikeObject[];
+  reaction: boolean,
+  comment: boolean,
+  videopageStats: videoPageStatsObject,
+  setReaction: (
+    reaction: boolean,
+  ) => void;
+  setComments: (
+    comment: boolean,
+  ) => void;
+  setVideoPageStats: (
+    isLiked: boolean,
+  isDisliked: boolean,
+  likeCount: number,
+  ) => void;
+  clearStats: () => void;
   likedComments: DisLikeObject[];
-  addToReactedPublications: (
-    publicationId: string,
-    likes: number,
-    dislikedPublication: DisLikeObject[]
-  ) => void;
-  dislikedPublication: DisLikeObject[];
-  addToDislikedPublications: (
-    publicationId: string,
-    likedPublication: LikeObject[]
-  ) => void;
   addToLikedComments: (commentId: string) => void;
 }
+
+export interface videoPageStatsObject {
+  isLiked: boolean;
+  isDisliked: boolean;
+  likeCount: number;
+}
+
+
 export interface LikeObject {
   likes: number;
   id: number | string;

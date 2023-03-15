@@ -4,6 +4,7 @@ import { LensPublication } from "../../types/Lens/Feed";
 import VideoCard from "../VideoCard";
 import Heading from "../UI/Heading";
 import Icon from "../Icon";
+import StyledText from "../UI/StyledText";
 
 type AllVideosProps = {
   profileId: string | undefined;
@@ -27,14 +28,34 @@ const AllVideos = ({
           alignItems: "center",
         }}
       >
-        <Heading
-          title={"Videos"}
+        <View
           style={{
-            fontSize: 20,
-            color: "white",
-            fontWeight: "600",
+            flexDirection: "row",
+            alignItems: "center",
           }}
-        />
+        >
+          <Heading
+            title={"Videos"}
+            style={{
+              fontSize: 20,
+              color: "white",
+              fontWeight: "600",
+            }}
+          />
+          {Videos.length > 0 ? (
+            <StyledText
+              title={`(${Videos?.length})`}
+              style={{
+                fontSize: 16,
+                color: "white",
+                fontWeight: "600",
+                marginLeft: 8,
+              }}
+            />
+          ) : (
+            <></>
+          )}
+        </View>
         <Pressable
           onPress={() => {
             navigation.navigate("YourVideos", {
@@ -60,7 +81,6 @@ const AllVideos = ({
       >
         {Boolean(Videos) &&
           Videos.map((item: LensPublication) => {
-            
             return (
               <VideoCard
                 publication={item}
@@ -78,7 +98,6 @@ const AllVideos = ({
             style={{
               color: "gray",
               fontSize: 14,
-              textAlign: "center",
             }}
           ></Heading>
         </View>

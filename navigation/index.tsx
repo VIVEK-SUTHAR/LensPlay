@@ -1,7 +1,7 @@
 //@ts-ignore
 import * as React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { AppState, TouchableWithoutFeedback, View } from "react-native";
@@ -19,17 +19,15 @@ import Settings from "../screens/Settings";
 import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
 import Channel from "../screens/Channel";
-import { useProfile, useThemeStore } from "../store/Store";
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import ProfileScreen from "../screens/Profile";
 import UserVideos from "../screens/UserVideos";
-import Waitlist from "../screens/Waitlist";
 import Avatar from "../components/UI/Avatar";
 import getIPFSLink from "../utils/getIPFSLink";
 import linking from "./LinkingConfiguration";
 import UserStats from "../screens/UserStats";
 import LeaderBoard from "../screens/LeaderBoard";
 import EditProfile from "../screens/EditProfile";
-import Loader from "../screens/Loader";
 import ConnectWallet from "../screens/ConnectWallet";
 import LoginWithLens from "../screens/LoginWithLens";
 import ReportPublication from "../screens/ReportPublication";
@@ -41,6 +39,13 @@ import Icon from "../components/Icon";
 import Notifications from "../screens/Notification";
 import LinkingVideo from "../screens/LinkingVideo";
 import * as Linking from "expo-linking";
+import JoinWaitlist from "../screens/JoinWaitlist";
+import QRLogin from "../screens/QRLogin";
+import Loader from "../screens/Loader";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import getAccessFromRefresh from "../utils/lens/getAccessFromRefresh";
+import storeTokens from "../utils/storeTokens";
+
 export default function Navigation() {
   return (
     <>
@@ -56,6 +61,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
   const theme = useThemeStore();
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -63,22 +69,8 @@ function RootNavigator() {
           backgroundColor: "black",
         },
       }}
-      initialRouteName={"Root"}
+      initialRouteName={"Loader"}
     >
-      <Stack.Screen
-        name="Waitlist"
-        component={Waitlist}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Loader"
-        component={Loader}
-        options={{
-          headerShown: false,
-        }}
-      />
       <Stack.Screen
         name="LeaderBoard"
         component={LeaderBoard}
@@ -89,7 +81,6 @@ function RootNavigator() {
         component={Login}
         options={{ headerShown: false }}
       />
-
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}
@@ -215,8 +206,9 @@ function RootNavigator() {
         name="FullImage"
         component={FullImage}
         options={{
-          animation: "fade_from_bottom",
+          animation: "default",
           headerShown: false,
+          presentation: "transparentModal",
           headerStyle: { backgroundColor: "transparent" },
           headerTintColor: theme.PRIMARY,
           headerTitle: "",
@@ -233,6 +225,36 @@ function RootNavigator() {
           headerTitle: "Comments",
         }}
       />
+      <Stack.Screen
+        name="JoinWaitlist"
+        component={JoinWaitlist}
+        options={{
+          animation: "slide_from_right",
+          headerShown: false,
+          headerStyle: { backgroundColor: "black" },
+          headerTintColor: theme.PRIMARY,
+          headerTitle: "",
+        }}
+      />
+      <Stack.Screen
+        name="QRLogin"
+        component={QRLogin}
+        options={{
+          animation: "fade_from_bottom",
+          headerShown: true,
+          headerStyle: { backgroundColor: "black" },
+          headerTintColor: theme.PRIMARY,
+          headerTitle: "Desktop Login",
+        }}
+      />
+      <Stack.Screen
+        name="Loader"
+        component={Loader}
+        options={{
+          animation: "none",
+          headerShown: false,
+        }}
+      />
     </Stack.Navigator>
   );
 }
@@ -242,6 +264,7 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
   const theme = useThemeStore();
   const user = useProfile();
+  const { setAccessToken, setRefreshToken } = useAuthStore();
 
   React.useEffect(() => {
     const handle = async () => {
@@ -253,6 +276,13 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
     Linking.addEventListener("url", (e) => {
       handleNavigation(e.url);
     });
+  }, []);
+
+  React.useEffect(() => {
+    updateTokens();
+    setInterval(() => {
+      updateTokens();
+    }, 60000);
   }, []);
 
   function handleNavigation(url: string | null) {
@@ -274,11 +304,43 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
     }
   }
 
+  const updateTokens = async () => {
+    const userTokens = await AsyncStorage.getItem("@user_tokens");
+    if (userTokens) {
+      const tokens = JSON.parse(userTokens);
+      const generatedTime = tokens.generatedTime;
+      const currentTime = new Date().getTime();
+
+      const minute = Math.floor(
+        ((currentTime - generatedTime) % (1000 * 60 * 60)) / (1000 * 60)
+      );
+      if (minute < 25) {
+        return;
+      } else {
+        const newTokens = await getAccessFromRefresh(tokens.refreshToken);
+        setAccessToken(newTokens?.accessToken);
+        setRefreshToken(newTokens?.refreshToken);
+        if (tokens.viaDesktop) {
+          await storeTokens(
+            newTokens?.accessToken,
+            newTokens?.refreshToken,
+            true
+          );
+          return;
+        }
+        if (!tokens.viaDesktop) {
+          storeTokens(newTokens?.accessToken, newTokens?.refreshToken);
+          return;
+        }
+      }
+    }
+  };
+
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        headerStyle: { backgroundColor: theme.DARK_PRIMARY, elevation: 2 },
+        headerStyle: { backgroundColor: "black", elevation: 2 },
         headerTitle: "",
         headerRight: () => (
           <View style={{ flexDirection: "row" }}>

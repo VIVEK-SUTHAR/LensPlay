@@ -1,11 +1,10 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import React from "react";
-import NotificationCardProps, { CollectedPublication } from "./index.d";
+import NotificationCardProps from "./index.d";
 import getIPFSLink from "../../utils/getIPFSLink";
 import formatAddress from "../../utils/formatAddress";
 import getDifference from "../../utils/getDifference";
 import Avatar from "../UI/Avatar";
-import CollectIcon from "../svg/CollectIcon";
 import StyledText from "../UI/StyledText";
 import Icon from "../Icon";
 

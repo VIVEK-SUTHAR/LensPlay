@@ -1,4 +1,3 @@
-import { ColorValue } from "react-native";
 import create from "zustand";
 import {
   DisLikeObject,
@@ -19,14 +18,18 @@ export const useAuthStore = create<IAuthStore>((set) => ({
     set({ accessToken: newAccessToken }),
   refreshToken: "",
   setRefreshToken: (newRefreshToken: string) =>
-    set({ accessToken: newRefreshToken }),
+    set({ refreshToken: newRefreshToken }),
   hasAccess: false,
   handleAccess: (value: boolean) => set({ hasAccess: value }),
+  viaDeskTop: false,
+  setIsViaDeskTop: (newstate: boolean) => set({ viaDeskTop: newstate }),
 }));
 
 export const useProfile = create<UserStore>((set) => ({
-  currentProfile: null,
+  currentProfile: undefined,
+  hasHandle: null,
   setCurrentProfile: (newProfile) => set({ currentProfile: newProfile }),
+  setHasHandle: (hasHandle) => set({ hasHandle: hasHandle }),
 }));
 
 export const useThemeStore = create<IThemeStore>((set) => ({
@@ -45,42 +48,43 @@ export const useToast = create<ToastProps>((set) => ({
 }));
 
 export const useReactionStore = create<IReactionStore>((set) => ({
-  likedPublication: [{ likes: 0, id: 0 }],
-  dislikedPublication: [{ id: 0 }],
+  reaction: false,
+  comment: false,
+  videopageStats: 
+    {
+      isLiked: false,
+      isDisliked: false,
+      likeCount: 0,
+    }
+  ,
   likedComments: [{ id: 0 }],
-  addToReactedPublications: (
-    publicationId: string,
-    likes: number,
-    dislikedPublication: DisLikeObject[]
-  ) => {
-    for (var i = 0; i < dislikedPublication.length; i++) {
-      if (dislikedPublication[i].id === publicationId) {
-        dislikedPublication.splice(i, 1);
-      }
-    }
-    set((state) => ({
-      likedPublication: [
-        ...state.likedPublication,
-        ({ likes: likes, id: publicationId } as unknown) as LikeObject,
-      ],
-      dislikedPublication: dislikedPublication,
-    }));
+  setReaction: (reaction) =>{
+    set({
+      reaction: reaction
+    })
   },
-  addToDislikedPublications: (
-    publicationId: string,
-    likedPublication: LikeObject[]
-  ) => {
-    for (var i = 0; i < likedPublication.length; i++) {
-      if (likedPublication[i].id === publicationId) {
-        likedPublication.splice(i, 1);
+  setComments: (comment) =>{
+    set({
+      comment: comment
+    })
+  },
+  setVideoPageStats: (isLiked, isDisliked, likeCount) => {
+    set({
+      videopageStats: {
+        isLiked: isLiked,
+        isDisliked: isDisliked,
+        likeCount: likeCount
       }
-    }
-    set((state) => ({
-      dislikedPublication: [
-        ...state.dislikedPublication,
-        { id: publicationId } as DisLikeObject,
-      ],
-    }));
+    })
+  },
+  clearStats: () => {
+    set({
+      videopageStats: {
+        isLiked: false,
+        isDisliked: false,
+        likeCount: 0
+      }
+    })
   },
   addToLikedComments: (commentId: string) => {
     set((state) => ({

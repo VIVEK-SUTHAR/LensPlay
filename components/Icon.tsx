@@ -24,6 +24,7 @@ type IconProps = {
     | "collect"
     | "comment"
     | "discord"
+    | "desktop"
     | "edit"
     | "compass_filled"
     | "compass_outline"
@@ -54,9 +55,11 @@ type IconProps = {
     | "arrowDown"
     | "star"
     | "copy"
+    | "qr"
     | "referal"
     | "report"
-    | "success";
+    | "success"
+    | "wallet";
   size?: number;
   color?: string;
   style?: StyleProp<TextStyle>;

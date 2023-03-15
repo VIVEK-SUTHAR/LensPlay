@@ -26,11 +26,11 @@ const VideoCard = ({
   id,
   width = "auto",
   height = 200,
-  publication
+  publication,
 }: videoPageProp) => {
   const [videoTime, setVideoTime] = React.useState<string>();
   const { setActivePublication } = useActivePublication();
-  
+
   React.useEffect(() => {
     const time = publication?.metadata?.attributes.filter((item) => {
       if (item?.traitType === "durationInSeconds") {
@@ -111,7 +111,11 @@ const VideoCard = ({
             alignItems: "center",
           }}
         >
-          <Avatar src={getIPFSLink(publication?.profile?.picture?.original?.url)} height={40} width={40} />
+          <Avatar
+            src={getIPFSLink(publication?.profile?.picture?.original?.url)}
+            height={40}
+            width={40}
+          />
           <View style={{ flex: 0.95 }}>
             <Heading
               title={publication?.metadata?.name}
@@ -119,7 +123,9 @@ const VideoCard = ({
               numberOfLines={1}
             />
             <StyledText
-              title={`By ${publication?.profile?.name || publication?.profile?.handle} ${getDifference(publication?.createdAt)}`}
+              title={`By ${
+                publication?.profile?.name || publication?.profile?.handle
+              } ${getDifference(publication?.createdAt)}`}
               style={{ fontSize: 12, color: "gray" }}
               numberOfLines={1}
             />

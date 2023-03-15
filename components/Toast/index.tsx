@@ -13,6 +13,7 @@ const Toast = () => {
 
   const slideIn = useRef(new Animated.Value(-100)).current;
   const scale = useRef(new Animated.Value(0.5)).current;
+
   useEffect(() => {
     if (toastStore.isVisible === true) {
       Animated.timing(slideIn, {
@@ -51,12 +52,6 @@ const Toast = () => {
         styles.conatiner,
         {
           display: toastStore.isVisible ? "flex" : "none",
-          // borderColor:
-          //   toastStore.type === ToastType.ERROR
-          //     ? "red"
-          //     : toastStore.type === ToastType.INFO
-          //     ? "white"
-          //     : "#22ae4a",
           backgroundColor:
             toastStore.type === ToastType.ERROR
               ? "#ff4d4d"
@@ -82,14 +77,16 @@ const Toast = () => {
             ? "info"
             : "success"
         }
-        color={"white"}
+        color={toastStore.type === ToastType.INFO ? "#000000" : "#FFFFFF"}
         style={{ marginHorizontal: 2 }}
         size={24}
       />
       <Text
         style={{
           fontSize: 16,
-          color: "white",
+          color: `${
+            toastStore.type === ToastType.INFO ? "#000000" : "#FFFFFF"
+          }`,
           fontWeight: "500",
           textAlign: "center",
           marginHorizontal: 2,

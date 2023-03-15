@@ -4,26 +4,32 @@ import { useComments } from "../../hooks/useFeed";
 import Heading from "../UI/Heading";
 import AnimatedLottieView from "lottie-react-native";
 import CommentSkeleton from "../UI/CommentSkeleton";
-import { Comments } from "../../types/Lens/Feed";
 import CommentCard from "./CommentCard";
+import { useReactionStore } from "../../store/Store";
+import { Comment as IComment} from "../../types/generated";
+
 
 const Comment = ({ publicationId }: { publicationId: string }) => {
+  const {reaction, comment, setComments} = useReactionStore();
   const { data: commentData, error, loading } = useComments(publicationId);
-
-  const comments: Comments[] = commentData?.publications?.items;
+  
+  
 
   if (error) return <NotFound />;
 
-  if (loading) return <Loading />;
+  if (loading && !reaction && !comment) return <Loading />;
 
-  if (!comments.length) return <NotFound />;
+  if (!commentData?.publications?.items.length) return <NotFound />;
 
   if (commentData) {
+    if(!comment){      
+      setComments(true);
+    }
     return (
       <SafeAreaView>
         <ScrollView>
           <View>
-            {comments.map((item: Comments) => {
+            {commentData?.publications?.items.map((item: IComment) => {
               return (
                 <CommentCard
                   key={item?.id}
@@ -38,6 +44,7 @@ const Comment = ({ publicationId }: { publicationId: string }) => {
                   name={item?.profile?.name}
                   stats={item?.stats}
                   commentId={item?.id}
+                  isAlreadyLiked={item?.reaction === "UPVOTE"}
                 />
               );
             })}

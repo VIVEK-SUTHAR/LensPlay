@@ -8,6 +8,7 @@ import Heading from "../UI/Heading";
 import VideoCard from "../VideoCard";
 import formatHandle from "../../utils/formatHandle";
 import Icon from "../Icon";
+import StyledText from "../UI/StyledText";
 
 type MirroredVideosProps = {
   profileId: string | undefined;
@@ -56,14 +57,34 @@ const MirroredVideos = ({
           alignItems: "center",
         }}
       >
-        <Heading
-          title={"Mirrored Videos"}
+        <View
           style={{
-            fontSize: 20,
-            color: "white",
-            fontWeight: "600",
+            flexDirection: "row",
+            alignItems: "center",
           }}
-        />
+        >
+          <Heading
+            title={"Mirrored Videos"}
+            style={{
+              fontSize: 20,
+              color: "white",
+              fontWeight: "600",
+            }}
+          />
+          {mirrorVideos.length > 0 ? (
+            <StyledText
+              title={`(${mirrorVideos?.length})`}
+              style={{
+                fontSize: 16,
+                color: "white",
+                fontWeight: "600",
+                marginLeft: 8,
+              }}
+            />
+          ) : (
+            <></>
+          )}
+        </View>
         <Pressable
           onPress={() => {
             navigation.navigate("YourVideos", {
@@ -92,10 +113,10 @@ const MirroredVideos = ({
             if (item?.appId?.includes("lenstube")) {
               return (
                 <VideoCard
-                publication={item}
-                id={item?.id}
-                height={150}
-                width={300}
+                  publication={item}
+                  id={item?.id}
+                  height={150}
+                  width={300}
                 />
               );
             }

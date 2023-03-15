@@ -6,13 +6,14 @@ import { client } from "../apollo/client";
 import getTrendingPublication from "../apollo/Queries/getTrendingPublication";
 import { useEffect } from "react";
 import AnimatedLottieView from "lottie-react-native";
-import Heading from "../components/UI/Heading";
 import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
 import { LensPublication } from "../types/Lens/Feed";
 import { RootTabScreenProps } from "../types/navigation/types";
 import StyledText from "../components/UI/StyledText";
 import { dark_primary } from "../constants/Colors";
+import { useGuestStore } from "../store/GuestStore";
+import getGuestTrending from "../apollo/Queries/getGuestTrending";
 const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
   const tags = [
     {
@@ -47,22 +48,18 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
   const theme = useThemeStore();
   const authStore = useAuthStore();
   const userStore = useProfile();
+  const { isGuest, profileId } = useGuestStore();
 
   async function getTrendingData() {
     try {
-      const trendingData = await client.query({
-        query: getTrendingPublication,
-        variables: {
-          id: userStore.currentProfile?.id,
-          sortBy: currentTag.name,
-        },
-        context: {
-          headers: {
-            "x-access-token": `Bearer ${authStore.accessToken}`,
+        const trendingData = await client.query({
+          query: getTrendingPublication,
+          variables: {
+            id: isGuest?profileId:userStore.currentProfile?.id,
+            sortBy: currentTag.name,
           },
-        },
-      });
-      setTrendingItems(trendingData.data.explorePublications.items);
+        });
+        setTrendingItems(trendingData.data.explorePublications.items);
     } catch (error) {
       if (error instanceof Error) {
         throw new Error("Something went wrong", { cause: error.cause });
@@ -145,23 +142,6 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
                 }}
                 source={require("../assets/loader.json")}
               />
-              <View
-                style={{
-                  alignItems: "center",
-                }}
-              >
-                <Heading
-                  title="Getting videos"
-                  style={{
-                    fontSize: 16,
-                    color: "white",
-                    marginVertical: 5,
-                    marginHorizontal: 15,
-                    fontWeight: "600",
-                    alignSelf: "flex-start",
-                  }}
-                />
-              </View>
             </Pressable>
           ) : isLoading ? (
             <>
@@ -176,12 +156,7 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
           )}
           {TrendingItems &&
             TrendingItems?.map((item: LensPublication, index) => {
-              return (
-                <VideoCard
-                publication={item}
-                  id={item?.id}
-                />
-              );
+              return <VideoCard publication={item} id={item?.id} />;
             })}
         </View>
       </ScrollView>

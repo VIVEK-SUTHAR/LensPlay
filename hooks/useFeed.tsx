@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client";
 import React from "react";
+import fetchReaction from "../apollo/Queries/fetchReaction";
 import getComments from "../apollo/Queries/getComments";
 import getFeed from "../apollo/Queries/getFeed";
 import getFollowers from "../apollo/Queries/getFollowers";
@@ -13,8 +14,9 @@ import notificationsQuery from "../apollo/Queries/notificationsQuery";
 import searchProfileQuery from "../apollo/Queries/searchProfileQuery";
 import { useAuthStore, useProfile } from "../store/Store";
 import { FeedData } from "../types/Lens/Feed";
+
 const useFeed = () => {
-  const { accessToken } = useAuthStore();
+  const { accessToken, refreshToken } = useAuthStore();
   const { currentProfile } = useProfile();
 
   const { data, error, loading, refetch } = useQuery<FeedData>(getFeed, {
@@ -27,7 +29,6 @@ const useFeed = () => {
       },
     },
     initialFetchPolicy: "cache-and-network",
-    pollInterval: 600000,
     refetchWritePolicy: "merge",
   });
   return { data, error, loading, refetch };
@@ -48,7 +49,6 @@ const useExplorePublication = () => {
       },
     },
     fetchPolicy: "cache-and-network",
-    pollInterval: 500000,
     skip: !currentProfile?.id,
   });
   return { data, error, loading };
@@ -75,9 +75,11 @@ const useUserPublication = (publicationId: string | undefined) => {
 
 const useComments = (publicationId: string) => {
   const { accessToken } = useAuthStore();
+  const {currentProfile} = useProfile();
   const { data, error, loading } = useQuery(getComments, {
     variables: {
       postId: publicationId,
+      id: currentProfile?.id
     },
     context: {
       headers: {
@@ -145,8 +147,9 @@ const useSearchProfile = (profile: string) => {
   return { data, error, loading };
 };
 const useNotifications = () => {
-  const activeProfile = useProfile();
+  const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
+
   const {
     data,
     error,
@@ -157,7 +160,7 @@ const useNotifications = () => {
     fetchMore,
   } = useQuery(notificationsQuery, {
     variables: {
-      pid: activeProfile.currentProfile?.id,
+      pid: currentProfile?.id,
     },
     fetchPolicy: "cache-and-network",
     initialFetchPolicy: "network-only",
@@ -170,6 +173,20 @@ const useNotifications = () => {
     },
   });
   return { data, error, loading, refetch, startPolling, previousData };
+};
+
+const useReaction = ( pubId: string) => {
+  const { currentProfile } = useProfile();
+
+  const { data, error, loading } = useQuery(fetchReaction, {
+    variables: {
+      id: currentProfile?.id,
+      pubId: pubId,
+    },
+    fetchPolicy: "network-only",
+    refetchWritePolicy: "merge",
+  });
+  return { data, error, loading };
 };
 
 const useIsMirrored = (publid: string) => {
@@ -186,8 +203,8 @@ const useIsMirrored = (publid: string) => {
   return { data, error };
 };
 
-export const useUserProfile = (profileId: string) => {
-  const { data, error, loading,refetch } = useQuery(getUserProfile, {
+export const useUserProfile = (profileId: string | undefined) => {
+  const { data, error, loading, refetch } = useQuery(getUserProfile, {
     variables: {
       id: profileId,
     },
@@ -195,16 +212,16 @@ export const useUserProfile = (profileId: string) => {
     nextFetchPolicy: "cache-and-network",
     pollInterval: 5000,
   });
-  return { data, error, loading,refetch };
+  return { data, error, loading, refetch };
 };
 
 export const useUserMirrors = (profileId: string) => {
-  const {accessToken } = useAuthStore();
+  const { accessToken } = useAuthStore();
   const { data, error, loading } = useQuery(getMirrorVideos, {
     variables: {
       id: profileId,
     },
-     context: {
+    context: {
       headers: {
         "x-access-token": `Bearer ${accessToken}`,
       },
@@ -215,7 +232,6 @@ export const useUserMirrors = (profileId: string) => {
   });
   return { data, error, loading };
 };
-
 
 export default useNotifications;
 
@@ -229,4 +245,5 @@ export {
   useFollowing,
   useSearchProfile,
   useNotifications,
+  useReaction
 };

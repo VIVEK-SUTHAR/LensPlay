@@ -69,8 +69,6 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   };
 
   const collectPublication = async () => {
-    console.log(item.id);
-
     try {
       const data = await freeCollectPublication(item.id, accessToken);
       if (data) {
@@ -278,11 +276,9 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
           }}
         >
           <LikeButton
-            likes={likes}
+            like={likes}
             id={item.id}
-            setLikes={setLikes}
-            isalreadyLiked={isalreadyLiked}
-            setisalreadyDisLiked={() => {}}
+            isalreadyLiked={item?.reaction}
             bytes={true}
           />
           <TouchableOpacity

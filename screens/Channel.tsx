@@ -483,34 +483,58 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                   </View>
                   <View
                     style={{
-                      backgroundColor: "white",
-                      borderRadius: 8,
-                      paddingVertical: 8,
-                      marginTop: 16,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginTop: 8,
                     }}
                   >
                     <View
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        justifyContent: "space-around",
-                        paddingHorizontal: 16,
                       }}
                     >
                       <StyledText
-                        title={`${profile?.stats?.totalFollowers} • Subscribers`}
-                        style={{ fontSize: 16, fontWeight: "600" }}
-                      />
-                      <View
+                        title={profile?.stats?.totalFollowers}
                         style={{
-                          height: 24,
-                          backgroundColor: "black",
-                          width: 2,
+                          fontSize: 14,
+                          fontWeight: "600",
+                          color: "white",
                         }}
-                      ></View>
+                      />
                       <StyledText
-                        title={`${allVideos?.length} • Videos`}
-                        style={{ fontSize: 16, fontWeight: "600" }}
+                        title={"subscribers"}
+                        style={{
+                          fontSize: 14,
+                          fontWeight: "500",
+                          color: "gray",
+                          marginLeft: 4,
+                        }}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        marginLeft: 8,
+                      }}
+                    >
+                      <StyledText
+                        title={profile?.stats?.totalFollowing}
+                        style={{
+                          fontSize: 14,
+                          fontWeight: "600",
+                          color: "white",
+                        }}
+                      />
+                      <StyledText
+                        title={"subscription"}
+                        style={{
+                          fontSize: 14,
+                          fontWeight: "500",
+                          color: "gray",
+                          marginLeft: 4,
+                        }}
                       />
                     </View>
                   </View>
@@ -553,28 +577,10 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                           allVideos.map((item: LensPublication) => {
                             return (
                               <VideoCard
-                                // key={item?.id}
                                 id={item?.id}
                                 publication={item}
                                 height={150}
                                 width={300}
-                                // date={item?.createdAt}
-                                // banner={item?.metadata?.cover}
-                                // title={item?.metadata?.name}
-                                // avatar={item?.profile?.picture?.original?.url}
-                                // playbackId={
-                                //   item?.metadata?.media[0]?.original?.url
-                                // }
-                                // uploadedBy={item?.profile?.name}
-                                // profileId={item?.profile?.id}
-                                // stats={item?.stats}
-                                // isFollowdByMe={item.profile.isFollowedByMe}
-                                // reaction={item?.reaction}
-                                // width={300}
-                                // height={150}
-                                // description={item?.metadata?.description}
-                                // ethAddress={item?.profile.ownedBy}
-                                // attributes={item?.metadata?.attributes}
                               />
                             );
                           })}
@@ -633,25 +639,6 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                             if (item?.appId?.includes("lenstube")) {
                               return (
                                 <VideoCard
-                                  // key={item?.id}
-                                  // id={item?.id}
-                                  // date={item?.createdAt}
-                                  // banner={item?.metadata?.cover}
-                                  // title={item?.metadata?.name}
-                                  // avatar={item?.profile?.picture?.original?.url}
-                                  // playbackId={
-                                  //   item?.metadata?.media[0]?.original?.url
-                                  // }
-                                  // uploadedBy={item?.profile?.name}
-                                  // profileId={item?.profile?.id}
-                                  // stats={item?.stats}
-                                  // isFollowdByMe={item.profile.isFollowedByMe}
-                                  // reaction={item?.reaction}
-                                  // width={300}
-                                  // height={150}
-                                  // ethAddress={item?.profile.ownedBy}
-                                  // description={item?.metadata?.description}
-                                  // attributes={item?.metadata?.attributes}
                                   id={item?.id}
                                   publication={item}
                                   height={150}
@@ -714,25 +701,6 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                         collectVideos.map((item: LensPublication) => {
                           return (
                             <VideoCard
-                              // key={item?.id}
-                              // id={item?.id}
-                              // date={item?.createdAt}
-                              // banner={item?.metadata?.cover}
-                              // title={item?.metadata?.name}
-                              // avatar={item?.profile?.picture?.original?.url}
-                              // playbackId={
-                              //   item?.metadata?.media[0]?.original?.url
-                              // }
-                              // uploadedBy={item?.profile?.name}
-                              // profileId={item?.profile?.id}
-                              // stats={item?.stats}
-                              // isFollowdByMe={item.profile.isFollowedByMe}
-                              // reaction={item?.reaction}
-                              // width={300}
-                              // height={150}
-                              // description={item?.metadata?.description}
-                              // ethAddress={item?.profile.ownedBy}
-                              // attributes={item?.metadata?.attributes}
                               id={item?.id}
                               publication={item}
                               height={150}

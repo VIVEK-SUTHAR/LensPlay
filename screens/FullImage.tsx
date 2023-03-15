@@ -1,5 +1,14 @@
-import { Image, Pressable, SafeAreaView, StyleSheet, View } from "react-native";
-import React from "react";
+import {
+  Animated,
+  ColorValue,
+  Image,
+  PanResponder,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from "react-native";
+import React, { useLayoutEffect, useState } from "react";
 import getIPFSLink from "../utils/getIPFSLink";
 import { RootStackScreenProps } from "../types/navigation/types";
 import Constants from "expo-constants";
@@ -12,24 +21,58 @@ const FullImage = ({
   route,
 }: RootStackScreenProps<"FullImage">) => {
   const isAvatar = route.params.source === "avatar";
+  const [bgColor, setBgColor] = useState<ColorValue>("rgba(0,0,0,1)");
+
+  const goBack = () => navigation.goBack();
+
+  const pan = React.useRef(new Animated.ValueXY()).current;
+
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderStart: (e) => {
+      setBgColor("rgba(0,0,0,0.4)");
+    },
+    onPanResponderMove: Animated.event(
+      [
+        null,
+        {
+          dx: pan.x,
+          dy: pan.y,
+        },
+      ],
+      { useNativeDriver: false }
+    ),
+    onPanResponderEnd: () => {
+      setBgColor("rgba(0,0,0,1)");
+    },
+    onPanResponderRelease: (e) => {
+      if (e.nativeEvent.pageY > 505 || e.nativeEvent.pageY < 330) {
+        goBack();
+      }
+      Animated.spring(pan, {
+        toValue: { x: 0, y: 0 },
+        useNativeDriver: false,
+      }).start();
+    },
+  });
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: bgColor }]}>
       <StatusBar backgroundColor="transparent" style="auto" />
       <View style={styles.headerStyle}>
-        <Pressable
-          onPress={() => {
-            navigation.pop();
-          }}
-        >
+        <Pressable onPress={goBack}>
           <Icon name="arrowLeft" />
         </Pressable>
       </View>
-      <View style={styles.imageContainer}>
+      <Animated.View
+        {...panResponder.panHandlers}
+        style={[pan.getLayout(), styles.imageContainer]}
+      >
         <Image
           source={{ uri: getIPFSLink(route.params.url) }}
           style={isAvatar ? styles.avatarStyle : styles.imageStyle}
         />
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 };
@@ -61,13 +104,13 @@ const styles = StyleSheet.create({
   imageStyle: {
     height: "100%",
     width: "100%",
-    resizeMode: "cover",
+    resizeMode: "contain",
   },
   avatarStyle: {
     height: "100%",
     width: "90%",
     alignSelf: "center",
-    resizeMode: "contain",
-    borderRadius: 500,
+    resizeMode: "cover",
+    borderRadius: 8,
   },
 });

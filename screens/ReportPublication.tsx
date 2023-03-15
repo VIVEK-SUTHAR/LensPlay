@@ -96,7 +96,6 @@ const ReportPublication = ({
       if (!reportQuery?.data?.reportPublication) {
         toast.show("Thanks for reporting", ToastType.SUCCESS, true);
       }
-      console.log(reportQuery.data);
     } catch (error) {
       if (error instanceof Error) {
         console.log(error);

@@ -26,6 +26,7 @@ import searchPublicationQuery from "../apollo/Queries/searchPublicationQuery";
 import Tabs, { Tab } from "../components/UI/Tabs";
 import { Profile } from "../types/Lens";
 import VideoCard from "../components/VideoCard";
+import { useGuestStore } from "../store/GuestStore";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const { DARK_PRIMARY } = useThemeStore();
@@ -42,32 +43,55 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const [isfound, setIsfound] = useState<boolean>(true);
   const [searchType, SetSearchType] = useState<"profile" | "videos">("profile");
   const debouncedValue = useDebounce<string>(keyword, 500);
+  const { isGuest } = useGuestStore();
 
   const onDebounce = async () => {
     if (keyword.trim().length > 0) {
       try {
-        const result = await client.query({
-          query:
-            searchType === "profile"
-              ? searchProfileQuery
-              : searchPublicationQuery,
-          variables: {
-            query: keyword.trim().toLowerCase(),
-          },
-          context: {
-            headers: {
-              "x-access-token": `Bearer ${authStore.accessToken}`,
+        if (isGuest) {
+          const result = await client.query({
+            query:
+              searchType === "profile"
+                ? searchProfileQuery
+                : searchPublicationQuery,
+            variables: {
+              query: keyword.trim().toLowerCase(),
             },
-          },
-        });
-        if (result?.data?.search?.items.length === 0) {
-          setIsfound(false);
-        } else {
-          setIsfound(true);
-          if (searchType === "profile") {
-            setSearchChannelResult(result?.data?.search?.items);
+          });
+          if (result?.data?.search?.items.length === 0) {
+            setIsfound(false);
           } else {
-            setSearchPostResult(result?.data?.search?.items);
+            setIsfound(true);
+            if (searchType === "profile") {
+              setSearchChannelResult(result?.data?.search?.items);
+            } else {
+              setSearchPostResult(result?.data?.search?.items);
+            }
+          }
+        } else {
+          const result = await client.query({
+            query:
+              searchType === "profile"
+                ? searchProfileQuery
+                : searchPublicationQuery,
+            variables: {
+              query: keyword.trim().toLowerCase(),
+            },
+            context: {
+              headers: {
+                "x-access-token": `Bearer ${authStore.accessToken}`,
+              },
+            },
+          });
+          if (result?.data?.search?.items.length === 0) {
+            setIsfound(false);
+          } else {
+            setIsfound(true);
+            if (searchType === "profile") {
+              setSearchChannelResult(result?.data?.search?.items);
+            } else {
+              setSearchPostResult(result?.data?.search?.items);
+            }
           }
         }
       } catch (error) {
@@ -79,8 +103,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
       }
     }
   };
-
-  console.log(searchType);
 
   useEffect(() => {
     onDebounce();
@@ -244,7 +266,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                         }}
                         numberOfLines={1}
                       /> */}
-                      <VideoCard publication={item} id={index.toString()}/>
+                      <VideoCard publication={item} id={index.toString()} />
                     </View>
                   )}
                 />
@@ -254,34 +276,37 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
         </Tabs>
       ) : (
         <>
-          {isRecommended && (
-            <View style={{ marginVertical: 10 }}>
+          {isRecommended && !isGuest && (
+            <View style={{ marginBottom: 16 }}>
               <Heading
                 title={"Recommended Channels"}
                 style={{
                   color: "white",
                   fontSize: 20,
                   fontWeight: "600",
-                  marginHorizontal: 20,
+                  marginHorizontal: 16,
                 }}
               />
-              {recommended.length === 0 && <Loader />}
-              <FlatList
-                data={recommended}
-                keyExtractor={(_, index) => index.toString()}
-                renderItem={({ item }) => {
-                  return (
-                    <ProfileCard
-                      profileIcon={item?.picture?.original?.url}
-                      profileName={item?.name || item?.id}
-                      profileId={item?.id}
-                      isFollowed={item?.isFollowedByMe || false}
-                      handle={item?.handle}
-                      owner={item?.ownedBy}
-                    />
-                  );
-                }}
-              />
+              {recommended.length === 0 && searchType === "videos" ? (
+                <Loader />
+              ) : (
+                <FlatList
+                  data={recommended}
+                  keyExtractor={(_, index) => index.toString()}
+                  renderItem={({ item }) => {
+                    return (
+                      <ProfileCard
+                        profileIcon={item?.picture?.original?.url}
+                        profileName={item?.name || item?.id}
+                        profileId={item?.id}
+                        isFollowed={item?.isFollowedByMe || false}
+                        handle={item?.handle}
+                        owner={item?.ownedBy}
+                      />
+                    );
+                  }}
+                />
+              )}
             </View>
           )}
         </>
@@ -347,6 +372,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
+    paddingVertical: 16,
   },
   headerContainer: {
     flexDirection: "row",

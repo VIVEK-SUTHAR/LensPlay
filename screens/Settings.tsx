@@ -25,6 +25,7 @@ import {
   LENSPLAY_TERMS,
 } from "../constants";
 import { useGuestStore } from "../store/GuestStore";
+import { useAuthStore, useProfile } from "../store/Store";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
@@ -42,6 +43,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const Wallet = useWalletConnect();
   const { isGuest } = useGuestStore();
+  const userStore = useProfile();
 
   const SettingItemsList: SettingsItemProps[] = [
     {
@@ -74,9 +76,9 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
     },
     {
       icon: <Icon name="logout" />,
-      label: "Logout",
+      label: isGuest ? "Login" : "Logout",
       onPress: () => {
-        setIsModalOpen(true);
+        isGuest ? navigation.push("Login") : setIsModalOpen(true);
       },
     },
   ];
@@ -85,18 +87,14 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="black" style="auto" />
       {SettingItemsList.map((item, index) => {
-        if (isGuest && item.label === "Logout") {
-          return;
-        } else {
-          return (
-            <SettingsItem
-              key={index}
-              icon={item.icon}
-              label={item.label}
-              onPress={item.onPress}
-            />
-          );
-        }
+        return (
+          <SettingsItem
+            key={index}
+            icon={item.icon}
+            label={item.label}
+            onPress={item.onPress}
+          />
+        );
       })}
       <View
         style={{
@@ -144,6 +142,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                 fontSize: 20,
                 marginVertical: 4,
                 textAlign: "left",
+                fontWeight: "600",
               }}
             />
             <StyledText
@@ -152,6 +151,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                 color: "white",
                 fontSize: 14,
                 marginVertical: 4,
+                fontWeight: "500",
               }}
             />
             <View
@@ -159,6 +159,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                 flexDirection: "row",
                 justifyContent: "flex-end",
                 width: "95%",
+                marginTop: 16,
               }}
             >
               <Pressable
@@ -175,7 +176,10 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                   setIsModalOpen(false);
                 }}
               >
-                <StyledText title="Cancel" style={{ color: "white" }} />
+                <StyledText
+                  title="Cancel"
+                  style={{ color: "white", fontWeight: "500" }}
+                />
               </Pressable>
               <Pressable
                 style={{
@@ -188,13 +192,26 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                   radius: 30,
                 }}
                 onPress={async () => {
-                  setIsModalOpen(false);
-                  await AsyncStorage.removeItem("@storage_Key");
-                  await Wallet.killSession();
-                  navigation.replace("Login");
+                  const userTokens = await AsyncStorage.getItem("@user_tokens");
+                  await AsyncStorage.removeItem("@user_tokens");
+                  userStore.setCurrentProfile(undefined);
+
+                  if (userTokens) {
+                    const tokens = JSON.parse(userTokens);
+                    if (tokens.viaDesktop) {
+                      navigation.replace("Login");
+                    }
+                    if (!tokens.viaDesktop) {
+                      await Wallet.killSession();
+                      navigation.replace("Login");
+                    }
+                  }
                 }}
               >
-                <StyledText title="Log Out" style={{ color: "red" }} />
+                <StyledText
+                  title="Log Out"
+                  style={{ color: "red", fontWeight: "500" }}
+                />
               </Pressable>
             </View>
           </View>

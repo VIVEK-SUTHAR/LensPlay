@@ -28,6 +28,7 @@ export default gql`
 		profileId: id
 		name
 		bio
+		id
 		attributes {
 			displayType
 			traitType

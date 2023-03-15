@@ -15,9 +15,8 @@ import { RootTabScreenProps } from "../types/navigation/types";
 import useNotifications from "../hooks/useFeed";
 import Tabs, { Tab } from "../components/UI/Tabs";
 import { NotificationTypes } from "../components/Notifications/index.d";
-import Icon from "../components/Icon";
-import PleaseLogin from "../components/PleaseLogin";
 import { useGuestStore } from "../store/GuestStore";
+import PleaseLogin from "../components/PleaseLogin";
 
 const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -28,199 +27,113 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const { data, error, loading, refetch } = useNotifications();
 
   if (error) console.log(error);
-
+  if (isGuest) return <PleaseLogin />;
   if (loading) return <Loader />;
-
   if (!data) return <NotFound />;
+
+  const NotificationTabs = [
+    {
+      name: "All",
+      type: "All",
+    },
+    {
+      name: "Collect",
+      type: NotificationTypes.COLLECT_NOTIFICATION,
+    },
+    {
+      name: "Comment",
+      type: NotificationTypes.COMMENT_NOTIFICATION,
+    },
+    {
+      name: "Follow",
+      type: NotificationTypes.FOLLOW_NOTIFICATION,
+    },
+    {
+      name: "Mention",
+      type: NotificationTypes.MENTION_NOTIFICATION,
+    },
+  ];
+
+  const FilterNotification = ({
+    notificationType,
+  }: {
+    notificationType: string;
+  }) => {
+    if (notificationType === "All") {
+      return (
+        <FlatList
+          data={data.result.items}
+          keyExtractor={(_, index) => index.toString()}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => {
+                setRefreshing(true);
+                refetch({
+                  pid: userStore.currentProfile?.id,
+                }).then(() => setRefreshing(false));
+              }}
+              colors={[theme.PRIMARY]}
+              progressBackgroundColor={"black"}
+            />
+          }
+          renderItem={({ item }) => (
+            <NotificationCard navigation={navigation} notification={item} />
+          )}
+        />
+      );
+    } else {
+      return (
+        <FlatList
+          data={data.result.items}
+          keyExtractor={(_, index) => index.toString()}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => {
+                setRefreshing(true);
+                refetch({
+                  pid: userStore.currentProfile?.id,
+                }).then(() => setRefreshing(false));
+              }}
+              colors={[theme.PRIMARY]}
+              progressBackgroundColor={"black"}
+            />
+          }
+          renderItem={({ item }) => {
+            if (item.__typename === notificationType) {
+              return (
+                <NotificationCard navigation={navigation} notification={item} />
+              );
+            }
+          }}
+          estimatedItemSize={10}
+        />
+      );
+    }
+  };
 
   if (data) {
     return (
       <SafeAreaView style={styles.container}>
-        {isGuest ? (
-          <PleaseLogin />
-        ) : (
-          <Tabs>
+        <Tabs>
+          {NotificationTabs.map((tab, index) => (
             <Tab.Screen
-              name="All"
+              name={tab.name}
+              key={index}
               children={() => (
-                <FlatList
+                <View
                   style={{
+                    flex: 1,
                     backgroundColor: "black",
                   }}
-                  data={data.result.items}
-                  keyExtractor={(_, index) => index.toString()}
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={refreshing}
-                      onRefresh={() => {
-                        setRefreshing(true);
-                        refetch({
-                          pid: userStore.currentProfile?.id,
-                        }).then(() => setRefreshing(false));
-                      }}
-                      colors={[theme.PRIMARY]}
-                      progressBackgroundColor={"black"}
-                    />
-                  }
-                  renderItem={({ item }) => (
-                    <NotificationCard
-                      navigation={navigation}
-                      notification={item}
-                    />
-                  )}
-                />
+                >
+                  <FilterNotification notificationType={tab.type} />
+                </View>
               )}
             />
-            <Tab.Screen
-              name="Collect"
-              children={() => (
-                <FlatList
-                  style={{
-                    backgroundColor: "black",
-                  }}
-                  data={data.result.items}
-                  keyExtractor={(_, index) => index.toString()}
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={refreshing}
-                      onRefresh={() => {
-                        setRefreshing(true);
-                        refetch({
-                          pid: userStore.currentProfile?.id,
-                        }).then(() => setRefreshing(false));
-                      }}
-                      colors={[theme.PRIMARY]}
-                      progressBackgroundColor={"black"}
-                    />
-                  }
-                  renderItem={({ item }) => {
-                    if (
-                      item.__typename === NotificationTypes.COLLECT_NOTIFICATION
-                    ) {
-                      return (
-                        <NotificationCard
-                          navigation={navigation}
-                          notification={item}
-                        />
-                      );
-                    }
-                  }}
-                />
-              )}
-            />
-            <Tab.Screen
-              name="Comment"
-              children={() => (
-                <FlatList
-                  style={{
-                    backgroundColor: "black",
-                  }}
-                  data={data.result.items}
-                  keyExtractor={(_, index) => index.toString()}
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={refreshing}
-                      onRefresh={() => {
-                        setRefreshing(true);
-                        refetch({
-                          pid: userStore.currentProfile?.id,
-                        }).then(() => setRefreshing(false));
-                      }}
-                      colors={[theme.PRIMARY]}
-                      progressBackgroundColor={"black"}
-                    />
-                  }
-                  renderItem={({ item }) => {
-                    if (
-                      item.__typename === NotificationTypes.COMMENT_NOTIFICATION
-                    ) {
-                      return (
-                        <NotificationCard
-                          navigation={navigation}
-                          notification={item}
-                        />
-                      );
-                    }
-                  }}
-                />
-              )}
-            />
-            <Tab.Screen
-              name="Follow"
-              children={() => (
-                <FlatList
-                  style={{
-                    backgroundColor: "black",
-                  }}
-                  data={data.result.items}
-                  keyExtractor={(_, index) => index.toString()}
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={refreshing}
-                      onRefresh={() => {
-                        setRefreshing(true);
-                        refetch({
-                          pid: userStore.currentProfile?.id,
-                        }).then(() => setRefreshing(false));
-                      }}
-                      colors={[theme.PRIMARY]}
-                      progressBackgroundColor={"black"}
-                    />
-                  }
-                  renderItem={({ item }) => {
-                    if (
-                      item.__typename === NotificationTypes.FOLLOW_NOTIFICATION
-                    ) {
-                      return (
-                        <NotificationCard
-                          navigation={navigation}
-                          notification={item}
-                        />
-                      );
-                    }
-                  }}
-                />
-              )}
-            />
-            <Tab.Screen
-              name="Mention"
-              children={() => (
-                <FlatList
-                  style={{
-                    backgroundColor: "black",
-                  }}
-                  data={data.result.items}
-                  keyExtractor={(_, index) => index.toString()}
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={refreshing}
-                      onRefresh={() => {
-                        setRefreshing(true);
-                        refetch({
-                          pid: userStore.currentProfile?.id,
-                        }).then(() => setRefreshing(false));
-                      }}
-                      colors={[theme.PRIMARY]}
-                      progressBackgroundColor={"black"}
-                    />
-                  }
-                  renderItem={({ item }) => {
-                    if (
-                      item.__typename === NotificationTypes.MENTION_NOTIFICATION
-                    ) {
-                      return (
-                        <NotificationCard
-                          navigation={navigation}
-                          notification={item}
-                        />
-                      );
-                    }
-                  }}
-                />
-              )}
-            />
-          </Tabs>
-        )}
+          ))}
+        </Tabs>
       </SafeAreaView>
     );
   }

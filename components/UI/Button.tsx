@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   ColorValue,
   Pressable,
+  Animated,
 } from "react-native";
 import React from "react";
 import StyledText from "./StyledText";
@@ -30,6 +31,8 @@ interface ButtonProps {
   iconPosition?: "left" | "right";
   disabled?: boolean;
   bytes?: boolean;
+  animated?: boolean;
+  scale?: number;
 }
 
 const Button = (props: ButtonProps): JSX.Element => {
@@ -54,17 +57,19 @@ const Button = (props: ButtonProps): JSX.Element => {
     iconPosition = "left",
     disabled,
     bytes = false,
+    animated = false,
+    scale = 0.9,
     ...rest
   } = props;
 
   var newStyle = Object.assign({}, textStyle, {
     textAlign: "center",
   });
-
+  const scaleRef = React.useRef(new Animated.Value(1)).current;
   return (
     <Pressable
       android_ripple={{
-        color: type === "outline" ? theme.PRIMARY : "rgba(255,255,255,0.08)",
+        color: "rgba(255,255,255,0.08)",
         radius: borderRadius * ripple_radius,
       }}
       style={[
@@ -75,14 +80,34 @@ const Button = (props: ButtonProps): JSX.Element => {
       ]}
       {...rest}
       onPress={
-        onPress
+        onPress && !disabled
           ? onPress
           : () => {
-              console.log("[Error]:onPress handler is missing");
+              console.log(
+                "[Error]:onPress handler is missing or disabled button"
+              );
             }
       }
+      onPressIn={(e) => {
+        e.preventDefault();
+        if (!animated) return;
+        Animated.timing(scaleRef, {
+          toValue: scale,
+          duration: 50,
+          useNativeDriver: true,
+        }).start();
+      }}
+      onPressOut={(e) => {
+        e.preventDefault();
+        if (!animated) return;
+        Animated.timing(scaleRef, {
+          toValue: 1,
+          duration: 50,
+          useNativeDriver: true,
+        }).start();
+      }}
     >
-      <View
+      <Animated.View
         style={{
           display: "flex",
           flexDirection: bytes ? "column" : "row",
@@ -90,7 +115,7 @@ const Button = (props: ButtonProps): JSX.Element => {
           borderRadius: borderRadius,
           justifyContent: textStyle ? "center" : "space-between",
           backgroundColor: disabled
-            ? "#cccccc"
+            ? "#c0c0c0"
             : type === "filled"
             ? bg
             : "transparent",
@@ -100,6 +125,11 @@ const Button = (props: ButtonProps): JSX.Element => {
           paddingHorizontal: px,
           marginHorizontal: mx,
           marginVertical: my,
+          transform: [
+            {
+              scale: scaleRef,
+            },
+          ],
         }}
       >
         {isLoading ? (
@@ -109,7 +139,7 @@ const Button = (props: ButtonProps): JSX.Element => {
             {icon && iconPosition === "left" ? (
               <View
                 style={{
-                  marginRight: 8,
+                  marginRight: bytes || title?.length === 0 ? 0 : 8,
                 }}
               >
                 {icon}
@@ -131,7 +161,7 @@ const Button = (props: ButtonProps): JSX.Element => {
             )}
           </>
         )}
-      </View>
+      </Animated.View>
     </Pressable>
   );
 };
