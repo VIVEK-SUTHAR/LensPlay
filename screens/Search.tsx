@@ -277,14 +277,14 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
       ) : (
         <>
           {isRecommended && !isGuest && (
-            <View style={{ marginVertical: 10 }}>
+            <View style={{ marginBottom: 16 }}>
               <Heading
                 title={"Recommended Channels"}
                 style={{
                   color: "white",
                   fontSize: 20,
                   fontWeight: "600",
-                  marginHorizontal: 20,
+                  marginHorizontal: 16,
                 }}
               />
               {recommended.length === 0 && searchType === "videos" ? (
@@ -372,6 +372,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
+    paddingVertical: 16,
   },
   headerContainer: {
     flexDirection: "row",
