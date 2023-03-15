@@ -192,10 +192,10 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                   radius: 30,
                 }}
                 onPress={async () => {
-                  console.log("in logout");
                   const isDeskTopLogin = await AsyncStorage.getItem(
                     "@viaDeskTop"
                   );
+                  await AsyncStorage.removeItem("@user_tokens");
                   if (isDeskTopLogin) {
                     await AsyncStorage.removeItem("@viaDeskTop");
                     navigation.replace("Login");
