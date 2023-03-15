@@ -192,19 +192,17 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                   radius: 30,
                 }}
                 onPress={async () => {
-                  const userTokens = await AsyncStorage.getItem("@user_tokens");
-                  await AsyncStorage.removeItem("@user_tokens");
-                  userStore.setCurrentProfile(undefined);
-
-                  if (userTokens) {
-                    const tokens = JSON.parse(userTokens);
-                    if (tokens.viaDesktop) {
-                      navigation.replace("Login");
-                    }
-                    if (!tokens.viaDesktop) {
-                      await Wallet.killSession();
-                      navigation.replace("Login");
-                    }
+                  console.log("in logout");
+                  const isDeskTopLogin = await AsyncStorage.getItem(
+                    "@viaDeskTop"
+                  );
+                  if (isDeskTopLogin) {
+                    await AsyncStorage.removeItem("@viaDeskTop");
+                    navigation.replace("Login");
+                    return;
+                  } else {
+                    await Wallet.killSession();
+                    navigation.replace("Login");
                   }
                 }}
               >

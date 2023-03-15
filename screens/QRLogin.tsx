@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import React, { useEffect, useState } from "react";
 import {
@@ -140,6 +141,7 @@ const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
           setRefreshToken(tokens?.refreshToken);
           await storeTokens(tokens?.accessToken, tokens?.refreshToken, true);
           await HandleDefaultProfile(address);
+          await AsyncStorage.setItem("@viaDeskTop", "true");
           navigation.navigate("Root");
         }
       } catch (error) {
