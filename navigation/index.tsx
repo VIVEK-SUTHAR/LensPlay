@@ -206,8 +206,9 @@ function RootNavigator() {
         name="FullImage"
         component={FullImage}
         options={{
-          animation: "fade_from_bottom",
+          animation: "default",
           headerShown: false,
+          presentation: "transparentModal",
           headerStyle: { backgroundColor: "transparent" },
           headerTintColor: theme.PRIMARY,
           headerTitle: "",
