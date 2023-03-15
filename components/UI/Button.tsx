@@ -64,7 +64,7 @@ const Button = (props: ButtonProps): JSX.Element => {
   return (
     <Pressable
       android_ripple={{
-        color: type === "outline" ? theme.PRIMARY : "rgba(255,255,255,0.08)",
+        color: "rgba(255,255,255,0.08)",
         radius: borderRadius * ripple_radius,
       }}
       style={[
@@ -75,10 +75,12 @@ const Button = (props: ButtonProps): JSX.Element => {
       ]}
       {...rest}
       onPress={
-        onPress
+        onPress && !disabled
           ? onPress
           : () => {
-              console.log("[Error]:onPress handler is missing");
+              console.log(
+                "[Error]:onPress handler is missing or disabled button"
+              );
             }
       }
     >
@@ -90,7 +92,7 @@ const Button = (props: ButtonProps): JSX.Element => {
           borderRadius: borderRadius,
           justifyContent: textStyle ? "center" : "space-between",
           backgroundColor: disabled
-            ? "#cccccc"
+            ? "#c0c0c0"
             : type === "filled"
             ? bg
             : "transparent",

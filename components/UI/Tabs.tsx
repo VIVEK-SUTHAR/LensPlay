@@ -23,7 +23,7 @@ export default function Tabs({ children }: { children: ReactNode }) {
         },
         tabBarActiveTintColor: "white",
         tabBarInactiveTintColor: "gray",
-        tabBarStyle: { backgroundColor: "transparent" },
+        tabBarStyle: { backgroundColor: "black" },
         tabBarIndicatorStyle: {
           backgroundColor: primary,
           height: 3,

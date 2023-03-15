@@ -40,6 +40,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const theme = useThemeStore();
   const userStore = useProfile();
   const { isGuest } = useGuestStore();
+  const { currentProfile } = useProfile();
 
   const { loading, data: Profile, error, refetch } = useUserProfile(
     userStore?.currentProfile?.id
