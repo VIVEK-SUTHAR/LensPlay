@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   ColorValue,
   Pressable,
+  Animated,
 } from "react-native";
 import React from "react";
 import StyledText from "./StyledText";
@@ -30,6 +31,8 @@ interface ButtonProps {
   iconPosition?: "left" | "right";
   disabled?: boolean;
   bytes?: boolean;
+  animated?: boolean;
+  scale?: number;
 }
 
 const Button = (props: ButtonProps): JSX.Element => {
@@ -54,13 +57,15 @@ const Button = (props: ButtonProps): JSX.Element => {
     iconPosition = "left",
     disabled,
     bytes = false,
+    animated = false,
+    scale=0.9,
     ...rest
   } = props;
 
   var newStyle = Object.assign({}, textStyle, {
     textAlign: "center",
   });
-
+  const scaleRef = React.useRef(new Animated.Value(1)).current;
   return (
     <Pressable
       android_ripple={{
@@ -83,8 +88,26 @@ const Button = (props: ButtonProps): JSX.Element => {
               );
             }
       }
+      onPressIn={(e) => {
+        e.preventDefault();
+        if (!animated) return;
+        Animated.timing(scaleRef, {
+          toValue: scale,
+          duration: 100,
+          useNativeDriver: true,
+        }).start();
+      }}
+      onPressOut={(e) => {
+        e.preventDefault();
+        if (!animated) return;
+        Animated.timing(scaleRef, {
+          toValue: 1,
+          duration: 100,
+          useNativeDriver: true,
+        }).start();
+      }}
     >
-      <View
+      <Animated.View
         style={{
           display: "flex",
           flexDirection: bytes ? "column" : "row",
@@ -102,6 +125,11 @@ const Button = (props: ButtonProps): JSX.Element => {
           paddingHorizontal: px,
           marginHorizontal: mx,
           marginVertical: my,
+          transform: [
+            {
+              scale: scaleRef,
+            },
+          ],
         }}
       >
         {isLoading ? (
@@ -133,7 +161,7 @@ const Button = (props: ButtonProps): JSX.Element => {
             )}
           </>
         )}
-      </View>
+      </Animated.View>
     </Pressable>
   );
 };

@@ -18,26 +18,32 @@ export default function EditAvatar() {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
   const windowHeight = Dimensions.get("window").height;
-
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const uploadToIPFS = async () => {
+    setIsUpdating(true);
     if (imageBlob) {
-      const imageCID = await uploadImageToIPFS(imageBlob);
-      const updateOnLens = await client.mutate({
-        mutation: updateProfilePictureQuery,
-        variables: {
-          profileId: currentProfile?.id,
-          url: `ipfs://${imageCID}`,
-        },
-        context: {
-          headers: {
-            "x-access-token": `Bearer ${accessToken}`,
+      try {
+        const imageCID = await uploadImageToIPFS(imageBlob);
+        const updateOnLens = await client.mutate({
+          mutation: updateProfilePictureQuery,
+          variables: {
+            profileId: currentProfile?.id,
+            url: `ipfs://${imageCID}`,
           },
-        },
-      });
-      if (updateOnLens.data) {
-        toast.show("Channel image updated", ToastType.SUCCESS, true);
-      } else {
-        toast.show("Something went wrong", ToastType.ERROR, true);
+          context: {
+            headers: {
+              "x-access-token": `Bearer ${accessToken}`,
+            },
+          },
+        });
+        if (updateOnLens.data) {
+          toast.show("Channel image updated", ToastType.SUCCESS, true);
+        } else {
+          toast.show("Something went wrong", ToastType.ERROR, true);
+        }
+      } catch (error) {
+      } finally {
+        setIsUpdating(false);
       }
     }
   };
@@ -115,6 +121,9 @@ export default function EditAvatar() {
             fontWeight: "600",
             color: "black",
           }}
+          animated={true}
+          scale={0.8}
+          isLoading={isUpdating}
           onPress={uploadToIPFS}
         />
       </View>
