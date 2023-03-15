@@ -263,7 +263,7 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
   const theme = useThemeStore();
   const user = useProfile();
-  const { setAccessToken } = useAuthStore();
+  const { setAccessToken, setRefreshToken } = useAuthStore();
 
   React.useEffect(() => {
     const handle = async () => {
@@ -275,9 +275,13 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
     Linking.addEventListener("url", (e) => {
       handleNavigation(e.url);
     });
+  }, []);
+
+  React.useEffect(() => {
+    updateTokens();
     setInterval(() => {
       updateTokens();
-    }, 840000);
+    }, 60000);
   }, []);
 
   function handleNavigation(url: string | null) {
@@ -310,11 +314,33 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
         ((currentTime - generatedTime) % (1000 * 60 * 60)) / (1000 * 60)
       );
       if (minute < 25) {
+        console.log(new Date(1678860002862).toLocaleTimeString());
+        
+        console.log(minute);
+
         return;
       } else {
+        console.log("25 min se jyada time bit gaya,user app me hai");
+        
+        console.log("updating tokens on reload");
         const newTokens = await getAccessFromRefresh(tokens.refreshToken);
+        console.log("got new tokens");
         setAccessToken(newTokens?.accessToken);
-        storeTokens(newTokens?.accessToken, newTokens?.refreshToken);
+        setRefreshToken(newTokens?.refreshToken);
+        if (tokens.viaDesktop) {
+          console.log("got via desktop ");
+          console.log("new access",newTokens?.accessToken);
+          console.log("new refresh",newTokens?.refreshToken);
+          
+          await storeTokens(newTokens?.accessToken, newTokens?.refreshToken, true);
+          console.log("stored new tokens in LS");
+          return;
+        }
+        if (!tokens.viaDesktop) {
+          console.log("got via mobile login");
+          storeTokens(newTokens?.accessToken, newTokens?.refreshToken);
+          return;
+        }
       }
     }
   };
