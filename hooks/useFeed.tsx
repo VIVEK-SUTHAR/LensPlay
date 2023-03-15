@@ -28,7 +28,6 @@ const useFeed = () => {
       },
     },
     initialFetchPolicy: "cache-and-network",
-    pollInterval: 600000,
     refetchWritePolicy: "merge",
   });
   return { data, error, loading, refetch };
@@ -49,7 +48,6 @@ const useExplorePublication = () => {
       },
     },
     fetchPolicy: "cache-and-network",
-    pollInterval: 500000,
     skip: !currentProfile?.id,
   });
   return { data, error, loading };

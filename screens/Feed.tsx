@@ -1,32 +1,50 @@
-import React from "react";
+import { StatusBar } from "expo-status-bar";
+import AnimatedLottieView from "lottie-react-native";
+import React, { useState } from "react";
 import {
   FlatList,
   RefreshControl,
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  View,
+  View
 } from "react-native";
-import { useState } from "react";
-import VideoCard from "../components/VideoCard";
-import { useAuthStore, useThemeStore } from "../store/Store";
-import { RootTabScreenProps } from "../types/navigation/types";
-import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
-import AnimatedLottieView from "lottie-react-native";
-import Heading from "../components/UI/Heading";
-import Button from "../components/UI/Button";
-import { useFeed } from "../hooks/useFeed";
-import { StatusBar } from "expo-status-bar";
-import { useGuestStore } from "../store/GuestStore";
 import PleaseLogin from "../components/PleaseLogin";
+import Button from "../components/UI/Button";
+import Heading from "../components/UI/Heading";
+import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
+import VideoCard from "../components/VideoCard";
+import { useFeed } from "../hooks/useFeed";
+import { useGuestStore } from "../store/GuestStore";
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
+import { RootTabScreenProps } from "../types/navigation/types";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const theme = useThemeStore();
-  const { accessToken } = useAuthStore();
+  const {accessToken,refreshToken } = useAuthStore();
   const { isGuest } = useGuestStore();
-
+  const { currentProfile } = useProfile();
   const { data: Feeddata, error, loading, refetch } = useFeed();
+  
+  if (error) {
+    console.log(error);
+    console.log(accessToken);
+    
+    refetch({ id: currentProfile?.id });
+  }
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    try {
+      refetch({ id: currentProfile?.id }).then((res) => {
+        setRefreshing(false);
+      });
+    } catch (error) {
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   if (isGuest) return <PleaseLogin />;
   if (loading) return <Loader />;
@@ -43,7 +61,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
-              onRefresh={() => {}}
+              onRefresh={onRefresh}
               colors={[theme.PRIMARY]}
               progressBackgroundColor={"black"}
             />

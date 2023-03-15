@@ -12,6 +12,8 @@ const verifyTokens = async (
         token: accessToken,
       },
     });
+    console.log(result);
+    
     return result.data.verify;
   } catch (error) {
     if (error instanceof Error) {
