@@ -17,95 +17,43 @@ import { ToastType } from "../../../types/Store";
 
 type DisLikeButtonProps = {
   id: string;
-  isalreadyDisLiked: string | null;
+  isalreadyDisLiked: boolean;
 };
 
 const DisLikeButton = ({ isalreadyDisLiked, id }: DisLikeButtonProps) => {
   const authStore = useAuthStore();
   const userStore = useProfile();
-  const [isAlreadyDisliked, setIsAlreadyDisliked] = useState<boolean>(
-    isalreadyDisLiked === "DOWNVOTE" ? true : false
-  );
-  const [isDisliked, setIsDisliked] = useState<boolean>(false);
   const { isGuest } = useGuestStore();
   const toast = useToast();
-  // const [clicked, setClicked] = useState<Boolean>(false);
-  var clicked = false;
   const { PRIMARY } = useThemeStore();
-  const likedPublication = useReactionStore();
-  const thumbup = likedPublication.likedPublication;
-  const thumbdown = likedPublication.dislikedPublication;
-
-  const checkAlreadyDislike = () => {
-    if (isAlreadyDisliked && !clicked) {
-      likedPublication.addToDislikedPublications(id, thumbup);
-    }
-  };
-
-  const checkFirstClick = () => {
-    thumbdown.map((publication) => {
-      if (publication.id === id) {
-        clicked = true;
-      }
-    });
-    thumbup.map((publication) => {
-      if (publication.id === id) {
-        clicked = true;
-      }
-    });
-  };
-
-  useEffect(() => {
-    checkFirstClick();
-  }, []);
-  useEffect(() => {
-    checkAlreadyDislike();
-  }, []);
-
-  useEffect(() => {
-    thumbdown.map((publication) => {
-      if (publication.id === id) {
-        setIsDisliked(true);
-        clicked = true;
-      }
-    });
-    thumbup.map((publication) => {
-      if (publication.id === id) {
-        setIsDisliked(false);
-        setIsAlreadyDisliked(false);
-        clicked = true;
-      }
-    });
-  }, [thumbup, thumbdown]);
+  const {videopageStats, setVideoPageStats} = useReactionStore();
+  // console.log(isalreadyDisLiked);
+  // console.log(videopageStats.isDisliked, 'video');
+  
 
   const onDislike = async () => {
     if (isGuest) {
       toast.show("Please Login", ToastType.ERROR, true);
       return;
     }
-    if (!isDisliked && !isGuest) {
-      addLike(
+    if (!isalreadyDisLiked && !isGuest) {
+      console.log('here');
+      
+      const data = await addLike(
         authStore.accessToken,
         userStore.currentProfile?.id,
         id,
         "DOWNVOTE"
-      ).then((res) => {
-        if (res) {
-          if (res.addReaction === null) {
-            setIsDisliked(true);
-            likedPublication.addToDislikedPublications(id, thumbup);
-          }
-        }
-      });
-      removeLike(authStore.accessToken, userStore.currentProfile?.id, id)
-        .then((res) => {})
-        .catch((error) => {
-          if (error instanceof Error) {
-            ToastAndroid.show("Can't react to post", ToastAndroid.SHORT);
-          }
-        });
+      );
+      console.log(data);
+      
+      const res = await removeLike(authStore.accessToken, userStore.currentProfile?.id, id);
+      if (res?.removeReaction === null){
+        setVideoPageStats(false, true, videopageStats.likeCount - 1)
+      }
+      console.log(res);
+      
     }
-    setIsDisliked(true);
   };
 
   return (
@@ -123,12 +71,12 @@ const DisLikeButton = ({ isalreadyDisLiked, id }: DisLikeButtonProps) => {
         fontWeight: "500",
         color: "white",
       }}
-      borderColor={isDisliked || isAlreadyDisliked ? PRIMARY : "white"}
+      borderColor={isalreadyDisLiked ? PRIMARY : "white"}
       icon={
         <Icon
           name="dislike"
           size={20}
-          color={isDisliked || isAlreadyDisliked ? PRIMARY : "white"}
+          color={isalreadyDisLiked ? PRIMARY : "white"}
         />
       }
     />

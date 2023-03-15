@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client";
 import React from "react";
+import fetchReaction from "../apollo/Queries/fetchReaction";
 import getComments from "../apollo/Queries/getComments";
 import getFeed from "../apollo/Queries/getFeed";
 import getFollowers from "../apollo/Queries/getFollowers";
@@ -74,9 +75,11 @@ const useUserPublication = (publicationId: string | undefined) => {
 
 const useComments = (publicationId: string) => {
   const { accessToken } = useAuthStore();
+  const {currentProfile} = useProfile();
   const { data, error, loading } = useQuery(getComments, {
     variables: {
       postId: publicationId,
+      id: currentProfile?.id
     },
     context: {
       headers: {
@@ -172,6 +175,20 @@ const useNotifications = () => {
   return { data, error, loading, refetch, startPolling, previousData };
 };
 
+const useReaction = ( pubId: string) => {
+  const { currentProfile } = useProfile();
+
+  const { data, error, loading } = useQuery(fetchReaction, {
+    variables: {
+      id: currentProfile?.id,
+      pubId: pubId,
+    },
+    fetchPolicy: "network-only",
+    refetchWritePolicy: "merge",
+  });
+  return { data, error, loading };
+};
+
 const useIsMirrored = (publid: string) => {
   const { currentProfile } = useProfile();
 
@@ -228,4 +245,5 @@ export {
   useFollowing,
   useSearchProfile,
   useNotifications,
+  useReaction
 };

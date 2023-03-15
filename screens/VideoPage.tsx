@@ -22,6 +22,7 @@ import {
 import DisLikeButton from "../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
 import StyledText from "../components/UI/StyledText";
+import { useReaction } from "../hooks/useFeed";
 
 const VideoPage = ({
   navigation,
@@ -29,11 +30,9 @@ const VideoPage = ({
 }: RootStackScreenProps<"VideoPage">) => {
   const { activePublication } = useActivePublication();
   const PublicationStats = activePublication?.stats;
-  const [likes, setLikes] = useState<number>(
-    activePublication?.stats?.totalUpvotes
-  );
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(false);
+  const { reaction, comment, setReaction, setComments, videopageStats, setVideoPageStats, clearStats } = useReactionStore();
 
   const [isAlreadyMirrored, setIsAlreadyMirrored] = useState<boolean>(false);
 
@@ -41,16 +40,34 @@ const VideoPage = ({
     setStatusBarHidden(false, "fade");
     setInFullsreen(!inFullscreen);
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
-    if (!inFullscreen) navigation.goBack();
+    if (!inFullscreen) {
+      navigation.goBack()
+      setReaction(false);
+      setComments(false);
+      clearStats();
+    }
     return true;
   }
 
   useEffect(() => {
+
     BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
   }, []);
 
+
+  const { data: ReactionData, error, loading } = useReaction(activePublication?.id);
+  console.log(videopageStats);
+  
+
   // const PublicationStats = route.params.stats;
   // const { activePublication } = useActivePublication();
+
+  if (ReactionData) {
+    if (!reaction) {
+      setVideoPageStats(ReactionData?.publication?.reaction === "UPVOTE", ReactionData?.publication?.reaction === "DOWNVOTE", ReactionData?.publication?.stats?.totalUpvotes);
+      setReaction(true);
+    }
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -87,41 +104,48 @@ const VideoPage = ({
             horizontal={true}
             showsHorizontalScrollIndicator={false}
           >
-            <LikeButton
-              like={activePublication?.stats?.totalUpvotes}
-              id={activePublication?.id}
-              isalreadyLiked={activePublication?.reaction}
-            />
-            <DisLikeButton
-              isalreadyDisLiked={activePublication?.reaction}
-              id={activePublication?.id}
-            />
-            <MirrorButton
-              id={activePublication?.id}
-              isAlreadyMirrored={isAlreadyMirrored}
-              setIsAlreadyMirrored={setIsAlreadyMirrored}
-              totalMirrors={activePublication.stats?.totalAmountOfMirrors}
-              bannerUrl={activePublication?.metadata?.cover}
-            />
-            <CollectButton
-              publicationId={activePublication?.id}
-              bannerUrl={activePublication?.metadata?.cover}
-              title={
-                activePublication?.profile?.name ||
-                activePublication?.profile?.handle
-              }
-              totalCollects={PublicationStats.totalAmountOfCollects}
-              videoUrl={activePublication?.metadata?.media[0]?.original?.url}
-              hasCollected={activePublication?.hasCollectedByMe}
-            />
-            <ShareButton
-              title={
-                activePublication?.profile?.name ||
-                activePublication?.profile.handle
-              }
-              publicationId={activePublication?.id}
-            />
-            <ReportButton publicationId={activePublication?.id} />
+            {
+              loading && !reaction && !comment ? (
+                <View>
+                  <StyledText title={'Loading'} style={{ color: 'white' }} />
+                </View>
+              ) : (<>
+                <LikeButton
+                  like={videopageStats?.likeCount}
+                  id={activePublication?.id}
+                  isalreadyLiked={videopageStats?.isLiked}
+                />
+                <DisLikeButton
+                  isalreadyDisLiked={videopageStats?.isDisliked}
+                  id={activePublication?.id}
+                />
+                <MirrorButton
+                  id={activePublication?.id}
+                  isAlreadyMirrored={isAlreadyMirrored}
+                  setIsAlreadyMirrored={setIsAlreadyMirrored}
+                  totalMirrors={activePublication.stats?.totalAmountOfMirrors}
+                  bannerUrl={activePublication?.metadata?.cover}
+                />
+                <CollectButton
+                  publicationId={activePublication?.id}
+                  bannerUrl={activePublication?.metadata?.cover}
+                  title={
+                    activePublication?.profile?.name ||
+                    activePublication?.profile?.handle
+                  }
+                  totalCollects={PublicationStats.totalAmountOfCollects}
+                  videoUrl={activePublication?.metadata?.media[0]?.original?.url}
+                  hasCollected={activePublication?.hasCollectedByMe}
+                />
+                <ShareButton
+                  title={
+                    activePublication?.profile?.name ||
+                    activePublication?.profile.handle
+                  }
+                  publicationId={activePublication?.id}
+                />
+                <ReportButton publicationId={activePublication?.id} /></>)
+            }
           </ScrollView>
           <StyledText
             title="Comments"

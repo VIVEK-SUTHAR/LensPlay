@@ -10,7 +10,7 @@ import {
   useReactionStore,
   useToast,
 } from "../../store/Store";
-import { addLike, freeMirror } from "../../api";
+import { addLike, freeMirror, removeLike } from "../../api";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
 import extractURLs from "../../utils/extractURL";
@@ -26,6 +26,7 @@ import { ToastType } from "../../types/Store";
 import RBSheet from "../UI/BottomSheet";
 import getIPFSLink from "../../utils/getIPFSLink";
 import formatHandle from "../../utils/formatHandle";
+import { PublicationStats } from "../../types/generated";
 
 type CommentCardProps = {
   avatar: string;
@@ -35,9 +36,10 @@ type CommentCardProps = {
   id: string;
   isFollowdByMe: boolean | undefined;
   name: string | undefined;
-  stats: CommentStats;
+  stats: PublicationStats;
   commentId: string;
   isIndexing?: boolean;
+  isAlreadyLiked: boolean;
 };
 
 const CommentCard = ({
@@ -51,41 +53,50 @@ const CommentCard = ({
   stats,
   commentId,
   isIndexing,
+  isAlreadyLiked
 }: CommentCardProps) => {
   const authStore = useAuthStore();
   const reactions = useReactionStore();
-  const [isalreadyDisLiked, setisalreadyDisLiked] = useState<Boolean>(false);
-  const [likes, setLikes] = useState<string>(stats?.totalUpvotes);
+  const [Liked, setLiked] = useState<boolean>(isAlreadyLiked);
+  const [likes, setLikes] = useState<number>(stats?.totalUpvotes);
   const navigation = useNavigation();
   const userStore = useProfile();
-  const likedComments = reactions.likedComments;
+  
   const { isGuest } = useGuestStore();
   const toast = useToast();
 
   const setLike = async () => {
     if (isIndexing) return;
-    if (!isalreadyDisLiked) {
-      addLike(
+    if (!Liked) {
+      const res = await addLike(
         authStore.accessToken,
         userStore.currentProfile?.id,
         commentId,
         "UPVOTE"
-      ).then((res) => {
-        if (res.addReaction === null) {
-          setLikes((prev) => prev + 1);
-          reactions.addToLikedComments(commentId);
-        }
-      });
+      )
+      if (res.addReaction === null) {
+        setLikes((prev) => prev + 1);
+      }
+    }
+    else {
+      const res = await removeLike(
+        authStore.accessToken,
+        userStore.currentProfile?.id,
+        commentId,
+      )
+      if (res.removeReaction === null){
+        setLikes((prev) => prev -  1);
+      }
     }
   };
 
-  useEffect(() => {
-    likedComments.map((id) => {
-      if (id.id === commentId) {
-        setisalreadyDisLiked(true);
-      }
-    });
-  }, [addLike]);
+  // useEffect(() => {
+  //   likedComments.map((id) => {
+  //     if (id.id === commentId) {
+  //       setisalreadyDisLiked(true);
+  //     }
+  //   });
+  // }, [addLike]);
 
   const collectRef = useRef(null);
   const mirrorRef = useRef(null);
@@ -247,13 +258,13 @@ const CommentCard = ({
                   return;
                 }
                 setLike();
-                setisalreadyDisLiked(true);
+                setLiked(prev => !prev);
               }}
               width={"auto"}
               bg="transparent"
               type={"filled"}
               textStyle={{
-                color: "white",
+                color: Liked?primary:"white",
                 fontSize: 14,
                 fontWeight: "500",
                 marginLeft: 4,
@@ -263,7 +274,7 @@ const CommentCard = ({
                 <Icon
                   name="like"
                   size={16}
-                  color={isalreadyDisLiked ? primary : "white"}
+                  color={Liked ? primary : "white"}
                 />
               }
             />
