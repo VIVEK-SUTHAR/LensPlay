@@ -96,8 +96,6 @@ const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
 
   async function HandleDefaultProfile(adress: string) {
     const userDefaultProfile = await getDefaultProfile(adress);
-    console.log(userDefaultProfile, "profile");
-
     if (userDefaultProfile) {
       setHasHandle(true);
       setCurrentProfile(userDefaultProfile);
@@ -134,7 +132,6 @@ const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
         }
 
         if (userData.fields.hasAccess) {
-          console.log("here");
           const tokens = await getTokens({
             address,
             signature: decryptedSignature,

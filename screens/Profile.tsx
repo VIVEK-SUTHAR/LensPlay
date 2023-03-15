@@ -368,48 +368,72 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
               </View>
               <View
                 style={{
-                  backgroundColor: "white",
-                  borderRadius: 8,
-                  paddingVertical: 8,
-                  marginTop: 16,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: 8,
                 }}
               >
-                <View
+                <Pressable
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    justifyContent: "space-around",
-                    paddingHorizontal: 16,
+                  }}
+                  onPress={() => {
+                    navigation.navigate("UserStats", {
+                      profileId: userStore.currentProfile?.id,
+                      activeTab: "subscriber",
+                    });
                   }}
                 >
-                  <Pressable
-                    android_ripple={{
-                      radius: 45,
-                      color: "gray",
-                    }}
-                    onPress={() => {
-                      navigation.navigate("UserStats", {
-                        profileId: userStore.currentProfile?.id,
-                      });
-                    }}
-                  >
-                    <StyledText
-                      title={`${profile?.stats?.totalFollowers} • Subscribers`}
-                      style={{ fontSize: 16, fontWeight: "600" }}
-                    />
-                  </Pressable>
-                  <View
-                    style={{
-                      height: 24,
-                      backgroundColor: "black",
-                      width: 2,
-                    }}
-                  ></View>
                   <StyledText
-                    title={`${AllVideosData?.publications?.items?.length} • Videos`}
-                    style={{ fontSize: 16, fontWeight: "600" }}
+                    title={profile?.stats?.totalFollowers}
+                    style={{
+                      fontSize: 14,
+                      fontWeight: "600",
+                      color: "white",
+                    }}
                   />
-                </View>
+                  <StyledText
+                    title={"subscribers"}
+                    style={{
+                      fontSize: 14,
+                      fontWeight: "500",
+                      color: "gray",
+                      marginLeft: 4,
+                    }}
+                  />
+                </Pressable>
+                <Pressable
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginLeft: 8,
+                  }}
+                  onPress={() => {
+                    navigation.navigate("UserStats", {
+                      profileId: userStore.currentProfile?.id,
+                      activeTab: "subscription",
+                    });
+                  }}
+                >
+                  <StyledText
+                    title={profile?.stats?.totalFollowing}
+                    style={{
+                      fontSize: 14,
+                      fontWeight: "600",
+                      color: "white",
+                    }}
+                  />
+                  <StyledText
+                    title={"subscription"}
+                    style={{
+                      fontSize: 14,
+                      fontWeight: "500",
+                      color: "gray",
+                      marginLeft: 4,
+                    }}
+                  />
+                </Pressable>
               </View>
               <View style={{ marginVertical: 24 }}>
                 {AllVideosData && (

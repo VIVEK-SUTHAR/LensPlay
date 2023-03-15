@@ -80,6 +80,7 @@ export type RootStackParamList = {
   };
   UserStats: {
     profileId?: string;
+    activeTab: string;
   };
   VideoPage: {
     publication: Pick<FeedItem, "root">;

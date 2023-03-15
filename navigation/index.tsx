@@ -314,30 +314,20 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
         ((currentTime - generatedTime) % (1000 * 60 * 60)) / (1000 * 60)
       );
       if (minute < 25) {
-        console.log(new Date(1678860002862).toLocaleTimeString());
-        
-        console.log(minute);
-
         return;
       } else {
-        console.log("25 min se jyada time bit gaya,user app me hai");
-        
-        console.log("updating tokens on reload");
         const newTokens = await getAccessFromRefresh(tokens.refreshToken);
-        console.log("got new tokens");
         setAccessToken(newTokens?.accessToken);
         setRefreshToken(newTokens?.refreshToken);
         if (tokens.viaDesktop) {
-          console.log("got via desktop ");
-          console.log("new access",newTokens?.accessToken);
-          console.log("new refresh",newTokens?.refreshToken);
-          
-          await storeTokens(newTokens?.accessToken, newTokens?.refreshToken, true);
-          console.log("stored new tokens in LS");
+          await storeTokens(
+            newTokens?.accessToken,
+            newTokens?.refreshToken,
+            true
+          );
           return;
         }
         if (!tokens.viaDesktop) {
-          console.log("got via mobile login");
           storeTokens(newTokens?.accessToken, newTokens?.refreshToken);
           return;
         }

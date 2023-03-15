@@ -16,9 +16,13 @@ import ProfileCardSkeleton from "../components/UI/ProfileCardSkeleton";
 import Icon from "../components/Icon";
 import Tabs, { Tab } from "../components/UI/Tabs";
 
-const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
+const UserStats = ({
+  navigation,
+  route,
+}: RootStackScreenProps<"UserStats">) => {
   const [headerTitle, setHeaderTitle] = useState<string>("Subscribers");
   const theme = useThemeStore();
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "",
@@ -78,6 +82,7 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
     </SafeAreaView>
   );
 };
+
 const Suscribers = () => {
   const { currentProfile } = useProfile();
   const { data, error, loading } = useFollowers(currentProfile?.id);
