@@ -52,11 +52,11 @@ const NotificationCard = ({
         );
       case NotificationTypes.MENTION_NOTIFICATION:
         return (
-
           <MentionNotification
+            key={React.useId()}
             navigation={navigation}
             notification={notification}
-            />
+          />
         );
     }
   };
@@ -65,7 +65,7 @@ const NotificationCard = ({
       <Pressable
         android_ripple={{
           borderless: false,
-          color:"rgba(255,255,255,0.1)"
+          color: "rgba(255,255,255,0.1)",
         }}
         style={{
           flexDirection: "row",

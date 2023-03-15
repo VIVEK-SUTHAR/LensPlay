@@ -15,6 +15,7 @@ const MentionNotification = ({
   return (
     <>
       <View
+        key={React.useId()}
         style={{
           height: 35,
           width: 35,
@@ -25,7 +26,7 @@ const MentionNotification = ({
       >
         <Icon name="mention" color="#CC5DE8" size={24} />
       </View>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }} key={React.useId()}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View>
             <Pressable
