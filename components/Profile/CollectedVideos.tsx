@@ -9,6 +9,7 @@ import { Feather } from "@expo/vector-icons";
 import VideoCard from "../VideoCard";
 import formatHandle from "../../utils/formatHandle";
 import Icon from "../Icon";
+import StyledText from "../UI/StyledText";
 
 type CollectedVideosProps = {
   navigation: any;
@@ -54,15 +55,34 @@ const CollectedVideos = ({
           alignItems: "center",
         }}
       >
-        <Heading
-          title={"Collected Videos"}
+        <View
           style={{
-            fontSize: 20,
-            color: "white",
-            fontWeight: "600",
+            flexDirection: "row",
+            alignItems: "center",
           }}
-        />
-
+        >
+          <Heading
+            title={"Collected Videos"}
+            style={{
+              fontSize: 20,
+              color: "white",
+              fontWeight: "600",
+            }}
+          />
+          {collectVideos.length > 0 ? (
+            <StyledText
+              title={`(${collectVideos?.length})`}
+              style={{
+                fontSize: 16,
+                color: "white",
+                fontWeight: "600",
+                marginLeft: 8,
+              }}
+            />
+          ) : (
+            <></>
+          )}
+        </View>
         <Pressable
           onPress={() => {
             navigation.navigate("YourVideos", {
