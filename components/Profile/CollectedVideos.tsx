@@ -1,20 +1,20 @@
-import { View, Pressable, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
-import Heading from "../UI/Heading";
-import { LensPublication } from "../../types/Lens/Feed";
+import { Pressable, ScrollView, View } from "react-native";
 import { client } from "../../apollo/client";
 import getCollectVideos from "../../apollo/Queries/getCollectVideos";
 import { useAuthStore } from "../../store/Store";
-import { Feather } from "@expo/vector-icons";
-import VideoCard from "../VideoCard";
+import { Scalars } from "../../types/generated";
+import { LensPublication } from "../../types/Lens/Feed";
 import formatHandle from "../../utils/formatHandle";
 import Icon from "../Icon";
+import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
+import VideoCard from "../VideoCard";
 
 type CollectedVideosProps = {
   navigation: any;
-  handle: string;
-  ethAddress: string | undefined;
+  handle: Scalars["Handle"];
+  ethAddress: Scalars["EthereumAddress"];
 };
 
 const CollectedVideos = ({
@@ -69,7 +69,7 @@ const CollectedVideos = ({
               fontWeight: "600",
             }}
           />
-          {collectVideos.length > 0 ? (
+          {collectVideos?.length > 0 ? (
             <StyledText
               title={`(${collectVideos?.length})`}
               style={{
@@ -107,7 +107,7 @@ const CollectedVideos = ({
         showsHorizontalScrollIndicator={false}
       >
         {Boolean(collectVideos) &&
-          collectVideos.map((item: any) => {
+          collectVideos?.map((item: any) => {
             if (item?.appId?.includes("lenstube")) {
               return (
                 <VideoCard

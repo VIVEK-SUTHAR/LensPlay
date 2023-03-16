@@ -1,14 +1,14 @@
-import { View, Pressable, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
+import { Pressable, ScrollView, View } from "react-native";
 import { client } from "../../apollo/client";
 import getMirrorVideos from "../../apollo/Queries/getMirrorVideos";
-import { LensPublication } from "../../types/Lens/Feed";
 import { useAuthStore } from "../../store/Store";
-import Heading from "../UI/Heading";
-import VideoCard from "../VideoCard";
+import { LensPublication } from "../../types/Lens/Feed";
 import formatHandle from "../../utils/formatHandle";
 import Icon from "../Icon";
+import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
+import VideoCard from "../VideoCard";
 
 type MirroredVideosProps = {
   profileId: string | undefined;

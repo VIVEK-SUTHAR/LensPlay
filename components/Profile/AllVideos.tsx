@@ -5,20 +5,16 @@ import VideoCard from "../VideoCard";
 import Heading from "../UI/Heading";
 import Icon from "../Icon";
 import StyledText from "../UI/StyledText";
+import { Post, Scalars } from "../../types/generated";
 
 type AllVideosProps = {
-  profileId: string | undefined;
+  profileId: Scalars["ProfileId"];
   navigation: any;
   handle?: string;
-  Videos: LensPublication[];
+  Videos: Post[];
 };
 
-const AllVideos = ({
-  Videos,
-  profileId,
-  handle,
-  navigation,
-}: AllVideosProps) => {
+const AllVideos = ({ Videos, navigation }: AllVideosProps) => {
   return (
     <>
       <Pressable
@@ -42,7 +38,7 @@ const AllVideos = ({
               fontWeight: "600",
             }}
           />
-          {Videos.length > 0 ? (
+          {Videos?.length > 0 ? (
             <StyledText
               title={`(${Videos?.length})`}
               style={{
@@ -80,7 +76,7 @@ const AllVideos = ({
         showsHorizontalScrollIndicator={false}
       >
         {Boolean(Videos) &&
-          Videos.map((item: LensPublication) => {
+          Videos.map((item: Post) => {
             return (
               <VideoCard
                 publication={item}

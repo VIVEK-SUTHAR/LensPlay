@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Image,
   Linking,
@@ -7,40 +8,36 @@ import {
   ToastAndroid,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import getIPFSLink from "../utils/getIPFSLink";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Heading from "../components/UI/Heading";
-import StyledText from "../components/UI/StyledText";
-import VideoCard from "../components/VideoCard";
-import { useAuthStore, useThemeStore, useToast } from "../store/Store";
+import { createFreeSubscribe } from "../api";
 import { client } from "../apollo/client";
-import getUserProfile from "../apollo/Queries/getUserProfile";
 import getPublications from "../apollo/Queries/getPublications";
+import getUserProfile from "../apollo/Queries/getUserProfile";
+import Icon from "../components/Icon";
+import AllVideos from "../components/Profile/AllVideos";
+import CollectedVideos from "../components/Profile/CollectedVideos";
+import MirroredVideos from "../components/Profile/MirroredVideos";
 import Avatar from "../components/UI/Avatar";
-import AnimatedLottieView from "lottie-react-native";
-import extractURLs from "../utils/extractURL";
-import { RootStackScreenProps } from "../types/navigation/types";
 import Button from "../components/UI/Button";
+import Heading from "../components/UI/Heading";
+import ProfileSkeleton from "../components/UI/ProfileSkeleton";
+import StyledText from "../components/UI/StyledText";
+import { STATIC_ASSET } from "../constants";
+import VERIFIED_CHANNELS from "../constants/Varified";
+import { useGuestStore } from "../store/GuestStore";
+import { useAuthStore, useThemeStore, useToast } from "../store/Store";
+import { Attribute, Post } from "../types/generated";
 import { Profile } from "../types/Lens";
 import { LensPublication } from "../types/Lens/Feed";
-import getMirrorVideos from "../apollo/Queries/getMirrorVideos";
-import getCollectVideos from "../apollo/Queries/getCollectVideos";
-import ProfileSkeleton from "../components/UI/ProfileSkeleton";
-import { createFreeSubscribe } from "../api";
+import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
-import VERIFIED_CHANNELS from "../constants/Varified";
-import VerifiedIcon from "../components/svg/VerifiedIcon";
-import { STATIC_ASSET } from "../constants";
-import Icon from "../components/Icon";
+import extractURLs from "../utils/extractURL";
 import formatHandle from "../utils/formatHandle";
-import { useGuestStore } from "../store/GuestStore";
+import getIPFSLink from "../utils/getIPFSLink";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [allVideos, setallVideos] = useState<LensPublication[]>([]);
-  const [mirrorVideos, setmirrorVideos] = useState<LensPublication[]>([]);
-  const [collectVideos, setcollectVideos] = useState<LensPublication[]>([]);
+  const [allVideos, setallVideos] = useState<Post[]>([]);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [alreadyFollowing, setAlreadyFollowing] = useState<boolean | undefined>(
@@ -58,22 +55,8 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const { isGuest } = useGuestStore();
 
   useEffect(() => {
-    let profileId = "";
-    Linking.addEventListener("url", (event) => {
-      const id = event.url.split("=")[1];
-      profileId = id;
-      getProfleInfo(id);
-      return;
-    });
-    Linking.getInitialURL().then((res) => {
-      const id = res?.split("=")[1];
-      profileId = id ? id : "";
-      getProfleInfo(id);
-      return;
-    });
-
     setAlreadyFollowing(route.params.isFollowdByMe);
-    getProfleInfo(profileId || route.params.profileId);
+    getProfleInfo(route.params.profileId);
   }, []);
 
   const getProfleInfo = async (profileId: string | undefined) => {
@@ -100,8 +83,6 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
         },
       });
       setallVideos(getUserVideos.data.publications.items);
-      await getUserMirrors(profileId);
-      await getUserCollects();
     } catch (error) {
       if (error instanceof Error) {
         console.log(error);
@@ -110,67 +91,28 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       setIsLoading(false);
     }
   };
-
-  const getUserMirrors = async (id: string | undefined) => {
-    try {
-      const getMirrorVideo = await client.query({
-        query: getMirrorVideos,
-        variables: {
-          id: id,
-        },
-        context: {
-          headers: {
-            "x-access-token": authStore.accessToken
-              ? `Bearer ${authStore.accessToken}`
-              : "",
-          },
-        },
-      });
-      setmirrorVideos(getMirrorVideo.data.publications.items);
-    } catch (err) {
-      setmirrorVideos([]);
-    }
-  };
-
-  const getUserCollects = async () => {
-    try {
-      const getCollectVideo = await client.query({
-        query: getCollectVideos,
-        variables: {
-          ethAddress: route.params.ethAddress,
-        },
-        context: {
-          headers: {
-            "x-access-token": `Bearer ${authStore.accessToken}`,
-          },
-        },
-      });
-      setcollectVideos(getCollectVideo.data.publications.items);
-    } catch (err) {
-      setcollectVideos([]);
-    }
-  };
-
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getProfleInfo(route.params.profileId).then(() => {
-      if (profile == profile) {
-        ToastAndroid.show("Channel is Up-to date", ToastAndroid.SHORT);
-      }
       setRefreshing(false);
+      ToastAndroid.show("Channel is Up-to date", ToastAndroid.SHORT);
     });
   }, []);
 
-  function getLinks(profile) {
-    const twitter = profile?.attributes?.find((item) => item.key === "twitter")
-      ?.value;
-    const youtube = profile?.attributes?.find((item) => item.key === "youtube")
-      ?.value;
+  function getLinks(profile: Profile | null) {
+    const twitter =
+      profile?.attributes?.find((item: Attribute) => item.key === "twitter")
+        ?.value || "";
+    const youtube =
+      profile?.attributes?.find((item: Attribute) => item.key === "youtube")
+        ?.value || "";
 
-    const insta = profile?.attributes?.find((item) => item.key === "instagram")
-      ?.value;
-    const website = profile?.attributes?.find((item) => item.key === "website")
-      ?.value;
+    const insta =
+      profile?.attributes?.find((item: Attribute) => item.key === "instagram")
+        ?.value || "";
+    const website =
+      profile?.attributes?.find((item: Attribute) => item.key === "website")
+        ?.value || "";
 
     setLinks({
       insta: insta,
@@ -202,8 +144,9 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                   onPress={(e) => {
                     e.preventDefault();
                     console.log(profile?.coverPicture?.original?.url);
-                      navigation.navigate("FullImage", {
+                    navigation.navigate("FullImage", {
                       url: profile?.coverPicture?.original?.url || STATIC_ASSET,
+                      source: "cover",
                     });
                   }}
                 >
@@ -244,7 +187,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     }}
                   >
                     <Avatar
-                      src={profile?.picture?.original?.url}
+                      src={getIPFSLink(profile?.picture?.original?.url)}
                       height={90}
                       width={90}
                       borderRadius={50}
@@ -324,7 +267,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                             color: "white",
                           }}
                         />
-                        {VERIFIED_CHANNELS.includes(profile?.id) && (
+                        {VERIFIED_CHANNELS.includes(profile!.id) && (
                           <View
                             style={{
                               backgroundColor: "transparent",
@@ -540,237 +483,28 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     </View>
                   </View>
                   <View style={{ marginTop: 24 }}>
-                    <View>
-                      <Pressable
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Heading
-                          title={"Videos"}
-                          style={{
-                            fontSize: 20,
-                            color: "white",
-                            fontWeight: "600",
-                          }}
-                        />
-                        <Pressable
-                          onPress={() => {
-                            navigation.navigate("YourVideos", {
-                              videos: allVideos,
-                              title: `Videos by ${
-                                profile?.name || profile?.handle
-                              } `,
-                            });
-                          }}
-                        >
-                          <Icon name="arrowForward" />
-                        </Pressable>
-                      </Pressable>
-                      <ScrollView
-                        horizontal={true}
-                        style={{ marginLeft: -12, marginTop: 8 }}
-                        showsHorizontalScrollIndicator={false}
-                      >
-                        {Boolean(allVideos) &&
-                          allVideos.map((item: LensPublication) => {
-                            return (
-                              <VideoCard
-                                id={item?.id}
-                                publication={item}
-                                height={150}
-                                width={300}
-                              />
-                            );
-                          })}
-                      </ScrollView>
-                      {allVideos?.length === 0 && (
-                        <View style={{ height: 50, justifyContent: "center" }}>
-                          <Heading
-                            title={`Looks like ${
-                              profile?.name || profile?.handle?.split(".")[0]
-                            } has not posted  any video`}
-                            style={{
-                              color: "gray",
-                              fontSize: 14,
-                              // textAlign: "center",
-                            }}
-                          ></Heading>
-                        </View>
-                      )}
-                    </View>
-                    <View style={{ marginTop: 16 }}>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Heading
-                          title={"Mirrored Videos"}
-                          style={{
-                            fontSize: 20,
-                            color: "white",
-                            fontWeight: "600",
-                          }}
-                        />
-                        <Pressable
-                          onPress={() => {
-                            navigation.navigate("YourVideos", {
-                              videos: mirrorVideos,
-                              title: `Mirror by ${
-                                profile?.name || profile?.handle
-                              } `,
-                            });
-                          }}
-                        >
-                          <Icon name="arrowForward" />
-                        </Pressable>
-                      </View>
-                      <ScrollView
-                        horizontal={true}
-                        style={{ marginLeft: -12, marginTop: 8 }}
-                        showsHorizontalScrollIndicator={false}
-                      >
-                        {Boolean(mirrorVideos) &&
-                          mirrorVideos.map((item: any) => {
-                            if (item?.appId?.includes("lenstube")) {
-                              return (
-                                <VideoCard
-                                  id={item?.id}
-                                  publication={item}
-                                  height={150}
-                                  width={300}
-                                />
-                              );
-                            }
-                          })}
-                      </ScrollView>
-                      {mirrorVideos?.length === 0 && (
-                        <View style={{ height: 50, justifyContent: "center" }}>
-                          <Heading
-                            title={`Seems like ${
-                              profile?.name || profile?.handle?.split(".")[0]
-                            } has not mirrored any video`}
-                            style={{
-                              color: "gray",
-                              fontSize: 14,
-                            }}
-                          ></Heading>
-                        </View>
-                      )}
-                    </View>
-                  </View>
-                  <View style={{ marginTop: 16 }}>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Heading
-                        title={"Collected Videos"}
-                        style={{
-                          fontSize: 20,
-                          color: "white",
-                          fontWeight: "600",
-                        }}
+                    {allVideos && (
+                      <AllVideos
+                        Videos={allVideos}
+                        profileId={profile?.id}
+                        navigation={navigation}
                       />
-                      <Pressable
-                        onPress={() => {
-                          navigation.navigate("YourVideos", {
-                            videos: collectVideos,
-                            title: `Collects by ${
-                              profile?.name || profile?.handle
-                            } `,
-                          });
-                        }}
-                      >
-                        <Icon name="arrowForward" />
-                      </Pressable>
-                    </View>
-                    <ScrollView
-                      horizontal={true}
-                      style={{ marginLeft: -12, marginTop: 8 }}
-                      showsHorizontalScrollIndicator={false}
-                    >
-                      {Boolean(collectVideos) &&
-                        collectVideos.map((item: LensPublication) => {
-                          return (
-                            <VideoCard
-                              id={item?.id}
-                              publication={item}
-                              height={150}
-                              width={300}
-                            />
-                          );
-                        })}
-                    </ScrollView>
-                    {collectVideos?.length === 0 && (
-                      <View style={{ height: 50, justifyContent: "center" }}>
-                        <Heading
-                          title={`Looks like ${
-                            profile?.name || profile?.handle?.split(".")[0]
-                          } has not collected any video`}
-                          style={{
-                            color: "gray",
-                            fontSize: 15,
-                          }}
-                        ></Heading>
-                      </View>
                     )}
+                    <MirroredVideos
+                      navigation={navigation}
+                      profileId={profile?.id}
+                      handle={profile?.handle}
+                    />
+                    <CollectedVideos
+                      ethAddress={profile?.ownedBy}
+                      handle={profile!.handle}
+                      navigation={navigation}
+                    />
                   </View>
                 </View>
               </View>
             )}
           </>
-        )}
-        {Boolean(isLoading) && (
-          <View
-            style={{
-              height: "auto",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <AnimatedLottieView
-              autoPlay
-              style={{
-                height: "auto",
-              }}
-              source={require("../assets/loader.json")}
-            />
-            {/* <Skleton />
-            <Skleton />
-            <Skleton /> */}
-          </View>
-        )}
-        {!allVideos && (
-          <View style={{ maxHeight: 250 }}>
-            <AnimatedLottieView
-              autoPlay
-              hardwareAccelerationAndroid={true}
-              style={{
-                height: "90%",
-                alignSelf: "center",
-              }}
-              source={require("../assets/notfound.json")}
-            />
-            <Heading
-              title={`Seems like ${
-                profile?.name || profile?.handle?.split(".")[0]
-              } has not uploaded any video`}
-              style={{
-                color: "gray",
-                fontSize: 12,
-                textAlign: "center",
-              }}
-            ></Heading>
-          </View>
         )}
       </ScrollView>
     </SafeAreaView>

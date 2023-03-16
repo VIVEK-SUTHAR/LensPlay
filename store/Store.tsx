@@ -1,6 +1,8 @@
 import create from "zustand";
+import { Mirror, Post } from "../types/generated";
 import {
   DisLikeObject,
+  IActivePublication,
   IAuthStore,
   IReactionStore,
   IThemeStore,
@@ -50,41 +52,39 @@ export const useToast = create<ToastProps>((set) => ({
 export const useReactionStore = create<IReactionStore>((set) => ({
   reaction: false,
   comment: false,
-  videopageStats: 
-    {
-      isLiked: false,
-      isDisliked: false,
-      likeCount: 0,
-    }
-  ,
-  likedComments: [{ id: 0 }],
-  setReaction: (reaction) =>{
-    set({
-      reaction: reaction
-    })
+  videopageStats: {
+    isLiked: false,
+    isDisliked: false,
+    likeCount: 0,
   },
-  setComments: (comment) =>{
+  likedComments: [{ id: 0 }],
+  setReaction: (reaction) => {
     set({
-      comment: comment
-    })
+      reaction: reaction,
+    });
+  },
+  setComments: (comment) => {
+    set({
+      comment: comment,
+    });
   },
   setVideoPageStats: (isLiked, isDisliked, likeCount) => {
     set({
       videopageStats: {
         isLiked: isLiked,
         isDisliked: isDisliked,
-        likeCount: likeCount
-      }
-    })
+        likeCount: likeCount,
+      },
+    });
   },
   clearStats: () => {
     set({
       videopageStats: {
         isLiked: false,
         isDisliked: false,
-        likeCount: 0
-      }
-    })
+        likeCount: 0,
+      },
+    });
   },
   addToLikedComments: (commentId: string) => {
     set((state) => ({
@@ -115,9 +115,9 @@ export const useOptimisticStore = create<OptimisticStore>((set) => ({
   },
 }));
 
-export const useActivePublication = create((set) => ({
+export const useActivePublication = create<IActivePublication>((set) => ({
   activePublication: null,
-  setActivePublication: (newPublication) => {
+  setActivePublication: (newPublication: Post | Mirror) => {
     set({
       activePublication: newPublication,
     });

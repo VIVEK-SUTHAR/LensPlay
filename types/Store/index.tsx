@@ -1,4 +1,4 @@
-import { Profile } from "../generated";
+import { Mirror, Post, Profile } from "../generated";
 
 export interface IAuthStore {
   accessToken: string;
@@ -15,6 +15,12 @@ export interface IThemeStore {
   DARK_PRIMARY: string;
   setPrimaryColor: (newPrimaryColor: string) => void;
 }
+
+export interface IActivePublication {
+  activePublication: Post | Mirror | null;
+  setActivePublication: (newPublication: Post | Mirror) => void;
+}
+
 export interface UserStore {
   currentProfile: Profile | undefined;
   hasHandle: boolean | null;
@@ -35,19 +41,15 @@ export enum ToastType {
   INFO = "INFO",
 }
 export interface IReactionStore {
-  reaction: boolean,
-  comment: boolean,
-  videopageStats: videoPageStatsObject,
-  setReaction: (
-    reaction: boolean,
-  ) => void;
-  setComments: (
-    comment: boolean,
-  ) => void;
+  reaction: boolean;
+  comment: boolean;
+  videopageStats: videoPageStatsObject;
+  setReaction: (reaction: boolean) => void;
+  setComments: (comment: boolean) => void;
   setVideoPageStats: (
     isLiked: boolean,
-  isDisliked: boolean,
-  likeCount: number,
+    isDisliked: boolean,
+    likeCount: number
   ) => void;
   clearStats: () => void;
   likedComments: DisLikeObject[];
@@ -59,7 +61,6 @@ export interface videoPageStatsObject {
   isDisliked: boolean;
   likeCount: number;
 }
-
 
 export interface LikeObject {
   likes: number;
