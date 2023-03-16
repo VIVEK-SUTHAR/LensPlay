@@ -1,13 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import * as React from "react";
-import {
-  Image,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { Image, TouchableWithoutFeedback, View } from "react-native";
 import { useActivePublication } from "../store/Store";
-import { Attribute, FeedItem, LensPublication, Root } from "../types/Lens/Feed";
+import { Mirror, Post } from "../types/generated";
+import { Attribute, Root } from "../types/Lens/Feed";
 import formatTime from "../utils/formatTime";
 import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
@@ -16,7 +12,7 @@ import Heading from "./UI/Heading";
 import StyledText from "./UI/StyledText";
 
 type videoPageProp = {
-  publication: Root;
+  publication: Root | Post | Mirror;
   id: string;
   height?: number | string;
   width?: number | string;
@@ -32,11 +28,13 @@ const VideoCard = ({
   const { setActivePublication } = useActivePublication();
 
   React.useEffect(() => {
-    const time = publication?.metadata?.attributes.filter((item) => {
-      if (item?.traitType === "durationInSeconds") {
-        setVideoTime(item?.value);
+    const time = publication?.metadata?.attributes?.filter(
+      (item: Attribute) => {
+        if (item?.traitType === "durationInSeconds") {
+          setVideoTime(item?.value);
+        }
       }
-    });
+    );
   }, []);
   const navigation = useNavigation();
   return (
@@ -137,5 +135,3 @@ const VideoCard = ({
 };
 
 export default VideoCard;
-
-const styles = StyleSheet.create({});
