@@ -74,13 +74,13 @@ export default function Scanner({
     }
   }
 
-  const handleBarcodeScanned = async (data) => {
+  const handleBarcodeScanned = async ({ data }) => {
     setHasData(false);
     if (data) {
       setHasData(true);
       try {
-        const signature = JSON.parse(data.data).signature;
-        const address = JSON.parse(data.data).address;
+        const signature = JSON.parse(data).signature;
+        const address = JSON.parse(data).address;
         if (!signature && !address) {
           toast.show("QR Expired, Please regenerate", ToastType.ERROR, true);
           return;
@@ -115,7 +115,7 @@ export default function Scanner({
           navigation.replace("Root");
         }
       } catch (error) {
-        console.log("[Error]:Error in QR Login");
+        // console.log("[Error]:Error in QR Login", error);
         throw new Error("[Error]:Error in QR Login", {
           cause: error,
         });
