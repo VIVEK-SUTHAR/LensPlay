@@ -113,6 +113,7 @@ export type RootStackParamList = {
   QRLogin: undefined;
   Settings: undefined;
   BugReport: undefined;
+  Scanner: undefined;
 };
 
 /**

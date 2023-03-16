@@ -45,6 +45,7 @@ import Loader from "../screens/Loader";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import getAccessFromRefresh from "../utils/lens/getAccessFromRefresh";
 import storeTokens from "../utils/storeTokens";
+import Scanner from "../screens/Scanner";
 
 export default function Navigation() {
   return (
@@ -253,6 +254,14 @@ function RootNavigator() {
         options={{
           animation: "none",
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Scanner"
+        component={Scanner}
+        options={{
+          animation: "none",
+          headerShown: true,
         }}
       />
     </Stack.Navigator>
