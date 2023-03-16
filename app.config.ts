@@ -170,13 +170,6 @@ const config: ExpoConfig = {
       },
     ],
     [
-      "expo-barcode-scanner",
-      {
-        cameraPermission:
-          "Allow LensPlay to access camera for QR Code Scanning",
-      },
-    ],
-    [
       "expo-camera",
       {
         cameraPermission: "Allow LensPlay to access your camera.",

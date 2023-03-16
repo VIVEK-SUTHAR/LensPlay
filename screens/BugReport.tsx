@@ -1,29 +1,22 @@
-import {
-  View,
-  ScrollView,
-  Pressable,
-  StyleSheet,
-  Image,
-  KeyboardAvoidingView,
-  Touchable,
-  TouchableOpacity,
-} from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
-import { RootStackScreenProps } from "../types/navigation/types";
+import {
+  Image,
+  KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, View
+} from "react-native";
+import Icon from "../components/Icon";
+import Button from "../components/UI/Button";
+import Dropdown from "../components/UI/Dropdown";
+import Input from "../components/UI/Input";
 import StyledText from "../components/UI/StyledText";
 import TextArea from "../components/UI/TextArea";
-import * as ImagePicker from "expo-image-picker";
-import uploadImageToIPFS from "../utils/uploadImageToIPFS";
-import getImageBlobFromUri from "../utils/getImageBlobFromUri";
-import Button from "../components/UI/Button";
-import { dark_primary, dark_secondary } from "../constants/Colors";
-import Dropdown from "../components/UI/Dropdown";
+import { dark_primary } from "../constants/Colors";
+import { useProfile, useToast } from "../store/Store";
+import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
-import { useProfile, useThemeStore, useToast } from "../store/Store";
-import Icon from "../components/Icon";
-import { StatusBar } from "expo-status-bar";
-import Input from "../components/UI/Input";
-import canUploadToArweave from "../utils/canUploadToArweave";
+import getImageBlobFromUri from "../utils/getImageBlobFromUri";
+import uploadImageToIPFS from "../utils/uploadImageToIPFS";
 
 export type BugCategory = {
   reason: string;

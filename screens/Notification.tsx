@@ -1,22 +1,22 @@
+import AnimatedLottieView from "lottie-react-native";
+import React, { useState } from "react";
 import {
   FlatList,
   RefreshControl,
   SafeAreaView,
   StyleSheet,
-  View,
+  View
 } from "react-native";
-import React, { useState } from "react";
-import AnimatedLottieView from "lottie-react-native";
-import Heading from "../components/UI/Heading";
 import NotificationCard from "../components/Notifications";
+import { NotificationTypes } from "../components/Notifications/index.d";
 import Skleton from "../components/Notifications/Skleton";
+import PleaseLogin from "../components/PleaseLogin";
+import Heading from "../components/UI/Heading";
+import Tabs, { Tab } from "../components/UI/Tabs";
+import useNotifications from "../hooks/useFeed";
+import { useGuestStore } from "../store/GuestStore";
 import { useProfile, useThemeStore } from "../store/Store";
 import { RootTabScreenProps } from "../types/navigation/types";
-import useNotifications from "../hooks/useFeed";
-import Tabs, { Tab } from "../components/UI/Tabs";
-import { NotificationTypes } from "../components/Notifications/index.d";
-import { useGuestStore } from "../store/GuestStore";
-import PleaseLogin from "../components/PleaseLogin";
 
 const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);

@@ -1,19 +1,17 @@
-import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import AnimatedLottieView from "lottie-react-native";
 import * as React from "react";
-import { useState } from "react";
-import VideoCard from "../components/VideoCard";
+import { useEffect, useState } from "react";
+import { Pressable, SafeAreaView, ScrollView, View } from "react-native";
 import { client } from "../apollo/client";
 import getTrendingPublication from "../apollo/Queries/getTrendingPublication";
-import { useEffect } from "react";
-import AnimatedLottieView from "lottie-react-native";
-import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
-import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
-import { LensPublication } from "../types/Lens/Feed";
-import { RootTabScreenProps } from "../types/navigation/types";
 import StyledText from "../components/UI/StyledText";
+import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
+import VideoCard from "../components/VideoCard";
 import { dark_primary } from "../constants/Colors";
 import { useGuestStore } from "../store/GuestStore";
-import getGuestTrending from "../apollo/Queries/getGuestTrending";
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
+import { LensPublication } from "../types/Lens/Feed";
+import { RootTabScreenProps } from "../types/navigation/types";
 const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
   const tags = [
     {

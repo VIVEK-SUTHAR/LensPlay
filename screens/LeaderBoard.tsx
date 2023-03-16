@@ -7,7 +7,7 @@ import {
   Pressable,
   TextInput,
   Vibration,
-  View,
+  View
 } from "react-native";
 import Icon from "../components/Icon";
 import Heading from "../components/UI/Heading";

@@ -1,25 +1,22 @@
-import React, { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Camera } from "expo-camera";
+import React, { useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
-  StyleSheet,
-  Text,
-  View,
+  StyleSheet, View
 } from "react-native";
 import Button from "../components/UI/Button";
 import Heading from "../components/UI/Heading";
+import { primary } from "../constants/Colors";
+import { useAuthStore, useProfile, useToast } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
+import { ToastType } from "../types/Store";
+import decryptData from "../utils/decryptData";
+import handleWaitlist from "../utils/handleWaitlist";
+import getDefaultProfile from "../utils/lens/getDefaultProfile";
 import getTokens from "../utils/lens/getTokens";
 import storeTokens from "../utils/storeTokens";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import handleWaitlist from "../utils/handleWaitlist";
-import decryptData from "../utils/decryptData";
-import { ToastType } from "../types/Store";
-import { useAuthStore, useProfile, useToast } from "../store/Store";
-import getDefaultProfile from "../utils/lens/getDefaultProfile";
-import { primary } from "../constants/Colors";
-import { QRdata } from "../types";
 
 export default function Scanner({
   navigation,

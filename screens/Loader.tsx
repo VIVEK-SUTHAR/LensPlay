@@ -1,15 +1,15 @@
-import React, { useEffect } from "react";
-import AnimatedLottieView from "lottie-react-native";
-import { View } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { RootStackScreenProps } from "../types/navigation/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import verifyTokens from "../utils/lens/verifyTokens";
-import getAccessFromRefresh from "../utils/lens/getAccessFromRefresh";
-import storeTokens from "../utils/storeTokens";
-import handleWaitlist from "../utils/handleWaitlist";
-import getDefaultProfile from "../utils/lens/getDefaultProfile";
+import { StatusBar } from "expo-status-bar";
+import AnimatedLottieView from "lottie-react-native";
+import React, { useEffect } from "react";
+import { View } from "react-native";
 import { useAuthStore, useProfile } from "../store/Store";
+import { RootStackScreenProps } from "../types/navigation/types";
+import handleWaitlist from "../utils/handleWaitlist";
+import getAccessFromRefresh from "../utils/lens/getAccessFromRefresh";
+import getDefaultProfile from "../utils/lens/getDefaultProfile";
+import verifyTokens from "../utils/lens/verifyTokens";
+import storeTokens from "../utils/storeTokens";
 
 export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
   const { setCurrentProfile, setHasHandle } = useProfile();

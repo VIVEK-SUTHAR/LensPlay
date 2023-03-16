@@ -3,11 +3,10 @@ import { StatusBar } from "expo-status-bar";
 import { MotiView } from "moti";
 import React, { useState } from "react";
 import {
-  Dimensions,
   Linking,
   SafeAreaView,
   StyleSheet,
-  View,
+  View
 } from "react-native";
 import Icon from "../components/Icon";
 import Button from "../components/UI/Button";

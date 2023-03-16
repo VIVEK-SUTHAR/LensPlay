@@ -1,51 +1,51 @@
 //@ts-ignore
-import * as React from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import * as Linking from "expo-linking";
 import { StatusBar } from "expo-status-bar";
+import * as React from "react";
 import { AppState, TouchableWithoutFeedback, View } from "react-native";
-import VideoPage from "../screens/VideoPage";
+import Icon from "../components/Icon";
+import Avatar from "../components/UI/Avatar";
+import Heading from "../components/UI/Heading";
+import StyledText from "../components/UI/StyledText";
+import BugReport from "../screens/BugReport";
+import Bytes from "../screens/Bytes";
+import Channel from "../screens/Channel";
+import ConnectWallet from "../screens/ConnectWallet";
+import EditProfile from "../screens/EditProfile";
 import Feed from "../screens/Feed";
+import FullImage from "../screens/FullImage";
+import JoinWaitlist from "../screens/JoinWaitlist";
+import LeaderBoard from "../screens/LeaderBoard";
+import LinkingVideo from "../screens/LinkingVideo";
+import Loader from "../screens/Loader";
 import Login from "../screens/Login";
+import LoginWithLens from "../screens/LoginWithLens";
+import Notifications from "../screens/Notification";
+import ProfileScreen from "../screens/Profile";
+import QRLogin from "../screens/QRLogin";
+import ReportPublication from "../screens/ReportPublication";
+import Scanner from "../screens/Scanner";
+import Search from "../screens/Search";
+import Settings from "../screens/Settings";
+import ShotsComment from "../screens/ShotsComment";
+import Trending from "../screens/Trending";
+import UserStats from "../screens/UserStats";
+import UserVideos from "../screens/UserVideos";
+import VideoPage from "../screens/VideoPage";
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import {
   RootStackParamList,
   RootStackScreenProps,
-  RootTabParamList,
+  RootTabParamList
 } from "../types/navigation/types";
-import Trending from "../screens/Trending";
-import Search from "../screens/Search";
-import Settings from "../screens/Settings";
-import Heading from "../components/UI/Heading";
-import StyledText from "../components/UI/StyledText";
-import Channel from "../screens/Channel";
-import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
-import ProfileScreen from "../screens/Profile";
-import UserVideos from "../screens/UserVideos";
-import Avatar from "../components/UI/Avatar";
 import getIPFSLink from "../utils/getIPFSLink";
-import linking from "./LinkingConfiguration";
-import UserStats from "../screens/UserStats";
-import LeaderBoard from "../screens/LeaderBoard";
-import EditProfile from "../screens/EditProfile";
-import ConnectWallet from "../screens/ConnectWallet";
-import LoginWithLens from "../screens/LoginWithLens";
-import ReportPublication from "../screens/ReportPublication";
-import Bytes from "../screens/Bytes";
-import FullImage from "../screens/FullImage";
-import BugReport from "../screens/BugReport";
-import ShotsComment from "../screens/ShotsComment";
-import Icon from "../components/Icon";
-import Notifications from "../screens/Notification";
-import LinkingVideo from "../screens/LinkingVideo";
-import * as Linking from "expo-linking";
-import JoinWaitlist from "../screens/JoinWaitlist";
-import QRLogin from "../screens/QRLogin";
-import Loader from "../screens/Loader";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import getAccessFromRefresh from "../utils/lens/getAccessFromRefresh";
 import storeTokens from "../utils/storeTokens";
-import Scanner from "../screens/Scanner";
+import linking from "./LinkingConfiguration";
 
 export default function Navigation() {
   return (
@@ -134,8 +134,6 @@ function RootNavigator() {
         options={{
           animation: "slide_from_right",
           headerShown: false,
-          headerTintColor: theme.PRIMARY,
-          headerTitle: "Your videos",
         }}
       />
       <Stack.Screen
@@ -155,6 +153,10 @@ function RootNavigator() {
           headerShown: true,
           headerTitle: "Edit Your Channel",
           headerTintColor: theme.PRIMARY,
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
         }}
       />
       <Stack.Screen
@@ -181,6 +183,10 @@ function RootNavigator() {
           headerShown: true,
           headerTintColor: theme.PRIMARY,
           headerTitle: "Report Video",
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
         }}
       />
       <Stack.Screen
@@ -191,6 +197,10 @@ function RootNavigator() {
           headerShown: true,
           headerTintColor: theme.PRIMARY,
           headerTitle: "Settings",
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
         }}
       />
       <Stack.Screen
@@ -201,6 +211,10 @@ function RootNavigator() {
           headerShown: true,
           headerTitle: "Report a Bug",
           headerTintColor: theme.PRIMARY,
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
         }}
       />
       <Stack.Screen
@@ -221,7 +235,10 @@ function RootNavigator() {
         options={{
           animation: "slide_from_right",
           headerShown: true,
-          headerStyle: { backgroundColor: "black" },
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
           headerTintColor: theme.PRIMARY,
           headerTitle: "Comments",
         }}
@@ -243,9 +260,12 @@ function RootNavigator() {
         options={{
           animation: "fade_from_bottom",
           headerShown: true,
-          headerStyle: { backgroundColor: "black" },
           headerTintColor: theme.PRIMARY,
           headerTitle: "Desktop Login",
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
         }}
       />
       <Stack.Screen
@@ -262,6 +282,11 @@ function RootNavigator() {
         options={{
           animation: "none",
           headerShown: true,
+          headerTintColor: theme.PRIMARY,
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
         }}
       />
     </Stack.Navigator>

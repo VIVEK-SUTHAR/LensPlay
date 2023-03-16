@@ -1,31 +1,23 @@
-import {
-  View,
-  StyleSheet,
-  Pressable,
-  Modal,
-  Linking,
-  SafeAreaView,
-} from "react-native";
-import React, { FC, useState } from "react";
-import { RootStackScreenProps } from "../types/navigation/types";
-import StyledText from "../components/UI/StyledText";
-import Heading from "../components/UI/Heading";
-import { dark_primary } from "../constants/Colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import Icon from "../components/Icon";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
+import React, { FC, useState } from "react";
+import {
+  Linking, Modal, Pressable, SafeAreaView, StyleSheet, View
+} from "react-native";
+import Icon from "../components/Icon";
+import Heading from "../components/UI/Heading";
+import StyledText from "../components/UI/StyledText";
 import {
   LENSPLAY_DISCORD,
   LENSPLAY_PRIVACY,
-  LENSPLAY_SITE,
-  LENSPLAY_TWITTER,
-  OFFICIAL_EMAIL,
-  LENSPLAY_TERMS,
+  LENSPLAY_SITE, LENSPLAY_TERMS, LENSPLAY_TWITTER,
+  OFFICIAL_EMAIL
 } from "../constants";
+import { dark_primary } from "../constants/Colors";
 import { useGuestStore } from "../store/GuestStore";
-import { useAuthStore, useProfile } from "../store/Store";
+import { RootStackScreenProps } from "../types/navigation/types";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
@@ -43,7 +35,6 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const Wallet = useWalletConnect();
   const { isGuest } = useGuestStore();
-  const userStore = useProfile();
 
   const SettingItemsList: SettingsItemProps[] = [
     {

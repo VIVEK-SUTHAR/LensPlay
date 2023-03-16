@@ -1,30 +1,29 @@
-import { View, ScrollView, SafeAreaView, BackHandler } from "react-native";
-import React, { useEffect } from "react";
-import useStore, {
-  useActivePublication,
-  useReactionStore,
-} from "../store/Store";
-import { useState } from "react";
-import { setStatusBarHidden } from "expo-status-bar";
 import * as ScreenOrientation from "expo-screen-orientation";
-import Player from "../components/VideoPlayer";
-import { RootStackScreenProps } from "../types/navigation/types";
+import { setStatusBarHidden } from "expo-status-bar";
+import React, { useEffect, useState } from "react";
+import { BackHandler, SafeAreaView, ScrollView, View } from "react-native";
 import Comment from "../components/Comments/";
 import CommentInput from "../components/Comments/CommentInput";
+import Button from "../components/UI/Button";
+import StyledText from "../components/UI/StyledText";
 import {
   CollectButton,
   LikeButton,
   ReportButton,
   ShareButton,
   VideoCreator,
-  VideoMeta,
+  VideoMeta
 } from "../components/VIdeo";
 import DisLikeButton from "../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
-import StyledText from "../components/UI/StyledText";
-import { useReaction } from "../hooks/useFeed";
-import Button from "../components/UI/Button";
+import Player from "../components/VideoPlayer";
 import { dark_primary } from "../constants/Colors";
+import { useReaction } from "../hooks/useFeed";
+import {
+  useActivePublication,
+  useReactionStore
+} from "../store/Store";
+import { RootStackScreenProps } from "../types/navigation/types";
 
 const VideoPage = ({
   navigation,
