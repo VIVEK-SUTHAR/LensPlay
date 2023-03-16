@@ -201,8 +201,9 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                 <Pressable
                   onPress={(e) => {
                     e.preventDefault();
-                    navigation.navigate("FullImage", {
-                      url: profile?.coverPicture?.original.url || STATIC_ASSET,
+                    console.log(profile?.coverPicture?.original?.url);
+                      navigation.navigate("FullImage", {
+                      url: profile?.coverPicture?.original?.url || STATIC_ASSET,
                     });
                   }}
                 >
@@ -237,7 +238,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                   <Pressable
                     onPress={(e) => {
                       navigation.navigate("FullImage", {
-                        url: getIPFSLink(profile?.picture.original.url),
+                        url: getIPFSLink(profile?.picture?.original?.url),
                         source: "avatar",
                       });
                     }}
