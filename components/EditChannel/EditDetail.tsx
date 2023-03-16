@@ -36,6 +36,12 @@ export default function EditDetail() {
     youtube: "",
     website: "",
   });
+  const [initialSocialLinks, setInitialSocialLinks] = useState({
+    twitter: "",
+    instagram: "",
+    youtube: "",
+    website: "",
+  })
   const [coverPic, setCoverPic] = useState<string | null>();
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [coverImageBlob, setCoverImageBlob] = useState<Blob>();
@@ -107,7 +113,7 @@ export default function EditDetail() {
     };
 
     const response = await fetch(
-      "https://bundlr-upload-server.vercel.app/api/upload/profileMetadata",
+      "https://lensplay-api.vercel.app/api/upload/profileMetadata",
       {
         method: "POST",
         body: bodyContent,
@@ -120,16 +126,18 @@ export default function EditDetail() {
 
   const handleUpdate = async () => {
     try {
-      setIsUpdating(true);
-      if (!userData.bio && !userData.name && !socialLinks) {
+      if (!userData.bio && !userData.name && !socialLinks.instagram && !socialLinks.twitter && !socialLinks.website && !socialLinks.youtube) {
         toast.show("Please select data", ToastType.ERROR, true);
       } else {
+        setIsUpdating(true);
         if (canUpload()) {
           await uploadMetadata();
         }
       }
     } catch (error) {
       if (error instanceof Error) {
+        console.log(error);
+        
         toast.show("Something went wronng", ToastType.ERROR, true);
       }
     } finally {
@@ -156,12 +164,13 @@ export default function EditDetail() {
 
   function getSocialLinks(profile: Profile | null) {
     const attributes = profile?.attributes ?? [];
+    
     const website = attributes.find((item) => item.key === "website")?.value;
     const twitter = attributes.find((item) => item.key === "twitter")?.value;
     const instagram = attributes.find((item) => item.key === "instagram")
       ?.value;
     const youtube = attributes.find((item) => item.key === "youtube")?.value;
-    setSocialLinks({
+    setInitialSocialLinks({
       instagram: instagram || "",
       website: website || "",
       youtube: youtube || "",
@@ -235,7 +244,7 @@ export default function EditDetail() {
           <Input
             label="Twitter"
             value={socialLinks.twitter}
-            placeHolder={socialLinks.twitter}
+            placeHolder={initialSocialLinks.twitter}
             onChange={(e) => {
               setSocialLinks({
                 ...socialLinks,
@@ -245,7 +254,7 @@ export default function EditDetail() {
           />
           <Input
             label="Instagram"
-            placeHolder={socialLinks.instagram || "@username"}
+            placeHolder={initialSocialLinks.instagram || "@username"}
             value={socialLinks.instagram}
             onChange={(e) => {
               setSocialLinks({
@@ -256,7 +265,7 @@ export default function EditDetail() {
           />
           <Input
             label="Youtube"
-            placeHolder={socialLinks.youtube || "Youtube link"}
+            placeHolder={initialSocialLinks.youtube || "Youtube link"}
             value={socialLinks.youtube}
             onChange={(e) => {
               setSocialLinks({
@@ -268,7 +277,7 @@ export default function EditDetail() {
           <Input
             label="Website"
             value={socialLinks.website}
-            placeHolder={socialLinks.website || "https://your-site.com"}
+            placeHolder={initialSocialLinks.website || "https://your-site.com"}
             onChange={(e) => {
               setSocialLinks({
                 ...socialLinks,
