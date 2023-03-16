@@ -1,12 +1,12 @@
+import React, { useLayoutEffect } from "react";
 import {
   FlatList,
   RefreshControl,
   SafeAreaView,
-  StyleSheet,
+  StyleSheet
 } from "react-native";
-import React, { useLayoutEffect } from "react";
-import { useThemeStore } from "../store/Store";
 import VideoCard from "../components/VideoCard";
+import { useThemeStore } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 
 const UserVideos = ({

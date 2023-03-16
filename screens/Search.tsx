@@ -1,3 +1,6 @@
+import { StatusBar } from "expo-status-bar";
+import AnimatedLottieView from "lottie-react-native";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -5,28 +8,25 @@ import {
   SafeAreaView,
   StyleSheet,
   TextInput,
-  View,
+  View
 } from "react-native";
-import React, { useEffect, useState } from "react";
 import { client } from "../apollo/client";
-import AnimatedLottieView from "lottie-react-native";
-import { RootStackScreenProps } from "../types/navigation/types";
-import { useAuthStore, useThemeStore } from "../store/Store";
-import { LensPublication } from "../types/Lens/Feed";
-import searchProfileQuery from "../apollo/Queries/searchProfileQuery";
-import ProfileCard from "../components/ProfileCard";
-import useDebounce from "../hooks/useDebounce";
-import StyledText from "../components/UI/StyledText";
-import { StatusBar } from "expo-status-bar";
-import Heading from "../components/UI/Heading";
 import recommendedProfiles from "../apollo/Queries/recommendedProfiles";
-import ProfileCardSkeleton from "../components/UI/ProfileCardSkeleton";
-import Icon from "../components/Icon";
+import searchProfileQuery from "../apollo/Queries/searchProfileQuery";
 import searchPublicationQuery from "../apollo/Queries/searchPublicationQuery";
+import Icon from "../components/Icon";
+import ProfileCard from "../components/ProfileCard";
+import Heading from "../components/UI/Heading";
+import ProfileCardSkeleton from "../components/UI/ProfileCardSkeleton";
+import StyledText from "../components/UI/StyledText";
 import Tabs, { Tab } from "../components/UI/Tabs";
-import { Profile } from "../types/Lens";
 import VideoCard from "../components/VideoCard";
+import useDebounce from "../hooks/useDebounce";
 import { useGuestStore } from "../store/GuestStore";
+import { useAuthStore, useThemeStore } from "../store/Store";
+import { Profile } from "../types/Lens";
+import { LensPublication } from "../types/Lens/Feed";
+import { RootStackScreenProps } from "../types/navigation/types";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const { DARK_PRIMARY } = useThemeStore();

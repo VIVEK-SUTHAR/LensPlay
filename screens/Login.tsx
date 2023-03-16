@@ -1,15 +1,10 @@
 import { AntDesign } from "@expo/vector-icons";
-import Constants from "expo-constants";
-import { StatusBar } from "expo-status-bar";
-import { MotiImage, MotiView } from "moti";
+import { MotiView } from "moti";
 import * as React from "react";
 import {
-  Dimensions,
   Image,
   Linking,
-  StyleSheet,
-  Text,
-  View,
+  StyleSheet, View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "../components/Icon";
@@ -21,9 +16,6 @@ import { primary } from "../constants/Colors";
 import { RootStackScreenProps } from "../types/navigation/types";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
-  const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
-  const [login, setLogin] = React.useState(true);
 
   return (
     <SafeAreaView style={styles.container}>

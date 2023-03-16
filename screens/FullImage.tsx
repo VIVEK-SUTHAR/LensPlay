@@ -1,3 +1,6 @@
+import Constants from "expo-constants";
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
 import {
   Animated,
   ColorValue,
@@ -6,14 +9,11 @@ import {
   Pressable,
   SafeAreaView,
   StyleSheet,
-  View,
+  View
 } from "react-native";
-import React, { useLayoutEffect, useState } from "react";
-import getIPFSLink from "../utils/getIPFSLink";
-import { RootStackScreenProps } from "../types/navigation/types";
-import Constants from "expo-constants";
-import { StatusBar } from "expo-status-bar";
 import Icon from "../components/Icon";
+import { RootStackScreenProps } from "../types/navigation/types";
+import getIPFSLink from "../utils/getIPFSLink";
 const StatusBarHeight = Constants.statusBarHeight;
 
 const FullImage = ({

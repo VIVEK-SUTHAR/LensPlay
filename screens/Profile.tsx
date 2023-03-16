@@ -1,46 +1,42 @@
+import { StatusBar } from "expo-status-bar";
 import * as React from "react";
+import { useEffect, useState } from "react";
 import {
-  Dimensions,
   Linking,
   Pressable,
   RefreshControl,
   SafeAreaView,
   ScrollView,
-  View,
+  View
 } from "react-native";
-import { useEffect, useState } from "react";
-import { useProfile, useThemeStore } from "../store/Store";
-import getIPFSLink from "../utils/getIPFSLink";
-import Heading from "../components/UI/Heading";
-import StyledText from "../components/UI/StyledText";
-import Avatar from "../components/UI/Avatar";
-import extractURLs from "../utils/extractURL";
-import { RootTabScreenProps } from "../types/navigation/types";
-import ProfileSkeleton from "../components/UI/ProfileSkeleton";
-import Button from "../components/UI/Button";
-import { StatusBar } from "expo-status-bar";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import { primary } from "../constants/Colors";
-import Cover from "../components/Profile/Cover";
-import { STATIC_ASSET } from "../constants";
-import AllVideos from "../components/Profile/AllVideos";
-import MirroredVideos from "../components/Profile/MirroredVideos";
-import CollectedVideos from "../components/Profile/CollectedVideos";
-import VERIFIED_CHANNELS from "../constants/Varified";
-import formatHandle from "../utils/formatHandle";
 import Icon from "../components/Icon";
+import PleaseLogin from "../components/PleaseLogin";
+import AllVideos from "../components/Profile/AllVideos";
+import CollectedVideos from "../components/Profile/CollectedVideos";
+import Cover from "../components/Profile/Cover";
+import MirroredVideos from "../components/Profile/MirroredVideos";
+import Avatar from "../components/UI/Avatar";
+import Button from "../components/UI/Button";
+import Heading from "../components/UI/Heading";
+import ProfileSkeleton from "../components/UI/ProfileSkeleton";
+import StyledText from "../components/UI/StyledText";
+import { STATIC_ASSET } from "../constants";
+import { primary } from "../constants/Colors";
+import VERIFIED_CHANNELS from "../constants/Varified";
 import { useUserProfile, useUserPublication } from "../hooks/useFeed";
 import { useGuestStore } from "../store/GuestStore";
-import PleaseLogin from "../components/PleaseLogin";
+import { useProfile, useThemeStore } from "../store/Store";
+import { RootTabScreenProps } from "../types/navigation/types";
+import extractURLs from "../utils/extractURL";
+import formatHandle from "../utils/formatHandle";
+import getIPFSLink from "../utils/getIPFSLink";
 
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [afterScroll, setafterScroll] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
-  const wallet = useWalletConnect();
   const theme = useThemeStore();
   const userStore = useProfile();
   const { isGuest } = useGuestStore();
-  const { currentProfile } = useProfile();
 
   const { loading, data: Profile, error, refetch } = useUserProfile(
     userStore?.currentProfile?.id

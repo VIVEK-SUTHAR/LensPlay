@@ -1,17 +1,15 @@
+import AnimatedLottieView from "lottie-react-native";
+import { ScrollView } from "moti";
+import React from "react";
 import {
   KeyboardAvoidingView,
   Linking,
   Platform,
-  StyleSheet,
-  Text,
-  View,
+  StyleSheet, View
 } from "react-native";
-import React from "react";
-import { ScrollView } from "moti";
-import Heading from "../components/UI/Heading";
 import Button from "../components/UI/Button";
+import Heading from "../components/UI/Heading";
 import { primary } from "../constants/Colors";
-import AnimatedLottieView from "lottie-react-native";
 
 type Props = {};
 

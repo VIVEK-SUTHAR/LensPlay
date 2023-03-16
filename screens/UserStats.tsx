@@ -1,20 +1,17 @@
-import {
-  View,
-  SafeAreaView,
-  StyleSheet,
-  Dimensions,
-  FlatList,
-} from "react-native";
 import React, { useLayoutEffect, useState } from "react";
-import { RootStackScreenProps } from "../types/navigation/types";
-import { useProfile, useThemeStore } from "../store/Store";
-import { useFollowers } from "../hooks/useFeed";
+import {
+  Dimensions,
+  FlatList, SafeAreaView,
+  StyleSheet, View
+} from "react-native";
+import Icon from "../components/Icon";
 import ProfileCard from "../components/ProfileCard";
-import { useFollowing } from "../hooks/useFeed";
 import Heading from "../components/UI/Heading";
 import ProfileCardSkeleton from "../components/UI/ProfileCardSkeleton";
-import Icon from "../components/Icon";
 import Tabs, { Tab } from "../components/UI/Tabs";
+import { useFollowers, useFollowing } from "../hooks/useFeed";
+import { useProfile, useThemeStore } from "../store/Store";
+import { RootStackScreenProps } from "../types/navigation/types";
 
 const UserStats = ({
   navigation,

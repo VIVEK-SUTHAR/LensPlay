@@ -1,5 +1,5 @@
 import React from "react";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import Comment from "../components/Comments";
 import CommentCard from "../components/Comments/CommentCard";
 import CommentInput from "../components/Comments/CommentInput";

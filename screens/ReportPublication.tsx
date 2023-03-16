@@ -1,23 +1,23 @@
+import React, { useEffect, useState } from "react";
 import {
   BackHandler,
   KeyboardAvoidingView,
   ScrollView,
   StyleSheet,
   TextInput,
-  View,
+  View
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { RootStackScreenProps } from "../types/navigation/types";
-import StyledText from "../components/UI/StyledText";
-import { dark_primary } from "../constants/Colors";
-import { useAuthStore, useThemeStore, useToast } from "../store/Store";
-import Button from "../components/UI/Button";
-import Heading from "../components/UI/Heading";
-import { ToastType } from "../types/Store";
-import Dropdown from "../components/UI/Dropdown";
 import { client } from "../apollo/client";
 import reportPublication from "../apollo/mutations/reportPublication";
+import Button from "../components/UI/Button";
+import Dropdown from "../components/UI/Dropdown";
+import Heading from "../components/UI/Heading";
+import StyledText from "../components/UI/StyledText";
+import { dark_primary } from "../constants/Colors";
 import { useGuestStore } from "../store/GuestStore";
+import { useAuthStore, useThemeStore, useToast } from "../store/Store";
+import { RootStackScreenProps } from "../types/navigation/types";
+import { ToastType } from "../types/Store";
 
 type subreason = {
   reason: string;

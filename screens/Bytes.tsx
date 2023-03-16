@@ -1,9 +1,9 @@
-import { View, Text, Dimensions, Pressable } from "react-native";
-import React from "react";
-import ByteCard from "../components/Bytes/ByteCard";
 import Constants from "expo-constants";
-import { RootTabScreenProps } from "../types/navigation/types";
+import React from "react";
+import { Dimensions, Pressable, Text, View } from "react-native";
+import ByteCard from "../components/Bytes/ByteCard";
 import Icon from "../components/Icon";
+import { RootTabScreenProps } from "../types/navigation/types";
 const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;

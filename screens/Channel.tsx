@@ -6,7 +6,7 @@ import {
   RefreshControl,
   ScrollView,
   ToastAndroid,
-  View,
+  View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createFreeSubscribe } from "../api";
@@ -28,7 +28,6 @@ import { useGuestStore } from "../store/GuestStore";
 import { useAuthStore, useThemeStore, useToast } from "../store/Store";
 import { Attribute, Post } from "../types/generated";
 import { Profile } from "../types/Lens";
-import { LensPublication } from "../types/Lens/Feed";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
 import extractURLs from "../utils/extractURL";
