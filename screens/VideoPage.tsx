@@ -23,6 +23,8 @@ import DisLikeButton from "../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
 import StyledText from "../components/UI/StyledText";
 import { useReaction } from "../hooks/useFeed";
+import Button from "../components/UI/Button";
+import { dark_primary } from "../constants/Colors";
 
 const VideoPage = ({
   navigation,
@@ -112,9 +114,53 @@ const VideoPage = ({
             showsHorizontalScrollIndicator={false}
           >
             {loading && !reaction && !comment ? (
-              <View>
-                <StyledText title={"Loading"} style={{ color: "white" }} />
-              </View>
+              <>
+                <Button
+                  title={""}
+                  mx={4}
+                  px={34}
+                  width={"auto"}
+                  bg={ dark_primary }
+                  type={"filled"}
+                  borderRadius={8}
+                />
+                <Button
+                  title={""}
+                  mx={4}
+                  px={34}
+                  width={"auto"}
+                  bg={ dark_primary }
+                  type={"filled"}
+                  borderRadius={8}
+                />
+                <Button
+                  title={""}
+                  mx={4}
+                  px={34}
+                  width={"auto"}
+                  bg={ dark_primary }
+                  type={"filled"}
+                  borderRadius={8}
+                />
+                <Button
+                  title={""}
+                  mx={4}
+                  px={34}
+                  width={"auto"}
+                  bg={ dark_primary }
+                  type={"filled"}
+                  borderRadius={8}
+                />
+                <Button
+                  title={""}
+                  mx={4}
+                  px={40}
+                  width={"auto"}
+                  bg={ dark_primary }
+                  type={"filled"}
+                  borderRadius={8}
+                />
+              </>
             ) : (
               <>
                 <LikeButton
