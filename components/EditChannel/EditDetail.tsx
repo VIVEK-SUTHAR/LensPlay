@@ -134,11 +134,11 @@ export default function EditDetail() {
         !socialLinks.twitter &&
         !socialLinks.website &&
         !socialLinks.youtube &&
-        coverImageBlob
+        !coverPic
       ) {
         toast.show("Please select data", ToastType.ERROR, true);
       } else {
-        setIsUpdating(true);
+        setIsUpdating(true);              
         if (canUpload()) {
           await uploadMetadata();
         }
@@ -146,7 +146,6 @@ export default function EditDetail() {
     } catch (error) {
       if (error instanceof Error) {
         console.log(error);
-
         toast.show("Something went wronng", ToastType.ERROR, true);
       }
     } finally {
@@ -161,7 +160,8 @@ export default function EditDetail() {
       socialLinks.instagram.length > 0 ||
       socialLinks.twitter.length > 0 ||
       socialLinks.website.length > 0 ||
-      socialLinks.youtube.length > 0
+      socialLinks.youtube.length > 0 ||
+      coverPic?.length > 0
     );
   };
 

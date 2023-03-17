@@ -18,7 +18,7 @@ const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
       instruction: "3. Connect your preffered wallet.",
     },
     {
-      instruction: "4. Sign message in wallet.",
+      instruction: "4. Click on Login with lens and Sign message through wallet.",
     },
     {
       instruction: "5. Scan the QR and explore LensPlay.",
@@ -62,13 +62,15 @@ const styles = StyleSheet.create({
   conatiner: {
     flex: 1,
     backgroundColor: "black",
+    justifyContent: 'space-between',
+    paddingVertical: 24
   },
   padding16: {
     paddingHorizontal: 16,
   },
   stepsHeader: {
     color: "white",
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "600",
     marginVertical: 4,
   },
@@ -76,27 +78,10 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 15,
     fontWeight: "600",
-    marginTop: 4,
-  },
-  qrOverlayContainer: {
-    position: "absolute",
-    marginTop: Dimensions.get("screen").height * 0.137,
-    height: "68.8%",
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  qrBlock: {
-    height: 200,
-    width: 200,
-    backgroundColor: "transparent",
-    borderColor: "white",
-    borderRadius: 4,
-    borderWidth: 2,
+    marginTop: 20,
   },
   buttonContainer: {
     width: "90%",
-    height: "70%",
     justifyContent: "center",
     alignSelf: "center",
   },
