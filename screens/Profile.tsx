@@ -84,6 +84,8 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
       yt: youtube,
     });
   }
+  console.log(userStore?.currentProfile?.coverPicture);
+  
 
   if (isGuest) return <PleaseLogin />;
   if (loading) return <ProfileSkeleton />;
@@ -121,7 +123,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
               <Cover
                 navigation={navigation}
                 url={
-                  userStore.currentProfile?.coverPicture?.original.url ||
+                  getIPFSLink(userStore.currentProfile?.coverPicture?.original.url) ||
                   STATIC_ASSET
                 }
               />

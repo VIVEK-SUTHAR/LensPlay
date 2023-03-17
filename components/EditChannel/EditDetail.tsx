@@ -96,18 +96,18 @@ export default function EditDetail() {
   };
 
   const uploadMetadata = async () => {
-    let coverURI = currentProfile?.coverPicture?.original.url;
+    let coverURI = currentProfile?.coverPicture?.original?.url;
 
     if (coverImageBlob) {
       coverURI = await uploadImageToIPFS(coverImageBlob);
-      coverURI = "ipfs://" + coverURI;
+      coverURI = coverURI;
     }
 
     const bodyContent = JSON.stringify({
       oldProfileData: currentProfile,
       newProfileData: userData,
       socialLinks: socialLinks,
-      coverImage: coverURI,
+      coverImage: `ipfs://${coverURI}`,
     });
     const headersList = {
       "Content-Type": "application/json",
@@ -122,6 +122,8 @@ export default function EditDetail() {
       }
     );
     const metadata = await response.json();
+    console.log(`https://arweave.net/${metadata.id}`);
+
     updateData(currentProfile?.id, `https://arweave.net/${metadata.id}`);
   };
 
@@ -138,7 +140,7 @@ export default function EditDetail() {
       ) {
         toast.show("Please select data", ToastType.ERROR, true);
       } else {
-        setIsUpdating(true);              
+        setIsUpdating(true);
         if (canUpload()) {
           await uploadMetadata();
         }
