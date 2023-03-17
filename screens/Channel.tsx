@@ -6,7 +6,7 @@ import {
   RefreshControl,
   ScrollView,
   ToastAndroid,
-  View
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createFreeSubscribe } from "../api";
@@ -172,7 +172,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "flex-end",
-                    marginLeft: 16,
+                    marginLeft: 8,
                     marginTop: "-20%",
                     zIndex: 12,
                   }}

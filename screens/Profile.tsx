@@ -7,7 +7,7 @@ import {
   RefreshControl,
   SafeAreaView,
   ScrollView,
-  View
+  View,
 } from "react-native";
 import Icon from "../components/Icon";
 import PleaseLogin from "../components/PleaseLogin";
@@ -131,7 +131,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "flex-end",
-                marginLeft: 16,
+                marginLeft: 8,
                 marginTop: "-20%",
                 zIndex: 12,
               }}
