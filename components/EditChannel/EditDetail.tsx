@@ -100,13 +100,14 @@ export default function EditDetail() {
 
     if (coverImageBlob) {
       coverURI = await uploadImageToIPFS(coverImageBlob);
+      coverURI = 'ipfs://' +  coverURI;
     }
 
     const bodyContent = JSON.stringify({
       oldProfileData: currentProfile,
       newProfileData: userData,
       socialLinks: socialLinks,
-      coverImage: `ipfs://${coverURI}`,
+      coverImage: coverURI,
     });
     const headersList = {
       "Content-Type": "application/json",
@@ -126,7 +127,7 @@ export default function EditDetail() {
 
   const handleUpdate = async () => {
     try {
-      if (!userData.bio && !userData.name && !socialLinks.instagram && !socialLinks.twitter && !socialLinks.website && !socialLinks.youtube) {
+      if (!userData.bio && !userData.name && !socialLinks.instagram && !socialLinks.twitter && !socialLinks.website && !socialLinks.youtube && coverImageBlob) {
         toast.show("Please select data", ToastType.ERROR, true);
       } else {
         setIsUpdating(true);
