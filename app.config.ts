@@ -101,7 +101,7 @@ const config: ExpoConfig = {
   },
   updates: {
     fallbackToCacheTimeout: 0,
-    url: "https://u.expo.dev/2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f",
+    url: "https://u.expo.dev/3b494bf0-e3fd-4a2c-b484-931ab7394de1",
   },
   runtimeVersion: {
     policy: "sdkVersion",
@@ -113,6 +113,7 @@ const config: ExpoConfig = {
   jsEngine: "hermes",
   android: {
     package: "com.lensplayxyz.lensplay",
+    versionCode: 2,
     adaptiveIcon: {
       foregroundImage: "./assets/images/adaptive-icon.png",
       backgroundColor: "#000000",
@@ -157,9 +158,9 @@ const config: ExpoConfig = {
     favicon: "./assets/images/favicon.png",
   },
   extra: {
-    // eas: {
-    //   projectId: "2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f",
-    // },
+    eas: {
+      projectId: "3b494bf0-e3fd-4a2c-b484-931ab7394de1",
+    },
   },
   plugins: [
     [

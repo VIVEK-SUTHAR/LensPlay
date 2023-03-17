@@ -122,8 +122,6 @@ export default function EditDetail() {
       }
     );
     const metadata = await response.json();
-    console.log(`https://arweave.net/${metadata.id}`);
-
     updateData(currentProfile?.id, `https://arweave.net/${metadata.id}`);
   };
 
