@@ -2,11 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { Camera } from "expo-camera";
 import React, { useState } from "react";
-import {
-  ActivityIndicator,
-  Dimensions,
-  StyleSheet, View
-} from "react-native";
+import { ActivityIndicator, Dimensions, StyleSheet, View } from "react-native";
 import Button from "../components/UI/Button";
 import Heading from "../components/UI/Heading";
 import { primary } from "../constants/Colors";
@@ -18,7 +14,6 @@ import handleWaitlist from "../utils/handleWaitlist";
 import getDefaultProfile from "../utils/lens/getDefaultProfile";
 import getTokens from "../utils/lens/getTokens";
 import storeTokens from "../utils/storeTokens";
-
 
 export default function Scanner({
   navigation,
@@ -73,17 +68,33 @@ export default function Scanner({
     }
   }
 
+  function isValidQR(data: any) {
+    try {
+      const parsedData = JSON.parse(data);
+      if (parsedData.signature && parsedData.address) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
   const handleBarcodeScanned = async (data) => {
     setHasData(false);
-    if (data) {
-      setHasData(true);
+    const isValidData = isValidQR(data.data);
+
+    if (!isValidData) {
+      toast.show("Invalid QR", ToastType.ERROR, true);
+      return;
+    }
+
+    if (isValidData) {
+      const signature = JSON.parse(data.data).signature;
+      const address = JSON.parse(data.data).address;
       try {
-        const signature = JSON.parse(data.data).signature;
-        const address = JSON.parse(data.data).address;
-        if (!signature && !address) {
-          toast.show("QR Expired, Please regenerate", ToastType.ERROR, true);
-          return;
-        }
+        setHasData(true);
         const decryptedSignature = await decryptData(signature);
         const userData = await handleWaitlist(address);
 
@@ -106,6 +117,13 @@ export default function Scanner({
             address,
             signature: decryptedSignature,
           });
+
+          if (!tokens) {
+            setHasData(false);
+            toast.show("Please regenerate QR", ToastType.ERROR, true);
+            return;
+          }
+
           setAccessToken(tokens?.accessToken);
           setRefreshToken(tokens?.refreshToken);
           await storeTokens(tokens?.accessToken, tokens?.refreshToken, true);
@@ -141,7 +159,9 @@ export default function Scanner({
               borderRadius: 8,
             }}
             ratio={"1:1"}
-            barCodeScannerSettings={{ barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr] }}
+            barCodeScannerSettings={{
+              barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+            }}
             onBarCodeScanned={handleBarcodeScanned}
           ></Camera>
         </View>

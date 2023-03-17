@@ -157,9 +157,9 @@ const config: ExpoConfig = {
     favicon: "./assets/images/favicon.png",
   },
   extra: {
-    eas: {
-    projectId: "2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f",
-    },
+    // eas: {
+    //   projectId: "2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f",
+    // },
   },
   plugins: [
     [
@@ -176,7 +176,6 @@ const config: ExpoConfig = {
       },
     ],
   ],
-  
 };
 
 export default withPackageVisibility(config);
