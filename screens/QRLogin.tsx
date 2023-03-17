@@ -9,13 +9,19 @@ import extractURLs from "../utils/extractURL";
 const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
   const LoginSteps = [
     {
-      instruction: "1. Go to https://lensplay.xyz/connect",
+      instruction: "1. Open your desktop browser.",
     },
     {
-      instruction: "2. Connect your wallet and sign message",
+      instruction: "2. Visit https://lensplay.xyz/connect",
     },
     {
-      instruction: "3. Scan QR and Explore LensPlay",
+      instruction: "3. Connect your preffered wallet.",
+    },
+    {
+      instruction: "4. Sign message in wallet.",
+    },
+    {
+      instruction: "5. Scan the QR and explore LensPlay.",
     },
   ];
 
@@ -66,7 +72,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginVertical: 4,
   },
-  stepInstruction: { color: "white", fontSize: 14, fontWeight: "600" },
+  stepInstruction: {
+    color: "white",
+    fontSize: 15,
+    fontWeight: "600",
+    marginTop: 4,
+  },
   qrOverlayContainer: {
     position: "absolute",
     marginTop: Dimensions.get("screen").height * 0.137,
@@ -85,7 +96,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: "90%",
-    height: "80%",
+    height: "70%",
     justifyContent: "center",
     alignSelf: "center",
   },
