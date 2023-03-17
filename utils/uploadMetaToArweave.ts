@@ -12,6 +12,7 @@ async function uploadMetaDataToArweave(commentText: string, handle: string | und
 		const headersList = {
 			"Accept": "*/*",
 			"Content-Type": "application/json",
+			Authorization:"Bearer ENGINEERCANTAKEOVERWORLD"
 		};
 
 		const bodyContent = JSON.stringify({
@@ -19,7 +20,7 @@ async function uploadMetaDataToArweave(commentText: string, handle: string | und
 			handle: handle,
 		});
 
-		const response = await fetch(`${BUNDLR_UPLOAD_API}/metadata`, {
+		const response = await fetch(`https://lensplay-api.vercel.app/api/upload/metadata`, {
 			method: "POST",
 			body: bodyContent,
 			headers: headersList,
