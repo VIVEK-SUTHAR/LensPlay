@@ -88,7 +88,7 @@ const withPackageVisibility: ConfigPlugin = (config) => {
 
 const config: ExpoConfig = {
   name: "LensPlay",
-  slug: "LensPlay",
+  slug: "lensplay",
   version: "0.0.2",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
@@ -101,7 +101,7 @@ const config: ExpoConfig = {
   },
   updates: {
     fallbackToCacheTimeout: 0,
-    url: "https://u.expo.dev/c3c41aca-6bdd-4196-a006-a524dcf26c4e",
+    url: "https://u.expo.dev/2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f",
   },
   runtimeVersion: {
     policy: "sdkVersion",
@@ -157,9 +157,9 @@ const config: ExpoConfig = {
     favicon: "./assets/images/favicon.png",
   },
   extra: {
-    // eas: {
-    // projectId: "c3c41aca-6bdd-4196-a006-a524dcf26c4e",
-    // },
+    eas: {
+    projectId: "2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f",
+    },
   },
   plugins: [
     [
@@ -176,6 +176,7 @@ const config: ExpoConfig = {
       },
     ],
   ],
+  
 };
 
 export default withPackageVisibility(config);
