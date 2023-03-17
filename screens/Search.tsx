@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   StyleSheet,
   TextInput,
-  View
+  View,
 } from "react-native";
 import { client } from "../apollo/client";
 import recommendedProfiles from "../apollo/Queries/recommendedProfiles";
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
-    paddingVertical: 16,
+    paddingBottom: 16,
   },
   headerContainer: {
     flexDirection: "row",
