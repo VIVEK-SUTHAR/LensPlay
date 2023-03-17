@@ -41,7 +41,7 @@ export default function EditDetail() {
     instagram: "",
     youtube: "",
     website: "",
-  })
+  });
   const [coverPic, setCoverPic] = useState<string | null>();
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [coverImageBlob, setCoverImageBlob] = useState<Blob>();
@@ -100,7 +100,7 @@ export default function EditDetail() {
 
     if (coverImageBlob) {
       coverURI = await uploadImageToIPFS(coverImageBlob);
-      coverURI = 'ipfs://' +  coverURI;
+      coverURI = "ipfs://" + coverURI;
     }
 
     const bodyContent = JSON.stringify({
@@ -127,7 +127,15 @@ export default function EditDetail() {
 
   const handleUpdate = async () => {
     try {
-      if (!userData.bio && !userData.name && !socialLinks.instagram && !socialLinks.twitter && !socialLinks.website && !socialLinks.youtube && coverImageBlob) {
+      if (
+        !userData.bio &&
+        !userData.name &&
+        !socialLinks.instagram &&
+        !socialLinks.twitter &&
+        !socialLinks.website &&
+        !socialLinks.youtube &&
+        coverImageBlob
+      ) {
         toast.show("Please select data", ToastType.ERROR, true);
       } else {
         setIsUpdating(true);
@@ -138,7 +146,7 @@ export default function EditDetail() {
     } catch (error) {
       if (error instanceof Error) {
         console.log(error);
-        
+
         toast.show("Something went wronng", ToastType.ERROR, true);
       }
     } finally {
@@ -165,7 +173,7 @@ export default function EditDetail() {
 
   function getSocialLinks(profile: Profile | null) {
     const attributes = profile?.attributes ?? [];
-    
+
     const website = attributes.find((item) => item.key === "website")?.value;
     const twitter = attributes.find((item) => item.key === "twitter")?.value;
     const instagram = attributes.find((item) => item.key === "instagram")

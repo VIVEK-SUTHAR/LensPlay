@@ -3,7 +3,11 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   Image,
-  KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, View
+  KeyboardAvoidingView,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
 } from "react-native";
 import Icon from "../components/Icon";
 import Button from "../components/UI/Button";
@@ -85,7 +89,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
           imgLink: `https://ipfs.io/ipfs/${hash}`,
         });
         let response = await fetch(
-          "https://bundlr-upload-server.vercel.app/api/report",
+          "https://lensplay-api.vercel.app/api/report",
           {
             method: "POST",
             body: bodyContent,
