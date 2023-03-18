@@ -2,12 +2,7 @@ import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
 import { MotiView } from "moti";
 import React, { useState } from "react";
-import {
-  Linking,
-  SafeAreaView,
-  StyleSheet,
-  View
-} from "react-native";
+import { Linking, SafeAreaView, StyleSheet, View } from "react-native";
 import Icon from "../components/Icon";
 import Button from "../components/UI/Button";
 import StyledText from "../components/UI/StyledText";
@@ -270,7 +265,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             py={12}
             isLoading={isloading}
             onPress={() => {
-              Linking.openURL("<http://claim.lens.xyz/>");
+              Linking.openURL("https://lens-create-profile.vercel.app/");
             }}
           />
         )}

@@ -4,7 +4,12 @@ import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import React, { FC, useState } from "react";
 import {
-  Linking, Modal, Pressable, SafeAreaView, StyleSheet, View
+  Linking,
+  Modal,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  View,
 } from "react-native";
 import Icon from "../components/Icon";
 import Heading from "../components/UI/Heading";
@@ -12,8 +17,10 @@ import StyledText from "../components/UI/StyledText";
 import {
   LENSPLAY_DISCORD,
   LENSPLAY_PRIVACY,
-  LENSPLAY_SITE, LENSPLAY_TERMS, LENSPLAY_TWITTER,
-  OFFICIAL_EMAIL
+  LENSPLAY_SITE,
+  LENSPLAY_TERMS,
+  LENSPLAY_TWITTER,
+  OFFICIAL_EMAIL,
 } from "../constants";
 import { dark_primary } from "../constants/Colors";
 import { useGuestStore } from "../store/GuestStore";
@@ -160,7 +167,6 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                 }}
                 android_ripple={{
                   color: "gray",
-                  borderless: true,
                   radius: 30,
                 }}
                 onPress={() => {
@@ -179,7 +185,6 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                 }}
                 android_ripple={{
                   color: "gray",
-                  borderless: true,
                   radius: 30,
                 }}
                 onPress={async () => {
