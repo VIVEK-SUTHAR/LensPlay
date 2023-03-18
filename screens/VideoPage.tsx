@@ -36,14 +36,14 @@ const VideoPage = ({
   const {
     reaction,
     comment,
+    collect,
     setReaction,
     setComments,
+    setCollect,
     videopageStats,
     setVideoPageStats,
     clearStats,
   } = useReactionStore();
-
-  const [isAlreadyMirrored, setIsAlreadyMirrored] = useState<boolean>(false);
 
   function handleBackButtonClick() {
     setStatusBarHidden(false, "fade");
@@ -53,6 +53,7 @@ const VideoPage = ({
       navigation.goBack();
       setReaction(false);
       setComments(false);
+      setCollect(false);
       clearStats();
     }
     return true;
@@ -112,7 +113,7 @@ const VideoPage = ({
             horizontal={true}
             showsHorizontalScrollIndicator={false}
           >
-            {loading && !reaction && !comment ? (
+            {loading && !reaction && !comment && !collect ? (
               <>
                 <Button
                   title={""}
@@ -173,8 +174,6 @@ const VideoPage = ({
                 />
                 <MirrorButton
                   id={activePublication?.id}
-                  isAlreadyMirrored={isAlreadyMirrored}
-                  setIsAlreadyMirrored={setIsAlreadyMirrored}
                   totalMirrors={activePublication.stats?.totalAmountOfMirrors}
                   bannerUrl={activePublication?.metadata?.cover}
                 />

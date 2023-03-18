@@ -52,6 +52,7 @@ export const useToast = create<ToastProps>((set) => ({
 export const useReactionStore = create<IReactionStore>((set) => ({
   reaction: false,
   comment: false,
+  collect: false,
   videopageStats: {
     isLiked: false,
     isDisliked: false,
@@ -66,6 +67,11 @@ export const useReactionStore = create<IReactionStore>((set) => ({
   setComments: (comment) => {
     set({
       comment: comment,
+    });
+  },
+  setCollect: (collect) => {
+    set({
+      comment: collect,
     });
   },
   setVideoPageStats: (isLiked, isDisliked, likeCount) => {

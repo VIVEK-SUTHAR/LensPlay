@@ -10,14 +10,14 @@ import { Comment as IComment} from "../../types/generated";
 
 
 const Comment = ({ publicationId }: { publicationId: string }) => {
-  const {reaction, comment, setComments} = useReactionStore();
+  const {reaction, comment, collect, setComments} = useReactionStore();
   const { data: commentData, error, loading } = useComments(publicationId);
   
   
 
   if (error) return <NotFound />;
 
-  if (loading && !reaction && !comment) return <Loading />;
+  if (loading && !reaction && !comment && !collect) return <Loading />;
 
   if (!commentData?.publications?.items.length) return <NotFound />;
 

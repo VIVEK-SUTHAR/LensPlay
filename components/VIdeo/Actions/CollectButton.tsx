@@ -1,6 +1,6 @@
 import { Dimensions, Image, View } from "react-native";
-import React, { useRef, useState } from "react";
-import { useAuthStore, useThemeStore, useToast } from "../../../store/Store";
+import React, { useEffect, useRef, useState } from "react";
+import { useAuthStore, useReactionStore, useThemeStore, useToast } from "../../../store/Store";
 import { freeCollectPublication } from "../../../api";
 import Button from "../../UI/Button";
 import { ToastType } from "../../../types/Store";
@@ -8,6 +8,9 @@ import getIPFSLink from "../../../utils/getIPFSLink";
 import RBSheet from "../../UI/BottomSheet";
 import Icon from "../../Icon";
 import { useGuestStore } from "../../../store/GuestStore";
+import { primary } from "../../../constants/Colors";
+import { client } from "../../../apollo/client";
+import fetchPublicationById from "../../../apollo/Queries/fetchPublicationById";
 
 type CollectVideoPrpos = {
   totalCollects: number;
@@ -19,8 +22,6 @@ type CollectVideoPrpos = {
 };
 
 const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isMute, setIsMute] = useState<boolean>(true);
   const { PRIMARY } = useThemeStore();
   const toast = useToast();
   const { accessToken } = useAuthStore();
@@ -37,11 +38,25 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
     hasCollected,
   } = CollectVideoProps;
 
+  const [isAlreadyCollected, setIsAlreadyCollected] = useState<boolean>(hasCollected);
+  const [collectCount, setCollectCount] = useState(totalCollects);
+  const {setCollect} =  useReactionStore();
+
   const collectPublication = async () => {
     try {
+      if(isAlreadyCollected){
+        toast.show(
+                "You have already collected the video",
+                ToastType.ERROR,
+                true
+              )
+        return
+      }
       const data = await freeCollectPublication(publicationId, accessToken);
       if (data) {
         toast.show("Collect Submitted", ToastType.SUCCESS, true);
+        setCollectCount(prev=>prev+1);
+        setIsAlreadyCollected(true);
         ref?.current?.close();
       }
     } catch (error) {
@@ -53,6 +68,28 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
       ref?.current?.close();
     }
   };
+
+  const getCollect = async () => {
+    const collects = await client.query({
+      query: fetchPublicationById,
+      variables: {
+        pubId: publicationId,
+      },
+      context: {
+        headers: {
+          "x-access-token": `Bearer ${accessToken}`,
+        },
+      },
+    });
+    setIsAlreadyCollected(collects?.data?.publication?.hasCollectedByMe);
+    setCollectCount(collects?.data?.publication?.stats?.totalAmountOfCollects);
+    setCollect(true);
+  }
+
+  useEffect(() => {
+    getCollect()
+  }, [])
+  
 
   return (
     <>
@@ -79,17 +116,18 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
             progressiveRenderingEnabled={true}
           />
           <Button
-            title={`Collect the video for free`}
+            title={isAlreadyCollected?'Already collected the video':`Collect the video for free`}
             width={"90%"}
             py={12}
             textStyle={{ fontSize: 20, fontWeight: "700", textAlign: "center" }}
+            bg={isAlreadyCollected?'#c0c0c0':primary}
             onPress={collectPublication}
           />
         </View>
       </RBSheet>
 
       <Button
-        title={`${totalCollects || 0} Collects`}
+        title={`${collectCount || 0} Collects`}
         mx={4}
         px={8}
         width={"auto"}
@@ -101,23 +139,17 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
             toast.show("Please Login", ToastType.ERROR, true);
             return;
           }
-          hasCollected
-            ? toast.show(
-                "You have already collected the post",
-                ToastType.ERROR,
-                true
-              )
-            : ref?.current?.open();
+          ref?.current?.open();
         }}
         icon={
           <Icon
             name="collect"
             size={20}
-            color={hasCollected ? PRIMARY : "white"}
+            color={isAlreadyCollected ? PRIMARY : "white"}
           />
         }
         textStyle={{
-          color: hasCollected ? PRIMARY : "white",
+          color: isAlreadyCollected? PRIMARY : "white",
           marginHorizontal: 4,
         }}
       />
