@@ -21,8 +21,11 @@ query Publication($id: ProfileId!, $pubId: InternalPublicationId ) {
   fragment PostFields on Post {
       stats{
       totalUpvotes
+      totalAmountOfCollects
+      totalAmountOfMirrors
     }
     reaction(request: {profileId:$id})
+    hasCollectedByMe
   }
   fragment CommentFields on Comment {
     

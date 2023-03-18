@@ -36,13 +36,13 @@ const VideoPage = ({
   const {
     reaction,
     comment,
-    collect,
     setReaction,
     setComments,
-    setCollect,
     videopageStats,
+    collectStats,
     setVideoPageStats,
     clearStats,
+    setCollectStats
   } = useReactionStore();
 
   function handleBackButtonClick() {
@@ -53,30 +53,40 @@ const VideoPage = ({
       navigation.goBack();
       setReaction(false);
       setComments(false);
-      setCollect(false);
       clearStats();
+      setCollectStats(false, 0);
     }
     return true;
   }
 
   useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);   
   }, []);
 
   const { data: ReactionData, error, loading } = useReaction(
     activePublication?.id
   );
-
+  
   if (ReactionData) {
     if (!reaction) {
+      setReaction(true);
       setVideoPageStats(
         ReactionData?.publication?.reaction === "UPVOTE",
         ReactionData?.publication?.reaction === "DOWNVOTE",
         ReactionData?.publication?.stats?.totalUpvotes
       );
-      setReaction(true);
+      setCollectStats(ReactionData?.publication?.hasCollectedByMe,ReactionData?.publication?.stats?.totalAmountOfCollects);
+      
     }
   }
+
+  useEffect(()=>{
+    console.log(reaction,'reaction');
+    console.log(comment,'comment');
+    
+  },[reaction, comment])
+
+  
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -113,7 +123,7 @@ const VideoPage = ({
             horizontal={true}
             showsHorizontalScrollIndicator={false}
           >
-            {loading && !reaction && !comment && !collect ? (
+            {loading || !reaction || !comment ? (              
               <>
                 <Button
                   title={""}
@@ -184,11 +194,11 @@ const VideoPage = ({
                     activePublication?.profile?.name ||
                     activePublication?.profile?.handle
                   }
-                  totalCollects={PublicationStats.totalAmountOfCollects}
+                  totalCollects={collectStats?.collectCount}
                   videoUrl={
                     activePublication?.metadata?.media[0]?.original?.url
                   }
-                  hasCollected={activePublication?.hasCollectedByMe}
+                  hasCollected={collectStats?.isCollected}
                 />
                 <ShareButton
                   title={

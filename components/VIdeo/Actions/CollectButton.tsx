@@ -38,13 +38,13 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
     hasCollected,
   } = CollectVideoProps;
 
-  const [isAlreadyCollected, setIsAlreadyCollected] = useState<boolean>(hasCollected);
-  const [collectCount, setCollectCount] = useState(totalCollects);
-  const {setCollect} =  useReactionStore();
+  // const [isAlreadyCollected, setIsAlreadyCollected] = useState<boolean>(hasCollected);
+  const { setCollectStats } =  useReactionStore();
+  
 
   const collectPublication = async () => {
     try {
-      if(isAlreadyCollected){
+      if(hasCollected){
         toast.show(
                 "You have already collected the video",
                 ToastType.ERROR,
@@ -55,8 +55,7 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
       const data = await freeCollectPublication(publicationId, accessToken);
       if (data) {
         toast.show("Collect Submitted", ToastType.SUCCESS, true);
-        setCollectCount(prev=>prev+1);
-        setIsAlreadyCollected(true);
+        setCollectStats(true, totalCollects + 1);
         ref?.current?.close();
       }
     } catch (error) {
@@ -68,27 +67,6 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
       ref?.current?.close();
     }
   };
-
-  const getCollect = async () => {
-    const collects = await client.query({
-      query: fetchPublicationById,
-      variables: {
-        pubId: publicationId,
-      },
-      context: {
-        headers: {
-          "x-access-token": `Bearer ${accessToken}`,
-        },
-      },
-    });
-    setIsAlreadyCollected(collects?.data?.publication?.hasCollectedByMe);
-    setCollectCount(collects?.data?.publication?.stats?.totalAmountOfCollects);
-    setCollect(true);
-  }
-
-  useEffect(() => {
-    getCollect()
-  }, [])
   
 
   return (
@@ -116,18 +94,18 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
             progressiveRenderingEnabled={true}
           />
           <Button
-            title={isAlreadyCollected?'Already collected the video':`Collect the video for free`}
+            title={hasCollected?'Already collected the video':`Collect the video for free`}
             width={"90%"}
             py={12}
             textStyle={{ fontSize: 20, fontWeight: "700", textAlign: "center" }}
-            bg={isAlreadyCollected?'#c0c0c0':primary}
+            bg={hasCollected?'#c0c0c0':primary}
             onPress={collectPublication}
           />
         </View>
       </RBSheet>
 
       <Button
-        title={`${collectCount || 0} Collects`}
+        title={`${totalCollects || 0} Collects`}
         mx={4}
         px={8}
         width={"auto"}
@@ -145,11 +123,11 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
           <Icon
             name="collect"
             size={20}
-            color={isAlreadyCollected ? PRIMARY : "white"}
+            color={hasCollected? PRIMARY : "white"}
           />
         }
         textStyle={{
-          color: isAlreadyCollected? PRIMARY : "white",
+          color: hasCollected ? PRIMARY : "white",
           marginHorizontal: 4,
         }}
       />

@@ -177,7 +177,8 @@ const useNotifications = () => {
 
 const useReaction = ( pubId: string) => {
   const { currentProfile } = useProfile();
-
+  const { accessToken } = useAuthStore();
+  
   const { data, error, loading } = useQuery(fetchReaction, {
     variables: {
       id: currentProfile?.id,
@@ -185,6 +186,11 @@ const useReaction = ( pubId: string) => {
     },
     fetchPolicy: "network-only",
     refetchWritePolicy: "merge",
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+      },
+    },
   });
   return { data, error, loading };
 };

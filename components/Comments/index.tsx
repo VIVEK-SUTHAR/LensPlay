@@ -10,19 +10,22 @@ import { Comment as IComment} from "../../types/generated";
 
 
 const Comment = ({ publicationId }: { publicationId: string }) => {
-  const {reaction, comment, collect, setComments} = useReactionStore();
+  const {reaction, comment, setComments} = useReactionStore();
   const { data: commentData, error, loading } = useComments(publicationId);
-  
-  
 
   if (error) return <NotFound />;
 
-  if (loading && !reaction && !comment && !collect) return <Loading />;
+  if (loading || !reaction ) return <Loading />;
 
-  if (!commentData?.publications?.items.length) return <NotFound />;
+  if (!commentData?.publications?.items.length) {
+    if (!comment){
+      setComments(true);
+    }
+    return <NotFound />;
+  };
 
   if (commentData) {
-    if(!comment){      
+    if (!comment){
       setComments(true);
     }
     return (
@@ -53,7 +56,6 @@ const Comment = ({ publicationId }: { publicationId: string }) => {
       </SafeAreaView>
     );
   }
-  return <View></View>;
 };
 
 export default Comment;
