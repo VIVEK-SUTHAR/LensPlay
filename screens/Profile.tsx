@@ -392,7 +392,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                     }}
                   />
                   <StyledText
-                    title={"subscribers"}
+                    title={"Subscribers"}
                     style={{
                       fontSize: 14,
                       fontWeight: "500",
@@ -410,7 +410,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   onPress={() => {
                     navigation.navigate("UserStats", {
                       profileId: userStore.currentProfile?.id,
-                      activeTab: "subscription",
+                      activeTab: "Subscription",
                     });
                   }}
                 >
