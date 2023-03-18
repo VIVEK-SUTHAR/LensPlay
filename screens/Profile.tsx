@@ -392,7 +392,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                     }}
                   />
                   <StyledText
-                    title={"Subscribers"}
+                    title={"subscribers"}
                     style={{
                       fontSize: 14,
                       fontWeight: "500",
