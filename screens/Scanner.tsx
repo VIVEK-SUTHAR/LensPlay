@@ -23,7 +23,7 @@ export default function Scanner({
   const windowHeight = Dimensions.get("window").height;
   const windowWidth = Dimensions.get("window").width;
   const { setAccessToken, setRefreshToken } = useAuthStore();
-  const { setCurrentProfile, setHasHandle } = useProfile();
+  const { setCurrentProfile, setHasHandle, hasHandle } = useProfile();
   const toast = useToast();
 
   if (!permission) {
@@ -82,7 +82,6 @@ export default function Scanner({
   }
 
   const handleBarcodeScanned = async (data) => {
-    setHasData(false);
     const isValidData = isValidQR(data.data);
 
     if (!isValidData) {
@@ -98,6 +97,13 @@ export default function Scanner({
         const decryptedSignature = await decryptData(signature);
         const userData = await handleWaitlist(address);
 
+        console.log(userData);
+
+        if (userData?.statusCode === 404) {
+          navigation.replace("JoinWaitlist");
+          return;
+        }
+
         if (!userData.fields.hasAccess) {
           navigation.replace("LeaderBoard", {
             referralsCount: userData.referralsCount,
@@ -107,35 +113,39 @@ export default function Scanner({
           });
         }
 
-        if (userData?.statusCode === 404) {
-          navigation.replace("JoinWaitlist");
-          return;
-        }
-
         if (userData.fields.hasAccess) {
-          const tokens = await getTokens({
-            address,
-            signature: decryptedSignature,
-          });
+          await HandleDefaultProfile(address);
 
-          if (!tokens) {
-            setHasData(false);
-            toast.show("Please regenerate QR", ToastType.ERROR, true);
+          if (!hasHandle) {
+            navigation.replace("LoginWithLens");
             return;
           }
 
-          setAccessToken(tokens?.accessToken);
-          setRefreshToken(tokens?.refreshToken);
-          await storeTokens(tokens?.accessToken, tokens?.refreshToken, true);
-          await HandleDefaultProfile(address);
-          await AsyncStorage.setItem("@viaDeskTop", "true");
-          navigation.replace("Root");
+          if (hasHandle) {
+            const tokens = await getTokens({
+              address,
+              signature: decryptedSignature,
+            });
+
+            if (!tokens) {
+              setHasData(false);
+              toast.show("Please regenerate QR", ToastType.ERROR, true);
+              return;
+            }
+            setAccessToken(tokens?.accessToken);
+            setRefreshToken(tokens?.refreshToken);
+            await storeTokens(tokens?.accessToken, tokens?.refreshToken, true);
+            await AsyncStorage.setItem("@viaDeskTop", "true");
+            navigation.replace("Root");
+          }
         }
       } catch (error) {
-        // console.log("[Error]:Error in QR Login", error);
-        throw new Error("[Error]:Error in QR Login", {
+        // console.log("[Error]:Error in Scanner", error);
+        throw new Error("[Error]:Error in Scanner", {
           cause: error,
         });
+      } finally {
+        setHasData(false);
       }
     }
   };

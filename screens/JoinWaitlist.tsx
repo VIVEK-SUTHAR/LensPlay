@@ -5,7 +5,8 @@ import {
   KeyboardAvoidingView,
   Linking,
   Platform,
-  StyleSheet, View
+  StyleSheet,
+  View,
 } from "react-native";
 import Button from "../components/UI/Button";
 import Heading from "../components/UI/Heading";
@@ -65,12 +66,11 @@ const JoinWaitlist = (props: Props) => {
             }
             px={8}
             py={12}
-            borderRadius={8}
             my={8}
             width={"auto"}
             type={"filled"}
             textStyle={{
-              fontSize: 16,
+              fontSize: 20,
               fontWeight: "600",
               color: "black",
             }}
