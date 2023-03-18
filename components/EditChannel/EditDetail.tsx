@@ -107,7 +107,7 @@ export default function EditDetail() {
       oldProfileData: currentProfile,
       newProfileData: userData,
       socialLinks: socialLinks,
-      coverImage: `ipfs://${coverURI}`,
+      coverImage: coverImageBlob ? `ipfs://${coverURI}` : coverURI,
     });
     const headersList = {
       "Content-Type": "application/json",
