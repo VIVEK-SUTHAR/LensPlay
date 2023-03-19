@@ -16,6 +16,8 @@ interface VideoPlayerProps {
   inFullscreen?: boolean;
   title: string;
   isMute: boolean;
+  isSliderVisible?: boolean;
+  loop?: boolean;
   setInFullscreen?: React.Dispatch<React.SetStateAction<boolean>>;
   setIsMute: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -24,6 +26,8 @@ function Player({
   inFullscreen,
   poster,
   title,
+  isSliderVisible = true,
+  loop = false,
   url,
   isMute,
   setInFullscreen,
@@ -49,7 +53,7 @@ function Player({
         color: primary,
       }}
       slider={{
-        visible: true,
+        visible: isSliderVisible,
         thumbTintColor: "white",
         maximumTrackTintColor: "white",
         minimumTrackTintColor: primary,
@@ -82,6 +86,7 @@ function Player({
         </View>
       }
       videoProps={{
+        isLooping: loop,
         usePoster: true,
         posterSource: {
           uri: getIPFSLink(poster),
@@ -91,6 +96,7 @@ function Player({
           width: "100%",
           resizeMode: "contain",
         },
+
         isMuted: isMute,
         shouldPlay: true,
         resizeMode: ResizeMode.CONTAIN,

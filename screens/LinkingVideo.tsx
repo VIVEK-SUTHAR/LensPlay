@@ -1,48 +1,20 @@
-import {
-  View,
-  Share,
-  ScrollView,
-  SafeAreaView,
-  BackHandler,
-  TextInput,
-  Pressable,
-  AppState,
-} from "react-native";
-import {
-  AntDesign,
-  Entypo,
-  Feather,
-  FontAwesome,
-  MaterialIcons,
-} from "@expo/vector-icons";
-import React, { useEffect } from "react";
-import {
-  useAuthStore,
-  useProfile,
-  useThemeStore,
-  useToast,
-} from "../store/Store";
-import { useState } from "react";
-import { setStatusBarHidden, StatusBar } from "expo-status-bar";
-import { client } from "../apollo/client";
-import Avatar from "../components/UI/Avatar";
-import Heading from "../components/UI/Heading";
-import StyledText from "../components/UI/StyledText";
 import * as ScreenOrientation from "expo-screen-orientation";
-import Drawer from "../components/UI/Drawer";
-import Player from "../components/VideoPlayer";
-import Button from "../components/UI/Button";
-import { RootStackScreenProps } from "../types/navigation/types";
-import { ToastType } from "../types/Store";
+import { setStatusBarHidden } from "expo-status-bar";
+import React, { useEffect, useState } from "react";
+import {
+  BackHandler,
+  SafeAreaView,
+  ScrollView,
+  Share,
+  View,
+} from "react-native";
+import { client } from "../apollo/client";
 import fetchPublicationById from "../apollo/Queries/fetchPublicationById";
-import { LensPublication } from "../types/Lens/Feed";
-import getIPFSLink from "../utils/getIPFSLink";
 import getComments from "../apollo/Queries/getComments";
-import { Comments } from "../types/Lens/Feed";
-import CommentSkeleton from "../components/UI/CommentSkeleton";
-import AnimatedLottieView from "lottie-react-native";
-import CommentCard from "../components/Comments/CommentCard";
-import * as Linking from "expo-linking";
+import Comment from "../components/Comments";
+import CommentInput from "../components/Comments/CommentInput";
+import Button from "../components/UI/Button";
+import StyledText from "../components/UI/StyledText";
 import {
   CollectButton,
   LikeButton,
@@ -53,25 +25,26 @@ import {
 } from "../components/VIdeo";
 import DisLikeButton from "../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
-import CommentInput from "../components/Comments/CommentInput";
-import Comment from "../components/Comments";
-import VideoPage from "./VideoPage";
+import Player from "../components/VideoPlayer";
+import {
+  useAuthStore,
+  useProfile,
+  useThemeStore,
+  useToast,
+} from "../store/Store";
+import { Comments, LensPublication } from "../types/Lens/Feed";
+import { RootStackScreenProps } from "../types/navigation/types";
 
 const LinkingVideo = ({
   navigation,
   route,
 }: RootStackScreenProps<"LinkingVideo">) => {
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
-  const [descOpen, setDescOpen] = useState<boolean>(false);
-  const [ismodalopen, setIsmodalopen] = useState<boolean>(false);
   const [commentText, setCommentText] = useState<string>("");
   const [isMute, setIsMute] = useState<boolean>(false);
-  const [isImdexing, setIsImdexing] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [videoData, setVideoData] = useState<LensPublication>();
-  const [isFocused, setIsFocused] = useState(false);
   const [comments, setComments] = useState<Comments[]>([]);
-  const [initialUrl, setInitialUrl] = useState(null);
 
   const theme = useThemeStore();
   const authStore = useAuthStore();
@@ -160,7 +133,7 @@ const LinkingVideo = ({
       }
     }
   };
-  if (!isLoading) {
+  if (isLoading) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
         <View

@@ -70,7 +70,7 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
               }}
             >
               <Heading
-                title="Loading Bytes for you"
+                title="Getting Shots for you"
                 style={{
                   fontSize: 16,
                   color: "white",

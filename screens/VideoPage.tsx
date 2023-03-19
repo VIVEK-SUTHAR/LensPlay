@@ -41,7 +41,7 @@ const VideoPage = ({
     setVideoPageStats,
     clearStats,
     setCollectStats,
-    setMirrorStats
+    setMirrorStats,
   } = useReactionStore();
 
   function handleBackButtonClick() {
@@ -69,7 +69,7 @@ const VideoPage = ({
 
   if (ReactionData) {
     console.log(ReactionData);
-    
+
     if (!reaction) {
       setReaction(true);
       setVideoPageStats(
@@ -77,10 +77,16 @@ const VideoPage = ({
         ReactionData?.publication?.reaction === "DOWNVOTE",
         ReactionData?.publication?.stats?.totalUpvotes
       );
-      setCollectStats(ReactionData?.publication?.hasCollectedByMe,ReactionData?.publication?.stats?.totalAmountOfCollects);
-      setMirrorStats(ReactionData?.publication?.mirrors?.length>0,ReactionData?.publication?.stats?.totalAmountOfMirrors);
+      setCollectStats(
+        ReactionData?.publication?.hasCollectedByMe,
+        ReactionData?.publication?.stats?.totalAmountOfCollects
+      );
+      setMirrorStats(
+        ReactionData?.publication?.mirrors?.length > 0,
+        ReactionData?.publication?.stats?.totalAmountOfMirrors
+      );
     }
-  }  
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -90,6 +96,8 @@ const VideoPage = ({
         url={activePublication?.metadata?.media[0]?.original?.url}
         inFullscreen={inFullscreen}
         isMute={isMute}
+        isSliderVisible={true}
+        loop={false}
         setInFullscreen={setInFullsreen}
         setIsMute={setIsMute}
       />

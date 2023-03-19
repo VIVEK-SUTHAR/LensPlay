@@ -174,13 +174,16 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
               shouldPlay: currentIndex === index ? true : false,
               resizeMode: ResizeMode.CONTAIN,
               isMuted: mute,
-
               posterSource: {
                 uri: getIPFSLink(item?.metadata.cover),
               },
+              isLooping: true,
               posterStyle: {
                 resizeMode: ResizeMode.CONTAIN,
               },
+            }}
+            slider={{
+              visible: false,
             }}
             icon={{
               size: 48,
