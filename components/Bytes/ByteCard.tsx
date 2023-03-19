@@ -1,11 +1,11 @@
 import AnimatedLottieView from "lottie-react-native";
 import React, { useEffect, useState } from "react";
-import { View, SafeAreaView, Dimensions, Pressable } from "react-native";
+import { Dimensions, Pressable, SafeAreaView, View } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import { client } from "../../apollo/client";
 import getBytes from "../../apollo/Queries/getBytes";
 import { useGuestStore } from "../../store/GuestStore";
-import { useAuthStore, useProfile } from "../../store/Store";
+import { useProfile } from "../../store/Store";
 import { Root } from "../../types/Lens/Feed";
 import Heading from "../UI/Heading";
 import SingleByte from "./SingleByte";
@@ -15,7 +15,6 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const userStore = useProfile();
-  const authStore = useAuthStore();
   const { isGuest, profileId } = useGuestStore();
 
   const handleChangeIndexValue = ({ index }: { index: number }) => {
@@ -25,9 +24,9 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
   async function getBytesData() {
     try {
       const bytesdata = await client.query({
-        query: getBytes,  
+        query: getBytes,
         variables: {
-          id: isGuest?profileId:userStore.currentProfile?.id,
+          id: isGuest ? profileId : userStore.currentProfile?.id,
         },
       });
       setBytesData(bytesdata.data.explorePublications.items);

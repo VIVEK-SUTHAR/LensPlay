@@ -12,17 +12,14 @@ import {
   ReportButton,
   ShareButton,
   VideoCreator,
-  VideoMeta
+  VideoMeta,
 } from "../components/VIdeo";
 import DisLikeButton from "../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
 import Player from "../components/VideoPlayer";
 import { dark_primary } from "../constants/Colors";
 import { useReaction } from "../hooks/useFeed";
-import {
-  useActivePublication,
-  useReactionStore
-} from "../store/Store";
+import { useActivePublication, useReactionStore } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 
 const VideoPage = ({
@@ -63,15 +60,15 @@ const VideoPage = ({
   }
 
   useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);   
+    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
   }, []);
 
   const { data: ReactionData, error, loading } = useReaction(
     activePublication?.id
   );
-  
+
   if (ReactionData) {
-    // console.log(ReactionData);
+    console.log(ReactionData);
     
     if (!reaction) {
       setReaction(true);
@@ -120,14 +117,14 @@ const VideoPage = ({
             horizontal={true}
             showsHorizontalScrollIndicator={false}
           >
-            {loading || !reaction || !comment ? (              
+            {loading || !reaction || !comment ? (
               <>
                 <Button
                   title={""}
                   mx={4}
                   px={34}
                   width={"auto"}
-                  bg={ dark_primary }
+                  bg={dark_primary}
                   type={"filled"}
                   borderRadius={8}
                 />
@@ -136,7 +133,7 @@ const VideoPage = ({
                   mx={4}
                   px={34}
                   width={"auto"}
-                  bg={ dark_primary }
+                  bg={dark_primary}
                   type={"filled"}
                   borderRadius={8}
                 />
@@ -145,7 +142,7 @@ const VideoPage = ({
                   mx={4}
                   px={34}
                   width={"auto"}
-                  bg={ dark_primary }
+                  bg={dark_primary}
                   type={"filled"}
                   borderRadius={8}
                 />
@@ -154,7 +151,7 @@ const VideoPage = ({
                   mx={4}
                   px={34}
                   width={"auto"}
-                  bg={ dark_primary }
+                  bg={dark_primary}
                   type={"filled"}
                   borderRadius={8}
                 />
@@ -163,7 +160,7 @@ const VideoPage = ({
                   mx={4}
                   px={40}
                   width={"auto"}
-                  bg={ dark_primary }
+                  bg={dark_primary}
                   type={"filled"}
                   borderRadius={8}
                 />

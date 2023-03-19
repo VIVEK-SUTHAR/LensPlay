@@ -1,32 +1,32 @@
+import { Ionicons } from "@expo/vector-icons";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useNavigation } from "@react-navigation/native";
+import { ResizeMode, Video } from "expo-av";
+import { StatusBar } from "expo-status-bar";
+import VideoPlayer from "expo-video-player";
 import React, { useRef, useState } from "react";
 import {
-  View,
-  Text,
   Dimensions,
-  TouchableOpacity,
   Image,
-  Share,
   Pressable,
   ScrollView,
+  Share,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import VideoPlayer from "expo-video-player";
-import { Ionicons } from "@expo/vector-icons";
-import { ResizeMode, Video } from "expo-av";
-import { Root } from "../../types/Lens/Feed";
-import getIPFSLink from "../../utils/getIPFSLink";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { freeCollectPublication } from "../../api";
 import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
-import { LikeButton } from "../VIdeo";
-import { StatusBar } from "expo-status-bar";
+import { Root } from "../../types/Lens/Feed";
+import { ToastType } from "../../types/Store";
+import getIPFSLink from "../../utils/getIPFSLink";
+import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
-import StyledText from "../UI/StyledText";
-import Heading from "../UI/Heading";
 import RBSheet, { BottomSheetType } from "../UI/BottomSheet";
 import Button from "../UI/Button";
-import Icon from "../Icon";
-import { useNavigation } from "@react-navigation/native";
-import { freeCollectPublication } from "../../api";
-import { ToastType } from "../../types/Store";
+import Heading from "../UI/Heading";
+import StyledText from "../UI/StyledText";
+import { LikeButton } from "../VIdeo";
 
 interface SingleByteProps {
   item: Root;
@@ -37,9 +37,6 @@ interface SingleByteProps {
 const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const [likes, setLikes] = useState<number>(item.stats.totalUpvotes);
   const [mute, setMute] = useState<boolean>(false);
-  const [isalreadyLiked, setisalreadyLiked] = useState<boolean>(
-    item?.reaction === "UPVOTE" ? true : false
-  );
   const [totalCollects, setTotalCollects] = useState<number>(
     item.stats.totalAmountOfCollects
   );
@@ -58,6 +55,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   navigation.addListener("blur", (e) => {
     ref.current?.pauseAsync();
   });
+
   const shareVideo = async () => {
     try {
       const result = await Share.share({
@@ -278,7 +276,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
           <LikeButton
             like={likes}
             id={item.id}
-            isalreadyLiked={item?.reaction}
+            isalreadyLiked={item?.reaction === "UPVOTE"}
             bytes={true}
           />
           <TouchableOpacity

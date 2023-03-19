@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "../../UI/Button";
 import { dark_primary } from "../../../constants/Colors";
 import formatInteraction from "../../../utils/formatInteraction";
@@ -29,11 +29,12 @@ const LikeButton = ({
 }: LikeButtonProps) => {
   const authStore = useAuthStore();
   const userStore = useProfile();
-  const {PRIMARY} = useThemeStore();
+  const { PRIMARY } = useThemeStore();
   const { isGuest } = useGuestStore();
-  const {setVideoPageStats} = useReactionStore();
+  const { setVideoPageStats } = useReactionStore();
   const toast = useToast();
-
+  const [isLiked, setIsLiked] = useState(isalreadyLiked);
+  const [likeCount, setLikeCount] = useState(like);
 
   const onLike = async () => {
     if (isGuest) {
@@ -46,14 +47,18 @@ const LikeButton = ({
         id,
         "UPVOTE"
       );
-      if (res?.addReaction === null) {
-        setVideoPageStats(true, false, like+1);
+      if (res?.addReaction === null && !bytes) {
+        setVideoPageStats(true, false, like + 1);
+      }
+      if (res?.addReaction === null && bytes) {
+        setLikeCount(likeCount + 1);
+        setIsLiked(true);
       }
     }
   };
   return (
     <Button
-      title={formatInteraction(like) || "0"}
+      title={formatInteraction(!bytes ? like : likeCount) || "0"}
       mx={4}
       px={16}
       width={"auto"}
@@ -63,17 +68,17 @@ const LikeButton = ({
       textStyle={{
         fontSize: 14,
         fontWeight: "500",
-        color: isalreadyLiked ? PRIMARY : "white",
+        color: (bytes ? isLiked : isalreadyLiked) ? PRIMARY : "white",
         marginLeft: 4,
       }}
-      borderColor={isalreadyLiked ? PRIMARY : "white"}
+      borderColor={(bytes ? isLiked : isalreadyLiked) ? PRIMARY : "white"}
       onPress={onLike}
       bytes={bytes}
       icon={
         <Icon
           name="like"
           size={bytes ? 28 : 20}
-          color={isalreadyLiked  ? PRIMARY : "white"}
+          color={(bytes ? isLiked : isalreadyLiked) ? PRIMARY : "white"}
         />
       }
     />
