@@ -8,7 +8,6 @@ query Publication($id: ProfileId!, $pubId: InternalPublicationId ) {
      __typename 
       ... on Post {
         ...PostFields
-  
       }
       ... on Comment {
         ...CommentFields
@@ -26,6 +25,7 @@ query Publication($id: ProfileId!, $pubId: InternalPublicationId ) {
     }
     reaction(request: {profileId:$id})
     hasCollectedByMe
+    mirrors(by: $id)
   }
   fragment CommentFields on Comment {
     

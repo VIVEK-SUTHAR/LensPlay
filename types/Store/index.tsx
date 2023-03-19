@@ -45,6 +45,7 @@ export interface IReactionStore {
   comment: boolean;
   videopageStats: videoPageStatsObject;
   collectStats: collectStatsObject;
+  mirrorStats: mirrorStatsObject;
   setReaction: (reaction: boolean) => void;
   setComments: (comment: boolean) => void;
   setVideoPageStats: (
@@ -52,7 +53,8 @@ export interface IReactionStore {
     isDisliked: boolean,
     likeCount: number
   ) => void;
-  setCollectStats: (isCollected:boolean, collectCount: number) => void;
+  setCollectStats: (isCollected: boolean, collectCount: number) => void;
+  setMirrorStats: (isMirrored: boolean, mirrorCount: number) => void;
   clearStats: () => void;
   likedComments: DisLikeObject[];
   addToLikedComments: (commentId: string) => void;
@@ -67,6 +69,11 @@ export interface videoPageStatsObject {
 export interface collectStatsObject {
   isCollected: boolean;
   collectCount: number;
+}
+
+export interface mirrorStatsObject {
+  isMirrored: boolean;
+  mirrorCount: number;
 }
 
 export interface LikeObject {

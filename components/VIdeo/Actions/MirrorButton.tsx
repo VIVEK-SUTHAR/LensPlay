@@ -4,6 +4,7 @@ import { dark_primary, primary } from "../../../constants/Colors";
 import {
   useAuthStore,
   useProfile,
+  useReactionStore,
   useThemeStore,
   useToast,
 } from "../../../store/Store";
@@ -20,12 +21,14 @@ type MirrorButtonProps = {
   id: string;
   totalMirrors: number;
   bannerUrl: string;
+  isAlreadyMirrored: boolean;
 };
 
 const MirrorButton = ({
   id,
   totalMirrors,
   bannerUrl,
+  isAlreadyMirrored
 }: MirrorButtonProps) => {
   const Toast = useToast();
   const authStore = useAuthStore();
@@ -33,13 +36,12 @@ const MirrorButton = ({
   const { PRIMARY } = useThemeStore();
   const ref = useRef();
   const { isGuest } = useGuestStore();
-  const [isAlreadyMirrored, setIsAlreadyMirrored] = useState<boolean>(false);
-  const [mirrorCount, setMirrorCount] = useState<number>(totalMirrors);
+  const {setMirrorStats} = useReactionStore();
+  
 
-  const { data, error } = useIsMirrored(id);
 
   const onMirror = async () => {
-    if (isAlreadyMirrored || data?.publication?.mirrors?.length > 0) {
+    if (isAlreadyMirrored) {
       Toast.show("Already mirrored", ToastType.ERROR, true);
       ref.current?.close();
       return;
@@ -52,9 +54,8 @@ const MirrorButton = ({
         );
         if (data) {
           Toast.show("Mirror submitted", ToastType.SUCCESS, true);
-          setMirrorCount(prev=>prev+1);
+          setMirrorStats(true, totalMirrors + 1);
           ref.current?.close();
-          setIsAlreadyMirrored(true);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -89,18 +90,18 @@ const MirrorButton = ({
             progressiveRenderingEnabled={true}
           />
           <Button
-            title={isAlreadyMirrored || data?.publication?.mirrors?.length > 0?'Already mirrored these video':'Mirror the video for free'}
+            title={isAlreadyMirrored?'Already mirrored these video':'Mirror the video for free'}
             width={"90%"}
             py={12}
             my={4}
             textStyle={{ fontSize: 20, fontWeight: "700", textAlign: "center" }}
             onPress={onMirror}
-            bg={data?.publication?.mirrors?.length > 0 || isAlreadyMirrored?'#c0c0c0':primary}
+            bg={isAlreadyMirrored?'#c0c0c0':primary}
           />
         </View>
       </RBSheet>
       <Button
-        title={mirrorCount?.toString()}
+        title={totalMirrors?.toString()}
         onPress={() => {
           if (isGuest) {
             Toast.show("Please Login", ToastType.ERROR, true);
@@ -118,7 +119,7 @@ const MirrorButton = ({
           fontSize: 14,
           fontWeight: "500",
           color:
-            isAlreadyMirrored || data?.publication?.mirrors?.length > 0
+            isAlreadyMirrored
               ? PRIMARY
               : "white",
           marginLeft: 4,
@@ -129,7 +130,7 @@ const MirrorButton = ({
             name="mirror"
             size={20}
             color={
-              isAlreadyMirrored || data?.publication?.mirrors?.length > 0
+              isAlreadyMirrored
                 ? PRIMARY
                 : "white"
             }

@@ -61,6 +61,10 @@ export const useReactionStore = create<IReactionStore>((set) => ({
     isCollected: false,
     collectCount: 0
   },
+  mirrorStats: {
+    isMirrored: false,
+    mirrorCount: 0
+  },
   likedComments: [{ id: 0 }],
   setReaction: (reaction) => {
     set({
@@ -86,6 +90,14 @@ export const useReactionStore = create<IReactionStore>((set) => ({
       collectStats:{
         isCollected: isCollected,
         collectCount: collectCount
+      }
+    })
+  },
+  setMirrorStats: (isMirrored, mirrorCount) => {
+    set({
+      mirrorStats: {
+        isMirrored: isMirrored,
+        mirrorCount: mirrorCount
       }
     })
   },

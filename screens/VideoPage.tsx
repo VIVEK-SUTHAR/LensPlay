@@ -40,9 +40,11 @@ const VideoPage = ({
     setComments,
     videopageStats,
     collectStats,
+    mirrorStats,
     setVideoPageStats,
     clearStats,
-    setCollectStats
+    setCollectStats,
+    setMirrorStats
   } = useReactionStore();
 
   function handleBackButtonClick() {
@@ -55,6 +57,7 @@ const VideoPage = ({
       setComments(false);
       clearStats();
       setCollectStats(false, 0);
+      setMirrorStats(false, 0);
     }
     return true;
   }
@@ -68,6 +71,8 @@ const VideoPage = ({
   );
   
   if (ReactionData) {
+    // console.log(ReactionData);
+    
     if (!reaction) {
       setReaction(true);
       setVideoPageStats(
@@ -76,17 +81,9 @@ const VideoPage = ({
         ReactionData?.publication?.stats?.totalUpvotes
       );
       setCollectStats(ReactionData?.publication?.hasCollectedByMe,ReactionData?.publication?.stats?.totalAmountOfCollects);
-      
+      setMirrorStats(ReactionData?.publication?.mirrors?.length>0,ReactionData?.publication?.stats?.totalAmountOfMirrors);
     }
-  }
-
-  useEffect(()=>{
-    console.log(reaction,'reaction');
-    console.log(comment,'comment');
-    
-  },[reaction, comment])
-
-  
+  }  
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -184,7 +181,8 @@ const VideoPage = ({
                 />
                 <MirrorButton
                   id={activePublication?.id}
-                  totalMirrors={activePublication.stats?.totalAmountOfMirrors}
+                  totalMirrors={mirrorStats?.mirrorCount}
+                  isAlreadyMirrored={mirrorStats?.isMirrored}
                   bannerUrl={activePublication?.metadata?.cover}
                 />
                 <CollectButton
