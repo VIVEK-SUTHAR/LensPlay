@@ -6,26 +6,25 @@ import AnimatedLottieView from "lottie-react-native";
 import CommentSkeleton from "../UI/CommentSkeleton";
 import CommentCard from "./CommentCard";
 import { useReactionStore } from "../../store/Store";
-import { Comment as IComment} from "../../types/generated";
-
+import { Comment as IComment } from "../../types/generated";
 
 const Comment = ({ publicationId }: { publicationId: string }) => {
-  const {reaction, comment, setComments} = useReactionStore();
+  const { reaction, comment, setComments } = useReactionStore();
   const { data: commentData, error, loading } = useComments(publicationId);
 
-  if (error) return <NotFound />;
+  if (!error) return <NotFound />;
 
-  if (loading || !reaction ) return <Loading />;
+  if (loading || !reaction) return <Loading />;
 
   if (!commentData?.publications?.items.length) {
-    if (!comment){
+    if (!comment) {
       setComments(true);
     }
     return <NotFound />;
-  };
+  }
 
   if (commentData) {
-    if (!comment){
+    if (!comment) {
       setComments(true);
     }
     return (
@@ -63,26 +62,16 @@ export default Comment;
 const NotFound = () => {
   return (
     <SafeAreaView>
-      <View style={{ maxHeight: 200 }}>
-        <AnimatedLottieView
-          autoPlay
-          style={{
-            height: "90%",
-            alignSelf: "center",
-            width: "100%",
-          }}
-          source={require("../../assets/nocomments.json")}
-        />
-        <Heading
-          title="There are no comments yet"
-          style={{
-            color: "white",
-            fontSize: 20,
-            textAlign: "center",
-            fontWeight: "600",
-          }}
-        ></Heading>
-      </View>
+      <Heading
+        title="Be the first one to comment"
+        style={{
+          color: "gray",
+          fontSize: 16,
+          textAlign: "center",
+          fontWeight: "500",
+          marginVertical: 16,
+        }}
+      ></Heading>
     </SafeAreaView>
   );
 };

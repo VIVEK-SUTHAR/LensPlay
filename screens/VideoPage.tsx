@@ -12,17 +12,14 @@ import {
   ReportButton,
   ShareButton,
   VideoCreator,
-  VideoMeta
+  VideoMeta,
 } from "../components/VIdeo";
 import DisLikeButton from "../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
 import Player from "../components/VideoPlayer";
 import { dark_primary } from "../constants/Colors";
 import { useReaction } from "../hooks/useFeed";
-import {
-  useActivePublication,
-  useReactionStore
-} from "../store/Store";
+import { useActivePublication, useReactionStore } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 
 const VideoPage = ({
@@ -42,7 +39,7 @@ const VideoPage = ({
     collectStats,
     setVideoPageStats,
     clearStats,
-    setCollectStats
+    setCollectStats,
   } = useReactionStore();
 
   function handleBackButtonClick() {
@@ -60,13 +57,13 @@ const VideoPage = ({
   }
 
   useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);   
+    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
   }, []);
 
   const { data: ReactionData, error, loading } = useReaction(
     activePublication?.id
   );
-  
+
   if (ReactionData) {
     if (!reaction) {
       setReaction(true);
@@ -75,18 +72,17 @@ const VideoPage = ({
         ReactionData?.publication?.reaction === "DOWNVOTE",
         ReactionData?.publication?.stats?.totalUpvotes
       );
-      setCollectStats(ReactionData?.publication?.hasCollectedByMe,ReactionData?.publication?.stats?.totalAmountOfCollects);
-      
+      setCollectStats(
+        ReactionData?.publication?.hasCollectedByMe,
+        ReactionData?.publication?.stats?.totalAmountOfCollects
+      );
     }
   }
 
-  useEffect(()=>{
-    console.log(reaction,'reaction');
-    console.log(comment,'comment');
-    
-  },[reaction, comment])
-
-  
+  useEffect(() => {
+    console.log(reaction, "reaction");
+    console.log(comment, "comment");
+  }, [reaction, comment]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -123,14 +119,14 @@ const VideoPage = ({
             horizontal={true}
             showsHorizontalScrollIndicator={false}
           >
-            {loading || !reaction || !comment ? (              
+            {loading || !reaction || !comment ? (
               <>
                 <Button
                   title={""}
                   mx={4}
                   px={34}
                   width={"auto"}
-                  bg={ dark_primary }
+                  bg={dark_primary}
                   type={"filled"}
                   borderRadius={8}
                 />
@@ -139,7 +135,7 @@ const VideoPage = ({
                   mx={4}
                   px={34}
                   width={"auto"}
-                  bg={ dark_primary }
+                  bg={dark_primary}
                   type={"filled"}
                   borderRadius={8}
                 />
@@ -148,7 +144,7 @@ const VideoPage = ({
                   mx={4}
                   px={34}
                   width={"auto"}
-                  bg={ dark_primary }
+                  bg={dark_primary}
                   type={"filled"}
                   borderRadius={8}
                 />
@@ -157,7 +153,7 @@ const VideoPage = ({
                   mx={4}
                   px={34}
                   width={"auto"}
-                  bg={ dark_primary }
+                  bg={dark_primary}
                   type={"filled"}
                   borderRadius={8}
                 />
@@ -166,7 +162,7 @@ const VideoPage = ({
                   mx={4}
                   px={40}
                   width={"auto"}
-                  bg={ dark_primary }
+                  bg={dark_primary}
                   type={"filled"}
                   borderRadius={8}
                 />
