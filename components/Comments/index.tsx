@@ -2,7 +2,6 @@ import { SafeAreaView, ScrollView, View } from "react-native";
 import React from "react";
 import { useComments } from "../../hooks/useFeed";
 import Heading from "../UI/Heading";
-import AnimatedLottieView from "lottie-react-native";
 import CommentSkeleton from "../UI/CommentSkeleton";
 import CommentCard from "./CommentCard";
 import { useReactionStore } from "../../store/Store";
