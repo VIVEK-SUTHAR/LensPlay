@@ -27,7 +27,7 @@ const Sheet = React.forwardRef<BottomSheetRefProps, BottomSheetProps>(
       },
     },
     ref
-  ) => {
+  ) => {  
     const snapPoints = useMemo(() => ["50%", "75%", "95%"], []);
     return (
       <BottomSheet
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingHorizontal: 24,
+    // paddingHorizontal: 24,
     paddingVertical: 16,
   },
 });

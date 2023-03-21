@@ -25,6 +25,7 @@ import { useReaction } from "../hooks/useFeed";
 import { useActivePublication, useAuthStore, useProfile, useReactionStore, useToast } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
+import extractURLs from "../utils/extractURL";
 import getIPFSLink from "../utils/getIPFSLink";
 
 const VideoPage = ({
@@ -76,7 +77,6 @@ const VideoPage = ({
   );
 
   if (ReactionData) {
-    console.log(ReactionData);
 
     if (!reaction) {
       setReaction(true);
@@ -98,6 +98,7 @@ const VideoPage = ({
 
   const collectRef = useRef<BottomSheetMethods>(null);
   const mirrorRef = useRef<BottomSheetMethods>(null);
+  const descRef = useRef<BottomSheetMethods>(null);
 
   const onMirror = async () => {
     if (mirrorStats?.isMirrored) {
@@ -167,6 +168,7 @@ const VideoPage = ({
             <VideoMeta
               title={activePublication?.metadata?.name}
               description={activePublication?.metadata?.description}
+              descRef={descRef}
             />
             <VideoCreator
               profileId={activePublication?.profile?.id}
@@ -358,6 +360,41 @@ const VideoPage = ({
             textStyle={{ fontSize: 20, fontWeight: "700", textAlign: "center" }}
             onPress={onMirror}
             bg={mirrorStats?.isMirrored?'#c0c0c0':primary}
+          />
+              </View>
+            </ScrollView>
+          </View>
+        }
+      />
+      <Sheet
+        ref={descRef}
+        children={
+          <View>
+            <ScrollView>
+              <View
+                style={{
+                  maxWidth: "100%",
+                  marginTop: 32,
+                  justifyContent: "space-between",
+                }}
+              >
+                <StyledText
+            title={"Description"}
+            style={{
+              fontSize: 20,
+              fontWeight: "600",
+              marginVertical: 4,
+              color: "white",
+              textAlign: 'left'
+            }}
+          />
+          <StyledText
+            title={extractURLs(activePublication?.metadata?.description)}
+            style={{
+              textAlign: "justify",
+              color: "white",
+              marginTop: 8
+            }}
           />
               </View>
             </ScrollView>

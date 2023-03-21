@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
 import { Feather } from "@expo/vector-icons";
@@ -18,16 +18,21 @@ type VideoMetaProps = {
   description: string;
 };
 
+
+
 const VideoMeta = (props: VideoMetaProps) => {
   const [descOpen, setDescOpen] = useState<boolean>(false);
 
-  const { title, description } = props;
+  const { title, description, descRef } = props;
 
-  const descRef = useRef();
+  const onPress = useCallback(() => {
+    descRef?.current?.snapToIndex(0);
+  }, []);
+
 
   return (
     <>
-      <RBSheet
+      {/* <RBSheet
         ref={descRef}
         height={Dimensions.get("window").height / 1.4}
         customStyles={{
@@ -65,12 +70,12 @@ const VideoMeta = (props: VideoMetaProps) => {
             }}
           />
         </ScrollView>
-      </RBSheet>
+      </RBSheet> */}
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: "center"
         }}
       >
         <Heading
@@ -99,7 +104,7 @@ const VideoMeta = (props: VideoMetaProps) => {
               }}
               onPress={(e) => {
                 e.preventDefault();
-                descRef.current.open();
+                onPress();
               }}
             >
               <StyledText
