@@ -1,3 +1,6 @@
+import { BottomSheetProps } from "@gorhom/bottom-sheet";
+import React from "react";
+
 export type IconProps = { width: number; height: number; filled?: boolean };
 
 export interface QRdata {
@@ -21,4 +24,8 @@ export interface Origin {
 export interface Size {
   height: number;
   width: number;
+}
+
+export interface IBottomSheet extends BottomSheetProps{
+  children: React.ReactNode;
 }

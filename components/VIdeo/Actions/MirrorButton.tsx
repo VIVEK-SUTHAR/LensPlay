@@ -29,19 +29,14 @@ const MirrorButton = ({
   totalMirrors,
   bannerUrl,
   isAlreadyMirrored,
-  mirrorRef
+  mirrorRef,
 }: MirrorButtonProps) => {
   const Toast = useToast();
   const authStore = useAuthStore();
   const userStore = useProfile();
   const { PRIMARY } = useThemeStore();
   const { isGuest } = useGuestStore();
-  const {setMirrorStats} = useReactionStore();
-  
-  
-
-
-  
+  const { setMirrorStats } = useReactionStore();
 
   return (
     <>
@@ -96,10 +91,7 @@ const MirrorButton = ({
         textStyle={{
           fontSize: 14,
           fontWeight: "500",
-          color:
-            isAlreadyMirrored
-              ? PRIMARY
-              : "white",
+          color: isAlreadyMirrored ? PRIMARY : "white",
           marginLeft: 4,
         }}
         //   borderColor={isalreadyDisLiked ? PRIMARY : "white"}
@@ -107,11 +99,7 @@ const MirrorButton = ({
           <Icon
             name="mirror"
             size={20}
-            color={
-              isAlreadyMirrored
-                ? PRIMARY
-                : "white"
-            }
+            color={isAlreadyMirrored ? PRIMARY : "white"}
           />
         }
       />

@@ -30,7 +30,6 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   const [isloading, setIsloading] = useState<boolean>(false);
 
   const onPress = useCallback(() => {
-
     loginRef?.current?.snapToIndex(0);
   }, []);
 
@@ -308,9 +307,22 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
       </View>
       <Sheet
         ref={loginRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "#1d1d1d",
+        }}
+        snapPoints={["50%"]}
         children={
           <View>
-            <ScrollView style={{ padding: 8, zIndex: 1, borderColor: 'red', borderWidth: 0 }}>
+            <ScrollView
+              style={{
+                padding: 8,
+                zIndex: 1,
+                borderColor: "red",
+                borderWidth: 0,
+              }}
+            >
               <View
                 style={{
                   maxWidth: "100%",
@@ -355,7 +367,11 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
                       }}
                       title="Connect Mobile Wallet"
                       bg={primary}
-                      textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
+                      textStyle={{
+                        fontWeight: "600",
+                        fontSize: 20,
+                        color: "black",
+                      }}
                       py={12}
                       icon={<Icon name="wallet" color="black" />}
                       iconPosition="left"
@@ -409,7 +425,11 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
                       title="Connect Desktop Wallet"
                       bg={"white"}
                       my={16}
-                      textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
+                      textStyle={{
+                        fontWeight: "600",
+                        fontSize: 20,
+                        color: "black",
+                      }}
                       py={12}
                       icon={<Icon name="desktop" color="black" size={24} />}
                       iconPosition="left"

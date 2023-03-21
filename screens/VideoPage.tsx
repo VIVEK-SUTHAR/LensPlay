@@ -2,7 +2,14 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
-import { BackHandler, Dimensions, Image, SafeAreaView, ScrollView, View } from "react-native";
+import {
+  BackHandler,
+  Dimensions,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  View,
+} from "react-native";
 import { freeCollectPublication, freeMirror } from "../api";
 import Sheet from "../components/Bottom";
 import Comment from "../components/Comments/";
@@ -22,7 +29,13 @@ import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
 import Player from "../components/VideoPlayer";
 import { dark_primary, primary } from "../constants/Colors";
 import { useReaction } from "../hooks/useFeed";
-import { useActivePublication, useAuthStore, useProfile, useReactionStore, useToast } from "../store/Store";
+import {
+  useActivePublication,
+  useAuthStore,
+  useProfile,
+  useReactionStore,
+  useToast,
+} from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
 import extractURLs from "../utils/extractURL";
@@ -34,7 +47,7 @@ const VideoPage = ({
 }: RootStackScreenProps<"VideoPage">) => {
   const { activePublication } = useActivePublication();
   const toast = useToast();
-  const {accessToken} = useAuthStore();
+  const { accessToken } = useAuthStore();
   const userStore = useProfile();
   const PublicationStats = activePublication?.stats;
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
@@ -77,7 +90,6 @@ const VideoPage = ({
   );
 
   if (ReactionData) {
-
     if (!reaction) {
       setReaction(true);
       setVideoPageStats(
@@ -111,31 +123,34 @@ const VideoPage = ({
         accessToken,
         userStore.currentProfile?.id,
         activePublication?.id
-        );
-        if (data) {
-          toast.show("Mirror submitted", ToastType.SUCCESS, true);
-          setMirrorStats(true, mirrorStats.mirrorCount + 1);
-          mirrorRef.current?.close();
+      );
+      if (data) {
+        toast.show("Mirror submitted", ToastType.SUCCESS, true);
+        setMirrorStats(true, mirrorStats.mirrorCount + 1);
+        mirrorRef.current?.close();
       }
     } catch (error) {
       if (error instanceof Error) {
         toast.show(error.message, ToastType.ERROR, true);
         mirrorRef?.current?.close();
       }
-    }    
+    }
   };
 
   const collectPublication = async () => {
     try {
-      if(collectStats?.isCollected){
+      if (collectStats?.isCollected) {
         toast.show(
-                "You have already collected the video",
-                ToastType.ERROR,
-                true
-              )
-        return
+          "You have already collected the video",
+          ToastType.ERROR,
+          true
+        );
+        return;
       }
-      const data = await freeCollectPublication(activePublication?.id, accessToken);
+      const data = await freeCollectPublication(
+        activePublication?.id,
+        accessToken
+      );
       if (data) {
         toast.show("Collect Submitted", ToastType.SUCCESS, true);
         setCollectStats(true, collectStats?.collectCount + 1);
@@ -286,6 +301,12 @@ const VideoPage = ({
       </SafeAreaView>
       <Sheet
         ref={collectRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "#1d1d1d",
+        }}
+        snapPoints={["50%"]}
         children={
           <View>
             <ScrollView>
@@ -311,11 +332,19 @@ const VideoPage = ({
                   progressiveRenderingEnabled={true}
                 />
                 <Button
-                  title={collectStats?.isCollected ? 'Already collected the video' : `Collect the video for free`}
+                  title={
+                    collectStats?.isCollected
+                      ? "Already collected the video"
+                      : `Collect the video for free`
+                  }
                   width={"90%"}
                   py={12}
-                  textStyle={{ fontSize: 20, fontWeight: "700", textAlign: "center" }}
-                  bg={collectStats?.isCollected ? '#c0c0c0' : primary}
+                  textStyle={{
+                    fontSize: 20,
+                    fontWeight: "700",
+                    textAlign: "center",
+                  }}
+                  bg={collectStats?.isCollected ? "#c0c0c0" : primary}
                   // onPress={collectPublication}
                   onPress={() => {
                     collectPublication();
@@ -328,6 +357,12 @@ const VideoPage = ({
       />
       <Sheet
         ref={mirrorRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "#1d1d1d",
+        }}
+        snapPoints={["50%"]}
         children={
           <View>
             <ScrollView>
@@ -341,26 +376,34 @@ const VideoPage = ({
                 }}
               >
                 <Image
-            source={{
-              uri: getIPFSLink(activePublication?.metadata?.cover),
-            }}
-            style={{
-              height: 180,
-              borderRadius: 8,
-              width: Dimensions.get("screen").width - 48,
-              resizeMode: "cover",
-            }}
-            progressiveRenderingEnabled={true}
-          />
-          <Button
-            title={mirrorStats?.isMirrored?'Already mirrored these video':'Mirror the video for free'}
-            width={"90%"}
-            py={12}
-            my={4}
-            textStyle={{ fontSize: 20, fontWeight: "700", textAlign: "center" }}
-            onPress={onMirror}
-            bg={mirrorStats?.isMirrored?'#c0c0c0':primary}
-          />
+                  source={{
+                    uri: getIPFSLink(activePublication?.metadata?.cover),
+                  }}
+                  style={{
+                    height: 180,
+                    borderRadius: 8,
+                    width: Dimensions.get("screen").width - 48,
+                    resizeMode: "cover",
+                  }}
+                  progressiveRenderingEnabled={true}
+                />
+                <Button
+                  title={
+                    mirrorStats?.isMirrored
+                      ? "Already mirrored these video"
+                      : "Mirror the video for free"
+                  }
+                  width={"90%"}
+                  py={12}
+                  my={4}
+                  textStyle={{
+                    fontSize: 20,
+                    fontWeight: "700",
+                    textAlign: "center",
+                  }}
+                  onPress={onMirror}
+                  bg={mirrorStats?.isMirrored ? "#c0c0c0" : primary}
+                />
               </View>
             </ScrollView>
           </View>
@@ -368,6 +411,12 @@ const VideoPage = ({
       />
       <Sheet
         ref={descRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "#1d1d1d",
+        }}
+        snapPoints={["70%", "95%"]}
         children={
           <View>
             <ScrollView>
@@ -379,30 +428,29 @@ const VideoPage = ({
                 }}
               >
                 <StyledText
-            title={"Description"}
-            style={{
-              fontSize: 20,
-              fontWeight: "600",
-              marginVertical: 4,
-              color: "white",
-              textAlign: 'left'
-            }}
-          />
-          <StyledText
-            title={extractURLs(activePublication?.metadata?.description)}
-            style={{
-              textAlign: "justify",
-              color: "white",
-              marginTop: 8
-            }}
-          />
+                  title={"Description"}
+                  style={{
+                    fontSize: 20,
+                    fontWeight: "600",
+                    marginVertical: 4,
+                    color: "white",
+                    textAlign: "left",
+                  }}
+                />
+                <StyledText
+                  title={extractURLs(activePublication?.metadata?.description)}
+                  style={{
+                    textAlign: "justify",
+                    color: "white",
+                    marginTop: 8,
+                  }}
+                />
               </View>
             </ScrollView>
           </View>
         }
       />
     </>
-
   );
 };
 

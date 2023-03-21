@@ -24,7 +24,6 @@ import getIPFSLink from "../../utils/getIPFSLink";
 import Sheet from "../Bottom";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
-import RBSheet, { BottomSheetType } from "../UI/BottomSheet";
 import Button from "../UI/Button";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
@@ -59,8 +58,6 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   });
 
   const onPress = useCallback((ref) => {
-    console.log(collectSheetRef);
-
     ref?.current?.snapToIndex(0);
   }, []);
 
@@ -70,7 +67,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
         message: `Let's watch ${item.metadata.name} on LensPlay,here's link,https://lensplay.xyz/watch/${item.id}`,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -134,6 +131,13 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             slider={{
               visible: false,
             }}
+            fullscreen={{
+              visible: false,
+            }}
+            mute={{
+              visible: false,
+            }}
+            timeVisible={false}
             icon={{
               size: 48,
               play: <Icon name="play" size={48} />,
@@ -259,10 +263,10 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
               e.preventDefault();
               collected
                 ? toast.show(
-                  "You have already collected this shot",
-                  ToastType.ERROR,
-                  true
-                )
+                    "You have already collected this shot",
+                    ToastType.ERROR,
+                    true
+                  )
                 : onPress(collectSheetRef);
             }}
           >
@@ -290,29 +294,52 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
       </View>
       <Sheet
         ref={collectSheetRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "#1d1d1d",
+        }}
+        snapPoints={["50%"]}
         children={
-          <View style={{paddingHorizontal: 8}}>
-            <ScrollView style={{ padding: 8, zIndex: 1 , borderColor: 'red', borderWidth: 0}}>
-              <View style={{ flex: 1, justifyContent: 'space-between', height: 280 }}>
-              <Image
-                source={{
-                  uri: getIPFSLink(item?.metadata?.cover),
-                }}
+          <View style={{ paddingHorizontal: 8 }}>
+            <ScrollView
+              style={{
+                padding: 8,
+                zIndex: 1,
+                borderColor: "red",
+                borderWidth: 0,
+              }}
+            >
+              <View
                 style={{
-                  height: 180,
-                  borderRadius: 8,
-                  resizeMode: "cover",
+                  flex: 1,
+                  justifyContent: "space-between",
+                  height: 280,
                 }}
-                progressiveRenderingEnabled={true}
-              />
-              <Button
-                title={`Collect the Shot for free`}
-                // width={"90%"}
-                mx={12}
-                py={12}
-                textStyle={{ fontSize: 20, fontWeight: "700", textAlign: "center" }}
-                onPress={collectPublication}
-              />
+              >
+                <Image
+                  source={{
+                    uri: getIPFSLink(item?.metadata?.cover),
+                  }}
+                  style={{
+                    height: 180,
+                    borderRadius: 8,
+                    resizeMode: "cover",
+                  }}
+                  progressiveRenderingEnabled={true}
+                />
+                <Button
+                  title={`Collect the Shot for free`}
+                  // width={"90%"}
+                  mx={12}
+                  py={12}
+                  textStyle={{
+                    fontSize: 20,
+                    fontWeight: "700",
+                    textAlign: "center",
+                  }}
+                  onPress={collectPublication}
+                />
               </View>
             </ScrollView>
           </View>
@@ -320,8 +347,14 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
       />
       <Sheet
         ref={descriptionRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "#1d1d1d",
+        }}
+        snapPoints={["50%"]}
         children={
-          <View style={{paddingHorizontal: 8}}>
+          <View style={{ paddingHorizontal: 8 }}>
             <ScrollView style={{ padding: 8 }}>
               <Heading
                 title={item?.metadata?.name}
