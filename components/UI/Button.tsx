@@ -11,6 +11,7 @@ import {
 import React from "react";
 import StyledText from "./StyledText";
 import { useThemeStore } from "../../store/Store";
+import Ripple from "./Ripple";
 interface ButtonProps {
   title: string;
   type?: "outline" | "filled";
@@ -67,102 +68,104 @@ const Button = (props: ButtonProps): JSX.Element => {
   });
   const scaleRef = React.useRef(new Animated.Value(1)).current;
   return (
-    <Pressable
-      android_ripple={{
-        color: "rgba(255,255,255,0.08)",
-        radius: borderRadius * ripple_radius,
-      }}
-      style={[
-        style,
-        {
-          width: width,
-        },
-      ]}
-      {...rest}
-      onPress={
-        onPress && !disabled
-          ? onPress
-          : () => {
-              console.log(
-                "[Error]:onPress handler is missing or disabled button"
-              );
-            }
-      }
-      onPressIn={(e) => {
-        e.preventDefault();
-        if (!animated) return;
-        Animated.timing(scaleRef, {
-          toValue: scale,
-          duration: 50,
-          useNativeDriver: true,
-        }).start();
-      }}
-      onPressOut={(e) => {
-        e.preventDefault();
-        if (!animated) return;
-        Animated.timing(scaleRef, {
-          toValue: 1,
-          duration: 50,
-          useNativeDriver: true,
-        }).start();
-      }}
-    >
-      <Animated.View
-        style={{
-          display: "flex",
-          flexDirection: bytes ? "column" : "row",
-          alignItems: "center",
-          borderRadius: borderRadius,
-          justifyContent: textStyle ? "center" : "space-between",
-          backgroundColor: disabled
-            ? "#c0c0c0"
-            : type === "filled"
-            ? bg
-            : "transparent",
-          borderColor: type === "outline" ? borderColor : "transparent",
-          borderWidth: type === "outline" ? 1 : 0,
-          paddingVertical: py,
-          paddingHorizontal: px,
-          marginHorizontal: mx,
-          marginVertical: my,
-          transform: [
-            {
-              scale: scaleRef,
-            },
-          ],
+    <Ripple>
+      <Pressable
+        style={[
+          style,
+          {
+            width: width,
+          },
+        ]}
+        {...rest}
+        onPress={
+          onPress && !disabled
+            ? onPress
+            : () => {
+                console.log(
+                  "[Error]:onPress handler is missing or disabled button"
+                );
+              }
+        }
+        onPressIn={(e) => {
+          e.preventDefault();
+          if (!animated) return;
+          Animated.timing(scaleRef, {
+            toValue: scale,
+            duration: 50,
+            useNativeDriver: true,
+          }).start();
+        }}
+        onPressOut={(e) => {
+          e.preventDefault();
+          if (!animated) return;
+          Animated.timing(scaleRef, {
+            toValue: 1,
+            duration: 50,
+            useNativeDriver: true,
+          }).start();
         }}
       >
-        {isLoading ? (
-          <ActivityIndicator size={"small"} animating={true} color={"black"} />
-        ) : (
-          <>
-            {icon && iconPosition === "left" ? (
-              <View
-                style={{
-                  marginRight: bytes || title?.length === 0 ? 0 : 8,
-                }}
-              >
-                {icon}
-              </View>
-            ) : (
-              <></>
-            )}
-            <StyledText title={title} style={newStyle} />
-            {icon && iconPosition === "right" ? (
-              <View
-                style={{
-                  marginLeft: 8,
-                }}
-              >
-                {icon}
-              </View>
-            ) : (
-              <></>
-            )}
-          </>
-        )}
-      </Animated.View>
-    </Pressable>
+        <Animated.View
+          style={{
+            display: "flex",
+            flexDirection: bytes ? "column" : "row",
+            alignItems: "center",
+            borderRadius: borderRadius,
+            justifyContent: textStyle ? "center" : "space-between",
+            backgroundColor: disabled
+              ? "#c0c0c0"
+              : type === "filled"
+              ? bg
+              : "transparent",
+            borderColor: type === "outline" ? borderColor : "transparent",
+            borderWidth: type === "outline" ? 1 : 0,
+            paddingVertical: py,
+            paddingHorizontal: px,
+            marginHorizontal: mx,
+            marginVertical: my,
+            transform: [
+              {
+                scale: scaleRef,
+              },
+            ],
+          }}
+        >
+          {isLoading ? (
+            <ActivityIndicator
+              size={"small"}
+              animating={true}
+              color={"black"}
+            />
+          ) : (
+            <>
+              {icon && iconPosition === "left" ? (
+                <View
+                  style={{
+                    marginRight: bytes || title?.length === 0 ? 0 : 8,
+                  }}
+                >
+                  {icon}
+                </View>
+              ) : (
+                <></>
+              )}
+              <StyledText title={title} style={newStyle} />
+              {icon && iconPosition === "right" ? (
+                <View
+                  style={{
+                    marginLeft: 8,
+                  }}
+                >
+                  {icon}
+                </View>
+              ) : (
+                <></>
+              )}
+            </>
+          )}
+        </Animated.View>
+      </Pressable>
+    </Ripple>
   );
 };
 
