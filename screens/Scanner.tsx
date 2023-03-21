@@ -62,8 +62,6 @@ export default function Scanner({
     const userDefaultProfile = await getDefaultProfile(adress);
 
     if (userDefaultProfile) {
-      console.log(userDefaultProfile);
-
       setHasHandle(true);
       setCurrentProfile(userDefaultProfile);
     } else {
@@ -99,8 +97,6 @@ export default function Scanner({
         setHasData(true);
         const decryptedSignature = await decryptData(signature);
         const userData = await handleWaitlist(address);
-
-        console.log(userData);
 
         if (userData?.statusCode === 404) {
           navigation.replace("JoinWaitlist");

@@ -21,6 +21,8 @@ interface ButtonProps {
   my?: number;
   px?: number;
   py?: number;
+  mt?: number;
+  mb?: number;
   bg?: ColorValue;
   ripple_radius?: number;
   style?: StyleProp<ViewProps>;
@@ -48,6 +50,8 @@ const Button = (props: ButtonProps): JSX.Element => {
     my = 0,
     px = 4,
     py = 8,
+    mt = 0,
+    mb = 0,
     textStyle,
     borderRadius = 50,
     ripple_radius = 0.5,
@@ -123,6 +127,8 @@ const Button = (props: ButtonProps): JSX.Element => {
             paddingHorizontal: px,
             marginHorizontal: mx,
             marginVertical: my,
+            marginTop: mt,
+            marginBottom: mb,
             transform: [
               {
                 scale: scaleRef,

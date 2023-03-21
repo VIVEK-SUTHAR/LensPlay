@@ -7,7 +7,7 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  View
+  View,
 } from "react-native";
 import PleaseLogin from "../components/PleaseLogin";
 import Button from "../components/UI/Button";
@@ -22,15 +22,13 @@ import { RootTabScreenProps } from "../types/navigation/types";
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const theme = useThemeStore();
-  const {accessToken,refreshToken } = useAuthStore();
+  const { accessToken, refreshToken } = useAuthStore();
   const { isGuest } = useGuestStore();
   const { currentProfile } = useProfile();
   const { data: Feeddata, error, loading, refetch } = useFeed();
-  
+
   if (error) {
     console.log(error);
-    console.log(accessToken);
-    
     refetch({ id: currentProfile?.id });
   }
 

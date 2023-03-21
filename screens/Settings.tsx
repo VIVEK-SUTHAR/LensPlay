@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
-import React, { FC, useState } from "react";
+import React, { FC, useRef, useState } from "react";
 import {
   Linking,
   Modal,
@@ -11,6 +11,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import Sheet from "../components/Bottom";
 import Icon from "../components/Icon";
 import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
@@ -22,9 +23,11 @@ import {
   LENSPLAY_TWITTER,
   OFFICIAL_EMAIL,
 } from "../constants";
-import { dark_primary } from "../constants/Colors";
+import { dark_primary, dark_secondary } from "../constants/Colors";
 import { useGuestStore } from "../store/GuestStore";
 import { RootStackScreenProps } from "../types/navigation/types";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Button from "../components/UI/Button";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
@@ -33,15 +36,18 @@ type SocialMediaBadgeProps = {
   name: string;
   link: string;
 };
+
 type SettingsItemProps = {
   label: string;
   icon: JSX.Element;
   onPress: () => void;
 };
+
 const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const Wallet = useWalletConnect();
   const { isGuest } = useGuestStore();
+  const logoutref = useRef<BottomSheetMethods>(null);
 
   const SettingItemsList: SettingsItemProps[] = [
     {
@@ -76,7 +82,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
       icon: <Icon name="logout" />,
       label: isGuest ? "Login" : "Logout",
       onPress: () => {
-        isGuest ? navigation.push("Login") : setIsModalOpen(true);
+        isGuest ? navigation.push("Login") : logoutref.current?.snapToIndex(0);
       },
     },
   ];
@@ -118,75 +124,56 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
           />
         </View>
       </View>
-      <Modal
-        transparent={true}
-        statusBarTranslucent={true}
-        animationType={"fade"}
-        visible={isModalOpen}
-      >
-        <View
-          style={{
-            height: "100%",
-            backgroundColor: "rgba(0,0,0,0.5)",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <View style={styles.logOutContainer}>
-            <Heading
-              title="Do you want to log-out?"
-              style={{
-                color: "#2A9D5C",
-                fontSize: 20,
-                marginVertical: 4,
-                textAlign: "left",
-                fontWeight: "600",
-              }}
-            />
-            <StyledText
-              title="By doing this,next time when you open LensPlay, you need to connect your wallet again."
-              style={{
-                color: "white",
-                fontSize: 14,
-                marginVertical: 4,
-                fontWeight: "500",
-              }}
-            />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "flex-end",
-                width: "95%",
-                marginTop: 16,
-              }}
-            >
-              <Pressable
+      <Sheet
+        ref={logoutref}
+        index={-1}
+        snapPoints={["50%"]}
+        bottomInset={32}
+        enablePanDownToClose
+        detached={true}
+        style={{
+          marginHorizontal: 16,
+        }}
+        children={
+          <View
+            style={{
+              justifyContent: "space-between",
+              padding: 16,
+              height: "100%",
+            }}
+          >
+            <View>
+              <Heading
+                title="Do you want to log-out?"
                 style={{
-                  marginHorizontal: 8,
-                  padding: 2,
+                  color: "white",
+                  fontSize: 20,
+                  marginVertical: 4,
+                  textAlign: "left",
+                  fontWeight: "600",
                 }}
-                android_ripple={{
+              />
+              <StyledText
+                title="By doing this,next time when you open LensPlay, you need to connect your wallet again."
+                style={{
                   color: "gray",
-                  radius: 30,
+                  fontSize: 14,
+                  marginVertical: 4,
+                  fontWeight: "500",
                 }}
+              />
+            </View>
+            <View>
+              <Button
                 onPress={() => {
-                  setIsModalOpen(false);
+                  logoutref.current?.close();
                 }}
-              >
-                <StyledText
-                  title="Cancel"
-                  style={{ color: "white", fontWeight: "500" }}
-                />
-              </Pressable>
-              <Pressable
-                style={{
-                  padding: 2,
-                  marginHorizontal: 8,
-                }}
-                android_ripple={{
-                  color: "gray",
-                  radius: 30,
-                }}
+                title="Cancel"
+                textStyle={{ fontWeight: "600", fontSize: 16, color: "black" }}
+                py={12}
+                borderRadius={8}
+              />
+              <Button
                 onPress={async () => {
                   const isDeskTopLogin = await AsyncStorage.getItem(
                     "@viaDeskTop"
@@ -201,16 +188,17 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                     navigation.replace("Login");
                   }
                 }}
-              >
-                <StyledText
-                  title="Log Out"
-                  style={{ color: "red", fontWeight: "500" }}
-                />
-              </Pressable>
+                mt={16}
+                title="Log Out"
+                bg={"red"}
+                textStyle={{ fontWeight: "600", fontSize: 16, color: "black" }}
+                py={12}
+                borderRadius={8}
+              />
             </View>
           </View>
-        </View>
-      </Modal>
+        }
+      />
     </SafeAreaView>
   );
 };
