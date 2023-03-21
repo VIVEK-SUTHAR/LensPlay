@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { usemirrorRef, useState } from "react";
 import Button from "../../UI/Button";
 import { dark_primary, primary } from "../../../constants/Colors";
 import {
@@ -28,46 +28,19 @@ const MirrorButton = ({
   id,
   totalMirrors,
   bannerUrl,
-  isAlreadyMirrored
+  isAlreadyMirrored,
+  mirrorRef,
 }: MirrorButtonProps) => {
   const Toast = useToast();
   const authStore = useAuthStore();
   const userStore = useProfile();
   const { PRIMARY } = useThemeStore();
-  const ref = useRef();
   const { isGuest } = useGuestStore();
-  const {setMirrorStats} = useReactionStore();
-  
-
-
-  const onMirror = async () => {
-    if (isAlreadyMirrored) {
-      Toast.show("Already mirrored", ToastType.ERROR, true);
-      ref.current?.close();
-      return;
-    }
-    try {
-      const data = await freeMirror(
-        authStore.accessToken,
-        userStore.currentProfile?.id,
-        id
-        );
-        if (data) {
-          Toast.show("Mirror submitted", ToastType.SUCCESS, true);
-          setMirrorStats(true, totalMirrors + 1);
-          ref.current?.close();
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        Toast.show(error.message, ToastType.ERROR, true);
-        ref?.current?.close();
-      }
-    }    
-  };
+  const { setMirrorStats } = useReactionStore();
 
   return (
     <>
-      <RBSheet ref={ref} height={Dimensions.get("window").height / 1.85}>
+      {/* <RBSheet mirrorRef={mirrorRef} height={Dimensions.get("window").height / 1.85}>
         <View
           style={{
             maxWidth: "100%",
@@ -99,7 +72,7 @@ const MirrorButton = ({
             bg={isAlreadyMirrored?'#c0c0c0':primary}
           />
         </View>
-      </RBSheet>
+      </RBSheet> */}
       <Button
         title={totalMirrors?.toString()}
         onPress={() => {
@@ -107,7 +80,7 @@ const MirrorButton = ({
             Toast.show("Please Login", ToastType.ERROR, true);
             return;
           }
-          ref?.current?.open();
+          mirrorRef?.current?.snapToIndex(0);
         }}
         mx={4}
         px={16}
@@ -118,10 +91,7 @@ const MirrorButton = ({
         textStyle={{
           fontSize: 14,
           fontWeight: "500",
-          color:
-            isAlreadyMirrored
-              ? PRIMARY
-              : "white",
+          color: isAlreadyMirrored ? PRIMARY : "white",
           marginLeft: 4,
         }}
         //   borderColor={isalreadyDisLiked ? PRIMARY : "white"}
@@ -129,11 +99,7 @@ const MirrorButton = ({
           <Icon
             name="mirror"
             size={20}
-            color={
-              isAlreadyMirrored
-                ? PRIMARY
-                : "white"
-            }
+            color={isAlreadyMirrored ? PRIMARY : "white"}
           />
         }
       />

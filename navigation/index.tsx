@@ -40,7 +40,7 @@ import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import {
   RootStackParamList,
   RootStackScreenProps,
-  RootTabParamList
+  RootTabParamList,
 } from "../types/navigation/types";
 import getIPFSLink from "../utils/getIPFSLink";
 import getAccessFromRefresh from "../utils/lens/getAccessFromRefresh";
@@ -426,20 +426,20 @@ function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
               style={{
                 backgroundColor: theme.PRIMARY,
                 marginHorizontal: 4,
-                paddingHorizontal: 4,
+                paddingHorizontal: 6,
                 paddingVertical: 2,
-                borderRadius: 10,
+                borderRadius: 8,
               }}
             >
               <StyledText
                 title="ALPHA"
-                style={{ color: "white", fontSize: 8, fontWeight: "700" }}
+                style={{ color: "black", fontSize: 8, fontWeight: "600" }}
               />
             </View>
           </View>
         ),
         tabBarStyle: {
-          backgroundColor: theme.DARK_PRIMARY,
+          backgroundColor: "black",
           alignItems: "center",
           justifyContent: "space-between",
           paddingTop: 6,

@@ -1,10 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import { ResizeMode, Video } from "expo-av";
 import { StatusBar } from "expo-status-bar";
 import VideoPlayer from "expo-video-player";
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -20,9 +21,9 @@ import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
 import { Root } from "../../types/Lens/Feed";
 import { ToastType } from "../../types/Store";
 import getIPFSLink from "../../utils/getIPFSLink";
+import Sheet from "../Bottom";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
-import RBSheet, { BottomSheetType } from "../UI/BottomSheet";
 import Button from "../UI/Button";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
@@ -44,8 +45,8 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const { PRIMARY } = useThemeStore();
   const toast = useToast();
   const ref = useRef<Video>(null);
-  const descriptionRef = useRef<BottomSheetType>(null);
-  const collectSheetRef = useRef<BottomSheetType>(null);
+  const descriptionRef = useRef<BottomSheetMethods>(null);
+  const collectSheetRef = useRef<BottomSheetMethods>(null);
   const { accessToken } = useAuthStore();
   const bottomTabBarHeight = useBottomTabBarHeight();
 
@@ -56,13 +57,17 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
     ref.current?.pauseAsync();
   });
 
+  const onPress = useCallback((ref) => {
+    ref?.current?.snapToIndex(0);
+  }, []);
+
   const shareVideo = async () => {
     try {
       const result = await Share.share({
         message: `Let's watch ${item.metadata.name} on LensPlay,here's link,https://lensplay.xyz/watch/${item.id}`,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -86,65 +91,6 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
 
   return (
     <>
-      <RBSheet
-        ref={descriptionRef}
-        height={Dimensions.get("window").height / 2}
-      >
-        <ScrollView style={{ padding: 8 }}>
-          <Heading
-            title={item?.metadata?.name}
-            style={{
-              fontSize: 18,
-              fontWeight: "600",
-              color: "white",
-            }}
-          />
-          <StyledText
-            title={
-              item?.metadata?.description ||
-              item?.metadata?.content ||
-              "No description provided by creator"
-            }
-            style={{
-              color: "white",
-            }}
-          />
-        </ScrollView>
-      </RBSheet>
-      <RBSheet
-        ref={collectSheetRef}
-        height={Dimensions.get("window").height / 1.8}
-      >
-        <View
-          style={{
-            maxWidth: "100%",
-            height: 300,
-            marginTop: 32,
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Image
-            source={{
-              uri: getIPFSLink(item?.metadata?.cover),
-            }}
-            style={{
-              height: 180,
-              borderRadius: 8,
-              width: Dimensions.get("screen").width - 48,
-              resizeMode: "cover",
-            }}
-            progressiveRenderingEnabled={true}
-          />
-          <Button
-            title={`Collect the Shot for free`}
-            width={"90%"}
-            py={12}
-            textStyle={{ fontSize: 20, fontWeight: "700", textAlign: "center" }}
-            onPress={collectPublication}
-          />
-        </View>
-      </RBSheet>
       <View
         style={{
           width: windowWidth,
@@ -185,6 +131,13 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             slider={{
               visible: false,
             }}
+            fullscreen={{
+              visible: false,
+            }}
+            mute={{
+              visible: false,
+            }}
+            timeVisible={false}
             icon={{
               size: 48,
               play: <Icon name="play" size={48} />,
@@ -209,7 +162,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
           style={{
             position: "absolute",
             width: windowWidth,
-            zIndex: 1,
+            zIndex: 0,
             bottom: 0,
             padding: 10,
           }}
@@ -218,7 +171,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             <View style={{ width: "auto", maxWidth: 250 }}>
               <Pressable
                 onPress={() => {
-                  descriptionRef?.current?.open();
+                  onPress(descriptionRef);
                 }}
               >
                 <Heading
@@ -314,7 +267,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
                     ToastType.ERROR,
                     true
                   )
-                : collectSheetRef?.current?.open();
+                : onPress(collectSheetRef);
             }}
           >
             <Icon
@@ -331,7 +284,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
               padding: 10,
               justifyContent: "center",
               alignItems: "center",
-              zIndex: 15,
+              zIndex: 0,
             }}
             onPress={shareVideo}
           >
@@ -339,6 +292,92 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
           </TouchableOpacity>
         </View>
       </View>
+      <Sheet
+        ref={collectSheetRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "#1d1d1d",
+        }}
+        snapPoints={["50%"]}
+        children={
+          <View style={{ paddingHorizontal: 8 }}>
+            <ScrollView
+              style={{
+                padding: 8,
+                zIndex: 1,
+                borderColor: "red",
+                borderWidth: 0,
+              }}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "space-between",
+                  height: 280,
+                }}
+              >
+                <Image
+                  source={{
+                    uri: getIPFSLink(item?.metadata?.cover),
+                  }}
+                  style={{
+                    height: 180,
+                    borderRadius: 8,
+                    resizeMode: "cover",
+                  }}
+                  progressiveRenderingEnabled={true}
+                />
+                <Button
+                  title={`Collect the Shot for free`}
+                  // width={"90%"}
+                  mx={12}
+                  py={12}
+                  textStyle={{
+                    fontSize: 20,
+                    fontWeight: "700",
+                    textAlign: "center",
+                  }}
+                  onPress={collectPublication}
+                />
+              </View>
+            </ScrollView>
+          </View>
+        }
+      />
+      <Sheet
+        ref={descriptionRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "#1d1d1d",
+        }}
+        snapPoints={["50%"]}
+        children={
+          <View style={{ paddingHorizontal: 8 }}>
+            <ScrollView style={{ padding: 8 }}>
+              <Heading
+                title={item?.metadata?.name}
+                style={{
+                  fontSize: 18,
+                  fontWeight: "600",
+                  color: "white",
+                }}
+              />
+              <StyledText
+                title={
+                  item?.metadata?.description ||
+                  item?.metadata?.content ||
+                  "No description provided by creator"
+                }
+                style={{
+                  color: "white",
+                }}
+              />
+            </ScrollView>
+          </View>
+        }
+      />
     </>
   );
 };

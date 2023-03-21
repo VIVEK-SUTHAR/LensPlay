@@ -60,7 +60,10 @@ export default function Scanner({
 
   async function HandleDefaultProfile(adress: string) {
     const userDefaultProfile = await getDefaultProfile(adress);
+
     if (userDefaultProfile) {
+      console.log(userDefaultProfile);
+
       setHasHandle(true);
       setCurrentProfile(userDefaultProfile);
     } else {

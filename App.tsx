@@ -7,6 +7,7 @@ import Toast from "./components/Toast";
 import useCachedResources from "./hooks/useCachedResources";
 import Navigation from "./navigation";
 import "react-native-reanimated";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -15,13 +16,15 @@ export default function App() {
     return null;
   } else {
     return (
-      <SafeAreaProvider>
-        <Toast />
-        <ApolloProvider client={client}>
-          <Navigation />
-          <StatusBar style="auto" />
-        </ApolloProvider>
-      </SafeAreaProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <Toast />
+          <ApolloProvider client={client}>
+            <Navigation />
+            <StatusBar style="auto" />
+          </ApolloProvider>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     );
   }
 }
