@@ -308,50 +308,45 @@ const VideoPage = ({
         }}
         snapPoints={["50%"]}
         children={
-          <View>
-            <ScrollView>
-              <View
-                style={{
-                  maxWidth: "100%",
-                  height: 300,
-                  marginTop: 32,
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Image
-                  source={{
-                    uri: getIPFSLink(activePublication?.metadata?.cover),
-                  }}
-                  style={{
-                    height: 180,
-                    borderRadius: 8,
-                    width: Dimensions.get("screen").width - 48,
-                    resizeMode: "cover",
-                  }}
-                  progressiveRenderingEnabled={true}
-                />
-                <Button
-                  title={
-                    collectStats?.isCollected
-                      ? "Already collected the video"
-                      : `Collect the video for free`
-                  }
-                  width={"90%"}
-                  py={12}
-                  textStyle={{
-                    fontSize: 20,
-                    fontWeight: "700",
-                    textAlign: "center",
-                  }}
-                  bg={collectStats?.isCollected ? "#c0c0c0" : primary}
-                  // onPress={collectPublication}
-                  onPress={() => {
-                    collectPublication();
-                  }}
-                />
-              </View>
-            </ScrollView>
+          <View
+            style={{
+              maxWidth: "100%",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              height: "100%",
+            }}
+          >
+            <Image
+              source={{
+                uri: getIPFSLink(activePublication?.metadata?.cover),
+              }}
+              style={{
+                height: Dimensions.get("screen").height / 4,
+                borderRadius: 8,
+                width: Dimensions.get("screen").width - 48,
+                resizeMode: "cover",
+              }}
+              progressiveRenderingEnabled={true}
+            />
+            <Button
+              title={
+                collectStats?.isCollected
+                  ? "Already collected the video"
+                  : `Collect the video`
+              }
+              width={"90%"}
+              py={12}
+              textStyle={{
+                fontSize: 20,
+                fontWeight: "700",
+                textAlign: "center",
+              }}
+              bg={collectStats?.isCollected ? "#c0c0c0" : primary}
+              // onPress={collectPublication}
+              onPress={() => {
+                collectPublication();
+              }}
+            />
           </View>
         }
       />
@@ -364,48 +359,43 @@ const VideoPage = ({
         }}
         snapPoints={["50%"]}
         children={
-          <View>
-            <ScrollView>
-              <View
-                style={{
-                  maxWidth: "100%",
-                  height: 300,
-                  marginTop: 32,
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Image
-                  source={{
-                    uri: getIPFSLink(activePublication?.metadata?.cover),
-                  }}
-                  style={{
-                    height: 180,
-                    borderRadius: 8,
-                    width: Dimensions.get("screen").width - 48,
-                    resizeMode: "cover",
-                  }}
-                  progressiveRenderingEnabled={true}
-                />
-                <Button
-                  title={
-                    mirrorStats?.isMirrored
-                      ? "Already mirrored these video"
-                      : "Mirror the video for free"
-                  }
-                  width={"90%"}
-                  py={12}
-                  my={4}
-                  textStyle={{
-                    fontSize: 20,
-                    fontWeight: "700",
-                    textAlign: "center",
-                  }}
-                  onPress={onMirror}
-                  bg={mirrorStats?.isMirrored ? "#c0c0c0" : primary}
-                />
-              </View>
-            </ScrollView>
+          <View
+            style={{
+              maxWidth: "100%",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              height: "100%",
+            }}
+          >
+            <Image
+              source={{
+                uri: getIPFSLink(activePublication?.metadata?.cover),
+              }}
+              style={{
+                height: Dimensions.get("screen").height / 4,
+                borderRadius: 8,
+                width: Dimensions.get("screen").width - 48,
+                resizeMode: "cover",
+              }}
+              progressiveRenderingEnabled={true}
+            />
+            <Button
+              title={
+                mirrorStats?.isMirrored
+                  ? "Already mirrored these video"
+                  : "Mirror the video"
+              }
+              width={"90%"}
+              py={12}
+              my={4}
+              textStyle={{
+                fontSize: 20,
+                fontWeight: "700",
+                textAlign: "center",
+              }}
+              onPress={onMirror}
+              bg={mirrorStats?.isMirrored ? "#c0c0c0" : primary}
+            />
           </View>
         }
       />

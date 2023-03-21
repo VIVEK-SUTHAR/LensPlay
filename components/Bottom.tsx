@@ -22,4 +22,5 @@ const Sheet = React.forwardRef<BottomSheetMethods, IBottomSheet>(
     );
   }
 );
+
 export default Sheet;
