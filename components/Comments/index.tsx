@@ -7,13 +7,19 @@ import CommentCard from "./CommentCard";
 import { useReactionStore } from "../../store/Store";
 import { Comment as IComment } from "../../types/generated";
 
-const Comment = ({ publicationId }: { publicationId: string }) => {
+const Comment = ({ publicationId, shots=false }: { publicationId: string, shots?: boolean }) => {
   const { reaction, comment, setComments } = useReactionStore();
   const { data: commentData, error, loading } = useComments(publicationId);
 
   if (error) return <NotFound />;
 
-  if (loading || !reaction) return <Loading />;
+  if (shots) {
+    if (loading) return <Loading />;    
+  }
+  else{
+    if (loading || !reaction) return <Loading />;
+  }
+
 
   if (!commentData?.publications?.items.length) {
 

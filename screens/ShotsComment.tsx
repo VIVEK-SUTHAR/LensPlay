@@ -20,7 +20,7 @@ export default function ShotsComment({
           name={optimitisticComment.username}
         />
       )}
-      <Comment publicationId={route.params.publicationId} />
+      <Comment publicationId={route.params.publicationId} shots={true} />
       <View style={{ position: "absolute", bottom: 0, width: "100%" }}>
         <CommentInput publicationId={route.params.publicationId} />
       </View>
