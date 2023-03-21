@@ -1,11 +1,11 @@
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
-import React, { FC, useRef, useState } from "react";
+import React, { FC, useRef } from "react";
 import {
   Linking,
-  Modal,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import Sheet from "../components/Bottom";
 import Icon from "../components/Icon";
+import Button from "../components/UI/Button";
 import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
 import {
@@ -23,11 +24,9 @@ import {
   LENSPLAY_TWITTER,
   OFFICIAL_EMAIL,
 } from "../constants";
-import { dark_primary, dark_secondary } from "../constants/Colors";
+import { dark_primary } from "../constants/Colors";
 import { useGuestStore } from "../store/GuestStore";
 import { RootStackScreenProps } from "../types/navigation/types";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import Button from "../components/UI/Button";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
@@ -44,7 +43,6 @@ type SettingsItemProps = {
 };
 
 const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const Wallet = useWalletConnect();
   const { isGuest } = useGuestStore();
   const logoutref = useRef<BottomSheetMethods>(null);
