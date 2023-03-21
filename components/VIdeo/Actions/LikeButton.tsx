@@ -56,6 +56,7 @@ const LikeButton = ({
       }
     }
   };
+
   return (
     <Button
       title={formatInteraction(!bytes ? like : likeCount) || "0"}

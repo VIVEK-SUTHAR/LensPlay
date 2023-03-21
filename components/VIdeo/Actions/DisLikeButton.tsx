@@ -45,7 +45,11 @@ const DisLikeButton = ({ isalreadyDisLiked, id }: DisLikeButtonProps) => {
         id
       );
       if (res?.removeReaction === null) {
-        setVideoPageStats(false, true, videopageStats.likeCount - 1);
+        if (videopageStats.likeCount === 0) {
+          setVideoPageStats(false, true, videopageStats.likeCount);
+        } else {
+          setVideoPageStats(false, true, videopageStats.likeCount - 1);
+        }
       }
     }
   };
