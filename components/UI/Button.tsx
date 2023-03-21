@@ -68,43 +68,43 @@ const Button = (props: ButtonProps): JSX.Element => {
   });
   const scaleRef = React.useRef(new Animated.Value(1)).current;
   return (
-    <Ripple>
-      <Pressable
-        style={[
-          style,
-          {
-            width: width,
-          },
-        ]}
-        {...rest}
-        onPress={
-          onPress && !disabled
-            ? onPress
-            : () => {
-                console.log(
-                  "[Error]:onPress handler is missing or disabled button"
-                );
-              }
-        }
-        onPressIn={(e) => {
-          e.preventDefault();
-          if (!animated) return;
-          Animated.timing(scaleRef, {
-            toValue: scale,
-            duration: 50,
-            useNativeDriver: true,
-          }).start();
-        }}
-        onPressOut={(e) => {
-          e.preventDefault();
-          if (!animated) return;
-          Animated.timing(scaleRef, {
-            toValue: 1,
-            duration: 50,
-            useNativeDriver: true,
-          }).start();
-        }}
-      >
+    <Pressable
+      style={[
+        style,
+        {
+          width: width,
+        },
+      ]}
+      {...rest}
+      onPress={
+        onPress && !disabled
+          ? onPress
+          : () => {
+              console.log(
+                "[Error]:onPress handler is missing or disabled button"
+              );
+            }
+      }
+      onPressIn={(e) => {
+        e.preventDefault();
+        if (!animated) return;
+        Animated.timing(scaleRef, {
+          toValue: scale,
+          duration: 50,
+          useNativeDriver: true,
+        }).start();
+      }}
+      onPressOut={(e) => {
+        e.preventDefault();
+        if (!animated) return;
+        Animated.timing(scaleRef, {
+          toValue: 1,
+          duration: 50,
+          useNativeDriver: true,
+        }).start();
+      }}
+    >
+      <Ripple>
         <Animated.View
           style={{
             display: "flex",
@@ -164,8 +164,8 @@ const Button = (props: ButtonProps): JSX.Element => {
             </>
           )}
         </Animated.View>
-      </Pressable>
-    </Ripple>
+      </Ripple>
+    </Pressable>
   );
 };
 

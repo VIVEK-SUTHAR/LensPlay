@@ -50,7 +50,7 @@ const Ripple: React.FC<RippleProps> = ({
 
       rippleOpacity.value = 1;
       scale.value = 0;
-      scale.value = withTiming(1, { duration: 1000 });
+      scale.value = withTiming(1, { duration: 500 });
     },
     onActive: () => {
       if (onTap) runOnJS(onTap)();
@@ -89,7 +89,7 @@ const Ripple: React.FC<RippleProps> = ({
     <View ref={aRef} style={style} collapsable={false}>
       <TapGestureHandler onGestureEvent={tapGestureEvent}>
         <Animated.View style={[style, { overflow: "hidden" }]}>
-          <View>{children}</View>
+          {children}
           <Animated.View style={rStyle} />
         </Animated.View>
       </TapGestureHandler>
