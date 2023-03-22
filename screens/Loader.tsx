@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import AnimatedLottieView from "lottie-react-native";
 import React, { useEffect } from "react";
 import { View } from "react-native";
+import { APP_OPEN } from "../constants/tracking";
 import { useAuthStore, useProfile } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 import handleWaitlist from "../utils/handleWaitlist";
@@ -10,6 +11,7 @@ import getAccessFromRefresh from "../utils/lens/getAccessFromRefresh";
 import getDefaultProfile from "../utils/lens/getDefaultProfile";
 import verifyTokens from "../utils/lens/verifyTokens";
 import storeTokens from "../utils/storeTokens";
+import TrackAction from "../utils/Track";
 
 export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
   const { setCurrentProfile, setHasHandle } = useProfile();
@@ -27,6 +29,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 
   const getLocalStorage = async () => {
     try {
+      TrackAction(APP_OPEN);
       const waitList = await AsyncStorage.getItem("@waitlist");
       const userTokens = await AsyncStorage.getItem("@user_tokens");
 

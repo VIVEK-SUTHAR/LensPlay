@@ -7,12 +7,14 @@ import Icon from "../components/Icon";
 import Button from "../components/UI/Button";
 import StyledText from "../components/UI/StyledText";
 import { primary } from "../constants/Colors";
+import { AUTH } from "../constants/tracking";
 import { useAuthStore, useProfile, useToast } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
 import generateChallenge from "../utils/lens/getChallenge";
 import getTokens from "../utils/lens/getTokens";
 import storeTokens from "../utils/storeTokens";
+import TrackAction from "../utils/Track";
 
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const [isloading, setIsloading] = useState<boolean>(false);
@@ -41,6 +43,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         setRefreshToken(tokens?.refreshToken);
         await storeTokens(tokens?.accessToken, tokens?.refreshToken, false);
         navigation.replace("Root");
+        TrackAction(AUTH.SIWL);
       } else {
         toast.show("Something went wrong", ToastType.ERROR, true);
       }

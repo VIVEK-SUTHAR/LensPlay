@@ -10,6 +10,8 @@ import { client } from "../../apollo/client";
 import updateProfilePictureQuery from "../../apollo/mutations/updateProfilePictureQuery";
 import { STATIC_ASSET } from "../../constants";
 import Button from "../UI/Button";
+import TrackAction from "../../utils/Track";
+import { SETTINGS } from "../../constants/tracking";
 
 export default function EditAvatar() {
   const [imageBlob, setImageBlob] = useState<Blob>();
@@ -36,6 +38,7 @@ export default function EditAvatar() {
             },
           },
         });
+        TrackAction(SETTINGS.PROFILE.UPDATE_AVATAR)
         if (updateOnLens.data) {
           toast.show("Channel image updated", ToastType.SUCCESS, true);
         } else {

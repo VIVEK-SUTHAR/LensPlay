@@ -5,7 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
-  View
+  View,
 } from "react-native";
 import { client } from "../apollo/client";
 import reportPublication from "../apollo/mutations/reportPublication";
@@ -14,10 +14,12 @@ import Dropdown from "../components/UI/Dropdown";
 import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
 import { dark_primary } from "../constants/Colors";
+import { PUBLICATION } from "../constants/tracking";
 import { useGuestStore } from "../store/GuestStore";
 import { useAuthStore, useThemeStore, useToast } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
+import TrackAction from "../utils/Track";
 
 type subreason = {
   reason: string;
@@ -96,6 +98,7 @@ const ReportPublication = ({
       if (!reportQuery?.data?.reportPublication) {
         toast.show("Thanks for reporting", ToastType.SUCCESS, true);
       }
+      TrackAction(PUBLICATION.REPORT);
     } catch (error) {
       if (error instanceof Error) {
         console.log(error);

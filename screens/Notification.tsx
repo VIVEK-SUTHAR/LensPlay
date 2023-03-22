@@ -13,10 +13,12 @@ import Skleton from "../components/Notifications/Skleton";
 import PleaseLogin from "../components/PleaseLogin";
 import Heading from "../components/UI/Heading";
 import Tabs, { Tab } from "../components/UI/Tabs";
+import { NOTIFICATION } from "../constants/tracking";
 import useNotifications from "../hooks/useFeed";
 import { useGuestStore } from "../store/GuestStore";
 import { useProfile, useThemeStore } from "../store/Store";
 import { RootTabScreenProps } from "../types/navigation/types";
+import TrackAction from "../utils/Track";
 
 const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -66,6 +68,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   }: {
     notificationType: string;
   }) => {
+    TrackAction(NOTIFICATION.NOTIFICATIONS);
     if (notificationType === "All") {
       return (
         <FlatList

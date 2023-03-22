@@ -17,10 +17,12 @@ import {
   View,
 } from "react-native";
 import { freeCollectPublication } from "../../api";
+import { SHOT } from "../../constants/tracking";
 import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
 import { Root } from "../../types/Lens/Feed";
 import { ToastType } from "../../types/Store";
 import getIPFSLink from "../../utils/getIPFSLink";
+import TrackAction from "../../utils/Track";
 import Sheet from "../Bottom";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
@@ -78,6 +80,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
         toast.show("Collect Submitted", ToastType.SUCCESS, true);
         setCollected(true);
         setTotalCollects((prev) => prev + 1);
+        TrackAction(SHOT.SHOTS_COLLECT);
       }
     } catch (error) {
       if (error instanceof Error) {
