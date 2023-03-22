@@ -12,12 +12,14 @@ import {
 import { client } from "../../apollo/client";
 import updateChannel from "../../apollo/mutations/updateChannel";
 import { dark_primary } from "../../constants/Colors";
+import { SETTINGS } from "../../constants/tracking";
 import { useAuthStore, useProfile, useToast } from "../../store/Store";
 import { Profile } from "../../types/generated";
 import { ToastType } from "../../types/Store";
 import formatHandle from "../../utils/formatHandle";
 import getImageBlobFromUri from "../../utils/getImageBlobFromUri";
 import getIPFSLink from "../../utils/getIPFSLink";
+import TrackAction from "../../utils/Track";
 import uploadImageToIPFS from "../../utils/uploadImageToIPFS";
 import Icon from "../Icon";
 import Button from "../UI/Button";
@@ -90,6 +92,7 @@ export default function EditDetail() {
         bio: "",
       });
       toast.show("Channel updated successfully", ToastType.SUCCESS, true);
+      TrackAction(SETTINGS.PROFILE.UPDATE_DETAILS);
     } else {
       toast.show("Some error occured please try again", ToastType.ERROR, true);
     }

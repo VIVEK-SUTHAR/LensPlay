@@ -6,6 +6,7 @@ import { ActivityIndicator, Dimensions, StyleSheet, View } from "react-native";
 import Button from "../components/UI/Button";
 import Heading from "../components/UI/Heading";
 import { primary } from "../constants/Colors";
+import { AUTH } from "../constants/tracking";
 import { useAuthStore, useProfile, useToast } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
@@ -14,6 +15,7 @@ import handleWaitlist from "../utils/handleWaitlist";
 import getDefaultProfile from "../utils/lens/getDefaultProfile";
 import getTokens from "../utils/lens/getTokens";
 import storeTokens from "../utils/storeTokens";
+import TrackAction from "../utils/Track";
 
 export default function Scanner({
   navigation,
@@ -82,7 +84,7 @@ export default function Scanner({
     }
   }
 
-  const handleBarcodeScanned = async (data) => {
+  const handleBarcodeScanned = async (data: any) => {
     const isValidData = isValidQR(data.data);
 
     if (!isValidData) {
@@ -136,13 +138,16 @@ export default function Scanner({
             await storeTokens(tokens?.accessToken, tokens?.refreshToken, true);
             await AsyncStorage.setItem("@viaDeskTop", "true");
             navigation.replace("Root");
+            TrackAction(AUTH.QR_LOGIN);
           }
         }
       } catch (error) {
-        // console.log("[Error]:Error in Scanner", error);
-        throw new Error("[Error]:Error in Scanner", {
-          cause: error,
-        });
+        if (error instanceof Error) {
+          // console.log("[Error]:Error in Scanner", error);
+          throw new Error("[Error]:Error in Scanner", {
+            cause: error,
+          });
+        }
       } finally {
         setHasData(false);
       }

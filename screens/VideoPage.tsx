@@ -8,7 +8,7 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
-  View,
+  View
 } from "react-native";
 import { freeCollectPublication, freeMirror } from "../api";
 import Sheet from "../components/Bottom";
@@ -22,24 +22,26 @@ import {
   ReportButton,
   ShareButton,
   VideoCreator,
-  VideoMeta,
+  VideoMeta
 } from "../components/VIdeo";
 import DisLikeButton from "../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
 import Player from "../components/VideoPlayer";
 import { dark_primary, primary } from "../constants/Colors";
+import { PUBLICATION } from "../constants/tracking";
 import { useReaction } from "../hooks/useFeed";
 import {
   useActivePublication,
   useAuthStore,
   useProfile,
   useReactionStore,
-  useToast,
+  useToast
 } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
 import extractURLs from "../utils/extractURL";
 import getIPFSLink from "../utils/getIPFSLink";
+import TrackAction from "../utils/Track";
 
 const VideoPage = ({
   navigation,
@@ -129,6 +131,7 @@ const VideoPage = ({
         setMirrorStats(true, mirrorStats.mirrorCount + 1);
         mirrorRef.current?.close();
       }
+      TrackAction(PUBLICATION.MIRROR);
     } catch (error) {
       if (error instanceof Error) {
         toast.show(error.message, ToastType.ERROR, true);
@@ -156,6 +159,7 @@ const VideoPage = ({
         setCollectStats(true, collectStats?.collectCount + 1);
         collectRef?.current?.close();
       }
+      TrackAction(PUBLICATION.MIRROR);
     } catch (error) {
       if (error instanceof Error) {
         toast.show(error.message, ToastType.ERROR, true);

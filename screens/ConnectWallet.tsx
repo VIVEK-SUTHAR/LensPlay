@@ -3,21 +3,21 @@ import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
 import { MotiView } from "moti";
 import React, { useCallback, useRef, useState } from "react";
-import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import Sheet from "../components/Bottom";
 import Icon from "../components/Icon";
-import RBSheet from "../components/UI/BottomSheet";
 import Button from "../components/UI/Button";
 import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
 import { dark_primary, primary } from "../constants/Colors";
+import { AUTH, GUEST_MODE } from "../constants/tracking";
 import { useGuestStore } from "../store/GuestStore";
 import { useProfile, useToast } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
 import handleWaitlist from "../utils/handleWaitlist";
 import getDefaultProfile from "../utils/lens/getDefaultProfile";
+import TrackAction from "../utils/Track";
 
 // https://eth-mainnet.alchemyapi.io/v2/5Kt3LOs7L13vV5L68P94MERVJM0baCSv
 
@@ -46,9 +46,11 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
 
   const connectWallet = useCallback(async () => {
     const walletData = await connector.connect();
+
     setIsloading(true);
     try {
       if (walletData) {
+        TrackAction(AUTH.WALLET_LOGIN);
         const userData = await handleWaitlist(walletData.accounts[0]);
         if (!userData.fields.hasAccess) {
           navigation.replace("LeaderBoard", {
@@ -295,6 +297,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           onPress={async () => {
             handleGuest(true);
             navigation.navigate("Root");
+            TrackAction(GUEST_MODE);
           }}
           title="Continue as Guest"
           bg={dark_primary}

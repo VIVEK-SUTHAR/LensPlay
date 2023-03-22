@@ -13,6 +13,8 @@ import { ToastAndroid } from "react-native";
 import Icon from "../../Icon";
 import { useGuestStore } from "../../../store/GuestStore";
 import { ToastType } from "../../../types/Store";
+import TrackAction from "../../../utils/Track";
+import { PUBLICATION } from "../../../constants/tracking";
 
 type DisLikeButtonProps = {
   id: string;
@@ -51,6 +53,7 @@ const DisLikeButton = ({ isalreadyDisLiked, id }: DisLikeButtonProps) => {
           setVideoPageStats(false, true, videopageStats.likeCount - 1);
         }
       }
+      TrackAction(PUBLICATION.DISLIKE);
     }
   };
 

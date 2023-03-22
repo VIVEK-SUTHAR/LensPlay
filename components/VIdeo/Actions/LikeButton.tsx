@@ -13,6 +13,8 @@ import { addLike } from "../../../api";
 import Icon from "../../Icon";
 import { useGuestStore } from "../../../store/GuestStore";
 import { ToastType } from "../../../types/Store";
+import TrackAction from "../../../utils/Track";
+import { PUBLICATION, SHOT } from "../../../constants/tracking";
 
 type LikeButtonProps = {
   id: string;
@@ -54,6 +56,7 @@ const LikeButton = ({
         setLikeCount(likeCount + 1);
         setIsLiked(true);
       }
+      TrackAction(bytes ? SHOT.SHOTS_LIKE : PUBLICATION.LIKE);
     }
   };
 

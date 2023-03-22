@@ -25,8 +25,10 @@ import {
   OFFICIAL_EMAIL,
 } from "../constants";
 import { dark_primary } from "../constants/Colors";
+import { AUTH } from "../constants/tracking";
 import { useGuestStore } from "../store/GuestStore";
 import { RootStackScreenProps } from "../types/navigation/types";
+import TrackAction from "../utils/Track";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
@@ -185,6 +187,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                     await Wallet.killSession();
                     navigation.replace("Login");
                   }
+                  TrackAction(AUTH.LOGOUT);
                 }}
                 mt={16}
                 title="Log Out"

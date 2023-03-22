@@ -22,6 +22,7 @@ import ProfileSkeleton from "../components/UI/ProfileSkeleton";
 import StyledText from "../components/UI/StyledText";
 import { STATIC_ASSET } from "../constants";
 import { primary } from "../constants/Colors";
+import { PROFILE, PUBLICATION } from "../constants/tracking";
 import VERIFIED_CHANNELS from "../constants/Varified";
 import { useUserProfile, useUserPublication } from "../hooks/useFeed";
 import { useGuestStore } from "../store/GuestStore";
@@ -30,6 +31,7 @@ import { RootTabScreenProps } from "../types/navigation/types";
 import extractURLs from "../utils/extractURL";
 import formatHandle from "../utils/formatHandle";
 import getIPFSLink from "../utils/getIPFSLink";
+import TrackAction from "../utils/Track";
 
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [afterScroll, setafterScroll] = useState(0);
@@ -116,6 +118,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                     STATIC_ASSET,
                   source: "cover",
                 });
+                TrackAction(PROFILE.FULL_IMAGE);
               }}
             >
               <Cover
@@ -143,6 +146,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                     url: getIPFSLink(profile?.picture?.original?.url),
                     source: "avatar",
                   });
+                  TrackAction(PROFILE.FULL_IMAGE);
                 }}
               >
                 <Avatar

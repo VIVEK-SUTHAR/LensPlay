@@ -23,6 +23,7 @@ import Heading from "../components/UI/Heading";
 import ProfileSkeleton from "../components/UI/ProfileSkeleton";
 import StyledText from "../components/UI/StyledText";
 import { STATIC_ASSET } from "../constants";
+import { PROFILE } from "../constants/tracking";
 import VERIFIED_CHANNELS from "../constants/Varified";
 import { useGuestStore } from "../store/GuestStore";
 import { useAuthStore, useThemeStore, useToast } from "../store/Store";
@@ -33,6 +34,7 @@ import { ToastType } from "../types/Store";
 import extractURLs from "../utils/extractURL";
 import formatHandle from "../utils/formatHandle";
 import getIPFSLink from "../utils/getIPFSLink";
+import TrackAction from "../utils/Track";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -233,6 +235,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                             toast.show("Subscribed", ToastType.SUCCESS, true);
                             setAlreadyFollowing(true);
                           }
+                          TrackAction(PROFILE.FOLLOW);
                         } catch (error) {
                           if (error instanceof Error) {
                             console.log(error);
