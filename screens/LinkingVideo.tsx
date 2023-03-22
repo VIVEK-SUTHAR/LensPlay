@@ -40,9 +40,11 @@ import {
   useThemeStore,
   useToast,
 } from "../store/Store";
+import { Mirror, Post } from "../types/generated";
 import { Comments, LensPublication } from "../types/Lens/Feed";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
+import extractURLs from "../utils/extractURL";
 import getIPFSLink from "../utils/getIPFSLink";
 import getAccessFromRefresh from "../utils/lens/getAccessFromRefresh";
 import getDefaultProfile from "../utils/lens/getDefaultProfile";
@@ -78,9 +80,63 @@ const LinkingVideo = ({
   } = useReactionStore();
   
 
-  const {accessToken, setAccessToken, refreshToken, setRefreshToken} = useAuthStore();
+  const {accessToken, setAccessToken, setRefreshToken} = useAuthStore();
+  const [activePublication, setactivePublication] = useState<Post | Mirror | null>(null);
   const {setHasHandle, currentProfile, setCurrentProfile} = useProfile();
   const toast = useToast();
+
+  const collectPublication = async () => {
+    try {
+      if (collectStats?.isCollected) {
+        toast.show(
+          "You have already collected the video",
+          ToastType.ERROR,
+          true
+        );
+        return;
+      }
+      const data = await freeCollectPublication(
+        activePublication?.id,
+        accessToken
+      );
+      if (data) {
+        toast.show("Collect Submitted", ToastType.SUCCESS, true);
+        setCollectStats(true, collectStats?.collectCount + 1);
+        collectRef?.current?.close();
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.show(error.message, ToastType.ERROR, true);
+        collectRef?.current?.close();
+      }
+    } finally {
+      collectRef?.current?.close();
+    }
+  };
+  const onMirror = async () => {
+    if (mirrorStats?.isMirrored) {
+      toast.show("Already mirrored", ToastType.ERROR, true);
+      mirrorRef.current?.close();
+      return;
+    }
+    try {
+      const data = await freeMirror(
+        accessToken,
+        currentProfile?.id,
+        activePublication?.id
+      );
+      if (data) {
+        toast.show("Mirror submitted", ToastType.SUCCESS, true);
+        setMirrorStats(true, mirrorStats.mirrorCount + 1);
+        mirrorRef.current?.close();
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.show(error.message, ToastType.ERROR, true);
+        mirrorRef?.current?.close();
+      }
+    }
+  };
 
   function handleBackButtonClick() {
     setStatusBarHidden(false, "fade");
@@ -181,10 +237,6 @@ const LinkingVideo = ({
     }
   };
 
-
-
-  const [activePublication, setactivePublication] = useState(null);
-
   const getVideoById = async (pubId: string, id: string, tokens: string) => {
     try {
       
@@ -234,71 +286,7 @@ const LinkingVideo = ({
     }
   };
 
-  const collectPublication = async () => {
-    try {
-      if (collectStats?.isCollected) {
-        toast.show(
-          "You have already collected the video",
-          ToastType.ERROR,
-          true
-        );
-        return;
-      }
-      const data = await freeCollectPublication(
-        activePublication?.id,
-        accessToken
-      );
-      if (data) {
-        toast.show("Collect Submitted", ToastType.SUCCESS, true);
-        setCollectStats(true, collectStats?.collectCount + 1);
-        collectRef?.current?.close();
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.show(error.message, ToastType.ERROR, true);
-        collectRef?.current?.close();
-      }
-    } finally {
-      collectRef?.current?.close();
-    }
-  };
-  const onMirror = async () => {
-    if (mirrorStats?.isMirrored) {
-      toast.show("Already mirrored", ToastType.ERROR, true);
-      mirrorRef.current?.close();
-      return;
-    }
-    try {
-      const data = await freeMirror(
-        accessToken,
-        currentProfile?.id,
-        activePublication?.id
-      );
-      if (data) {
-        toast.show("Mirror submitted", ToastType.SUCCESS, true);
-        setMirrorStats(true, mirrorStats.mirrorCount + 1);
-        mirrorRef.current?.close();
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.show(error.message, ToastType.ERROR, true);
-        mirrorRef?.current?.close();
-      }
-    }
-  };
-  const onShare = async () => {
-    try {
-      const result = await Share.share({
-        message: `Let's watch ${videoData?.metadata?.name} by ${videoData?.profile.handle} on LensPlay,
-        
-        `,
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-      }
-    }
-  };
+ 
   if (isLoading) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -387,10 +375,11 @@ const LinkingVideo = ({
       />
       <ScrollView>
         <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
-          <VideoMeta
-            title={activePublication?.metadata?.name}
-            description={activePublication?.metadata?.description}
-          />
+        <VideoMeta
+              title={activePublication?.metadata?.name}
+              description={activePublication?.metadata?.description}
+              descRef={descRef}
+            />
           <VideoCreator
             profileId={activePublication?.profile?.id}
             avatarLink={activePublication?.profile?.picture?.original?.url}
@@ -549,6 +538,47 @@ const LinkingVideo = ({
               onPress={onMirror}
               bg={mirrorStats?.isMirrored ? "#c0c0c0" : primary}
             />
+          </View>
+        }
+      />
+      <Sheet
+        ref={descRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "#1d1d1d",
+        }}
+        snapPoints={["70%", "95%"]}
+        children={
+          <View style={{paddingHorizontal: 16}}>
+            <ScrollView>
+              <View
+                style={{
+                  maxWidth: "100%",
+                  marginTop: 32,
+                  justifyContent: "space-between",
+                }}
+              >
+                <StyledText
+                  title={"Description"}
+                  style={{
+                    fontSize: 20,
+                    fontWeight: "600",
+                    marginVertical: 4,
+                    color: "white",
+                    textAlign: "left",
+                  }}
+                />
+                <StyledText
+                  title={extractURLs(activePublication?.metadata?.description)}
+                  style={{
+                    textAlign: "justify",
+                    color: "white",
+                    marginTop: 8,
+                  }}
+                />
+              </View>
+            </ScrollView>
           </View>
         }
       />

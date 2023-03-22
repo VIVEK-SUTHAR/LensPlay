@@ -52,6 +52,7 @@ const VideoPage = ({
   const { accessToken } = useAuthStore();
   const userStore = useProfile();
   const PublicationStats = activePublication?.stats;
+  
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(false);
   const {
@@ -412,7 +413,7 @@ const VideoPage = ({
         }}
         snapPoints={["70%", "95%"]}
         children={
-          <View>
+          <View style={{paddingHorizontal: 16}}>
             <ScrollView>
               <View
                 style={{
