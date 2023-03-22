@@ -5,7 +5,7 @@ import {
   RefreshControl,
   SafeAreaView,
   StyleSheet,
-  View
+  View,
 } from "react-native";
 import NotificationCard from "../components/Notifications";
 import { NotificationTypes } from "../components/Notifications/index.d";
@@ -29,7 +29,14 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   if (error) console.log(error);
   if (isGuest) return <PleaseLogin />;
   if (loading) return <Loader />;
-  if (!data) return <NotFound />;
+  if (!data)
+    return (
+      <NotFound
+        message={
+          "Looks like you don't have any notifications,interact with profiles to get notifications"
+        }
+      />
+    );
 
   const NotificationTabs = [
     {
@@ -64,6 +71,11 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
         <FlatList
           data={data.result.items}
           keyExtractor={(_, index) => index.toString()}
+          ListEmptyComponent={() => {
+            return (
+              <NotFound message="Looks like you don't have any notifications,interact with profiles to get notifications" />
+            );
+          }}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -87,6 +99,11 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
         <FlatList
           data={data.result.items}
           keyExtractor={(_, index) => index.toString()}
+          ListEmptyComponent={() => {
+            return (
+              <NotFound message="Looks like you don't have any notifications,interact with profiles to get notifications" />
+            );
+          }}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -157,7 +174,7 @@ const Loader = () => {
   );
 };
 
-const NotFound = () => {
+const NotFound = ({ message }: { message: string }) => {
   return (
     <View
       style={{
@@ -180,13 +197,13 @@ const NotFound = () => {
         }}
       >
         <Heading
-          title="No new notifications"
+          title={message}
           style={{
             fontSize: 16,
             color: "white",
             marginVertical: 5,
             marginHorizontal: 15,
-            fontWeight: "600",
+            fontWeight: "700",
             alignSelf: "flex-start",
           }}
         />

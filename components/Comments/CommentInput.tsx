@@ -120,7 +120,7 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
         }}
       >
         <Avatar
-          src={getIPFSLink(currentProfile?.picture.original.url)}
+          src={getIPFSLink(currentProfile?.picture?.original?.url)}
           height={28}
           width={28}
         />

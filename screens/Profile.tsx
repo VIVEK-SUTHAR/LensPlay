@@ -112,7 +112,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
               onPress={(e) => {
                 navigation.navigate("FullImage", {
                   url:
-                    userStore.currentProfile?.coverPicture?.original.url ||
+                    userStore.currentProfile?.coverPicture?.original?.url ||
                     STATIC_ASSET,
                   source: "cover",
                 });
@@ -122,7 +122,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 navigation={navigation}
                 url={
                   getIPFSLink(
-                    userStore.currentProfile?.coverPicture?.original.url
+                    userStore.currentProfile?.coverPicture?.original?.url
                   ) || STATIC_ASSET
                 }
               />
@@ -140,13 +140,13 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
               <Pressable
                 onPress={(e) => {
                   navigation.navigate("FullImage", {
-                    url: getIPFSLink(profile?.picture.original.url),
+                    url: getIPFSLink(profile?.picture?.original?.url),
                     source: "avatar",
                   });
                 }}
               >
                 <Avatar
-                  src={getIPFSLink(profile?.picture.original.url)}
+                  src={getIPFSLink(profile?.picture?.original?.url)}
                   height={90}
                   width={90}
                   borderRadius={100}
@@ -193,7 +193,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 <View>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Heading
-                      title={profile?.name}
+                      title={profile?.name || formatHandle(profile?.handle)}
                       style={{
                         fontSize: 16,
                         marginTop: 8,

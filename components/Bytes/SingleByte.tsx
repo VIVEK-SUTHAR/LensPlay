@@ -117,6 +117,10 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
               source: {
                 uri: getIPFSLink(item.metadata.media[0]?.original?.url),
               },
+              onError(error) {
+                // console.log(error);
+              },
+
               shouldPlay: currentIndex === index ? true : false,
               resizeMode: ResizeMode.CONTAIN,
               isMuted: mute,

@@ -47,6 +47,8 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   if (isGuest) return <PleaseLogin />;
   if (loading) return <Loader />;
   if (error) return <NotFound navigation={navigation} />;
+  if (Feeddata?.feed?.items?.length === 0)
+    return <NotFound navigation={navigation} />;
   if (!Feeddata && !loading) return <NotFound navigation={navigation} />;
 
   if (Feeddata) {

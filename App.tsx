@@ -1,13 +1,13 @@
 import { ApolloProvider } from "@apollo/client";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { client } from "./apollo/client";
 import Toast from "./components/Toast";
 import useCachedResources from "./hooks/useCachedResources";
 import Navigation from "./navigation";
-import "react-native-reanimated";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
