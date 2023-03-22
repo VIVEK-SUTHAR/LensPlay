@@ -1,16 +1,22 @@
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   BackHandler,
+  Dimensions,
+  Image,
   SafeAreaView,
   ScrollView,
   Share,
   View,
 } from "react-native";
+import { freeCollectPublication, freeMirror } from "../api";
 import { client } from "../apollo/client";
 import fetchPublicationById from "../apollo/Queries/fetchPublicationById";
 import getComments from "../apollo/Queries/getComments";
+import Sheet from "../components/Bottom";
 import Comment from "../components/Comments";
 import CommentInput from "../components/Comments/CommentInput";
 import Button from "../components/UI/Button";
@@ -26,14 +32,22 @@ import {
 import DisLikeButton from "../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
 import Player from "../components/VideoPlayer";
+import { primary } from "../constants/Colors";
 import {
   useAuthStore,
   useProfile,
+  useReactionStore,
   useThemeStore,
   useToast,
 } from "../store/Store";
 import { Comments, LensPublication } from "../types/Lens/Feed";
 import { RootStackScreenProps } from "../types/navigation/types";
+import { ToastType } from "../types/Store";
+import getIPFSLink from "../utils/getIPFSLink";
+import getAccessFromRefresh from "../utils/lens/getAccessFromRefresh";
+import getDefaultProfile from "../utils/lens/getDefaultProfile";
+import verifyTokens from "../utils/lens/verifyTokens";
+import storeTokens from "../utils/storeTokens";
 
 const LinkingVideo = ({
   navigation,
@@ -46,70 +60,169 @@ const LinkingVideo = ({
   const [videoData, setVideoData] = useState<LensPublication>();
   const [comments, setComments] = useState<Comments[]>([]);
 
-  const theme = useThemeStore();
-  const authStore = useAuthStore();
-  const userStore = useProfile();
+  const collectRef = useRef<BottomSheetMethods>(null);
+  const mirrorRef = useRef<BottomSheetMethods>(null);
+  const descRef = useRef<BottomSheetMethods>(null);
+
+  const {
+    reaction,
+    comment,
+    setReaction,
+    videopageStats,
+    collectStats,
+    mirrorStats,
+    setVideoPageStats,
+    clearStats,
+    setCollectStats,
+    setMirrorStats,
+  } = useReactionStore();
+  
+
+  const {accessToken, setAccessToken, refreshToken, setRefreshToken} = useAuthStore();
+  const {setHasHandle, currentProfile, setCurrentProfile} = useProfile();
   const toast = useToast();
 
   function handleBackButtonClick() {
     setStatusBarHidden(false, "fade");
     setInFullsreen(!inFullscreen);
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
-    if (!inFullscreen) navigation.goBack();
+    if (!inFullscreen) {
+      navigation.goBack();
+      setReaction(false);
+      clearStats();
+      setCollectStats(false, 0);
+      setMirrorStats(false, 0);
+    }
     return true;
+  }
+
+  const setProfile = async (address: string) => {
+    const userDefaultProfile = await getDefaultProfile(address);
+    if (userDefaultProfile) {
+      setHasHandle(true);
+      setCurrentProfile(userDefaultProfile);
+      return userDefaultProfile;
+    } else {
+      setHasHandle(false);
+    }
+  }
+
+  const handleAsyncStorage = async () => {
+    try {
+      setIsLoading(true);
+      const userTokens = await AsyncStorage.getItem("@user_tokens");
+      const waitList = await AsyncStorage.getItem("@waitlist");
+      if(!userTokens) {
+        navigation.replace("Login");
+        return;
+      }
+      else{
+        const accessToken = JSON.parse(userTokens).accessToken;
+        const refreshToken = JSON.parse(userTokens).refreshToken;
+        const isvalidTokens = await verifyTokens(accessToken);
+        if(waitList){
+          if (isvalidTokens){
+            const address = JSON.parse(waitList).address;
+            setAccessToken(accessToken);
+            setRefreshToken(refreshToken);
+            const profile = await setProfile(address);
+            getVideoById(route?.params?.id, profile?.id, accessToken);
+          }
+          else{
+            const newTokens = await getAccessFromRefresh(refreshToken);
+                const address = JSON.parse(waitList).address;
+                const profile = await setProfile(address);
+                setAccessToken(newTokens?.accessToken);
+                setRefreshToken(newTokens?.refreshToken);
+                await storeTokens(
+                  newTokens?.accessToken,
+                  newTokens?.refreshToken
+                );
+                getVideoById(route?.params?.id, profile?.id, newTokens?.accessToken);
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
   }
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
-    getVideoById(route?.params?.id);
+    handleAsyncStorage();
   }, []);
 
-  async function fetchComments(publicationId: string): Promise<void> {
+  async function fetchComments(publicationId: string, id: string): Promise<void> {
     try {
       const data = await client.query({
         query: getComments,
         variables: {
           postId: publicationId,
+          id: currentProfile?.id || id
         },
         context: {
           headers: {
-            "x-access-token": `Bearer ${authStore.accessToken}`,
+            "x-access-token": accessToken
+              ? `Bearer ${accessToken}`
+              : "",
           },
         },
       });
-      setComments([]);
+
       setComments(data.data.publications.items);
+      
     } catch (error) {
       if (error instanceof Error) {
-        throw new Error("Can't fetch comments", { cause: error.cause });
+        throw new Error("Can't fetch comments dayoom", { cause: error.cause });
       }
     } finally {
       setIsLoading(false);
     }
-  }
+  };
+
+
 
   const [activePublication, setactivePublication] = useState(null);
 
-  const getVideoById = async (pubId: string) => {
-    setIsLoading(true);
+  const getVideoById = async (pubId: string, id: string, tokens: string) => {
     try {
+      
       const feed = await client.query({
         query: fetchPublicationById,
         variables: {
           pubId: pubId,
+          id: currentProfile?.id || id
         },
         context: {
           headers: {
-            "x-access-token": authStore.accessToken
-              ? `Bearer ${authStore.accessToken}`
+            "x-access-token": accessToken || tokens
+              ? `Bearer ${accessToken || tokens}`
               : "",
           },
         },
       });
 
       setactivePublication(feed.data.publication);
-
-      fetchComments(pubId);
+      if (!reaction) {
+        setReaction(true);
+        
+        setVideoPageStats(
+          feed?.data?.publication?.reaction === "UPVOTE",
+          feed?.data?.publication?.reaction === "DOWNVOTE",
+          feed?.data?.publication?.stats?.totalUpvotes
+        );
+        
+        setCollectStats(
+          feed?.data?.publication?.hasCollectedByMe,
+          feed?.data?.publication?.stats?.totalAmountOfCollects
+        );
+        setMirrorStats(
+          feed?.data?.publication?.mirrors?.length > 0,
+          feed?.data?.publication?.stats?.totalAmountOfMirrors
+        );
+      }
+      await fetchComments(pubId, id);
 
       return feed;
     } catch (error) {
@@ -118,6 +231,59 @@ const LinkingVideo = ({
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const collectPublication = async () => {
+    try {
+      if (collectStats?.isCollected) {
+        toast.show(
+          "You have already collected the video",
+          ToastType.ERROR,
+          true
+        );
+        return;
+      }
+      const data = await freeCollectPublication(
+        activePublication?.id,
+        accessToken
+      );
+      if (data) {
+        toast.show("Collect Submitted", ToastType.SUCCESS, true);
+        setCollectStats(true, collectStats?.collectCount + 1);
+        collectRef?.current?.close();
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.show(error.message, ToastType.ERROR, true);
+        collectRef?.current?.close();
+      }
+    } finally {
+      collectRef?.current?.close();
+    }
+  };
+  const onMirror = async () => {
+    if (mirrorStats?.isMirrored) {
+      toast.show("Already mirrored", ToastType.ERROR, true);
+      mirrorRef.current?.close();
+      return;
+    }
+    try {
+      const data = await freeMirror(
+        accessToken,
+        currentProfile?.id,
+        activePublication?.id
+      );
+      if (data) {
+        toast.show("Mirror submitted", ToastType.SUCCESS, true);
+        setMirrorStats(true, mirrorStats.mirrorCount + 1);
+        mirrorRef.current?.close();
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.show(error.message, ToastType.ERROR, true);
+        mirrorRef?.current?.close();
+      }
     }
   };
   const onShare = async () => {
@@ -244,31 +410,25 @@ const LinkingVideo = ({
             showsHorizontalScrollIndicator={false}
           >
             <LikeButton
-              like={activePublication?.stats?.totalUpvotes}
+              like={videopageStats?.likeCount}
               id={activePublication?.id}
-              isalreadyLiked={activePublication?.reaction}
+              isalreadyLiked={videopageStats?.isLiked}
             />
             <DisLikeButton
-              isalreadyDisLiked={activePublication?.stats?.reaction}
+              isalreadyDisLiked={videopageStats?.isDisliked}
               id={activePublication?.id}
             />
             <MirrorButton
-              id={activePublication?.id}
-              // isAlreadyMirrored={isAlreadyMirrored}
-              // setIsAlreadyMirrored={setIsAlreadyMirrored}
-              totalMirrors={activePublication?.stats?.totalAmountOfMirrors}
-              bannerUrl={activePublication?.metadata?.cover}
-            />
+                    id={activePublication?.id}
+                    totalMirrors={mirrorStats?.mirrorCount}
+                    isAlreadyMirrored={mirrorStats?.isMirrored}
+                    bannerUrl={activePublication?.metadata?.cover}
+                    mirrorRef={mirrorRef}
+                  />
             <CollectButton
-              publicationId={activePublication?.id}
-              bannerUrl={activePublication?.metadata?.cover}
-              title={
-                activePublication?.profile?.name ||
-                activePublication?.profile?.handle
-              }
-              totalCollects={activePublication?.stats?.totalAmountOfCollects}
-              videoUrl={activePublication?.metadata?.media[0]?.original?.url}
-              hasCollected={activePublication?.hasCollectedByMe}
+               totalCollects={collectStats?.collectCount}
+               collectRef={collectRef}
+               hasCollected={collectStats?.isCollected}
             />
             <ShareButton
               title={
@@ -292,6 +452,106 @@ const LinkingVideo = ({
         </View>
       </ScrollView>
       <CommentInput publicationId={activePublication?.id} />
+      <Sheet
+        ref={collectRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "#1d1d1d",
+        }}
+        snapPoints={["50%"]}
+        children={
+          <View
+            style={{
+              maxWidth: "100%",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              height: "100%",
+            }}
+          >
+            <Image
+              source={{
+                uri: getIPFSLink(activePublication?.metadata?.cover),
+              }}
+              style={{
+                height: Dimensions.get("screen").height / 4,
+                borderRadius: 8,
+                width: Dimensions.get("screen").width - 48,
+                resizeMode: "cover",
+              }}
+              progressiveRenderingEnabled={true}
+            />
+            <Button
+              title={
+                collectStats?.isCollected
+                  ? "Already collected the video"
+                  : `Collect the video`
+              }
+              width={"90%"}
+              py={12}
+              textStyle={{
+                fontSize: 20,
+                fontWeight: "700",
+                textAlign: "center",
+              }}
+              bg={collectStats?.isCollected ? "#c0c0c0" : primary}
+              // onPress={collectPublication}
+              onPress={() => {
+                collectPublication();
+              }}
+            />
+          </View>
+        }
+      />
+      <Sheet
+        ref={mirrorRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "#1d1d1d",
+        }}
+        snapPoints={["50%"]}
+        children={
+          <View
+            style={{
+              maxWidth: "100%",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              height: "100%",
+            }}
+          >
+            <Image
+              source={{
+                uri: getIPFSLink(activePublication?.metadata?.cover),
+              }}
+              style={{
+                height: Dimensions.get("screen").height / 4,
+                borderRadius: 8,
+                width: Dimensions.get("screen").width - 48,
+                resizeMode: "cover",
+              }}
+              progressiveRenderingEnabled={true}
+            />
+            <Button
+              title={
+                mirrorStats?.isMirrored
+                  ? "Already mirrored these video"
+                  : "Mirror the video"
+              }
+              width={"90%"}
+              py={12}
+              my={4}
+              textStyle={{
+                fontSize: 20,
+                fontWeight: "700",
+                textAlign: "center",
+              }}
+              onPress={onMirror}
+              bg={mirrorStats?.isMirrored ? "#c0c0c0" : primary}
+            />
+          </View>
+        }
+      />
     </SafeAreaView>
   );
 };

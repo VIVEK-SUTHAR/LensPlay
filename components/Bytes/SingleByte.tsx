@@ -318,7 +318,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
                 style={{
                   flex: 1,
                   justifyContent: "space-between",
-                  height: 280,
+                  height: Dimensions.get("screen").height / 3,
                 }}
               >
                 <Image

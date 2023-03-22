@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export default gql`
-	query Publication($pubId: InternalPublicationId!) {
+	query Publication($pubId: InternalPublicationId!, $id: ProfileId!) {
 		publication(request: { publicationId: $pubId }) {
 			__typename
 			... on Post {
@@ -135,8 +135,8 @@ export default gql`
 		}
 		appId
 		hidden
-		reaction(request: null)
-		mirrors(by: null)
+		reaction(request: {profileId:$id})
+		mirrors(by: $id)
 		hasCollectedByMe
 	}
 
@@ -160,7 +160,7 @@ export default gql`
 		}
 		appId
 		hidden
-		reaction(request: null)
+		reaction(request: {profileId:$id})
 		hasCollectedByMe
 	}
 
@@ -196,7 +196,7 @@ export default gql`
 		}
 		appId
 		hidden
-		reaction(request: null)
+		reaction(request: {profileId:$id})
 		mirrors(by: null)
 		hasCollectedByMe
 	}
