@@ -1,23 +1,34 @@
-import { View, Text } from "react-native";
 import React, { useState } from "react";
-import Avatar from "../UI/Avatar";
-import Heading from "../UI/Heading";
-import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
-import StyledText from "../UI/StyledText";
-import { ToastType } from "../../types/Store";
+import { View } from "react-native";
 import { createFreeSubscribe } from "../../api";
-import Button from "../UI/Button";
 import { useGuestStore } from "../../store/GuestStore";
+import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
+import { ToastType } from "../../types/Store";
+import Avatar from "../UI/Avatar";
+import Button from "../UI/Button";
+import Heading from "../UI/Heading";
+import StyledText from "../UI/StyledText";
 
 type VideoCreatorProps = {
   avatarLink: string;
   uploadedBy: string;
   profileId: string;
   alreadyFollowing: boolean;
+  showSubscribeButton?: boolean;
+  showSubscribers?: boolean;
+  subscribersCount?: number;
 };
 
 const VideoCreator = (props: VideoCreatorProps) => {
-  const { profileId, uploadedBy, avatarLink, alreadyFollowing } = props;
+  const {
+    profileId,
+    uploadedBy,
+    avatarLink,
+    alreadyFollowing,
+    showSubscribers = false,
+    subscribersCount = 0,
+    showSubscribeButton = true,
+  } = props;
 
   const [following, setFollowing] = useState<boolean>(alreadyFollowing);
 
@@ -26,7 +37,7 @@ const VideoCreator = (props: VideoCreatorProps) => {
   const toast = useToast();
   const { isGuest } = useGuestStore();
 
-  const followCreator = async () => {
+  const followCreator = React.useCallback(async () => {
     if (isGuest) {
       toast.show("Please Login", ToastType.ERROR, true);
       return;
@@ -45,7 +56,7 @@ const VideoCreator = (props: VideoCreatorProps) => {
       if (error instanceof Error) {
       }
     }
-  };
+  }, []);
 
   return (
     <View
@@ -69,7 +80,11 @@ const VideoCreator = (props: VideoCreatorProps) => {
             }}
           />
           <StyledText
-            title={`@${uploadedBy}`}
+            title={
+              showSubscribers
+                ? `${subscribersCount} Subscribers`
+                : `@${uploadedBy}`
+            }
             style={{
               color: "gray",
               fontSize: 12,
@@ -78,23 +93,25 @@ const VideoCreator = (props: VideoCreatorProps) => {
           />
         </View>
       </View>
-      <Button
-        title={following ? "Unsubscribe" : "Subscribe"}
-        width={"auto"}
-        px={16}
-        py={8}
-        type={"filled"}
-        bg={PRIMARY}
-        textStyle={{
-          fontSize: 16,
-          fontWeight: "700",
-          marginHorizontal: 4,
-          color: "black",
-        }}
-        onPress={followCreator}
-      />
+      {Boolean(showSubscribeButton) && (
+        <Button
+          title={following ? "Unsubscribe" : "Subscribe"}
+          width={"auto"}
+          px={12}
+          py={6}
+          type={"filled"}
+          bg={PRIMARY}
+          textStyle={{
+            fontSize: 16,
+            fontWeight: "700",
+            marginHorizontal: 4,
+          }}
+          animated={true}
+          onPress={followCreator}
+        />
+      )}
     </View>
   );
 };
 
-export default VideoCreator;
+export default React.memo(VideoCreator);

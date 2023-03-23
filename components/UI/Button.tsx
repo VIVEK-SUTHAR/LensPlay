@@ -24,7 +24,7 @@ interface ButtonProps {
   mt?: number;
   mb?: number;
   bg?: ColorValue;
-  ripple_radius?: number;
+  ripple_color?: ColorValue;
   style?: StyleProp<ViewProps>;
   textStyle?: StyleProp<TextStyle>;
   borderColor?: ColorValue;
@@ -54,7 +54,7 @@ const Button = (props: ButtonProps): JSX.Element => {
     mb = 0,
     textStyle,
     borderRadius = 50,
-    ripple_radius = 0.5,
+    ripple_color="rgba(0,0,0,0.2)",
     bg = theme.PRIMARY.toString(),
     onPress,
     borderColor = "white",
@@ -108,7 +108,7 @@ const Button = (props: ButtonProps): JSX.Element => {
         }).start();
       }}
     >
-      <Ripple>
+      <Ripple rippleColor={ripple_color}>
         <Animated.View
           style={{
             display: "flex",

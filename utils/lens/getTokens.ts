@@ -15,7 +15,7 @@ const getTokens = async (
         request,
       },
     });
-    return result.data!.authenticate;
+    return result?.data?.authenticate;
   } catch (error) {
     if (error instanceof Error) {
       console.log("[Error]:Error in authencitating ");

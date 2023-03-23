@@ -47,7 +47,7 @@ const CollectNotification: React.FC<NotificationCardProps> = ({
               <StyledText
                 title={
                   notification?.wallet?.defaultProfile?.handle?.split(".")[0] ||
-                  formatAddress(notification.wallet?.address)
+                  formatAddress(notification?.wallet?.address)
                 }
                 style={{ color: "white", fontWeight: "500" }}
               />

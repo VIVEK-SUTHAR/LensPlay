@@ -1,6 +1,7 @@
 import BottomSheet from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import React from "react";
+import { ScrollView } from "react-native";
 import { IBottomSheet } from "../types";
 
 const Sheet = React.forwardRef<BottomSheetMethods, IBottomSheet>(
@@ -18,7 +19,7 @@ const Sheet = React.forwardRef<BottomSheetMethods, IBottomSheet>(
           backgroundColor: "#1d1d1d",
         }}
         {...props}
-      />
+      ></BottomSheet>
     );
   }
 );

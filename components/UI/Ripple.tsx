@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import { ColorValue, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import {
   TapGestureHandler,
   TapGestureHandlerGestureEvent,
@@ -19,6 +19,7 @@ interface RippleProps {
   contentContainerStyle?: StyleProp<ViewStyle>;
   onTap?: () => void;
   children: React.ReactNode;
+  rippleColor?: ColorValue;
 }
 
 const Ripple: React.FC<RippleProps> = ({
@@ -26,6 +27,7 @@ const Ripple: React.FC<RippleProps> = ({
   onTap,
   children,
   contentContainerStyle,
+  rippleColor="rgba(0,0,0,0.2)"
 }) => {
   const centerX = useSharedValue(0);
   const centerY = useSharedValue(0);
@@ -71,7 +73,7 @@ const Ripple: React.FC<RippleProps> = ({
       height: circleRadius * 2,
       borderRadius: circleRadius,
       opacity: rippleOpacity.value,
-      backgroundColor: "rgba(0,0,0,0.2)",
+      backgroundColor: rippleColor,
       position: "absolute",
       top: 0,
       left: 0,

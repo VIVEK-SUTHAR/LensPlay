@@ -54,10 +54,10 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
         const userData = await handleWaitlist(walletData.accounts[0]);
         if (!userData.fields.hasAccess) {
           navigation.replace("LeaderBoard", {
-            referralsCount: userData.referralsCount,
-            rankingPoints: userData.rankingPoints,
-            rankingPosition: userData.rankingPosition,
-            refferalLink: `https://form.waitlistpanda.com/go/${userData.listId}?ref=${userData.id}`,
+            referralsCount: userData?.referralsCount,
+            rankingPoints: userData?.rankingPoints,
+            rankingPosition: userData?.rankingPosition,
+            refferalLink: `https://form.waitlistpanda.com/go/${userData?.listId}?ref=${userData?.id}`,
           });
         }
 

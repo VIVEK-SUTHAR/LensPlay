@@ -12,7 +12,7 @@ const getAccessFromRefresh = async (
         rtoken: refreshToken,
       },
     });
-    return newTokens.data.refresh;
+    return newTokens?.data?.refresh;
   } catch (error) {
     if (error instanceof Error) {
       console.log("[Error]:Error in refreshing new tokens ");

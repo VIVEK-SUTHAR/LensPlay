@@ -1,6 +1,6 @@
 async function TrackAction(event: string) {
   if (__DEV__) {
-    console.log("dev mode");
+    // console.log("dev mode");
     return;
   }
   const options = {
@@ -9,7 +9,7 @@ async function TrackAction(event: string) {
     body: JSON.stringify([
       {
         properties: {
-          token: "99c7752eb9896ed47d99f588a86a7e98",
+          token: "33a7ed7c61c940384d30edaf7d54d663",
         },
         event: event,
       },

@@ -8,12 +8,14 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
-  View
+  StyleSheet,
+  View,
 } from "react-native";
 import { freeCollectPublication, freeMirror } from "../api";
 import Sheet from "../components/Bottom";
 import Comment from "../components/Comments/";
 import CommentInput from "../components/Comments/CommentInput";
+import ProfileCard from "../components/ProfileCard";
 import Button from "../components/UI/Button";
 import StyledText from "../components/UI/StyledText";
 import {
@@ -22,11 +24,12 @@ import {
   ReportButton,
   ShareButton,
   VideoCreator,
-  VideoMeta
+  VideoMeta,
 } from "../components/VIdeo";
 import DisLikeButton from "../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
 import Player from "../components/VideoPlayer";
+import { STATIC_ASSET } from "../constants";
 import { dark_primary, primary } from "../constants/Colors";
 import { PUBLICATION } from "../constants/tracking";
 import { useReaction } from "../hooks/useFeed";
@@ -35,7 +38,7 @@ import {
   useAuthStore,
   useProfile,
   useReactionStore,
-  useToast
+  useToast,
 } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
@@ -52,7 +55,7 @@ const VideoPage = ({
   const { accessToken } = useAuthStore();
   const userStore = useProfile();
   const PublicationStats = activePublication?.stats;
-  
+
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(false);
   const {
@@ -411,14 +414,17 @@ const VideoPage = ({
         backgroundStyle={{
           backgroundColor: "#1d1d1d",
         }}
+        handleStyle={{
+          padding: 16,
+          // borderBottomWidth: 1,
+        }}
         snapPoints={["70%", "95%"]}
         children={
-          <View style={{paddingHorizontal: 16}}>
-            <ScrollView>
+          <View style={{ paddingHorizontal: 16 }}>
+            <ScrollView scrollEnabled={true}>
               <View
                 style={{
-                  maxWidth: "100%",
-                  marginTop: 32,
+                  marginTop: 8,
                   justifyContent: "space-between",
                 }}
               >
@@ -432,15 +438,107 @@ const VideoPage = ({
                     textAlign: "left",
                   }}
                 />
-                <StyledText
-                  title={extractURLs(activePublication?.metadata?.description)}
-                  style={{
-                    textAlign: "justify",
-                    color: "white",
-                    marginTop: 8,
-                  }}
-                />
               </View>
+              <StyledText
+                title={activePublication?.metadata?.name}
+                style={{
+                  fontSize: 20,
+                  fontWeight: "600",
+                  marginVertical: 4,
+                  color: "white",
+                  textAlign: "left",
+                }}
+              />
+              <View
+                style={{
+                  // height: "auto",
+                  paddingVertical: 10,
+                  width: "100%",
+                  paddingHorizontal: 8,
+                  alignSelf: "center",
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  borderBottomColor: "gray",
+                  borderBottomWidth: 1,
+                  // backgroundColor: "red",
+                }}
+              >
+                <View style={styles.verticleCenter}>
+                  <StyledText
+                    title={activePublication?.stats?.totalUpvotes || 0}
+                    style={styles.statsLabel}
+                  />
+                  <StyledText title="Likes" style={{ color: "white" }} />
+                </View>
+                <View style={styles.verticleCenter}>
+                  <StyledText
+                    title={activePublication?.stats?.totalAmountOfCollects || 0}
+                    style={styles.statsLabel}
+                  />
+                  <StyledText title="Collects" style={{ color: "white" }} />
+                </View>
+                <View style={styles.verticleCenter}>
+                  <StyledText
+                    title={activePublication?.stats?.totalAmountOfMirrors || 0}
+                    style={styles.statsLabel}
+                  />
+                  <StyledText title="Mirrors" style={{ color: "white" }} />
+                </View>
+              </View>
+              <StyledText
+                title={
+                  extractURLs(activePublication?.metadata?.description) ||
+                  "No description provided by crator"
+                }
+                style={{
+                  textAlign: "justify",
+                  color: "white",
+                  marginTop: 16,
+                  fontSize: 14,
+                  fontWeight: "500",
+                }}
+              />
+              <StyledText
+                title={`Posted via ${
+                  activePublication?.appId?.charAt(0)?.toUpperCase() +
+                    activePublication?.appId?.slice(1) || "LensPlay"
+                }`}
+                style={{
+                  color: "white",
+                  marginTop: 16,
+                  fontSize: 14,
+                  fontWeight: "500",
+                }}
+              />
+              <StyledText
+                title={"Uploaded By"}
+                style={{
+                  color: "white",
+                  marginTop: 16,
+                  fontSize: 14,
+                  fontWeight: "500",
+                }}
+              />
+
+              <VideoCreator
+                alreadyFollowing={
+                  activePublication?.profile?.isFollowedByMe || false
+                }
+                avatarLink={
+                  activePublication?.profile?.picture?.original?.url ||
+                  STATIC_ASSET
+                }
+                profileId={activePublication?.profile?.id}
+                uploadedBy={
+                  activePublication?.profile?.name ||
+                  activePublication?.profile?.handle
+                }
+                showSubscribeButton={false}
+                showSubscribers={true}
+                subscribersCount={
+                  activePublication?.profile?.stats?.totalFollowers
+                }
+              />
             </ScrollView>
           </View>
         }
@@ -450,3 +548,13 @@ const VideoPage = ({
 };
 
 export default VideoPage;
+const styles = StyleSheet.create({
+  statsLabel: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+  verticleCenter: {
+    alignItems: "center",
+  },
+});

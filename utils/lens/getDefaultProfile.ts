@@ -13,7 +13,7 @@ const getDefaultProfile = async (
       },
     });
 
-    return result.data.defaultProfile;
+    return result?.data?.defaultProfile;
   } catch (error) {
     console.log("[Error]:Error in getting default profile");
     // throw new Error("[Error]:Error in getting default profile", {

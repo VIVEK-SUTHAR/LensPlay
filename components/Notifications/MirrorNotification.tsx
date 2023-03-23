@@ -1,14 +1,13 @@
-import { Pressable, Text, View } from "react-native";
 import React from "react";
-import NotificationCardProps from "./index.d";
-import getDifference from "../../utils/getDifference";
-import formatAddress from "../../utils/formatAddress";
-import Avatar from "../UI/Avatar";
-import { AntDesign } from "@expo/vector-icons";
-import extractURLs from "../../utils/extractURL";
-import StyledText from "../UI/StyledText";
+import { Pressable, View } from "react-native";
 import { STATIC_ASSET } from "../../constants";
+import extractURLs from "../../utils/extractURL";
+import formatAddress from "../../utils/formatAddress";
+import getDifference from "../../utils/getDifference";
 import Icon from "../Icon";
+import Avatar from "../UI/Avatar";
+import StyledText from "../UI/StyledText";
+import NotificationCardProps from "./index.d";
 
 const MirrorNotification = ({
   navigation,
@@ -33,7 +32,7 @@ const MirrorNotification = ({
             <Pressable
               onPress={() => {
                 navigation.navigate("Channel", {
-                  profileId: notification.profile?.id,
+                  profileId: notification?.profile?.id,
                 });
               }}
             >

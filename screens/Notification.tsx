@@ -127,7 +127,6 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
               );
             }
           }}
-          estimatedItemSize={10}
         />
       );
     }

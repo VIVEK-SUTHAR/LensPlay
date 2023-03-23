@@ -74,7 +74,7 @@ export default function Scanner({
   function isValidQR(data: any) {
     try {
       const parsedData = JSON.parse(data);
-      if (parsedData.signature && parsedData.address) {
+      if (parsedData?.signature && parsedData?.address) {
         return true;
       } else {
         return false;
@@ -85,7 +85,7 @@ export default function Scanner({
   }
 
   const handleBarcodeScanned = async (data: any) => {
-    const isValidData = isValidQR(data.data);
+    const isValidData = isValidQR(data?.data);
 
     if (!isValidData) {
       toast.show("Invalid QR", ToastType.ERROR, true);
@@ -105,16 +105,16 @@ export default function Scanner({
           return;
         }
 
-        if (!userData.fields.hasAccess) {
+        if (!userData?.fields?.hasAccess) {
           navigation.replace("LeaderBoard", {
-            referralsCount: userData.referralsCount,
-            rankingPoints: userData.rankingPoints,
-            rankingPosition: userData.rankingPosition,
-            refferalLink: `https://form.waitlistpanda.com/go/${userData.listId}?ref=${userData.id}`,
+            referralsCount: userData?.referralsCount,
+            rankingPoints: userData?.rankingPoints,
+            rankingPosition: userData?.rankingPosition,
+            refferalLink: `https://form.waitlistpanda.com/go/${userData?.listId}?ref=${userData?.id}`,
           });
         }
 
-        if (userData.fields.hasAccess) {
+        if (userData?.fields?.hasAccess) {
           await HandleDefaultProfile(address);
 
           if (!hasHandle) {
@@ -144,9 +144,9 @@ export default function Scanner({
       } catch (error) {
         if (error instanceof Error) {
           // console.log("[Error]:Error in Scanner", error);
-          throw new Error("[Error]:Error in Scanner", {
-            cause: error,
-          });
+          // throw new Error("[Error]:Error in Scanner", {
+          //   cause: error,
+          // });
         }
       } finally {
         setHasData(false);

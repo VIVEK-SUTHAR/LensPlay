@@ -16,7 +16,7 @@ const generateChallenge = async (
       },
     });
 
-    return result.data.challenge;
+    return result?.data?.challenge;
   } catch (error) {
     if (error instanceof Error) {
       console.log("[Error]:Error in generating challenge text");

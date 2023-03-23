@@ -12,7 +12,7 @@ const verifyTokens = async (
         token: accessToken,
       },
     });
-    return result.data.verify;
+    return result?.data?.verify;
   } catch (error) {
     if (error instanceof Error) {
       console.log("[Error]:Error in verify Tokens");

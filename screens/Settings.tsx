@@ -29,7 +29,7 @@ import { AUTH } from "../constants/tracking";
 import { useGuestStore } from "../store/GuestStore";
 import { RootStackScreenProps } from "../types/navigation/types";
 import TrackAction from "../utils/Track";
-
+import UPADTES from "../update.json";
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
 type SocialMediaBadgeProps = {
@@ -118,6 +118,10 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
           ))}
         </View>
         <View style={styles.appVersionContainer}>
+          <StyledText
+            title={`OTA Build:${UPADTES.OTA_BUILD}`}
+            style={{ color: "gray", fontSize: 10 }}
+          />
           <StyledText
             title={`${Constants.expoConfig?.name} v${Constants.expoConfig?.version}`}
             style={{ color: "gray", fontSize: 10 }}
@@ -238,7 +242,7 @@ const SocialMedia: SocialMediaBadgeProps[] = [
   },
   {
     icon: <Icon name="link" size={16} color="#2AD95C" />,
-    name: "website",
+    name: "Website",
     link: LENSPLAY_SITE,
   },
 ];
@@ -310,7 +314,7 @@ const styles = StyleSheet.create({
   },
   appVersionContainer: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     margin: 16,
   },
 });

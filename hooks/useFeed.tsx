@@ -75,11 +75,11 @@ const useUserPublication = (publicationId: string | undefined) => {
 
 const useComments = (publicationId: string) => {
   const { accessToken } = useAuthStore();
-  const {currentProfile} = useProfile();
+  const { currentProfile } = useProfile();
   const { data, error, loading } = useQuery(getComments, {
     variables: {
       postId: publicationId,
-      id: currentProfile?.id
+      id: currentProfile?.id,
     },
     context: {
       headers: {
@@ -175,10 +175,10 @@ const useNotifications = () => {
   return { data, error, loading, refetch, startPolling, previousData };
 };
 
-const useReaction = ( pubId: string) => {
+const useReaction = (pubId: string) => {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
-  
+
   const { data, error, loading } = useQuery(fetchReaction, {
     variables: {
       id: currentProfile?.id,
@@ -251,5 +251,5 @@ export {
   useFollowing,
   useSearchProfile,
   useNotifications,
-  useReaction
+  useReaction,
 };

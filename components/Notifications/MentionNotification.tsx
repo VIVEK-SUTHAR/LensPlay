@@ -32,7 +32,7 @@ const MentionNotification = ({
             <Pressable
               onPress={() => {
                 navigation.navigate("Channel", {
-                  profileId: notification.profile?.id,
+                  profileId: notification?.profile?.id,
                 });
               }}
             >
