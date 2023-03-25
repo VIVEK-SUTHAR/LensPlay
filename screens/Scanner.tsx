@@ -60,14 +60,15 @@ export default function Scanner({
     );
   }
 
-  async function HandleDefaultProfile(adress: string) {
+  async function HandleDefaultProfile(adress: string): Promise<boolean> {
     const userDefaultProfile = await getDefaultProfile(adress);
 
     if (userDefaultProfile) {
-      setHasHandle(true);
       setCurrentProfile(userDefaultProfile);
+      return true;
     } else {
       setHasHandle(false);
+      return false;
     }
   }
 
@@ -115,14 +116,15 @@ export default function Scanner({
         }
 
         if (userData?.fields?.hasAccess) {
-          await HandleDefaultProfile(address);
+          const result = await HandleDefaultProfile(address);
 
-          if (!hasHandle) {
+          if (!result) {
             navigation.replace("LoginWithLens");
             return;
           }
 
-          if (hasHandle) {
+          if (result) {
+            setHasHandle(true);
             const tokens = await getTokens({
               address,
               signature: decryptedSignature,
