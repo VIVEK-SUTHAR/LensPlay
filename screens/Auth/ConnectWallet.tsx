@@ -4,26 +4,26 @@ import { StatusBar } from "expo-status-bar";
 import { MotiView } from "moti";
 import React, { useCallback, useRef, useState } from "react";
 import { SafeAreaView, StyleSheet, View } from "react-native";
-import Sheet from "../components/Bottom";
-import Icon from "../components/Icon";
-import Button from "../components/UI/Button";
-import Heading from "../components/UI/Heading";
-import StyledText from "../components/UI/StyledText";
-import { dark_primary, primary } from "../constants/Colors";
-import { AUTH, GUEST_MODE } from "../constants/tracking";
-import { useGuestStore } from "../store/GuestStore";
-import { useProfile, useToast } from "../store/Store";
-import { RootStackScreenProps } from "../types/navigation/types";
-import { ToastType } from "../types/Store";
-import handleWaitlist from "../utils/handleWaitlist";
-import getDefaultProfile from "../utils/lens/getDefaultProfile";
-import TrackAction from "../utils/Track";
+import Sheet from "../../components/Bottom";
+import Icon from "../../components/Icon";
+import Button from "../../components/UI/Button";
+import Heading from "../../components/UI/Heading";
+import StyledText from "../../components/UI/StyledText";
+import { dark_primary, primary } from "../../constants/Colors";
+import { AUTH, GUEST_MODE } from "../../constants/tracking";
+import { useGuestStore } from "../../store/GuestStore";
+import { useProfile, useToast } from "../../store/Store";
+import { RootStackScreenProps } from "../../types/navigation/types";
+import { ToastType } from "../../types/Store";
+import handleWaitlist from "../../utils/handleWaitlist";
+import getDefaultProfile from "../../utils/lens/getDefaultProfile";
+import TrackAction from "../../utils/Track";
 
 // https://eth-mainnet.alchemyapi.io/v2/5Kt3LOs7L13vV5L68P94MERVJM0baCSv
 
 function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   const connector = useWalletConnect();
-  const loginRef = useRef<BottomSheetMethods>();
+  const loginRef = useRef<BottomSheetMethods>(null);
   const { handleGuest } = useGuestStore();
   const toast = useToast();
   const { setCurrentProfile, setHasHandle } = useProfile();

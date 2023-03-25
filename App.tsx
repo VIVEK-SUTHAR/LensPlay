@@ -20,8 +20,8 @@ export default function App() {
         <SafeAreaProvider>
           <Toast />
           <ApolloProvider client={client}>
+            <StatusBar style="dark" />
             <Navigation />
-            <StatusBar style="auto" />
           </ApolloProvider>
         </SafeAreaProvider>
       </GestureHandlerRootView>

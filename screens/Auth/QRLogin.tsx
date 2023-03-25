@@ -1,10 +1,10 @@
 import React from "react";
 import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
-import Icon from "../components/Icon";
-import Button from "../components/UI/Button";
-import StyledText from "../components/UI/StyledText";
-import { RootStackScreenProps } from "../types/navigation/types";
-import extractURLs from "../utils/extractURL";
+import Icon from "../../components/Icon";
+import Button from "../../components/UI/Button";
+import StyledText from "../../components/UI/StyledText";
+import { RootStackScreenProps } from "../../types/navigation/types";
+import extractURLs from "../../utils/extractURL";
 
 const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
   const LoginSteps = [

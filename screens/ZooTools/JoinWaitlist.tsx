@@ -8,9 +8,9 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import Button from "../components/UI/Button";
-import Heading from "../components/UI/Heading";
-import { primary } from "../constants/Colors";
+import Button from "../../components/UI/Button";
+import Heading from "../../components/UI/Heading";
+import { primary } from "../../constants/Colors";
 
 type Props = {};
 
@@ -43,7 +43,7 @@ const JoinWaitlist = (props: Props) => {
             style={{
               width: "100%",
             }}
-            source={require("../assets/notInWaitlist.json")}
+            source={require("../../assets/notInWaitlist.json")}
           />
         </View>
         <View>

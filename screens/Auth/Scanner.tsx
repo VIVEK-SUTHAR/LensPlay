@@ -3,19 +3,19 @@ import { BarCodeScanner } from "expo-barcode-scanner";
 import { Camera } from "expo-camera";
 import React, { useState } from "react";
 import { ActivityIndicator, Dimensions, StyleSheet, View } from "react-native";
-import Button from "../components/UI/Button";
-import Heading from "../components/UI/Heading";
-import { primary } from "../constants/Colors";
-import { AUTH } from "../constants/tracking";
-import { useAuthStore, useProfile, useToast } from "../store/Store";
-import { RootStackScreenProps } from "../types/navigation/types";
-import { ToastType } from "../types/Store";
-import decryptData from "../utils/decryptData";
-import handleWaitlist from "../utils/handleWaitlist";
-import getDefaultProfile from "../utils/lens/getDefaultProfile";
-import getTokens from "../utils/lens/getTokens";
-import storeTokens from "../utils/storeTokens";
-import TrackAction from "../utils/Track";
+import Button from "../../components/UI/Button";
+import Heading from "../../components/UI/Heading";
+import { primary } from "../../constants/Colors";
+import { AUTH } from "../../constants/tracking";
+import { useAuthStore, useProfile, useToast } from "../../store/Store";
+import { RootStackScreenProps } from "../../types/navigation/types";
+import { ToastType } from "../../types/Store";
+import decryptData from "../../utils/decryptData";
+import handleWaitlist from "../../utils/handleWaitlist";
+import getDefaultProfile from "../../utils/lens/getDefaultProfile";
+import getTokens from "../../utils/lens/getTokens";
+import storeTokens from "../../utils/storeTokens";
+import TrackAction from "../../utils/Track";
 
 export default function Scanner({
   navigation,

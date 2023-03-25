@@ -9,15 +9,15 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import PleaseLogin from "../components/PleaseLogin";
-import Button from "../components/UI/Button";
-import Heading from "../components/UI/Heading";
-import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
-import VideoCard from "../components/VideoCard";
-import { useFeed } from "../hooks/useFeed";
-import { useGuestStore } from "../store/GuestStore";
-import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
-import { RootTabScreenProps } from "../types/navigation/types";
+import PleaseLogin from "../../components/PleaseLogin";
+import Button from "../../components/UI/Button";
+import Heading from "../../components/UI/Heading";
+import VideoCardSkeleton from "../../components/UI/VideoCardSkeleton";
+import VideoCard from "../../components/VideoCard";
+import { useFeed } from "../../hooks/useFeed";
+import { useGuestStore } from "../../store/GuestStore";
+import { useAuthStore, useProfile, useThemeStore } from "../../store/Store";
+import { RootTabScreenProps } from "../../types/navigation/types";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -73,6 +73,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
       </SafeAreaView>
     );
   }
+  return <SafeAreaView style={styles.container}></SafeAreaView>;
 };
 export default Feed;
 
@@ -92,7 +93,7 @@ const NotFound = ({ navigation }: { navigation: any }) => {
           style={{
             height: "auto",
           }}
-          source={require("../assets/notfound.json")}
+          source={require("../../assets/notfound.json")}
         />
         <View
           style={{

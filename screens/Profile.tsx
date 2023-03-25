@@ -462,5 +462,8 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
       </SafeAreaView>
     );
   }
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}></SafeAreaView>
+  );
 };
 export default ProfileScreen;

@@ -9,13 +9,13 @@ import {
   Vibration,
   View
 } from "react-native";
-import Icon from "../components/Icon";
-import Heading from "../components/UI/Heading";
-import StyledText from "../components/UI/StyledText";
-import { dark_primary } from "../constants/Colors";
-import { useToast } from "../store/Store";
-import { RootStackScreenProps } from "../types/navigation/types";
-import { ToastType } from "../types/Store";
+import Icon from "../../components/Icon";
+import Heading from "../../components/UI/Heading";
+import StyledText from "../../components/UI/StyledText";
+import { dark_primary } from "../../constants/Colors";
+import { useToast } from "../../store/Store";
+import { RootStackScreenProps } from "../../types/navigation/types";
+import { ToastType } from "../../types/Store";
 
 export default function LeaderBoard({
   navigation,
@@ -50,7 +50,7 @@ export default function LeaderBoard({
       <StatusBar style="light" backgroundColor="transparent" />
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Image
-          source={require("../assets/images/icon.png")}
+          source={require("../../assets/images/icon.png")}
           style={{ width: 40, height: 40 }}
         />
         <Heading

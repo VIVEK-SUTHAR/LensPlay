@@ -1,22 +1,17 @@
 import { AntDesign } from "@expo/vector-icons";
 import { MotiView } from "moti";
 import * as React from "react";
-import {
-  Image,
-  Linking,
-  StyleSheet, View
-} from "react-native";
+import { Image, Linking, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Icon from "../components/Icon";
-import Button from "../components/UI/Button";
-import Heading from "../components/UI/Heading";
-import StyledText from "../components/UI/StyledText";
-import { LENSPLAY_SITE } from "../constants";
-import { primary } from "../constants/Colors";
-import { RootStackScreenProps } from "../types/navigation/types";
+import Icon from "../../components/Icon";
+import Button from "../../components/UI/Button";
+import Heading from "../../components/UI/Heading";
+import StyledText from "../../components/UI/StyledText";
+import { LENSPLAY_SITE } from "../../constants";
+import { primary } from "../../constants/Colors";
+import { RootStackScreenProps } from "../../types/navigation/types";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
-
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -65,13 +60,9 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
             >
               <Image
                 style={{ width: 64, height: 64 }}
-                source={require("../assets/images/lens.png")}
+                source={require("../../assets/images/lens.png")}
               />
-              {/* <Icon name="play" color="white" size={36} /> */}
             </MotiView>
-            {/* <MotiImage
-            source={{ uri: require("../assets/images/lens.png") }}
-          /> */}
           </View>
         </View>
         <View

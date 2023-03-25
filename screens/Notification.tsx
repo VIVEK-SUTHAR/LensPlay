@@ -68,7 +68,6 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   }: {
     notificationType: string;
   }) => {
-    TrackAction(NOTIFICATION.NOTIFICATIONS);
     if (notificationType === "All") {
       return (
         <FlatList
@@ -133,6 +132,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   };
 
   if (data) {
+    TrackAction(NOTIFICATION.NOTIFICATIONS);
     return (
       <SafeAreaView style={styles.container}>
         <Tabs>
@@ -156,6 +156,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
       </SafeAreaView>
     );
   }
+  return <SafeAreaView style={styles.container}></SafeAreaView>;
 };
 
 export default Notifications;
