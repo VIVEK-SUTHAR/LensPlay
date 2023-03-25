@@ -114,6 +114,7 @@ export default function EditDetail() {
     });
     const headersList = {
       "Content-Type": "application/json",
+      Authorization:"Bearer ENGINEERCANTAKEOVERWORLD"
     };
 
     const response = await fetch(
@@ -123,7 +124,8 @@ export default function EditDetail() {
         body: bodyContent,
         headers: headersList,
       }
-    );
+    );    
+    
     const metadata = await response.json();
     updateData(currentProfile?.id, `https://arweave.net/${metadata.id}`);
   };
