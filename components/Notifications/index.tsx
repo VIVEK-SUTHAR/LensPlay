@@ -1,13 +1,19 @@
-import { Pressable, View } from "react-native";
 import React from "react";
-import NotificationCardProps, { NotificationTypes } from "./index.d";
-import CollectNotification from "./CollectNotification";
-import MirrorNotification from "./MirrorNotification";
-import FollowNotification from "./FollowNotification";
-import ReactionNotification from "./ReactionNotification";
-import CommentNotification from "./CommentNotification";
-import MentionNotification from "./MentionNotification";
+import { Pressable } from "react-native";
 import { dark_primary } from "../../constants/Colors";
+import { Notification } from "../../types/generated";
+import CollectNotification from "./CollectNotification";
+import CommentNotification from "./CommentNotification";
+import FollowNotification from "./FollowNotification";
+import { NotificationTypes } from "./index.d";
+import MentionNotification from "./MentionNotification";
+import MirrorNotification from "./MirrorNotification";
+import ReactionNotification from "./ReactionNotification";
+
+export type NotificationCardProps = {
+  navigation: any;
+  notification: Notification;
+};
 
 const NotificationCard = ({
   navigation,

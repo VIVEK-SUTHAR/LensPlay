@@ -1,17 +1,34 @@
-import { Pressable, View } from "react-native";
 import React from "react";
-import NotificationCardProps from "./index.d";
-import getIPFSLink from "../../utils/getIPFSLink";
+import { Pressable, View } from "react-native";
+import { NewCollectNotification } from "../../types/generated";
 import formatAddress from "../../utils/formatAddress";
 import getDifference from "../../utils/getDifference";
+import getIPFSLink from "../../utils/getIPFSLink";
+import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
-import Icon from "../Icon";
 
-const CollectNotification: React.FC<NotificationCardProps> = ({
+type CollectNotificationProps = {
+  navigation: any;
+  notification: NewCollectNotification;
+};
+
+const CollectNotification: React.FC<CollectNotificationProps> = ({
   navigation,
   notification,
 }) => {
+  let PROFILE_PIC_URI = "";
+  if (
+    notification?.wallet?.defaultProfile?.picture?.__typename === "MediaSet"
+  ) {
+    PROFILE_PIC_URI =
+      notification?.wallet?.defaultProfile?.picture?.original?.url;
+  }
+  if (
+    notification?.wallet?.defaultProfile?.picture?.__typename === "NftImage"
+  ) {
+    PROFILE_PIC_URI = notification?.wallet?.defaultProfile?.picture?.uri;
+  }
   return (
     <>
       <View
@@ -36,9 +53,7 @@ const CollectNotification: React.FC<NotificationCardProps> = ({
               }}
             >
               <Avatar
-                src={getIPFSLink(
-                  notification?.wallet?.defaultProfile?.picture?.original?.url
-                )}
+                src={getIPFSLink(PROFILE_PIC_URI)}
                 height={35}
                 width={35}
               />

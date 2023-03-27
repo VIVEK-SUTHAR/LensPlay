@@ -14,19 +14,32 @@ import PleaseLogin from "../components/PleaseLogin";
 import Heading from "../components/UI/Heading";
 import Tabs, { Tab } from "../components/UI/Tabs";
 import { NOTIFICATION } from "../constants/tracking";
-import useNotifications from "../hooks/useFeed";
 import { useGuestStore } from "../store/GuestStore";
-import { useProfile, useThemeStore } from "../store/Store";
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
+import { useNotificationsQuery } from "../types/generated";
 import { RootTabScreenProps } from "../types/navigation/types";
 import TrackAction from "../utils/Track";
 
 const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const theme = useThemeStore();
-  const userStore = useProfile();
+  const { currentProfile } = useProfile();
+  const { accessToken } = useAuthStore();
   const { isGuest } = useGuestStore();
-
-  const { data, error, loading, refetch } = useNotifications();
+  const { data, error, loading, refetch } = useNotificationsQuery({
+    variables: {
+      request: {
+        profileId: currentProfile?.id,
+        sources: ["lensplay"],
+      },
+    },
+    pollInterval: 100,
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+      },
+    },
+  });
 
   if (error) console.log(error);
   if (isGuest) return <PleaseLogin />;
@@ -71,7 +84,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
     if (notificationType === "All") {
       return (
         <FlatList
-          data={data.result.items}
+          data={data.notifications.items}
           keyExtractor={(_, index) => index.toString()}
           ListEmptyComponent={() => {
             return (
@@ -84,7 +97,9 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
               onRefresh={() => {
                 setRefreshing(true);
                 refetch({
-                  pid: userStore.currentProfile?.id,
+                  request: {
+                    profileId: currentProfile?.id,
+                  },
                 }).then(() => setRefreshing(false));
               }}
               colors={[theme.PRIMARY]}
@@ -99,7 +114,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
     } else {
       return (
         <FlatList
-          data={data.result.items}
+          data={data.notifications.items}
           keyExtractor={(_, index) => index.toString()}
           ListEmptyComponent={() => {
             return (
@@ -112,7 +127,9 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
               onRefresh={() => {
                 setRefreshing(true);
                 refetch({
-                  pid: userStore.currentProfile?.id,
+                  request: {
+                    profileId: currentProfile?.id,
+                  },
                 }).then(() => setRefreshing(false));
               }}
               colors={[theme.PRIMARY]}
@@ -125,6 +142,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
                 <NotificationCard navigation={navigation} notification={item} />
               );
             }
+            return <View />;
           }}
         />
       );

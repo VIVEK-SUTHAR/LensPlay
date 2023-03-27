@@ -1,17 +1,23 @@
-import { Pressable, Text, View } from "react-native";
 import React from "react";
-import NotificationCardProps from "./index.d";
-import getDifference from "../../utils/getDifference";
-import formatAddress from "../../utils/formatAddress";
-import Avatar from "../UI/Avatar";
-import Icon from "../Icon";
-import { STATIC_ASSET } from "../../constants";
+import { Pressable, Text, View } from "react-native";
+import { NewMentionNotification } from "../../types/generated";
 import extractURLs from "../../utils/extractURL";
+import formatAddress from "../../utils/formatAddress";
+import getDifference from "../../utils/getDifference";
+import getIPFSLink from "../../utils/getIPFSLink";
+import getRawurl from "../../utils/getRawUrl";
+import Icon from "../Icon";
+import Avatar from "../UI/Avatar";
+
+type MentionNotificationProps = {
+  navigation: any;
+  notification: NewMentionNotification;
+};
 
 const MentionNotification = ({
   navigation,
   notification,
-}: NotificationCardProps) => {
+}: MentionNotificationProps) => {
   return (
     <>
       <View
@@ -32,15 +38,18 @@ const MentionNotification = ({
             <Pressable
               onPress={() => {
                 navigation.navigate("Channel", {
-                  profileId: notification?.profile?.id,
+                  profileId: notification?.mentionPublication?.profile?.id,
+                  isFollowdByMe:
+                    notification?.mentionPublication?.profile?.isFollowedByMe,
+                  ethAddress:
+                    notification?.mentionPublication?.profile?.ownedBy,
                 });
               }}
             >
               <Avatar
-                src={
-                  notification?.mentionPublication?.profile?.picture?.original
-                    ?.url || STATIC_ASSET
-                }
+                src={getIPFSLink(
+                  getRawurl(notification?.mentionPublication?.profile?.picture)
+                )}
                 height={35}
                 width={35}
               />
@@ -49,7 +58,10 @@ const MentionNotification = ({
               <Text style={{ color: "white", fontWeight: "600" }}>
                 {notification?.mentionPublication?.profile?.handle?.split(
                   "."
-                )[0] || formatAddress(notification?.wallet?.address)}{" "}
+                )[0] ||
+                  formatAddress(
+                    notification?.mentionPublication?.profile?.ownedBy
+                  )}{" "}
               </Text>
               mentioned you in a{" "}
               {notification?.mentionPublication?.__typename === "Post"

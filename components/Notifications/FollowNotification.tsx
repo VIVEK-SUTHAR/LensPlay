@@ -1,14 +1,20 @@
 import React from "react";
 import { Pressable, View } from "react-native";
+import { NewFollowerNotification } from "../../types/generated";
 import formatAddress from "../../utils/formatAddress";
 import getDifference from "../../utils/getDifference";
 import getIPFSLink from "../../utils/getIPFSLink";
+import getRawurl from "../../utils/getRawUrl";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
-import NotificationCardProps from "./index.d";
 
-const FollowNotification: React.FC<NotificationCardProps> = ({
+type FollowNotificationProps = {
+  navigation: any;
+  notification: NewFollowerNotification;
+};
+
+const FollowNotification: React.FC<FollowNotificationProps> = ({
   navigation,
   notification,
 }) => {
@@ -33,15 +39,15 @@ const FollowNotification: React.FC<NotificationCardProps> = ({
                 navigation.navigate("Channel", {
                   profileId: notification?.wallet?.defaultProfile?.id,
                   isFollowdByMe: notification?.isFollowedByMe,
-                  name: notification?.profile?.name,
+                  name: notification?.wallet?.defaultProfile?.name,
                   ethAddress: notification?.wallet?.address,
-                  handle: notification?.profile?.handle,
+                  handle: notification?.wallet?.defaultProfile?.handle,
                 });
               }}
             >
               <Avatar
                 src={getIPFSLink(
-                  notification?.wallet?.defaultProfile?.picture?.original?.url
+                  getRawurl(notification?.wallet?.defaultProfile?.picture)
                 )}
                 height={35}
                 width={35}
@@ -68,4 +74,4 @@ const FollowNotification: React.FC<NotificationCardProps> = ({
   );
 };
 
-export default  React.memo(FollowNotification);
+export default React.memo(FollowNotification);

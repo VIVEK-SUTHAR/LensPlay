@@ -1,16 +1,20 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { EvilIcons } from "@expo/vector-icons";
+import { Pressable, View } from "react-native";
+import { NewCommentNotification } from "../../types/generated";
 import formatAddress from "../../utils/formatAddress";
-import NotificationCardProps from "./index.d";
-import Avatar from "../UI/Avatar";
 import getDifference from "../../utils/getDifference";
 import getIPFSLink from "../../utils/getIPFSLink";
-import CommentIcon from "../svg/CommentIcon";
-import StyledText from "../UI/StyledText";
+import getRawurl from "../../utils/getRawUrl";
 import Icon from "../Icon";
+import Avatar from "../UI/Avatar";
+import StyledText from "../UI/StyledText";
 
-const CommentNotification: React.FC<NotificationCardProps> = ({
+type CommentNotificationProps = {
+  navigation: any;
+  notification: NewCommentNotification;
+};
+
+const CommentNotification: React.FC<CommentNotificationProps> = ({
   navigation,
   notification,
 }) => {
@@ -38,7 +42,7 @@ const CommentNotification: React.FC<NotificationCardProps> = ({
               }}
             >
               <Avatar
-                src={getIPFSLink(notification?.profile?.picture?.original?.url)}
+                src={getIPFSLink(getRawurl(notification?.profile?.picture))}
                 height={35}
                 width={35}
               />
@@ -47,7 +51,7 @@ const CommentNotification: React.FC<NotificationCardProps> = ({
               <StyledText
                 title={
                   notification?.profile?.handle?.split(".")[0] ||
-                  formatAddress(notification?.wallet?.address)
+                  formatAddress(notification?.profile?.ownedBy)
                 }
                 style={{ color: "white", fontWeight: "500" }}
               />

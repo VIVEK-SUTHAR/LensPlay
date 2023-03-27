@@ -1,17 +1,22 @@
-import { Pressable, Text, View } from "react-native";
 import React from "react";
-import NotificationCardProps from "./index.d";
-import Avatar from "../UI/Avatar";
-import getIPFSLink from "../../utils/getIPFSLink";
+import { Pressable, View } from "react-native";
+import { useThemeStore } from "../../store/Store";
+import { NewReactionNotification } from "../../types/generated";
+import extractURLs from "../../utils/extractURL";
 import formatAddress from "../../utils/formatAddress";
 import getDifference from "../../utils/getDifference";
-import extractURLs from "../../utils/extractURL";
-import LikeIcon from "../svg/LikeIcon";
-import StyledText from "../UI/StyledText";
+import getIPFSLink from "../../utils/getIPFSLink";
+import getRawurl from "../../utils/getRawUrl";
 import Icon from "../Icon";
-import { useThemeStore } from "../../store/Store";
+import Avatar from "../UI/Avatar";
+import StyledText from "../UI/StyledText";
 
-const ReactionNotification: React.FC<NotificationCardProps> = ({
+type ReactionNotificationProps = {
+  navigation: any;
+  notification: NewReactionNotification;
+};
+
+const ReactionNotification: React.FC<ReactionNotificationProps> = ({
   navigation,
   notification,
 }) => {
@@ -40,7 +45,7 @@ const ReactionNotification: React.FC<NotificationCardProps> = ({
               }}
             >
               <Avatar
-                src={getIPFSLink(notification?.profile?.picture?.original?.url)}
+                src={getIPFSLink(getRawurl(notification?.profile?.picture))}
                 height={35}
                 width={35}
               />
@@ -49,7 +54,7 @@ const ReactionNotification: React.FC<NotificationCardProps> = ({
               <StyledText
                 title={
                   notification?.profile?.handle?.split(".")[0] ||
-                  formatAddress(notification?.wallet?.address)
+                  formatAddress(notification?.profile?.ownedBy)
                 }
                 style={{ color: "white", fontWeight: "500" }}
               />

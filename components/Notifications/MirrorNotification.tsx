@@ -1,18 +1,23 @@
 import React from "react";
 import { Pressable, View } from "react-native";
-import { STATIC_ASSET } from "../../constants";
+import { NewMirrorNotification } from "../../types/generated";
 import extractURLs from "../../utils/extractURL";
 import formatAddress from "../../utils/formatAddress";
 import getDifference from "../../utils/getDifference";
+import getRawurl from "../../utils/getRawUrl";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
-import NotificationCardProps from "./index.d";
+
+type MirrorNotificationProps = {
+  navigation: any;
+  notification: NewMirrorNotification;
+};
 
 const MirrorNotification = ({
   navigation,
   notification,
-}: NotificationCardProps) => {
+}: MirrorNotificationProps) => {
   return (
     <>
       <View
@@ -37,9 +42,7 @@ const MirrorNotification = ({
               }}
             >
               <Avatar
-                src={
-                  notification?.profile?.picture?.original?.url || STATIC_ASSET
-                }
+                src={getRawurl(notification?.profile?.picture)}
                 height={35}
                 width={35}
               />
@@ -48,7 +51,7 @@ const MirrorNotification = ({
               <StyledText
                 title={
                   notification?.profile?.handle?.split(".")[0] ||
-                  formatAddress(notification?.wallet?.address)
+                  formatAddress(notification?.profile?.ownedBy)
                 }
                 style={{ color: "white", fontWeight: "500" }}
               />
