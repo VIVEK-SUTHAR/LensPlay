@@ -16,7 +16,7 @@ import Tabs, { Tab } from "../components/UI/Tabs";
 import { NOTIFICATION } from "../constants/tracking";
 import { useGuestStore } from "../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
-import { useNotificationsQuery } from "../types/generated";
+import { Notification, useNotificationsQuery } from "../types/generated";
 import { RootTabScreenProps } from "../types/navigation/types";
 import TrackAction from "../utils/Track";
 
@@ -30,7 +30,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
     variables: {
       request: {
         profileId: currentProfile?.id,
-        sources: ["lensplay"],
+        sources: ["LensPlay"],
       },
     },
     pollInterval: 100,
@@ -41,7 +41,16 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
     },
   });
 
-  if (error) console.log(error);
+  const notifications = data?.notifications?.items as Notification[];
+
+  if (error)
+    return (
+      <NotFound
+        message={
+          "Oh no,LensPlay encounterd some error while loading your notifications,😞😞"
+        }
+      />
+    );
   if (isGuest) return <PleaseLogin />;
   if (loading) return <Loader />;
   if (!data)
@@ -84,8 +93,8 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
     if (notificationType === "All") {
       return (
         <FlatList
-          data={data.notifications.items}
-          keyExtractor={(_, index) => index.toString()}
+          data={notifications}
+          keyExtractor={(item, index) => `${item?.notificationId}-${index}`}
           ListEmptyComponent={() => {
             return (
               <NotFound message="Looks like you don't have any notifications,interact with profiles to get notifications" />
@@ -114,8 +123,8 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
     } else {
       return (
         <FlatList
-          data={data.notifications.items}
-          keyExtractor={(_, index) => index.toString()}
+          data={notifications}
+          keyExtractor={(item, index) => `${item?.notificationId}-${index}`}
           ListEmptyComponent={() => {
             return (
               <NotFound message="Looks like you don't have any notifications,interact with profiles to get notifications" />
@@ -195,7 +204,13 @@ const Loader = () => {
   );
 };
 
-const NotFound = ({ message }: { message: string }) => {
+const NotFound = ({
+  message,
+}: {
+  message: string;
+  showRefreshButton?: boolean;
+  onRefresh?: () => void;
+}) => {
   return (
     <View
       style={{

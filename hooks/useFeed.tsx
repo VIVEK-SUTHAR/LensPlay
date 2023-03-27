@@ -146,34 +146,6 @@ const useSearchProfile = (profile: string) => {
   });
   return { data, error, loading };
 };
-const useNotifications = () => {
-  const { currentProfile } = useProfile();
-  const { accessToken } = useAuthStore();
-
-  const {
-    data,
-    error,
-    loading,
-    refetch,
-    startPolling,
-    previousData,
-    fetchMore,
-  } = useQuery(notificationsQuery, {
-    variables: {
-      pid: currentProfile?.id,
-    },
-    fetchPolicy: "cache-and-network",
-    initialFetchPolicy: "network-only",
-    refetchWritePolicy: "merge",
-    pollInterval: 100,
-    context: {
-      headers: {
-        "x-access-token": `Bearer ${accessToken}`,
-      },
-    },
-  });
-  return { data, error, loading, refetch, startPolling, previousData };
-};
 
 const useReaction = (pubId: string) => {
   const { currentProfile } = useProfile();
@@ -239,8 +211,6 @@ export const useUserMirrors = (profileId: string) => {
   return { data, error, loading };
 };
 
-export default useNotifications;
-
 export {
   useFeed,
   useExplorePublication,
@@ -250,6 +220,5 @@ export {
   useFollowers,
   useFollowing,
   useSearchProfile,
-  useNotifications,
   useReaction,
 };
