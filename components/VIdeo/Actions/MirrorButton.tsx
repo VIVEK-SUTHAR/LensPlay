@@ -16,12 +16,14 @@ import RBSheet from "../../UI/BottomSheet";
 import Icon from "../../Icon";
 import { useIsMirrored } from "../../../hooks/useFeed";
 import { useGuestStore } from "../../../store/GuestStore";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 
 type MirrorButtonProps = {
   id: string;
   totalMirrors: number;
   bannerUrl: string;
   isAlreadyMirrored: boolean;
+  mirrorRef:React.RefObject<BottomSheetMethods>
 };
 
 const MirrorButton = ({

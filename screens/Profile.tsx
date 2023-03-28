@@ -22,15 +22,17 @@ import ProfileSkeleton from "../components/UI/ProfileSkeleton";
 import StyledText from "../components/UI/StyledText";
 import { STATIC_ASSET } from "../constants";
 import { primary } from "../constants/Colors";
-import { PROFILE, PUBLICATION } from "../constants/tracking";
+import { PROFILE } from "../constants/tracking";
 import VERIFIED_CHANNELS from "../constants/Varified";
 import { useUserProfile, useUserPublication } from "../hooks/useFeed";
 import { useGuestStore } from "../store/GuestStore";
 import { useProfile, useThemeStore } from "../store/Store";
+import { MediaSet, useProfileQuery } from "../types/generated";
 import { RootTabScreenProps } from "../types/navigation/types";
 import extractURLs from "../utils/extractURL";
 import formatHandle from "../utils/formatHandle";
 import getIPFSLink from "../utils/getIPFSLink";
+import getRawurl from "../utils/getRawUrl";
 import TrackAction from "../utils/Track";
 
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
@@ -40,9 +42,13 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const userStore = useProfile();
   const { isGuest } = useGuestStore();
 
-  const { loading, data: Profile, error, refetch } = useUserProfile(
-    userStore?.currentProfile?.id
-  );
+  const { loading, data: Profile, error, refetch } = useProfileQuery({
+    variables: {
+      request: {
+        profileId: userStore?.currentProfile?.id,
+      },
+    },
+  });
 
   const {
     data: AllVideosData,
@@ -61,7 +67,9 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
     await refetch({
-      id: userStore?.currentProfile?.id,
+      request: {
+        profileId: userStore?.currentProfile?.id,
+      },
     });
     setRefreshing(false);
   }, []);
@@ -114,7 +122,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
               onPress={(e) => {
                 navigation.navigate("FullImage", {
                   url:
-                    userStore.currentProfile?.coverPicture?.original?.url ||
+                    getRawurl(userStore?.currentProfile?.coverPicture) ||
                     STATIC_ASSET,
                   source: "cover",
                 });
@@ -123,11 +131,9 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
             >
               <Cover
                 navigation={navigation}
-                url={
-                  getIPFSLink(
-                    userStore.currentProfile?.coverPicture?.original?.url
-                  ) || STATIC_ASSET
-                }
+                url={getIPFSLink(
+                  getRawurl(userStore.currentProfile?.coverPicture)
+                )}
               />
             </Pressable>
             <View
@@ -143,14 +149,14 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
               <Pressable
                 onPress={(e) => {
                   navigation.navigate("FullImage", {
-                    url: getIPFSLink(profile?.picture?.original?.url),
+                    url: getIPFSLink(getRawurl(profile?.picture as MediaSet)),
                     source: "avatar",
                   });
                   TrackAction(PROFILE.FULL_IMAGE);
                 }}
               >
                 <Avatar
-                  src={getIPFSLink(profile?.picture?.original?.url)}
+                  src={getIPFSLink(getRawurl(profile?.picture as MediaSet))}
                   height={90}
                   width={90}
                   borderRadius={100}

@@ -21,6 +21,8 @@ const ReactionNotification: React.FC<ReactionNotificationProps> = ({
   notification,
 }) => {
   const { PRIMARY } = useThemeStore();
+  console.log(notification?.publication);
+  
   return (
     <>
       <View
@@ -76,8 +78,8 @@ const ReactionNotification: React.FC<ReactionNotificationProps> = ({
             <View>
               <StyledText
                 title={extractURLs(
-                  notification?.publication?.metadata?.description ||
-                    notification?.publication?.metadata?.content
+                  notification?.publication?.metadata?.content ||
+                    notification?.publication?.metadata?.description
                 )}
                 numberOfLines={2}
                 style={{ fontSize: 12, color: "gray" }}

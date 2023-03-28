@@ -1,24 +1,15 @@
-import {
-  Dimensions,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import React, { useCallback, useRef, useState } from "react";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import React, { useCallback, useState } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
+import { Maybe } from "../../types/generated";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
-import { Feather } from "@expo/vector-icons";
-import RBSheet from "../UI/BottomSheet";
-import extractURLs from "../../utils/extractURL";
 
 type VideoMetaProps = {
-  title: string;
+  title: Maybe<string> | undefined;
   description: string;
+  descRef: React.RefObject<BottomSheetMethods>;
 };
-
-
 
 const VideoMeta = (props: VideoMetaProps) => {
   const [descOpen, setDescOpen] = useState<boolean>(false);
@@ -28,7 +19,6 @@ const VideoMeta = (props: VideoMetaProps) => {
   const onPress = useCallback(() => {
     descRef?.current?.snapToIndex(0);
   }, []);
-
 
   return (
     <>
@@ -75,7 +65,7 @@ const VideoMeta = (props: VideoMetaProps) => {
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <Heading
@@ -93,7 +83,7 @@ const VideoMeta = (props: VideoMetaProps) => {
         <View style={{ marginTop: 8, flexDirection: "row" }}>
           <StyledText
             title={description}
-            style={{ color: "white", fontSize: 14,maxWidth:"92%" }}
+            style={{ color: "white", fontSize: 14, maxWidth: "92%" }}
             numberOfLines={1}
           />
           {description?.length > 0 && (

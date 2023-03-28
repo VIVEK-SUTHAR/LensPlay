@@ -1,4 +1,3 @@
-import AnimatedLottieView from "lottie-react-native";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import {
@@ -7,10 +6,7 @@ import {
   RefreshControl,
   SafeAreaView,
   ScrollView,
-  View,
 } from "react-native";
-import { client } from "../apollo/client";
-import getTrendingPublication from "../apollo/Queries/getTrendingPublication";
 import Skeleton from "../components/common/Skeleton";
 import NotFound from "../components/Profile/NotFound";
 import StyledText from "../components/UI/StyledText";
@@ -22,7 +18,6 @@ import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import {
   Mirror,
   Post,
-  Publication,
   PublicationMainFocus,
   PublicationSortCriteria,
   PublicationTypes,
@@ -171,7 +166,10 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
             />
           }
           renderItem={({ item }: { item: Explore }) => {
-            return <VideoCard publication={item as Explore} id={item.id} />;
+            if (item?.appId === "lenstube") {
+              return <VideoCard publication={item as Explore} id={item.id} />;
+            }
+            return <></>;
           }}
         />
       </SafeAreaView>

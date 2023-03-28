@@ -15,7 +15,6 @@ import { freeCollectPublication, freeMirror } from "../api";
 import Sheet from "../components/Bottom";
 import Comment from "../components/Comments/";
 import CommentInput from "../components/Comments/CommentInput";
-import ProfileCard from "../components/ProfileCard";
 import Button from "../components/UI/Button";
 import StyledText from "../components/UI/StyledText";
 import {
@@ -44,17 +43,13 @@ import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
 import extractURLs from "../utils/extractURL";
 import getIPFSLink from "../utils/getIPFSLink";
+import getRawurl from "../utils/getRawUrl";
 import TrackAction from "../utils/Track";
-
-const VideoPage = ({
-  navigation,
-  route,
-}: RootStackScreenProps<"VideoPage">) => {
+const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
   const { activePublication } = useActivePublication();
   const toast = useToast();
   const { accessToken } = useAuthStore();
   const userStore = useProfile();
-  const PublicationStats = activePublication?.stats;
 
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(false);
@@ -178,8 +173,8 @@ const VideoPage = ({
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
         <Player
-          poster={activePublication?.metadata?.cover}
-          title={activePublication?.metadata?.name}
+          poster={getRawurl(activePublication?.metadata?.cover)}
+          title={activePublication?.metadata?.name || ""}
           url={activePublication?.metadata?.media[0]?.original?.url}
           inFullscreen={inFullscreen}
           isMute={isMute}
@@ -195,7 +190,7 @@ const VideoPage = ({
             />
             <VideoCreator
               profileId={activePublication?.profile?.id}
-              avatarLink={activePublication?.profile?.picture?.original?.url}
+              avatarLink={getRawurl(activePublication?.profile?.picture)}
               uploadedBy={
                 activePublication?.profile?.name ||
                 activePublication?.profile?.handle
@@ -274,7 +269,7 @@ const VideoPage = ({
                     id={activePublication?.id}
                     totalMirrors={mirrorStats?.mirrorCount}
                     isAlreadyMirrored={mirrorStats?.isMirrored}
-                    bannerUrl={activePublication?.metadata?.cover}
+                    bannerUrl={getRawurl(activePublication?.metadata?.cover)}
                     mirrorRef={mirrorRef}
                   />
                   <CollectButton
@@ -302,7 +297,7 @@ const VideoPage = ({
                 marginBottom: 8,
               }}
             />
-            <Comment publicationId={activePublication?.id} />
+            <Comment publicationId={activePublication?.id} shots={false} />
           </View>
         </ScrollView>
         <CommentInput publicationId={activePublication?.id} />
@@ -326,7 +321,7 @@ const VideoPage = ({
           >
             <Image
               source={{
-                uri: getIPFSLink(activePublication?.metadata?.cover),
+                uri: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
               }}
               style={{
                 height: Dimensions.get("screen").height / 4,
@@ -377,7 +372,7 @@ const VideoPage = ({
           >
             <Image
               source={{
-                uri: getIPFSLink(activePublication?.metadata?.cover),
+                uri: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
               }}
               style={{
                 height: Dimensions.get("screen").height / 4,
@@ -525,8 +520,7 @@ const VideoPage = ({
                   activePublication?.profile?.isFollowedByMe || false
                 }
                 avatarLink={
-                  activePublication?.profile?.picture?.original?.url ||
-                  STATIC_ASSET
+                  getRawurl(activePublication?.profile?.picture) || STATIC_ASSET
                 }
                 profileId={activePublication?.profile?.id}
                 uploadedBy={
