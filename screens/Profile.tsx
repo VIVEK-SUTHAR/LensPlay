@@ -24,10 +24,17 @@ import { STATIC_ASSET } from "../constants";
 import { primary } from "../constants/Colors";
 import { PROFILE } from "../constants/tracking";
 import VERIFIED_CHANNELS from "../constants/Varified";
-import { useUserProfile, useUserPublication } from "../hooks/useFeed";
+import { useUserPublication } from "../hooks/useFeed";
 import { useGuestStore } from "../store/GuestStore";
-import { useProfile, useThemeStore } from "../store/Store";
-import { MediaSet, useProfileQuery } from "../types/generated";
+import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
+import {
+  MediaSet,
+  Post,
+  PublicationMainFocus,
+  PublicationTypes,
+  useProfilePostsQuery,
+  useProfileQuery,
+} from "../types/generated";
 import { RootTabScreenProps } from "../types/navigation/types";
 import extractURLs from "../utils/extractURL";
 import formatHandle from "../utils/formatHandle";
@@ -41,8 +48,9 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const theme = useThemeStore();
   const userStore = useProfile();
   const { isGuest } = useGuestStore();
+  const { accessToken } = useAuthStore();
 
-  const { loading, data: Profile, error, refetch } = useProfileQuery({
+  const { data: Profile, loading, error, refetch } = useProfileQuery({
     variables: {
       request: {
         profileId: userStore?.currentProfile?.id,
@@ -50,20 +58,45 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
     },
   });
 
+  const QueryRequest = {
+    profileId: userStore?.currentProfile?.id,
+    publicationTypes: [PublicationTypes.Post],
+    metadata: {
+      mainContentFocus: [PublicationMainFocus.Video],
+    },
+    sources: ["lenstube"],
+    limit: 50,
+  };
+
   const {
     data: AllVideosData,
     error: AllVideoError,
     loading: AllVideosLoading,
-  } = useUserPublication(userStore?.currentProfile?.id);
+  } = useProfilePostsQuery({
+    variables: {
+      request: QueryRequest,
+      reactionRequest: {
+        profileId: userStore?.currentProfile?.id,
+      },
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+      },
+    },
+  });
+
   const [links, setLinks] = useState({
     twitter: "",
     insta: "",
     yt: "",
     site: "",
   });
+
   useEffect(() => {
     getLinks();
   }, []);
+
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
     await refetch({
@@ -73,6 +106,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
     });
     setRefreshing(false);
   }, []);
+
   function getLinks() {
     const twitter = userStore.currentProfile?.attributes?.find(
       (item) => item.key === "twitter"

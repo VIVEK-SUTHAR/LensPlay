@@ -35,6 +35,7 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
       setIsLoading(false);
     }
   }
+
   useEffect(() => {
     getBytesData();
   }, []);

@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Pressable, ScrollView, View } from "react-native";
-import { client } from "../../apollo/client";
-import getMirrorVideos from "../../apollo/Queries/getMirrorVideos";
 import { useAuthStore } from "../../store/Store";
-import { LensPublication } from "../../types/Lens/Feed";
+import {
+  PublicationMainFocus,
+  PublicationTypes,
+  useProfilePostsQuery,
+} from "../../types/generated";
 import formatHandle from "../../utils/formatHandle";
 import Icon from "../Icon";
 import Heading from "../UI/Heading";
@@ -21,32 +23,35 @@ const MirroredVideos = ({
   profileId,
   handle,
 }: MirroredVideosProps) => {
-  const [mirrorVideos, setmirrorVideos] = useState<LensPublication[]>([]);
-
   const { accessToken } = useAuthStore();
 
-  useEffect(() => {
-    getAllMirroredVideos();
-  }, []);
-
-  const getAllMirroredVideos = async () => {
-    try {
-      const data = await client.query({
-        query: getMirrorVideos,
-        variables: {
-          id: profileId,
-        },
-        context: {
-          headers: {
-            "x-access-token": `Bearer ${accessToken}`,
-          },
-        },
-      });
-      setmirrorVideos(data.data.publications.items);
-    } catch (err) {
-      setmirrorVideos([]);
-    }
+  const QueryRequest = {
+    profileId: profileId,
+    publicationTypes: [PublicationTypes.Mirror],
+    metadata: {
+      mainContentFocus: [PublicationMainFocus.Video],
+    },
+    sources: ["lenstube"],
+    limit: 50,
   };
+
+  const {
+    data: AllMirrorVideosData,
+    error: AllMirrorVideoError,
+    loading: AllMirrorVideosLoading,
+  } = useProfilePostsQuery({
+    variables: {
+      request: QueryRequest,
+      reactionRequest: {
+        profileId: profileId,
+      },
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+      },
+    },
+  });
 
   return (
     <View style={{ marginTop: 16 }}>
@@ -71,9 +76,9 @@ const MirroredVideos = ({
               fontWeight: "600",
             }}
           />
-          {mirrorVideos.length > 0 ? (
+          {AllMirrorVideosData?.publications.items ? (
             <StyledText
-              title={`(${mirrorVideos?.length})`}
+              title={`(${AllMirrorVideosData?.publications.items?.length})`}
               style={{
                 fontSize: 16,
                 color: "white",
@@ -88,7 +93,7 @@ const MirroredVideos = ({
         <Pressable
           onPress={() => {
             navigation.navigate("YourVideos", {
-              videos: mirrorVideos,
+              videos: AllMirrorVideosData?.publications.items,
               title: "Your mirrors",
             });
           }}
@@ -98,7 +103,9 @@ const MirroredVideos = ({
             size={24}
             color="white"
             style={{
-              display: mirrorVideos?.length > 0 ? "flex" : "none",
+              display: AllMirrorVideosData?.publications.items
+                ? "flex"
+                : "none",
             }}
           />
         </Pressable>
@@ -108,8 +115,8 @@ const MirroredVideos = ({
         style={{ marginLeft: -12, marginTop: 8 }}
         showsHorizontalScrollIndicator={false}
       >
-        {Boolean(mirrorVideos) &&
-          mirrorVideos.map((item: any) => {
+        {Boolean(AllMirrorVideosData?.publications.items) &&
+          AllMirrorVideosData?.publications.items.map((item: any) => {
             if (item?.appId?.includes("lenstube")) {
               return (
                 <VideoCard
@@ -122,7 +129,7 @@ const MirroredVideos = ({
             }
           })}
       </ScrollView>
-      {mirrorVideos?.length === 0 && (
+      {AllMirrorVideosData?.publications.items?.length === 0 && (
         <View style={{ height: 50, justifyContent: "center" }}>
           <Heading
             title={`Seems like ${formatHandle(

@@ -11,7 +11,7 @@ type AllVideosProps = {
   profileId: Scalars["ProfileId"];
   navigation: any;
   handle?: string;
-  Videos: Post[];
+  Videos: Post[] | undefined;
 };
 
 const AllVideos = ({ Videos, navigation }: AllVideosProps) => {

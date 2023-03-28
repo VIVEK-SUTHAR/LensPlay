@@ -28,7 +28,9 @@ import { RootTabScreenProps } from "../types/navigation/types";
 
 type Explore = Post | Mirror;
 
-const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
+export default function Trending({
+  navigation,
+}: RootTabScreenProps<"Trending">) {
   const tags = [
     {
       name: PublicationSortCriteria.Latest,
@@ -175,6 +177,4 @@ const Trending: React.FC<RootTabScreenProps<"Trending">> = () => {
       </SafeAreaView>
     );
   }
-};
-
-export default Trending;
+}
