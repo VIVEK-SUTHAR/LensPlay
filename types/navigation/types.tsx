@@ -82,12 +82,7 @@ export type RootStackParamList = {
     profileId?: string;
     activeTab: string;
   };
-  VideoPage: {
-    publication: Pick<FeedItem, "root">;
-    id: string;
-    height: number | string;
-    width: number | string;
-  };
+  VideoPage: undefined;
   Channel: {
     profileId: string;
     isFollowdByMe?: boolean;

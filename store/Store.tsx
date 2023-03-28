@@ -1,5 +1,5 @@
 import create from "zustand";
-import { Mirror, Post } from "../types/generated";
+import { FeedItemRoot, Mirror, Post } from "../types/generated";
 import {
   DisLikeObject,
   IActivePublication,
@@ -59,11 +59,11 @@ export const useReactionStore = create<IReactionStore>((set) => ({
   },
   collectStats: {
     isCollected: false,
-    collectCount: 0
+    collectCount: 0,
   },
   mirrorStats: {
     isMirrored: false,
-    mirrorCount: 0
+    mirrorCount: 0,
   },
   likedComments: [{ id: 0 }],
   setReaction: (reaction) => {
@@ -87,19 +87,19 @@ export const useReactionStore = create<IReactionStore>((set) => ({
   },
   setCollectStats: (isCollected, collectCount) => {
     set({
-      collectStats:{
+      collectStats: {
         isCollected: isCollected,
-        collectCount: collectCount
-      }
-    })
+        collectCount: collectCount,
+      },
+    });
   },
   setMirrorStats: (isMirrored, mirrorCount) => {
     set({
       mirrorStats: {
         isMirrored: isMirrored,
-        mirrorCount: mirrorCount
-      }
-    })
+        mirrorCount: mirrorCount,
+      },
+    });
   },
   clearStats: () => {
     set({
@@ -141,7 +141,7 @@ export const useOptimisticStore = create<OptimisticStore>((set) => ({
 
 export const useActivePublication = create<IActivePublication>((set) => ({
   activePublication: null,
-  setActivePublication: (newPublication: Post | Mirror) => {
+  setActivePublication: (newPublication: Post | Mirror | FeedItemRoot) => {
     set({
       activePublication: newPublication,
     });

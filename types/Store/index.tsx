@@ -1,4 +1,4 @@
-import { Mirror, Post, Profile } from "../generated";
+import { FeedItemRoot, Mirror, Post, Profile } from "../generated";
 
 export interface IAuthStore {
   accessToken: string;
@@ -17,8 +17,8 @@ export interface IThemeStore {
 }
 
 export interface IActivePublication {
-  activePublication: Post | Mirror | null;
-  setActivePublication: (newPublication: Post | Mirror) => void;
+  activePublication: Post | Mirror | FeedItemRoot | null;
+  setActivePublication: (newPublication: Post | Mirror | FeedItemRoot) => void;
 }
 
 export interface UserStore {

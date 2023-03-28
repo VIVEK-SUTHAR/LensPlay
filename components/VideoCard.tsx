@@ -2,41 +2,47 @@ import { useNavigation } from "@react-navigation/native";
 import * as React from "react";
 import { Image, TouchableWithoutFeedback, View } from "react-native";
 import { useActivePublication } from "../store/Store";
-import { Mirror, Post } from "../types/generated";
-import { Attribute, Root } from "../types/Lens/Feed";
+import {
+  FeedItemRoot,
+  Maybe,
+  MetadataAttributeOutput,
+  Mirror,
+  Post,
+} from "../types/generated";
 import formatTime from "../utils/formatTime";
 import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
+import getRawurl from "../utils/getRawUrl";
 import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
 import StyledText from "./UI/StyledText";
 
 type videoPageProp = {
-  publication: Root | Post | Mirror;
+  publication: FeedItemRoot | Mirror | Post;
   id: string;
   height?: number | string;
   width?: number | string;
 };
 
 const VideoCard = ({
-  id,
   width = "auto",
   height = 200,
   publication,
 }: videoPageProp) => {
-  const [videoTime, setVideoTime] = React.useState<string>();
+  const [videoTime, setVideoTime] = React.useState<Maybe<string> | undefined>();
   const { setActivePublication } = useActivePublication();
+  const navigation = useNavigation();
 
   React.useEffect(() => {
-    const time = publication?.metadata?.attributes?.filter(
-      (item: Attribute) => {
+    publication?.metadata?.attributes?.filter(
+      (item: MetadataAttributeOutput) => {
         if (item?.traitType === "durationInSeconds") {
           setVideoTime(item?.value);
         }
       }
     );
   }, []);
-  const navigation = useNavigation();
+
   return (
     <View
       style={{
@@ -55,9 +61,7 @@ const VideoCard = ({
           <Image
             progressiveRenderingEnabled={true}
             source={{
-              uri:
-                getIPFSLink(publication?.metadata?.cover) ||
-                "https://assets.lenstube.xyz/images/coverGradient.jpeg",
+              uri: getIPFSLink(getRawurl(publication?.metadata?.cover)),
             }}
             style={{
               height: "100%",
@@ -110,7 +114,7 @@ const VideoCard = ({
           }}
         >
           <Avatar
-            src={getIPFSLink(publication?.profile?.picture?.original?.url)}
+            src={getRawurl(publication?.profile?.picture)}
             height={40}
             width={40}
           />

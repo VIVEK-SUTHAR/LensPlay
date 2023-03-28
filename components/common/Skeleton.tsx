@@ -1,4 +1,5 @@
 import React from "react";
+import { ScrollView } from "react-native";
 
 export default function Skeleton({
   children,
@@ -7,5 +8,13 @@ export default function Skeleton({
   children: React.ReactNode;
   number: number;
 }) {
-  return <>{[...Array(number)].map(() => children)}</>;
+  return (
+    <ScrollView
+      style={{
+        backgroundColor: "black",
+      }}
+    >
+      {[...Array(number)].map(() => children)}
+    </ScrollView>
+  );
 }

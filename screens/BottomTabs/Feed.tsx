@@ -14,28 +14,58 @@ import Button from "../../components/UI/Button";
 import Heading from "../../components/UI/Heading";
 import VideoCardSkeleton from "../../components/UI/VideoCardSkeleton";
 import VideoCard from "../../components/VideoCard";
-import { useFeed } from "../../hooks/useFeed";
 import { useGuestStore } from "../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../store/Store";
+import {
+  FeedItemRoot,
+  PublicationMainFocus,
+  useFeedQuery,
+} from "../../types/generated";
 import { RootTabScreenProps } from "../../types/navigation/types";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const theme = useThemeStore();
-  const { accessToken, refreshToken } = useAuthStore();
+  const { accessToken } = useAuthStore();
   const { isGuest } = useGuestStore();
   const { currentProfile } = useProfile();
-  const { data: Feeddata, error, loading, refetch } = useFeed();
+
+  const QueryRequest = {
+    profileId: currentProfile?.id,
+    metadata: {
+      mainContentFocus: [PublicationMainFocus.Video],
+    },
+    sources: ["lenstube"],
+    limit: 50,
+  };
+
+  const { data: Feeddata, error, loading, refetch } = useFeedQuery({
+    variables: {
+      request: QueryRequest,
+      reactionRequest: {
+        profileId: currentProfile?.id,
+      },
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+      },
+    },
+  });
 
   if (error) {
     console.log(error);
-    refetch({ id: currentProfile?.id });
+    refetch({
+      request: QueryRequest,
+    });
   }
 
   const onRefresh = () => {
     setRefreshing(true);
     try {
-      refetch({ id: currentProfile?.id }).then((res) => {
+      refetch({
+        request: QueryRequest,
+      }).then((res) => {
         setRefreshing(false);
       });
     } catch (error) {
@@ -67,7 +97,12 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
             />
           }
           renderItem={({ item }) => {
-            return <VideoCard publication={item?.root} id={item?.root?.id} />;
+            return (
+              <VideoCard
+                publication={item?.root as FeedItemRoot}
+                id={item?.root?.id}
+              />
+            );
           }}
         />
       </SafeAreaView>
