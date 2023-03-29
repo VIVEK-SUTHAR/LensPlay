@@ -7,8 +7,6 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { client } from "../apollo/client";
-import reportPublication from "../apollo/mutations/reportPublication";
 import Button from "../components/UI/Button";
 import Dropdown from "../components/UI/Dropdown";
 import Heading from "../components/UI/Heading";
@@ -17,6 +15,10 @@ import { dark_primary } from "../constants/Colors";
 import { PUBLICATION } from "../constants/tracking";
 import { useGuestStore } from "../store/GuestStore";
 import { useAuthStore, useThemeStore, useToast } from "../store/Store";
+import {
+  PublicationReportingReason,
+  useReportPublicationMutation,
+} from "../types/generated";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
 import TrackAction from "../utils/Track";
@@ -24,8 +26,9 @@ import TrackAction from "../utils/Track";
 type subreason = {
   reason: string;
 };
+
 export type RESONTYPEDATA = {
-  reason: string;
+  reason: PublicationReportingReason;
   subReason: subreason[];
 };
 
@@ -52,18 +55,40 @@ const ReportPublication = ({
 
   const reportData: RESONTYPEDATA[] = [
     {
-      reason: "SENSITIVE",
+      reason: PublicationReportingReason.Sensitive,
       subReason: [{ reason: "NSFW" }, { reason: "OFFENSIVE" }],
     },
     {
-      reason: "ILLEGAL",
+      reason: PublicationReportingReason.Illegal,
       subReason: [{ reason: "ANIMAL_ABUSE" }, { reason: "HUMAN_ABUSE" }],
     },
     {
-      reason: "FRAUD",
+      reason: PublicationReportingReason.Fraud,
       subReason: [{ reason: "SCAM" }, { reason: "IMPERSONATION" }],
     },
   ];
+
+  const getReasonType = (type: string) => {
+    if (type === "ILLEGAL") {
+      return "illegalReason";
+    }
+    if (type === "FRAUD") {
+      return "fraudReason";
+    }
+    if (type === "SENSITIVE") {
+      return "sensitiveReason";
+    }
+    return "illegalReason";
+  };
+
+  const [createReport] = useReportPublicationMutation({
+    onError: () => {
+      toast.show("Something went wrong!", ToastType.ERROR, true);
+    },
+    onCompleted: () => {
+      toast.show("Thanks for reporting", ToastType.SUCCESS, true);
+    },
+  });
 
   const handleReport = async () => {
     if (!selectedData?.reason || !selectedSubReason?.reason) {
@@ -75,18 +100,17 @@ const ReportPublication = ({
       return;
     }
     try {
-      const reportQuery = await client.mutate({
-        mutation: reportPublication,
+      createReport({
         variables: {
           request: {
             publicationId: route.params.publicationId,
             reason: {
-              sensitiveReason: {
+              [getReasonType(selectedData.reason)]: {
                 reason: selectedData.reason,
-                subreason: selectedSubReason.reason,
+                subreason: selectedData.subReason,
               },
             },
-            additionalComments: addiText ? addiText : "",
+            additionalComments: addiText ? addiText : null,
           },
         },
         context: {
@@ -95,9 +119,6 @@ const ReportPublication = ({
           },
         },
       });
-      if (!reportQuery?.data?.reportPublication) {
-        toast.show("Thanks for reporting", ToastType.SUCCESS, true);
-      }
       TrackAction(PUBLICATION.REPORT);
     } catch (error) {
       if (error instanceof Error) {

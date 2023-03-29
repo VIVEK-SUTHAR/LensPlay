@@ -38,7 +38,7 @@ export default function EditAvatar() {
             },
           },
         });
-        TrackAction(SETTINGS.PROFILE.UPDATE_AVATAR)
+        TrackAction(SETTINGS.PROFILE.UPDATE_AVATAR);
         if (updateOnLens.data) {
           toast.show("Channel image updated", ToastType.SUCCESS, true);
         } else {
@@ -79,10 +79,11 @@ export default function EditAvatar() {
       }}
     >
       <Avatar
-        src={image || 
-          currentProfile?.picture?.__typename === "MediaSet" ? currentProfile?.picture?.original?.url :
-          currentProfile?.picture?.uri
-         || STATIC_ASSET}
+        src={
+          image || currentProfile?.picture?.__typename === "MediaSet"
+            ? currentProfile?.picture?.original?.url
+            : currentProfile?.picture?.uri || STATIC_ASSET
+        }
         height={windowHeight / 3}
         width={windowHeight / 3}
       />
