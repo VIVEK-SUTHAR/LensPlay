@@ -5,10 +5,11 @@ import {
   Comment as IComment,
   PublicationMainFocus,
   PublicationsQueryRequest,
-  useCommentsQuery,
+  useCommentsQuery
 } from "../../types/generated";
 import formatHandle from "../../utils/formatHandle";
 import getRawurl from "../../utils/getRawUrl";
+import Skeleton from "../common/Skeleton";
 import CommentSkeleton from "../UI/CommentSkeleton";
 import Heading from "../UI/Heading";
 import CommentCard from "./CommentCard";
@@ -44,7 +45,6 @@ const Comment = ({
       reactionRequest: {
         profileId: currentProfile?.id,
       },
-
     },
     context: {
       headers: {
@@ -127,15 +127,7 @@ const NotFound = () => {
 const Loading = () => {
   return (
     <SafeAreaView>
-      <ScrollView>
-        <CommentSkeleton />
-        <CommentSkeleton />
-        <CommentSkeleton />
-        <CommentSkeleton />
-        <CommentSkeleton />
-        <CommentSkeleton />
-        <CommentSkeleton />
-      </ScrollView>
+      <Skeleton children={<CommentSkeleton />} number={10} />
     </SafeAreaView>
   );
 };
