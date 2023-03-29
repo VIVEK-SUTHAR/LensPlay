@@ -13,7 +13,7 @@ import StyledText from "./StyledText";
 import { useThemeStore } from "../../store/Store";
 import Ripple from "./Ripple";
 interface ButtonProps {
-  title: string;
+  title: string | number;
   type?: "outline" | "filled";
   isLoading?: boolean;
   width?: number | string;
@@ -147,7 +147,7 @@ const Button = (props: ButtonProps): JSX.Element => {
               {icon && iconPosition === "left" ? (
                 <View
                   style={{
-                    marginRight: bytes || title?.length === 0 ? 0 : 8,
+                    marginRight: bytes || title ? 0 : 8,
                   }}
                 >
                   {icon}

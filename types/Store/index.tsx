@@ -1,4 +1,4 @@
-import { FeedItemRoot, Mirror, Post, Profile } from "../generated";
+import { FeedItemRoot, Maybe, Mirror, Post, Profile } from "../generated";
 
 export interface IAuthStore {
   accessToken: string;
@@ -93,7 +93,7 @@ export interface OptimisticStore {
 export interface OptimitisticComment {
   commentText: string;
   handle: string;
-  username: string;
+  username: Maybe<string> | undefined;
   isIndexing: boolean;
 }
 

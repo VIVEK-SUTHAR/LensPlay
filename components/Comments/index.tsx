@@ -1,10 +1,8 @@
 import React from "react";
 import { SafeAreaView, ScrollView, View } from "react-native";
-import { useComments } from "../../hooks/useFeed";
 import { useAuthStore, useProfile, useReactionStore } from "../../store/Store";
 import {
   Comment as IComment,
-  CommentRankingFilter,
   PublicationMainFocus,
   PublicationsQueryRequest,
   useCommentsQuery,
@@ -46,6 +44,7 @@ const Comment = ({
       reactionRequest: {
         profileId: currentProfile?.id,
       },
+
     },
     context: {
       headers: {
@@ -53,8 +52,6 @@ const Comment = ({
       },
     },
   });
-
-  console.log(commentData);
 
   if (error) return <NotFound />;
 
@@ -64,7 +61,7 @@ const Comment = ({
     if (loading || !reaction) return <Loading />;
   }
 
-  if (!commentData?.publications?.items.length) {
+  if (!commentData?.publications?.items?.length) {
     if (!comment) {
       setComments(true);
     }
@@ -75,11 +72,12 @@ const Comment = ({
     if (!comment) {
       setComments(true);
     }
+    const allComments = commentData?.publications?.items as IComment[];
     return (
       <SafeAreaView>
         <ScrollView>
           <View>
-            {commentData?.publications?.items.map((item) => {
+            {allComments?.map((item: IComment) => {
               return (
                 <CommentCard
                   key={item?.id}

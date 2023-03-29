@@ -1,21 +1,22 @@
-import { View, TextInput, Pressable } from "react-native";
 import React, { useState } from "react";
-import getIPFSLink from "../../utils/getIPFSLink";
+import { Pressable, TextInput, View } from "react-native";
+import { getProxyActionStatus } from "../../api";
+import { client } from "../../apollo/client";
+import createCommentViaDispatcher from "../../apollo/mutations/createCommentViaDispatcher";
+import { useGuestStore } from "../../store/GuestStore";
 import {
   useAuthStore,
   useOptimisticStore,
   useProfile,
   useThemeStore,
-  useToast,
+  useToast
 } from "../../store/Store";
-import Avatar from "../UI/Avatar";
-import uploadMetaDataToArweave from "../../utils/uploadMetaToArweave";
 import { ToastType } from "../../types/Store";
-import { client } from "../../apollo/client";
-import createCommentViaDispatcher from "../../apollo/mutations/createCommentViaDispatcher";
+import getIPFSLink from "../../utils/getIPFSLink";
+import getRawurl from "../../utils/getRawUrl";
+import uploadMetaDataToArweave from "../../utils/uploadMetaToArweave";
 import Icon from "../Icon";
-import { getProxyActionStatus } from "../../api";
-import { useGuestStore } from "../../store/GuestStore";
+import Avatar from "../UI/Avatar";
 
 type CommentInputProps = {
   publicationId: string;
@@ -120,7 +121,7 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
         }}
       >
         <Avatar
-          src={getIPFSLink(currentProfile?.picture?.original?.url)}
+          src={getIPFSLink(getRawurl(currentProfile?.picture))}
           height={28}
           width={28}
         />
@@ -160,7 +161,6 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
             height: 60,
             justifyContent: "center",
             alignItems: "center",
-            // marginHorizontal: 2,
             paddingHorizontal: 12,
           }}
           onPressIn={publishComment}

@@ -1,28 +1,25 @@
-import { Dimensions, Pressable, View } from "react-native";
-import React, { useRef, useState } from "react";
-import getDifference from "../../utils/getDifference";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
+import React, { useRef, useState } from "react";
+import { Pressable, View } from "react-native";
+import { addLike, removeLike } from "../../api";
+import { dark_primary, primary } from "../../constants/Colors";
+import { useGuestStore } from "../../store/GuestStore";
 import {
   useAuthStore,
   useProfile,
   useReactionStore,
-  useToast,
+  useToast
 } from "../../store/Store";
-import { addLike, freeMirror, removeLike } from "../../api";
+import { PublicationStats } from "../../types/generated";
+import { ToastType } from "../../types/Store";
+import extractURLs from "../../utils/extractURL";
+import getDifference from "../../utils/getDifference";
+import Icon from "../Icon";
+import Avatar from "../UI/Avatar";
+import Button from "../UI/Button";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
-import extractURLs from "../../utils/extractURL";
-import Button from "../UI/Button";
-import { dark_primary, primary } from "../../constants/Colors";
-import Avatar from "../UI/Avatar";
-import Icon from "../Icon";
-import { CollectButton } from "../VIdeo";
-import { useGuestStore } from "../../store/GuestStore";
-import { ToastType } from "../../types/Store";
-import RBSheet from "../UI/BottomSheet";
-import getIPFSLink from "../../utils/getIPFSLink";
-import formatHandle from "../../utils/formatHandle";
-import { PublicationStats } from "../../types/generated";
 
 type CommentCardProps = {
   avatar: string;
@@ -52,7 +49,6 @@ const CommentCard = ({
   isAlreadyLiked,
 }: CommentCardProps) => {
   const authStore = useAuthStore();
-  const reactions = useReactionStore();
   const [Liked, setLiked] = useState<boolean>(isAlreadyLiked);
   const [likes, setLikes] = useState<number>(stats?.totalUpvotes);
   const navigation = useNavigation();
@@ -93,95 +89,11 @@ const CommentCard = ({
   //   });
   // }, [addLike]);
 
-  const collectRef = useRef(null);
-  const mirrorRef = useRef(null);
+  const collectRef = useRef<BottomSheetMethods>(null);
+  const mirrorRef = useRef<BottomSheetMethods>(null);
 
   return (
     <>
-      <RBSheet ref={collectRef} height={Dimensions.get("window").height / 2.5}>
-        <StyledText
-          title={`Comment by  ${formatHandle(username)} `}
-          style={{
-            color: "white",
-            fontSize: 18,
-            fontWeight: "600",
-            padding: 16,
-            textAlign: "left",
-          }}
-        />
-        <View
-          style={{
-            maxWidth: "100%",
-            height: "auto",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <StyledText
-            title={extractURLs(commentText)}
-            style={{
-              height: 150,
-              color: "white",
-              paddingHorizontal: 8,
-              paddingVertical: 16,
-            }}
-          />
-          <Button
-            title={`Collect the comment for free`}
-            width={"90%"}
-            my={12}
-            icon={<Icon name="collect" color="black" />}
-            textStyle={{
-              fontSize: 20,
-              fontWeight: "700",
-              textAlign: "center",
-            }}
-            // onPress={collectPublication}
-          />
-        </View>
-      </RBSheet>
-      <RBSheet ref={mirrorRef} height={Dimensions.get("window").height / 2.5}>
-        <StyledText
-          title={`Comment by  ${formatHandle(username)} `}
-          style={{
-            color: "white",
-            fontSize: 18,
-            fontWeight: "600",
-            padding: 16,
-            textAlign: "left",
-          }}
-        />
-        <View
-          style={{
-            maxWidth: "100%",
-            height: "auto",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <StyledText
-            title={extractURLs(commentText)}
-            style={{
-              height: 150,
-              color: "white",
-              paddingHorizontal: 8,
-              paddingVertical: 16,
-            }}
-          />
-          <Button
-            title={`Mirror the comment for free`}
-            width={"90%"}
-            my={12}
-            icon={<Icon name="collect" color="black" />}
-            textStyle={{
-              fontSize: 20,
-              fontWeight: "700",
-              textAlign: "center",
-            }}
-            // onPress={collectPublication}
-          />
-        </View>
-      </RBSheet>
       <View
         style={{
           flexDirection: "row",
@@ -288,8 +200,7 @@ const CommentCard = ({
                   toast.show("Please Login", ToastType.ERROR, true);
                   return;
                 }
-                collectRef?.current?.open();
-                // setIsmodalopen(true);
+                collectRef?.current?.snapToIndex(0);
               }}
             />
             <Button
@@ -312,7 +223,7 @@ const CommentCard = ({
                   toast.show("Please Login", ToastType.ERROR, true);
                   return;
                 }
-                mirrorRef?.current?.open();
+                mirrorRef?.current?.snapToIndex(0);
               }}
             />
             <Button
