@@ -1,17 +1,16 @@
+import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
 import { Dimensions, SafeAreaView, View } from "react-native";
-import getImageBlobFromUri from "../../utils/getImageBlobFromUri";
-import Avatar from "../UI/Avatar";
-import * as ImagePicker from "expo-image-picker";
-import { useAuthStore, useProfile, useToast } from "../../store/Store";
-import { ToastType } from "../../types/Store";
-import uploadImageToIPFS from "../../utils/uploadImageToIPFS";
-import { client } from "../../apollo/client";
-import updateProfilePictureQuery from "../../apollo/mutations/updateProfilePictureQuery";
-import { STATIC_ASSET } from "../../constants";
-import Button from "../UI/Button";
-import TrackAction from "../../utils/Track";
 import { SETTINGS } from "../../constants/tracking";
+import { useAuthStore, useProfile, useToast } from "../../store/Store";
+import { useCreateSetProfileImageUriViaDispatcherMutation } from "../../types/generated";
+import { ToastType } from "../../types/Store";
+import getImageBlobFromUri from "../../utils/getImageBlobFromUri";
+import getRawurl from "../../utils/getRawUrl";
+import TrackAction from "../../utils/Track";
+import uploadImageToIPFS from "../../utils/uploadImageToIPFS";
+import Avatar from "../UI/Avatar";
+import Button from "../UI/Button";
 
 export default function EditAvatar() {
   const [imageBlob, setImageBlob] = useState<Blob>();
@@ -21,16 +20,31 @@ export default function EditAvatar() {
   const { accessToken } = useAuthStore();
   const windowHeight = Dimensions.get("window").height;
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
+
+  const [
+    createSetProfileImageUriViaDispatcherMutation,
+  ] = useCreateSetProfileImageUriViaDispatcherMutation({
+    onCompleted: () => {
+      setIsUpdating(false);
+      toast.show("Channel image updated", ToastType.SUCCESS, true);
+    },
+    onError: () => {
+      setIsUpdating(false);
+      toast.show("Something went wrong", ToastType.ERROR, true);
+    },
+  });
+
   const uploadToIPFS = async () => {
     setIsUpdating(true);
     if (imageBlob) {
       try {
         const imageCID = await uploadImageToIPFS(imageBlob);
-        const updateOnLens = await client.mutate({
-          mutation: updateProfilePictureQuery,
+        createSetProfileImageUriViaDispatcherMutation({
           variables: {
-            profileId: currentProfile?.id,
-            url: `ipfs://${imageCID}`,
+            request: {
+              profileId: currentProfile?.id,
+              url: `ipfs://${imageCID}`,
+            },
           },
           context: {
             headers: {
@@ -39,15 +53,7 @@ export default function EditAvatar() {
           },
         });
         TrackAction(SETTINGS.PROFILE.UPDATE_AVATAR);
-        if (updateOnLens.data) {
-          toast.show("Channel image updated", ToastType.SUCCESS, true);
-        } else {
-          toast.show("Something went wrong", ToastType.ERROR, true);
-        }
-      } catch (error) {
-      } finally {
-        setIsUpdating(false);
-      }
+      } catch (error) {}
     }
   };
 
@@ -79,30 +85,26 @@ export default function EditAvatar() {
       }}
     >
       <Avatar
-        src={
-          image || currentProfile?.picture?.__typename === "MediaSet"
-            ? currentProfile?.picture?.original?.url
-            : currentProfile?.picture?.uri || STATIC_ASSET
-        }
+        src={image || getRawurl(currentProfile?.picture)}
         height={windowHeight / 3}
         width={windowHeight / 3}
       />
       <View
         style={{
           width: "100%",
-          justifyContent: "center",
+          justifyContent: "space-evenly",
           alignItems: "center",
+          height: "20%",
         }}
       >
         <Button
           title="Edit avatar"
           width={"50%"}
           type="outline"
-          ripple_radius={4}
           borderColor="white"
           px={12}
           py={8}
-          my={16}
+          my={24}
           borderRadius={8}
           textStyle={{
             textAlign: "center",
@@ -116,11 +118,10 @@ export default function EditAvatar() {
           title="Update Avatar"
           width={"50%"}
           disabled={!image ? true : false}
-          ripple_radius={4}
           borderColor="white"
           px={12}
           py={8}
-          my={16}
+          my={78}
           borderRadius={8}
           textStyle={{
             textAlign: "center",

@@ -9,16 +9,18 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { client } from "../../apollo/client";
-import updateChannel from "../../apollo/mutations/updateChannel";
 import { dark_primary } from "../../constants/Colors";
 import { SETTINGS } from "../../constants/tracking";
 import { useAuthStore, useProfile, useToast } from "../../store/Store";
-import { Profile } from "../../types/generated";
+import {
+  Profile,
+  useCreateSetProfileMetadataViaDispatcherMutation,
+} from "../../types/generated";
 import { ToastType } from "../../types/Store";
 import formatHandle from "../../utils/formatHandle";
 import getImageBlobFromUri from "../../utils/getImageBlobFromUri";
 import getIPFSLink from "../../utils/getIPFSLink";
+import getRawurl from "../../utils/getRawUrl";
 import TrackAction from "../../utils/Track";
 import uploadImageToIPFS from "../../utils/uploadImageToIPFS";
 import Icon from "../Icon";
@@ -64,42 +66,24 @@ export default function EditDetail() {
       toast.show("No image selected", ToastType.ERROR, true);
     }
     if (!coverresult.canceled) {
-      setCoverPic(coverresult.uri);
+      setCoverPic(coverresult.assets[0].uri);
       const imgblob = await getImageBlobFromUri(coverresult.assets[0].uri);
       setCoverImageBlob(imgblob);
     }
   }
-
-  const updateData = async (
-    profileId: string | undefined,
-    metadataUrl: string
-  ) => {
-    const result = await client.mutate({
-      mutation: updateChannel,
-      variables: {
-        profileId: profileId,
-        metadata: metadataUrl,
-      },
-      context: {
-        headers: {
-          "x-access-token": `Bearer ${accessToken}`,
-        },
-      },
-    });
-    if (result.data) {
-      setUserData({
-        name: "",
-        bio: "",
-      });
+  const [
+    createSetProfileMetadataViaDispatcherMutation,
+  ] = useCreateSetProfileMetadataViaDispatcherMutation({
+    onCompleted: () => {
       toast.show("Channel updated successfully", ToastType.SUCCESS, true);
       TrackAction(SETTINGS.PROFILE.UPDATE_DETAILS);
-    } else {
+    },
+    onError: () => {
       toast.show("Some error occured please try again", ToastType.ERROR, true);
-    }
-  };
-
+    },
+  });
   const uploadMetadata = async () => {
-    let coverURI = currentProfile?.coverPicture?.original?.url;
+    let coverURI = getRawurl(currentProfile?.coverPicture);
 
     if (coverImageBlob) {
       coverURI = await uploadImageToIPFS(coverImageBlob);
@@ -114,7 +98,7 @@ export default function EditDetail() {
     });
     const headersList = {
       "Content-Type": "application/json",
-      Authorization:"Bearer ENGINEERCANTAKEOVERWORLD"
+      Authorization: "Bearer ENGINEERCANTAKEOVERWORLD",
     };
 
     const response = await fetch(
@@ -124,10 +108,22 @@ export default function EditDetail() {
         body: bodyContent,
         headers: headersList,
       }
-    );    
-    
+    );
+
     const metadata = await response.json();
-    updateData(currentProfile?.id, `https://arweave.net/${metadata.id}`);
+    createSetProfileMetadataViaDispatcherMutation({
+      variables: {
+        request: {
+          metadata: `https://arweave.net/${metadata.id}`,
+          profileId: currentProfile?.id,
+        },
+      },
+      context: {
+        headers: {
+          "x-access-token": `Bearer ${accessToken}`,
+        },
+      },
+    });
   };
 
   const handleUpdate = async () => {
@@ -166,7 +162,7 @@ export default function EditDetail() {
       socialLinks.twitter.length > 0 ||
       socialLinks.website.length > 0 ||
       socialLinks.youtube.length > 0 ||
-      coverPic?.length > 0
+      !coverPic
     );
   };
 
@@ -219,7 +215,7 @@ export default function EditDetail() {
             source={{
               uri:
                 coverPic ||
-                getIPFSLink(currentProfile?.coverPicture?.original.url),
+                getIPFSLink(getRawurl(currentProfile?.coverPicture)),
             }}
             style={{
               opacity: 0.5,
