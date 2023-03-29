@@ -1,13 +1,18 @@
-import { SafeAreaView, ScrollView, View } from "react-native";
 import React from "react";
+import { SafeAreaView, ScrollView, View } from "react-native";
 import { useComments } from "../../hooks/useFeed";
-import Heading from "../UI/Heading";
-import CommentSkeleton from "../UI/CommentSkeleton";
-import CommentCard from "./CommentCard";
-import { useReactionStore } from "../../store/Store";
-import { Comment as IComment } from "../../types/generated";
-import getRawurl from "../../utils/getRawUrl";
+import { useAuthStore, useProfile, useReactionStore } from "../../store/Store";
+import {
+  Comment as IComment,
+  PublicationMainFocus,
+  PublicationsQueryRequest,
+  useCommentsQuery,
+} from "../../types/generated";
 import formatHandle from "../../utils/formatHandle";
+import getRawurl from "../../utils/getRawUrl";
+import CommentSkeleton from "../UI/CommentSkeleton";
+import Heading from "../UI/Heading";
+import CommentCard from "./CommentCard";
 
 const Comment = ({
   publicationId,
@@ -16,8 +21,40 @@ const Comment = ({
   publicationId: string;
   shots?: boolean;
 }) => {
+  const { currentProfile } = useProfile();
+  const { accessToken } = useAuthStore();
   const { reaction, comment, setComments } = useReactionStore();
-  const { data: commentData, error, loading } = useComments(publicationId);
+
+  const QueryRequest: PublicationsQueryRequest = {
+    commentsOf: publicationId,
+    metadata: {
+      mainContentFocus: [
+        PublicationMainFocus.Video,
+        PublicationMainFocus.Article,
+        PublicationMainFocus.Embed,
+        PublicationMainFocus.Link,
+        PublicationMainFocus.TextOnly,
+      ],
+    },
+    sources: ["lenstube"],
+    limit: 50,
+  };
+
+  const { data: commentData, error, loading, refetch } = useCommentsQuery({
+    variables: {
+      request: QueryRequest,
+      reactionRequest: {
+        profileId: currentProfile?.id,
+      },
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+      },
+    },
+  });
+
+  console.log(commentData);
 
   if (error) return <NotFound />;
 
@@ -42,7 +79,7 @@ const Comment = ({
       <SafeAreaView>
         <ScrollView>
           <View>
-            {commentData?.publications?.items.map((item: IComment) => {
+            {commentData?.publications?.items.map((item) => {
               return (
                 <CommentCard
                   key={item?.id}

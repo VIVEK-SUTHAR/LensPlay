@@ -1,9 +1,7 @@
-import { Dimensions, Image, Pressable, Text, View } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import { Dimensions, Pressable, View } from "react-native";
+import React, { useRef, useState } from "react";
 import getDifference from "../../utils/getDifference";
 import { useNavigation } from "@react-navigation/native";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
-import { CommentStats } from "../../types/Lens/Feed";
 import {
   useAuthStore,
   useProfile,
@@ -17,8 +15,6 @@ import extractURLs from "../../utils/extractURL";
 import Button from "../UI/Button";
 import { dark_primary, primary } from "../../constants/Colors";
 import Avatar from "../UI/Avatar";
-import CollectIcon from "../svg/CollectIcon";
-import MirrorIcon from "../svg/MirrorIcon";
 import Icon from "../Icon";
 import { CollectButton } from "../VIdeo";
 import { useGuestStore } from "../../store/GuestStore";
@@ -53,7 +49,7 @@ const CommentCard = ({
   stats,
   commentId,
   isIndexing,
-  isAlreadyLiked
+  isAlreadyLiked,
 }: CommentCardProps) => {
   const authStore = useAuthStore();
   const reactions = useReactionStore();
@@ -61,7 +57,7 @@ const CommentCard = ({
   const [likes, setLikes] = useState<number>(stats?.totalUpvotes);
   const navigation = useNavigation();
   const userStore = useProfile();
-  
+
   const { isGuest } = useGuestStore();
   const toast = useToast();
 
@@ -73,19 +69,18 @@ const CommentCard = ({
         userStore.currentProfile?.id,
         commentId,
         "UPVOTE"
-      )
+      );
       if (res.addReaction === null) {
         setLikes((prev) => prev + 1);
       }
-    }
-    else {
+    } else {
       const res = await removeLike(
         authStore.accessToken,
         userStore.currentProfile?.id,
-        commentId,
-      )
-      if (res.removeReaction === null){
-        setLikes((prev) => prev -  1);
+        commentId
+      );
+      if (res.removeReaction === null) {
+        setLikes((prev) => prev - 1);
       }
     }
   };
@@ -258,24 +253,20 @@ const CommentCard = ({
                   return;
                 }
                 setLike();
-                setLiked(prev => !prev);
+                setLiked((prev) => !prev);
               }}
               width={"auto"}
               bg="transparent"
               type={"filled"}
               textStyle={{
-                color: Liked?primary:"white",
+                color: Liked ? primary : "white",
                 fontSize: 14,
                 fontWeight: "500",
                 marginLeft: 4,
                 paddingEnd: 16,
               }}
               icon={
-                <Icon
-                  name="like"
-                  size={16}
-                  color={Liked ? primary : "white"}
-                />
+                <Icon name="like" size={16} color={Liked ? primary : "white"} />
               }
             />
             <Button
