@@ -182,7 +182,11 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                     backgroundColor: "black",
                     height: "100%",
                   }}
-                  data={result?.search?.items}
+                  data={
+                    searchType === SearchRequestTypes.Profile
+                      ? result?.search?.items
+                      : null
+                  }
                   keyExtractor={(_, index) => index.toString()}
                   renderItem={({ item }) => (
                     <ProfileCard
@@ -214,7 +218,11 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                     backgroundColor: "black",
                     height: "100%",
                   }}
-                  data={result?.search?.items}
+                  data={
+                    searchType === SearchRequestTypes.Publication
+                      ? result?.search?.items
+                      : null
+                  }
                   keyExtractor={(_, index) => index.toString()}
                   renderItem={({ item, index }) => (
                     <View
