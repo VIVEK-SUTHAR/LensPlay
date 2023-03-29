@@ -4,6 +4,7 @@ import { useComments } from "../../hooks/useFeed";
 import { useAuthStore, useProfile, useReactionStore } from "../../store/Store";
 import {
   Comment as IComment,
+  CommentRankingFilter,
   PublicationMainFocus,
   PublicationsQueryRequest,
   useCommentsQuery,
@@ -36,7 +37,6 @@ const Comment = ({
         PublicationMainFocus.TextOnly,
       ],
     },
-    sources: ["lenstube"],
     limit: 50,
   };
 
