@@ -7,6 +7,7 @@ import NotFound from "../Profile/NotFound";
 import ProfileCard from "../ProfileCard";
 import Heading from "../UI/Heading";
 import ProfileCardSkeleton from "../UI/ProfileCardSkeleton";
+import StyledText from "../UI/StyledText";
 
 const Recommended = () => {
   const { data, error, loading } = useRecommendedProfilesQuery();
@@ -17,33 +18,46 @@ const Recommended = () => {
   if (error) return <NotFound />;
   if (data) {
     return (
-      <View style={{ marginBottom: 16 }}>
-        <Heading
-          title={"Recommended Channels"}
+      <>
+        <StyledText
+          title={"No channel found"}
           style={{
-            color: "white",
-            fontSize: 20,
+            color: "gray",
+            fontSize: 12,
             fontWeight: "600",
-            marginHorizontal: 16,
+            marginTop: 24,
+            textAlign: "center",
           }}
         />
-        <FlatList
-          data={data?.recommendedProfiles as Profile[]}
-          keyExtractor={(_, index) => index.toString()}
-          renderItem={({ item }) => {
-            return (
-              <ProfileCard
-                profileIcon={getRawurl(item?.picture)}
-                profileName={item?.name || item?.id}
-                profileId={item?.id}
-                isFollowed={item?.isFollowedByMe || false}
-                handle={item?.handle}
-                owner={item?.ownedBy}
-              />
-            );
-          }}
-        />
-      </View>
+        <View style={{ paddingVertical: 24 }}>
+          <Heading
+            title={"Recommended Channels"}
+            style={{
+              color: "white",
+              fontSize: 20,
+              fontWeight: "600",
+              marginHorizontal: 12,
+              marginVertical: 8,
+            }}
+          />
+          <FlatList
+            data={data?.recommendedProfiles as Profile[]}
+            keyExtractor={(_, index) => index.toString()}
+            renderItem={({ item }) => {
+              return (
+                <ProfileCard
+                  profileIcon={getRawurl(item?.picture)}
+                  profileName={item?.name || item?.id}
+                  profileId={item?.id}
+                  isFollowed={item?.isFollowedByMe || false}
+                  handle={item?.handle}
+                  owner={item?.ownedBy}
+                />
+              );
+            }}
+          />
+        </View>
+      </>
     );
   }
   return <></>;

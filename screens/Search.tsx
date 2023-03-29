@@ -38,7 +38,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   );
   const debouncedValue = useDebounce<string>(keyword, 500);
   const { isGuest } = useGuestStore();
-  const [showRecommended, setShowRecommended] = useState<boolean>(true);
 
   const [searchChannels, { data: result, error, loading }] = useLazyQuery(
     searchType === SearchRequestTypes.Profile
@@ -61,9 +60,9 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
             },
           });
           if (result?.search?.items?.length > 0) {
-            setIsfound(false);
-          } else {
             setIsfound(true);
+          } else {
+            setIsfound(false);
           }
         } else {
           searchChannels({
@@ -82,9 +81,9 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
             },
           });
           if (result?.items?.length > 0) {
-            setIsfound(false);
-          } else {
             setIsfound(true);
+          } else {
+            setIsfound(false);
           }
         }
       } catch (error) {
@@ -130,9 +129,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                 onDebounce();
               }}
               style={styles.textInput}
-              onFocus={() => {
-                setShowRecommended(false);
-              }}
             />
           </View>
         );
@@ -143,105 +139,74 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="auto" />
-      {!!isSearching && (
-        <>
-          <AnimatedLottieView
-            autoPlay
-            style={{
-              height: "auto",
-            }}
-            source={require("../assets/loader.json")}
-          />
-          <View
-            style={{
-              alignItems: "center",
-            }}
-          >
-            <StyledText
-              title="Getting videos..."
-              style={styles.searchingLoader}
+      <Tabs>
+        <Tab.Screen
+          name="Profile"
+          listeners={{
+            focus: () => {
+              setSearchType(SearchRequestTypes.Profile);
+            },
+          }}
+          children={() => (
+            <FlatList
+              style={{
+                backgroundColor: "black",
+                height: "100%",
+              }}
+              ListEmptyComponent={!isfound ? <Recommended /> : null}
+              data={
+                searchType === SearchRequestTypes.Profile
+                  ? result?.search?.items
+                  : null
+              }
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={({ item }) => (
+                <ProfileCard
+                  profileIcon={item?.picture?.original?.url}
+                  profileName={item?.name || item?.id}
+                  profileId={item?.id}
+                  isFollowed={item?.isFollowedByMe || false}
+                  handle={item?.handle}
+                  owner={item?.ownedBy}
+                />
+              )}
             />
-          </View>
-        </>
-      )}
-      {!showRecommended ? (
-        <Tabs>
-          <Tab.Screen
-            name="Profile"
-            listeners={{
-              focus: () => {
-                setSearchType(SearchRequestTypes.Profile);
-              },
-            }}
-            children={() =>
-              !isfound ? (
-                <NotFound />
-              ) : (
-                <FlatList
+          )}
+        />
+        <Tab.Screen
+          name="Videos"
+          listeners={{
+            focus: () => {
+              setSearchType(SearchRequestTypes.Publication);
+            },
+          }}
+          children={() => (
+            <FlatList
+              style={{
+                backgroundColor: "black",
+                height: "100%",
+              }}
+              ListEmptyComponent={<NotFound />}
+              data={
+                searchType === SearchRequestTypes.Publication
+                  ? result?.search?.items
+                  : null
+              }
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={({ item, index }) => (
+                <View
                   style={{
                     backgroundColor: "black",
-                    height: "100%",
+                    paddingVertical: 8,
                   }}
-                  data={
-                    searchType === SearchRequestTypes.Profile
-                      ? result?.search?.items
-                      : null
-                  }
-                  keyExtractor={(_, index) => index.toString()}
-                  renderItem={({ item }) => (
-                    <ProfileCard
-                      profileIcon={item?.picture?.original?.url}
-                      profileName={item?.name || item?.id}
-                      profileId={item?.id}
-                      isFollowed={item?.isFollowedByMe || false}
-                      handle={item?.handle}
-                      owner={item?.ownedBy}
-                    />
-                  )}
-                />
-              )
-            }
-          />
-          <Tab.Screen
-            name="Videos"
-            listeners={{
-              focus: () => {
-                setSearchType(SearchRequestTypes.Publication);
-              },
-            }}
-            children={() =>
-              !isfound ? (
-                <NotFound />
-              ) : (
-                <FlatList
-                  style={{
-                    backgroundColor: "black",
-                    height: "100%",
-                  }}
-                  data={
-                    searchType === SearchRequestTypes.Publication
-                      ? result?.search?.items
-                      : null
-                  }
-                  keyExtractor={(_, index) => index.toString()}
-                  renderItem={({ item, index }) => (
-                    <View
-                      style={{
-                        backgroundColor: "black",
-                        paddingVertical: 8,
-                      }}
-                    >
-                      <VideoCard publication={item} id={index.toString()} />
-                    </View>
-                  )}
-                />
-              )
-            }
-          />
-        </Tabs>
-      ) : (
-        <Recommended />
-      )}
+                >
+                  <VideoCard publication={item} id={index.toString()} />
+                </View>
+              )}
+            />
+          )}
+        />
+      </Tabs>
     </SafeAreaView>
   );
 };
