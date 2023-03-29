@@ -7,7 +7,7 @@ import {
   RefreshControl,
   SafeAreaView,
   ScrollView,
-  View,
+  View
 } from "react-native";
 import Icon from "../components/Icon";
 import PleaseLogin from "../components/PleaseLogin";
@@ -24,16 +24,15 @@ import { STATIC_ASSET } from "../constants";
 import { primary } from "../constants/Colors";
 import { PROFILE } from "../constants/tracking";
 import VERIFIED_CHANNELS from "../constants/Varified";
-import { useUserPublication } from "../hooks/useFeed";
 import { useGuestStore } from "../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import {
+  Maybe,
   MediaSet,
-  Post,
-  PublicationMainFocus,
+  Post, PublicationMainFocus,
   PublicationTypes,
   useProfilePostsQuery,
-  useProfileQuery,
+  useProfileQuery
 } from "../types/generated";
 import { RootTabScreenProps } from "../types/navigation/types";
 import extractURLs from "../utils/extractURL";
@@ -41,6 +40,13 @@ import formatHandle from "../utils/formatHandle";
 import getIPFSLink from "../utils/getIPFSLink";
 import getRawurl from "../utils/getRawUrl";
 import TrackAction from "../utils/Track";
+
+type SocialLinks = {
+  twitter: Maybe<string> | undefined;
+  insta: Maybe<string> | undefined;
+  yt: Maybe<string> | undefined;
+  site: Maybe<string> | undefined;
+};
 
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [afterScroll, setafterScroll] = useState(0);
@@ -86,7 +92,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
     },
   });
 
-  const [links, setLinks] = useState({
+  const [links, setLinks] = useState<SocialLinks>({
     twitter: "",
     insta: "",
     yt: "",
@@ -140,6 +146,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
         />
         <ScrollView
           onScroll={(event) => {
+            event.preventDefault();
             setafterScroll(event.nativeEvent.contentOffset.y);
           }}
           refreshControl={
@@ -216,9 +223,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                     color: "black",
                   }}
                   onPress={() => {
-                    navigation.navigate("EditProfile", {
-                      profile: profile,
-                    });
+                    navigation.navigate("EditProfile");
                   }}
                 />
               </View>
@@ -291,7 +296,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   flexDirection: "row",
                 }}
               >
-                {links.twitter?.length > 0 ? (
+                {links?.twitter ? (
                   <Pressable
                     style={{
                       flexDirection: "row",
@@ -315,7 +320,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 ) : (
                   <></>
                 )}
-                {links.yt?.length > 0 ? (
+                {links?.yt ? (
                   <Pressable
                     style={{
                       flexDirection: "row",
@@ -353,7 +358,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   flexDirection: "row",
                 }}
               >
-                {links.insta?.length > 0 ? (
+                {links?.insta ? (
                   <Pressable
                     style={{
                       flexDirection: "row",
@@ -386,12 +391,14 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 ) : (
                   <></>
                 )}
-                {links.site?.length > 0 ? (
+                {links?.site ? (
                   <Pressable
                     style={{ flexDirection: "row", alignItems: "center" }}
                     onPress={(e) => {
                       e.preventDefault();
-                      Linking.openURL(links.site);
+                      if (links.site) {
+                        Linking.openURL(links?.site);
+                      }
                     }}
                   >
                     <Icon name="link" color="white" size={16} />
@@ -480,7 +487,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
               <View style={{ marginVertical: 24 }}>
                 {AllVideosData && (
                   <AllVideos
-                    Videos={AllVideosData?.publications?.items}
+                    Videos={AllVideosData?.publications?.items as Post[]}
                     profileId={userStore.currentProfile?.id}
                     navigation={navigation}
                   />

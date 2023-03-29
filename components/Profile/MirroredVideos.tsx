@@ -4,7 +4,7 @@ import { useAuthStore } from "../../store/Store";
 import {
   PublicationMainFocus,
   PublicationTypes,
-  useProfilePostsQuery,
+  useProfileMirrorsQuery
 } from "../../types/generated";
 import formatHandle from "../../utils/formatHandle";
 import Icon from "../Icon";
@@ -39,7 +39,7 @@ const MirroredVideos = ({
     data: AllMirrorVideosData,
     error: AllMirrorVideoError,
     loading: AllMirrorVideosLoading,
-  } = useProfilePostsQuery({
+  } = useProfileMirrorsQuery({
     variables: {
       request: QueryRequest,
       reactionRequest: {
@@ -53,6 +53,7 @@ const MirroredVideos = ({
     },
   });
 
+    
   return (
     <View style={{ marginTop: 16 }}>
       <View

@@ -4,9 +4,8 @@ import {
   NavigatorScreenParams,
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Profile } from "../Lens/index";
 import { FeedItem, LensPublication, VideoPageStats } from "../Lens/Feed";
-
+import type { Profile, ProfileQuery } from "../generated";
 /**
  
  LENS-PLAY NAVIGATION STRUCTURE
@@ -69,9 +68,7 @@ export type RootStackParamList = {
   };
   LoginWithLens: undefined;
   ConnectWallet: undefined;
-  EditProfile: {
-    profile: Profile | null;
-  };
+  EditProfile: undefined;
   LeaderBoard: {
     referralsCount: number;
     rankingPoints: number;

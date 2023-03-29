@@ -38,7 +38,7 @@ const AllVideos = ({ Videos, navigation }: AllVideosProps) => {
               fontWeight: "600",
             }}
           />
-          {Videos?.length > 0 ? (
+          {Videos ? (
             <StyledText
               title={`(${Videos?.length})`}
               style={{
@@ -65,7 +65,7 @@ const AllVideos = ({ Videos, navigation }: AllVideosProps) => {
             size={24}
             color="white"
             style={{
-              display: Videos?.length > 0 ? "flex" : "none",
+              display: Videos ? "flex" : "none",
             }}
           />
         </Pressable>
@@ -76,7 +76,7 @@ const AllVideos = ({ Videos, navigation }: AllVideosProps) => {
         showsHorizontalScrollIndicator={false}
       >
         {Boolean(Videos) &&
-          Videos.map((item: Post) => {
+          Videos?.map((item: Post) => {
             return (
               <VideoCard
                 publication={item}
