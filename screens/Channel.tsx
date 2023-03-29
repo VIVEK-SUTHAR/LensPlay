@@ -269,7 +269,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                             color: "white",
                           }}
                         />
-                        {VERIFIED_CHANNELS.includes(profile!.id) && (
+                        {VERIFIED_CHANNELS.includes(profile?.id) && (
                           <View
                             style={{
                               backgroundColor: "transparent",

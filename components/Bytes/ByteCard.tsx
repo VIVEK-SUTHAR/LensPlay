@@ -1,48 +1,76 @@
 import AnimatedLottieView from "lottie-react-native";
 import React, { useEffect, useState } from "react";
-import { Dimensions, Pressable, SafeAreaView, View } from "react-native";
+import {
+  Dimensions,
+  Pressable,
+  RefreshControl,
+  SafeAreaView,
+  View,
+} from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import { client } from "../../apollo/client";
 import getBytes from "../../apollo/Queries/getBytes";
 import { useGuestStore } from "../../store/GuestStore";
-import { useProfile } from "../../store/Store";
+import { useAuthStore, useProfile, useThemeStore } from "../../store/Store";
+import {
+  Mirror,
+  Post,
+  PublicationMainFocus,
+  PublicationSortCriteria,
+  PublicationTypes,
+  useExploreQuery,
+} from "../../types/generated";
 import { Root } from "../../types/Lens/Feed";
 import Heading from "../UI/Heading";
 import SingleByte from "./SingleByte";
 
-const ByteCard = ({ navigation }: { navigation: any }) => {
-  const [bytesData, setBytesData] = useState<Root[]>([]);
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const userStore = useProfile();
-  const { isGuest, profileId } = useGuestStore();
+export type ShotsPublication = Post | Mirror;
 
+const ByteCard = ({ navigation }: { navigation: any }) => {
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  const { currentProfile } = useProfile();
+  const { isGuest, profileId } = useGuestStore();
+  const { PRIMARY } = useThemeStore();
+  const { accessToken } = useAuthStore();
   const handleChangeIndexValue = ({ index }: { index: number }) => {
     setCurrentIndex(index);
   };
 
-  async function getBytesData() {
-    try {
-      const bytesdata = await client.query({
-        query: getBytes,
-        variables: {
-          id: isGuest ? profileId : userStore.currentProfile?.id,
-        },
-      });
-      setBytesData(bytesdata.data.explorePublications.items);
-    } catch (error) {
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  const QueryRequest = {
+    sortCriteria: PublicationSortCriteria.Latest,
+    publicationTypes: [PublicationTypes.Mirror, PublicationTypes.Post],
+    metadata: {
+      mainContentFocus: [PublicationMainFocus.Video],
+    },
+    sources: ["lenstube", "lenstube-bytes"],
+  };
 
-  useEffect(() => {
-    getBytesData();
+  const { data: shotsData, error, loading, refetch } = useExploreQuery({
+    variables: {
+      request: QueryRequest,
+      reactionRequest: {
+        profileId: isGuest ? profileId : currentProfile?.id,
+      },
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+      },
+    },
+  });
+
+  const bytesData = shotsData?.explorePublications?.items as ShotsPublication[];
+
+  const onRefresh = React.useCallback(() => {
+    refetch({
+      request: QueryRequest,
+    });
   }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-      {isLoading ? (
+      {loading ? (
         <View
           style={{
             flex: 1,
@@ -87,25 +115,47 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
       ) : (
         <></>
       )}
-      {bytesData.length > 0 ? (
+      {shotsData?.explorePublications?.items ? (
         <SwiperFlatList
+          refreshControl={
+            <RefreshControl
+              onRefresh={onRefresh}
+              refreshing={isRefreshing}
+              colors={[PRIMARY]}
+              progressBackgroundColor={"black"}
+            />
+          }
           vertical={true}
           keyExtractor={(item, index) => index.toString()}
           onChangeIndex={handleChangeIndexValue}
-          data={bytesData}
-          renderItem={({ item, index }) => (
-            <View
-              style={{
-                height: Dimensions.get("window").height,
-              }}
-            >
-              <SingleByte
-                item={item}
-                index={index}
-                currentIndex={currentIndex}
-              />
-            </View>
-          )}
+          data={shotsData?.explorePublications?.items}
+          renderItem={({
+            item,
+            index,
+          }: {
+            item: ShotsPublication;
+            index: number;
+          }) => {
+            if (
+              item?.appId === "lenstube" ||
+              item?.appId === "lenstube-bytes"
+            ) {
+              return (
+                <View
+                  style={{
+                    height: Dimensions.get("window").height,
+                  }}
+                >
+                  <SingleByte
+                    item={item}
+                    index={index}
+                    currentIndex={currentIndex}
+                  />
+                </View>
+              );
+            }
+            return <></>;
+          }}
         />
       ) : (
         <></>

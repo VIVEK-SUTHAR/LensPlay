@@ -4699,6 +4699,11 @@ export type PublicationRevenueQueryVariables = Exact<{
 
 export type PublicationRevenueQuery = { __typename?: 'Query', publicationRevenue?: { __typename?: 'PublicationRevenue', revenue: { __typename?: 'RevenueAggregate', total: { __typename?: 'Erc20Amount', value: string } } } | null };
 
+export type RecommendedProfilesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RecommendedProfilesQuery = { __typename?: 'Query', recommendedProfiles: Array<{ __typename?: 'Profile', id: any, name?: string | null, bio?: string | null, handle: any, picture?: { __typename?: 'MediaSet', original: { __typename?: 'Media', url: any } } | { __typename?: 'NftImage', uri: any } | null }> };
+
 export type ResolveProfileAddressQueryVariables = Exact<{
   request: SingleProfileQueryRequest;
 }>;
@@ -7503,6 +7508,53 @@ export function usePublicationRevenueLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type PublicationRevenueQueryHookResult = ReturnType<typeof usePublicationRevenueQuery>;
 export type PublicationRevenueLazyQueryHookResult = ReturnType<typeof usePublicationRevenueLazyQuery>;
 export type PublicationRevenueQueryResult = Apollo.QueryResult<PublicationRevenueQuery, PublicationRevenueQueryVariables>;
+export const RecommendedProfilesDocument = gql`
+    query RecommendedProfiles {
+  recommendedProfiles {
+    id
+    name
+    bio
+    handle
+    picture {
+      ... on MediaSet {
+        original {
+          url
+        }
+      }
+      ... on NftImage {
+        uri
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useRecommendedProfilesQuery__
+ *
+ * To run a query within a React component, call `useRecommendedProfilesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRecommendedProfilesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRecommendedProfilesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useRecommendedProfilesQuery(baseOptions?: Apollo.QueryHookOptions<RecommendedProfilesQuery, RecommendedProfilesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<RecommendedProfilesQuery, RecommendedProfilesQueryVariables>(RecommendedProfilesDocument, options);
+      }
+export function useRecommendedProfilesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RecommendedProfilesQuery, RecommendedProfilesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<RecommendedProfilesQuery, RecommendedProfilesQueryVariables>(RecommendedProfilesDocument, options);
+        }
+export type RecommendedProfilesQueryHookResult = ReturnType<typeof useRecommendedProfilesQuery>;
+export type RecommendedProfilesLazyQueryHookResult = ReturnType<typeof useRecommendedProfilesLazyQuery>;
+export type RecommendedProfilesQueryResult = Apollo.QueryResult<RecommendedProfilesQuery, RecommendedProfilesQueryVariables>;
 export const ResolveProfileAddressDocument = gql`
     query ResolveProfileAddress($request: SingleProfileQueryRequest!) {
   profile(request: $request) {

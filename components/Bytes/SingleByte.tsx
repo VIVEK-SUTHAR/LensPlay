@@ -19,9 +19,9 @@ import {
 import { freeCollectPublication } from "../../api";
 import { SHOT } from "../../constants/tracking";
 import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
-import { Root } from "../../types/Lens/Feed";
 import { ToastType } from "../../types/Store";
 import getIPFSLink from "../../utils/getIPFSLink";
+import getRawurl from "../../utils/getRawUrl";
 import TrackAction from "../../utils/Track";
 import Sheet from "../Bottom";
 import Icon from "../Icon";
@@ -30,52 +30,55 @@ import Button from "../UI/Button";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
 import { LikeButton } from "../VIdeo";
+import { ShotsPublication } from "./ByteCard";
 
 interface SingleByteProps {
-  item: Root;
+  item: ShotsPublication;
   index: number;
   currentIndex: number;
 }
 
 const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
-  const [likes, setLikes] = useState<number>(item.stats.totalUpvotes);
   const [mute, setMute] = useState<boolean>(false);
+  const [collected, setCollected] = useState<boolean>(item?.hasCollectedByMe);
   const [totalCollects, setTotalCollects] = useState<number>(
-    item.stats.totalAmountOfCollects
+    item?.stats?.totalAmountOfCollects
   );
-  const navigation = useNavigation();
-  const { PRIMARY } = useThemeStore();
-  const toast = useToast();
-  const ref = useRef<Video>(null);
+
+  const ref = React.useRef<Video>(null);
   const descriptionRef = useRef<BottomSheetMethods>(null);
   const collectSheetRef = useRef<BottomSheetMethods>(null);
-  const { accessToken } = useAuthStore();
+
   const bottomTabBarHeight = useBottomTabBarHeight();
+
+  const navigation = useNavigation();
+  const { PRIMARY } = useThemeStore();
+  const { accessToken } = useAuthStore();
+  const toast = useToast();
 
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-  const [collected, setCollected] = useState<boolean>(item?.hasCollectedByMe);
   navigation.addListener("blur", (e) => {
     ref.current?.pauseAsync();
   });
 
-  const onPress = useCallback((ref) => {
+  const onPress = useCallback((ref: React.RefObject<BottomSheetMethods>) => {
     ref?.current?.snapToIndex(0);
   }, []);
 
   const shareVideo = async () => {
     try {
       const result = await Share.share({
-        message: `Let's watch ${item.metadata.name} on LensPlay,here's link,https://lensplay.xyz/watch/${item.id}`,
+        message: `Let's watch ${item?.metadata?.name} on LensPlay,here's link,https://lensplay.xyz/watch/${item.id}`,
       });
     } catch (error) {
       // console.log(error);
     }
   };
 
-  const collectPublication = async () => {
+  const collectPublication = React.useCallback(async () => {
     try {
-      const data = await freeCollectPublication(item.id, accessToken);
+      const data = await freeCollectPublication(item?.id, accessToken);
       if (data) {
         toast.show("Collect Submitted", ToastType.SUCCESS, true);
         setCollected(true);
@@ -90,7 +93,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
     } finally {
       //
     }
-  };
+  }, []);
 
   return (
     <>
@@ -118,7 +121,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             videoProps={{
               ref: ref,
               source: {
-                uri: getIPFSLink(item.metadata.media[0]?.original?.url),
+                uri: getIPFSLink(item?.metadata?.media[0]?.original?.url),
               },
               onError(error) {
                 // console.log(error);
@@ -128,7 +131,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
               resizeMode: ResizeMode.CONTAIN,
               isMuted: mute,
               posterSource: {
-                uri: getIPFSLink(item?.metadata.cover),
+                uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
               },
               isLooping: true,
               posterStyle: {
@@ -188,7 +191,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
                     fontWeight: "600",
                   }}
                   numberOfLines={1}
-                  title={item.metadata.name}
+                  title={item?.metadata?.name}
                 />
                 <StyledText
                   style={{
@@ -197,7 +200,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
                     fontWeight: "500",
                   }}
                   numberOfLines={2}
-                  title={item.metadata.description}
+                  title={item?.metadata?.description}
                 />
               </Pressable>
               <View
@@ -209,18 +212,18 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
                 }}
               >
                 <Avatar
-                  src={item.profile?.picture?.original?.url}
+                  src={getRawurl(item?.profile?.picture)}
                   height={40}
                   width={40}
                 />
                 <View style={{ marginLeft: 8 }}>
                   <StyledText
                     style={{ color: "white", fontSize: 16, fontWeight: "500" }}
-                    title={item.profile.name || item.profile.id}
+                    title={item?.profile?.name || item?.profile?.id}
                   />
                   <StyledText
                     style={{ color: "gray", fontSize: 12, fontWeight: "500" }}
-                    title={item.profile.handle}
+                    title={item?.profile?.handle}
                   />
                 </View>
               </View>
@@ -237,8 +240,8 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
           }}
         >
           <LikeButton
-            like={likes}
-            id={item.id}
+            like={item?.stats?.totalUpvotes}
+            id={item?.id}
             isalreadyLiked={item?.reaction === "UPVOTE"}
             bytes={true}
           />
@@ -251,13 +254,13 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             onPress={(e) => {
               e.preventDefault();
               navigation.navigate("ShotsComment", {
-                publicationId: item.id,
+                publicationId: item?.id,
               });
             }}
           >
             <Icon name="comment" size={32} />
             <Text style={{ color: "white" }}>
-              {item.stats.totalAmountOfComments}
+              {item?.stats?.totalAmountOfComments}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -326,7 +329,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
               >
                 <Image
                   source={{
-                    uri: getIPFSLink(item?.metadata?.cover),
+                    uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
                   }}
                   style={{
                     height: 180,

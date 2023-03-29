@@ -8,16 +8,14 @@ import {
   SafeAreaView,
   StyleSheet,
   TextInput,
-  View,
+  View
 } from "react-native";
 import { client } from "../apollo/client";
-import recommendedProfiles from "../apollo/Queries/recommendedProfiles";
 import searchProfileQuery from "../apollo/Queries/searchProfileQuery";
 import searchPublicationQuery from "../apollo/Queries/searchPublicationQuery";
 import Icon from "../components/Icon";
 import ProfileCard from "../components/ProfileCard";
-import Heading from "../components/UI/Heading";
-import ProfileCardSkeleton from "../components/UI/ProfileCardSkeleton";
+import Recommended from "../components/Search/Recommended";
 import StyledText from "../components/UI/StyledText";
 import Tabs, { Tab } from "../components/UI/Tabs";
 import VideoCard from "../components/VideoCard";
@@ -36,7 +34,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
     []
   );
   const [searchChannelResult, setSearchChannelResult] = useState<Profile[]>([]);
-  const [recommended, setRecommended] = useState<Profile[]>([]);
   const [isRecommended, setIsRecommended] = useState<boolean>(true);
   const [keyword, setKeyword] = useState<string>("");
   const [isSearching, setIsSearching] = useState<boolean>(false);
@@ -108,30 +105,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
     onDebounce();
   }, [debouncedValue, searchType]);
 
-  const getRecommendedProfiles = async () => {
-    if (!isSearching) {
-      try {
-        const data = await client.query({
-          query: recommendedProfiles,
-          variables: {},
-          context: {
-            headers: {
-              "x-access-token": `Bearer ${authStore.accessToken}`,
-            },
-          },
-        });
-        setRecommended(data.data.recommendedProfiles);
-      } catch (error) {
-        if (error instanceof Error) {
-          console.log(error);
-        }
-      }
-    }
-  };
-
-  useEffect(() => {
-    getRecommendedProfiles();
-  }, []);
+ 
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -275,41 +249,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
           />
         </Tabs>
       ) : (
-        <>
-          {isRecommended && !isGuest && (
-            <View style={{ marginBottom: 16 }}>
-              <Heading
-                title={"Recommended Channels"}
-                style={{
-                  color: "white",
-                  fontSize: 20,
-                  fontWeight: "600",
-                  marginHorizontal: 16,
-                }}
-              />
-              {recommended.length === 0 && searchType === "videos" ? (
-                <Loader />
-              ) : (
-                <FlatList
-                  data={recommended}
-                  keyExtractor={(_, index) => index.toString()}
-                  renderItem={({ item }) => {
-                    return (
-                      <ProfileCard
-                        profileIcon={item?.picture?.original?.url}
-                        profileName={item?.name || item?.id}
-                        profileId={item?.id}
-                        isFollowed={item?.isFollowedByMe || false}
-                        handle={item?.handle}
-                        owner={item?.ownedBy}
-                      />
-                    );
-                  }}
-                />
-              )}
-            </View>
-          )}
-        </>
+          <Recommended/>
       )}
     </SafeAreaView>
   );
@@ -317,22 +257,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 
 export default Search;
 
-function Loader() {
-  return (
-    <>
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-    </>
-  );
-}
 function NotFound() {
   return (
     <View
