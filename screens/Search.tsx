@@ -1,3 +1,4 @@
+import { useLazyQuery } from "@apollo/client";
 import { StatusBar } from "expo-status-bar";
 import AnimatedLottieView from "lottie-react-native";
 import React, { useEffect, useState } from "react";
@@ -8,11 +9,8 @@ import {
   SafeAreaView,
   StyleSheet,
   TextInput,
-  View
+  View,
 } from "react-native";
-import { client } from "../apollo/client";
-import searchProfileQuery from "../apollo/Queries/searchProfileQuery";
-import searchPublicationQuery from "../apollo/Queries/searchPublicationQuery";
 import Icon from "../components/Icon";
 import ProfileCard from "../components/ProfileCard";
 import Recommended from "../components/Search/Recommended";
@@ -22,57 +20,60 @@ import VideoCard from "../components/VideoCard";
 import useDebounce from "../hooks/useDebounce";
 import { useGuestStore } from "../store/GuestStore";
 import { useAuthStore, useThemeStore } from "../store/Store";
-import { Profile } from "../types/Lens";
-import { LensPublication } from "../types/Lens/Feed";
+import {
+  SearchProfilesDocument,
+  SearchPublicationsDocument,
+  SearchRequestTypes,
+} from "../types/generated";
 import { RootStackScreenProps } from "../types/navigation/types";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const { DARK_PRIMARY } = useThemeStore();
   const authStore = useAuthStore();
-
-  const [searchPostResult, setSearchPostResult] = useState<LensPublication[]>(
-    []
-  );
-  const [searchChannelResult, setSearchChannelResult] = useState<Profile[]>([]);
-  const [isRecommended, setIsRecommended] = useState<boolean>(true);
   const [keyword, setKeyword] = useState<string>("");
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isfound, setIsfound] = useState<boolean>(true);
-  const [searchType, SetSearchType] = useState<"profile" | "videos">("profile");
+  const [searchType, SetSearchType] = useState<SearchRequestTypes>(
+    SearchRequestTypes.Profile
+  );
   const debouncedValue = useDebounce<string>(keyword, 500);
   const { isGuest } = useGuestStore();
+  const [showRecommended, setShowRecommended] = useState<boolean>(true);
+
+  const [searchChannels, { data: result, error, loading }] = useLazyQuery(
+    searchType === SearchRequestTypes.Profile
+      ? SearchProfilesDocument
+      : SearchPublicationsDocument
+  );
 
   const onDebounce = async () => {
     if (keyword.trim().length > 0) {
       try {
         if (isGuest) {
-          const result = await client.query({
-            query:
-              searchType === "profile"
-                ? searchProfileQuery
-                : searchPublicationQuery,
+          searchChannels({
             variables: {
-              query: keyword.trim().toLowerCase(),
+              request: {
+                type: searchType,
+                query: keyword,
+                limit: 30,
+                sources: ["lenstube"],
+              },
             },
           });
-          if (result?.data?.search?.items.length === 0) {
+          if (result?.search?.items?.length > 0) {
             setIsfound(false);
           } else {
             setIsfound(true);
-            if (searchType === "profile") {
-              setSearchChannelResult(result?.data?.search?.items);
-            } else {
-              setSearchPostResult(result?.data?.search?.items);
-            }
           }
         } else {
-          const result = await client.query({
-            query:
-              searchType === "profile"
-                ? searchProfileQuery
-                : searchPublicationQuery,
+          searchChannels({
             variables: {
-              query: keyword.trim().toLowerCase(),
+              request: {
+                type: searchType,
+                query: keyword,
+                limit: 30,
+                sources: ["lenstube"],
+              },
             },
             context: {
               headers: {
@@ -80,15 +81,10 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
               },
             },
           });
-          if (result?.data?.search?.items.length === 0) {
+          if (result?.items?.length > 0) {
             setIsfound(false);
           } else {
             setIsfound(true);
-            if (searchType === "profile") {
-              setSearchChannelResult(result?.data?.search?.items);
-            } else {
-              setSearchPostResult(result?.data?.search?.items);
-            }
           }
         }
       } catch (error) {
@@ -104,8 +100,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   useEffect(() => {
     onDebounce();
   }, [debouncedValue, searchType]);
-
- 
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -132,13 +126,12 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
               placeholderTextColor={"white"}
               selectionColor={"white"}
               onChange={(e) => {
-                setIsRecommended(false);
                 setKeyword(e.nativeEvent.text);
                 onDebounce();
               }}
               style={styles.textInput}
-              onBlur={() => {
-                setIsRecommended(false);
+              onFocus={() => {
+                setShowRecommended(false);
               }}
             />
           </View>
@@ -171,13 +164,13 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
           </View>
         </>
       )}
-      {searchPostResult?.length > 0 || searchChannelResult?.length > 0 ? (
+      {!showRecommended ? (
         <Tabs>
           <Tab.Screen
             name="Profile"
             listeners={{
               focus: () => {
-                SetSearchType("profile");
+                SetSearchType(SearchRequestTypes.Profile);
               },
             }}
             children={() =>
@@ -189,7 +182,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                     backgroundColor: "black",
                     height: "100%",
                   }}
-                  data={searchChannelResult}
+                  data={result?.search?.items}
                   keyExtractor={(_, index) => index.toString()}
                   renderItem={({ item }) => (
                     <ProfileCard
@@ -209,7 +202,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
             name="Videos"
             listeners={{
               focus: () => {
-                SetSearchType("videos");
+                SetSearchType(SearchRequestTypes.Publication);
               },
             }}
             children={() =>
@@ -221,25 +214,15 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                     backgroundColor: "black",
                     height: "100%",
                   }}
-                  data={searchPostResult}
+                  data={result?.search?.items}
                   keyExtractor={(_, index) => index.toString()}
                   renderItem={({ item, index }) => (
                     <View
                       style={{
                         backgroundColor: "black",
-                        // paddingHorizontal: 16,
                         paddingVertical: 8,
                       }}
                     >
-                      {/* <Heading
-                        title={item?.metadata?.name}
-                        style={{
-                          fontSize: 16,
-                          fontWeight: "600",
-                          color: "white",
-                        }}
-                        numberOfLines={1}
-                      /> */}
                       <VideoCard publication={item} id={index.toString()} />
                     </View>
                   )}
@@ -249,7 +232,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
           />
         </Tabs>
       ) : (
-          <Recommended/>
+        <Recommended />
       )}
     </SafeAreaView>
   );
@@ -292,6 +275,7 @@ function NotFound() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

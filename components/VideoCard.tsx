@@ -29,8 +29,6 @@ const VideoCard = ({
   height = 200,
   publication,
 }: videoPageProp) => {
-  console.log(publication?.profile?.id);
-  
   const [videoTime, setVideoTime] = React.useState<Maybe<string> | undefined>();
   const { setActivePublication } = useActivePublication();
   const navigation = useNavigation();
