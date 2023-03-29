@@ -33,7 +33,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const [keyword, setKeyword] = useState<string>("");
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isfound, setIsfound] = useState<boolean>(true);
-  const [searchType, SetSearchType] = useState<SearchRequestTypes>(
+  const [searchType, setSearchType] = useState<SearchRequestTypes>(
     SearchRequestTypes.Profile
   );
   const debouncedValue = useDebounce<string>(keyword, 500);
@@ -170,7 +170,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
             name="Profile"
             listeners={{
               focus: () => {
-                SetSearchType(SearchRequestTypes.Profile);
+                setSearchType(SearchRequestTypes.Profile);
               },
             }}
             children={() =>
@@ -206,7 +206,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
             name="Videos"
             listeners={{
               focus: () => {
-                SetSearchType(SearchRequestTypes.Publication);
+                setSearchType(SearchRequestTypes.Publication);
               },
             }}
             children={() =>
