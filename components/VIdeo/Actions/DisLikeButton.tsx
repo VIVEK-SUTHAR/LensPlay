@@ -15,6 +15,11 @@ import { useGuestStore } from "../../../store/GuestStore";
 import { ToastType } from "../../../types/Store";
 import TrackAction from "../../../utils/Track";
 import { PUBLICATION } from "../../../constants/tracking";
+import {
+  ReactionTypes,
+  useAddReactionMutation,
+  useRemoveReactionMutation,
+} from "../../../types/generated";
 
 type DisLikeButtonProps = {
   id: string;
@@ -25,35 +30,74 @@ const DisLikeButton = ({ isalreadyDisLiked, id }: DisLikeButtonProps) => {
   const authStore = useAuthStore();
   const userStore = useProfile();
   const { isGuest } = useGuestStore();
-  const toast = useToast();
   const { PRIMARY } = useThemeStore();
   const { videopageStats, setVideoPageStats } = useReactionStore();
+  const { accessToken } = useAuthStore();
+  const toast = useToast();
+
+  const [addReaction] = useAddReactionMutation({
+    onError: (error) => {
+      console.log(error.message, "add e");
+      toast.show("Something went wrong!", ToastType.ERROR, true);
+    },
+    onCompleted: (data) => {
+      console.log(data, "add");
+      setVideoPageStats(
+        false,
+        true,
+        videopageStats.isLiked
+          ? videopageStats.likeCount - 1
+          : videopageStats.likeCount
+      );
+    },
+  });
+
+  const [removeReaction] = useRemoveReactionMutation({
+    onError: (error) => {
+      console.log(error.message, "remove e");
+      toast.show("Something went wrong!", ToastType.ERROR, true);
+    },
+    onCompleted: (data) => {
+      setVideoPageStats(false, false, videopageStats.likeCount);
+    },
+  });
 
   const onDislike = async () => {
     if (isGuest) {
       toast.show("Please Login", ToastType.ERROR, true);
       return;
     }
-    if (!isalreadyDisLiked && !isGuest) {
-      const data = await addLike(
-        authStore.accessToken,
-        userStore.currentProfile?.id,
-        id,
-        "DOWNVOTE"
-      );
-      const res = await removeLike(
-        authStore.accessToken,
-        userStore.currentProfile?.id,
-        id
-      );
-      if (res?.removeReaction === null) {
-        if (videopageStats.likeCount === 0) {
-          setVideoPageStats(false, true, videopageStats.likeCount);
-        } else {
-          setVideoPageStats(false, true, videopageStats.likeCount - 1);
-        }
-      }
+    if (!isalreadyDisLiked) {
+      addReaction({
+        variables: {
+          request: {
+            profileId: userStore.currentProfile?.id,
+            reaction: ReactionTypes.Downvote,
+            publicationId: id,
+          },
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${accessToken}`,
+          },
+        },
+      });
       TrackAction(PUBLICATION.DISLIKE);
+    } else {
+      removeReaction({
+        variables: {
+          request: {
+            profileId: userStore.currentProfile?.id,
+            reaction: ReactionTypes.Downvote,
+            publicationId: id,
+          },
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${accessToken}`,
+          },
+        },
+      });
     }
   };
 

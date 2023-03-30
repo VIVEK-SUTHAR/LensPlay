@@ -5,7 +5,7 @@ import {
   Comment as IComment,
   PublicationMainFocus,
   PublicationsQueryRequest,
-  useCommentsQuery
+  useCommentsQuery,
 } from "../../types/generated";
 import formatHandle from "../../utils/formatHandle";
 import getRawurl from "../../utils/getRawUrl";
@@ -46,6 +46,8 @@ const Comment = ({
         profileId: currentProfile?.id,
       },
     },
+    initialFetchPolicy: "network-only",
+    refetchWritePolicy: "merge",
     context: {
       headers: {
         "x-access-token": `Bearer ${accessToken}`,
@@ -78,6 +80,8 @@ const Comment = ({
         <ScrollView>
           <View>
             {allComments?.map((item: IComment) => {
+              console.log(item.reaction);
+
               return (
                 <CommentCard
                   key={item?.id}
@@ -103,6 +107,8 @@ const Comment = ({
       </SafeAreaView>
     );
   }
+
+  return <></>;
 };
 
 export default Comment;

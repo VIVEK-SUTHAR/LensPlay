@@ -9,12 +9,16 @@ import {
   useThemeStore,
   useToast,
 } from "../../../store/Store";
-import { addLike } from "../../../api";
 import Icon from "../../Icon";
 import { useGuestStore } from "../../../store/GuestStore";
 import { ToastType } from "../../../types/Store";
 import TrackAction from "../../../utils/Track";
 import { PUBLICATION, SHOT } from "../../../constants/tracking";
+import {
+  ReactionTypes,
+  useAddReactionMutation,
+  useRemoveReactionMutation,
+} from "../../../types/generated";
 
 type LikeButtonProps = {
   id: string;
@@ -29,7 +33,6 @@ const LikeButton = ({
   id,
   bytes = false,
 }: LikeButtonProps) => {
-  const authStore = useAuthStore();
   const userStore = useProfile();
   const { PRIMARY } = useThemeStore();
   const { isGuest } = useGuestStore();
@@ -37,26 +40,75 @@ const LikeButton = ({
   const toast = useToast();
   const [isLiked, setIsLiked] = useState(isalreadyLiked);
   const [likeCount, setLikeCount] = useState(like);
+  const { accessToken } = useAuthStore();
+
+  const [addReaction] = useAddReactionMutation({
+    onError: (e) => {
+      console.log(e.message);
+
+      toast.show("Something went wrong!", ToastType.ERROR, true);
+    },
+    onCompleted: () => {
+      if (bytes) {
+        setLikeCount(likeCount + 1);
+        setIsLiked(true);
+      } else {
+        setVideoPageStats(true, false, like + 1);
+      }
+    },
+  });
+
+  const [removeReaction] = useRemoveReactionMutation({
+    onError: (e) => {
+      console.log(e.message);
+      toast.show("Something went wrong!", ToastType.ERROR, true);
+    },
+    onCompleted: () => {
+      if (bytes) {
+        setLikeCount(likeCount - 1);
+        setIsLiked(false);
+      } else {
+        setVideoPageStats(false, false, like - 1);
+      }
+    },
+  });
 
   const onLike = async () => {
     if (isGuest) {
       toast.show("Please Login", ToastType.ERROR, true);
+      return;
     }
-    if (!isalreadyLiked && !isGuest) {
-      const res = await addLike(
-        authStore.accessToken,
-        userStore.currentProfile?.id,
-        id,
-        "UPVOTE"
-      );
-      if (res?.addReaction === null && !bytes) {
-        setVideoPageStats(true, false, like + 1);
-      }
-      if (res?.addReaction === null && bytes) {
-        setLikeCount(likeCount + 1);
-        setIsLiked(true);
-      }
+    if (!isalreadyLiked) {
+      addReaction({
+        variables: {
+          request: {
+            profileId: userStore.currentProfile?.id,
+            reaction: ReactionTypes.Upvote,
+            publicationId: id,
+          },
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${accessToken}`,
+          },
+        },
+      });
       TrackAction(bytes ? SHOT.SHOTS_LIKE : PUBLICATION.LIKE);
+    } else {
+      removeReaction({
+        variables: {
+          request: {
+            profileId: userStore.currentProfile?.id,
+            reaction: ReactionTypes.Upvote,
+            publicationId: id,
+          },
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${accessToken}`,
+          },
+        },
+      });
     }
   };
 

@@ -7,7 +7,7 @@ import {
   RefreshControl,
   SafeAreaView,
   ScrollView,
-  View
+  View,
 } from "react-native";
 import Icon from "../components/Icon";
 import PleaseLogin from "../components/PleaseLogin";
@@ -29,10 +29,11 @@ import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import {
   Maybe,
   MediaSet,
-  Post, PublicationMainFocus,
+  Post,
+  PublicationMainFocus,
   PublicationTypes,
   useProfilePostsQuery,
-  useProfileQuery
+  useProfileQuery,
 } from "../types/generated";
 import { RootTabScreenProps } from "../types/navigation/types";
 import extractURLs from "../utils/extractURL";

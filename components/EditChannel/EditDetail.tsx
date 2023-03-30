@@ -82,6 +82,7 @@ export default function EditDetail() {
       toast.show("Some error occured please try again", ToastType.ERROR, true);
     },
   });
+
   const uploadMetadata = async () => {
     let coverURI = getRawurl(currentProfile?.coverPicture);
 
@@ -96,6 +97,7 @@ export default function EditDetail() {
       socialLinks: socialLinks,
       coverImage: coverImageBlob ? `ipfs://${coverURI}` : coverURI,
     });
+
     const headersList = {
       "Content-Type": "application/json",
       Authorization: "Bearer ENGINEERCANTAKEOVERWORLD",

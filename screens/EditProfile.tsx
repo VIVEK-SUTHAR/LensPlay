@@ -5,7 +5,6 @@ import Tabs, { Tab } from "../components/UI/Tabs";
 import { RootStackScreenProps } from "../types/navigation/types";
 
 const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
-  
   return (
     <Tabs>
       <Tab.Screen name="Avatar" component={EditAvatar} />

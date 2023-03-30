@@ -15,6 +15,7 @@ import { freeCollectPublication, freeMirror } from "../api";
 import Sheet from "../components/Bottom";
 import Comment from "../components/Comments/";
 import CommentInput from "../components/Comments/CommentInput";
+import Skeleton from "../components/common/Skeleton";
 import Button from "../components/UI/Button";
 import StyledText from "../components/UI/StyledText";
 import {
@@ -207,53 +208,21 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
               showsHorizontalScrollIndicator={false}
             >
               {loading || !reaction || !comment ? (
-                <>
-                  <Button
-                    title={""}
-                    mx={4}
-                    px={34}
-                    width={"auto"}
-                    bg={dark_primary}
-                    type={"filled"}
-                    borderRadius={8}
-                  />
-                  <Button
-                    title={""}
-                    mx={4}
-                    px={34}
-                    width={"auto"}
-                    bg={dark_primary}
-                    type={"filled"}
-                    borderRadius={8}
-                  />
-                  <Button
-                    title={""}
-                    mx={4}
-                    px={34}
-                    width={"auto"}
-                    bg={dark_primary}
-                    type={"filled"}
-                    borderRadius={8}
-                  />
-                  <Button
-                    title={""}
-                    mx={4}
-                    px={34}
-                    width={"auto"}
-                    bg={dark_primary}
-                    type={"filled"}
-                    borderRadius={8}
-                  />
-                  <Button
-                    title={""}
-                    mx={4}
-                    px={40}
-                    width={"auto"}
-                    bg={dark_primary}
-                    type={"filled"}
-                    borderRadius={8}
-                  />
-                </>
+                <Skeleton
+                  children={
+                    <Button
+                      title={""}
+                      mx={4}
+                      px={34}
+                      width={"auto"}
+                      bg={dark_primary}
+                      type={"filled"}
+                      borderRadius={8}
+                    />
+                  }
+                  number={5}
+                  horizontal={true}
+                />
               ) : (
                 <>
                   <LikeButton
