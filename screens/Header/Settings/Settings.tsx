@@ -11,11 +11,11 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import Sheet from "../components/Bottom";
-import Icon from "../components/Icon";
-import Button from "../components/UI/Button";
-import Heading from "../components/UI/Heading";
-import StyledText from "../components/UI/StyledText";
+import Sheet from "../../../components/Bottom";
+import Icon from "../../../components/Icon";
+import Button from "../../../components/UI/Button";
+import Heading from "../../../components/UI/Heading";
+import StyledText from "../../../components/UI/StyledText";
 import {
   LENSPLAY_DISCORD,
   LENSPLAY_PRIVACY,
@@ -23,13 +23,13 @@ import {
   LENSPLAY_TERMS,
   LENSPLAY_TWITTER,
   OFFICIAL_EMAIL,
-} from "../constants";
-import { dark_primary } from "../constants/Colors";
-import { AUTH } from "../constants/tracking";
-import { useGuestStore } from "../store/GuestStore";
-import { RootStackScreenProps } from "../types/navigation/types";
-import TrackAction from "../utils/Track";
-import UPADTES from "../update.json";
+} from "../../../constants";
+import { dark_primary } from "../../../constants/Colors";
+import { AUTH } from "../../../constants/tracking";
+import { useGuestStore } from "../../../store/GuestStore";
+import { RootStackScreenProps } from "../../../types/navigation/types";
+import TrackAction from "../../../utils/Track";
+import UPADTES from "../../../update.json";
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
 type SocialMediaBadgeProps = {

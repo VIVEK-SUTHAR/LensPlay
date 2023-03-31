@@ -7,14 +7,14 @@ import {
   SafeAreaView,
   ScrollView,
 } from "react-native";
-import Skeleton from "../components/common/Skeleton";
-import NotFound from "../components/Profile/NotFound";
-import StyledText from "../components/UI/StyledText";
-import VideoCardSkeleton from "../components/UI/VideoCardSkeleton";
-import VideoCard from "../components/VideoCard";
-import { dark_primary } from "../constants/Colors";
-import { useGuestStore } from "../store/GuestStore";
-import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
+import Skeleton from "../../../components/common/Skeleton";
+import NotFound from "../../../components/Profile/NotFound";
+import StyledText from "../../../components/UI/StyledText";
+import VideoCardSkeleton from "../../../components/UI/VideoCardSkeleton";
+import VideoCard from "../../../components/VideoCard";
+import { dark_primary } from "../../../constants/Colors";
+import { useGuestStore } from "../../../store/GuestStore";
+import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
   Mirror,
   Post,
@@ -22,9 +22,9 @@ import {
   PublicationSortCriteria,
   PublicationTypes,
   useExploreQuery,
-} from "../types/generated";
-import { LensPublication } from "../types/Lens/Feed";
-import { RootTabScreenProps } from "../types/navigation/types";
+} from "../../../types/generated";
+import { LensPublication } from "../../../types/Lens/Feed";
+import { RootTabScreenProps } from "../../../types/navigation/types";
 
 type Explore = Post | Mirror;
 

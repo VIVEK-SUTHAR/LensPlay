@@ -38,7 +38,7 @@ const AllVideos = ({ Videos, navigation }: AllVideosProps) => {
               fontWeight: "600",
             }}
           />
-          {Videos ? (
+          {Videos && Videos?.length > 0 ? (
             <StyledText
               title={`(${Videos?.length})`}
               style={{

@@ -9,22 +9,22 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { createFreeSubscribe } from "../api";
-import { client } from "../apollo/client";
-import getUserProfile from "../apollo/Queries/getUserProfile";
-import Icon from "../components/Icon";
-import AllVideos from "../components/Profile/AllVideos";
-import CollectedVideos from "../components/Profile/CollectedVideos";
-import MirroredVideos from "../components/Profile/MirroredVideos";
-import Avatar from "../components/UI/Avatar";
-import Button from "../components/UI/Button";
-import Heading from "../components/UI/Heading";
-import ProfileSkeleton from "../components/UI/ProfileSkeleton";
-import StyledText from "../components/UI/StyledText";
-import { PROFILE } from "../constants/tracking";
-import VERIFIED_CHANNELS from "../constants/Varified";
-import { useGuestStore } from "../store/GuestStore";
-import { useAuthStore, useThemeStore, useToast } from "../store/Store";
+import { createFreeSubscribe } from "../../api";
+import { client } from "../../apollo/client";
+import getUserProfile from "../../apollo/Queries/getUserProfile";
+import Icon from "../../components/Icon";
+import AllVideos from "../../components/Profile/AllVideos";
+import CollectedVideos from "../../components/Profile/CollectedVideos";
+import MirroredVideos from "../../components/Profile/MirroredVideos";
+import Avatar from "../../components/UI/Avatar";
+import Button from "../../components/UI/Button";
+import Heading from "../../components/UI/Heading";
+import ProfileSkeleton from "../../components/UI/ProfileSkeleton";
+import StyledText from "../../components/UI/StyledText";
+import { PROFILE } from "../../constants/tracking";
+import VERIFIED_CHANNELS from "../../constants/Varified";
+import { useGuestStore } from "../../store/GuestStore";
+import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
 import {
   Attribute,
   MediaSet,
@@ -33,15 +33,15 @@ import {
   PublicationTypes,
   useProfilePostsQuery,
   useProfileQuery,
-} from "../types/generated";
-import { Profile } from "../types/Lens";
-import { RootStackScreenProps } from "../types/navigation/types";
-import { ToastType } from "../types/Store";
-import extractURLs from "../utils/extractURL";
-import formatHandle from "../utils/formatHandle";
-import getIPFSLink from "../utils/getIPFSLink";
-import TrackAction from "../utils/Track";
-import getRawurl from "../utils/getRawUrl";
+} from "../../types/generated";
+import { Profile } from "../../types/Lens";
+import { RootStackScreenProps } from "../../types/navigation/types";
+import { ToastType } from "../../types/Store";
+import extractURLs from "../../utils/extractURL";
+import formatHandle from "../../utils/formatHandle";
+import getIPFSLink from "../../utils/getIPFSLink";
+import TrackAction from "../../utils/Track";
+import getRawurl from "../../utils/getRawUrl";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);

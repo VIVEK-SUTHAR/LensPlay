@@ -4,7 +4,7 @@ import { useAuthStore } from "../../store/Store";
 import {
   PublicationMainFocus,
   PublicationTypes,
-  useProfileMirrorsQuery
+  useProfileMirrorsQuery,
 } from "../../types/generated";
 import formatHandle from "../../utils/formatHandle";
 import Icon from "../Icon";
@@ -53,7 +53,6 @@ const MirroredVideos = ({
     },
   });
 
-    
   return (
     <View style={{ marginTop: 16 }}>
       <View
@@ -77,7 +76,8 @@ const MirroredVideos = ({
               fontWeight: "600",
             }}
           />
-          {AllMirrorVideosData?.publications.items ? (
+          {AllMirrorVideosData?.publications.items &&
+          AllMirrorVideosData?.publications.items.length > 0 ? (
             <StyledText
               title={`(${AllMirrorVideosData?.publications.items?.length})`}
               style={{

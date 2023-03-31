@@ -9,19 +9,20 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import PleaseLogin from "../../components/PleaseLogin";
-import Button from "../../components/UI/Button";
-import Heading from "../../components/UI/Heading";
-import VideoCardSkeleton from "../../components/UI/VideoCardSkeleton";
-import VideoCard from "../../components/VideoCard";
-import { useGuestStore } from "../../store/GuestStore";
-import { useAuthStore, useProfile, useThemeStore } from "../../store/Store";
+import PleaseLogin from "../../../components/PleaseLogin";
+import Button from "../../../components/UI/Button";
+import Heading from "../../../components/UI/Heading";
+import VideoCardSkeleton from "../../../components/UI/VideoCardSkeleton";
+import VideoCard from "../../../components/VideoCard";
+import { useGuestStore } from "../../../store/GuestStore";
+import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
   FeedItemRoot,
   PublicationMainFocus,
   useFeedQuery,
-} from "../../types/generated";
-import { RootTabScreenProps } from "../../types/navigation/types";
+} from "../../../types/generated";
+import { RootTabScreenProps } from "../../../types/navigation/types";
+import Skeleton from "../../../components/common/Skeleton";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -75,7 +76,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   };
 
   if (isGuest) return <PleaseLogin />;
-  if (loading) return <Loader />;
+  if (loading) return <Skeleton children={<VideoCardSkeleton />} number={10} />;
   if (error) return <NotFound navigation={navigation} />;
   if (Feeddata?.feed?.items?.length === 0)
     return <NotFound navigation={navigation} />;
@@ -128,7 +129,7 @@ const NotFound = ({ navigation }: { navigation: any }) => {
           style={{
             height: "auto",
           }}
-          source={require("../../assets/notfound.json")}
+          source={require("../../../assets/notfound.json")}
         />
         <View
           style={{
@@ -168,18 +169,6 @@ const NotFound = ({ navigation }: { navigation: any }) => {
     </SafeAreaView>
   );
 };
-
-const Loader = () => (
-  <SafeAreaView style={styles.container}>
-    <ScrollView>
-      <VideoCardSkeleton />
-      <VideoCardSkeleton />
-      <VideoCardSkeleton />
-      <VideoCardSkeleton />
-      <VideoCardSkeleton />
-    </ScrollView>
-  </SafeAreaView>
-);
 
 const styles = StyleSheet.create({
   container: {

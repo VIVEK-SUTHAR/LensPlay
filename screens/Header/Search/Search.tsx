@@ -11,21 +11,21 @@ import {
   TextInput,
   View,
 } from "react-native";
-import Icon from "../components/Icon";
-import ProfileCard from "../components/ProfileCard";
-import Recommended from "../components/Search/Recommended";
-import StyledText from "../components/UI/StyledText";
-import Tabs, { Tab } from "../components/UI/Tabs";
-import VideoCard from "../components/VideoCard";
-import useDebounce from "../hooks/useDebounce";
-import { useGuestStore } from "../store/GuestStore";
-import { useAuthStore, useThemeStore } from "../store/Store";
+import Icon from "../../../components/Icon";
+import ProfileCard from "../../../components/ProfileCard";
+import Recommended from "../../../components/Search/Recommended";
+import StyledText from "../../../components/UI/StyledText";
+import Tabs, { Tab } from "../../../components/UI/Tabs";
+import VideoCard from "../../../components/VideoCard";
+import useDebounce from "../../../hooks/useDebounce";
+import { useGuestStore } from "../../../store/GuestStore";
+import { useAuthStore, useThemeStore } from "../../../store/Store";
 import {
   SearchProfilesDocument,
   SearchPublicationsDocument,
   SearchRequestTypes,
-} from "../types/generated";
-import { RootStackScreenProps } from "../types/navigation/types";
+} from "../../../types/generated";
+import { RootStackScreenProps } from "../../../types/navigation/types";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const { DARK_PRIMARY } = useThemeStore();
@@ -226,7 +226,7 @@ function NotFound() {
         style={{
           height: "auto",
         }}
-        source={require("../assets/notfound.json")}
+        source={require("../../../assets/notfound.json")}
       />
       <View
         style={{

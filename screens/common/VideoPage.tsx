@@ -11,13 +11,13 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { freeCollectPublication, freeMirror } from "../api";
-import Sheet from "../components/Bottom";
-import Comment from "../components/Comments/";
-import CommentInput from "../components/Comments/CommentInput";
-import Skeleton from "../components/common/Skeleton";
-import Button from "../components/UI/Button";
-import StyledText from "../components/UI/StyledText";
+import { freeCollectPublication, freeMirror } from "../../api";
+import Sheet from "../../components/Bottom";
+import Comment from "../../components/Comments";
+import CommentInput from "../../components/Comments/CommentInput";
+import Skeleton from "../../components/common/Skeleton";
+import Button from "../../components/UI/Button";
+import StyledText from "../../components/UI/StyledText";
 import {
   CollectButton,
   LikeButton,
@@ -25,27 +25,27 @@ import {
   ShareButton,
   VideoCreator,
   VideoMeta,
-} from "../components/VIdeo";
-import DisLikeButton from "../components/VIdeo/Actions/DisLikeButton";
-import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
-import Player from "../components/VideoPlayer";
-import { STATIC_ASSET } from "../constants";
-import { dark_primary, primary } from "../constants/Colors";
-import { PUBLICATION } from "../constants/tracking";
-import { useReaction } from "../hooks/useLensQuery";
+} from "../../components/VIdeo";
+import DisLikeButton from "../../components/VIdeo/Actions/DisLikeButton";
+import MirrorButton from "../../components/VIdeo/Actions/MirrorButton";
+import Player from "../../components/VideoPlayer";
+import { STATIC_ASSET } from "../../constants";
+import { dark_primary, primary } from "../../constants/Colors";
+import { PUBLICATION } from "../../constants/tracking";
+import { useReaction } from "../../hooks/useLensQuery";
 import {
   useActivePublication,
   useAuthStore,
   useProfile,
   useReactionStore,
   useToast,
-} from "../store/Store";
-import { RootStackScreenProps } from "../types/navigation/types";
-import { ToastType } from "../types/Store";
-import extractURLs from "../utils/extractURL";
-import getIPFSLink from "../utils/getIPFSLink";
-import getRawurl from "../utils/getRawUrl";
-import TrackAction from "../utils/Track";
+} from "../../store/Store";
+import { RootStackScreenProps } from "../../types/navigation/types";
+import { ToastType } from "../../types/Store";
+import extractURLs from "../../utils/extractURL";
+import getIPFSLink from "../../utils/getIPFSLink";
+import getRawurl from "../../utils/getRawUrl";
+import TrackAction from "../../utils/Track";
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
   const { activePublication } = useActivePublication();
   const toast = useToast();

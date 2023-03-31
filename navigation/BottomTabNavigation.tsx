@@ -7,11 +7,11 @@ import Icon from "../components/Icon";
 import Avatar from "../components/UI/Avatar";
 import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
-import Bytes from "../screens/BottomTabs/Bytes";
-import Feed from "../screens/BottomTabs/Feed";
-import Notifications from "../screens/Notification";
-import ProfileScreen from "../screens/Profile";
-import Trending from "../screens/Trending";
+import Bytes from "../screens/BottomTabs/Shots/Bytes";
+import Feed from "../screens/BottomTabs/Home/Feed";
+import Notifications from "../screens/BottomTabs/Notification/Notification";
+import ProfileScreen from "../screens/BottomTabs/Profile/Profile";
+import Trending from "../screens/BottomTabs/Explore/Trending";
 import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
 import {
   RootStackScreenProps,

@@ -7,21 +7,21 @@ import {
   TextInput,
   View,
 } from "react-native";
-import Button from "../components/UI/Button";
-import Dropdown from "../components/UI/Dropdown";
-import Heading from "../components/UI/Heading";
-import StyledText from "../components/UI/StyledText";
-import { dark_primary } from "../constants/Colors";
-import { PUBLICATION } from "../constants/tracking";
-import { useGuestStore } from "../store/GuestStore";
-import { useAuthStore, useThemeStore, useToast } from "../store/Store";
+import Button from "../../components/UI/Button";
+import Dropdown from "../../components/UI/Dropdown";
+import Heading from "../../components/UI/Heading";
+import StyledText from "../../components/UI/StyledText";
+import { dark_primary } from "../../constants/Colors";
+import { PUBLICATION } from "../../constants/tracking";
+import { useGuestStore } from "../../store/GuestStore";
+import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
 import {
   PublicationReportingReason,
   useReportPublicationMutation,
-} from "../types/generated";
-import { RootStackScreenProps } from "../types/navigation/types";
-import { ToastType } from "../types/Store";
-import TrackAction from "../utils/Track";
+} from "../../types/generated";
+import { RootStackScreenProps } from "../../types/navigation/types";
+import { ToastType } from "../../types/Store";
+import TrackAction from "../../utils/Track";
 
 type subreason = {
   reason: string;

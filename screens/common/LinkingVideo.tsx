@@ -11,15 +11,15 @@ import {
   ScrollView,
   View,
 } from "react-native";
-import { freeCollectPublication, freeMirror } from "../api";
-import fetchPublicationById from "../apollo/Queries/fetchPublicationById";
-import getComments from "../apollo/Queries/getComments";
-import { client } from "../apollo/client";
-import Sheet from "../components/Bottom";
-import Comment from "../components/Comments";
-import CommentInput from "../components/Comments/CommentInput";
-import Button from "../components/UI/Button";
-import StyledText from "../components/UI/StyledText";
+import { freeCollectPublication, freeMirror } from "../../api";
+import fetchPublicationById from "../../apollo/Queries/fetchPublicationById";
+import getComments from "../../apollo/Queries/getComments";
+import { client } from "../../apollo/client";
+import Sheet from "../../components/Bottom";
+import Comment from "../../components/Comments";
+import CommentInput from "../../components/Comments/CommentInput";
+import Button from "../../components/UI/Button";
+import StyledText from "../../components/UI/StyledText";
 import {
   CollectButton,
   LikeButton,
@@ -27,27 +27,27 @@ import {
   ShareButton,
   VideoCreator,
   VideoMeta,
-} from "../components/VIdeo";
-import DisLikeButton from "../components/VIdeo/Actions/DisLikeButton";
-import MirrorButton from "../components/VIdeo/Actions/MirrorButton";
-import Player from "../components/VideoPlayer";
-import { primary } from "../constants/Colors";
+} from "../../components/VIdeo";
+import DisLikeButton from "../../components/VIdeo/Actions/DisLikeButton";
+import MirrorButton from "../../components/VIdeo/Actions/MirrorButton";
+import Player from "../../components/VideoPlayer";
+import { primary } from "../../constants/Colors";
 import {
   useAuthStore,
   useProfile,
   useReactionStore,
   useToast,
-} from "../store/Store";
-import { Comments, LensPublication } from "../types/Lens/Feed";
-import { ToastType } from "../types/Store";
-import { Mirror, Post } from "../types/generated";
-import { RootStackScreenProps } from "../types/navigation/types";
-import extractURLs from "../utils/extractURL";
-import getIPFSLink from "../utils/getIPFSLink";
-import getAccessFromRefresh from "../utils/lens/getAccessFromRefresh";
-import getDefaultProfile from "../utils/lens/getDefaultProfile";
-import verifyTokens from "../utils/lens/verifyTokens";
-import storeTokens from "../utils/storeTokens";
+} from "../../store/Store";
+import { Comments, LensPublication } from "../../types/Lens/Feed";
+import { ToastType } from "../../types/Store";
+import { Mirror, Post } from "../../types/generated";
+import { RootStackScreenProps } from "../../types/navigation/types";
+import extractURLs from "../../utils/extractURL";
+import getIPFSLink from "../../utils/getIPFSLink";
+import getAccessFromRefresh from "../../utils/lens/getAccessFromRefresh";
+import getDefaultProfile from "../../utils/lens/getDefaultProfile";
+import verifyTokens from "../../utils/lens/verifyTokens";
+import storeTokens from "../../utils/storeTokens";
 
 const LinkingVideo = ({
   navigation,

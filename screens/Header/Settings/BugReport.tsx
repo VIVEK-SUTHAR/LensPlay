@@ -9,18 +9,18 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import Icon from "../components/Icon";
-import Button from "../components/UI/Button";
-import Dropdown from "../components/UI/Dropdown";
-import Input from "../components/UI/Input";
-import StyledText from "../components/UI/StyledText";
-import TextArea from "../components/UI/TextArea";
-import { dark_primary } from "../constants/Colors";
-import { useProfile, useToast } from "../store/Store";
-import { RootStackScreenProps } from "../types/navigation/types";
-import { ToastType } from "../types/Store";
-import getImageBlobFromUri from "../utils/getImageBlobFromUri";
-import uploadImageToIPFS from "../utils/uploadImageToIPFS";
+import Icon from "../../../components/Icon";
+import Button from "../../../components/UI/Button";
+import Dropdown from "../../../components/UI/Dropdown";
+import Input from "../../../components/UI/Input";
+import StyledText from "../../../components/UI/StyledText";
+import TextArea from "../../../components/UI/TextArea";
+import { dark_primary } from "../../../constants/Colors";
+import { useProfile, useToast } from "../../../store/Store";
+import { ToastType } from "../../../types/Store";
+import { RootStackScreenProps } from "../../../types/navigation/types";
+import getImageBlobFromUri from "../../../utils/getImageBlobFromUri";
+import uploadImageToIPFS from "../../../utils/uploadImageToIPFS";
 
 export type BugCategory = {
   reason: string;
@@ -39,7 +39,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
     imgLink: "",
     username: currentProfile?.handle,
   });
-  const [image, setimage] = useState(null);
+  const [image, setimage] = useState<string | null>(null);
 
   async function selectSS() {
     let coverresult = await ImagePicker.launchImageLibraryAsync({
@@ -50,7 +50,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
       base64: true,
     });
     if (!coverresult.canceled) {
-      setimage(coverresult.assets[0].uri);
+      setimage(coverresult?.assets[0]?.uri);
     }
   }
   const [selectData, setselectData] = useState<BugCategory>({ reason: "" });

@@ -7,18 +7,19 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import NotificationCard from "../components/Notifications";
-import { NotificationTypes } from "../components/Notifications/index.d";
-import Skleton from "../components/Notifications/Skleton";
-import PleaseLogin from "../components/PleaseLogin";
-import Heading from "../components/UI/Heading";
-import Tabs, { Tab } from "../components/UI/Tabs";
-import { NOTIFICATION } from "../constants/tracking";
-import { useGuestStore } from "../store/GuestStore";
-import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
-import { Notification, useNotificationsQuery } from "../types/generated";
-import { RootTabScreenProps } from "../types/navigation/types";
-import TrackAction from "../utils/Track";
+import NotificationCard from "../../../components/Notifications";
+import { NotificationTypes } from "../../../components/Notifications/index.d";
+import Skleton from "../../../components/Notifications/Skleton";
+import PleaseLogin from "../../../components/PleaseLogin";
+import Heading from "../../../components/UI/Heading";
+import Tabs, { Tab } from "../../../components/UI/Tabs";
+import { NOTIFICATION } from "../../../constants/tracking";
+import { useGuestStore } from "../../../store/GuestStore";
+import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
+import { Notification, useNotificationsQuery } from "../../../types/generated";
+import { RootTabScreenProps } from "../../../types/navigation/types";
+import TrackAction from "../../../utils/Track";
+import Skeleton from "../../../components/common/Skeleton";
 
 const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -26,6 +27,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
   const { isGuest } = useGuestStore();
+
   const { data, error, loading, refetch } = useNotificationsQuery({
     variables: {
       request: {
@@ -34,6 +36,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
       },
     },
     pollInterval: 100,
+    fetchPolicy: "network-only",
     context: {
       headers: {
         "x-access-token": `Bearer ${accessToken}`,
@@ -43,6 +46,8 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
 
   const notifications = data?.notifications?.items as Notification[];
 
+  if (isGuest) return <PleaseLogin />;
+  if (loading) return <Skeleton children={<Skleton />} number={10} />;
   if (error)
     return (
       <NotFound
@@ -51,8 +56,6 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
         }
       />
     );
-  if (isGuest) return <PleaseLogin />;
-  if (loading) return <Loader />;
   if (!data)
     return (
       <NotFound
@@ -188,22 +191,6 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
 
 export default Notifications;
 
-const Loader = () => {
-  return (
-    <SafeAreaView style={styles.container}>
-      <Skleton />
-      <Skleton />
-      <Skleton />
-      <Skleton />
-      <Skleton />
-      <Skleton />
-      <Skleton />
-      <Skleton />
-      <Skleton />
-    </SafeAreaView>
-  );
-};
-
 const NotFound = ({
   message,
 }: {
@@ -225,7 +212,7 @@ const NotFound = ({
         style={{
           height: "auto",
         }}
-        source={require("../assets/notfound.json")}
+        source={require("../../../assets/notfound.json")}
       />
       <View
         style={{
