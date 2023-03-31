@@ -21,8 +21,7 @@ const ReactionNotification: React.FC<ReactionNotificationProps> = ({
   notification,
 }) => {
   const { PRIMARY } = useThemeStore();
-  console.log(notification?.publication);
-  
+
   return (
     <>
       <View

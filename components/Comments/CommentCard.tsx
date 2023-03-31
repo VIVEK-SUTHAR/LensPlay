@@ -56,8 +56,6 @@ const CommentCard = ({
   const { isGuest } = useGuestStore();
   const toast = useToast();
 
-  console.log(isAlreadyLiked);
-
   const [addReaction] = useAddReactionMutation({
     onError: () => {
       toast.show("Something went wrong!", ToastType.ERROR, true);

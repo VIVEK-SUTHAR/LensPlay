@@ -3,7 +3,7 @@ import {
   FlatList,
   RefreshControl,
   SafeAreaView,
-  StyleSheet
+  StyleSheet,
 } from "react-native";
 import VideoCard from "../components/VideoCard";
 import { useThemeStore } from "../store/Store";

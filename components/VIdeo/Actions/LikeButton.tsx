@@ -44,8 +44,6 @@ const LikeButton = ({
 
   const [addReaction] = useAddReactionMutation({
     onError: (e) => {
-      console.log(e.message);
-
       toast.show("Something went wrong!", ToastType.ERROR, true);
     },
     onCompleted: () => {
@@ -60,7 +58,6 @@ const LikeButton = ({
 
   const [removeReaction] = useRemoveReactionMutation({
     onError: (e) => {
-      console.log(e.message);
       toast.show("Something went wrong!", ToastType.ERROR, true);
     },
     onCompleted: () => {

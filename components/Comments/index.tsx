@@ -80,8 +80,6 @@ const Comment = ({
         <ScrollView>
           <View>
             {allComments?.map((item: IComment) => {
-              console.log(item.reaction);
-
               return (
                 <CommentCard
                   key={item?.id}

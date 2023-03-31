@@ -18,7 +18,8 @@ const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
       instruction: "3. Connect your preffered wallet.",
     },
     {
-      instruction: "4. Click on Login with lens and Sign message through wallet.",
+      instruction:
+        "4. Click on Login with lens and Sign message through wallet.",
     },
     {
       instruction: "5. Scan the QR and explore LensPlay.",
@@ -62,8 +63,8 @@ const styles = StyleSheet.create({
   conatiner: {
     flex: 1,
     backgroundColor: "black",
-    justifyContent: 'space-between',
-    paddingVertical: 24
+    justifyContent: "space-between",
+    paddingVertical: 24,
   },
   padding16: {
     paddingHorizontal: 16,

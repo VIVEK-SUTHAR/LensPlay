@@ -1,15 +1,17 @@
 import React, { useLayoutEffect, useState } from "react";
 import {
   Dimensions,
-  FlatList, SafeAreaView,
-  StyleSheet, View
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  View,
 } from "react-native";
 import Icon from "../components/Icon";
 import ProfileCard from "../components/ProfileCard";
 import Heading from "../components/UI/Heading";
 import ProfileCardSkeleton from "../components/UI/ProfileCardSkeleton";
 import Tabs, { Tab } from "../components/UI/Tabs";
-import { useFollowers, useFollowing } from "../hooks/useFeed";
+import { useFollowers, useFollowing } from "../hooks/useLensQuery";
 import { useProfile, useThemeStore } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 

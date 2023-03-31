@@ -9,7 +9,6 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
-  Share,
   View,
 } from "react-native";
 import { freeCollectPublication, freeMirror } from "../api";
@@ -37,7 +36,6 @@ import {
   useAuthStore,
   useProfile,
   useReactionStore,
-  useThemeStore,
   useToast,
 } from "../store/Store";
 import { Mirror, Post } from "../types/generated";
@@ -78,11 +76,12 @@ const LinkingVideo = ({
     setCollectStats,
     setMirrorStats,
   } = useReactionStore();
-  
 
-  const {accessToken, setAccessToken, setRefreshToken} = useAuthStore();
-  const [activePublication, setactivePublication] = useState<Post | Mirror | null>(null);
-  const {setHasHandle, currentProfile, setCurrentProfile} = useProfile();
+  const { accessToken, setAccessToken, setRefreshToken } = useAuthStore();
+  const [activePublication, setactivePublication] = useState<
+    Post | Mirror | null
+  >(null);
+  const { setHasHandle, currentProfile, setCurrentProfile } = useProfile();
   const toast = useToast();
 
   const collectPublication = async () => {
@@ -113,6 +112,7 @@ const LinkingVideo = ({
       collectRef?.current?.close();
     }
   };
+
   const onMirror = async () => {
     if (mirrorStats?.isMirrored) {
       toast.show("Already mirrored", ToastType.ERROR, true);
@@ -161,96 +161,91 @@ const LinkingVideo = ({
     } else {
       setHasHandle(false);
     }
-  }
+  };
 
   const handleAsyncStorage = async () => {
     try {
       setIsLoading(true);
       const userTokens = await AsyncStorage.getItem("@user_tokens");
       const waitList = await AsyncStorage.getItem("@waitlist");
-      if(!userTokens) {
+      if (!userTokens) {
         navigation.replace("Login");
         return;
-      }
-      else{
+      } else {
         const accessToken = JSON.parse(userTokens).accessToken;
         const refreshToken = JSON.parse(userTokens).refreshToken;
         const isvalidTokens = await verifyTokens(accessToken);
-        if(waitList){
-          if (isvalidTokens){
+        if (waitList) {
+          if (isvalidTokens) {
             const address = JSON.parse(waitList).address;
             setAccessToken(accessToken);
             setRefreshToken(refreshToken);
             const profile = await setProfile(address);
             getVideoById(route?.params?.id, profile?.id, accessToken);
-          }
-          else{
+          } else {
             const newTokens = await getAccessFromRefresh(refreshToken);
-                const address = JSON.parse(waitList).address;
-                const profile = await setProfile(address);
-                setAccessToken(newTokens?.accessToken);
-                setRefreshToken(newTokens?.refreshToken);
-                await storeTokens(
-                  newTokens?.accessToken,
-                  newTokens?.refreshToken
-                );
-                getVideoById(route?.params?.id, profile?.id, newTokens?.accessToken);
+            const address = JSON.parse(waitList).address;
+            const profile = await setProfile(address);
+            setAccessToken(newTokens?.accessToken);
+            setRefreshToken(newTokens?.refreshToken);
+            await storeTokens(newTokens?.accessToken, newTokens?.refreshToken);
+            getVideoById(
+              route?.params?.id,
+              profile?.id,
+              newTokens?.accessToken
+            );
           }
         }
       }
     } catch (error) {
       console.log(error);
     }
-
-  }
+  };
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
     handleAsyncStorage();
   }, []);
 
-  async function fetchComments(publicationId: string, id: string): Promise<void> {
+  async function fetchComments(
+    publicationId: string,
+    id: string
+  ): Promise<void> {
     try {
       const data = await client.query({
         query: getComments,
         variables: {
           postId: publicationId,
-          id: currentProfile?.id || id
+          id: currentProfile?.id || id,
         },
         context: {
           headers: {
-            "x-access-token": accessToken
-              ? `Bearer ${accessToken}`
-              : "",
+            "x-access-token": accessToken ? `Bearer ${accessToken}` : "",
           },
         },
       });
-
       setComments(data.data.publications.items);
-      
     } catch (error) {
       if (error instanceof Error) {
-        throw new Error("Can't fetch comments dayoom", { cause: error.cause });
+        throw new Error("Can't fetch comments", { cause: error.cause });
       }
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   const getVideoById = async (pubId: string, id: string, tokens: string) => {
     try {
-      
       const feed = await client.query({
         query: fetchPublicationById,
         variables: {
           pubId: pubId,
-          id: currentProfile?.id || id
+          id: currentProfile?.id || id,
         },
         context: {
           headers: {
-            "x-access-token": accessToken || tokens
-              ? `Bearer ${accessToken || tokens}`
-              : "",
+            "x-access-token":
+              accessToken || tokens ? `Bearer ${accessToken || tokens}` : "",
           },
         },
       });
@@ -258,13 +253,13 @@ const LinkingVideo = ({
       setactivePublication(feed.data.publication);
       if (!reaction) {
         setReaction(true);
-        
+
         setVideoPageStats(
           feed?.data?.publication?.reaction === "UPVOTE",
           feed?.data?.publication?.reaction === "DOWNVOTE",
           feed?.data?.publication?.stats?.totalUpvotes
         );
-        
+
         setCollectStats(
           feed?.data?.publication?.hasCollectedByMe,
           feed?.data?.publication?.stats?.totalAmountOfCollects
@@ -286,7 +281,6 @@ const LinkingVideo = ({
     }
   };
 
- 
   if (isLoading) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -375,11 +369,11 @@ const LinkingVideo = ({
       />
       <ScrollView>
         <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
-        <VideoMeta
-              title={activePublication?.metadata?.name}
-              description={activePublication?.metadata?.description}
-              descRef={descRef}
-            />
+          <VideoMeta
+            title={activePublication?.metadata?.name}
+            description={activePublication?.metadata?.description}
+            descRef={descRef}
+          />
           <VideoCreator
             profileId={activePublication?.profile?.id}
             avatarLink={activePublication?.profile?.picture?.original?.url}
@@ -408,16 +402,16 @@ const LinkingVideo = ({
               id={activePublication?.id}
             />
             <MirrorButton
-                    id={activePublication?.id}
-                    totalMirrors={mirrorStats?.mirrorCount}
-                    isAlreadyMirrored={mirrorStats?.isMirrored}
-                    bannerUrl={activePublication?.metadata?.cover}
-                    mirrorRef={mirrorRef}
-                  />
+              id={activePublication?.id}
+              totalMirrors={mirrorStats?.mirrorCount}
+              isAlreadyMirrored={mirrorStats?.isMirrored}
+              bannerUrl={activePublication?.metadata?.cover}
+              mirrorRef={mirrorRef}
+            />
             <CollectButton
-               totalCollects={collectStats?.collectCount}
-               collectRef={collectRef}
-               hasCollected={collectStats?.isCollected}
+              totalCollects={collectStats?.collectCount}
+              collectRef={collectRef}
+              hasCollected={collectStats?.isCollected}
             />
             <ShareButton
               title={
@@ -550,7 +544,7 @@ const LinkingVideo = ({
         }}
         snapPoints={["70%", "95%"]}
         children={
-          <View style={{paddingHorizontal: 16}}>
+          <View style={{ paddingHorizontal: 16 }}>
             <ScrollView>
               <View
                 style={{

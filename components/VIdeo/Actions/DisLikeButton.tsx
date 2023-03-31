@@ -37,11 +37,9 @@ const DisLikeButton = ({ isalreadyDisLiked, id }: DisLikeButtonProps) => {
 
   const [addReaction] = useAddReactionMutation({
     onError: (error) => {
-      console.log(error.message, "add e");
       toast.show("Something went wrong!", ToastType.ERROR, true);
     },
     onCompleted: (data) => {
-      console.log(data, "add");
       setVideoPageStats(
         false,
         true,

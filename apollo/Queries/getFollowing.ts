@@ -1,21 +1,18 @@
 import { gql } from "@apollo/client";
 
 export default gql`
-query Following($subId:EthereumAddress!) {
-    following(request: { 
-                  address:$subId
-      
-               }) {
+  query Following($subId: EthereumAddress!) {
+    following(request: { address: $subId }) {
       items {
         profile {
           id
           name
           bio
           attributes {
-              displayType
-              traitType
-              key
-              value
+            displayType
+            traitType
+            key
+            value
           }
           followNftAddress
           metadata
@@ -106,10 +103,10 @@ query Following($subId:EthereumAddress!) {
               recipient
             }
             ... on ProfileFollowModuleSettings {
-             type
+              type
             }
             ... on RevertFollowModuleSettings {
-             type
+              type
             }
           }
         }

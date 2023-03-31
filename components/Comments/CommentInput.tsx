@@ -9,7 +9,7 @@ import {
   useOptimisticStore,
   useProfile,
   useThemeStore,
-  useToast
+  useToast,
 } from "../../store/Store";
 import { ToastType } from "../../types/Store";
 import getIPFSLink from "../../utils/getIPFSLink";

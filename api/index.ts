@@ -14,5 +14,5 @@ export {
   freeMirror,
   getProxyActionStatus,
   isFollowedByMe,
-  removeLike
+  removeLike,
 };

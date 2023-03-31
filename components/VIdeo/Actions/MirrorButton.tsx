@@ -1,6 +1,7 @@
-import React, { usemirrorRef, useState } from "react";
-import Button from "../../UI/Button";
-import { dark_primary, primary } from "../../../constants/Colors";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import React from "react";
+import { dark_primary } from "../../../constants/Colors";
+import { useGuestStore } from "../../../store/GuestStore";
 import {
   useAuthStore,
   useProfile,
@@ -8,22 +9,16 @@ import {
   useThemeStore,
   useToast,
 } from "../../../store/Store";
-import { freeMirror } from "../../../api";
 import { ToastType } from "../../../types/Store";
-import { Dimensions, Image, View } from "react-native";
-import getIPFSLink from "../../../utils/getIPFSLink";
-import RBSheet from "../../UI/BottomSheet";
 import Icon from "../../Icon";
-import { useIsMirrored } from "../../../hooks/useFeed";
-import { useGuestStore } from "../../../store/GuestStore";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Button from "../../UI/Button";
 
 type MirrorButtonProps = {
   id: string;
   totalMirrors: number;
   bannerUrl: string;
   isAlreadyMirrored: boolean;
-  mirrorRef:React.RefObject<BottomSheetMethods>
+  mirrorRef: React.RefObject<BottomSheetMethods>;
 };
 
 const MirrorButton = ({

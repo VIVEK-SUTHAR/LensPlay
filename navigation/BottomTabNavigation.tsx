@@ -207,8 +207,7 @@ export default function BottomTabNavigator({
               >
                 <Icon
                   name={focused ? "home_filled" : "home_outline"}
-                  color={focused ? theme.PRIMARY : "white"}
-                  // size={24}
+                  color={"white"}
                 />
               </View>
             );
@@ -234,7 +233,7 @@ export default function BottomTabNavigator({
               >
                 <Icon
                   name={focused ? "compass_filled" : "compass_outline"}
-                  color={focused ? theme.PRIMARY : "white"}
+                  color={"white"}
                   size={24}
                 />
               </View>
@@ -262,7 +261,7 @@ export default function BottomTabNavigator({
               >
                 <Icon
                   name={focused ? "shots_filled" : "shots_outline"}
-                  color={focused ? theme.PRIMARY : "white"}
+                  color={"white"}
                   size={24}
                 />
               </View>
@@ -292,7 +291,7 @@ export default function BottomTabNavigator({
                   name={
                     focused ? "notification_filled" : "notification_outline"
                   }
-                  color={focused ? theme.PRIMARY : "white"}
+                  color={"white"}
                 />
               </View>
             );
@@ -315,7 +314,7 @@ export default function BottomTabNavigator({
                   flexDirection: "row",
                   height: 30,
                   borderRadius: 45,
-                  borderColor: focused ? theme.PRIMARY : "transparent",
+                  borderColor: focused ? "white" : "transparent",
                   borderWidth: 1,
                 }}
               >

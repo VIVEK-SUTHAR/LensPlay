@@ -32,7 +32,7 @@ import Player from "../components/VideoPlayer";
 import { STATIC_ASSET } from "../constants";
 import { dark_primary, primary } from "../constants/Colors";
 import { PUBLICATION } from "../constants/tracking";
-import { useReaction } from "../hooks/useFeed";
+import { useReaction } from "../hooks/useLensQuery";
 import {
   useActivePublication,
   useAuthStore,

@@ -3,7 +3,7 @@ import { StyleProp, Text, TextStyle, View } from "react-native";
 
 type videoCardProps = {
   width?: number | string;
-}
+};
 
 const VideoCardSkeleton = ({ width = "auto" }: videoCardProps) => {
   return (
@@ -13,7 +13,7 @@ const VideoCardSkeleton = ({ width = "auto" }: videoCardProps) => {
         paddingVertical: 1,
         borderRadius: 10,
         margin: 10,
-        backgroundColor: '#111111',
+        backgroundColor: "#111111",
         width: width,
       }}
     >
@@ -21,7 +21,7 @@ const VideoCardSkeleton = ({ width = "auto" }: videoCardProps) => {
         style={{
           height: 200,
           backgroundColor: "rgba(255,255,255,0.1)",
-          borderRadius: 10
+          borderRadius: 10,
         }}
       ></View>
       <View
@@ -39,8 +39,8 @@ const VideoCardSkeleton = ({ width = "auto" }: videoCardProps) => {
           style={{
             flexDirection: "column",
             alignItems: "flex-start",
-            marginRight:4,
-            paddingHorizontal:16
+            marginRight: 4,
+            paddingHorizontal: 16,
           }}
         >
           <View

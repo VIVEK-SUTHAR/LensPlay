@@ -144,7 +144,6 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                 <Pressable
                   onPress={(e) => {
                     e.preventDefault();
-                    console.log(profile?.coverPicture?.original?.url);
                     navigation.navigate("FullImage", {
                       url: profile?.coverPicture?.original?.url || STATIC_ASSET,
                       source: "cover",

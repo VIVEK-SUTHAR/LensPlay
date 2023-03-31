@@ -9,7 +9,7 @@ import {
   Pressable,
   SafeAreaView,
   StyleSheet,
-  View
+  View,
 } from "react-native";
 import Icon from "../components/Icon";
 import { RootStackScreenProps } from "../types/navigation/types";
