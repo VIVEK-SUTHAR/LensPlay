@@ -23,6 +23,7 @@ import QRLogin from "../screens/Auth/QRLogin";
 import Loader from "../screens/common/Loader";
 import Scanner from "../screens/Auth/Scanner";
 import BottomTabNavigator from "./BottomTabNavigation";
+import UploadVideo from "../screens/Header/Upload/Video/UploadVideo";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -108,6 +109,7 @@ export default function StackNavigation() {
           />
         </Stack.Group>
       </Stack.Group>
+
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}
@@ -259,6 +261,20 @@ export default function StackNavigation() {
         options={{
           animation: "none",
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="UploadVideo"
+        component={UploadVideo}
+        options={{
+          animation: "fade_from_bottom",
+          headerShown: true,
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
+          headerTintColor: "white",
+          headerTitle: "Add Details",
         }}
       />
     </Stack.Navigator>
