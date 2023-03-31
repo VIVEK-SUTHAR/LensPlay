@@ -9,7 +9,7 @@ const LensIcon = createIconSetFromIcoMoon(
   "icomoon.ttf"
 );
 
-type IconProps = {
+export type IconProps = {
   name:
     | "arrowForward"
     | "arrowLeft"
@@ -64,6 +64,7 @@ type IconProps = {
   color?: string;
   style?: StyleProp<TextStyle>;
 };
+
 function CustomIcon({ name, size = 26, color = "white", style }: IconProps) {
   const [fontsLoaded] = useFonts({
     IcoMoon: require("../assets/fonts/icomoon.ttf"),
