@@ -107,6 +107,7 @@ export type RootStackParamList = {
   BugReport: undefined;
   Scanner: undefined;
   UploadVideo: undefined;
+  UploadShots: undefined;
 };
 
 /**

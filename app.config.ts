@@ -176,6 +176,14 @@ const config: ExpoConfig = {
         cameraPermission: "Allow LensPlay to access your camera.",
       },
     ],
+    [
+      "react-native-vision-camera",
+      {
+        cameraPermissionText: "LensPlay needs access to your Camera.",
+        enableMicrophonePermission: true,
+        microphonePermissionText: "LensPlay needs access to your Microphone.",
+      },
+    ],
   ],
 };
 

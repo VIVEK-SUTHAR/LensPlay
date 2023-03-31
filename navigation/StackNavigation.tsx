@@ -24,6 +24,7 @@ import Loader from "../screens/common/Loader";
 import Scanner from "../screens/Auth/Scanner";
 import BottomTabNavigator from "./BottomTabNavigation";
 import UploadVideo from "../screens/Header/Upload/Video/UploadVideo";
+import UploadShots from "../screens/Header/Upload/Shots/UploadShots";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -275,6 +276,14 @@ export default function StackNavigation() {
           },
           headerTintColor: "white",
           headerTitle: "Add Details",
+        }}
+      />
+      <Stack.Screen
+        name="UploadShots"
+        component={UploadShots}
+        options={{
+          animation: "fade",
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

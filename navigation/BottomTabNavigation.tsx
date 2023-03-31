@@ -28,6 +28,7 @@ import {
 import getIPFSLink from "../utils/getIPFSLink";
 import getAccessFromRefresh from "../utils/lens/getAccessFromRefresh";
 import storeTokens from "../utils/storeTokens";
+import { Camera } from "react-native-vision-camera";
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
@@ -413,6 +414,12 @@ export default function BottomTabNavigator({
                 alignItems: "center",
                 paddingHorizontal: 16,
                 paddingVertical: 8,
+              }}
+              onPress={async () => {
+                const cameraPermission = await Camera.requestCameraPermission();
+                const microphonePermission = await Camera.requestMicrophonePermission();
+                console.log(cameraPermission, microphonePermission);
+                // navigation.push("UploadShots");
               }}
             >
               <View
