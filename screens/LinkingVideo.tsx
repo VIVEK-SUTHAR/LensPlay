@@ -12,9 +12,9 @@ import {
   View,
 } from "react-native";
 import { freeCollectPublication, freeMirror } from "../api";
-import { client } from "../apollo/client";
 import fetchPublicationById from "../apollo/Queries/fetchPublicationById";
 import getComments from "../apollo/Queries/getComments";
+import { client } from "../apollo/client";
 import Sheet from "../components/Bottom";
 import Comment from "../components/Comments";
 import CommentInput from "../components/Comments/CommentInput";
@@ -38,10 +38,10 @@ import {
   useReactionStore,
   useToast,
 } from "../store/Store";
-import { Mirror, Post } from "../types/generated";
 import { Comments, LensPublication } from "../types/Lens/Feed";
-import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
+import { Mirror, Post } from "../types/generated";
+import { RootStackScreenProps } from "../types/navigation/types";
 import extractURLs from "../utils/extractURL";
 import getIPFSLink from "../utils/getIPFSLink";
 import getAccessFromRefresh from "../utils/lens/getAccessFromRefresh";

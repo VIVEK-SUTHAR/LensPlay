@@ -63,9 +63,10 @@ const VideoCreator = (props: VideoCreatorProps) => {
       style={{
         width: "100%",
         flexDirection: "row",
+        alignItems: "center",
         paddingVertical: 4,
         justifyContent: "space-between",
-        marginTop: 8,
+        marginTop: 16,
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -97,14 +98,13 @@ const VideoCreator = (props: VideoCreatorProps) => {
         <Button
           title={following ? "Unsubscribe" : "Subscribe"}
           width={"auto"}
-          px={12}
-          py={6}
+          px={24}
+          py={8}
           type={"filled"}
-          bg={PRIMARY}
+          bg={"white"}
           textStyle={{
-            fontSize: 16,
-            fontWeight: "700",
-            marginHorizontal: 4,
+            fontSize: 14,
+            fontWeight: "600",
           }}
           animated={true}
           onPress={followCreator}

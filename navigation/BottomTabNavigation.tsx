@@ -181,7 +181,7 @@ export default function BottomTabNavigator({
           justifyContent: "space-between",
           paddingTop: 6,
           borderTopColor: "transparent",
-          marginBottom: -5,
+          marginBottom: -6,
           minHeight: 58,
           paddingHorizontal: 5,
         },
@@ -208,6 +208,7 @@ export default function BottomTabNavigator({
                 <Icon
                   name={focused ? "home_filled" : "home_outline"}
                   color={"white"}
+                  size={25}
                 />
               </View>
             );
@@ -315,7 +316,7 @@ export default function BottomTabNavigator({
                   height: 30,
                   borderRadius: 45,
                   borderColor: focused ? "white" : "transparent",
-                  borderWidth: 1,
+                  borderWidth: focused ? 1 : 0,
                 }}
               >
                 <Avatar

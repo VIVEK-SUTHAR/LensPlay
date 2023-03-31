@@ -163,9 +163,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
             <Pressable
               onPress={(e) => {
                 navigation.navigate("FullImage", {
-                  url:
-                    getRawurl(userStore?.currentProfile?.coverPicture) ||
-                    STATIC_ASSET,
+                  url: getRawurl(userStore?.currentProfile?.coverPicture),
                   source: "cover",
                 });
                 TrackAction(PROFILE.FULL_IMAGE);
@@ -198,7 +196,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 }}
               >
                 <Avatar
-                  src={getIPFSLink(getRawurl(profile?.picture as MediaSet))}
+                  src={getRawurl(profile?.picture as MediaSet)}
                   height={90}
                   width={90}
                   borderRadius={100}
@@ -214,14 +212,14 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 <Button
                   title={"Edit Channel"}
                   width={"auto"}
-                  px={16}
+                  type="outline"
+                  px={24}
                   py={8}
                   bg={primary}
                   textStyle={{
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: "600",
-                    marginHorizontal: 4,
-                    color: "black",
+                    color: "white",
                   }}
                   onPress={() => {
                     navigation.navigate("EditProfile");

@@ -11,7 +11,6 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createFreeSubscribe } from "../api";
 import { client } from "../apollo/client";
-import getPublications from "../apollo/Queries/getPublications";
 import getUserProfile from "../apollo/Queries/getUserProfile";
 import Icon from "../components/Icon";
 import AllVideos from "../components/Profile/AllVideos";
@@ -22,12 +21,19 @@ import Button from "../components/UI/Button";
 import Heading from "../components/UI/Heading";
 import ProfileSkeleton from "../components/UI/ProfileSkeleton";
 import StyledText from "../components/UI/StyledText";
-import { STATIC_ASSET } from "../constants";
 import { PROFILE } from "../constants/tracking";
 import VERIFIED_CHANNELS from "../constants/Varified";
 import { useGuestStore } from "../store/GuestStore";
 import { useAuthStore, useThemeStore, useToast } from "../store/Store";
-import { Attribute, Post } from "../types/generated";
+import {
+  Attribute,
+  MediaSet,
+  Post,
+  PublicationMainFocus,
+  PublicationTypes,
+  useProfilePostsQuery,
+  useProfileQuery,
+} from "../types/generated";
 import { Profile } from "../types/Lens";
 import { RootStackScreenProps } from "../types/navigation/types";
 import { ToastType } from "../types/Store";
@@ -35,10 +41,9 @@ import extractURLs from "../utils/extractURL";
 import formatHandle from "../utils/formatHandle";
 import getIPFSLink from "../utils/getIPFSLink";
 import TrackAction from "../utils/Track";
+import getRawurl from "../utils/getRawUrl";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [allVideos, setallVideos] = useState<Post[]>([]);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [alreadyFollowing, setAlreadyFollowing] = useState<boolean | undefined>(
@@ -56,9 +61,47 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const { isGuest } = useGuestStore();
 
   useEffect(() => {
-    setAlreadyFollowing(route.params.isFollowdByMe);
-    getProfleInfo(route.params.profileId);
+    setAlreadyFollowing(route?.params?.isFollowdByMe);
+    getProfleInfo(route?.params?.profileId);
   }, []);
+
+  const QueryRequest = {
+    profileId: route?.params?.profileId,
+    publicationTypes: [PublicationTypes.Post],
+    metadata: {
+      mainContentFocus: [PublicationMainFocus.Video],
+    },
+    sources: ["lenstube"],
+    limit: 50,
+  };
+
+  const {
+    data: AllVideosData,
+    error: AllVideoError,
+    loading: AllVideosLoading,
+  } = useProfilePostsQuery({
+    variables: {
+      request: QueryRequest,
+      reactionRequest: {
+        profileId: route?.params?.profileId,
+      },
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${authStore.accessToken}`,
+      },
+    },
+  });
+
+  const { data: profileData, loading, error, refetch } = useProfileQuery({
+    variables: {
+      request: {
+        profileId: route?.params?.profileId,
+      },
+    },
+  });
+
+  const profile = profileData?.profile;
 
   const getProfleInfo = async (profileId: string | undefined) => {
     try {
@@ -68,22 +111,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
           id: profileId,
         },
       });
-      setProfile(profiledata.data.profile);
       getLinks(profiledata.data.profile);
-      const getUserVideos = await client.query({
-        query: getPublications,
-        variables: {
-          id: profileId,
-        },
-        context: {
-          headers: {
-            "x-access-token": authStore.accessToken
-              ? `Bearer ${authStore.accessToken}`
-              : "",
-          },
-        },
-      });
-      setallVideos(getUserVideos.data.publications.items);
     } catch (error) {
       if (error instanceof Error) {
         console.log(error);
@@ -92,6 +120,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       setIsLoading(false);
     }
   };
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getProfleInfo(route.params.profileId).then(() => {
@@ -145,7 +174,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                   onPress={(e) => {
                     e.preventDefault();
                     navigation.navigate("FullImage", {
-                      url: profile?.coverPicture?.original?.url || STATIC_ASSET,
+                      url: getRawurl(profile?.coverPicture as MediaSet),
                       source: "cover",
                     });
                   }}
@@ -158,7 +187,9 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                   >
                     <Image
                       source={{
-                        uri: getIPFSLink(profile?.coverPicture?.original.url),
+                        uri: getIPFSLink(
+                          getRawurl(profile?.coverPicture as MediaSet)
+                        ),
                       }}
                       style={{
                         height: "100%",
@@ -181,16 +212,18 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                   <Pressable
                     onPress={(e) => {
                       navigation.navigate("FullImage", {
-                        url: getIPFSLink(profile?.picture?.original?.url),
+                        url: getIPFSLink(
+                          getRawurl(profile?.picture as MediaSet)
+                        ),
                         source: "avatar",
                       });
                     }}
                   >
                     <Avatar
-                      src={getIPFSLink(profile?.picture?.original?.url)}
+                      src={getRawurl(profile?.picture as MediaSet)}
                       height={90}
                       width={90}
-                      borderRadius={50}
+                      borderRadius={100}
                     />
                   </Pressable>
                   <View
@@ -203,14 +236,13 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     <Button
                       title={alreadyFollowing ? "Unsubscribe" : "Subscribe"}
                       width={"auto"}
-                      px={16}
+                      px={24}
                       py={8}
                       type={"filled"}
-                      bg={theme.PRIMARY}
+                      bg={"white"}
                       textStyle={{
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: "600",
-                        marginHorizontal: 4,
                         color: "black",
                       }}
                       onPress={async () => {
@@ -484,9 +516,9 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     </View>
                   </View>
                   <View style={{ marginTop: 24 }}>
-                    {allVideos && (
+                    {AllVideosData?.publications?.items && (
                       <AllVideos
-                        Videos={allVideos}
+                        Videos={AllVideosData?.publications?.items as Post[]}
                         profileId={profile?.id}
                         navigation={navigation}
                       />
@@ -498,7 +530,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     />
                     <CollectedVideos
                       ethAddress={profile?.ownedBy}
-                      handle={profile!.handle}
+                      handle={profile?.handle}
                       navigation={navigation}
                     />
                   </View>

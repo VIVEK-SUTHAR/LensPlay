@@ -54,7 +54,7 @@ const Button = (props: ButtonProps): JSX.Element => {
     mb = 0,
     textStyle,
     borderRadius = 50,
-    ripple_color="rgba(0,0,0,0.2)",
+    ripple_color = "rgba(0,0,0,0.2)",
     bg = theme.PRIMARY.toString(),
     onPress,
     borderColor = "white",
@@ -70,7 +70,9 @@ const Button = (props: ButtonProps): JSX.Element => {
   var newStyle = Object.assign({}, textStyle, {
     textAlign: "center",
   });
+
   const scaleRef = React.useRef(new Animated.Value(1)).current;
+
   return (
     <Pressable
       style={[
@@ -147,7 +149,7 @@ const Button = (props: ButtonProps): JSX.Element => {
               {icon && iconPosition === "left" ? (
                 <View
                   style={{
-                    marginRight: bytes || title ? 0 : 8,
+                    marginRight: bytes || title.toString().length === 0 ? 0 : 4,
                   }}
                 >
                   {icon}
