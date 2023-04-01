@@ -101,7 +101,7 @@ const config: ExpoConfig = {
   },
   updates: {
     fallbackToCacheTimeout: 0,
-    url: "https://u.expo.dev/3b494bf0-e3fd-4a2c-b484-931ab7394de1",
+    url: "https://u.expo.dev/b2fcb561-ea34-43d1-acf0-dabcba685aa2",
   },
   runtimeVersion: {
     policy: "sdkVersion",
@@ -158,9 +158,9 @@ const config: ExpoConfig = {
     favicon: "./assets/images/favicon.png",
   },
   extra: {
-    // eas: {
-    //   projectId: "3b494bf0-e3fd-4a2c-b484-931ab7394de1",
-    // },
+    eas: {
+      projectId: "b2fcb561-ea34-43d1-acf0-dabcba685aa2",
+    },
   },
   plugins: [
     [

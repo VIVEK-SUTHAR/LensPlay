@@ -15,7 +15,6 @@ import { useToast } from "../../../../store/Store";
 import { ToastType } from "../../../../types/Store";
 import { RootStackScreenProps } from "../../../../types/navigation/types";
 import getImageBlobFromUri from "../../../../utils/getImageBlobFromUri";
-import Switch from "../../../../components/UI/Switch";
 
 export default function UploadVideo({
   navigation,

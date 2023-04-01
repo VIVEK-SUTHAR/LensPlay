@@ -418,8 +418,14 @@ export default function BottomTabNavigator({
               onPress={async () => {
                 const cameraPermission = await Camera.requestCameraPermission();
                 const microphonePermission = await Camera.requestMicrophonePermission();
-                console.log(cameraPermission, microphonePermission);
-                // navigation.push("UploadShots");
+                if (
+                  cameraPermission === "authorized" &&
+                  microphonePermission === "authorized"
+                ) {
+                  navigation.push("UploadShots");
+                } else {
+                  uploadRef.current?.close();
+                }
               }}
             >
               <View
@@ -443,7 +449,7 @@ export default function BottomTabNavigator({
           </View>
         }
       />
-      <Sheet
+      {/* <Sheet
         ref={uploadTypeRef}
         index={-1}
         enablePanDownToClose={true}
@@ -551,7 +557,7 @@ export default function BottomTabNavigator({
             </Pressable>
           </View>
         }
-      />
+      /> */}
     </>
   );
 }
