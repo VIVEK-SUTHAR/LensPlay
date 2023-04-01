@@ -482,6 +482,7 @@ export default function BottomTabNavigator({
                   }
                   if (!camera.canceled) {
                     // setImage(camera.uri);
+                    navigation.push("UploadVideo");
                   }
                 }
               }}
@@ -526,6 +527,7 @@ export default function BottomTabNavigator({
                 }
                 if (!result.canceled) {
                   console.log(result);
+                  navigation.push("UploadVideo");
                 }
               }}
             >
