@@ -4712,6 +4712,11 @@ expo-video-player@^2.2.0:
   dependencies:
     tslib "^2.4.0"
 
+expo-video-thumbnails@~7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/expo-video-thumbnails/-/expo-video-thumbnails-7.0.0.tgz#a98c726d529372153161735794ccf6bd9ba925f2"
+  integrity sha512-QTifwHjz1VL+nXX39lSZHJtbHKI8a/DVCVk6iT/WQZG1JmZdeUHObrcWlIKeDsTCB5fQWIfOmin+N9hbe4n0qw==
+
 expo-web-browser@~12.0.0:
   version "12.0.0"
   resolved "https://registry.yarnpkg.com/expo-web-browser/-/expo-web-browser-12.0.0.tgz#c8e117bfd6357df05ae3cf85acb423b44c4f6304"

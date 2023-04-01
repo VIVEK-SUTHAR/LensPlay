@@ -42,6 +42,7 @@
     "expo-status-bar": "~1.4.2",
     "expo-updates": "~0.15.6",
     "expo-video-player": "^2.2.0",
+    "expo-video-thumbnails": "~7.0.0",
     "expo-web-browser": "~12.0.0",
     "graphql": "^16.6.0",
     "https-browserify": "^1.0.0",

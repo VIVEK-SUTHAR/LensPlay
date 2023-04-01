@@ -1,13 +1,7 @@
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { IBottomSheet } from "../types";
-import React, { useCallback, useMemo } from "react";
-import { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
-import Animated, {
-  Extrapolate,
-  interpolate,
-  useAnimatedStyle,
-} from "react-native-reanimated";
+import React, { useCallback } from "react";
 import { BottomSheetDefaultBackdropProps } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types";
 
 const Sheet = React.forwardRef<BottomSheetMethods, IBottomSheet>(

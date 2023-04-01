@@ -449,7 +449,7 @@ export default function BottomTabNavigator({
           </View>
         }
       />
-      {/* <Sheet
+      <Sheet
         ref={uploadTypeRef}
         index={-1}
         enablePanDownToClose={true}
@@ -557,7 +557,7 @@ export default function BottomTabNavigator({
             </Pressable>
           </View>
         }
-      /> */}
+      />
     </>
   );
 }
