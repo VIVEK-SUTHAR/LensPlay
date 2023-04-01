@@ -1,26 +1,33 @@
+import { ResizeMode } from "expo-av";
 import * as ImagePicker from "expo-image-picker";
-import React, { useState } from "react";
+import VideoPlayer from "expo-video-player";
+import React, { useEffect, useState } from "react";
 import { Dimensions, Image, Pressable, SafeAreaView, View } from "react-native";
 import Icon from "../../../../components/Icon";
-import Heading from "../../../../components/UI/Heading";
-import { STATIC_ASSET } from "../../../../constants";
-import { useToast } from "../../../../store/Store";
-import { ToastType } from "../../../../types/Store";
-import { RootStackScreenProps } from "../../../../types/navigation/types";
-import getImageBlobFromUri from "../../../../utils/getImageBlobFromUri";
 import Button from "../../../../components/UI/Button";
+import Heading from "../../../../components/UI/Heading";
 import StyledText from "../../../../components/UI/StyledText";
+import { useToast } from "../../../../store/Store";
+import { RootStackScreenProps } from "../../../../types/navigation/types";
+import { ToastType } from "../../../../types/Store";
+import generateThumbnail from "../../../../utils/generateThumbnails";
 
 export default function UploadVideo({
   navigation,
+  route,
 }: RootStackScreenProps<"UploadVideo">) {
   const [coverPic, setCoverPic] = useState<string | null>(null);
-  const [coverImageBlob, setCoverImageBlob] = useState<Blob>();
   const toast = useToast();
-
   const windowHeight = Dimensions.get("window").height;
   const windowWidth = Dimensions.get("window").width;
-
+  const [thumbnails, setThumbnails] = useState<string[] | undefined>([]);
+  useEffect(() => {
+    generateThumbnail(route.params.localUrl, route.params.duration).then(
+      (res) => {
+        setThumbnails(res);
+      }
+    );
+  }, []);
   async function selectCoverImage() {
     let coverresult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -34,8 +41,6 @@ export default function UploadVideo({
     }
     if (!coverresult.canceled) {
       setCoverPic(coverresult.assets[0].uri);
-      const imgblob = await getImageBlobFromUri(coverresult.assets[0].uri);
-      setCoverImageBlob(imgblob);
     }
   }
 
@@ -48,18 +53,28 @@ export default function UploadVideo({
     >
       <Pressable
         style={{
-          height: windowHeight / 4,
+          height: 250,
           width: "100%",
         }}
       >
-        <Image
-          source={{
-            uri: STATIC_ASSET,
+        <VideoPlayer
+          videoProps={{
+            source: {
+              uri: route.params.localUrl,
+            },
+            shouldPlay: true,
+            resizeMode: ResizeMode.CONTAIN,
+            volume: 0.5,
           }}
           style={{
-            height: "100%",
-            width: "100%",
-            resizeMode: "cover",
+            height: 250,
+          }}
+          slider={{
+            visible: false,
+          }}
+          timeVisible={false}
+          fullscreen={{
+            visible: false,
           }}
         />
       </Pressable>
@@ -86,26 +101,20 @@ export default function UploadVideo({
           flexWrap: "wrap",
         }}
       >
-        {[...Array(5)].map(() => (
-          <View
-            style={{
-              height: windowWidth / 4,
-              width: windowHeight / 4.5,
-              marginTop: 16,
-            }}
-          >
-            <Image
-              source={{
-                uri: STATIC_ASSET,
-              }}
-              style={{
-                height: "100%",
-                width: "100%",
-                resizeMode: "cover",
-              }}
-            />
-          </View>
-        ))}
+        {thumbnails &&
+          thumbnails.map((item) => {
+            return (
+              <View
+                style={{
+                  height: windowWidth / 4,
+                  width: windowHeight / 4.5,
+                  marginTop: 16,
+                }}
+              >
+                <ThumbnailCard url={item} />
+              </View>
+            );
+          })}
         <View
           style={{
             height: windowWidth / 4,
@@ -120,6 +129,7 @@ export default function UploadVideo({
               backgroundColor: "rgba(255,255,255,0.2)",
               justifyContent: "center",
               alignItems: "center",
+              borderRadius: 8,
             }}
             onPress={selectCoverImage}
           >
@@ -132,6 +142,7 @@ export default function UploadVideo({
                   height: "100%",
                   width: "100%",
                   resizeMode: "cover",
+                  borderRadius: 8,
                 }}
               />
             ) : (
@@ -143,7 +154,7 @@ export default function UploadVideo({
               >
                 <Icon name="edit" />
                 <StyledText
-                  title={"select cover"}
+                  title={"Select cover"}
                   style={{
                     color: "white",
                     fontSize: 14,
@@ -173,9 +184,43 @@ export default function UploadVideo({
             fontSize: 16,
             fontWeight: "600",
           }}
+          onPress={() => {
+            navigation.navigate("AddDetails");
+          }}
           bg={"white"}
         />
       </View>
     </SafeAreaView>
   );
 }
+
+const ThumbnailCard = React.memo(({ url }: { url: string }) => {
+  return (
+    <Image
+      source={{
+        uri: url,
+      }}
+      style={{
+        height: "100%",
+        width: "100%",
+        resizeMode: "cover",
+        borderRadius: 4,
+      }}
+    />
+  );
+});
+
+const ThumnailSkletom = () => {
+  return (
+    <Pressable
+      style={{
+        height: "100%",
+        width: "100%",
+        backgroundColor: "rgba(255,255,255,0.2)",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 8,
+      }}
+    ></Pressable>
+  );
+};

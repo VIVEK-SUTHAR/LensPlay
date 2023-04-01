@@ -106,7 +106,10 @@ export type RootStackParamList = {
   Settings: undefined;
   BugReport: undefined;
   Scanner: undefined;
-  UploadVideo: undefined;
+  UploadVideo: {
+    localUrl: string;
+    duration?: number | null | undefined;
+  };
   UploadShots: undefined;
   AddDetails: undefined;
 };

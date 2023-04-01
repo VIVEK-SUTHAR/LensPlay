@@ -139,7 +139,7 @@ export default function BottomTabNavigator({
                     alignItems: "center",
                   }}
                 >
-                  <Icon name="arrowLeft" size={24} />
+                  <Icon name="upload" size={24} />
                 </View>
               </TouchableWithoutFeedback>
               <TouchableWithoutFeedback
@@ -394,7 +394,7 @@ export default function BottomTabNavigator({
                   borderRadius: 50,
                 }}
               >
-                <Icon name="arrowForward" size={24} />
+                <Icon name="create" size={24} />
               </View>
               <StyledText
                 title={"Create a video"}
@@ -488,7 +488,10 @@ export default function BottomTabNavigator({
                   }
                   if (!camera.canceled) {
                     // setImage(camera.uri);
-                    navigation.push("UploadVideo");
+                    navigation.push("UploadVideo", {
+                      localUrl: camera.assets[0].uri,
+                      duration: camera.assets[0].duration,
+                    });
                   }
                 }
               }}
@@ -500,7 +503,7 @@ export default function BottomTabNavigator({
                   borderRadius: 50,
                 }}
               >
-                <Icon name="arrowDown" size={24} />
+                <Icon name="record" size={24} />
               </View>
               <StyledText
                 title={"Record a video"}
@@ -525,6 +528,7 @@ export default function BottomTabNavigator({
                 let result = await ImagePicker.launchImageLibraryAsync({
                   mediaTypes: ImagePicker.MediaTypeOptions.Videos,
                   allowsEditing: true,
+
                   quality: 1,
                   base64: true,
                 });
@@ -532,8 +536,10 @@ export default function BottomTabNavigator({
                   uploadTypeRef.current?.close();
                 }
                 if (!result.canceled) {
-                  console.log(result);
-                  navigation.push("UploadVideo");
+                  navigation.push("UploadVideo", {
+                    localUrl: result.assets[0].uri,
+                    duration: result.assets[0].duration,
+                  });
                 }
               }}
             >

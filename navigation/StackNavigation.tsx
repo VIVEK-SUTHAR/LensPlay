@@ -269,7 +269,7 @@ export default function StackNavigation() {
         name="UploadVideo"
         component={UploadVideo}
         options={{
-          animation: "fade_from_bottom",
+          animation: "slide_from_right",
           headerShown: true,
           headerTitleStyle: {
             fontSize: 16,
@@ -291,7 +291,7 @@ export default function StackNavigation() {
         name="AddDetails"
         component={AddDetails}
         options={{
-          animation: "fade",
+          animation: "slide_from_right",
           headerShown: false,
         }}
       />

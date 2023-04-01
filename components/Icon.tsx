@@ -59,7 +59,11 @@ export type IconProps = {
     | "referal"
     | "report"
     | "success"
-    | "wallet";
+    | "wallet"
+    | "done"
+    | "upload-file"
+    | "record"
+    | "create";
   size?: number;
   color?: string;
   style?: StyleProp<TextStyle>;
