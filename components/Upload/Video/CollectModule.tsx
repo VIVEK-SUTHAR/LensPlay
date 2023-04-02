@@ -1,20 +1,29 @@
-import React, { useState } from "react";
-import { View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Alert, View } from "react-native";
 import StyledText from "../../UI/StyledText";
 import Switch from "../../UI/Switch";
-import { primary } from "../../../constants/Colors";
+import { dark_primary, primary } from "../../../constants/Colors";
 
-export default function CollectModule() {
+export default function CollectModule({ collectRef }: { collectRef: any }) {
   const [collect, setIsCollect] = useState<boolean>(false);
+  
+  useEffect(() => {
+    if (collect) {
+      collectRef.current.snapToIndex(0);
+    }
+  }, [collect]);
 
   return (
     <View
       style={{
         flexDirection: "row",
-        // alignItems: "center",
         justifyContent: "space-between",
-        padding: 8,
+        alignItems: "flex-start",
+        padding: 12,
+        marginHorizontal: 8,
+        borderRadius: 4,
         marginVertical: 16,
+        backgroundColor: dark_primary,
       }}
     >
       <View
@@ -23,7 +32,7 @@ export default function CollectModule() {
         }}
       >
         <StyledText
-          title={"Only Followers can collect"}
+          title={"Make this Video collectible"}
           style={{
             color: "white",
             fontSize: 16,
@@ -32,7 +41,7 @@ export default function CollectModule() {
         />
         <StyledText
           title={
-            "Only profiles that follow you will be able to collect this video"
+            "By enabling this, your video will be collectible by others as NFT"
           }
           style={{
             color: "gray",
