@@ -1,64 +1,40 @@
-import React, { useEffect, useState } from "react";
-import { Alert, View } from "react-native";
+import React from "react";
+import { Pressable } from "react-native";
+import { dark_primary } from "../../../constants/Colors";
 import StyledText from "../../UI/StyledText";
-import Switch from "../../UI/Switch";
-import { dark_primary, primary } from "../../../constants/Colors";
 
 export default function CollectModule({ collectRef }: { collectRef: any }) {
-  const [collect, setIsCollect] = useState<boolean>(false);
-  
-  useEffect(() => {
-    if (collect) {
-      collectRef.current.snapToIndex(0);
-    }
-  }, [collect]);
-
   return (
-    <View
+    <Pressable
       style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
         padding: 12,
         marginHorizontal: 8,
         borderRadius: 4,
         marginVertical: 16,
         backgroundColor: dark_primary,
       }}
+      onPress={(e) => {
+        e.preventDefault();
+        collectRef?.current?.snapToIndex(0);
+      }}
     >
-      <View
+      <StyledText
+        title="Collect Settings"
         style={{
-          maxWidth: "80%",
+          color: "white",
+          fontSize: 18,
+          fontWeight: "500",
         }}
-      >
-        <StyledText
-          title={"Make this Video collectible"}
-          style={{
-            color: "white",
-            fontSize: 16,
-            fontWeight: "500",
-          }}
-        />
-        <StyledText
-          title={
-            "By enabling this, your video will be collectible by others as NFT"
-          }
-          style={{
-            color: "gray",
-            fontSize: 14,
-            fontWeight: "500",
-          }}
-        />
-      </View>
-      <Switch
-        value={collect}
-        handleOnPress={() => {
-          setIsCollect(!collect);
-        }}
-        activeTrackColor={primary}
-        inActiveTrackColor="rgba(255,255,255,0.2)"
-        thumbColor="white"
       />
-    </View>
+      <StyledText
+        title="You can also set whether this video is collectible or not"
+        style={{
+          color: "gray",
+          fontSize: 14,
+          fontWeight: "500",
+          maxWidth: "95%",
+        }}
+      />
+    </Pressable>
   );
 }

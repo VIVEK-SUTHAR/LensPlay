@@ -1,5 +1,5 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import React, { useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -47,13 +47,25 @@ export default function AddDetails({
       isSelected: false,
     },
   ];
-
-  const [activeModule, setActiveModule] = useState(ReferenceModuleList[0]);
   const referenceModuleRef = useRef<BottomSheetMethods>(null);
   const collectModuleRef = useRef<BottomSheetMethods>(null);
-  const [isFollowersOnlyCollect, setIsFollowersOnlyCollect] = useState(false);
-  const [isPaidCollect, setIsPaidCollect] = useState(false);
+
+  const [activeModule, setActiveModule] = useState(ReferenceModuleList[0]);
+  const [isFollowersOnlyCollect, setIsFollowersOnlyCollect] = useState<boolean>(
+    false
+  );
+  const [isPaidCollect, setIsPaidCollect] = useState<boolean>(false);
   const [collectAmmount, setCollectAmmount] = useState(0);
+  const [isCollectEnabled, setIsCollectEnabled] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (isCollectEnabled) {
+      collectModuleRef?.current?.snapToIndex(1);
+    }
+    if (!isCollectEnabled) {
+      collectModuleRef?.current?.snapToIndex(0);
+    }
+  }, [isCollectEnabled]);
 
   return (
     <>
@@ -244,7 +256,7 @@ export default function AddDetails({
       />
       <Sheet
         ref={collectModuleRef}
-        snapPoints={["75%"]}
+        snapPoints={["40%", "99%"]}
         containerStyle={{
           height: "auto",
         }}
@@ -266,78 +278,6 @@ export default function AddDetails({
               <View
                 style={{
                   backgroundColor: dark_secondary,
-                  marginVertical: 24,
-                  borderRadius: 4,
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    paddingHorizontal: 12,
-                  }}
-                >
-                  <Icon name="referal" />
-                  <StyledText
-                    title={"Who can Collect"}
-                    style={{
-                      color: "white",
-                      fontSize: 16,
-                      fontWeight: "500",
-                      padding: 12,
-                      borderRadius: 4,
-                      // marginVertical: 4,
-                    }}
-                  />
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "flex-start",
-                    padding: 12,
-                    borderRadius: 4,
-                    marginVertical: 2,
-                  }}
-                >
-                  <View
-                    style={{
-                      maxWidth: "80%",
-                    }}
-                  >
-                    <StyledText
-                      title={"Only Followers can collect"}
-                      style={{
-                        color: "white",
-                        fontSize: 16,
-                        fontWeight: "500",
-                      }}
-                    />
-                    <StyledText
-                      title={
-                        "By enabling this,only your followers will be able to collect this video as NFT"
-                      }
-                      style={{
-                        color: "gray",
-                        fontSize: 14,
-                        fontWeight: "500",
-                      }}
-                    />
-                  </View>
-                  <Switch
-                    value={isFollowersOnlyCollect}
-                    handleOnPress={() => {
-                      setIsFollowersOnlyCollect((prev) => !prev);
-                    }}
-                    activeTrackColor={primary}
-                    inActiveTrackColor="rgba(255,255,255,0.2)"
-                    thumbColor="white"
-                  />
-                </View>
-              </View>
-              <View
-                style={{
-                  backgroundColor: dark_secondary,
                   marginVertical: 8,
                   borderRadius: 4,
 
@@ -350,16 +290,15 @@ export default function AddDetails({
                     alignItems: "center",
                   }}
                 >
-                  <Icon name="referal" />
+                  <Icon name="collect" />
                   <StyledText
-                    title={"Make this Paid Collect"}
+                    title={"This Video can be collectible"}
                     style={{
                       color: "white",
                       fontSize: 16,
                       fontWeight: "500",
                       padding: 12,
                       borderRadius: 4,
-                      // marginVertical: 4,
                     }}
                   />
                 </View>
@@ -368,9 +307,9 @@ export default function AddDetails({
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "flex-start",
-                    // padding: 12,
+                    marginHorizontal: 8,
                     borderRadius: 4,
-                    marginVertical: 2,
+                    marginVertical: 16,
                   }}
                 >
                   <View
@@ -379,7 +318,7 @@ export default function AddDetails({
                     }}
                   >
                     <StyledText
-                      title={"Enable Paid Collect"}
+                      title={"Make this Video collectible"}
                       style={{
                         color: "white",
                         fontSize: 16,
@@ -388,7 +327,7 @@ export default function AddDetails({
                     />
                     <StyledText
                       title={
-                        "By enabling this,you will get paid whenever someone collects your post"
+                        "By enabling this, your video will be collectible by others as NFT"
                       }
                       style={{
                         color: "gray",
@@ -398,64 +337,234 @@ export default function AddDetails({
                     />
                   </View>
                   <Switch
-                    value={isPaidCollect}
+                    value={isCollectEnabled}
                     handleOnPress={() => {
-                      setIsPaidCollect((prev) => !prev);
+                      setIsCollectEnabled((prev) => !prev);
                     }}
                     activeTrackColor={primary}
                     inActiveTrackColor="rgba(255,255,255,0.2)"
                     thumbColor="white"
                   />
                 </View>
-                {isPaidCollect && (
+              </View>
+              {isCollectEnabled && (
+                <>
                   <View
                     style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
+                      backgroundColor: dark_secondary,
+                      marginVertical: 24,
+                      borderRadius: 4,
                     }}
                   >
-                    <TextInput
-                      placeholder="Collect Fee"
-                      selectionColor={theme.PRIMARY}
-                      placeholderTextColor={"gray"}
-                      keyboardType="number-pad"
-                      style={{
-                        backgroundColor: "#1a1a1a",
-                        flex: 0.9,
-                        padding: 8,
-                        color: "white",
-                        marginVertical: 8,
-                        borderRadius: 8,
-                      }}
-                      onChange={(e) => {
-                        e.preventDefault();
-                        setCollectAmmount(parseInt(e.nativeEvent.text));
-                      }}
-                    />
                     <View
                       style={{
-                        backgroundColor: "#1a1a1a",
-                        flex: 0.25,
-                        padding: 8,
-                        marginVertical: 8,
-                        marginHorizontal: 4,
-                        borderRadius: 8,
-                        justifyContent: "center",
+                        flexDirection: "row",
                         alignItems: "center",
+                        paddingHorizontal: 12,
                       }}
                     >
+                      <Icon name="referal" />
                       <StyledText
-                        title="WMATIC"
+                        title={"Who can Collect"}
                         style={{
                           color: "white",
-                          flex: 1,
+                          fontSize: 16,
+                          fontWeight: "500",
+                          padding: 12,
+                          borderRadius: 4,
+                          // marginVertical: 4,
                         }}
                       />
                     </View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        padding: 12,
+                        borderRadius: 4,
+                        marginVertical: 2,
+                      }}
+                    >
+                      <View
+                        style={{
+                          maxWidth: "80%",
+                        }}
+                      >
+                        <StyledText
+                          title={"Only Followers can collect"}
+                          style={{
+                            color: "white",
+                            fontSize: 16,
+                            fontWeight: "500",
+                          }}
+                        />
+                        <StyledText
+                          title={
+                            "By enabling this,only your followers will be able to collect this video as NFT"
+                          }
+                          style={{
+                            color: "gray",
+                            fontSize: 14,
+                            fontWeight: "500",
+                          }}
+                        />
+                      </View>
+                      <Switch
+                        value={isFollowersOnlyCollect}
+                        handleOnPress={() => {
+                          setIsFollowersOnlyCollect((prev) => !prev);
+                        }}
+                        activeTrackColor={primary}
+                        inActiveTrackColor="rgba(255,255,255,0.2)"
+                        thumbColor="white"
+                      />
+                    </View>
                   </View>
-                )}
-              </View>
+                  <View
+                    style={{
+                      backgroundColor: dark_secondary,
+                      marginVertical: 8,
+                      borderRadius: 4,
+
+                      paddingHorizontal: 12,
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Icon name="referal" />
+                      <StyledText
+                        title={"Make this Paid Collect"}
+                        style={{
+                          color: "white",
+                          fontSize: 16,
+                          fontWeight: "500",
+                          padding: 12,
+                          borderRadius: 4,
+                          // marginVertical: 4,
+                        }}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        // padding: 12,
+                        borderRadius: 4,
+                        marginVertical: 2,
+                      }}
+                    >
+                      <View
+                        style={{
+                          maxWidth: "80%",
+                        }}
+                      >
+                        <StyledText
+                          title={"Enable Paid Collect"}
+                          style={{
+                            color: "white",
+                            fontSize: 16,
+                            fontWeight: "500",
+                          }}
+                        />
+                        <StyledText
+                          title={
+                            "By enabling this,you will get paid whenever someone collects your post"
+                          }
+                          style={{
+                            color: "gray",
+                            fontSize: 14,
+                            fontWeight: "500",
+                          }}
+                        />
+                      </View>
+                      <Switch
+                        value={isPaidCollect}
+                        handleOnPress={() => {
+                          setIsPaidCollect((prev) => !prev);
+                        }}
+                        activeTrackColor={primary}
+                        inActiveTrackColor="rgba(255,255,255,0.2)"
+                        thumbColor="white"
+                      />
+                    </View>
+                    {isPaidCollect && (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <TextInput
+                          placeholder="Collect Fee"
+                          selectionColor={theme.PRIMARY}
+                          placeholderTextColor={"gray"}
+                          keyboardType="number-pad"
+                          style={{
+                            backgroundColor: "#1a1a1a",
+                            flex: 0.9,
+                            padding: 8,
+                            color: "white",
+                            marginVertical: 8,
+                            borderRadius: 8,
+                          }}
+                          onChange={(e) => {
+                            e.preventDefault();
+                            setCollectAmmount(parseInt(e.nativeEvent.text));
+                          }}
+                        />
+                        <View
+                          style={{
+                            backgroundColor: "#1a1a1a",
+                            flex: 0.25,
+                            padding: 8,
+                            marginVertical: 8,
+                            marginHorizontal: 4,
+                            borderRadius: 8,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <StyledText
+                            title="WMATIC"
+                            style={{
+                              color: "white",
+                              flex: 1,
+                            }}
+                          />
+                        </View>
+                      </View>
+                    )}
+                  </View>
+                </>
+              )}
+            </View>
+            <View
+              style={{
+                width: "45%",
+                alignSelf: "flex-end",
+              }}
+            >
+              <Button
+                title={"Save"}
+                width={"100%"}
+                mx={45}
+                bg={"white"}
+                borderRadius={8}
+                textStyle={{
+                  textAlign: "center",
+                  fontWeight: "600",
+                }}
+                onPress={useCallback(() => {
+                  collectModuleRef?.current?.forceClose();
+                }, [])}
+              />
             </View>
           </ScrollView>
         }
