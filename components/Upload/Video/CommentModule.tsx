@@ -1,27 +1,29 @@
-import React, { useState } from "react";
-import { View } from "react-native";
+import React from "react";
+import { Pressable, View } from "react-native";
+import { dark_primary } from "../../../constants/Colors";
+import Icon from "../../Icon";
 import StyledText from "../../UI/StyledText";
-import Switch from "../../UI/Switch";
-import { primary } from "../../../constants/Colors";
 
-export default function CommentModule() {
-  const [comment, setIsComment] = useState<boolean>(false);
-
+export default function CommentModule({ sheetRef,activeModule }: { sheetRef: any,activeModule:string }) {
   return (
     <View
       style={{
         flexDirection: "row",
         justifyContent: "space-between",
-        padding: 8,
+        alignItems: "flex-start",
+        padding: 12,
+        marginHorizontal: 8,
+        borderRadius: 4,
+        backgroundColor: dark_primary,
       }}
     >
       <View
         style={{
-          maxWidth: "80%",
+          maxWidth: "60%",
         }}
       >
         <StyledText
-          title={"Only Followers can comment"}
+          title={"Who can comment"}
           style={{
             color: "white",
             fontSize: 16,
@@ -29,25 +31,35 @@ export default function CommentModule() {
           }}
         />
         <StyledText
-          title={
-            "Only profiles that follow you will be able to comment on this video"
-          }
+          title={"By default, everyone can comment on your video"}
           style={{
             color: "gray",
-            fontSize: 14,
+            fontSize: 12,
             fontWeight: "500",
           }}
         />
       </View>
-      <Switch
-        value={comment}
-        handleOnPress={() => {
-          setIsComment(!comment);
+      <Pressable
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
         }}
-        activeTrackColor={primary}
-        inActiveTrackColor="rgba(255,255,255,0.2)"
-        thumbColor="white"
-      />
+        onPress={(e) => {
+          sheetRef?.current?.snapToIndex(0);
+        }}
+      >
+        <StyledText
+          title={activeModule}
+          style={{
+            color: "white",
+            fontSize: 14,
+            fontWeight: "500",
+            marginHorizontal: 2,
+          }}
+        />
+        <Icon name="arrowDown" size={20} />
+      </Pressable>
     </View>
   );
 }
