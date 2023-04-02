@@ -115,7 +115,7 @@ export interface IGuestStore {
 export interface IUploadStore {
   videoURL: string | null;
   coverURL: string | null;
-  title: string | null;
+  title: string;
   description: string | null;
   isFollowersOnlyCollect: boolean;
   referenceModule: ReferenceModules;

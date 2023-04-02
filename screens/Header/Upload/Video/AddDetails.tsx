@@ -22,7 +22,6 @@ import { STATIC_ASSET } from "../../../../constants";
 import { dark_secondary, primary } from "../../../../constants/Colors";
 import { useThemeStore } from "../../../../store/Store";
 import { useUploadStore } from "../../../../store/UploadStore";
-import { CollectModules } from "../../../../types/generated";
 import { RootStackScreenProps } from "../../../../types/navigation/types";
 
 export default function AddDetails({
@@ -88,7 +87,7 @@ export default function AddDetails({
         >
           <Image
             source={{
-              uri: uploadStore?.coverURL,
+              uri: uploadStore?.coverURL || STATIC_ASSET,
             }}
             style={{
               height: "100%",

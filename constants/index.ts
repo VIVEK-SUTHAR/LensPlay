@@ -4,7 +4,7 @@ import { Dimensions, Platform } from "react-native";
 const LENS_API_ENDPOINT = "https://api-mumbai.lens.dev/";
 const IS_MAINNET = false;
 //Application
-const APP_ID = "lensplay";
+const APP_ID = "LensPlay";
 
 const APP_NAME = "LensPlay";
 
