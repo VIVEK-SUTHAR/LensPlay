@@ -13,10 +13,10 @@ SplashScreen.preventAutoHideAsync();
 
 const Heading: FC<HeadingProps> = ({ title, style, ...rest }) => {
   const [fontsLoaded] = useFonts({
-    Raleway_Regular: require("../../assets/fonts/Raleway-Regular.ttf"),
-    Raleway_Medium: require("../../assets/fonts/Raleway-Medium.ttf"),
-    Raleway_SemiBold: require("../../assets/fonts/Raleway-SemiBold.ttf"),
-    Raleway_Bold: require("../../assets/fonts/Raleway-Bold.ttf"),
+    PlusJakartaSans_Regular: require("../../assets/fonts/PlusJakartaSans-Regular.ttf"),
+    PlusJakartaSans_Medium: require("../../assets/fonts/PlusJakartaSans-Medium.ttf"),
+    PlusJakartaSans_SemiBold: require("../../assets/fonts/PlusJakartaSans-SemiBold.ttf"),
+    PlusJakartaSans_Bold: require("../../assets/fonts/PlusJakartaSans-Bold.ttf"),
   });
 
   const onLayoutRootView = useCallback(async () => {
@@ -32,13 +32,13 @@ const Heading: FC<HeadingProps> = ({ title, style, ...rest }) => {
   const getFontFamily = (fontWeight: number) => {
     switch (fontWeight) {
       case 700:
-        return "Raleway_Bold";
+        return "PlusJakartaSans_Bold";
       case 600:
-        return "Raleway_SemiBold";
+        return "PlusJakartaSans_SemiBold";
       case 500:
-        return "Raleway_Medium";
+        return "PlusJakartaSans_Medium";
       default:
-        return "Raleway_Regular";
+        return "PlusJakartaSans_Regular";
     }
   };
 
