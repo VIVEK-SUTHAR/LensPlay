@@ -8,21 +8,21 @@ import Button from "../../../../components/UI/Button";
 import Heading from "../../../../components/UI/Heading";
 import StyledText from "../../../../components/UI/StyledText";
 import { useToast } from "../../../../store/Store";
-import { RootStackScreenProps } from "../../../../types/navigation/types";
 import { ToastType } from "../../../../types/Store";
+import { RootStackScreenProps } from "../../../../types/navigation/types";
 import generateThumbnail from "../../../../utils/generateThumbnails";
-import Skeleton from "../../../../components/common/Skeleton";
 
 export default function UploadVideo({
   navigation,
   route,
 }: RootStackScreenProps<"UploadVideo">) {
   const [coverPic, setCoverPic] = useState<string | null>(null);
+  const [thumbnails, setThumbnails] = useState<string[]>([]);
+  const [selectedCover, setSelectedCover] = useState<number>(0);
   const toast = useToast();
+  const videoRef = useRef<Video>();
   const windowHeight = Dimensions.get("window").height;
   const windowWidth = Dimensions.get("window").width;
-  const [thumbnails, setThumbnails] = useState<string[]>([]);
-  const videoRef = useRef<Video>();
 
   const ThumnailSkleton = () => {
     return (
@@ -59,7 +59,7 @@ export default function UploadVideo({
       base64: true,
     });
     if (coverresult.canceled) {
-      toast.show("No image selected", ToastType.ERROR, true);
+      return;
     }
     if (!coverresult.canceled) {
       setCoverPic(coverresult.assets[0].uri);
@@ -125,17 +125,37 @@ export default function UploadVideo({
         }}
       >
         {thumbnails?.length > 0 ? (
-          thumbnails.map((item) => {
+          thumbnails.map((item, index) => {
             return (
-              <View
+              <Pressable
                 style={{
                   height: windowWidth / 4,
                   width: windowHeight / 4.5,
                   marginTop: 16,
+                  position: "relative",
+                }}
+                onPress={() => {
+                  setSelectedCover(index);
                 }}
               >
                 <ThumbnailCard url={item} />
-              </View>
+                {selectedCover === index && !coverPic ? (
+                  <View
+                    style={{
+                      position: "absolute",
+                      height: "100%",
+                      width: "100%",
+                      backgroundColor: "rgba(0,0,0,0.4)",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Icon name="done" />
+                  </View>
+                ) : (
+                  <></>
+                )}
+              </Pressable>
             );
           })
         ) : (
@@ -166,17 +186,37 @@ export default function UploadVideo({
             onPress={selectCoverImage}
           >
             {coverPic ? (
-              <Image
-                source={{
-                  uri: coverPic,
-                }}
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  resizeMode: "cover",
-                  borderRadius: 8,
-                }}
-              />
+              <>
+                <Image
+                  source={{
+                    uri: coverPic,
+                  }}
+                  style={{
+                    height: "100%",
+                    width: "100%",
+                    resizeMode: "cover",
+                    borderRadius: 8,
+                  }}
+                />
+                <>
+                  {coverPic ? (
+                    <View
+                      style={{
+                        position: "absolute",
+                        height: "100%",
+                        width: "100%",
+                        backgroundColor: "rgba(0,0,0,0.4)",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Icon name="done" />
+                    </View>
+                  ) : (
+                    <></>
+                  )}
+                </>
+              </>
             ) : (
               <View
                 style={{
