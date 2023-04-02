@@ -5,6 +5,7 @@ import Heading from "../../components/UI/Heading";
 import StyledText from "../../components/UI/StyledText";
 import { dark_primary } from "../../constants/Colors";
 import Button from "../../components/UI/Button";
+import { UploadStore } from "../../store/UploadStore";
 
 const Types: string[] = [
   "Arts & Entertainment",
@@ -53,6 +54,10 @@ export default function VideoTypes({
   navigation,
 }: RootStackScreenProps<"AddDetails">) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  // const uploadStore = UploadStore();
+  // console.log(uploadStore.collectModule);
+  // console.log(uploadStore.isFollowersOnlyCollect);
 
   return (
     <SafeAreaView

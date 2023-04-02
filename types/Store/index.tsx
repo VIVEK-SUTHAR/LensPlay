@@ -1,4 +1,13 @@
-import { FeedItemRoot, Maybe, Mirror, Post, Profile } from "../generated";
+import {
+  CollectModules,
+  FeedItemRoot,
+  Maybe,
+  Mirror,
+  Post,
+  Profile,
+  ReferenceModuleParams,
+  ReferenceModules,
+} from "../generated";
 
 export interface IAuthStore {
   accessToken: string;
@@ -108,7 +117,12 @@ export interface IUploadStore {
   coverURL: string | null;
   title: string | null;
   description: string | null;
+  isFollowersOnlyCollect: boolean;
   setURLs: (videoURL: string, coverURL: string) => void;
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
+  referenceModule: ReferenceModules;
+  collectModule: CollectModules;
+  setCollectModule: (newCollectModule: CollectModules) => void;
+  setIsFollowesOnlyCollect: (newValue: boolean) => void;
 }

@@ -21,6 +21,8 @@ import CommentModule from "../../../../components/Upload/Video/CommentModule";
 import { STATIC_ASSET } from "../../../../constants";
 import { dark_secondary, primary } from "../../../../constants/Colors";
 import { useThemeStore } from "../../../../store/Store";
+import { UploadStore } from "../../../../store/UploadStore";
+import { CollectModules } from "../../../../types/generated";
 import { RootStackScreenProps } from "../../../../types/navigation/types";
 
 export default function AddDetails({
@@ -58,14 +60,28 @@ export default function AddDetails({
   const [collectAmmount, setCollectAmmount] = useState(0);
   const [isCollectEnabled, setIsCollectEnabled] = useState<boolean>(false);
 
+  const uploadStore = UploadStore();
+
   useEffect(() => {
     if (isCollectEnabled) {
+      uploadStore.setCollectModule(CollectModules.FreeCollectModule);
       collectModuleRef?.current?.snapToIndex(1);
     }
     if (!isCollectEnabled) {
+      uploadStore.setCollectModule(CollectModules.RevertCollectModule);
       collectModuleRef?.current?.snapToIndex(0);
     }
   }, [isCollectEnabled]);
+
+  useEffect(() => {
+    if (isFollowersOnlyCollect) {
+      uploadStore.setIsFollowesOnlyCollect(true);
+      return;
+    }
+    if (!isFollowersOnlyCollect) {
+      uploadStore.setIsFollowesOnlyCollect(false);
+    }
+  }, [isFollowersOnlyCollect]);
 
   return (
     <>

@@ -1,4 +1,5 @@
 import create from "zustand";
+import { CollectModules, ReferenceModules } from "../types/generated";
 import { IUploadStore } from "../types/Store";
 
 export const UploadStore = create<IUploadStore>((set) => ({
@@ -6,6 +7,9 @@ export const UploadStore = create<IUploadStore>((set) => ({
   coverURL: null,
   title: null,
   description: null,
+  collectModule: CollectModules.RevertCollectModule,
+  referenceModule: ReferenceModules.FollowerOnlyReferenceModule,
+  isFollowersOnlyCollect: false,
   setURLs: (videoURL, coverURL) => {
     set({
       videoURL: videoURL,
@@ -16,4 +20,8 @@ export const UploadStore = create<IUploadStore>((set) => ({
   },
   setTitle: (title) => set({ title: title }),
   setDescription: (description) => set({ description: description }),
+  setCollectModule: (newCollectModule) =>
+    set({ collectModule: newCollectModule }),
+  setIsFollowesOnlyCollect: (newValue: boolean) =>
+    set({ isFollowersOnlyCollect: newValue }),
 }));
