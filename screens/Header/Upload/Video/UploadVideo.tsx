@@ -11,6 +11,7 @@ import { useToast } from "../../../../store/Store";
 import { RootStackScreenProps } from "../../../../types/navigation/types";
 import { ToastType } from "../../../../types/Store";
 import generateThumbnail from "../../../../utils/generateThumbnails";
+import Skeleton from "../../../../components/common/Skeleton";
 
 export default function UploadVideo({
   navigation,
@@ -20,13 +21,15 @@ export default function UploadVideo({
   const toast = useToast();
   const windowHeight = Dimensions.get("window").height;
   const windowWidth = Dimensions.get("window").width;
-  const [thumbnails, setThumbnails] = useState<string[] | undefined>([]);
+  const [thumbnails, setThumbnails] = useState<string[]>([]);
   const videoRef = useRef<Video>();
 
   useEffect(() => {
     generateThumbnail(route.params.localUrl, route.params.duration).then(
       (res) => {
-        setThumbnails(res);
+        if (res) {
+          setThumbnails(res);
+        }
       }
     );
   }, []);
@@ -105,7 +108,7 @@ export default function UploadVideo({
           flexWrap: "wrap",
         }}
       >
-        {thumbnails &&
+        {thumbnails?.length > 0 ? (
           thumbnails.map((item) => {
             return (
               <View
@@ -118,7 +121,10 @@ export default function UploadVideo({
                 <ThumbnailCard url={item} />
               </View>
             );
-          })}
+          })
+        ) : (
+          <Skeleton children={<ThumnailSkleton />} number={5} />
+        )}
         <View
           style={{
             height: windowWidth / 4,
