@@ -22,6 +22,6 @@ export const UploadStore = create<IUploadStore>((set) => ({
   setDescription: (description) => set({ description: description }),
   setCollectModule: (newCollectModule) =>
     set({ collectModule: newCollectModule }),
-  setIsFollowesOnlyCollect: (newValue: boolean) =>
+  setIsFollowesOnlyCollect: (newValue) =>
     set({ isFollowersOnlyCollect: newValue }),
 }));

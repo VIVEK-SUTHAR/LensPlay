@@ -118,11 +118,11 @@ export interface IUploadStore {
   title: string | null;
   description: string | null;
   isFollowersOnlyCollect: boolean;
+  referenceModule: ReferenceModules;
+  collectModule: CollectModules;
   setURLs: (videoURL: string, coverURL: string) => void;
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
-  referenceModule: ReferenceModules;
-  collectModule: CollectModules;
   setCollectModule: (newCollectModule: CollectModules) => void;
   setIsFollowesOnlyCollect: (newValue: boolean) => void;
 }

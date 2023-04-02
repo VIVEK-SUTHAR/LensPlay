@@ -4,22 +4,32 @@ import { dark_primary } from "../../../constants/Colors";
 import Icon from "../../Icon";
 import StyledText from "../../UI/StyledText";
 
-export default function CommentModule({ sheetRef,activeModule }: { sheetRef: any,activeModule:string }) {
+export default function CommentModule({
+  sheetRef,
+  activeModule,
+}: {
+  sheetRef: any;
+  activeModule: string;
+}) {
   return (
-    <View
+    <Pressable
       style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-        padding: 12,
+        paddingHorizontal: 16,
+        paddingVertical: 16,
         marginHorizontal: 8,
-        borderRadius: 4,
+        borderRadius: 8,
         backgroundColor: dark_primary,
+        marginVertical: 8,
+      }}
+      onPress={(e) => {
+        sheetRef?.current?.snapToIndex(0);
       }}
     >
       <View
         style={{
-          maxWidth: "60%",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
         <StyledText
@@ -28,38 +38,37 @@ export default function CommentModule({ sheetRef,activeModule }: { sheetRef: any
             color: "white",
             fontSize: 16,
             fontWeight: "500",
+            maxWidth: "75%",
           }}
         />
+        <StyledText
+          title={activeModule}
+          style={{
+            color: "gray",
+            fontSize: 12,
+            fontWeight: "500",
+            marginHorizontal: 2,
+          }}
+        />
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "flex-end",
+        }}
+      >
         <StyledText
           title={"By default, everyone can comment on your video"}
           style={{
             color: "gray",
             fontSize: 12,
             fontWeight: "500",
+            maxWidth: "65%",
           }}
         />
+        <Icon name="arrowForward" size={16} />
       </View>
-      <Pressable
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        onPress={(e) => {
-          sheetRef?.current?.snapToIndex(0);
-        }}
-      >
-        <StyledText
-          title={activeModule}
-          style={{
-            color: "white",
-            fontSize: 14,
-            fontWeight: "500",
-            marginHorizontal: 2,
-          }}
-        />
-        <Icon name="arrowDown" size={20} />
-      </Pressable>
-    </View>
+    </Pressable>
   );
 }

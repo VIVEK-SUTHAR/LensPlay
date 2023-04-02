@@ -125,9 +125,9 @@ export default function VideoTypes({
         }}
       >
         <StyledText
-          title={"Clear"}
+          title={"CLEAR"}
           style={{
-            fontSize: 16,
+            fontSize: 12,
             color: "gray",
             fontWeight: "600",
           }}

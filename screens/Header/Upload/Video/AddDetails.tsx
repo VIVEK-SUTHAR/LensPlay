@@ -63,17 +63,6 @@ export default function AddDetails({
   const uploadStore = UploadStore();
 
   useEffect(() => {
-    if (isCollectEnabled) {
-      uploadStore.setCollectModule(CollectModules.FreeCollectModule);
-      collectModuleRef?.current?.snapToIndex(1);
-    }
-    if (!isCollectEnabled) {
-      uploadStore.setCollectModule(CollectModules.RevertCollectModule);
-      collectModuleRef?.current?.snapToIndex(0);
-    }
-  }, [isCollectEnabled]);
-
-  useEffect(() => {
     if (isFollowersOnlyCollect) {
       uploadStore.setIsFollowesOnlyCollect(true);
       return;
@@ -172,7 +161,7 @@ export default function AddDetails({
         <View
           style={{
             padding: 8,
-            marginVertical: 24,
+            // marginVertical: 24,
             flexDirection: "row",
             justifyContent: "flex-end",
           }}
@@ -272,13 +261,18 @@ export default function AddDetails({
       />
       <Sheet
         ref={collectModuleRef}
-        snapPoints={["40%", "99%"]}
+        snapPoints={["98%"]}
         containerStyle={{
           height: "auto",
         }}
         enablePanDownToClose={true}
         children={
-          <ScrollView>
+          <ScrollView
+            contentContainerStyle={{
+              justifyContent: "space-between",
+              flex: 1,
+            }}
+          >
             <View style={{ padding: 16 }}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Heading
@@ -287,7 +281,8 @@ export default function AddDetails({
                     color: "white",
                     fontSize: 20,
                     marginHorizontal: 8,
-                    fontWeight: "700",
+                    marginBottom: 16,
+                    fontWeight: "600",
                   }}
                 />
               </View>
@@ -295,36 +290,15 @@ export default function AddDetails({
                 style={{
                   backgroundColor: dark_secondary,
                   marginVertical: 8,
-                  borderRadius: 4,
-
+                  borderRadius: 8,
                   paddingHorizontal: 12,
                 }}
               >
                 <View
                   style={{
                     flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Icon name="collect" />
-                  <StyledText
-                    title={"This Video can be collectible"}
-                    style={{
-                      color: "white",
-                      fontSize: 16,
-                      fontWeight: "500",
-                      padding: 12,
-                      borderRadius: 4,
-                    }}
-                  />
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "flex-start",
-                    marginHorizontal: 8,
-                    borderRadius: 4,
                     marginVertical: 16,
                   }}
                 >
@@ -368,30 +342,10 @@ export default function AddDetails({
                   <View
                     style={{
                       backgroundColor: dark_secondary,
-                      marginVertical: 24,
-                      borderRadius: 4,
+                      marginVertical: 8,
+                      borderRadius: 8,
                     }}
                   >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        paddingHorizontal: 12,
-                      }}
-                    >
-                      <Icon name="referal" />
-                      <StyledText
-                        title={"Who can Collect"}
-                        style={{
-                          color: "white",
-                          fontSize: 16,
-                          fontWeight: "500",
-                          padding: 12,
-                          borderRadius: 4,
-                          // marginVertical: 4,
-                        }}
-                      />
-                    </View>
                     <View
                       style={{
                         flexDirection: "row",
@@ -441,36 +395,16 @@ export default function AddDetails({
                     style={{
                       backgroundColor: dark_secondary,
                       marginVertical: 8,
-                      borderRadius: 4,
-
+                      borderRadius: 8,
                       paddingHorizontal: 12,
                     }}
                   >
                     <View
                       style={{
                         flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Icon name="referal" />
-                      <StyledText
-                        title={"Make this Paid Collect"}
-                        style={{
-                          color: "white",
-                          fontSize: 16,
-                          fontWeight: "500",
-                          padding: 12,
-                          borderRadius: 4,
-                          // marginVertical: 4,
-                        }}
-                      />
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: "row",
                         justifyContent: "space-between",
                         alignItems: "flex-start",
-                        // padding: 12,
+                        paddingVertical: 12,
                         borderRadius: 4,
                         marginVertical: 2,
                       }}
@@ -515,6 +449,7 @@ export default function AddDetails({
                           flexDirection: "row",
                           justifyContent: "space-between",
                           alignItems: "center",
+                          marginVertical: 8,
                         }}
                       >
                         <TextInput
@@ -524,10 +459,10 @@ export default function AddDetails({
                           keyboardType="number-pad"
                           style={{
                             backgroundColor: "#1a1a1a",
-                            flex: 0.9,
-                            padding: 8,
+                            flex: 0.8,
+                            paddingVertical: 4,
+                            paddingHorizontal: 8,
                             color: "white",
-                            marginVertical: 8,
                             borderRadius: 8,
                           }}
                           onChange={(e) => {
@@ -539,10 +474,11 @@ export default function AddDetails({
                           style={{
                             backgroundColor: "#1a1a1a",
                             flex: 0.25,
-                            padding: 8,
-                            marginVertical: 8,
-                            marginHorizontal: 4,
+                            flexDirection: "row",
+                            paddingVertical: 8,
+                            paddingHorizontal: 8,
                             borderRadius: 8,
+                            marginLeft: 4,
                             justifyContent: "center",
                             alignItems: "center",
                           }}
@@ -551,7 +487,6 @@ export default function AddDetails({
                             title="WMATIC"
                             style={{
                               color: "white",
-                              flex: 1,
                             }}
                           />
                         </View>
@@ -563,14 +498,15 @@ export default function AddDetails({
             </View>
             <View
               style={{
-                width: "45%",
-                alignSelf: "flex-end",
+                width: "100%",
+                padding: 16,
+                flexDirection: "row",
+                justifyContent: "flex-end",
               }}
             >
               <Button
                 title={"Save"}
-                width={"100%"}
-                mx={45}
+                width={"30%"}
                 bg={"white"}
                 borderRadius={8}
                 textStyle={{
@@ -578,7 +514,7 @@ export default function AddDetails({
                   fontWeight: "600",
                 }}
                 onPress={useCallback(() => {
-                  collectModuleRef?.current?.forceClose();
+                  collectModuleRef?.current?.close();
                 }, [])}
               />
             </View>
