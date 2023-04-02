@@ -28,9 +28,10 @@ export default function AddDetails({
 }: RootStackScreenProps<"AddDetails">) {
   const theme = useThemeStore();
   const windowHeight = Dimensions.get("window").height;
+
   const ReferenceModuleList = [
     {
-      name: "Everyone can",
+      name: "Everyone",
       isSelected: true,
     },
     {
@@ -46,10 +47,10 @@ export default function AddDetails({
       isSelected: false,
     },
   ];
+
   const [activeModule, setActiveModule] = useState(ReferenceModuleList[0]);
   const referenceModuleRef = useRef<BottomSheetMethods>(null);
   const collectModuleRef = useRef<BottomSheetMethods>(null);
-
   const [isFollowersOnlyCollect, setIsFollowersOnlyCollect] = useState(false);
   const [isPaidCollect, setIsPaidCollect] = useState(false);
   const [collectAmmount, setCollectAmmount] = useState(0);
@@ -188,38 +189,52 @@ export default function AddDetails({
               renderItem={({ item, index }) => {
                 return (
                   <Pressable
-                    style={{ flexDirection: "row", alignItems: "center" }}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
                     onPress={() => {
                       setActiveModule(ReferenceModuleList[index]);
                       referenceModuleRef.current?.close();
                     }}
                   >
-                    <View
-                      style={{
-                        height: "auto",
-                        width: "auto",
-                        backgroundColor:
-                          activeModule.name === item.name
-                            ? theme.PRIMARY
-                            : "black",
-                        borderRadius: 50,
-                        padding: 4,
-                        marginVertical: 16,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Icon name={"done"} color={"white"} size={18} />
-                    </View>
                     <StyledText
                       title={item.name}
                       style={{
-                        color: "white",
+                        color: "rgba(255,255,255,0.8)",
                         fontSize: 18,
                         fontWeight: "400",
-                        marginHorizontal: 8,
+                        marginVertical: 16,
                       }}
                     />
+                    {activeModule.name === item.name ? (
+                      <View
+                        style={{
+                          height: "auto",
+                          width: "auto",
+                          backgroundColor:
+                            activeModule.name === item.name
+                              ? theme.PRIMARY
+                              : "black",
+                          borderRadius: 50,
+                          padding: 4,
+                          marginVertical: 16,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Icon
+                          name={"done"}
+                          color={
+                            activeModule.name === item.name ? "black" : "white"
+                          }
+                          size={18}
+                        />
+                      </View>
+                    ) : (
+                      <></>
+                    )}
                   </Pressable>
                 );
               }}
@@ -238,7 +253,6 @@ export default function AddDetails({
           <ScrollView>
             <View style={{ padding: 16 }}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Icon name="collect" size={24} />
                 <Heading
                   title={"Collect Settings"}
                   style={{
