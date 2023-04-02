@@ -1,11 +1,16 @@
 import React, { useState } from "react";
-import { SafeAreaView, TextInput, View } from "react-native";
-import StyledText from "../../components/UI/StyledText";
+import {
+  SafeAreaView,
+  TextInput,
+  View
+} from "react-native";
 import Button from "../../components/UI/Button";
+import StyledText from "../../components/UI/StyledText";
+import { useThemeStore } from "../../store/Store";
 
 export default function AddDescription() {
   const [description, setDescription] = useState<string | null>(null);
-
+  const theme = useThemeStore();
   return (
     <SafeAreaView
       style={{
@@ -21,6 +26,7 @@ export default function AddDescription() {
         <TextInput
           placeholder="Add description for your video"
           placeholderTextColor={"gray"}
+          selectionColor={theme.PRIMARY}
           textAlignVertical="top"
           multiline={true}
           style={{
@@ -30,6 +36,7 @@ export default function AddDescription() {
             height: "100%",
             color: "white",
           }}
+          autoFocus={true}
           onChange={(e) => {
             setDescription(e.nativeEvent.text);
           }}
