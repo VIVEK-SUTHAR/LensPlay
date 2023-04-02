@@ -24,6 +24,22 @@ export default function UploadVideo({
   const [thumbnails, setThumbnails] = useState<string[]>([]);
   const videoRef = useRef<Video>();
 
+  const ThumnailSkleton = () => {
+    return (
+      <View
+        style={{
+          height: windowWidth / 4,
+          width: windowHeight / 4.5,
+          backgroundColor: "rgba(255,255,255,0.2)",
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: 8,
+          marginTop: 16,
+        }}
+      ></View>
+    );
+  };
+
   useEffect(() => {
     generateThumbnail(route.params.localUrl, route.params.duration).then(
       (res) => {
@@ -123,7 +139,13 @@ export default function UploadVideo({
             );
           })
         ) : (
-          <Skeleton children={<ThumnailSkleton />} number={5} />
+          <>
+            <ThumnailSkleton />
+            <ThumnailSkleton />
+            <ThumnailSkleton />
+            <ThumnailSkleton />
+            <ThumnailSkleton />
+          </>
         )}
         <View
           style={{
@@ -220,18 +242,3 @@ const ThumbnailCard = React.memo(({ url }: { url: string }) => {
     />
   );
 });
-
-const ThumnailSkleton = () => {
-  return (
-    <View
-      style={{
-        height: "100%",
-        width: "100%",
-        backgroundColor: "rgba(255,255,255,0.2)",
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: 8,
-      }}
-    ></View>
-  );
-};
