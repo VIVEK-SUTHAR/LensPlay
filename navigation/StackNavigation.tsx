@@ -26,6 +26,8 @@ import BottomTabNavigator from "./BottomTabNavigation";
 import UploadVideo from "../screens/Header/Upload/Video/UploadVideo";
 import UploadShots from "../screens/Header/Upload/Shots/UploadShots";
 import AddDetails from "../screens/Header/Upload/Video/AddDetails";
+import AddDescription from "../screens/common/AddDescription";
+import VideoTypes from "../screens/common/VideoTypes";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -292,7 +294,41 @@ export default function StackNavigation() {
         component={AddDetails}
         options={{
           animation: "slide_from_right",
-          headerShown: false,
+          headerShown: true,
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
+          headerTintColor: "white",
+          headerTitle: "Add Details",
+        }}
+      />
+      <Stack.Screen
+        name="AddDescription"
+        component={AddDescription}
+        options={{
+          animation: "slide_from_right",
+          headerShown: true,
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
+          headerTintColor: "white",
+          headerTitle: "Add Description",
+        }}
+      />
+      <Stack.Screen
+        name="VideoTypes"
+        component={VideoTypes}
+        options={{
+          animation: "slide_from_right",
+          headerShown: true,
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
+          headerTintColor: "white",
+          headerTitle: "Select Video types",
         }}
       />
     </Stack.Navigator>

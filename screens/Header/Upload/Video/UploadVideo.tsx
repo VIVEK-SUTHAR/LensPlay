@@ -53,7 +53,7 @@ export default function UploadVideo({
     >
       <Pressable
         style={{
-          height: 250,
+          height: windowHeight / 4,
           width: "100%",
         }}
       >
@@ -67,7 +67,7 @@ export default function UploadVideo({
             volume: 0.5,
           }}
           style={{
-            height: 250,
+            height: windowHeight / 4,
           }}
           slider={{
             visible: false,
@@ -210,7 +210,7 @@ const ThumbnailCard = React.memo(({ url }: { url: string }) => {
   );
 });
 
-const ThumnailSkletom = () => {
+const ThumnailSkleton = () => {
   return (
     <Pressable
       style={{

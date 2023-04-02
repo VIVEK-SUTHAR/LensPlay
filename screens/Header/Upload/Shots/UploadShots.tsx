@@ -8,7 +8,6 @@ import {
   useCameraDevices,
 } from "react-native-vision-camera";
 import Switch from "../../../../components/UI/Switch";
-import { CaptureButton } from "../../../../components/Upload/CaptureButton";
 import Heading from "../../../../components/UI/Heading";
 import { useSharedValue } from "react-native-reanimated";
 
@@ -49,25 +48,6 @@ export default function UploadShots({
         video={true}
         photo={false}
       ></Camera>
-      <View
-        style={{
-          height: 50,
-          width: 50,
-        }}
-      >
-        <CaptureButton
-          camera={camera}
-          onMediaCaptured={() => {}}
-          minZoom={0}
-          maxZoom={0}
-          cameraZoom={{
-            value: 0,
-          }}
-          flash={"off"}
-          enabled={false}
-          setIsPressingButton={() => {}}
-        />
-      </View>
     </SafeAreaView>
   );
 }

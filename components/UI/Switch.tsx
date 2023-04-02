@@ -78,15 +78,15 @@ const Switch = ({
 
 const styles = StyleSheet.create({
   circleStyle: {
-    width: 24,
-    height: 24,
+    width: 20,
+    height: 20,
     borderRadius: 24,
   },
   containerStyle: {
-    width: 50,
+    width: 45,
     paddingVertical: 2,
     paddingHorizontal: 2,
-    borderRadius: 36.5,
+    borderRadius: 24,
   },
   shadowValue: {
     shadowColor: "#000",
@@ -96,7 +96,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
-
     elevation: 4,
   },
 });

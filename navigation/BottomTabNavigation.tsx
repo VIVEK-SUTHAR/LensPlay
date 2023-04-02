@@ -550,7 +550,7 @@ export default function BottomTabNavigator({
                   borderRadius: 50,
                 }}
               >
-                <Icon name="copy" size={24} />
+                <Icon name="upload-file" size={24} />
               </View>
               <StyledText
                 title={"Select from gallery"}

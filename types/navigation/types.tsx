@@ -112,6 +112,8 @@ export type RootStackParamList = {
   };
   UploadShots: undefined;
   AddDetails: undefined;
+  AddDescription: undefined;
+  VideoTypes: undefined;
 };
 
 /**
