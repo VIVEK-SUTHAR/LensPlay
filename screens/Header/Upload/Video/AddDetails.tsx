@@ -1,24 +1,27 @@
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import React, { useRef, useState } from "react";
 import {
   Dimensions,
   Image,
   Pressable,
   SafeAreaView,
+  ScrollView,
   TextInput,
   View,
 } from "react-native";
-import Icon, { IconProps } from "../../../../components/Icon";
+import { FlatList } from "react-native-gesture-handler";
+import Sheet from "../../../../components/Bottom";
+import Icon from "../../../../components/Icon";
+import Button from "../../../../components/UI/Button";
 import Heading from "../../../../components/UI/Heading";
-import { STATIC_ASSET } from "../../../../constants";
-import { RootStackScreenProps } from "../../../../types/navigation/types";
+import StyledText from "../../../../components/UI/StyledText";
+import Switch from "../../../../components/UI/Switch";
 import CollectModule from "../../../../components/Upload/Video/CollectModule";
 import CommentModule from "../../../../components/Upload/Video/CommentModule";
-import Button from "../../../../components/UI/Button";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import Sheet from "../../../../components/Bottom";
-import StyledText from "../../../../components/UI/StyledText";
+import { STATIC_ASSET } from "../../../../constants";
+import { dark_secondary, primary } from "../../../../constants/Colors";
 import { useThemeStore } from "../../../../store/Store";
-import { FlatList } from "react-native-gesture-handler";
+import { RootStackScreenProps } from "../../../../types/navigation/types";
 
 export default function AddDetails({
   navigation,
@@ -45,6 +48,12 @@ export default function AddDetails({
   ];
   const [activeModule, setActiveModule] = useState(ReferenceModuleList[0]);
   const referenceModuleRef = useRef<BottomSheetMethods>(null);
+  const collectModuleRef = useRef<BottomSheetMethods>(null);
+
+  const [isFollowersOnlyCollect, setIsFollowersOnlyCollect] = useState(false);
+  const [isPaidCollect, setIsPaidCollect] = useState(false);
+  const [collectAmmount, setCollectAmmount] = useState(0);
+
   return (
     <>
       <SafeAreaView
@@ -126,7 +135,7 @@ export default function AddDetails({
           />
           <Icon name="arrowForward" size={20} color="white" />
         </Pressable>
-        <CollectModule />
+        <CollectModule collectRef={collectModuleRef} />
         <CommentModule
           sheetRef={referenceModuleRef}
           activeModule={activeModule.name}
@@ -216,6 +225,225 @@ export default function AddDetails({
               }}
             />
           </View>
+        }
+      />
+      <Sheet
+        ref={collectModuleRef}
+        snapPoints={["75%"]}
+        containerStyle={{
+          height: "auto",
+        }}
+        enablePanDownToClose={true}
+        children={
+          <ScrollView>
+            <View style={{ padding: 16 }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Icon name="collect" size={24} />
+                <Heading
+                  title={"Collect Settings"}
+                  style={{
+                    color: "white",
+                    fontSize: 20,
+                    marginHorizontal: 8,
+                    fontWeight: "700",
+                  }}
+                />
+              </View>
+              <View
+                style={{
+                  backgroundColor: dark_secondary,
+                  marginVertical: 24,
+                  borderRadius: 4,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    paddingHorizontal: 12,
+                  }}
+                >
+                  <Icon name="referal" />
+                  <StyledText
+                    title={"Who can Collect"}
+                    style={{
+                      color: "white",
+                      fontSize: 16,
+                      fontWeight: "500",
+                      padding: 12,
+                      borderRadius: 4,
+                      // marginVertical: 4,
+                    }}
+                  />
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    padding: 12,
+                    borderRadius: 4,
+                    marginVertical: 2,
+                  }}
+                >
+                  <View
+                    style={{
+                      maxWidth: "80%",
+                    }}
+                  >
+                    <StyledText
+                      title={"Only Followers can collect"}
+                      style={{
+                        color: "white",
+                        fontSize: 16,
+                        fontWeight: "500",
+                      }}
+                    />
+                    <StyledText
+                      title={
+                        "By enabling this,only your followers will be able to collect this video as NFT"
+                      }
+                      style={{
+                        color: "gray",
+                        fontSize: 14,
+                        fontWeight: "500",
+                      }}
+                    />
+                  </View>
+                  <Switch
+                    value={isFollowersOnlyCollect}
+                    handleOnPress={() => {
+                      setIsFollowersOnlyCollect((prev) => !prev);
+                    }}
+                    activeTrackColor={primary}
+                    inActiveTrackColor="rgba(255,255,255,0.2)"
+                    thumbColor="white"
+                  />
+                </View>
+              </View>
+              <View
+                style={{
+                  backgroundColor: dark_secondary,
+                  marginVertical: 8,
+                  borderRadius: 4,
+
+                  paddingHorizontal: 12,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <Icon name="referal" />
+                  <StyledText
+                    title={"Make this Paid Collect"}
+                    style={{
+                      color: "white",
+                      fontSize: 16,
+                      fontWeight: "500",
+                      padding: 12,
+                      borderRadius: 4,
+                      // marginVertical: 4,
+                    }}
+                  />
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    // padding: 12,
+                    borderRadius: 4,
+                    marginVertical: 2,
+                  }}
+                >
+                  <View
+                    style={{
+                      maxWidth: "80%",
+                    }}
+                  >
+                    <StyledText
+                      title={"Enable Paid Collect"}
+                      style={{
+                        color: "white",
+                        fontSize: 16,
+                        fontWeight: "500",
+                      }}
+                    />
+                    <StyledText
+                      title={
+                        "By enabling this,you will get paid whenever someone collects your post"
+                      }
+                      style={{
+                        color: "gray",
+                        fontSize: 14,
+                        fontWeight: "500",
+                      }}
+                    />
+                  </View>
+                  <Switch
+                    value={isPaidCollect}
+                    handleOnPress={() => {
+                      setIsPaidCollect((prev) => !prev);
+                    }}
+                    activeTrackColor={primary}
+                    inActiveTrackColor="rgba(255,255,255,0.2)"
+                    thumbColor="white"
+                  />
+                </View>
+                {isPaidCollect && (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <TextInput
+                      placeholder="Collect Fee"
+                      selectionColor={theme.PRIMARY}
+                      placeholderTextColor={"gray"}
+                      keyboardType="number-pad"
+                      style={{
+                        backgroundColor: "#1a1a1a",
+                        flex: 0.9,
+                        padding: 8,
+                        color: "white",
+                        marginVertical: 8,
+                        borderRadius: 8,
+                      }}
+                      onChange={(e) => {
+                        e.preventDefault();
+                        setCollectAmmount(parseInt(e.nativeEvent.text));
+                      }}
+                    />
+                    <View
+                      style={{
+                        backgroundColor: "#1a1a1a",
+                        flex: 0.25,
+                        padding: 8,
+                        marginVertical: 8,
+                        marginHorizontal: 4,
+                        borderRadius: 8,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <StyledText
+                        title="WMATIC"
+                        style={{
+                          color: "white",
+                          flex: 1,
+                        }}
+                      />
+                    </View>
+                  </View>
+                )}
+              </View>
+            </View>
+          </ScrollView>
         }
       />
     </>
