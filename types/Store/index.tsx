@@ -102,3 +102,13 @@ export interface IGuestStore {
   profileId: string;
   handleGuest: (isGuest: boolean) => void;
 }
+
+export interface IUploadStore {
+  videoURL: string | null;
+  coverURL: string | null;
+  title: string | null;
+  description: string | null;
+  setURLs: (videoURL: string, coverURL: string) => void;
+  setTitle: (title: string) => void;
+  setDescription: (description: string) => void;
+}

@@ -158,7 +158,7 @@ export default function AddDetails({
       </SafeAreaView>
       <Sheet
         ref={referenceModuleRef}
-        snapPoints={["45%"]}
+        snapPoints={["50%"]}
         style={{
           height: "auto",
         }}
