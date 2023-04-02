@@ -2,7 +2,7 @@ import create from "zustand";
 import { CollectModules, ReferenceModules } from "../types/generated";
 import { IUploadStore } from "../types/Store";
 
-export const UploadStore = create<IUploadStore>((set) => ({
+export const useUploadStore = create<IUploadStore>((set) => ({
   videoURL: null,
   coverURL: null,
   title: null,

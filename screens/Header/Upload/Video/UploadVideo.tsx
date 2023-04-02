@@ -7,8 +7,7 @@ import Icon from "../../../../components/Icon";
 import Button from "../../../../components/UI/Button";
 import Heading from "../../../../components/UI/Heading";
 import StyledText from "../../../../components/UI/StyledText";
-import { useToast } from "../../../../store/Store";
-import { ToastType } from "../../../../types/Store";
+import { useUploadStore } from "../../../../store/UploadStore";
 import { RootStackScreenProps } from "../../../../types/navigation/types";
 import generateThumbnail from "../../../../utils/generateThumbnails";
 
@@ -19,10 +18,10 @@ export default function UploadVideo({
   const [coverPic, setCoverPic] = useState<string | null>(null);
   const [thumbnails, setThumbnails] = useState<string[]>([]);
   const [selectedCover, setSelectedCover] = useState<number>(0);
-  const toast = useToast();
   const videoRef = useRef<Video>();
   const windowHeight = Dimensions.get("window").height;
   const windowWidth = Dimensions.get("window").width;
+  const { setURLs } = useUploadStore();
 
   const ThumnailSkleton = () => {
     return (
@@ -63,6 +62,7 @@ export default function UploadVideo({
     }
     if (!coverresult.canceled) {
       setCoverPic(coverresult.assets[0].uri);
+      setSelectedCover(5);
     }
   }
 
@@ -139,7 +139,7 @@ export default function UploadVideo({
                 }}
               >
                 <ThumbnailCard url={item} />
-                {selectedCover === index && !coverPic ? (
+                {selectedCover === index ? (
                   <View
                     style={{
                       position: "absolute",
@@ -199,7 +199,7 @@ export default function UploadVideo({
                   }}
                 />
                 <>
-                  {coverPic ? (
+                  {selectedCover === 5 ? (
                     <View
                       style={{
                         position: "absolute",
@@ -259,6 +259,10 @@ export default function UploadVideo({
           onPress={() => {
             videoRef.current?.pauseAsync();
             navigation.navigate("AddDetails");
+            setURLs(
+              route?.params?.localUrl,
+              selectedCover === 6 ? coverPic : thumbnails[selectedCover]
+            );
           }}
           bg={"white"}
         />

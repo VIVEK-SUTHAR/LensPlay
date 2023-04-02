@@ -21,7 +21,7 @@ import CommentModule from "../../../../components/Upload/Video/CommentModule";
 import { STATIC_ASSET } from "../../../../constants";
 import { dark_secondary, primary } from "../../../../constants/Colors";
 import { useThemeStore } from "../../../../store/Store";
-import { UploadStore } from "../../../../store/UploadStore";
+import { useUploadStore } from "../../../../store/UploadStore";
 import { CollectModules } from "../../../../types/generated";
 import { RootStackScreenProps } from "../../../../types/navigation/types";
 
@@ -60,7 +60,7 @@ export default function AddDetails({
   const [collectAmmount, setCollectAmmount] = useState(0);
   const [isCollectEnabled, setIsCollectEnabled] = useState<boolean>(false);
 
-  const uploadStore = UploadStore();
+  const uploadStore = useUploadStore();
 
   useEffect(() => {
     if (isFollowersOnlyCollect) {
@@ -88,7 +88,7 @@ export default function AddDetails({
         >
           <Image
             source={{
-              uri: STATIC_ASSET,
+              uri: uploadStore?.coverURL,
             }}
             style={{
               height: "100%",
