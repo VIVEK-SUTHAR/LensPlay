@@ -1,7 +1,7 @@
-import { ResizeMode } from "expo-av";
+import { ResizeMode, Video } from "expo-av";
 import * as ImagePicker from "expo-image-picker";
 import VideoPlayer from "expo-video-player";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Dimensions, Image, Pressable, SafeAreaView, View } from "react-native";
 import Icon from "../../../../components/Icon";
 import Button from "../../../../components/UI/Button";
@@ -21,6 +21,8 @@ export default function UploadVideo({
   const windowHeight = Dimensions.get("window").height;
   const windowWidth = Dimensions.get("window").width;
   const [thumbnails, setThumbnails] = useState<string[] | undefined>([]);
+  const videoRef = useRef<Video>();
+
   useEffect(() => {
     generateThumbnail(route.params.localUrl, route.params.duration).then(
       (res) => {
@@ -28,6 +30,7 @@ export default function UploadVideo({
       }
     );
   }, []);
+
   async function selectCoverImage() {
     let coverresult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -60,11 +63,12 @@ export default function UploadVideo({
         <VideoPlayer
           videoProps={{
             source: {
-              uri: route.params.localUrl,
+              uri: route?.params?.localUrl,
             },
             shouldPlay: true,
             resizeMode: ResizeMode.CONTAIN,
             volume: 0.5,
+            ref: videoRef,
           }}
           style={{
             height: windowHeight / 4,
@@ -185,6 +189,7 @@ export default function UploadVideo({
             fontWeight: "600",
           }}
           onPress={() => {
+            videoRef.current?.pauseAsync();
             navigation.navigate("AddDetails");
           }}
           bg={"white"}
@@ -212,7 +217,7 @@ const ThumbnailCard = React.memo(({ url }: { url: string }) => {
 
 const ThumnailSkleton = () => {
   return (
-    <Pressable
+    <View
       style={{
         height: "100%",
         width: "100%",
@@ -221,6 +226,6 @@ const ThumnailSkleton = () => {
         alignItems: "center",
         borderRadius: 8,
       }}
-    ></Pressable>
+    ></View>
   );
 };
