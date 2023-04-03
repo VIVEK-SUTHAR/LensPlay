@@ -14,7 +14,7 @@ import storeTokens from "../../utils/storeTokens";
 import TrackAction from "../../utils/Track";
 
 export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
-  const { setCurrentProfile, setHasHandle } = useProfile();
+  const { setCurrentProfile, currentProfile, setHasHandle } = useProfile();
   const { setAccessToken, setRefreshToken } = useAuthStore();
 
   async function HandleDefaultProfile(adress: string) {
@@ -27,11 +27,29 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
     }
   }
 
+  async function getProfileQR() {
+    const qrResponse = await fetch(
+      "https://www.lensplay.xyz/api/generateProfileQR",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          profileID: currentProfile?.id,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const qrData = await qrResponse.json();
+    await AsyncStorage.setItem("@profileQR", qrData.message);
+  }
+
   const getLocalStorage = async () => {
     try {
       TrackAction(APP_OPEN);
       const waitList = await AsyncStorage.getItem("@waitlist");
       const userTokens = await AsyncStorage.getItem("@user_tokens");
+      const profileQR = await AsyncStorage.getItem("@profileQR");
 
       if (!userTokens) {
         navigation.replace("Login");
@@ -71,11 +89,17 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
               setAccessToken(accessToken);
               setRefreshToken(refreshToken);
               await HandleDefaultProfile(address);
+              if (!profileQR) {
+                await getProfileQR();
+              }
               navigation.replace("Root");
             } else {
               const newTokens = await getAccessFromRefresh(refreshToken);
               const address = JSON.parse(waitList).address;
               await HandleDefaultProfile(address);
+              if (!profileQR) {
+                await getProfileQR();
+              }
               setAccessToken(newTokens?.accessToken);
               setRefreshToken(newTokens?.refreshToken);
               await storeTokens(
@@ -89,6 +113,8 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
       }
     } catch (error) {
       if (error instanceof Error) {
+        console.log(error);
+
         console.log("[Error]:Error in accessing local storage");
         throw new Error("[Error]:Error in accessing local storage", {
           cause: error,
