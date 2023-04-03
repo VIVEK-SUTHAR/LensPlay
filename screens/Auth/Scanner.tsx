@@ -22,11 +22,11 @@ export default function Scanner({
 }: RootStackScreenProps<"Scanner">) {
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [hasData, setHasData] = useState<boolean>(false);
-  const windowHeight = Dimensions.get("window").height;
-  const windowWidth = Dimensions.get("window").width;
   const { setAccessToken, setRefreshToken } = useAuthStore();
   const { setCurrentProfile, setHasHandle, hasHandle } = useProfile();
   const toast = useToast();
+  const windowHeight = Dimensions.get("window").height;
+  const windowWidth = Dimensions.get("window").width;
 
   if (!permission) {
     return <View />;

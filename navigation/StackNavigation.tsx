@@ -28,6 +28,7 @@ import UploadShots from "../screens/Header/Upload/Shots/UploadShots";
 import AddDetails from "../screens/Header/Upload/Video/AddDetails";
 import AddDescription from "../screens/common/AddDescription";
 import VideoTypes from "../screens/common/VideoTypes";
+import ProfileScanner from "../screens/Header/Settings/ProfileScanner";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -329,6 +330,20 @@ export default function StackNavigation() {
           },
           headerTintColor: "white",
           headerTitle: "Select Video types",
+        }}
+      />
+      <Stack.Screen
+        name="ProfileScanner"
+        component={ProfileScanner}
+        options={{
+          animation: "slide_from_right",
+          headerShown: true,
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
+          headerTintColor: "white",
+          headerTitle: "",
         }}
       />
     </Stack.Navigator>

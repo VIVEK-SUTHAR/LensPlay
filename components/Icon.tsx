@@ -56,6 +56,7 @@ export type IconProps = {
     | "star"
     | "copy"
     | "qr"
+    | "rightArrow"
     | "referal"
     | "report"
     | "success"

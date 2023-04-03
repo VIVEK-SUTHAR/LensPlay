@@ -5,7 +5,6 @@ import Heading from "../../components/UI/Heading";
 import StyledText from "../../components/UI/StyledText";
 import { dark_primary } from "../../constants/Colors";
 import Button from "../../components/UI/Button";
-import { UploadStore } from "../../store/UploadStore";
 
 const Types: string[] = [
   "Arts & Entertainment",
@@ -52,7 +51,7 @@ function Tag({ name }: { name: string }) {
 
 export default function VideoTypes({
   navigation,
-}: RootStackScreenProps<"AddDetails">) {
+}: RootStackScreenProps<"VideoTypes">) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   // const uploadStore = UploadStore();

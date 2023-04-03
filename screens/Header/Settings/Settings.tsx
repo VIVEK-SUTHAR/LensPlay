@@ -45,27 +45,39 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 
   const SettingItemsList: SettingsItemProps[] = [
     {
-      icon: <Icon name="policy" />,
+      icon: <Icon name="policy" size={24} />,
       label: "Terms and Conditions",
       onPress: () => {
         Linking.openURL(LENSPLAY_TERMS);
       },
     },
     {
-      icon: <Icon name="terms" />,
+      icon: <Icon name="terms" size={24} />,
       label: "Privacy Policy",
       onPress: () => {
         Linking.openURL(LENSPLAY_PRIVACY);
       },
     },
     {
-      icon: <Icon name="mail" />,
+      icon: <Icon name="mail" size={24} />,
       label: "Contact Us",
       onPress: () => {
         Linking.openURL(`mailto:${OFFICIAL_EMAIL}`);
       },
     },
   ];
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <Pressable onPress={() => navigation.push("ProfileScanner")}>
+            <Icon name="close" size={20} />
+          </Pressable>
+        );
+      },
+    });
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -121,7 +133,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
             }}
           >
             <SettingsItem
-              icon={<Icon name="bug" />}
+              icon={<Icon name="bug" size={24} />}
               label={"Report a bug"}
               onPress={() => navigation.push("BugReport")}
             />
@@ -261,8 +273,16 @@ const Item: FC<SettingsItemProps> = (item: SettingsItemProps) => {
       style={styles.itemContainer}
       onPress={item.onPress}
     >
-      {item.icon}
-      <StyledText title={item.label} style={styles.itemText} />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        {item.icon}
+        <StyledText title={item.label} style={styles.itemText} />
+      </View>
+      <Icon name="rightArrow" size={16} />
     </Pressable>
   );
 };
@@ -277,7 +297,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: "rgba(0,0,0,0.2)",
