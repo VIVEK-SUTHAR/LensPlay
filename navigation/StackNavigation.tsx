@@ -285,7 +285,7 @@ export default function StackNavigation() {
         name="UploadShots"
         component={UploadShots}
         options={{
-          animation: "fade",
+          animation: "slide_from_right",
           headerShown: false,
         }}
       />
