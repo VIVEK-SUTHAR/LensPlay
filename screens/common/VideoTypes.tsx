@@ -17,6 +17,9 @@ import { useUploadStore } from "../../store/UploadStore";
 import { APP_ID, LENSPLAY_SITE } from "../../constants";
 import { useProfile } from "../../store/Store";
 import uploadToArweave from "../../utils/uploadToArweave";
+import getImageBlobFromUri from "../../utils/getImageBlobFromUri";
+import uploadImageToIPFS from "../../utils/uploadImageToIPFS";
+import getFileMimeType from "../../utils/video/getFileType";
 const Types: string[] = [
   "Arts & Entertainment",
   "Business",
@@ -67,47 +70,50 @@ export default function VideoTypes({
 
   const uploadStore = useUploadStore();
   const { currentProfile } = useProfile();
-
-  const attributes: MetadataAttributeInput[] = [
-    {
-      displayType: PublicationMetadataDisplayTypes.String,
-      traitType: "handle",
-      value: `${currentProfile?.handle}`,
-    },
-    {
-      displayType: PublicationMetadataDisplayTypes.String,
-      traitType: "app",
-      value: APP_ID,
-    },
-  ];
-  const media: Array<PublicationMetadataMediaInput> = [
-    {
-      item: "IPFS_LINK",
-      type: "VIDEO_TYPE_UTIL_IWILL_DO",
-      cover: "COVER_IMAGE_UTIL",
-    },
-  ];
-
-  const metadata: PublicationMetadataV2Input = {
-    version: "2.0.0",
-    metadata_id: uuidV4(),
-    description: uploadStore.description,
-    content: `${uploadStore.title}\n\n${uploadStore.description}`,
-    locale: "en-US",
-    tags: [],
-    mainContentFocus: PublicationMainFocus.Video,
-    external_url: `${LENSPLAY_SITE}/channel/${currentProfile?.handle}`,
-    animation_url: "IPFS_LINK_YAHA",
-    image: "COVER_IMAGE_KA_LINK_YAHA",
-    imageMimeType: "IMAHE_TYPE_KA_UTIL_ME ADD KRDUNGA",
-    name: uploadStore.title,
-    attributes,
-    media,
-    appId: APP_ID,
-  };
+  console.log(uploadStore.coverURL);
 
   const handleUpload = async () => {
     try {
+      const imageBlob = await getImageBlobFromUri(uploadStore.coverURL);
+      const coverImageURI = await uploadImageToIPFS(imageBlob);
+
+      const attributes: MetadataAttributeInput[] = [
+        {
+          displayType: PublicationMetadataDisplayTypes.String,
+          traitType: "handle",
+          value: `${currentProfile?.handle}`,
+        },
+        {
+          displayType: PublicationMetadataDisplayTypes.String,
+          traitType: "app",
+          value: APP_ID,
+        },
+      ];
+      const media: Array<PublicationMetadataMediaInput> = [
+        {
+          item: "VIDEO_IPFS_LINK",
+          type: `video/${getFileMimeType(uploadStore.videoURL)}`,
+          cover: coverImageURI,
+        },
+      ];
+
+      const metadata: PublicationMetadataV2Input = {
+        version: "2.0.0",
+        metadata_id: uuidV4(),
+        description: uploadStore.description,
+        content: `${uploadStore.title}\n\n${uploadStore.description}`,
+        locale: "en-US",
+        tags: selectedTags ? selectedTags : [],
+        mainContentFocus: PublicationMainFocus.Video,
+        external_url: `${LENSPLAY_SITE}/channel/${currentProfile?.handle}`,
+        animation_url: "IPFS_LINK_YAHA",
+        image: `ipfs://${coverImageURI}`,
+        imageMimeType: getFileMimeType(uploadStore.coverURL),
+        name: uploadStore.title,
+        attributes,
+        media,
+        appId: APP_ID,
+      };
       const metadataUri = await uploadToArweave(metadata);
       console.log(metadataUri);
     } catch (error) {
