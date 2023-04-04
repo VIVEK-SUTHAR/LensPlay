@@ -1,5 +1,8 @@
-import React, { useEffect, useRef } from "react";
-import { RootStackScreenProps } from "../../../types/navigation/types";
+import { BarCodeScanner } from "expo-barcode-scanner";
+import { Camera } from "expo-camera";
+import Constants from "expo-constants";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect } from "react";
 import {
   Animated,
   Dimensions,
@@ -7,21 +10,16 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { Camera } from "expo-camera";
-import { BarCodeScanner } from "expo-barcode-scanner";
-import { StatusBar } from "expo-status-bar";
-import Constants from "expo-constants";
-import Heading from "../../../components/UI/Heading";
-import { useThemeStore } from "../../../store/Store";
 import {
+  Value,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
-  withDelay,
   withRepeat,
   withSpring,
-  withTiming,
 } from "react-native-reanimated";
+import Heading from "../../../components/UI/Heading";
+import { RootStackScreenProps } from "../../../types/navigation/types";
 
 export default function ProfileScanner({
   navigation,
@@ -36,19 +34,24 @@ export default function ProfileScanner({
     }
   }
 
-  const scaleValue = useSharedValue(0);
+  const scaleValue = useSharedValue(1);
 
   const scalestyle = useAnimatedStyle(() => {
     return {
-      transform: [{ scale: interpolate(scaleValue.value, [0, 1], [1, 0]) }],
+      transform: [{ scale: scaleValue.value }],
     };
   });
+
+  useEffect(() => {
+    scaleValue.value = withRepeat(withSpring(0), -1, true);
+  }, []);
+
   const handleBarcodeScanned = async (data: any) => {
-    console.log(data.data);
     navigation.replace("Channel", {
       profileId: data?.data,
     });
   };
+
   return (
     <SafeAreaView
       style={{
@@ -59,22 +62,22 @@ export default function ProfileScanner({
       }}
     >
       <StatusBar backgroundColor="transparent" />
-
       <View
         style={{
           position: "absolute",
           top: Constants.statusBarHeight + 10,
           zIndex: 50,
           backgroundColor: "rgba(0,0,0,0.4)",
-          padding: 12,
+          paddingHorizontal: 16,
+          paddingVertical: 8,
           borderRadius: 8,
         }}
       >
         <Heading
-          title="Scan LensPlay QR Code"
+          title="Scan profile QR"
           style={{
             color: "white",
-            fontSize: 18,
+            fontSize: 16,
             fontWeight: "600",
           }}
         />
@@ -89,7 +92,7 @@ export default function ProfileScanner({
               borderLeftWidth: 6,
               borderTopColor: "white",
               borderTopWidth: 6,
-              borderTopStartRadius: 8,
+              borderRadius: 8,
             }}
           ></View>
           <View
@@ -100,7 +103,7 @@ export default function ProfileScanner({
               borderRightWidth: 6,
               borderTopColor: "white",
               borderTopWidth: 6,
-              borderTopEndRadius:8
+              borderRadius: 8,
             }}
           ></View>
         </View>
@@ -113,7 +116,7 @@ export default function ProfileScanner({
               borderLeftWidth: 6,
               borderBottomColor: "white",
               borderBottomWidth: 6,
-              borderBottomStartRadius: 8,
+              borderRadius: 8,
             }}
           ></View>
           <View
@@ -124,7 +127,7 @@ export default function ProfileScanner({
               borderBottomWidth: 6,
               borderRightColor: "white",
               borderRightWidth: 6,
-              borderBottomEndRadius: 8,
+              borderRadius: 8,
             }}
           ></View>
         </View>
@@ -146,13 +149,10 @@ export default function ProfileScanner({
 const styles = StyleSheet.create({
   scanner: {
     position: "absolute",
-    height: Dimensions.get("window").height / 3,
-    width: Dimensions.get("window").width * 0.7,
-    top: Dimensions.get("window").height / 2.5,
-    backgroundColor: "transparent",
+    width: 220,
+    height: 220,
     zIndex: 5,
     flexDirection: "column",
     justifyContent: "space-between",
-    // borderColor: "white",
   },
 });
