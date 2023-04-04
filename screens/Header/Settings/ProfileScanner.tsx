@@ -40,7 +40,7 @@ export default function ProfileScanner({
 
   const scalestyle = useAnimatedStyle(() => {
     return {
-      transform: [{ scale:interpolate(scaleValue.value,[0,1],[1,0])}],
+      transform: [{ scale: interpolate(scaleValue.value, [0, 1], [1, 0]) }],
     };
   });
   const handleBarcodeScanned = async (data: any) => {
@@ -59,11 +59,12 @@ export default function ProfileScanner({
       }}
     >
       <StatusBar backgroundColor="transparent" />
+
       <View
         style={{
           position: "absolute",
           top: Constants.statusBarHeight + 10,
-          zIndex: 5,
+          zIndex: 50,
           backgroundColor: "rgba(0,0,0,0.4)",
           padding: 12,
           borderRadius: 8,
@@ -78,7 +79,56 @@ export default function ProfileScanner({
           }}
         />
       </View>
-      <Animated.View style={[styles.scanner, scalestyle]}></Animated.View>
+      <Animated.View style={[styles.scanner, scalestyle]}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View
+            style={{
+              height: 50,
+              width: 50,
+              borderLeftColor: "white",
+              borderLeftWidth: 6,
+              borderTopColor: "white",
+              borderTopWidth: 6,
+              borderTopStartRadius: 8,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 50,
+              width: 50,
+              borderRightColor: "white",
+              borderRightWidth: 6,
+              borderTopColor: "white",
+              borderTopWidth: 6,
+              borderTopEndRadius:8
+            }}
+          ></View>
+        </View>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View
+            style={{
+              height: 50,
+              width: 50,
+              borderLeftColor: "white",
+              borderLeftWidth: 6,
+              borderBottomColor: "white",
+              borderBottomWidth: 6,
+              borderBottomStartRadius: 8,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 50,
+              width: 50,
+              borderBottomColor: "white",
+              borderBottomWidth: 6,
+              borderRightColor: "white",
+              borderRightWidth: 6,
+              borderBottomEndRadius: 8,
+            }}
+          ></View>
+        </View>
+      </Animated.View>
       <Camera
         style={{
           width: windowWidth,
@@ -101,8 +151,8 @@ const styles = StyleSheet.create({
     top: Dimensions.get("window").height / 2.5,
     backgroundColor: "transparent",
     zIndex: 5,
-    borderColor: "white",
-    borderWidth: 4,
-    borderRadius: 8,
+    flexDirection: "column",
+    justifyContent: "space-between",
+    // borderColor: "white",
   },
 });
