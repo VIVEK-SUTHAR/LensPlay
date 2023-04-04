@@ -337,7 +337,7 @@ export default function StackNavigation() {
         component={ProfileScanner}
         options={{
           animation: "slide_from_right",
-          headerShown: true,
+          headerShown: false,
           headerTitleStyle: {
             fontSize: 16,
             fontWeight: "600",

@@ -1,8 +1,27 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { RootStackScreenProps } from "../../../types/navigation/types";
-import { Dimensions, SafeAreaView } from "react-native";
+import {
+  Animated,
+  Dimensions,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from "react-native";
 import { Camera } from "expo-camera";
 import { BarCodeScanner } from "expo-barcode-scanner";
+import { StatusBar } from "expo-status-bar";
+import Constants from "expo-constants";
+import Heading from "../../../components/UI/Heading";
+import { useThemeStore } from "../../../store/Store";
+import {
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withRepeat,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
 
 export default function ProfileScanner({
   navigation,
@@ -17,13 +36,19 @@ export default function ProfileScanner({
     }
   }
 
+  const scaleValue = useSharedValue(0);
+
+  const scalestyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale:interpolate(scaleValue.value,[0,1],[1,0])}],
+    };
+  });
   const handleBarcodeScanned = async (data: any) => {
     console.log(data.data);
     navigation.replace("Channel", {
       profileId: data?.data,
     });
   };
-
   return (
     <SafeAreaView
       style={{
@@ -33,13 +58,33 @@ export default function ProfileScanner({
         alignItems: "center",
       }}
     >
-      <Camera
+      <StatusBar backgroundColor="transparent" />
+      <View
         style={{
-          width: windowWidth / 1.5,
-          height: windowHeight / 3,
+          position: "absolute",
+          top: Constants.statusBarHeight + 10,
+          zIndex: 5,
+          backgroundColor: "rgba(0,0,0,0.4)",
+          padding: 12,
           borderRadius: 8,
         }}
-        ratio={"1:1"}
+      >
+        <Heading
+          title="Scan LensPlay QR Code"
+          style={{
+            color: "white",
+            fontSize: 18,
+            fontWeight: "600",
+          }}
+        />
+      </View>
+      <Animated.View style={[styles.scanner, scalestyle]}></Animated.View>
+      <Camera
+        style={{
+          width: windowWidth,
+          height: windowHeight,
+        }}
+        ratio={"16:9"}
         barCodeScannerSettings={{
           barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
         }}
@@ -48,3 +93,16 @@ export default function ProfileScanner({
     </SafeAreaView>
   );
 }
+const styles = StyleSheet.create({
+  scanner: {
+    position: "absolute",
+    height: Dimensions.get("window").height / 3,
+    width: Dimensions.get("window").width * 0.7,
+    top: Dimensions.get("window").height / 2.5,
+    backgroundColor: "transparent",
+    zIndex: 5,
+    borderColor: "white",
+    borderWidth: 4,
+    borderRadius: 8,
+  },
+});
