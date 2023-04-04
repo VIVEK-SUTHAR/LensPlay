@@ -5,17 +5,12 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
 import Animated, {
-  Value,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
-  withSpring,
-  withDelay,
   withTiming,
-  Extrapolation,
 } from "react-native-reanimated";
-import Icon from "../../../components/Icon";
 import Heading from "../../../components/UI/Heading";
 import { RootStackScreenProps } from "../../../types/navigation/types";
 

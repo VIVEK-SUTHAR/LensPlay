@@ -104,7 +104,7 @@ export default function StackNavigation() {
             component={Scanner}
             options={{
               animation: "none",
-              headerShown: true,
+              headerShown: false,
               headerTintColor: theme.PRIMARY,
               headerTitleStyle: {
                 fontSize: 16,
