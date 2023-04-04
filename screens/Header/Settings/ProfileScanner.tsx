@@ -3,21 +3,19 @@ import { Camera } from "expo-camera";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
-import {
-  Animated,
-  Dimensions,
-  SafeAreaView,
-  StyleSheet,
-  View,
-} from "react-native";
-import {
+import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
+import Animated, {
   Value,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
   withSpring,
+  withDelay,
+  withTiming,
+  Extrapolation,
 } from "react-native-reanimated";
+import Icon from "../../../components/Icon";
 import Heading from "../../../components/UI/Heading";
 import { RootStackScreenProps } from "../../../types/navigation/types";
 
@@ -34,18 +32,27 @@ export default function ProfileScanner({
     }
   }
 
-  const scaleValue = useSharedValue(1);
+  const scale = useSharedValue(0);
 
-  const scalestyle = useAnimatedStyle(() => {
+  const scaleStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ scale: scaleValue.value }],
+      transform: [
+        {
+          scale: interpolate(scale.value, [1, 0], [1.15, 1]),
+        },
+      ],
     };
   });
 
   useEffect(() => {
-    scaleValue.value = withRepeat(withSpring(0), -1, true);
+    scale.value = withRepeat(
+      withTiming(1, {
+        duration: 1000,
+      }),
+      -1,
+      true
+    );
   }, []);
-
   const handleBarcodeScanned = async (data: any) => {
     navigation.replace("Channel", {
       profileId: data?.data,
@@ -62,6 +69,22 @@ export default function ProfileScanner({
       }}
     >
       <StatusBar backgroundColor="transparent" />
+      {/* <View
+        style={{
+          position: "absolute",
+          bottom: 100,
+          right:45,
+          height: 50,
+          width: 50,
+          backgroundColor: "rgba(0,0,0,0.5)",
+          zIndex: 5,
+          borderRadius: 50,
+          justifyContent: "center",
+          alignItems:"center"
+        }}
+      >
+        <Icon name="close"/>
+      </View> */}
       <View
         style={{
           position: "absolute",
@@ -82,7 +105,7 @@ export default function ProfileScanner({
           }}
         />
       </View>
-      <Animated.View style={[styles.scanner, scalestyle]}>
+      <Animated.View style={[styles.scanner, scaleStyle]}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View
             style={{
