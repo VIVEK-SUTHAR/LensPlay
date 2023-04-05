@@ -120,7 +120,7 @@ export default function StackNavigation() {
         component={BottomTabNavigator}
         options={{
           headerShown: false,
-          animation: "slide_from_right",
+          animation: "default",
           gestureEnabled: false,
         }}
       />
