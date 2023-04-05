@@ -109,6 +109,7 @@ const config: ExpoConfig = {
   assetBundlePatterns: ["**/*"],
   ios: {
     supportsTablet: true,
+    bundleIdentifier:"com.k.l"
   },
   jsEngine: "hermes",
   android: {
