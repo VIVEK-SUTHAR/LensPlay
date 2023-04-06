@@ -1,27 +1,29 @@
 import React, { useState } from "react";
-import { RootStackScreenProps } from "../../types/navigation/types";
 import { Pressable, SafeAreaView, ScrollView, View } from "react-native";
+import { v4 as uuidV4 } from "uuid";
+import Button from "../../components/UI/Button";
 import Heading from "../../components/UI/Heading";
 import StyledText from "../../components/UI/StyledText";
+import { APP_ID, LENSPLAY_SITE } from "../../constants";
 import { dark_primary } from "../../constants/Colors";
-import Button from "../../components/UI/Button";
+import { useProfile } from "../../store/Store";
+import { useUploadStore } from "../../store/UploadStore";
 import {
-  Maybe,
   MetadataAttributeInput,
   PublicationMainFocus,
   PublicationMetadataDisplayTypes,
   PublicationMetadataMediaInput,
   PublicationMetadataV2Input,
 } from "../../types/generated";
-import { v4 as uuidV4 } from "uuid";
-import { useUploadStore } from "../../store/UploadStore";
-import { APP_ID, LENSPLAY_SITE } from "../../constants";
-import { useProfile } from "../../store/Store";
-import * as tus from "tus-js-client";
-import uploadToArweave from "../../utils/uploadToArweave";
+import { RootStackScreenProps } from "../../types/navigation/types";
 import getImageBlobFromUri from "../../utils/getImageBlobFromUri";
 import uploadImageToIPFS from "../../utils/uploadImageToIPFS";
+import uploadToArweave from "../../utils/uploadToArweave";
 import getFileMimeType from "../../utils/video/getFileType";
+import getUploadURLForLivePeer from "../../utils/video/getUploadURLForLivepeer";
+import uploadToTus, {
+  TusUploadRequestOptions,
+} from "../../utils/video/uploadToTUS";
 const Types: string[] = [
   "Arts & Entertainment",
   "Business",
@@ -65,10 +67,6 @@ function Tag({ name }: { name: string }) {
   );
 }
 
-type UploadToLivePeerResult = {
-  assetId: Maybe<string>;
-  tusEndpoint: Maybe<string>;
-};
 export default function VideoTypes({
   navigation,
 }: RootStackScreenProps<"AddDetails">) {
@@ -76,65 +74,45 @@ export default function VideoTypes({
 
   const uploadStore = useUploadStore();
   const { currentProfile } = useProfile();
-  const uploadToLivePeer = async (): Promise<
-    UploadToLivePeerResult | undefined
-  > => {
-    try {
-      const requestUploadURL = await fetch(
-        "https://livepeer.studio/api/asset/request-upload",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer 2f8ae1ad-1159-44c0-8de4-7c7f5099ccbc`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name: uuidV4() }),
-        }
-      );
-      if (requestUploadURL.ok) {
-        const jsonResponse = await requestUploadURL.json();
-        const tusEndpoint = jsonResponse?.tusEndpoint;
-        const assetId = jsonResponse?.asset?.id;
-        return {
-          tusEndpoint,
-          assetId,
-        };
-      }
-    } catch (error) {}
-  };
 
   const uploadViaTus = async () => {
-    const { tusEndpoint, assetId } = await uploadToLivePeer();
+    try {
+      const { tusEndpoint, assetId } = await getUploadURLForLivePeer();
 
-    const localVideoBlob = await getImageBlobFromUri(uploadStore.videoURL);
-    const uploader = new tus.Upload(localVideoBlob, {
-      endpoint: tusEndpoint,
+      const localVideoBlob = await getImageBlobFromUri(uploadStore.videoURL!);
 
-      onError: (err) => {
-        console.error("Error uploading file:", err);
-      },
-      onProgress: (bytesUploaded, bytesTotal) => {
-        const percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
-        console.log("Uploaded " + percentage + "%");
-      },
-      onSuccess: () => {
-        console.log("Upload finished:");
-        handleUpload(assetId);
-      },
-    });
-    uploader.start();
+      const uploadRequest: TusUploadRequestOptions = {
+        videoBlob: localVideoBlob!,
+        tusEndPoint: tusEndpoint,
+        onSucessCallBack: () => {
+          //This will be fired when upload is finished succesfully
+          handleUpload(assetId);
+        },
+        onError: function (): void {
+          //Handle Errors Here
+        },
+        onProgress: function (_sentBytes, _totalBytes): void {
+          //SET LOGIC HERE TO UPDATE UI ACCORDINGLY
+        },
+      };
+      uploadToTus(uploadRequest);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error);
+      }
+    }
   };
 
   const handleUpload = async (assetId: string) => {
     try {
       console.log(assetId);
 
-      const imageBlob = await getImageBlobFromUri(uploadStore.coverURL);
+      const imageBlob = await getImageBlobFromUri(uploadStore.coverURL!);
 
       const coverImageURI = await uploadImageToIPFS(imageBlob);
       console.log("Cover uploaded", coverImageURI);
 
-      const videoBlob = await getImageBlobFromUri(uploadStore.videoURL);
+      const videoBlob = await getImageBlobFromUri(uploadStore.videoURL!);
       const ipfsVideoUrl = await uploadImageToIPFS(videoBlob);
       console.log("Video uploaded to ipfs", ipfsVideoUrl);
 
