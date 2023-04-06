@@ -34,7 +34,7 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
   const { currentProfile } = useProfile();
   const { isGuest, profileId } = useGuestStore();
   const { PRIMARY } = useThemeStore();
-  const { accessToken } = useAuthStore(); 
+  const { accessToken } = useAuthStore();
   const { height: WINDOW_HEIGHT } = Dimensions.get("window");
   const bottomTabHeight = useBottomTabBarHeight();
 
@@ -60,7 +60,7 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
     },
     context: {
       headers: {
-        "x-access-token": `Bearer ${accessToken}`,
+        "x-access-token": `${!accessToken ? '' : `Bearer ${accessToken}`}`,
       },
     },
   });
@@ -75,7 +75,6 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
 
   return (
     <>
-     {/* <StatusBar backgroundColor="black" /> */}
       {loading ? (
         <View
           style={{
@@ -123,22 +122,28 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
       )}
       {shotsData?.explorePublications?.items ? (
         <SwiperFlatList
-        vertical={true}
-        keyExtractor={(item, index) => index.toString()}
-        onChangeIndex={handleChangeIndexValue}
-        data={bytesData}
-        renderItem={({ item, index }) => (
+          vertical={true}
+          keyExtractor={(item, index) => index.toString()}
+          onChangeIndex={handleChangeIndexValue}
+          data={bytesData}
+          renderItem={({ item, index }) => (
+            <View
+            style={{
+              height: Dimensions.get("window").height,
+            }}
+          >
             <SingleByte
               item={item}
               index={index}
               currentIndex={currentIndex}
             />
-        )}
-      />
+          </View>
+          )}
+        />
       ) : (
         <></>
       )}</>
-       
+
   );
 };
 

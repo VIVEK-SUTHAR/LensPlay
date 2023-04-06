@@ -4500,43 +4500,17 @@ expo-constants@~13.2.0, expo-constants@~13.2.2, expo-constants@~13.2.4:
     "@expo/config" "~7.0.0"
     uuid "^3.3.2"
 
-expo-dev-client@~2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/expo-dev-client/-/expo-dev-client-2.0.1.tgz#f5878807c96a60d90fc219b6535654cb6ddb9214"
-  integrity sha512-+OXXZKKo/CplqklpaZasHAX7qaRrzC83biqXTFa1z5NiFW41uqtAqTFx6gmPi4kx3YgwtD+ep6R3SRrKjdCukg==
+expo-dev-client@~1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/expo-dev-client/-/expo-dev-client-1.3.1.tgz#bcaf46bd4646354d8c6fd3b2270d5802d221ac8b"
+  integrity sha512-GGMaLwc3FNdcGB2UsEj252CV9DmWJWMblqX0h5AtiEnmKyVBRn3/yiQyWdPFDkLletYGvDeILfMHUo/PRdOGIA==
   dependencies:
-    expo-dev-launcher "2.0.2"
-    expo-dev-menu "2.0.2"
-    expo-dev-menu-interface "1.0.0"
-    expo-manifests "~0.4.0"
-    expo-updates-interface "~0.8.0"
-
-expo-dev-launcher@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/expo-dev-launcher/-/expo-dev-launcher-2.0.2.tgz#bbcde0dd35e81ed6a415dc5b246da68e9b365255"
-  integrity sha512-MQT7VSOHJQrEs3YAv5BQLYs3Uk7P1dNqBw6kKrj3jKBq0z92k2LLg1aCk7nP8OGJVDvrb2jTXBka8VXVqF0ECg==
-  dependencies:
-    expo-dev-menu "2.0.2"
-    resolve-from "^5.0.0"
-    semver "^7.3.5"
-
-expo-dev-menu-interface@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/expo-dev-menu-interface/-/expo-dev-menu-interface-1.0.0.tgz#00204cb7e1c43cc8a4eee9cb74f6e5760b512d75"
-  integrity sha512-4lsVofTwV9oBM+zo7XhtmvbfiXD4I7I3Rqns6U0i6IOnH7OGBDpKvGZ5YikWPFGn6NOu8loqqd8S7inFIaxC0A==
-
-expo-dev-menu@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/expo-dev-menu/-/expo-dev-menu-2.0.2.tgz#9a2d7a00097d4eafe54cf8e9a5c727174e101e4c"
-  integrity sha512-SxR5riXgm+VVKsDKC/bOLuOJ0CKutW07G+OqJ9eYfxwGfxa8omLJHwagbCsd8FwUPGkzvzgfRJRGLo5J6REMow==
-  dependencies:
-    expo-dev-menu-interface "1.0.0"
-    semver "^7.3.5"
-
-expo-eas-client@~0.4.0:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/expo-eas-client/-/expo-eas-client-0.4.1.tgz#4ccdafb5faeac97394fb3fa4c777ec22b2017f1d"
-  integrity sha512-bIj2rm6lw/iZAOAW5CSAxshSXi2oY+ORpHRp4ZdqSDuwA0RIa9jGyMm1Jhostjjz5y9k2uur5vtVqq6P3Bwx/Q==
+    "@expo/config-plugins" "~5.0.0"
+    expo-dev-launcher "1.3.1"
+    expo-dev-menu "1.3.1"
+    expo-dev-menu-interface "0.7.2"
+    expo-manifests "~0.3.0"
+    expo-updates-interface "~0.7.0"
 
 expo-dev-launcher@1.3.1:
   version "1.3.1"
@@ -4703,15 +4677,15 @@ expo-video-player@^2.2.0:
   dependencies:
     tslib "^2.4.0"
 
-expo-video-thumbnails@~7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/expo-video-thumbnails/-/expo-video-thumbnails-7.0.0.tgz#a98c726d529372153161735794ccf6bd9ba925f2"
-  integrity sha512-QTifwHjz1VL+nXX39lSZHJtbHKI8a/DVCVk6iT/WQZG1JmZdeUHObrcWlIKeDsTCB5fQWIfOmin+N9hbe4n0qw==
+expo-video-thumbnails@~6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/expo-video-thumbnails/-/expo-video-thumbnails-6.4.0.tgz#59603af06c1d2122c2f7db854562236bbd8319ec"
+  integrity sha512-KsO84yjWkemJTdNdArC/qVhx1YGLQJojRBC7/BtwohNiJXVV1sxX1L4Yioh/grnpnfLXDPcBxYxv+pLN6k4x/Q==
 
-expo-web-browser@~12.0.0:
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/expo-web-browser/-/expo-web-browser-12.0.0.tgz#c8e117bfd6357df05ae3cf85acb423b44c4f6304"
-  integrity sha512-7/RUuE0sv5kf+mTw5/SOnks0Am1ctoxvT1Xi53Nom2EuXTKBV+b2Kf5xAw3ItoW5W4MHJUX3FdNI6qc9sS9+Pw==
+expo-web-browser@~11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/expo-web-browser/-/expo-web-browser-11.0.0.tgz#5116a99a32f8b98fc47a6aff026b4d608ffe18ec"
+  integrity sha512-LKakUgsDIFLCYWh+RrjB8ANzgD6TTpi0fe00Gu5GrGuEs0cQmEynltq2OVPYOXiaNdcaaora7VFqC47A9rDE+A==
   dependencies:
     compare-urls "^2.0.0"
 
@@ -8376,17 +8350,6 @@ react-native-tab-view@^3.5.0:
   integrity sha512-Dvvs54zPtI4f8x6GuTGy4VUMeMSnmjQFa0PsJkogWuRnxcYT+CunCDMOvxzSesh2AbL6UaTNPmTQ0Le9ybYsHg==
   dependencies:
     use-latest-callback "^0.1.5"
-
-"react-native-tcp@git+https://github.com/VIVEK-SUTHAR/react-native-tcp":
-  version "4.0.0"
-  resolved "git+https://github.com/VIVEK-SUTHAR/react-native-tcp#6122a838533f759cf2fe9f9714f98e5d8a55f9c0"
-  dependencies:
-    base64-js "1.3.1"
-    buffer "^5.4.3"
-    events "^3.0.0"
-    ip-regex "^4.1.0"
-    process "^0.11.9"
-    util "^0.12.1"
 
 react-native-vision-camera@^2.15.4:
   version "2.15.4"

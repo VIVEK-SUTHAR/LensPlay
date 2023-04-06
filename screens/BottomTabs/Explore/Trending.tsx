@@ -84,7 +84,7 @@ export default function Trending({
     },
     context: {
       headers: {
-        "x-access-token": `Bearer ${accessToken}`,
+        "x-access-token": `${!accessToken?'':`Bearer ${accessToken}`}`,
       },
     },
   });
@@ -95,7 +95,12 @@ export default function Trending({
     });
   }, [currentTag]);
 
-  if (error) return <NotFound />;
+  if (error) {
+    console.log(error);
+    return <StyledText title={'sajol'} style={{
+      color: 'white'
+    }}/>
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>

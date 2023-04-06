@@ -52,6 +52,10 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
       if (walletData) {
         TrackAction(AUTH.WALLET_LOGIN);
         const userData = await handleWaitlist(walletData.accounts[0]);
+        if (userData.statusCode === 404) {
+          navigation.replace("JoinWaitlist");
+        }
+        
         if (!userData.fields.hasAccess) {
           navigation.replace("LeaderBoard", {
             referralsCount: userData?.referralsCount,
@@ -59,10 +63,6 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             rankingPosition: userData?.rankingPosition,
             refferalLink: `https://form.waitlistpanda.com/go/${userData?.listId}?ref=${userData?.id}`,
           });
-        }
-
-        if (userData.statusCode === 404) {
-          navigation.replace("JoinWaitlist");
         }
 
         if (userData.fields.hasAccess) {

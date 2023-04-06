@@ -103,13 +103,15 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
       <View
         style={{
           width: windowWidth,
-          height: windowHeight - bottomTabBarHeight,
+          height: windowHeight - bottomTabBarHeight - 2,
           position: "relative",
           justifyContent: "center",
           alignItems: "center",
+          // borderWidth: 2,
+          // borderColor: 'red'
         }}
       >
-        {/* <StatusBar backgroundColor="transparent" /> */}
+        <StatusBar backgroundColor="transparent" />
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => setMute(!mute)}
