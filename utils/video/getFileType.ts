@@ -5,6 +5,6 @@ function getFileMimeType(filePath: string) {
   let reversePath = filePath.split("").reverse().join("");
   const reverseType = reversePath.split(".")[0];
   const type = reverseType.split("").reverse().join("");
-  return type;
+  return `image/${type}`;
 }
 export default getFileMimeType;

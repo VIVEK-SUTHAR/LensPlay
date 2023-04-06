@@ -69,7 +69,7 @@ function Tag({ name }: { name: string }) {
 
 export default function VideoTypes({
   navigation,
-}: RootStackScreenProps<"AddDetails">) {
+}: RootStackScreenProps<"VideoTypes">) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const uploadStore = useUploadStore();
