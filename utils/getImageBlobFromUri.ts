@@ -4,8 +4,9 @@
  * @returns blob of image
  */
 
-const getImageBlobFromUri = async (uri: string) => {
+const getImageBlobFromUri = async (uri: string | null) => {
   try {
+    if (!uri) return "";
     const response = await fetch(uri);
     const blob = await response.blob();
     return blob;

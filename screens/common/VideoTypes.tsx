@@ -6,6 +6,7 @@ import StyledText from "../../components/UI/StyledText";
 import { dark_primary } from "../../constants/Colors";
 import Button from "../../components/UI/Button";
 import {
+  Maybe,
   MetadataAttributeInput,
   PublicationMainFocus,
   PublicationMetadataDisplayTypes,
@@ -16,6 +17,7 @@ import { v4 as uuidV4 } from "uuid";
 import { useUploadStore } from "../../store/UploadStore";
 import { APP_ID, LENSPLAY_SITE } from "../../constants";
 import { useProfile } from "../../store/Store";
+import * as tus from "tus-js-client";
 import uploadToArweave from "../../utils/uploadToArweave";
 import getImageBlobFromUri from "../../utils/getImageBlobFromUri";
 import uploadImageToIPFS from "../../utils/uploadImageToIPFS";
@@ -63,6 +65,10 @@ function Tag({ name }: { name: string }) {
   );
 }
 
+type UploadToLivePeerResult = {
+  assetId: Maybe<string>;
+  tusEndpoint: Maybe<string>;
+};
 export default function VideoTypes({
   navigation,
 }: RootStackScreenProps<"AddDetails">) {
@@ -70,12 +76,67 @@ export default function VideoTypes({
 
   const uploadStore = useUploadStore();
   const { currentProfile } = useProfile();
-  console.log(uploadStore.coverURL);
-
-  const handleUpload = async () => {
+  const uploadToLivePeer = async (): Promise<
+    UploadToLivePeerResult | undefined
+  > => {
     try {
+      const requestUploadURL = await fetch(
+        "https://livepeer.studio/api/asset/request-upload",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer 2f8ae1ad-1159-44c0-8de4-7c7f5099ccbc`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: uuidV4() }),
+        }
+      );
+      if (requestUploadURL.ok) {
+        const jsonResponse = await requestUploadURL.json();
+        const tusEndpoint = jsonResponse?.tusEndpoint;
+        const assetId = jsonResponse?.asset?.id;
+        return {
+          tusEndpoint,
+          assetId,
+        };
+      }
+    } catch (error) {}
+  };
+
+  const uploadViaTus = async () => {
+    const { tusEndpoint, assetId } = await uploadToLivePeer();
+
+    const localVideoBlob = await getImageBlobFromUri(uploadStore.videoURL);
+    const uploader = new tus.Upload(localVideoBlob, {
+      endpoint: tusEndpoint,
+
+      onError: (err) => {
+        console.error("Error uploading file:", err);
+      },
+      onProgress: (bytesUploaded, bytesTotal) => {
+        const percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
+        console.log("Uploaded " + percentage + "%");
+      },
+      onSuccess: () => {
+        console.log("Upload finished:");
+        handleUpload(assetId);
+      },
+    });
+    uploader.start();
+  };
+
+  const handleUpload = async (assetId: string) => {
+    try {
+      console.log(assetId);
+
       const imageBlob = await getImageBlobFromUri(uploadStore.coverURL);
+
       const coverImageURI = await uploadImageToIPFS(imageBlob);
+      console.log("Cover uploaded", coverImageURI);
+
+      const videoBlob = await getImageBlobFromUri(uploadStore.videoURL);
+      const ipfsVideoUrl = await uploadImageToIPFS(videoBlob);
+      console.log("Video uploaded to ipfs", ipfsVideoUrl);
 
       const attributes: MetadataAttributeInput[] = [
         {
@@ -88,12 +149,17 @@ export default function VideoTypes({
           traitType: "app",
           value: APP_ID,
         },
+        {
+          displayType: PublicationMetadataDisplayTypes.String,
+          traitType: "assetId",
+          value: assetId,
+        },
       ];
       const media: Array<PublicationMetadataMediaInput> = [
         {
-          item: "VIDEO_IPFS_LINK",
-          type: `video/${getFileMimeType(uploadStore.videoURL)}`,
-          cover: coverImageURI,
+          item: `ipfs://${ipfsVideoUrl}`,
+          type: `video/${getFileMimeType(uploadStore.videoURL!)}`,
+          cover: `ipfs://${coverImageURI}`,
         },
       ];
 
@@ -106,16 +172,18 @@ export default function VideoTypes({
         tags: selectedTags ? selectedTags : [],
         mainContentFocus: PublicationMainFocus.Video,
         external_url: `${LENSPLAY_SITE}/channel/${currentProfile?.handle}`,
-        animation_url: "IPFS_LINK_YAHA",
+        animation_url: `ipfs://${ipfsVideoUrl}`,
         image: `ipfs://${coverImageURI}`,
-        imageMimeType: getFileMimeType(uploadStore.coverURL),
+        imageMimeType: getFileMimeType(uploadStore.coverURL!),
         name: uploadStore.title,
         attributes,
         media,
         appId: APP_ID,
       };
       const metadataUri = await uploadToArweave(metadata);
-      console.log(metadataUri);
+      console.log("Metadata uploaded to arweave", metadataUri);
+      console.log("Collect Module of Post", uploadStore.collectModule);
+      console.log("Reference Module of Post", uploadStore.referenceModule);
     } catch (error) {
       console.log(error);
     }
@@ -239,7 +307,7 @@ export default function VideoTypes({
             fontSize: 16,
             fontWeight: "600",
           }}
-          onPress={handleUpload}
+          onPress={uploadViaTus}
         />
       </View>
     </SafeAreaView>
