@@ -1,3 +1,4 @@
+import { WINDOW_WIDTH } from "@gorhom/bottom-sheet";
 import * as ImagePicker from "expo-image-picker";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
@@ -123,7 +124,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
   return (
     <KeyboardAvoidingView style={styles.container}>
       <StatusBar backgroundColor="black" style="auto" />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} style={{width: WINDOW_WIDTH, paddingHorizontal: 12, marginTop: 4}}>
         <View
           style={{
             width: "100%",
@@ -131,7 +132,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
         >
           <StyledText
             title="Tell us where you found bug,we'll be happy to fix it"
-            style={{ color: "white" }}
+            style={{ color: "white", textAlign: 'center' }}
           />
         </View>
         <Dropdown
@@ -140,7 +141,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
           onSelect={setselectData}
           width={"100%"}
         />
-        <View>
+        <View style={{}}>
           {image && (
             <View>
               <Pressable
@@ -206,7 +207,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
           width={"100%"}
           px={12}
           py={8}
-          my={16}
+          mt={12}
           borderRadius={8}
           textStyle={{
             textAlign: "center",
@@ -228,6 +229,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "black",
     alignItems: "center",
+    // paddingHorizontal: 12
   },
   image: {
     width: "100%",

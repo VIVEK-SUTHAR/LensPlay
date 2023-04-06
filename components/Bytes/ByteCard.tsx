@@ -1,3 +1,5 @@
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { StatusBar } from "expo-status-bar";
 import AnimatedLottieView from "lottie-react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -9,8 +11,8 @@ import {
 } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import { client } from "../../apollo/client";
-import getBytes from "../../apollo/Queries/getBytes";
 import { useGuestStore } from "../../store/GuestStore";
+import getBytes from "../../apollo/Queries/getBytes";
 import { useAuthStore, useProfile, useThemeStore } from "../../store/Store";
 import {
   Mirror,
@@ -32,7 +34,10 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
   const { currentProfile } = useProfile();
   const { isGuest, profileId } = useGuestStore();
   const { PRIMARY } = useThemeStore();
-  const { accessToken } = useAuthStore();
+  const { accessToken } = useAuthStore(); 
+  const { height: WINDOW_HEIGHT } = Dimensions.get("window");
+  const bottomTabHeight = useBottomTabBarHeight();
+
   const handleChangeIndexValue = ({ index }: { index: number }) => {
     setCurrentIndex(index);
   };
@@ -69,7 +74,8 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+    <>
+     {/* <StatusBar backgroundColor="black" /> */}
       {loading ? (
         <View
           style={{
@@ -117,50 +123,22 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
       )}
       {shotsData?.explorePublications?.items ? (
         <SwiperFlatList
-          refreshControl={
-            <RefreshControl
-              onRefresh={onRefresh}
-              refreshing={isRefreshing}
-              colors={[PRIMARY]}
-              progressBackgroundColor={"black"}
+        vertical={true}
+        keyExtractor={(item, index) => index.toString()}
+        onChangeIndex={handleChangeIndexValue}
+        data={bytesData}
+        renderItem={({ item, index }) => (
+            <SingleByte
+              item={item}
+              index={index}
+              currentIndex={currentIndex}
             />
-          }
-          vertical={true}
-          keyExtractor={(item, index) => index.toString()}
-          onChangeIndex={handleChangeIndexValue}
-          data={shotsData?.explorePublications?.items}
-          renderItem={({
-            item,
-            index,
-          }: {
-            item: ShotsPublication;
-            index: number;
-          }) => {
-            if (
-              item?.appId === "lenstube" ||
-              item?.appId === "lenstube-bytes"
-            ) {
-              return (
-                <View
-                  style={{
-                    height: Dimensions.get("window").height,
-                  }}
-                >
-                  <SingleByte
-                    item={item}
-                    index={index}
-                    currentIndex={currentIndex}
-                  />
-                </View>
-              );
-            }
-            return <></>;
-          }}
-        />
+        )}
+      />
       ) : (
         <></>
-      )}
-    </SafeAreaView>
+      )}</>
+       
   );
 };
 

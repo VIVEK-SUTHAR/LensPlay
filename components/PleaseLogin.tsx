@@ -20,11 +20,14 @@ export default function PleaseLogin() {
       }}
     >
       <Heading
-        title="please login"
+        title="You can't access this screen in guest mode, Please Login to continue"
         style={{
-          fontSize: 24,
+          fontSize: 20,
           color: "white",
           fontWeight: "600",
+          marginBottom: 16,
+          paddingHorizontal: 8,
+          textAlign: 'center'
         }}
       />
       <Button
@@ -32,8 +35,9 @@ export default function PleaseLogin() {
         width="50%"
         my={16}
         py={8}
+        px={2}
         bg={PRIMARY}
-        textStyle={{ fontSize: 16, fontWeight: "600" }}
+        textStyle={{ fontSize: 20, fontWeight: "600" }}
         onPress={() => navigation.navigate("Login")}
       />
     </SafeAreaView>

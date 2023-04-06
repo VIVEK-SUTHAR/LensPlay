@@ -30,6 +30,8 @@ import Button from "../UI/Button";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
 import { LikeButton } from "../VIdeo";
+import Constants from "expo-constants";
+
 import { ShotsPublication } from "./ByteCard";
 
 interface SingleByteProps {
@@ -58,6 +60,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
 
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
+  const StatusBarHeight = Constants.statusBarHeight;
   navigation.addListener("blur", (e) => {
     ref.current?.pauseAsync();
   });
@@ -106,7 +109,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
           alignItems: "center",
         }}
       >
-        <StatusBar backgroundColor="transparent" />
+        {/* <StatusBar backgroundColor="transparent" /> */}
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => setMute(!mute)}
@@ -128,14 +131,14 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
               },
 
               shouldPlay: currentIndex === index ? true : false,
-              resizeMode: ResizeMode.CONTAIN,
+              resizeMode: ResizeMode.COVER,
               isMuted: mute,
               posterSource: {
                 uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
               },
               isLooping: true,
               posterStyle: {
-                resizeMode: ResizeMode.CONTAIN,
+                resizeMode: ResizeMode.COVER,
               },
             }}
             slider={{
@@ -157,17 +160,6 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             autoHidePlayer={true}
           />
         </TouchableOpacity>
-        <Ionicons
-          name="volume-mute"
-          style={{
-            fontSize: mute ? 20 : 0,
-            color: "white",
-            position: "absolute",
-            backgroundColor: "rgba(52,52,52,0.6)",
-            borderRadius: 100,
-            padding: mute ? 20 : 0,
-          }}
-        />
         <View
           style={{
             position: "absolute",
@@ -316,8 +308,8 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
               style={{
                 padding: 8,
                 zIndex: 1,
-                borderColor: "red",
-                borderWidth: 0,
+                // borderColor: "red",
+                // borderWidth: 0,
               }}
             >
               <View

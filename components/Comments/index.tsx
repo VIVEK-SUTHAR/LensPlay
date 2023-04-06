@@ -55,15 +55,17 @@ const Comment = ({
     },
   });
 
-  if (error) return <NotFound />;
-
+  if (error){
+    return <NotFound />;
+  }
   if (shots) {
     if (loading) return <Loading />;
   } else {
     if (loading || !reaction) return <Loading />;
   }
 
-  if (!commentData?.publications?.items?.length) {
+
+  if (!commentData?.publications?.items.length) {
     if (!comment) {
       setComments(true);
     }
