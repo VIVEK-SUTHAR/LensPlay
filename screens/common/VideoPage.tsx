@@ -1,3 +1,4 @@
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
@@ -384,8 +385,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
         }}
         snapPoints={["70%", "95%"]}
         children={
-          <View style={{ paddingHorizontal: 16 }}>
-            <ScrollView scrollEnabled={true}>
+          <BottomSheetScrollView>
+            <View style={{ paddingHorizontal: 16 }}>
               <View
                 style={{
                   marginTop: 8,
@@ -502,8 +503,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
                   activePublication?.profile?.stats?.totalFollowers
                 }
               />
-            </ScrollView>
-          </View>
+            </View>
+          </BottomSheetScrollView>
         }
       />
     </>
