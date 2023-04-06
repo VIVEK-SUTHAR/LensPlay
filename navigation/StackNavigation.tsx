@@ -104,7 +104,7 @@ export default function StackNavigation() {
             component={Scanner}
             options={{
               animation: "none",
-              headerShown: true,
+              headerShown: false,
               headerTintColor: theme.PRIMARY,
               headerTitleStyle: {
                 fontSize: 16,
@@ -120,7 +120,7 @@ export default function StackNavigation() {
         component={BottomTabNavigator}
         options={{
           headerShown: false,
-          animation: "slide_from_right",
+          animation: "default",
           gestureEnabled: false,
         }}
       />
@@ -337,7 +337,7 @@ export default function StackNavigation() {
         component={ProfileScanner}
         options={{
           animation: "slide_from_right",
-          headerShown: true,
+          headerShown: false,
           headerTitleStyle: {
             fontSize: 16,
             fontWeight: "600",
