@@ -24,33 +24,29 @@ import { useThemeStore } from "../../../../store/Store";
 import { useUploadStore } from "../../../../store/UploadStore";
 import { RootStackScreenProps } from "../../../../types/navigation/types";
 
+const ReferenceModuleList = [
+  {
+    name: "Everyone",
+    isSelected: true,
+  },
+  {
+    name: "My followers",
+    isSelected: false,
+  },
+  {
+    name: "My following",
+    isSelected: false,
+  },
+  {
+    name: "Friends of friend",
+    isSelected: false,
+  },
+];
+
 export default function AddDetails({
   navigation,
 }: RootStackScreenProps<"AddDetails">) {
   const theme = useThemeStore();
-  const windowHeight = Dimensions.get("window").height;
-
-  const ReferenceModuleList = [
-    {
-      name: "Everyone",
-      isSelected: true,
-    },
-    {
-      name: "My followers",
-      isSelected: false,
-    },
-    {
-      name: "My following",
-      isSelected: false,
-    },
-    {
-      name: "Friends of friend",
-      isSelected: false,
-    },
-  ];
-  const referenceModuleRef = useRef<BottomSheetMethods>(null);
-  const collectModuleRef = useRef<BottomSheetMethods>(null);
-
   const [activeModule, setActiveModule] = useState(ReferenceModuleList[0]);
   const [isFollowersOnlyCollect, setIsFollowersOnlyCollect] = useState<boolean>(
     false
@@ -58,6 +54,11 @@ export default function AddDetails({
   const [isPaidCollect, setIsPaidCollect] = useState<boolean>(false);
   const [collectAmmount, setCollectAmmount] = useState(0);
   const [isCollectEnabled, setIsCollectEnabled] = useState<boolean>(false);
+  const { title, setTitle } = useUploadStore();
+  const windowHeight = Dimensions.get("window").height;
+
+  const referenceModuleRef = useRef<BottomSheetMethods>(null);
+  const collectModuleRef = useRef<BottomSheetMethods>(null);
 
   const uploadStore = useUploadStore();
 
@@ -115,12 +116,18 @@ export default function AddDetails({
             placeholderTextColor={"gray"}
             numberOfLines={2}
             textAlignVertical="top"
+            value={title}
             style={{
               color: "white",
               fontSize: 20,
               paddingVertical: 8,
               marginVertical: 4,
             }}
+            onChange={useCallback(
+              (e: { nativeEvent: { text: string } }) =>
+                setTitle(e.nativeEvent.text),
+              []
+            )}
           />
         </View>
         <Pressable

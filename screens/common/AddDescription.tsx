@@ -1,16 +1,17 @@
-import React, { useState } from "react";
-import {
-  SafeAreaView,
-  TextInput,
-  View
-} from "react-native";
+import React, { useCallback, useState } from "react";
+import { SafeAreaView, TextInput, View } from "react-native";
 import Button from "../../components/UI/Button";
 import StyledText from "../../components/UI/StyledText";
 import { useThemeStore } from "../../store/Store";
+import { useUploadStore } from "../../store/UploadStore";
+import { RootStackScreenProps } from "../../types/navigation/types";
 
-export default function AddDescription() {
-  const [description, setDescription] = useState<string | null>(null);
+export default function AddDescription({
+  navigation,
+}: RootStackScreenProps<"AddDescription">) {
   const theme = useThemeStore();
+  const { description, setDescription } = useUploadStore();
+
   return (
     <SafeAreaView
       style={{
@@ -29,6 +30,7 @@ export default function AddDescription() {
           selectionColor={theme.PRIMARY}
           textAlignVertical="top"
           multiline={true}
+          value={description}
           style={{
             paddingHorizontal: 16,
             paddingVertical: 24,
@@ -37,9 +39,9 @@ export default function AddDescription() {
             color: "white",
           }}
           autoFocus={true}
-          onChange={(e) => {
+          onChange={useCallback((e: { nativeEvent: { text: string } }) => {
             setDescription(e.nativeEvent.text);
-          }}
+          }, [])}
         />
       </View>
       <View
@@ -65,7 +67,7 @@ export default function AddDescription() {
             fontWeight: "600",
           }}
           onPress={() => {
-            // navigation.navigate("AddDetails");
+            navigation.replace("AddDetails");
           }}
           bg={"white"}
         />
