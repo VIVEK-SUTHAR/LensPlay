@@ -3,6 +3,7 @@ import fetchReaction from "../apollo/Queries/fetchReaction";
 import getFollowers from "../apollo/Queries/getFollowers";
 import getFollowing from "../apollo/Queries/getFollowing";
 import { useAuthStore, useProfile } from "../store/Store";
+import { useGuestStore } from "../store/GuestStore";
 
 const useFollowing = (ethAddress: string | undefined) => {
   const { accessToken } = useAuthStore();
@@ -45,17 +46,18 @@ const useFollowers = (profileId: string | undefined) => {
 const useReaction = (pubId: string) => {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
+  const {isGuest, profileId} = useGuestStore();
 
-  const { data, error, loading } = useQuery(fetchReaction, {
+  const { data, error, loading } = useQuery(fetchReaction, {    
     variables: {
-      id: currentProfile?.id,
+      id: isGuest?profileId:(currentProfile?.id),
       pubId: pubId,
     },
     fetchPolicy: "network-only",
     refetchWritePolicy: "merge",
     context: {
       headers: {
-        "x-access-token": `Bearer ${accessToken}`,
+        "x-access-token": `${!accessToken?'':`Bearer ${accessToken}`}`,
       },
     },
   });

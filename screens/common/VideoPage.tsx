@@ -90,7 +90,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
   const { data: ReactionData, error, loading } = useReaction(
     activePublication?.id
   );
-
+  
   if (ReactionData) {
     if (!reaction) {
       setReaction(true);
@@ -99,6 +99,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
         ReactionData?.publication?.reaction === "DOWNVOTE",
         ReactionData?.publication?.stats?.totalUpvotes
       );
+      
       setCollectStats(
         ReactionData?.publication?.hasCollectedByMe,
         ReactionData?.publication?.stats?.totalAmountOfCollects

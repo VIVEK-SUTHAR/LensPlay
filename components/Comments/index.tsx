@@ -50,7 +50,7 @@ const Comment = ({
     refetchWritePolicy: "merge",
     context: {
       headers: {
-        "x-access-token": `Bearer ${accessToken}`,
+        "x-access-token": `${!accessToken?'':`Bearer ${accessToken}`}`,
       },
     },
   });
