@@ -27,7 +27,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 
   const [
     getChallenge,
-    { data: challange, error: challangeError, loading: challengeLoading },
+    { data: challangeText, error: challangeError, loading: challengeLoading },
   ] = useChallengeLazyQuery();
 
   const [
@@ -39,19 +39,21 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
     setIsloading(true);
     try {
       const address = connector.accounts[0];
-      getChallenge({
+      const data = await getChallenge({
         variables: {
           request: {
             address: address,
           },
         },
       });
+      console.log(data.data?.challenge);
+
       const signature = await connector.sendCustomRequest({
         method: "personal_sign",
-        params: [address, challange?.challenge.text],
+        params: [address, data?.data?.challenge?.text],
       });
       if (signature) {
-        getTokens({
+        const response = await getTokens({
           variables: {
             request: {
               address: address,
@@ -59,8 +61,10 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             },
           },
         });
-        setAccessToken(tokens?.authenticate?.accessToken);
-        setRefreshToken(tokens?.authenticate?.refreshToken);
+        console.log(response?.data?.authenticate);
+
+        setAccessToken(response?.data?.authenticate?.accessToken);
+        setRefreshToken(response?.data?.authenticate?.accessToken);
         await storeTokens(
           tokens?.authenticate?.accessToken,
           tokens?.authenticate?.refreshToken,
