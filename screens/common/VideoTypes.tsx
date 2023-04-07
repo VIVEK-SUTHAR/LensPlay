@@ -16,6 +16,7 @@ import {
   PublicationMetadataV2Input,
 } from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
+import getCollectModule from "../../utils/getCollectModule";
 import getImageBlobFromUri from "../../utils/getImageBlobFromUri";
 import uploadImageToIPFS from "../../utils/uploadImageToIPFS";
 import uploadToArweave from "../../utils/uploadToArweave";
@@ -74,6 +75,11 @@ export default function VideoTypes({
 
   const uploadStore = useUploadStore();
   const { currentProfile } = useProfile();
+
+  const prepareRequest = () => {
+    const data = getCollectModule(uploadStore.collectModule);
+    console.log(data);
+  };
 
   const uploadViaTus = async () => {
     try {
@@ -285,7 +291,7 @@ export default function VideoTypes({
             fontSize: 16,
             fontWeight: "600",
           }}
-          onPress={uploadViaTus}
+          onPress={prepareRequest}
         />
       </View>
     </SafeAreaView>

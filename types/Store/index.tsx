@@ -1,3 +1,4 @@
+import { CollectModuleType } from "../../utils/getCollectModule";
 import {
   CollectModules,
   FeedItemRoot,
@@ -119,10 +120,10 @@ export interface IUploadStore {
   description: string | null;
   isFollowersOnlyCollect: boolean;
   referenceModule: ReferenceModules;
-  collectModule: CollectModules;
+  collectModule: CollectModuleType;
   setURLs: (videoURL: string, coverURL: string) => void;
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
-  setCollectModule: (newCollectModule: CollectModules) => void;
+  setCollectModule: (newCollectModule:CollectModuleType) => void;
   setIsFollowesOnlyCollect: (newValue: boolean) => void;
 }

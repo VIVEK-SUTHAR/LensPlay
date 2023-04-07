@@ -1,19 +1,19 @@
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import React, { useCallback, useEffect, useState } from "react";
-import { Pressable, ScrollView, TextInput, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import {
   dark_primary,
   dark_secondary,
   primary,
 } from "../../../constants/Colors";
-import StyledText from "../../UI/StyledText";
-import Heading from "../../UI/Heading";
-import Icon from "../../Icon";
-import Sheet from "../../Bottom";
-import Switch from "../../UI/Switch";
-import { useUploadStore } from "../../../store/UploadStore";
 import { useThemeStore } from "../../../store/Store";
+import { useUploadStore } from "../../../store/UploadStore";
+import Sheet from "../../Bottom";
+import Icon from "../../Icon";
 import Button from "../../UI/Button";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Heading from "../../UI/Heading";
+import StyledText from "../../UI/StyledText";
+import Switch from "../../UI/Switch";
 
 type CollectModuleSheetProp = {
   collectModuleRef: React.RefObject<BottomSheetMethods>;
@@ -89,21 +89,47 @@ function CollectModuleSheet({ collectModuleRef }: CollectModuleSheetProp) {
   const [isFollowersOnlyCollect, setIsFollowersOnlyCollect] = useState<boolean>(
     false
   );
-  const [isPaidCollect, setIsPaidCollect] = useState<boolean>(false);
-  const [collectAmmount, setCollectAmmount] = useState(0);
   const [isCollectEnabled, setIsCollectEnabled] = useState<boolean>(false);
-
   const uploadStore = useUploadStore();
-  const theme = useThemeStore();
+
   useEffect(() => {
     if (isFollowersOnlyCollect) {
-      uploadStore.setIsFollowesOnlyCollect(true);
+      uploadStore.setCollectModule({
+        type: "freeCollectModule",
+        followerOnlyCollect: true,
+        isFreeCollect: true,
+        isRevertCollect: false,
+      });
       return;
     }
     if (!isFollowersOnlyCollect) {
-      uploadStore.setIsFollowesOnlyCollect(false);
+      uploadStore.setCollectModule({
+        type: "freeCollectModule",
+        followerOnlyCollect: false,
+        isFreeCollect: true,
+        isRevertCollect: false,
+      });
     }
+    
   }, [isFollowersOnlyCollect]);
+  useEffect(() => {
+    if (isCollectEnabled) {
+      uploadStore.setCollectModule({
+        type: "freeCollectModule",
+        followerOnlyCollect: isFollowersOnlyCollect,
+        isFreeCollect: true,
+        isRevertCollect: false,
+      });
+    }
+    if (!isCollectEnabled) {
+      uploadStore.setCollectModule({
+        type: "freeCollectModule",
+        followerOnlyCollect: isFollowersOnlyCollect,
+        isFreeCollect: true,
+        isRevertCollect: true,
+      });
+    }
+  },[isCollectEnabled])
   return (
     <Sheet
       ref={collectModuleRef}
@@ -237,7 +263,7 @@ function CollectModuleSheet({ collectModuleRef }: CollectModuleSheetProp) {
                     />
                   </View>
                 </View>
-                <View
+                {/* <View
                   style={{
                     backgroundColor: dark_secondary,
                     marginVertical: 8,
@@ -338,7 +364,7 @@ function CollectModuleSheet({ collectModuleRef }: CollectModuleSheetProp) {
                       </View>
                     </View>
                   )}
-                </View>
+                </View> */}
               </>
             )}
           </View>

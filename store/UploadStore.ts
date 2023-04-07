@@ -1,13 +1,18 @@
 import create from "zustand";
-import { CollectModules, ReferenceModules } from "../types/generated";
+import { ReferenceModules } from "../types/generated";
 import { IUploadStore } from "../types/Store";
 
 export const useUploadStore = create<IUploadStore>((set) => ({
   videoURL: null,
   coverURL: null,
-  title: null,
+  title:"",
   description: null,
-  collectModule: CollectModules.RevertCollectModule,
+  collectModule: {
+    type: "revertCollectModule",
+    followerOnlyCollect: false,
+    isFreeCollect: false,
+    isRevertCollect: true,
+  },
   referenceModule: ReferenceModules.FollowerOnlyReferenceModule,
   isFollowersOnlyCollect: false,
   setURLs: (videoURL, coverURL) => {
