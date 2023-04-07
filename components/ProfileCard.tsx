@@ -9,10 +9,10 @@ import StyledText from "./UI/StyledText";
 
 type ProfileCardProps = {
   profileIcon: string;
-  profileName: string;
+  profileName: string | null | undefined;
   handle: string;
   owner: string;
-  isFollowed: boolean ;
+  isFollowed: boolean;
   profileId: string;
 };
 

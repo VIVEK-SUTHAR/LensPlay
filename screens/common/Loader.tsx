@@ -5,17 +5,33 @@ import React, { useEffect } from "react";
 import { View } from "react-native";
 import { APP_OPEN } from "../../constants/tracking";
 import { useAuthStore, useProfile } from "../../store/Store";
+import {
+  useRefreshTokensMutation,
+  useVerifyTokensLazyQuery,
+} from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
-import handleWaitlist from "../../utils/handleWaitlist";
-import getAccessFromRefresh from "../../utils/lens/getAccessFromRefresh";
-import getDefaultProfile from "../../utils/lens/getDefaultProfile";
-import verifyTokens from "../../utils/lens/verifyTokens";
-import storeTokens from "../../utils/storeTokens";
 import TrackAction from "../../utils/Track";
+import handleWaitlist from "../../utils/handleWaitlist";
+import getDefaultProfile from "../../utils/lens/getDefaultProfile";
+import storeTokens from "../../utils/storeTokens";
 
 export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
   const { setCurrentProfile, setHasHandle } = useProfile();
   const { setAccessToken, setRefreshToken } = useAuthStore();
+
+  const [
+    verifyTokens,
+    { data: isvalidTokens, error: verifyError, loading: verifyLoading },
+  ] = useVerifyTokensLazyQuery();
+
+  const [
+    getAccessFromRefresh,
+    { data: newTokens, error, loading },
+  ] = useRefreshTokensMutation();
+
+  console.log(isvalidTokens, newTokens);
+
+  console.log(verifyError?.message, error?.message, "error");
 
   async function HandleDefaultProfile(adress: string) {
     const userDefaultProfile = await getDefaultProfile(adress);
@@ -42,6 +58,11 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
         const accessToken = JSON.parse(userTokens).accessToken;
         const refreshToken = JSON.parse(userTokens).refreshToken;
 
+        if (!accessToken || !refreshToken) {
+          navigation.replace("Login");
+          return;
+        }
+
         if (!waitList) {
           navigation.replace("Login");
           return;
@@ -65,22 +86,35 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
             return;
           }
 
-          if (userData.fields.hasAccess) {
-            const isvalidTokens = await verifyTokens(accessToken);
-            if (isvalidTokens) {
+          if (userData?.fields?.hasAccess) {
+            verifyTokens({
+              variables: {
+                request: {
+                  accessToken: accessToken,
+                },
+              },
+            });
+
+            if (isvalidTokens?.verify) {
               setAccessToken(accessToken);
               setRefreshToken(refreshToken);
               await HandleDefaultProfile(address);
               navigation.replace("Root");
             } else {
-              const newTokens = await getAccessFromRefresh(refreshToken);
+              getAccessFromRefresh({
+                variables: {
+                  request: {
+                    refreshToken: refreshToken,
+                  },
+                },
+              });
               const address = JSON.parse(waitList).address;
               await HandleDefaultProfile(address);
-              setAccessToken(newTokens?.accessToken);
-              setRefreshToken(newTokens?.refreshToken);
+              setAccessToken(newTokens?.refresh.accessToken);
+              setRefreshToken(newTokens?.refresh.refreshToken);
               await storeTokens(
-                newTokens?.accessToken,
-                newTokens?.refreshToken
+                newTokens?.refresh.accessToken,
+                newTokens?.refresh.refreshToken
               );
               navigation.replace("Root");
             }
