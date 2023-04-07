@@ -66,8 +66,8 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         setAccessToken(response?.data?.authenticate?.accessToken);
         setRefreshToken(response?.data?.authenticate?.accessToken);
         await storeTokens(
-          tokens?.authenticate?.accessToken,
-          tokens?.authenticate?.refreshToken,
+          response?.data?.authenticate?.accessToken,
+          response?.data?.authenticate?.refreshToken,
           false
         );
         navigation.replace("Root");

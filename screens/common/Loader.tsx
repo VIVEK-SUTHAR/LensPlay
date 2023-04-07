@@ -87,7 +87,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
           }
 
           if (userData?.fields?.hasAccess) {
-            verifyTokens({
+            await verifyTokens({
               variables: {
                 request: {
                   accessToken: accessToken,
@@ -101,7 +101,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
               await HandleDefaultProfile(address);
               navigation.replace("Root");
             } else {
-              getAccessFromRefresh({
+              const newData = await getAccessFromRefresh({
                 variables: {
                   request: {
                     refreshToken: refreshToken,
@@ -110,11 +110,11 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
               });
               const address = JSON.parse(waitList).address;
               await HandleDefaultProfile(address);
-              setAccessToken(newTokens?.refresh.accessToken);
-              setRefreshToken(newTokens?.refresh.refreshToken);
+              setAccessToken(newData?.data?.refresh?.accessToken);
+              setRefreshToken(newData?.data?.refresh?.refreshToken);
               await storeTokens(
-                newTokens?.refresh.accessToken,
-                newTokens?.refresh.refreshToken
+                newData?.data?.refresh?.accessToken,
+                newData?.data?.refresh?.refreshToken
               );
               navigation.replace("Root");
             }
