@@ -29,8 +29,8 @@ async function uploadToArweave(metadata: PublicationMetadataV2Input) {
     );
     if (response.ok) {
       const jsondata = await response.json();
-      const content_uri = `https://arweave.net/${jsondata.id}`;
-      return content_uri;
+      const content_hash = jsondata?.id;
+      return content_hash;
     }
   } catch (err) {
     if (err instanceof Error) {

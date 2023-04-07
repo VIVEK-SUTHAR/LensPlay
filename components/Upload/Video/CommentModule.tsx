@@ -11,9 +11,7 @@ import StyledText from "../../UI/StyledText";
 type CommentModuleSheetProps = {
   referenceModuleRef: React.RefObject<BottomSheetMethods>;
   ReferenceModuleList: ReferenceModuleListItem[];
-  setActiveModule: React.Dispatch<
-    React.SetStateAction<ReferenceModuleListItem>
-  >;
+  setActiveModule: (referenceModule: ReferenceModuleListItem) => void;
   activeModule: ReferenceModuleListItem;
 };
 

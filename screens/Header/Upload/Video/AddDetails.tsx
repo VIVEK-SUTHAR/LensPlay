@@ -63,6 +63,13 @@ export default function AddDetails({
     []
   );
 
+  const handleModuleChange = React.useCallback(
+    (module: ReferenceModuleListItem) => {
+      setActiveModule(module);
+    },
+    []
+  );
+
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -122,7 +129,7 @@ export default function AddDetails({
         ReferenceModuleList={ReferenceModuleList}
         activeModule={activeModule}
         referenceModuleRef={referenceModuleRef}
-        setActiveModule={setActiveModule}
+        setActiveModule={handleModuleChange}
       />
     </>
   );

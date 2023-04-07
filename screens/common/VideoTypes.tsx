@@ -1,12 +1,19 @@
-import React, { useState } from "react";
-import { Pressable, SafeAreaView, ScrollView, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Alert,
+  Linking,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  View,
+} from "react-native";
 import { v4 as uuidV4 } from "uuid";
 import Button from "../../components/UI/Button";
 import Heading from "../../components/UI/Heading";
 import StyledText from "../../components/UI/StyledText";
 import { APP_ID, LENSPLAY_SITE } from "../../constants";
 import { dark_primary } from "../../constants/Colors";
-import { useProfile } from "../../store/Store";
+import { useAuthStore, useProfile, useToast } from "../../store/Store";
 import { useUploadStore } from "../../store/UploadStore";
 import {
   MetadataAttributeInput,
@@ -14,8 +21,10 @@ import {
   PublicationMetadataDisplayTypes,
   PublicationMetadataMediaInput,
   PublicationMetadataV2Input,
+  useCreatePostViaDispatcherMutation,
 } from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
+import { ToastType } from "../../types/Store";
 import getCollectModule from "../../utils/getCollectModule";
 import getImageBlobFromUri from "../../utils/getImageBlobFromUri";
 import getReferenceModule from "../../utils/getReferenceModule";
@@ -76,6 +85,76 @@ export default function VideoTypes({
 
   const uploadStore = useUploadStore();
   const { currentProfile } = useProfile();
+
+  const [content, setContent] = useState("GM!");
+
+  const [createPost, { data, error }] = useCreatePostViaDispatcherMutation({
+    onCompleted: () => {
+      toast.show("Post Submmitted", ToastType.SUCCESS, true);
+      setShow(true);
+    },
+    onError(error, clientOptions?) {
+      toast.show(error.message, ToastType.ERROR, true);
+    },
+  });
+
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    Alert.alert(
+      "clicking upload will trigger a sample text post,",
+      `Video upload is ready,next commit ,And Sample text is gm,
+      `
+    );
+  }, []);
+
+  const toast = useToast();
+  const { accessToken } = useAuthStore();
+  const testSamplePost = async () => {
+    try {
+      const metadata: PublicationMetadataV2Input = {
+        version: "2.0.0",
+        metadata_id: "dd9e3adf-ffd6-40f6-aa3a-c41fc9ba9fdd",
+        content: content,
+        external_url: `https://testnet.lenster.xyz/u/${currentProfile?.handle}`,
+        image: null,
+        imageMimeType: null,
+        name: `Post by ${currentProfile?.handle}`,
+        tags: [],
+        animation_url: null,
+        mainContentFocus: PublicationMainFocus.TextOnly,
+        contentWarning: null,
+        attributes: [
+          {
+            traitType: "type",
+            displayType: PublicationMetadataDisplayTypes.String,
+            value: "text_only",
+          },
+        ],
+        media: [],
+        locale: "en-US",
+        appId: "LensPlay",
+      };
+      console.log("Called");
+      const reqMetadataUri = await uploadToArweave(metadata);
+      const metadataUri = `ar://${reqMetadataUri}`;
+      createPost({
+        variables: {
+          request: {
+            collectModule: getCollectModule(uploadStore.collectModule),
+            contentURI: metadataUri,
+            profileId: currentProfile?.id,
+            referenceModule: getReferenceModule(uploadStore.referenceModule),
+          },
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${accessToken}`,
+          },
+        },
+      });
+    } catch (error) {}
+  };
 
   const prepareRequest = () => {
     const data = getCollectModule(uploadStore.collectModule);
@@ -278,6 +357,32 @@ export default function VideoTypes({
           }
         })}
       </ScrollView>
+      {show && (
+        <View
+          style={{
+            position: "absolute",
+            bottom: 100,
+            paddingHorizontal: 16,
+            width: "100%",
+          }}
+        >
+          <Button
+            title={"Show Post"}
+            width={"100%"}
+            py={12}
+            my={16}
+            textStyle={{
+              fontSize: 16,
+              fontWeight: "600",
+            }}
+            onPress={() => {
+              Linking.openURL(
+                `https://testnet.lenster.xyz/u/${currentProfile?.handle}`
+              );
+            }}
+          />
+        </View>
+      )}
       <View
         style={{
           position: "absolute",
@@ -294,7 +399,7 @@ export default function VideoTypes({
             fontSize: 16,
             fontWeight: "600",
           }}
-          onPress={prepareRequest}
+          onPress={testSamplePost}
         />
       </View>
     </SafeAreaView>
