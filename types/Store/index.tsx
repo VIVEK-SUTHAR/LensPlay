@@ -113,17 +113,26 @@ export interface IGuestStore {
   handleGuest: (isGuest: boolean) => void;
 }
 
+export type ReferenceModuleType = {
+  isFollowerOnly: boolean;
+  degreesOfSeparationReferenceModule: {
+    isEnabled: boolean;
+    seperationLevel: number;
+  } | null;
+};
+
 export interface IUploadStore {
   videoURL: string | null;
   coverURL: string | null;
   title: string;
   description: string | null;
   isFollowersOnlyCollect: boolean;
-  referenceModule: ReferenceModules;
+  referenceModule: ReferenceModuleType | null;
   collectModule: CollectModuleType;
+  setReferenceModule: (userReferenceModule: ReferenceModuleType|null) => void;
   setURLs: (videoURL: string, coverURL: string) => void;
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
-  setCollectModule: (newCollectModule:CollectModuleType) => void;
+  setCollectModule: (newCollectModule: CollectModuleType) => void;
   setIsFollowesOnlyCollect: (newValue: boolean) => void;
 }

@@ -5,7 +5,7 @@ import { IUploadStore } from "../types/Store";
 export const useUploadStore = create<IUploadStore>((set) => ({
   videoURL: null,
   coverURL: null,
-  title:"",
+  title: "",
   description: null,
   collectModule: {
     type: "revertCollectModule",
@@ -13,7 +13,10 @@ export const useUploadStore = create<IUploadStore>((set) => ({
     isFreeCollect: false,
     isRevertCollect: true,
   },
-  referenceModule: ReferenceModules.FollowerOnlyReferenceModule,
+  referenceModule: {
+    isFollowerOnly: false,
+    degreesOfSeparationReferenceModule: null,
+  },
   isFollowersOnlyCollect: false,
   setURLs: (videoURL, coverURL) => {
     set({
@@ -23,6 +26,10 @@ export const useUploadStore = create<IUploadStore>((set) => ({
       coverURL: coverURL,
     });
   },
+  setReferenceModule: (newData) =>
+    set({
+      referenceModule: newData,
+    }),
   setTitle: (title) => set({ title: title }),
   setDescription: (description) => set({ description: description }),
   setCollectModule: (newCollectModule) =>

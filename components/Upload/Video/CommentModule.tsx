@@ -1,8 +1,9 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import React from "react";
+import React, { useEffect } from "react";
 import { FlatList, Pressable, View } from "react-native";
 import { dark_primary } from "../../../constants/Colors";
 import { useThemeStore } from "../../../store/Store";
+import { useUploadStore } from "../../../store/UploadStore";
 import Sheet from "../../Bottom";
 import Icon from "../../Icon";
 import StyledText from "../../UI/StyledText";
@@ -96,6 +97,39 @@ function CommentModuleSheet({
   setActiveModule,
 }: CommentModuleSheetProps) {
   const theme = useThemeStore();
+  const uploadStore = useUploadStore();
+  useEffect(() => {
+    if (activeModule.name === ReferenceModuleList[0].name) {
+      uploadStore.setReferenceModule(null);
+    }
+    if (activeModule.name === ReferenceModuleList[1].name) {
+      uploadStore.setReferenceModule({
+        isFollowerOnly: true,
+        degreesOfSeparationReferenceModule: {
+          isEnabled: false,
+          seperationLevel: 1,
+        },
+      });
+    }
+    if (activeModule.name === ReferenceModuleList[2].name) {
+      uploadStore.setReferenceModule({
+        isFollowerOnly: false,
+        degreesOfSeparationReferenceModule: {
+          isEnabled: true,
+          seperationLevel: 1,
+        },
+      });
+    }
+    if (activeModule.name === ReferenceModuleList[3].name) {
+      uploadStore.setReferenceModule({
+        isFollowerOnly: false,
+        degreesOfSeparationReferenceModule: {
+          isEnabled: true,
+          seperationLevel: 2,
+        },
+      });
+    }
+  }, [activeModule]);
   return (
     <Sheet
       ref={referenceModuleRef}

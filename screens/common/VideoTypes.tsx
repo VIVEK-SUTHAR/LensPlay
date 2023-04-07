@@ -18,6 +18,7 @@ import {
 import { RootStackScreenProps } from "../../types/navigation/types";
 import getCollectModule from "../../utils/getCollectModule";
 import getImageBlobFromUri from "../../utils/getImageBlobFromUri";
+import getReferenceModule from "../../utils/getReferenceModule";
 import uploadImageToIPFS from "../../utils/uploadImageToIPFS";
 import uploadToArweave from "../../utils/uploadToArweave";
 import getFileMimeType from "../../utils/video/getFileType";
@@ -78,7 +79,9 @@ export default function VideoTypes({
 
   const prepareRequest = () => {
     const data = getCollectModule(uploadStore.collectModule);
-    console.log(data);
+    console.log("Collect Module", data);
+    const ref = getReferenceModule(uploadStore.referenceModule);
+    console.log("Reference Module", ref);
   };
 
   const uploadViaTus = async () => {
