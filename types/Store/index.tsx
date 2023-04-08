@@ -132,10 +132,14 @@ export interface IUploadStore {
   isFollowersOnlyCollect: boolean;
   referenceModule: ReferenceModuleType | null;
   collectModule: CollectModuleType;
+  uploadingStatus: null | "UPLOADING" | "PROCCESSING";
+  uploadProgress: number;
   setReferenceModule: (userReferenceModule: ReferenceModuleType | null) => void;
   setURLs: (videoURL: string, coverURL: string) => void;
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
   setCollectModule: (newCollectModule: CollectModuleType) => void;
   setIsFollowesOnlyCollect: (newValue: boolean) => void;
+  setUploadingStatus: (status: "UPLOADING" | "PROCCESSING") => void;
+  setUploadProgress: (progress: number) => void;
 }

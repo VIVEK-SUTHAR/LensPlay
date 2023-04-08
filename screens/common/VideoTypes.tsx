@@ -35,6 +35,7 @@ import getUploadURLForLivePeer from "../../utils/video/getUploadURLForLivepeer";
 import uploadToTus, {
   TusUploadRequestOptions,
 } from "../../utils/video/uploadToTUS";
+
 const Types: string[] = [
   "Arts & Entertainment",
   "Business",
@@ -82,6 +83,7 @@ export default function VideoTypes({
   navigation,
 }: RootStackScreenProps<"VideoTypes">) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const { setUploadingStatus, setUploadProgress } = useUploadStore();
 
   const uploadStore = useUploadStore();
   const { currentProfile } = useProfile();
@@ -156,15 +158,9 @@ export default function VideoTypes({
     } catch (error) {}
   };
 
-  const prepareRequest = () => {
-    const data = getCollectModule(uploadStore.collectModule);
-    console.log("Collect Module", data);
-    const ref = getReferenceModule(uploadStore.referenceModule);
-    console.log("Reference Module", ref);
-  };
-
   const uploadViaTus = async () => {
     try {
+      setUploadingStatus("UPLOADING");
       const { tusEndpoint, assetId } = await getUploadURLForLivePeer();
 
       const localVideoBlob = await getImageBlobFromUri(uploadStore.videoURL!);
@@ -173,14 +169,15 @@ export default function VideoTypes({
         videoBlob: localVideoBlob!,
         tusEndPoint: tusEndpoint,
         onSucessCallBack: () => {
-          //This will be fired when upload is finished succesfully
           handleUpload(assetId);
         },
         onError: function (): void {
           //Handle Errors Here
         },
         onProgress: function (_sentBytes, _totalBytes): void {
-          //SET LOGIC HERE TO UPDATE UI ACCORDINGLY
+          const percentage = ((_sentBytes / _totalBytes) * 100).toFixed(2);
+          setUploadProgress(parseInt(percentage));
+          console.log("Uploaded " + percentage + "%");
         },
       };
       uploadToTus(uploadRequest);
@@ -193,6 +190,7 @@ export default function VideoTypes({
 
   const handleUpload = async (assetId: string) => {
     try {
+      setUploadingStatus("PROCCESSING");
       console.log(assetId);
 
       const imageBlob = await getImageBlobFromUri(uploadStore.coverURL!);
