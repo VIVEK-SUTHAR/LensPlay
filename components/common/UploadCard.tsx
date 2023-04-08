@@ -32,8 +32,7 @@ export default function UploadCard() {
       >
         <Image
           source={{
-            uri:
-              "https://images.unsplash.com/photo-1680693377318-63eb48d33056?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+            uri: coverURL,
           }}
           style={{
             width: 140,
@@ -70,7 +69,7 @@ export default function UploadCard() {
           }}
         >
           <Heading
-            title="Hello this is firt ivrvn kjfkk sdfn  slkns d skdnfk ksdn ksd k kdfkjs lsndl sd"
+            title={title}
             style={{ color: "white", fontSize: 14, fontWeight: "400" }}
             numberOfLines={3}
           />
