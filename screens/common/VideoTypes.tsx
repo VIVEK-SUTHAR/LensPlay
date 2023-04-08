@@ -90,11 +90,11 @@ export default function VideoTypes({
 
   const [createPost, { data, error }] = useCreatePostViaDispatcherMutation({
     onCompleted: () => {
-      toast.show("Post Submmitted", ToastType.SUCCESS, true);
       setShow(true);
+      toast.success("Post Submitted !");
     },
     onError(error, clientOptions?) {
-      toast.show(error.message, ToastType.ERROR, true);
+      toast.error("Something went wrong !");
     },
   });
 

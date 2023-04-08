@@ -20,6 +20,7 @@ export type IconProps = {
     | "policy"
     | "mirror"
     | "chat"
+    | "info"
     | "close"
     | "collect"
     | "comment"

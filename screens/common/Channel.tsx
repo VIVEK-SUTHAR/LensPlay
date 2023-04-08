@@ -42,6 +42,7 @@ import formatHandle from "../../utils/formatHandle";
 import getIPFSLink from "../../utils/getIPFSLink";
 import TrackAction from "../../utils/Track";
 import getRawurl from "../../utils/getRawUrl";
+import { StatusBar } from "expo-status-bar";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);

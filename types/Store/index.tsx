@@ -44,6 +44,9 @@ export interface ToastProps {
   timeout?: number;
   type?: ToastType;
   show: (message: string, type: ToastType, isVisible: boolean) => void;
+  success: (message: string) => void;
+  error: (errormessage: string) => void;
+  info: (message: string) => void;
 }
 export enum ToastType {
   SUCCESS = "SUCCESS",
@@ -129,7 +132,7 @@ export interface IUploadStore {
   isFollowersOnlyCollect: boolean;
   referenceModule: ReferenceModuleType | null;
   collectModule: CollectModuleType;
-  setReferenceModule: (userReferenceModule: ReferenceModuleType|null) => void;
+  setReferenceModule: (userReferenceModule: ReferenceModuleType | null) => void;
   setURLs: (videoURL: string, coverURL: string) => void;
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;

@@ -1,5 +1,4 @@
 import create from "zustand";
-import { ReferenceModules } from "../types/generated";
 import { IUploadStore } from "../types/Store";
 
 export const useUploadStore = create<IUploadStore>((set) => ({
