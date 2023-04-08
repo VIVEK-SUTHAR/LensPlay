@@ -42,7 +42,12 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         setAccessToken(tokens?.accessToken);
         setRefreshToken(tokens?.refreshToken);
         await storeTokens(tokens?.accessToken, tokens?.refreshToken, false);
-        navigation.replace("Root");
+        if(hasHandle){
+          navigation.replace("Root");
+        }
+        else{
+          navigation.replace("CreateProfile");
+        }
         TrackAction(AUTH.SIWL);
       } else {
         toast.show("Something went wrong", ToastType.ERROR, true);
@@ -246,9 +251,8 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           width: "100%",
         }}
       >
-        {hasHandle ? (
           <Button
-            title="Login With Lens"
+            title={hasHandle?"Login With Lens":"Claim Lens Handle"}
             bg={primary}
             textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
             py={12}
@@ -259,19 +263,6 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             }}
             animated={true}
           />
-        ) : (
-          <Button
-            title="Claim Lens Handle"
-            bg={primary}
-            borderRadius={50}
-            textStyle={{ fontWeight: "600", fontSize: 20 }}
-            py={12}
-            isLoading={isloading}
-            onPress={() => {
-              Linking.openURL("https://lens-create-profile.vercel.app/");
-            }}
-          />
-        )}
       </View>
     </SafeAreaView>
   );
