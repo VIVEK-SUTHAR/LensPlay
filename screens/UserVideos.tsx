@@ -5,9 +5,10 @@ import {
   SafeAreaView,
   StyleSheet,
 } from "react-native";
-import VideoCard from "../components/VideoCard";
 import { useThemeStore } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
+import VideoCard from "../components/VideoCard";
+import UploadCard from "../components/common/UploadCard";
 
 const UserVideos = ({
   navigation,
@@ -26,7 +27,7 @@ const UserVideos = ({
   }, []);
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
+      {/* <FlatList
         data={videos}
         keyExtractor={(item) => item.id.toString()}
         refreshControl={
@@ -41,7 +42,9 @@ const UserVideos = ({
             <VideoCard publication={item} id={item?.id} />
           </>
         )}
-      />
+      /> */}
+      <UploadCard />
+      {/* <MyVideoCard /> */}
     </SafeAreaView>
   );
 };
