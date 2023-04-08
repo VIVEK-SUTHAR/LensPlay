@@ -136,6 +136,10 @@ export default function VideoTypes({
 
   const uploadViaTus = async () => {
     try {
+      navigation.replace("YourVideos", {
+        title: "Your Videos",
+        videos: AllVideosData?.publications?.items as Post[],
+      });
       setUploadingStatus("UPLOADING");
       const { tusEndpoint, assetId } = await getUploadURLForLivePeer();
 
@@ -166,10 +170,7 @@ export default function VideoTypes({
 
   const handleUpload = async (assetId: string) => {
     try {
-      navigation.replace("YourVideos", {
-        title: "Your Videos",
-        videos: AllVideosData?.publications?.items as Post[],
-      });
+      
       setUploadingStatus("PROCCESSING");
       const imageBlob = await getImageBlobFromUri(uploadStore.coverURL!);
 
@@ -216,7 +217,7 @@ export default function VideoTypes({
         external_url: `${LENSPLAY_SITE}/channel/${currentProfile?.handle}`,
         animation_url: `ipfs://${ipfsVideoUrl}`,
         image: `ipfs://${coverImageURI}`,
-        imageMimeType: getFileMimeType(uploadStore.coverURL!),
+        imageMimeType: `image/${getFileMimeType(uploadStore.coverURL!)}` ,
         name: uploadStore.title,
         attributes,
         media,

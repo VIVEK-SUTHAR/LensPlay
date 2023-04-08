@@ -72,8 +72,8 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
-    sources: ["lenstube"],
-    limit: 50,
+    sources: ["lenstube","lensplay"],
+    // limit: 50,
   };
 
   const {
