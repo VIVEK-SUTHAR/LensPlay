@@ -69,7 +69,6 @@ const Button = (props: ButtonProps): JSX.Element => {
 
   var newStyle = Object.assign({}, textStyle, {
     textAlign: "center",
-    color: bg === "white" ? "black" : "white",
   });
 
   const scaleRef = React.useRef(new Animated.Value(1)).current;
