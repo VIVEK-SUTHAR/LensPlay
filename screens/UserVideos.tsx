@@ -11,6 +11,7 @@ import VideoCard from "../components/VideoCard";
 import UploadCard from "../components/common/UploadCard";
 import { View } from "react-native";
 import { useUploadStore } from "../store/UploadStore";
+import { Mirror, Post } from "../types/generated";
 
 const UserVideos = ({
   navigation,
@@ -31,9 +32,9 @@ const UserVideos = ({
   return (
     <SafeAreaView style={styles.container}>
       {uploadingStatus && <UploadCard />}
-      {/* <FlatList
+      <FlatList
         data={videos}
-        keyExtractor={(item) => item.id.toString()}
+        // keyExtractor={(item) => item.id.toString()}
         refreshControl={
           <RefreshControl
             refreshing={false}
@@ -42,9 +43,9 @@ const UserVideos = ({
           />
         }
         renderItem={({ item }) => (
-            <VideoCard publication={item} id={item?.id} />
+          <VideoCard publication={item} id={item?.id} />
         )}
-      /> */}
+      />
       {/* <MyVideoCard /> */}
     </SafeAreaView>
   );

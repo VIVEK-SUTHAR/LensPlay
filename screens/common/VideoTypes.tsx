@@ -17,11 +17,14 @@ import { useAuthStore, useProfile, useToast } from "../../store/Store";
 import { useUploadStore } from "../../store/UploadStore";
 import {
   MetadataAttributeInput,
+  Post,
   PublicationMainFocus,
   PublicationMetadataDisplayTypes,
   PublicationMetadataMediaInput,
   PublicationMetadataV2Input,
+  PublicationTypes,
   useCreatePostViaDispatcherMutation,
+  useProfilePostsQuery,
 } from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import { ToastType } from "../../types/Store";
@@ -83,80 +86,53 @@ export default function VideoTypes({
   navigation,
 }: RootStackScreenProps<"VideoTypes">) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const { setUploadingStatus, setUploadProgress } = useUploadStore();
-
+  const {
+    setUploadingStatus,
+    setUploadProgress,
+    setClearStore,
+  } = useUploadStore();
+  const toast = useToast();
   const uploadStore = useUploadStore();
   const { currentProfile } = useProfile();
+  const { accessToken } = useAuthStore();
 
-  const [content, setContent] = useState("GM!");
+  const QueryRequest = {
+    profileId: currentProfile?.id,
+    publicationTypes: [PublicationTypes.Post],
+    metadata: {
+      mainContentFocus: [PublicationMainFocus.Video],
+    },
+    sources: ["lenstube"],
+    limit: 50,
+  };
+
+  const {
+    data: AllVideosData,
+    error: AllVideoError,
+    loading: AllVideosLoading,
+  } = useProfilePostsQuery({
+    variables: {
+      request: QueryRequest,
+      reactionRequest: {
+        profileId: currentProfile?.id,
+      },
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+      },
+    },
+  });
 
   const [createPost, { data, error }] = useCreatePostViaDispatcherMutation({
     onCompleted: () => {
-      setShow(true);
-      toast.success("Post Submitted !");
+      toast.success("Video uploaded successfully");
+      setClearStore();
     },
     onError(error, clientOptions?) {
       toast.error("Something went wrong !");
     },
   });
-
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    Alert.alert(
-      "clicking upload will trigger a sample text post,",
-      `Video upload is ready,next commit ,And Sample text is gm,
-      `
-    );
-  }, []);
-
-  const toast = useToast();
-  const { accessToken } = useAuthStore();
-  const testSamplePost = async () => {
-    try {
-      const metadata: PublicationMetadataV2Input = {
-        version: "2.0.0",
-        metadata_id: "dd9e3adf-ffd6-40f6-aa3a-c41fc9ba9fdd",
-        content: content,
-        external_url: `https://testnet.lenster.xyz/u/${currentProfile?.handle}`,
-        image: null,
-        imageMimeType: null,
-        name: `Post by ${currentProfile?.handle}`,
-        tags: [],
-        animation_url: null,
-        mainContentFocus: PublicationMainFocus.TextOnly,
-        contentWarning: null,
-        attributes: [
-          {
-            traitType: "type",
-            displayType: PublicationMetadataDisplayTypes.String,
-            value: "text_only",
-          },
-        ],
-        media: [],
-        locale: "en-US",
-        appId: "LensPlay",
-      };
-      console.log("Called");
-      const reqMetadataUri = await uploadToArweave(metadata);
-      const metadataUri = `ar://${reqMetadataUri}`;
-      createPost({
-        variables: {
-          request: {
-            collectModule: getCollectModule(uploadStore.collectModule),
-            contentURI: metadataUri,
-            profileId: currentProfile?.id,
-            referenceModule: getReferenceModule(uploadStore.referenceModule),
-          },
-        },
-        context: {
-          headers: {
-            "x-access-token": `Bearer ${accessToken}`,
-          },
-        },
-      });
-    } catch (error) {}
-  };
 
   const uploadViaTus = async () => {
     try {
@@ -172,7 +148,7 @@ export default function VideoTypes({
           handleUpload(assetId);
         },
         onError: function (): void {
-          //Handle Errors Here
+          toast.error("Something went wrong");
         },
         onProgress: function (_sentBytes, _totalBytes): void {
           const percentage = ((_sentBytes / _totalBytes) * 100).toFixed(2);
@@ -190,9 +166,11 @@ export default function VideoTypes({
 
   const handleUpload = async (assetId: string) => {
     try {
+      navigation.replace("YourVideos", {
+        title: "Your Videos",
+        videos: AllVideosData?.publications?.items as Post[],
+      });
       setUploadingStatus("PROCCESSING");
-      console.log(assetId);
-
       const imageBlob = await getImageBlobFromUri(uploadStore.coverURL!);
 
       const coverImageURI = await uploadImageToIPFS(imageBlob);
@@ -245,6 +223,21 @@ export default function VideoTypes({
         appId: APP_ID,
       };
       const metadataUri = await uploadToArweave(metadata);
+      createPost({
+        variables: {
+          request: {
+            collectModule: getCollectModule(uploadStore.collectModule),
+            contentURI: `ar://${metadataUri}`,
+            profileId: currentProfile?.id,
+            referenceModule: getReferenceModule(uploadStore.referenceModule),
+          },
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${accessToken}`,
+          },
+        },
+      });
       console.log("Metadata uploaded to arweave", metadataUri);
       console.log("Collect Module of Post", uploadStore.collectModule);
       console.log("Reference Module of Post", uploadStore.referenceModule);
@@ -355,32 +348,6 @@ export default function VideoTypes({
           }
         })}
       </ScrollView>
-      {show && (
-        <View
-          style={{
-            position: "absolute",
-            bottom: 100,
-            paddingHorizontal: 16,
-            width: "100%",
-          }}
-        >
-          <Button
-            title={"Show Post"}
-            width={"100%"}
-            py={12}
-            my={16}
-            textStyle={{
-              fontSize: 16,
-              fontWeight: "600",
-            }}
-            onPress={() => {
-              Linking.openURL(
-                `https://testnet.lenster.xyz/u/${currentProfile?.handle}`
-              );
-            }}
-          />
-        </View>
-      )}
       <View
         style={{
           position: "absolute",
@@ -397,7 +364,7 @@ export default function VideoTypes({
             fontSize: 16,
             fontWeight: "600",
           }}
-          onPress={testSamplePost}
+          onPress={uploadViaTus}
         />
       </View>
     </SafeAreaView>

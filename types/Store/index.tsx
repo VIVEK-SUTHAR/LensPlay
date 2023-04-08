@@ -140,6 +140,7 @@ export interface IUploadStore {
   setDescription: (description: string) => void;
   setCollectModule: (newCollectModule: CollectModuleType) => void;
   setIsFollowesOnlyCollect: (newValue: boolean) => void;
-  setUploadingStatus: (status: "UPLOADING" | "PROCCESSING") => void;
+  setUploadingStatus: (status: null | "UPLOADING" | "PROCCESSING") => void;
   setUploadProgress: (progress: number) => void;
+  setClearStore: () => void;
 }
