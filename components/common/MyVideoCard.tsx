@@ -99,6 +99,17 @@ export default function MyVideoCard({
           />
           <View
             style={{
+              marginTop: 4,
+            }}
+          >
+            <StyledText
+              title={publication?.metadata?.content || publication?.metadata?.description}
+              numberOfLines={1}
+              style={{ color: "gray", fontSize: 12 }}
+            />
+          </View>
+          <View
+            style={{
               marginTop: 2,
             }}
           >

@@ -42,6 +42,7 @@ import getIPFSLink from "../../../utils/getIPFSLink";
 import getRawurl from "../../../utils/getRawUrl";
 import TrackAction from "../../../utils/Track";
 import SocialLinks from "../../../components/common/SocialLinks";
+import PinnedPublication from "../../../components/Profile/PinnedPublication";
 
 type SocialLinks = {
   twitter: Maybe<string> | undefined;
@@ -72,8 +73,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
-    sources: ["lenstube","lensplay"],
-    // limit: 50,
+    sources: ["lenstube", "lensplay"],
   };
 
   const {
@@ -366,6 +366,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 youtube={links.yt}
               />
               <View style={{ marginVertical: 24 }}>
+                <PinnedPublication />
                 {AllVideosData && (
                   <AllVideos
                     Videos={AllVideosData?.publications?.items as Post[]}
