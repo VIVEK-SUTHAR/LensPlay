@@ -13,6 +13,7 @@ import enableDispatcher from '../../utils/lens/enableDispatcher';
 import createSetDispatcherTypedData from '../../utils/createSetDispatcherTypedData';
 import broadcastTransaction from '../../utils/lens/broadcastTransaction';
 import ImageCarousel from '../../components/UI/ImageCarousel';
+import StyledText from '../../components/UI/StyledText';
 
 
 const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) => {
@@ -96,23 +97,31 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
         }
     }
     const data=[
-        {
-            image:require('../../assets/images/lens.png')
-        },
-        {
-            image:require('../../assets/images/lens.png')
-        },
-        {
-            image:require('../../assets/images/lens.png')
-        },
-        {
-            image:require('../../assets/images/lens.png')
-        },
+       {
+        link:  'https://gateway.ipfscdn.io/ipfs/QmS2wmPQwnbpuZtqbRmEKPqNPCR39a2FTpEF7iv5G7Nixd',
+       },
+       {
+        link:  'https://gateway.ipfscdn.io/ipfs/QmZXK1cSNrj9SDZKnGaHJP9hdZvvUjUwf7uUiYqjnA5eX7',
+       },
+       {
+        link:  'https://lens.infura-ipfs.io/ipfs/QmVBfhfgfhGsRVxTNURVUgceqyzjdVe11ic5rCghmePuKX',
+       },
+       {
+        link:  'https://gateway.ipfscdn.io/ipfs/bafybeiehsyi2xtlfr7zmsuadruhwvodc4sxs6oh57bzd3fhd2mcjsybaiy',
+       },
+       {
+        link:  'https://gateway.ipfscdn.io/ipfs/bafkreibypw2ovrxub6mcpgw4e7gh3753emni5qtan3o3m6kdvpse3cmi44',
+       },
     ]
     return (
         <SafeAreaView style={styles.container}>
             <View>
-                <ImageCarousel data={data} />
+                <View style={styles.textContainer}>
+                <StyledText title={'Create your'} style={{color: 'white', fontSize: 32, fontWeight: '700'}}/>
+                <StyledText title={'Test Profile'} style={{color: primary, fontSize: 38, fontWeight: '700'}}/>
+
+                </View>
+                <ImageCarousel data={data} autoPlay={true}/>
             </View>
             <View style={styles.inputContainer}>
                 {/* <StyledText title="Enter " style={styles.textStyle} /> */}
@@ -166,6 +175,12 @@ const styles = StyleSheet.create({
     },
     white: {
         color: 'white'
+    },
+    textContainer: {
+        marginVertical: 20,
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     inputContainer: {
         width: "90%",
