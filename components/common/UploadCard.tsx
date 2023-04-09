@@ -9,8 +9,11 @@ import {
 import StyledText from "../UI/StyledText";
 import Heading from "../UI/Heading";
 import Icon from "../Icon";
+import { useUploadStore } from "../../store/UploadStore";
 
 export default function UploadCard() {
+  const { title, coverURL, uploadProgress, uploadingStatus } = useUploadStore();
+
   return (
     <Pressable
       android_ripple={{
@@ -29,8 +32,7 @@ export default function UploadCard() {
       >
         <Image
           source={{
-            uri:
-              "https://images.unsplash.com/photo-1680693377318-63eb48d33056?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+            uri: coverURL,
           }}
           style={{
             width: 140,
@@ -42,14 +44,14 @@ export default function UploadCard() {
           style={{
             position: "absolute",
             backgroundColor: "rgba(0,0,0,0.4)",
-            width: "100%",
+            width: `${uploadProgress}%`,
             height: "100%",
             borderRadius: 8,
             justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <ActivityIndicator />
+          {uploadingStatus === "PROCCESSING" && <ActivityIndicator />}
         </View>
       </View>
       <View
@@ -67,7 +69,7 @@ export default function UploadCard() {
           }}
         >
           <Heading
-            title="Hello this is firt ivrvn kjfkk sdfn  slkns d skdnfk ksdn ksd k kdfkjs lsndl sd"
+            title={title}
             style={{ color: "white", fontSize: 14, fontWeight: "400" }}
             numberOfLines={3}
           />
@@ -77,7 +79,13 @@ export default function UploadCard() {
             }}
           >
             <StyledText
-              title={"Uploading 94%"}
+              title={
+                uploadingStatus === "UPLOADING"
+                  ? `${
+                      uploadingStatus.toLocaleLowerCase() + " " + uploadProgress
+                    }`
+                  : uploadingStatus?.toLocaleLowerCase()
+              }
               style={{ color: "gray", fontSize: 12 }}
             />
           </View>

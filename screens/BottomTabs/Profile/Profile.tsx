@@ -21,7 +21,7 @@ import Heading from "../../../components/UI/Heading";
 import ProfileSkeleton from "../../../components/UI/ProfileSkeleton";
 import StyledText from "../../../components/UI/StyledText";
 import { STATIC_ASSET } from "../../../constants";
-import { primary } from "../../../constants/Colors";
+import { primary, white } from "../../../constants/Colors";
 import { PROFILE } from "../../../constants/tracking";
 import VERIFIED_CHANNELS from "../../../constants/Varified";
 import { useGuestStore } from "../../../store/GuestStore";
@@ -72,8 +72,8 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
-    sources: ["lenstube"],
-    limit: 50,
+    sources: ["lenstube","lensplay"],
+    // limit: 50,
   };
 
   const {
@@ -214,6 +214,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   title={"Edit Channel"}
                   width={"auto"}
                   type="outline"
+                  borderColor={white[100]}
                   px={24}
                   py={8}
                   bg={primary}
@@ -289,12 +290,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
               ) : (
                 <></>
               )}
-              <SocialLinks
-                instagram={links.insta}
-                website={links.site}
-                twitter={links.twitter}
-                youtube={links.yt}
-              />
               <View
                 style={{
                   flexDirection: "row",
@@ -364,6 +359,12 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   />
                 </Pressable>
               </View>
+              <SocialLinks
+                instagram={links.insta}
+                website={links.site}
+                twitter={links.twitter}
+                youtube={links.yt}
+              />
               <View style={{ marginVertical: 24 }}>
                 {AllVideosData && (
                   <AllVideos

@@ -9,6 +9,9 @@ import { useThemeStore } from "../store/Store";
 import { RootStackScreenProps } from "../types/navigation/types";
 import VideoCard from "../components/VideoCard";
 import UploadCard from "../components/common/UploadCard";
+import { View } from "react-native";
+import { useUploadStore } from "../store/UploadStore";
+import { Mirror, Post } from "../types/generated";
 
 const UserVideos = ({
   navigation,
@@ -16,6 +19,7 @@ const UserVideos = ({
 }: RootStackScreenProps<"YourVideos">) => {
   const videos = route.params.videos;
   const theme = useThemeStore();
+  const { uploadingStatus } = useUploadStore();
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: route.params.title,
@@ -27,9 +31,10 @@ const UserVideos = ({
   }, []);
   return (
     <SafeAreaView style={styles.container}>
-      {/* <FlatList
+      {uploadingStatus && <UploadCard />}
+      <FlatList
         data={videos}
-        keyExtractor={(item) => item.id.toString()}
+        // keyExtractor={(item) => item.id.toString()}
         refreshControl={
           <RefreshControl
             refreshing={false}
@@ -38,12 +43,9 @@ const UserVideos = ({
           />
         }
         renderItem={({ item }) => (
-          <>
-            <VideoCard publication={item} id={item?.id} />
-          </>
+          <VideoCard publication={item} id={item?.id} />
         )}
-      /> */}
-      <UploadCard />
+      />
       {/* <MyVideoCard /> */}
     </SafeAreaView>
   );

@@ -530,6 +530,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       </SafeAreaView>
     );
   }
+  return <></>;
 };
 
 export default Channel;

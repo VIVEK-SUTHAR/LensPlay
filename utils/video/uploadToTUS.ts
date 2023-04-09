@@ -5,10 +5,7 @@ export type TusUploadRequestOptions = {
   tusEndPoint: string;
   onSucessCallBack: () => void;
   onError: () => void;
-  onProgress:
-    | ((bytesSent: number, bytesTotal: number) => void)
-    | null
-    | undefined;
+  onProgress: (bytesSent: number, bytesTotal: number) => void;
 };
 /**
  *
@@ -16,15 +13,14 @@ export type TusUploadRequestOptions = {
  *
  */
 async function uploadToTus(params: TusUploadRequestOptions): Promise<void> {
-  const { tusEndPoint, videoBlob, onSucessCallBack } = params;
+  const { tusEndPoint, videoBlob, onSucessCallBack, onProgress } = params;
   const uploader = new tus.Upload(videoBlob, {
     endpoint: tusEndPoint,
     onError: (err) => {
       console.error("Error uploading file:", err);
     },
     onProgress: (bytesUploaded, bytesTotal) => {
-      const percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
-      console.log("Uploaded " + percentage + "%");
+      onProgress(bytesUploaded, bytesTotal);
     },
     onSuccess: () => {
       console.log("Upload finished:");

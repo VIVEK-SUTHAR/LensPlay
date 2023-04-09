@@ -158,9 +158,9 @@ const config: ExpoConfig = {
     favicon: "./assets/images/favicon.png",
   },
   extra: {
-    eas: {
-      projectId: "b2fcb561-ea34-43d1-acf0-dabcba685aa2",
-    },
+    // eas: {
+    //   projectId: "b2fcb561-ea34-43d1-acf0-dabcba685aa2",
+    // },
   },
   plugins: [
     [
