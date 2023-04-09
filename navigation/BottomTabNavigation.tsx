@@ -20,7 +20,12 @@ import Feed from "../screens/BottomTabs/Home/Feed";
 import Notifications from "../screens/BottomTabs/Notification/Notification";
 import ProfileScreen from "../screens/BottomTabs/Profile/Profile";
 import Bytes from "../screens/BottomTabs/Shots/Bytes";
-import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
+import {
+  useAuthStore,
+  useProfile,
+  useThemeStore,
+  useToast,
+} from "../store/Store";
 import {
   RootStackScreenProps,
   RootTabParamList,
@@ -29,6 +34,8 @@ import getIPFSLink from "../utils/getIPFSLink";
 import getAccessFromRefresh from "../utils/lens/getAccessFromRefresh";
 import storeTokens from "../utils/storeTokens";
 import { Camera } from "react-native-vision-camera";
+import getFileSize from "../utils/video/getFileSize";
+import canUploadedToIpfs from "../utils/canUploadToIPFS";
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
@@ -119,6 +126,8 @@ export default function BottomTabNavigator({
 
   const uploadRef = useRef<BottomSheetMethods>(null);
   const uploadTypeRef = useRef<BottomSheetMethods>(null);
+
+  const toast = useToast();
 
   return (
     <>
@@ -535,6 +544,11 @@ export default function BottomTabNavigator({
                   uploadTypeRef.current?.close();
                 }
                 if (!result.canceled) {
+                  const size = await getFileSize(result.assets[0].uri);
+                  if (!canUploadedToIpfs(size)) {
+                    toast.error("Select video less than 100MB");
+                    return;
+                  }
                   navigation.push("UploadVideo", {
                     localUrl: result.assets[0].uri,
                     duration: result.assets[0].duration,
