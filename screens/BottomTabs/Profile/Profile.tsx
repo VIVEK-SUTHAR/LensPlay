@@ -27,9 +27,11 @@ import VERIFIED_CHANNELS from "../../../constants/Varified";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
+  Attribute,
   Maybe,
   MediaSet,
   Post,
+  Profile,
   PublicationMainFocus,
   PublicationTypes,
   useProfilePostsQuery,
@@ -54,6 +56,9 @@ type SocialLinks = {
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [afterScroll, setafterScroll] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
+  const [pinnedPublicationId, setPinnedPublicationId] = useState<string | null>(
+    null
+  );
   const theme = useThemeStore();
   const userStore = useProfile();
   const { isGuest } = useGuestStore();
@@ -101,10 +106,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
     site: "",
   });
 
-  useEffect(() => {
-    getLinks();
-  }, []);
-
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
     await refetch({
@@ -112,6 +113,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
         profileId: userStore?.currentProfile?.id,
       },
     });
+    getPinnedPublication();
     setRefreshing(false);
   }, []);
 
@@ -136,6 +138,23 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
       yt: youtube,
     });
   }
+
+  const getPinnedPublication = () => {
+    const attributes = Profile?.profile?.attributes;
+    const pinnedPublication = attributes?.find(
+      (attr: Attribute) =>
+        attr.traitType === "pinnedPublicationId" ||
+        attr.key === "pinnedPublicationId"
+    );
+    if (pinnedPublication) {
+      setPinnedPublicationId(pinnedPublication.value);
+    }
+  };
+
+  useEffect(() => {
+    getLinks();
+    getPinnedPublication();
+  }, []);
 
   if (isGuest) return <PleaseLogin />;
   if (loading) return <ProfileSkeleton />;
@@ -366,7 +385,11 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 youtube={links.yt}
               />
               <View style={{ marginVertical: 24 }}>
-                <PinnedPublication />
+                {pinnedPublicationId ? (
+                  <PinnedPublication pubId={pinnedPublicationId} />
+                ) : (
+                  <></>
+                )}
                 {AllVideosData && (
                   <AllVideos
                     Videos={AllVideosData?.publications?.items as Post[]}
@@ -395,4 +418,5 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}></SafeAreaView>
   );
 };
+
 export default ProfileScreen;

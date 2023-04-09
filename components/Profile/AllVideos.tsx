@@ -32,7 +32,7 @@ const AllVideos = ({ Videos, navigation }: AllVideosProps) => {
           <Heading
             title={"Videos"}
             style={{
-              fontSize: 20,
+              fontSize: 16,
               color: "white",
               fontWeight: "600",
             }}
