@@ -5,7 +5,7 @@ import Button from "../../components/UI/Button";
 import Heading from "../../components/UI/Heading";
 import StyledText from "../../components/UI/StyledText";
 import { APP_ID, LENSPLAY_SITE } from "../../constants";
-import { dark_primary } from "../../constants/Colors";
+import { black, dark_primary } from "../../constants/Colors";
 import { useAuthStore, useProfile, useToast } from "../../store/Store";
 import { useUploadStore } from "../../store/UploadStore";
 import {
@@ -40,39 +40,13 @@ const Types: string[] = [
   "Hobbies & Interests",
   "News",
   "Family & Parenting",
-  "Education",
   "Law, Government and Politics",
+  "Lens",
+  "Education",
   "Career",
   "Home & Garden",
   "Crypto",
-  "Lens",
-  "NSFW",
 ];
-
-function Tag({ name }: { name: string }) {
-  return (
-    <View
-      style={{
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderWidth: 1,
-        borderColor: "#1c1c1c",
-        marginVertical: 4,
-        marginRight: 8,
-        borderRadius: 4,
-        backgroundColor: dark_primary,
-      }}
-    >
-      <StyledText
-        title={name}
-        style={{
-          fontSize: 14,
-          color: "white",
-        }}
-      />
-    </View>
-  );
-}
 
 export default function VideoTypes({
   navigation,
@@ -87,6 +61,32 @@ export default function VideoTypes({
   const uploadStore = useUploadStore();
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
+
+  function Tag({ name }: { name: string }) {
+    return (
+      <View
+        style={{
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          marginVertical: 4,
+          marginRight: 4,
+          borderRadius: 50,
+          backgroundColor: `${
+            selectedTags.includes(name) ? "white" : black[500]
+          }`,
+        }}
+      >
+        <StyledText
+          title={name}
+          style={{
+            fontSize: 16,
+            color: `${selectedTags.includes(name) ? "black" : "white"}`,
+            fontWeight: "500",
+          }}
+        />
+      </View>
+    );
+  }
 
   const QueryRequest = {
     profileId: currentProfile?.id,
@@ -150,7 +150,7 @@ export default function VideoTypes({
         },
         onProgress: function (_sentBytes, _totalBytes): void {
           const percentage = ((_sentBytes / _totalBytes) * 100).toFixed(2);
-          setUploadProgress(parseInt(percentage));
+          setUploadProgress(parseFloat(percentage));
           console.log("Uploaded " + percentage + "%");
         },
       };
@@ -256,63 +256,43 @@ export default function VideoTypes({
       <View
         style={{
           paddingHorizontal: 16,
-          marginTop: 24,
+          marginVertical: 24,
+          alignItems: "center",
         }}
       >
         <Heading
-          title={"Please select video type"}
+          title={"Select your video content types"}
           style={{
             color: "white",
             fontSize: 20,
             fontWeight: "600",
+            textAlign: "center",
           }}
         />
         <StyledText
-          title={"Max 5 type"}
+          title={"You can select max five types"}
           style={{
             color: "gray",
             fontSize: 14,
             fontWeight: "600",
+            textAlign: "center",
           }}
         />
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            flexWrap: "wrap",
-            marginTop: 16,
-            height: 120,
-          }}
-        >
-          {selectedTags.map((type) => (
-            <Pressable
-              key={type}
-              onPress={() => {
-                const index = selectedTags.indexOf(type);
-                selectedTags.splice(index, 1);
-              }}
-            >
-              <Tag name={type} />
-            </Pressable>
-          ))}
-        </View>
       </View>
       <Pressable
         style={{
           alignItems: "flex-end",
           justifyContent: "flex-end",
           width: "100%",
-          borderBottomWidth: 1,
-          borderBottomColor: "gray",
-          padding: 16,
-          marginBottom: 24,
+          paddingHorizontal: 16,
+          marginTop: 24,
         }}
         onPress={() => {
           setSelectedTags([]);
         }}
       >
         <StyledText
-          title={"CLEAR"}
+          title={"CLEAR ALL"}
           style={{
             fontSize: 12,
             color: "gray",
@@ -322,7 +302,7 @@ export default function VideoTypes({
       </Pressable>
       <ScrollView
         style={{
-          paddingHorizontal: 16,
+          padding: 16,
         }}
         contentContainerStyle={{
           flexDirection: "row",
@@ -331,21 +311,23 @@ export default function VideoTypes({
         }}
       >
         {Types.map((type) => {
-          if (!selectedTags.includes(type)) {
-            return (
-              <Pressable
-                key={type}
-                onPress={() => {
-                  if (selectedTags.length === 5) {
-                    return;
-                  }
-                  setSelectedTags([...selectedTags, type]);
-                }}
-              >
-                <Tag name={type} />
-              </Pressable>
-            );
-          }
+          return (
+            <Pressable
+              key={type}
+              onPress={() => {
+                if (selectedTags.includes(type)) {
+                  const index = selectedTags.indexOf(type);
+                  selectedTags.splice(index, 1);
+                  setSelectedTags([...selectedTags]);
+                  return;
+                }
+                if (selectedTags.length === 5) return;
+                setSelectedTags([...selectedTags, type]);
+              }}
+            >
+              <Tag name={type} />
+            </Pressable>
+          );
         })}
       </ScrollView>
       <View
