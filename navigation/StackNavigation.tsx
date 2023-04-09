@@ -3,7 +3,7 @@ import Channel from "../screens/common/Channel";
 import LeaderBoard from "../screens/ZooTools/LeaderBoard";
 import Login from "../screens/Auth/Login";
 import Search from "../screens/Header/Search/Search";
-import UserVideos from "../screens/UserVideos";
+import UserVideos from "../screens/common/UserVideos";
 import VideoPage from "../screens/common/VideoPage";
 import { useThemeStore } from "../store/Store";
 import { RootStackParamList } from "../types/navigation/types";

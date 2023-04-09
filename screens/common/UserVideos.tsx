@@ -5,13 +5,12 @@ import {
   SafeAreaView,
   StyleSheet,
 } from "react-native";
-import { useThemeStore } from "../store/Store";
-import { RootStackScreenProps } from "../types/navigation/types";
-import VideoCard from "../components/VideoCard";
-import UploadCard from "../components/common/UploadCard";
-import { View } from "react-native";
-import { useUploadStore } from "../store/UploadStore";
-import { Mirror, Post } from "../types/generated";
+import VideoCard from "../../components/VideoCard";
+import UploadCard from "../../components/common/UploadCard";
+import { useThemeStore } from "../../store/Store";
+import { useUploadStore } from "../../store/UploadStore";
+import { Post } from "../../types/generated";
+import { RootStackScreenProps } from "../../types/navigation/types";
 
 const UserVideos = ({
   navigation,
