@@ -259,6 +259,7 @@ export const VideoActionSheet = ({ sheetRef, pubId }: SheetProps) => {
               <Ripple
                 onTap={() => {
                   item.onPress(pubId);
+                  sheetRef?.current?.close();
                 }}
               >
                 <View
