@@ -77,7 +77,7 @@ const Toast = () => {
         }
         color={toastStore.type === ToastType.INFO ? "#000000" : "#FFFFFF"}
         style={{ marginHorizontal: 2 }}
-        size={24}
+        size={16}
       />
       <Text
         style={{
@@ -85,7 +85,7 @@ const Toast = () => {
           color: `${
             toastStore.type === ToastType.INFO ? "#000000" : "#FFFFFF"
           }`,
-          fontWeight: "500",
+          fontWeight: "600",
           textAlign: "center",
           marginHorizontal: 2,
         }}

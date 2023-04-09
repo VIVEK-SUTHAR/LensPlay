@@ -127,6 +127,8 @@ export default function VideoTypes({
   });
 
   const uploadViaTus = async () => {
+    if (selectedTags.length === 0)
+      return toast.error("Please select atleast tag");
     try {
       navigation.replace("YourVideos", {
         title: "Your Videos",

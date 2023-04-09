@@ -20,7 +20,7 @@ import CommentModule, {
   ReferenceModuleListItem,
 } from "../../../../components/Upload/Video/CommentModule";
 import { STATIC_ASSET } from "../../../../constants";
-import { useThemeStore } from "../../../../store/Store";
+import { useThemeStore, useToast } from "../../../../store/Store";
 import { useUploadStore } from "../../../../store/UploadStore";
 import { RootStackScreenProps } from "../../../../types/navigation/types";
 
@@ -49,16 +49,16 @@ export default function AddDetails({
 }: RootStackScreenProps<"AddDetails">) {
   const [activeModule, setActiveModule] = useState(ReferenceModuleList[0]);
 
-  const { title, setTitle } = useUploadStore();
+  const { title, description, setTitle } = useUploadStore();
   const { PRIMARY } = useThemeStore();
   const referenceModuleRef = React.useRef<BottomSheetMethods>(null);
   const collectModuleRef = React.useRef<BottomSheetMethods>(null);
-
+  const toast = useToast();
   const uploadStore = useUploadStore();
 
   const handleOnChange = React.useCallback(
     (e: { nativeEvent: { text: string } }) => {
-      setTitle(e.nativeEvent.text);
+      setTitle(e.nativeEvent.text.trim());
     },
     []
   );
@@ -69,6 +69,13 @@ export default function AddDetails({
     },
     []
   );
+
+  const handleAddDetails = () => {
+    if (title.length === 0) return toast.error("Please enter title");
+    if (title.length > 100) return toast.info("Title is too long");
+    if (!description) return toast.error("Please enter description");
+    navigation.push("VideoTypes");
+  };
 
   return (
     <>
@@ -116,10 +123,12 @@ export default function AddDetails({
             title={"Next"}
             py={8}
             width={"30%"}
-            textStyle={styles.descHeading}
-            onPress={() => {
-              navigation.navigate("VideoTypes");
+            textStyle={{
+              color: "black",
+              fontSize: 16,
+              fontWeight: "600",
             }}
+            onPress={handleAddDetails}
             bg={"white"}
           />
         </View>

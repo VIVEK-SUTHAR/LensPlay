@@ -83,7 +83,10 @@ export default function UploadCard() {
               title={
                 uploadingStatus === "UPLOADING"
                   ? `${
-                      uploadingStatus.toLocaleLowerCase() + " " + uploadProgress+"%"
+                      uploadingStatus.toLocaleLowerCase() +
+                      " " +
+                      uploadProgress +
+                      "%"
                     }`
                   : uploadingStatus?.toLocaleLowerCase()
               }
