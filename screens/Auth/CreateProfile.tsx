@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { RootStackScreenProps } from '../../types/navigation/types'
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { dark_primary, primary } from '../../constants/Colors';
 import { useAuthStore, useProfile, useThemeStore, useToast } from '../../store/Store';
@@ -14,6 +14,7 @@ import createSetDispatcherTypedData from '../../utils/createSetDispatcherTypedDa
 import broadcastTransaction from '../../utils/lens/broadcastTransaction';
 import ImageCarousel from '../../components/UI/ImageCarousel';
 import StyledText from '../../components/UI/StyledText';
+import Icon from '../../components/Icon';
 
 
 const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) => {
@@ -96,79 +97,108 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
             }
         }
     }
-    const data=[
-       {
-        link:  'https://gateway.ipfscdn.io/ipfs/QmS2wmPQwnbpuZtqbRmEKPqNPCR39a2FTpEF7iv5G7Nixd',
-       },
-       {
-        link:  'https://gateway.ipfscdn.io/ipfs/QmZXK1cSNrj9SDZKnGaHJP9hdZvvUjUwf7uUiYqjnA5eX7',
-       },
-       {
-        link:  'https://lens.infura-ipfs.io/ipfs/QmVBfhfgfhGsRVxTNURVUgceqyzjdVe11ic5rCghmePuKX',
-       },
-       {
-        link:  'https://gateway.ipfscdn.io/ipfs/bafybeiehsyi2xtlfr7zmsuadruhwvodc4sxs6oh57bzd3fhd2mcjsybaiy',
-       },
-       {
-        link:  'https://gateway.ipfscdn.io/ipfs/bafkreibypw2ovrxub6mcpgw4e7gh3753emni5qtan3o3m6kdvpse3cmi44',
-       },
-       {
-        link:  'https://gateway.ipfscdn.io/ipfs/QmS2wmPQwnbpuZtqbRmEKPqNPCR39a2FTpEF7iv5G7Nixd',
-       },
-       {
-        link:  'https://gateway.ipfscdn.io/ipfs/QmZXK1cSNrj9SDZKnGaHJP9hdZvvUjUwf7uUiYqjnA5eX7',
-       },
-       {
-        link:  'https://lens.infura-ipfs.io/ipfs/QmVBfhfgfhGsRVxTNURVUgceqyzjdVe11ic5rCghmePuKX',
-       },
-       {
-        link:  'https://gateway.ipfscdn.io/ipfs/bafybeiehsyi2xtlfr7zmsuadruhwvodc4sxs6oh57bzd3fhd2mcjsybaiy',
-       },
-       {
-        link:  'https://gateway.ipfscdn.io/ipfs/bafkreibypw2ovrxub6mcpgw4e7gh3753emni5qtan3o3m6kdvpse3cmi44',
-       },
-       {
-        link:  'https://gateway.ipfscdn.io/ipfs/QmS2wmPQwnbpuZtqbRmEKPqNPCR39a2FTpEF7iv5G7Nixd',
-       },
-       {
-        link:  'https://gateway.ipfscdn.io/ipfs/QmZXK1cSNrj9SDZKnGaHJP9hdZvvUjUwf7uUiYqjnA5eX7',
-       },
-       {
-        link:  'https://lens.infura-ipfs.io/ipfs/QmVBfhfgfhGsRVxTNURVUgceqyzjdVe11ic5rCghmePuKX',
-       },
-       {
-        link:  'https://gateway.ipfscdn.io/ipfs/bafybeiehsyi2xtlfr7zmsuadruhwvodc4sxs6oh57bzd3fhd2mcjsybaiy',
-       },
-       {
-        link:  'https://gateway.ipfscdn.io/ipfs/bafkreibypw2ovrxub6mcpgw4e7gh3753emni5qtan3o3m6kdvpse3cmi44',
-       },
+    const data = [
+        {
+            link: 'https://gateway.ipfscdn.io/ipfs/bafkreibypw2ovrxub6mcpgw4e7gh3753emni5qtan3o3m6kdvpse3cmi44',
+        },
+        {
+            link: 'https://gateway.ipfscdn.io/ipfs/QmS2wmPQwnbpuZtqbRmEKPqNPCR39a2FTpEF7iv5G7Nixd',
+        },
+        {
+            link: 'https://gateway.ipfscdn.io/ipfs/QmZXK1cSNrj9SDZKnGaHJP9hdZvvUjUwf7uUiYqjnA5eX7',
+        },
+        {
+            link: 'https://lens.infura-ipfs.io/ipfs/QmVBfhfgfhGsRVxTNURVUgceqyzjdVe11ic5rCghmePuKX',
+        },
+        {
+            link: 'https://gateway.ipfscdn.io/ipfs/bafybeiehsyi2xtlfr7zmsuadruhwvodc4sxs6oh57bzd3fhd2mcjsybaiy',
+        },
+        {
+            link: 'https://gateway.ipfscdn.io/ipfs/bafkreibypw2ovrxub6mcpgw4e7gh3753emni5qtan3o3m6kdvpse3cmi44',
+        },
+        {
+            link: 'https://gateway.ipfscdn.io/ipfs/QmS2wmPQwnbpuZtqbRmEKPqNPCR39a2FTpEF7iv5G7Nixd',
+        },
+        {
+            link: 'https://gateway.ipfscdn.io/ipfs/QmZXK1cSNrj9SDZKnGaHJP9hdZvvUjUwf7uUiYqjnA5eX7',
+        },
+        {
+            link: 'https://lens.infura-ipfs.io/ipfs/QmVBfhfgfhGsRVxTNURVUgceqyzjdVe11ic5rCghmePuKX',
+        },
+        {
+            link: 'https://gateway.ipfscdn.io/ipfs/bafybeiehsyi2xtlfr7zmsuadruhwvodc4sxs6oh57bzd3fhd2mcjsybaiy',
+        },
+        {
+            link: 'https://gateway.ipfscdn.io/ipfs/bafkreibypw2ovrxub6mcpgw4e7gh3753emni5qtan3o3m6kdvpse3cmi44',
+        },
+        {
+            link: 'https://gateway.ipfscdn.io/ipfs/QmS2wmPQwnbpuZtqbRmEKPqNPCR39a2FTpEF7iv5G7Nixd',
+        },
+        {
+            link: 'https://gateway.ipfscdn.io/ipfs/QmZXK1cSNrj9SDZKnGaHJP9hdZvvUjUwf7uUiYqjnA5eX7',
+        },
+        {
+            link: 'https://lens.infura-ipfs.io/ipfs/QmVBfhfgfhGsRVxTNURVUgceqyzjdVe11ic5rCghmePuKX',
+        },
+        {
+            link: 'https://gateway.ipfscdn.io/ipfs/bafybeiehsyi2xtlfr7zmsuadruhwvodc4sxs6oh57bzd3fhd2mcjsybaiy',
+        },
     ]
     return (
-        <SafeAreaView style={styles.container}>
-            <View>
+        <KeyboardAvoidingView style={styles.container}>
+            <View style={{ width: '100%', alignItems: 'center', flex: 1 }}>
                 <View style={styles.textContainer}>
-                <StyledText title={'Create your'} style={{color: 'white', fontSize: 30, fontWeight: '700'}}/>
-                <StyledText title={'Test Profile'} style={{color: primary, fontSize: 38, fontWeight: '700'}}/>
+                    <StyledText title={'Create your'} style={{ color: 'white', fontSize: 30, fontWeight: '700' }} />
+                    <StyledText title={'Test Profile'} style={{ color: primary, fontSize: 38, fontWeight: '700' }} />
 
                 </View>
-                <ImageCarousel data={data} autoPlay={true}/>
+                <ImageCarousel data={data} autoPlay={true} />
+                <View style={styles.inputContainer}>
+                    {/* <StyledText title="Enter " style={styles.textStyle} /> */}
+                    <TextInput
+                        numberOfLines={2}
+                        multiline={true}
+                        value={handle}
+                        style={styles.input}
+                        placeholderTextColor="gray"
+                        selectionColor={theme.PRIMARY}
+                        onChange={(e) => {
+                            e.preventDefault();
+                            setHandle(e.nativeEvent.text);
+                        }}
+                        placeholder='Enter Test handle'
+                    />
+                </View>
+                <View style={styles.desc}>
+                    <View style={styles.descContainer}>
+                        <View>
+                            <Icon name='compass_filled' size={30} />
+                        </View>
+                        <View  style={{
+                            width: '80%'
+                        }}>
+                            <Text style={styles.descTitleText}>Click</Text>
+                            <Text style={styles.descText}>
+                                Click on create handle and check for available handles
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={styles.descContainer}>
+                        <View>
+                            <Icon name='mirror' size={30} />
+                        </View>
+                        <View style={{
+                            width: '80%'
+                        }}>
+                            <Text style={styles.descTitleText}>Sign</Text>
+                            <Text style={styles.descText}>
+                                Sign the dispatcher and explore lensplay
+                            </Text>
+                        </View>
+                    </View>
+                </View>
             </View>
-            <View style={styles.inputContainer}>
-                {/* <StyledText title="Enter " style={styles.textStyle} /> */}
-                <TextInput
-                    numberOfLines={2}
-                    multiline={true}
-                    value={handle}
-                    style={styles.input}
-                    placeholderTextColor="gray"
-                    selectionColor={theme.PRIMARY}
-                    onChange={(e) => {
-                        e.preventDefault();
-                        setHandle(e.nativeEvent.text);
-                    }}
-                    placeholder='Enter Test handle'
-                />
-            </View>
+
             <View style={styles.buttonContainer}>
                 <Button
                     title="Create Handle"
@@ -189,7 +219,7 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                     }}
                 />
             </View>
-        </SafeAreaView>
+        </KeyboardAvoidingView>
     )
 }
 
@@ -198,10 +228,17 @@ export default CreateProfile;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        // width: '100%',
+        flexDirection: 'column',
         backgroundColor: "black",
         justifyContent: "space-between",
         paddingBottom: 20,
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingVertical: 40,
+        // paddingHorizontal: 10
+    },
+    desc: {
+        marginVertical: 40
     },
     white: {
         color: 'white'
@@ -210,11 +247,12 @@ const styles = StyleSheet.create({
         marginVertical: 20,
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     inputContainer: {
         width: "90%",
         marginVertical: 12,
+        height: 60
     },
     input: {
         backgroundColor: dark_primary,
@@ -225,6 +263,7 @@ const styles = StyleSheet.create({
         // paddingVertical: 8,
         borderRadius: 8,
         fontSize: 16,
+        height: '100%'
     },
     textStyle: {
         color: "white",
@@ -232,8 +271,30 @@ const styles = StyleSheet.create({
         marginBottom: 4,
         fontSize: 16,
     },
+    descContainer: {
+
+        // flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        marginVertical: 10,
+        // backgroundColor: 'red'
+
+    },
+    descTitleText: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: '600',
+        opacity: 0.8
+    },
+    descText: {
+        color: 'white',
+        fontSize: 12,
+        opacity: 0.5
+    },
     buttonContainer: {
         paddingHorizontal: 16,
-        width: "100%"
+        width: "100%",
+        paddingVertical: 20
     }
 });

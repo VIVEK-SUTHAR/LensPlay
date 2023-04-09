@@ -46,7 +46,8 @@ const ImageCarousel = ({ data, autoPlay }) => {
     }
   },[newSize, data.length, isAutoPlay, offset.value, ScrollViewRef]);
   return (
-    <Animated.ScrollView 
+    <View style={{height: newSize}}>
+      <Animated.ScrollView 
         ref={ScrollViewRef}
         horizontal 
         showsHorizontalScrollIndicator={false} 
@@ -88,6 +89,7 @@ const ImageCarousel = ({ data, autoPlay }) => {
         );
       })}
     </Animated.ScrollView>
+    </View>
   );
 };
 
@@ -95,9 +97,10 @@ export default ImageCarousel;
 
 const styles = StyleSheet.create({
   imageContainer: {
-    borderRadius: 120,
+    borderRadius: 100,
     overflow: "hidden",
-    backgroundColor: '#202124'
+    backgroundColor: '#202124',
+    height: '100%'
   },
   image: {
     width: "100%",
