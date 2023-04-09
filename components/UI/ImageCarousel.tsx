@@ -79,7 +79,7 @@ const ImageCarousel = ({ data, autoPlay }) => {
           const margin = interpolate(
               x.value,
               [(index-2)*newSize,(index-1)*newSize,index*newSize],
-              [-8,12,-8]
+              [-12,8,-12]
           );
 
           const opacity = interpolate(
@@ -87,10 +87,16 @@ const ImageCarousel = ({ data, autoPlay }) => {
             [(index-2)*newSize,(index-1)*newSize,index*newSize],
             [0.5,1,0.5]
         );
+        const scale = interpolate(
+          x.value,
+          [(index-2)*newSize,(index-1)*newSize,index*newSize],
+          [0.8,1,0.8]
+      );
           
           return {
               marginTop: margin,
-              opacity: opacity
+              opacity: opacity,
+              transform: [{scale}]
           };
       });
         if (!item.link) {
@@ -105,7 +111,6 @@ const ImageCarousel = ({ data, autoPlay }) => {
             <Animated.Text style={[{
                 color: 'white',
                 textAlign: 'center',
-                marginTop: 12,
                 fontSize: 12,
               },marginStyle]}>{item.handle}</Animated.Text>
           </View>

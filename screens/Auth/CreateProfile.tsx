@@ -174,7 +174,6 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                         </View>
                         <ImageCarousel data={data} autoPlay={true} />
                         <View style={styles.inputContainer}>
-                            {/* <StyledText title="Enter " style={styles.textStyle} /> */}
                             <TextInput
                                 numberOfLines={2}
                                 multiline={true}
@@ -254,7 +253,8 @@ const styles = StyleSheet.create({
         backgroundColor: "black",
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingVertical: 40
+        paddingBottom: 20,
+        paddingTop: 50
 
     },
     desc: {
@@ -264,14 +264,14 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     textContainer: {
-        marginVertical: 20,
+        marginVertical: 30,
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
     },
     inputContainer: {
         width: "90%",
-        marginVertical: 16,
+        marginVertical: 8,
         height: 60
     },
     input: {
