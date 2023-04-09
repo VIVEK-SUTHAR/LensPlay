@@ -1,13 +1,10 @@
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Dimensions } from "react-native";
 import Animated, { interpolate, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import { primary } from "../../constants/Colors";
 // import { Animated } from "react-native";
 
-type Props = {
-  data: any;
-};
 
 const ImageCarousel = ({ data, autoPlay }) => {
   const ScrollViewRef = useAnimatedRef(null);
@@ -21,6 +18,8 @@ const ImageCarousel = ({ data, autoPlay }) => {
   const newSize = windowWidth * 0.3;
   const spacer=(windowWidth-newSize)/2;
   const x=useSharedValue(0);
+  const interval = useRef();
+  const offset = useSharedValue(0);
   const onScroll=useAnimatedScrollHandler({
     onScroll:event=>{
         x.value = event.contentOffset.x;
@@ -29,22 +28,23 @@ const ImageCarousel = ({ data, autoPlay }) => {
 
   useEffect(()=>{
     if(isAutoPlay == true){
-      console.log('yes true');
       
-      let offset = 0;
-      setInterval(()=>{
-        if (offset >= Math.floor(newSize*(data.length - 1) - 10)){
-          offset=0;
+      let _offset = offset.value;
+      interval.current = setInterval(()=>{
+        if (_offset >= Math.floor(newSize*(data.length - 1) - 10)){
+          _offset=0;
         }
         else{
-          offset = Math.floor(offset + newSize);
+          _offset = Math.floor(_offset + newSize);
         }
-        ScrollViewRef.current.scrollTo({x: offset, y: 0});
-        console.log(offset);
+        ScrollViewRef.current.scrollTo({x: _offset, y: 0});
         
       },2000)
     }
-  },[newSize, data.length, isAutoPlay]);
+    else{
+      clearInterval(interval?.current);
+    }
+  },[newSize, data.length, isAutoPlay, offset.value, ScrollViewRef]);
   return (
     <Animated.ScrollView 
         ref={ScrollViewRef}
@@ -55,6 +55,13 @@ const ImageCarousel = ({ data, autoPlay }) => {
         snapToInterval={newSize}
         decelerationRate="fast"
         onScroll={onScroll}
+        onScrollBeginDrag={()=>{
+          setIsAutoPlay(false);
+        }}
+        onMomentumScrollEnd={(e)=>{
+          offset.value = e.nativeEvent.contentOffset.x;
+          setIsAutoPlay(true);
+        }}
     >
       {newData.map((item, index) => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -62,7 +69,7 @@ const ImageCarousel = ({ data, autoPlay }) => {
             const scale=interpolate(
                 x.value,
                 [(index-2)*newSize,(index-1)*newSize,index*newSize],
-                [0.8,1,0.8]
+                [0.6,1,0.6]
             )
             return {
                 transform:[{scale}],
