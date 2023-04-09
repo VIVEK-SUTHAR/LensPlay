@@ -1,7 +1,10 @@
 {
+  "compileOnSave": true,
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "jsx": "react",
+    "target": "ES6",
+    "lib": [ "es5", "dom" ],
     "strict": true
   },
   "typeRoots": [

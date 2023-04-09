@@ -103,7 +103,10 @@ export default function MyVideoCard({
             }}
           >
             <StyledText
-              title={publication?.metadata?.content || publication?.metadata?.description}
+              title={
+                publication?.metadata?.content ||
+                publication?.metadata?.description
+              }
               numberOfLines={1}
               style={{ color: "gray", fontSize: 12 }}
             />
@@ -187,14 +190,12 @@ export const VideoActionSheet = ({ sheetRef, pubId }: SheetProps) => {
   const pinPublication = async () => {
     // toast.success("Implementation baki hai");
     const newProfile = currentProfile;
-
     const isAlreadyPinned = newProfile?.attributes?.find(
       (attr) =>
         attr.traitType === "pinnedPublicationId" ||
         attr.key === "pinnedPublicationId"
     );
-    console.log(isAlreadyPinned);
-
+    console.log("before", newProfile?.attributes);
     if (!isAlreadyPinned) {
       const newAttribute = {
         displayType: PublicationMetadataDisplayTypes.String,
@@ -202,10 +203,15 @@ export const VideoActionSheet = ({ sheetRef, pubId }: SheetProps) => {
         key: "pinnedPublicationId",
         value: pubId,
       };
-      newProfile?.attributes?.push(newAttribute);
+      const attr = newProfile?.attributes;
+      const attrs = [...attr!, newAttribute];
+      if (newProfile) {
+        newProfile.attributes = attrs;
+      }
       return;
     }
     isAlreadyPinned.value = pubId;
+    console.log("after", newProfile?.metadata);
 
     console.log(newProfile?.metadata);
     // uploadMetadata(newProfile as Profile);
