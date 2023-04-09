@@ -67,7 +67,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
-    sources: ["lenstube"],
+    sources: ["lensplay", "lenstube"],
   };
 
   const { data: AllVideosData } = useProfilePostsQuery({

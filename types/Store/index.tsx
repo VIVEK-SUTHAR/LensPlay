@@ -129,11 +129,13 @@ export interface IUploadStore {
   coverURL: string | null;
   title: string;
   description: string | null;
+  duration: number | null | undefined;
   isFollowersOnlyCollect: boolean;
   referenceModule: ReferenceModuleType | null;
   collectModule: CollectModuleType;
   uploadingStatus: null | "UPLOADING" | "PROCCESSING";
   uploadProgress: number;
+  setDuration: (videoDuration: number) => void;
   setReferenceModule: (userReferenceModule: ReferenceModuleType | null) => void;
   setURLs: (videoURL: string, coverURL: string) => void;
   setTitle: (title: string) => void;

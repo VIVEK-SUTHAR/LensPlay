@@ -6,6 +6,7 @@ export const useUploadStore = create<IUploadStore>((set) => ({
   coverURL: null,
   title: "",
   description: null,
+  duration: null,
   collectModule: {
     type: "revertCollectModule",
     followerOnlyCollect: false,
@@ -37,6 +38,7 @@ export const useUploadStore = create<IUploadStore>((set) => ({
     set({ collectModule: newCollectModule }),
   setIsFollowesOnlyCollect: (newValue) =>
     set({ isFollowersOnlyCollect: newValue }),
+  setDuration: (duration) => set({ duration: duration }),
   setUploadingStatus: (status) => set({ uploadingStatus: status }),
   setUploadProgress: (progress) => set({ uploadProgress: progress }),
   setClearStore: () =>

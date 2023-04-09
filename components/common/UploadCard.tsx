@@ -10,6 +10,7 @@ import StyledText from "../UI/StyledText";
 import Heading from "../UI/Heading";
 import Icon from "../Icon";
 import { useUploadStore } from "../../store/UploadStore";
+import { STATIC_ASSET } from "../../constants";
 
 export default function UploadCard() {
   const { title, coverURL, uploadProgress, uploadingStatus } = useUploadStore();
@@ -32,7 +33,7 @@ export default function UploadCard() {
       >
         <Image
           source={{
-            uri: coverURL,
+            uri: coverURL || STATIC_ASSET,
           }}
           style={{
             width: 140,
@@ -82,7 +83,7 @@ export default function UploadCard() {
               title={
                 uploadingStatus === "UPLOADING"
                   ? `${
-                      uploadingStatus.toLocaleLowerCase() + " " + uploadProgress
+                      uploadingStatus.toLocaleLowerCase() + " " + uploadProgress+"%"
                     }`
                   : uploadingStatus?.toLocaleLowerCase()
               }

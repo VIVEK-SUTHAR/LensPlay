@@ -1,12 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
-  Alert,
-  Linking,
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  View,
-} from "react-native";
+import React, { useState } from "react";
+import { Pressable, SafeAreaView, ScrollView, View } from "react-native";
 import { v4 as uuidV4 } from "uuid";
 import Button from "../../components/UI/Button";
 import Heading from "../../components/UI/Heading";
@@ -27,7 +20,6 @@ import {
   useProfilePostsQuery,
 } from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
-import { ToastType } from "../../types/Store";
 import getCollectModule from "../../utils/getCollectModule";
 import getImageBlobFromUri from "../../utils/getImageBlobFromUri";
 import getReferenceModule from "../../utils/getReferenceModule";
@@ -170,7 +162,6 @@ export default function VideoTypes({
 
   const handleUpload = async (assetId: string) => {
     try {
-      
       setUploadingStatus("PROCCESSING");
       const imageBlob = await getImageBlobFromUri(uploadStore.coverURL!);
 
@@ -197,6 +188,11 @@ export default function VideoTypes({
           traitType: "assetId",
           value: assetId,
         },
+        {
+          displayType: PublicationMetadataDisplayTypes.String,
+          traitType: "durationInSeconds",
+          value: uploadStore.duration?.toString()!,
+        },
       ];
       const media: Array<PublicationMetadataMediaInput> = [
         {
@@ -217,13 +213,14 @@ export default function VideoTypes({
         external_url: `${LENSPLAY_SITE}/channel/${currentProfile?.handle}`,
         animation_url: `ipfs://${ipfsVideoUrl}`,
         image: `ipfs://${coverImageURI}`,
-        imageMimeType: `image/${getFileMimeType(uploadStore.coverURL!)}` ,
+        imageMimeType: `image/${getFileMimeType(uploadStore.coverURL!)}`,
         name: uploadStore.title,
         attributes,
         media,
         appId: APP_ID,
       };
       const metadataUri = await uploadToArweave(metadata);
+      console.log(metadataUri);
       createPost({
         variables: {
           request: {

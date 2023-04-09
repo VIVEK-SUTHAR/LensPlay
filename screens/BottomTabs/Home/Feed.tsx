@@ -36,8 +36,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
-    sources: ["lenstube"],
-    limit: 50,
+    sources: ["lensplay","lenstube"],
   };
 
   const { data: Feeddata, error, loading, refetch } = useFeedQuery({

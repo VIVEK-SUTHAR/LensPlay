@@ -36,6 +36,7 @@ import storeTokens from "../utils/storeTokens";
 import { Camera } from "react-native-vision-camera";
 import getFileSize from "../utils/video/getFileSize";
 import canUploadedToIpfs from "../utils/canUploadToIPFS";
+import { useUploadStore } from "../store/UploadStore";
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
@@ -128,7 +129,7 @@ export default function BottomTabNavigator({
   const uploadTypeRef = useRef<BottomSheetMethods>(null);
 
   const toast = useToast();
-
+  const uploadStore = useUploadStore();
   return (
     <>
       <BottomTab.Navigator
@@ -549,6 +550,7 @@ export default function BottomTabNavigator({
                     toast.error("Select video less than 100MB");
                     return;
                   }
+                  uploadStore.setDuration(result.assets[0].duration!);
                   navigation.push("UploadVideo", {
                     localUrl: result.assets[0].uri,
                     duration: result.assets[0].duration,

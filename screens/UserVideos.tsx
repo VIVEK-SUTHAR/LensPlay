@@ -33,7 +33,7 @@ const UserVideos = ({
     <SafeAreaView style={styles.container}>
       {uploadingStatus && <UploadCard />}
       <FlatList
-        data={videos}
+        data={videos as Post[]}
         // keyExtractor={(item) => item.id.toString()}
         refreshControl={
           <RefreshControl
