@@ -3,30 +3,43 @@ import { Dimensions, Image, Pressable, View } from "react-native";
 import StyledText from "../UI/StyledText";
 import Heading from "../UI/Heading";
 import Icon from "../Icon";
+import { Mirror, Post } from "../../types/generated";
+import { useNavigation } from "@react-navigation/native";
+import { useActivePublication } from "../../store/Store";
+import getIPFSLink from "../../utils/getIPFSLink";
+import getRawurl from "../../utils/getRawUrl";
+import getDifference from "../../utils/getDifference";
+import { black } from "../../constants/Colors";
 
 type MyVideoCardProps = {
-  title: string;
-  time: string;
-  poster: string;
+  publication: Mirror | Post;
+  id: string;
 };
 
-export default function MyVideoCard({ title, time, poster }: MyVideoCardProps) {
+export default function MyVideoCard({ publication, id }: MyVideoCardProps) {
+  const navigation = useNavigation();
+  const { setActivePublication } = useActivePublication();
+
   return (
     <Pressable
+      key={id}
       android_ripple={{
-        color: "gray",
+        color: black[400],
       }}
       style={{
         flexDirection: "row",
         maxWidth: Dimensions.get("window").width,
         padding: 16,
       }}
+      onPress={() => {
+        setActivePublication(publication);
+        navigation.navigate("VideoPage");
+      }}
     >
       <View>
         <Image
           source={{
-            uri:
-              "https://images.unsplash.com/photo-1680693377318-63eb48d33056?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+            uri: getIPFSLink(getRawurl(publication?.metadata?.cover)),
           }}
           style={{
             width: 140,
@@ -50,7 +63,7 @@ export default function MyVideoCard({ title, time, poster }: MyVideoCardProps) {
           }}
         >
           <Heading
-            title="Hello this is firt ivrvn kjfkk sdfn  slkns d skdnfk ksdn ksd k kdfkjs lsndl sd"
+            title={publication?.metadata?.name}
             style={{ color: "white", fontSize: 14, fontWeight: "400" }}
             numberOfLines={3}
           />
@@ -60,13 +73,13 @@ export default function MyVideoCard({ title, time, poster }: MyVideoCardProps) {
             }}
           >
             <StyledText
-              title={"1 year ago"}
+              title={getDifference(publication?.createdAt)}
               style={{ color: "gray", fontSize: 12 }}
             />
           </View>
         </View>
         <Pressable>
-          <Icon name="arrowDown" size={16} />
+          <Icon name="delete" size={16} color="red" />
         </Pressable>
       </View>
     </Pressable>

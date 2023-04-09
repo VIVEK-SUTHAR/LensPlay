@@ -1,11 +1,10 @@
-import { View, Text, ScrollView, Pressable } from "react-native";
-import React, { useEffect, useState } from "react";
-import { LensPublication } from "../../types/Lens/Feed";
-import VideoCard from "../VideoCard";
-import Heading from "../UI/Heading";
-import Icon from "../Icon";
-import StyledText from "../UI/StyledText";
+import React from "react";
+import { Pressable, ScrollView, View } from "react-native";
 import { Post, Scalars } from "../../types/generated";
+import Icon from "../Icon";
+import Heading from "../UI/Heading";
+import StyledText from "../UI/StyledText";
+import VideoCard from "../VideoCard";
 
 type AllVideosProps = {
   profileId: Scalars["ProfileId"];

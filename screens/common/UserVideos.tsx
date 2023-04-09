@@ -11,6 +11,7 @@ import { useThemeStore } from "../../store/Store";
 import { useUploadStore } from "../../store/UploadStore";
 import { Post } from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
+import MyVideoCard from "../../components/common/MyVideoCard";
 
 const UserVideos = ({
   navigation,
@@ -33,7 +34,7 @@ const UserVideos = ({
       {uploadingStatus && <UploadCard />}
       <FlatList
         data={videos as Post[]}
-        // keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
             refreshing={false}
@@ -42,10 +43,10 @@ const UserVideos = ({
           />
         }
         renderItem={({ item }) => (
-          <VideoCard publication={item} id={item?.id} />
+          // <VideoCard publication={item} id={item?.id} />
+          <MyVideoCard publication={item} id={item.id} />
         )}
       />
-      {/* <MyVideoCard /> */}
     </SafeAreaView>
   );
 };
