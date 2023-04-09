@@ -71,21 +71,23 @@ const PinnedPublication = () => {
     <View>
       {pinned.hasPinned && (
         <View>
-          <Heading
-            title={"Pinned video"}
-            style={{
-              fontSize: 20,
-              color: "white",
-              fontWeight: "600",
-            }}
-          />
           {data && (
-            <VideoCard
-              publication={pinnedPublication as Post}
-              id={pinnedPublication?.id}
-              height={150}
-              width={300}
-            />
+            <>
+              <Heading
+                title={"Pinned video"}
+                style={{
+                  fontSize: 20,
+                  color: "white",
+                  fontWeight: "600",
+                }}
+              />
+              <VideoCard
+                publication={pinnedPublication as Post}
+                id={pinnedPublication?.id}
+                height={150}
+                width={300}
+              />
+            </>
           )}
         </View>
       )}

@@ -5,9 +5,12 @@
  * @returns id Arweave txn id
  */
 
+import { ProfileMetaDataV1nput } from "../types";
 import { PublicationMetadataV2Input } from "../types/generated";
 
-async function uploadToArweave(metadata: PublicationMetadataV2Input) {
+async function uploadToArweave(
+  metadata: PublicationMetadataV2Input | ProfileMetaDataV1nput
+) {
   try {
     const headersList = {
       Accept: "*/*",
@@ -34,7 +37,7 @@ async function uploadToArweave(metadata: PublicationMetadataV2Input) {
     }
   } catch (err) {
     if (err instanceof Error) {
-      throw new Error("Something went wromg", { cause: err });
+      throw new Error("Something went wrong");
     }
   }
 }

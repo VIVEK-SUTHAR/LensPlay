@@ -19,6 +19,9 @@ import {
   useToast,
 } from "../../store/Store";
 import {
+  Attribute,
+  InputMaybe,
+  Maybe,
   Mirror,
   Post,
   Profile,
@@ -37,6 +40,7 @@ import StyledText from "../UI/StyledText";
 import uploadToArweave from "../../utils/uploadToArweave";
 import TrackAction from "../../utils/Track";
 import { SETTINGS } from "../../constants/tracking";
+import { ProfileMetaDataV1nput } from "../../types";
 
 type MyVideoCardProps = {
   publication: Mirror | Post;
@@ -157,8 +161,7 @@ export const VideoActionSheet = ({ sheetRef, pubId }: SheetProps) => {
   ] = useCreateSetProfileMetadataViaDispatcherMutation({
     onCompleted: (data) => {
       console.log(data);
-
-      toast.success("Channel updated successfully");
+      toast.success("Video pinned successfully !");
       TrackAction(SETTINGS.PROFILE.UPDATE_DETAILS);
     },
     onError: () => {
@@ -187,21 +190,21 @@ export const VideoActionSheet = ({ sheetRef, pubId }: SheetProps) => {
     if (isAlreadyPinned) {
       isAlreadyPinned.value = pubId;
     }
-    const newMetaData = {
+
+    const newMetaData: ProfileMetaDataV1nput = {
       version: "1.0.0",
       metadata_id: uuidV4(),
-      name: currentProfile?.name,
-      bio: currentProfile?.bio,
-      cover_picture: currentProfile?.coverPicture,
-      attributes: isAlreadyPinned ? attr : attrs,
+      name: currentProfile?.name || "",
+      bio: currentProfile?.bio || "",
+      cover_picture: getRawurl(currentProfile?.coverPicture),
+      attributes: isAlreadyPinned ? attr : (attrs as Attribute[]),
     };
-
+    toast.success("Video pin submitted");
     const hash = await uploadToArweave(newMetaData);
-
     createSetProfileMetadataViaDispatcherMutation({
       variables: {
         request: {
-          metadata: `https://arweave.net/${hash}`,
+          metadata: `ar://${hash}`,
           profileId: currentProfile?.id,
         },
       },
