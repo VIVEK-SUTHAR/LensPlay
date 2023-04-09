@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { RootStackScreenProps } from '../../types/navigation/types'
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Dimensions, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { dark_primary, primary } from '../../constants/Colors';
 import { useAuthStore, useProfile, useThemeStore, useToast } from '../../store/Store';
@@ -15,6 +15,7 @@ import broadcastTransaction from '../../utils/lens/broadcastTransaction';
 import ImageCarousel from '../../components/UI/ImageCarousel';
 import StyledText from '../../components/UI/StyledText';
 import Icon from '../../components/Icon';
+import { StatusBar } from 'expo-status-bar';
 
 
 const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) => {
@@ -25,6 +26,7 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
     const { currentProfile, setCurrentProfile } = useProfile();
     const connector = useWalletConnect();
     const toast = useToast();
+    const windowHeight = Dimensions.get('screen').height;
 
 
     const handleDefaultProfile = async (address: string) => {
@@ -100,125 +102,145 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
     const data = [
         {
             link: 'https://gateway.ipfscdn.io/ipfs/bafkreibypw2ovrxub6mcpgw4e7gh3753emni5qtan3o3m6kdvpse3cmi44',
+            handle: 'iamharsh.test'
         },
         {
             link: 'https://gateway.ipfscdn.io/ipfs/QmS2wmPQwnbpuZtqbRmEKPqNPCR39a2FTpEF7iv5G7Nixd',
+            handle: 'iamvivek.test'
         },
         {
             link: 'https://gateway.ipfscdn.io/ipfs/QmZXK1cSNrj9SDZKnGaHJP9hdZvvUjUwf7uUiYqjnA5eX7',
+            handle: 'wagmi.test'
         },
         {
             link: 'https://lens.infura-ipfs.io/ipfs/QmVBfhfgfhGsRVxTNURVUgceqyzjdVe11ic5rCghmePuKX',
+            handle: 'nader.test'
         },
         {
             link: 'https://gateway.ipfscdn.io/ipfs/bafybeiehsyi2xtlfr7zmsuadruhwvodc4sxs6oh57bzd3fhd2mcjsybaiy',
+            handle: 'stani.test'
         },
         {
             link: 'https://gateway.ipfscdn.io/ipfs/bafkreibypw2ovrxub6mcpgw4e7gh3753emni5qtan3o3m6kdvpse3cmi44',
+            handle: 'iamharsh.test'
         },
         {
             link: 'https://gateway.ipfscdn.io/ipfs/QmS2wmPQwnbpuZtqbRmEKPqNPCR39a2FTpEF7iv5G7Nixd',
+            handle: 'iamvivek.test'
         },
         {
             link: 'https://gateway.ipfscdn.io/ipfs/QmZXK1cSNrj9SDZKnGaHJP9hdZvvUjUwf7uUiYqjnA5eX7',
+            handle: 'wagmi.test'
         },
         {
             link: 'https://lens.infura-ipfs.io/ipfs/QmVBfhfgfhGsRVxTNURVUgceqyzjdVe11ic5rCghmePuKX',
+            handle: 'nader.test'
         },
         {
             link: 'https://gateway.ipfscdn.io/ipfs/bafybeiehsyi2xtlfr7zmsuadruhwvodc4sxs6oh57bzd3fhd2mcjsybaiy',
+            handle: 'stani.test'
         },
         {
             link: 'https://gateway.ipfscdn.io/ipfs/bafkreibypw2ovrxub6mcpgw4e7gh3753emni5qtan3o3m6kdvpse3cmi44',
+            handle: 'iamharsh.test'
         },
         {
             link: 'https://gateway.ipfscdn.io/ipfs/QmS2wmPQwnbpuZtqbRmEKPqNPCR39a2FTpEF7iv5G7Nixd',
+            handle: 'iamvivek.test'
         },
         {
             link: 'https://gateway.ipfscdn.io/ipfs/QmZXK1cSNrj9SDZKnGaHJP9hdZvvUjUwf7uUiYqjnA5eX7',
+            handle: 'wagmi.test'
         },
         {
             link: 'https://lens.infura-ipfs.io/ipfs/QmVBfhfgfhGsRVxTNURVUgceqyzjdVe11ic5rCghmePuKX',
+            handle: 'nader.test'
         },
         {
             link: 'https://gateway.ipfscdn.io/ipfs/bafybeiehsyi2xtlfr7zmsuadruhwvodc4sxs6oh57bzd3fhd2mcjsybaiy',
+            handle: 'stani.test'
         },
     ]
     return (
-        <KeyboardAvoidingView style={styles.container}>
-            <View style={{ width: '100%', alignItems: 'center', flex: 1 }}>
-                <View style={styles.textContainer}>
-                    <StyledText title={'Create your'} style={{ color: 'white', fontSize: 30, fontWeight: '700' }} />
-                    <StyledText title={'Test Profile'} style={{ color: primary, fontSize: 38, fontWeight: '700' }} />
+        <KeyboardAvoidingView style={{flex: 1}}>
+      <StatusBar backgroundColor="black" style="auto" />
+            <ScrollView>
+                <View style={[styles.container , {height: windowHeight}]}>
+                    <View style={{ width: '100%', alignItems: 'center', flex: 1 }}>
+                        <View style={styles.textContainer}>
+                            <StyledText title={'Create your'} style={{ color: 'white', fontSize: 30, fontWeight: '700' }} />
+                            <StyledText title={'Test Profile'} style={{ color: primary, fontSize: 38, fontWeight: '700' }} />
 
-                </View>
-                <ImageCarousel data={data} autoPlay={true} />
-                <View style={styles.inputContainer}>
-                    {/* <StyledText title="Enter " style={styles.textStyle} /> */}
-                    <TextInput
-                        numberOfLines={2}
-                        multiline={true}
-                        value={handle}
-                        style={styles.input}
-                        placeholderTextColor="gray"
-                        selectionColor={theme.PRIMARY}
-                        onChange={(e) => {
-                            e.preventDefault();
-                            setHandle(e.nativeEvent.text);
-                        }}
-                        placeholder='Enter Test handle'
-                    />
-                </View>
-                <View style={styles.desc}>
-                    <View style={styles.descContainer}>
-                        <View>
-                            <Icon name='compass_filled' size={30} />
                         </View>
-                        <View  style={{
-                            width: '80%'
-                        }}>
-                            <Text style={styles.descTitleText}>Click</Text>
-                            <Text style={styles.descText}>
-                                Click on create handle and check for available handles
-                            </Text>
+                        <ImageCarousel data={data} autoPlay={true} />
+                        <View style={styles.inputContainer}>
+                            {/* <StyledText title="Enter " style={styles.textStyle} /> */}
+                            <TextInput
+                                numberOfLines={2}
+                                multiline={true}
+                                value={handle}
+                                style={styles.input}
+                                placeholderTextColor="gray"
+                                selectionColor={theme.PRIMARY}
+                                onChange={(e) => {
+                                    e.preventDefault();
+                                    setHandle(e.nativeEvent.text);
+                                }}
+                                placeholder='Enter Test handle'
+                            />
+                        </View>
+                        <View style={styles.desc}>
+                            <View style={styles.descContainer}>
+                                <View>
+                                    <Icon name='compass_filled' size={30} />
+                                </View>
+                                <View style={{
+                                    width: '80%'
+                                }}>
+                                    <Text style={styles.descTitleText}>Click</Text>
+                                    <Text style={styles.descText}>
+                                        Click on create handle and check for available handles
+                                    </Text>
+                                </View>
+                            </View>
+                            <View style={styles.descContainer}>
+                                <View>
+                                    <Icon name='mirror' size={30} />
+                                </View>
+                                <View style={{
+                                    width: '80%'
+                                }}>
+                                    <Text style={styles.descTitleText}>Sign</Text>
+                                    <Text style={styles.descText}>
+                                        Sign the dispatcher and explore lensplay
+                                    </Text>
+                                </View>
+                            </View>
                         </View>
                     </View>
-                    <View style={styles.descContainer}>
-                        <View>
-                            <Icon name='mirror' size={30} />
-                        </View>
-                        <View style={{
-                            width: '80%'
-                        }}>
-                            <Text style={styles.descTitleText}>Sign</Text>
-                            <Text style={styles.descText}>
-                                Sign the dispatcher and explore lensplay
-                            </Text>
-                        </View>
+
+                    <View style={styles.buttonContainer}>
+                        <Button
+                            title="Create Handle"
+                            width={"100%"}
+                            py={12}
+                            bg={primary}
+                            borderRadius={50}
+                            textStyle={{
+                                textAlign: "center",
+                                fontSize: 20,
+                                fontWeight: "600",
+                                color: "black",
+                            }}
+                            isLoading={isloading}
+                            onPress={async () => {
+                                // await handleDefaultProfile(connector.accounts[0]);
+                                await createHandle();
+                            }}
+                        />
                     </View>
                 </View>
-            </View>
-
-            <View style={styles.buttonContainer}>
-                <Button
-                    title="Create Handle"
-                    width={"100%"}
-                    py={12}
-                    bg={primary}
-                    borderRadius={50}
-                    textStyle={{
-                        textAlign: "center",
-                        fontSize: 16,
-                        fontWeight: "600",
-                        color: "white",
-                    }}
-                    isLoading={isloading}
-                    onPress={async () => {
-                        // await handleDefaultProfile(connector.accounts[0]);
-                        await createHandle();
-                    }}
-                />
-            </View>
+            </ScrollView>
         </KeyboardAvoidingView>
     )
 }
@@ -228,14 +250,12 @@ export default CreateProfile;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // width: '100%',
         flexDirection: 'column',
         backgroundColor: "black",
-        justifyContent: "space-between",
-        paddingBottom: 20,
         alignItems: 'center',
-        paddingVertical: 40,
-        // paddingHorizontal: 10
+        justifyContent: 'space-between',
+        paddingVertical: 40
+
     },
     desc: {
         marginVertical: 40
@@ -251,16 +271,15 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         width: "90%",
-        marginVertical: 12,
+        marginVertical: 16,
         height: 60
     },
     input: {
         backgroundColor: dark_primary,
         color: "white",
         borderWidth: 1,
-        marginTop: 18,
+        marginTop: 28,
         paddingHorizontal: 16,
-        // paddingVertical: 8,
         borderRadius: 8,
         fontSize: 16,
         height: '100%'

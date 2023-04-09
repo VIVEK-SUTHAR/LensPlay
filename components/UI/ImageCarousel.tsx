@@ -46,7 +46,7 @@ const ImageCarousel = ({ data, autoPlay }) => {
     }
   },[newSize, data.length, isAutoPlay, offset.value, ScrollViewRef]);
   return (
-    <View style={{height: newSize}}>
+    <View style={{height: newSize + 30}}>
       <Animated.ScrollView 
         ref={ScrollViewRef}
         horizontal 
@@ -65,17 +65,34 @@ const ImageCarousel = ({ data, autoPlay }) => {
         }}
     >
       {newData.map((item, index) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
         const style=useAnimatedStyle(()=>{
-            const scale=interpolate(
+            const scale = interpolate(
                 x.value,
                 [(index-2)*newSize,(index-1)*newSize,index*newSize],
                 [0.6,1,0.6]
-            )
+            );
             return {
                 transform:[{scale}],
             };
         });
+        const marginStyle=useAnimatedStyle(()=>{
+          const margin = interpolate(
+              x.value,
+              [(index-2)*newSize,(index-1)*newSize,index*newSize],
+              [-8,12,-8]
+          );
+
+          const opacity = interpolate(
+            x.value,
+            [(index-2)*newSize,(index-1)*newSize,index*newSize],
+            [0.5,1,0.5]
+        );
+          
+          return {
+              marginTop: margin,
+              opacity: opacity
+          };
+      });
         if (!item.link) {
             return <View style={{width:spacer }} key={index} />
         }
@@ -85,6 +102,12 @@ const ImageCarousel = ({ data, autoPlay }) => {
             <Animated.View style={[styles.imageContainer,style]}>
               <Image source={{uri: item.link}} style={styles.image} />
             </Animated.View>
+            <Animated.Text style={[{
+                color: 'white',
+                textAlign: 'center',
+                marginTop: 12,
+                fontSize: 12,
+              },marginStyle]}>{item.handle}</Animated.Text>
           </View>
         );
       })}
@@ -100,7 +123,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     overflow: "hidden",
     backgroundColor: '#202124',
-    height: '100%'
+    // height: '100%'
   },
   image: {
     width: "100%",
