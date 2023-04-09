@@ -43,7 +43,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         setRefreshToken(tokens?.refreshToken);
         await storeTokens(tokens?.accessToken, tokens?.refreshToken, false);
         if(hasHandle){
-          navigation.replace("Root");
+          navigation.replace("CreateProfile");
         }
         else{
           navigation.replace("CreateProfile");
@@ -51,7 +51,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         TrackAction(AUTH.SIWL);
       } else {
         toast.show("Something went wrong", ToastType.ERROR, true);
-      }
+      }   
     } catch (error) {
       if (error instanceof Error) {
         console.log("[Error]:Error in login with lens");

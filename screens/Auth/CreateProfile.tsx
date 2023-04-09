@@ -12,6 +12,7 @@ import getProfiles from '../../utils/lens/getProfiles';
 import enableDispatcher from '../../utils/lens/enableDispatcher';
 import createSetDispatcherTypedData from '../../utils/createSetDispatcherTypedData';
 import broadcastTransaction from '../../utils/lens/broadcastTransaction';
+import ImageCarousel from '../../components/UI/ImageCarousel';
 
 
 const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) => {
@@ -94,8 +95,25 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
             }
         }
     }
+    const data=[
+        {
+            image:require('../../assets/images/lens.png')
+        },
+        {
+            image:require('../../assets/images/lens.png')
+        },
+        {
+            image:require('../../assets/images/lens.png')
+        },
+        {
+            image:require('../../assets/images/lens.png')
+        },
+    ]
     return (
         <SafeAreaView style={styles.container}>
+            <View>
+                <ImageCarousel data={data} />
+            </View>
             <View style={styles.inputContainer}>
                 {/* <StyledText title="Enter " style={styles.textStyle} /> */}
                 <TextInput
