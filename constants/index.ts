@@ -43,7 +43,7 @@ const MENTION_REGEX = /(@[^\s]+)/g;
 export const OFFICIAL_EMAIL = "lensplay.ac@gmail.com";
 export const LENSPLAY_TWITTER = "https://twitter.com/lensplayxyz";
 export const LENSPLAY_DISCORD = "https://discord.gg/tgrzS4Actz";
-export const LENSPLAY_SITE = "https://lensplay.xyz/";
+export const LENSPLAY_SITE = "https://lensplay.xyz";
 export const LENSPLAY_PRIVACY =
   "https://island-hat-05d.notion.site/LensPlay-Privacy-Policy-bc6f36fa5434481bb3b57bf79f1e552d";
 export const LENSPLAY_TERMS =

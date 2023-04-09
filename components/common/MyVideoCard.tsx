@@ -1,22 +1,46 @@
-import React from "react";
-import { Dimensions, Image, Pressable, View } from "react-native";
-import StyledText from "../UI/StyledText";
-import Heading from "../UI/Heading";
-import Icon from "../Icon";
-import { Mirror, Post } from "../../types/generated";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
-import { useActivePublication } from "../../store/Store";
+import React from "react";
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  Pressable,
+  Share,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { black } from "../../constants/Colors";
+import { useActivePublication, useProfile, useToast } from "../../store/Store";
+import {
+  Attribute,
+  Mirror,
+  Post,
+  PublicationMetadataDisplayTypes,
+  Scalars,
+} from "../../types/generated";
+import getDifference from "../../utils/getDifference";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
-import getDifference from "../../utils/getDifference";
-import { black } from "../../constants/Colors";
+import Sheet from "../Bottom";
+import Icon from "../Icon";
+import Heading from "../UI/Heading";
+import Ripple from "../UI/Ripple";
+import StyledText from "../UI/StyledText";
 
 type MyVideoCardProps = {
   publication: Mirror | Post;
   id: string;
+  sheetRef?: React.RefObject<BottomSheetMethods>;
+  setPubId?: (pubId: Scalars["InternalPublicationId"]) => void;
 };
 
-export default function MyVideoCard({ publication, id }: MyVideoCardProps) {
+export default function MyVideoCard({
+  publication,
+  id,
+  sheetRef,
+  setPubId,
+}: MyVideoCardProps) {
   const navigation = useNavigation();
   const { setActivePublication } = useActivePublication();
 
@@ -78,10 +102,119 @@ export default function MyVideoCard({ publication, id }: MyVideoCardProps) {
             />
           </View>
         </View>
-        <Pressable>
+        <TouchableOpacity
+          activeOpacity={0.5}
+          onPress={() => {
+            if (setPubId) {
+              setPubId(publication.id);
+            }
+            sheetRef?.current?.snapToIndex(0);
+          }}
+        >
           <Icon name="more" size={16} />
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </Pressable>
   );
 }
+
+type SheetProps = {
+  sheetRef: React.RefObject<BottomSheetMethods>;
+  pubId: Scalars["InternalPublicationId"];
+};
+
+export const VideoActionSheet = ({ sheetRef, pubId }: SheetProps) => {
+  const profile = useProfile();
+  const toast = useToast();
+  const pinPublication = async () => {
+    toast.success("Implementation baki hai");
+    const attributes = profile.currentProfile?.attributes;
+    const isAlreadyPinnedAnother = attributes?.find(
+      (attr) =>
+        attr.traitType === "pinnedPublicationId" ||
+        attr.key === "pinnedPublicationId"
+    );
+    if (!isAlreadyPinnedAnother) {
+      const newAttribute = {
+        displayType: PublicationMetadataDisplayTypes.String,
+        traitType: "pinnedPublicationId",
+        key: "pinnedPublicationId",
+        value: pubId,
+      };
+      attributes?.push(newAttribute);
+    }
+  };
+
+  const actionList = [
+    {
+      name: "Pin this video to your channel",
+      icon: "success",
+      onPress: (pubid: Scalars["InternalPublicationId"]) => {
+        pinPublication();
+      },
+    },
+    {
+      name: "Share this video",
+      icon: "share",
+      onPress: (pubid: Scalars["InternalPublicationId"]) => {
+        Share.share({
+          message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${pubid}`,
+          title: "Watch video on LensPlay",
+        });
+      },
+    },
+    {
+      name: "Delete",
+      icon: "delete",
+      onPress: (pubid: Scalars["InternalPublicationId"]) => {},
+    },
+  ];
+  return (
+    <Sheet
+      ref={sheetRef}
+      snapPoints={["35%"]}
+      enablePanDownToClose={true}
+      enableOverDrag={true}
+      style={{
+        marginHorizontal: 8,
+        paddingHorizontal: 16,
+      }}
+      detached={true}
+      children={
+        <FlatList
+          data={actionList}
+          renderItem={({ item }) => {
+            return (
+              <Ripple
+                style={{ marginVertical: 8 }}
+                onTap={() => {
+                  item.onPress(pubId);
+                }}
+              >
+                <View
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    marginVertical: 4,
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <Icon name={item.icon} color={"white"} />
+                  <StyledText
+                    title={item.name}
+                    style={{
+                      fontSize: 16,
+                      marginHorizontal: 8,
+                      color: "white",
+                    }}
+                  />
+                </View>
+              </Ripple>
+            );
+          }}
+        />
+      }
+    />
+  );
+};

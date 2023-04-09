@@ -11,7 +11,10 @@ import { useThemeStore } from "../../store/Store";
 import { useUploadStore } from "../../store/UploadStore";
 import { Post } from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
-import MyVideoCard from "../../components/common/MyVideoCard";
+import MyVideoCard, {
+  VideoActionSheet,
+} from "../../components/common/MyVideoCard";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 
 const UserVideos = ({
   navigation,
@@ -29,25 +32,42 @@ const UserVideos = ({
       },
     });
   }, []);
+
+  const actionSheetRef = React.useRef<BottomSheetMethods>(null);
+
+  const [pubId, setPubId] = React.useState("");
+
+  const handlePubId = React.useCallback((pubId: string) => {
+    setPubId(pubId);
+  }, []);
+
   return (
-    <SafeAreaView style={styles.container}>
-      {uploadingStatus && <UploadCard />}
-      <FlatList
-        data={videos as Post[]}
-        keyExtractor={(item) => item.id}
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            colors={[theme.PRIMARY]}
-            progressBackgroundColor={"black"}
-          />
-        }
-        renderItem={({ item }) => (
-          // <VideoCard publication={item} id={item?.id} />
-          <MyVideoCard publication={item} id={item.id} />
-        )}
-      />
-    </SafeAreaView>
+    <>
+      <SafeAreaView style={styles.container}>
+        {uploadingStatus && <UploadCard />}
+        <FlatList
+          data={videos as Post[]}
+          keyExtractor={(item) => item.id}
+          refreshControl={
+            <RefreshControl
+              refreshing={false}
+              colors={[theme.PRIMARY]}
+              progressBackgroundColor={"black"}
+            />
+          }
+          renderItem={({ item }) => (
+            // <VideoCard publication={item} id={item?.id} />
+            <MyVideoCard
+              publication={item}
+              id={item.id}
+              sheetRef={actionSheetRef}
+              setPubId={handlePubId}
+            />
+          )}
+        />
+        <VideoActionSheet sheetRef={actionSheetRef} pubId={pubId} />
+      </SafeAreaView>
+    </>
   );
 };
 
