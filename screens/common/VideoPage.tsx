@@ -47,6 +47,7 @@ import extractURLs from "../../utils/extractURL";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
 import TrackAction from "../../utils/Track";
+
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
   const { activePublication } = useActivePublication();
   const toast = useToast();

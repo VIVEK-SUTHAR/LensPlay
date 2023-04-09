@@ -11,13 +11,19 @@ import {
   View,
 } from "react-native";
 import { black } from "../../constants/Colors";
-import { useActivePublication, useProfile, useToast } from "../../store/Store";
 import {
-  Attribute,
+  useActivePublication,
+  useAuthStore,
+  useProfile,
+  useToast,
+} from "../../store/Store";
+import {
   Mirror,
   Post,
+  Profile,
   PublicationMetadataDisplayTypes,
   Scalars,
+  useCreateSetProfileMetadataViaDispatcherMutation,
 } from "../../types/generated";
 import getDifference from "../../utils/getDifference";
 import getIPFSLink from "../../utils/getIPFSLink";
@@ -124,25 +130,74 @@ type SheetProps = {
 };
 
 export const VideoActionSheet = ({ sheetRef, pubId }: SheetProps) => {
-  const profile = useProfile();
   const toast = useToast();
+  const { currentProfile } = useProfile();
+  const { accessToken } = useAuthStore();
+
+  const uploadMetadata = async (newProfile: Profile) => {
+    const bodyContent = JSON.stringify({
+      oldProfileData: currentProfile,
+      newProfileData: newProfile,
+    });
+
+    const headersList = {
+      "Content-Type": "application/json",
+      Authorization: "Bearer ENGINEERCANTAKEOVERWORLD",
+    };
+
+    const response = await fetch(
+      "https://lensplay-api.vercel.app/api/upload/profileMetadata",
+      {
+        method: "POST",
+        body: bodyContent,
+        headers: headersList,
+      }
+    );
+
+    const metadata = await response.json();
+
+    console.log(metadata?.id);
+
+    // useCreateSetProfileMetadataViaDispatcherMutation({
+    //   variables: {
+    //     request: {
+    //       metadata: `https://arweave.net/${metadata.id}`,
+    //       profileId: currentProfile?.id,
+    //     },
+    //   },
+    //   context: {
+    //     headers: {
+    //       "x-access-token": `Bearer ${accessToken}`,
+    //     },
+    //   },
+    // });
+  };
+
   const pinPublication = async () => {
-    toast.success("Implementation baki hai");
-    const attributes = profile.currentProfile?.attributes;
-    const isAlreadyPinnedAnother = attributes?.find(
+    // toast.success("Implementation baki hai");
+    const newProfile = currentProfile;
+
+    const isAlreadyPinned = newProfile?.attributes?.find(
       (attr) =>
         attr.traitType === "pinnedPublicationId" ||
         attr.key === "pinnedPublicationId"
     );
-    if (!isAlreadyPinnedAnother) {
+    console.log(isAlreadyPinned);
+
+    if (!isAlreadyPinned) {
       const newAttribute = {
         displayType: PublicationMetadataDisplayTypes.String,
         traitType: "pinnedPublicationId",
         key: "pinnedPublicationId",
         value: pubId,
       };
-      attributes?.push(newAttribute);
+      newProfile?.attributes?.push(newAttribute);
+      return;
     }
+    isAlreadyPinned.value = pubId;
+
+    console.log(newProfile?.metadata);
+    // uploadMetadata(newProfile as Profile);
   };
 
   const actionList = [
