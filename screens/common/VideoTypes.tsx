@@ -5,7 +5,7 @@ import Button from "../../components/UI/Button";
 import Heading from "../../components/UI/Heading";
 import StyledText from "../../components/UI/StyledText";
 import { APP_ID, LENSPLAY_SITE } from "../../constants";
-import { black, dark_primary } from "../../constants/Colors";
+import { black } from "../../constants/Colors";
 import { useAuthStore, useProfile, useToast } from "../../store/Store";
 import { useUploadStore } from "../../store/UploadStore";
 import {

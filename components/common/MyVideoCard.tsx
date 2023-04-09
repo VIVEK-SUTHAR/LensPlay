@@ -1,6 +1,7 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
+import { v4 as uuidV4 } from "uuid";
 import {
   Dimensions,
   FlatList,
@@ -33,6 +34,9 @@ import Icon from "../Icon";
 import Heading from "../UI/Heading";
 import Ripple from "../UI/Ripple";
 import StyledText from "../UI/StyledText";
+import uploadToArweave from "../../utils/uploadToArweave";
+import TrackAction from "../../utils/Track";
+import { SETTINGS } from "../../constants/tracking";
 
 type MyVideoCardProps = {
   publication: Mirror | Post;
@@ -148,73 +152,65 @@ export const VideoActionSheet = ({ sheetRef, pubId }: SheetProps) => {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
 
-  const uploadMetadata = async (newProfile: Profile) => {
-    const bodyContent = JSON.stringify({
-      oldProfileData: currentProfile,
-      newProfileData: newProfile,
-    });
+  const [
+    createSetProfileMetadataViaDispatcherMutation,
+  ] = useCreateSetProfileMetadataViaDispatcherMutation({
+    onCompleted: (data) => {
+      console.log(data);
 
-    const headersList = {
-      "Content-Type": "application/json",
-      Authorization: "Bearer ENGINEERCANTAKEOVERWORLD",
-    };
-
-    const response = await fetch(
-      "https://lensplay-api.vercel.app/api/upload/profileMetadata",
-      {
-        method: "POST",
-        body: bodyContent,
-        headers: headersList,
-      }
-    );
-
-    const metadata = await response.json();
-
-    console.log(metadata?.id);
-
-    // useCreateSetProfileMetadataViaDispatcherMutation({
-    //   variables: {
-    //     request: {
-    //       metadata: `https://arweave.net/${metadata.id}`,
-    //       profileId: currentProfile?.id,
-    //     },
-    //   },
-    //   context: {
-    //     headers: {
-    //       "x-access-token": `Bearer ${accessToken}`,
-    //     },
-    //   },
-    // });
-  };
+      toast.success("Channel updated successfully");
+      TrackAction(SETTINGS.PROFILE.UPDATE_DETAILS);
+    },
+    onError: () => {
+      toast.error("Some error occured please try again");
+    },
+  });
 
   const pinPublication = async () => {
-    // toast.success("Implementation baki hai");
-    const newProfile = currentProfile;
-    const isAlreadyPinned = newProfile?.attributes?.find(
+    const attr = currentProfile?.attributes;
+    let attrs;
+    const isAlreadyPinned = attr?.find(
       (attr) =>
         attr.traitType === "pinnedPublicationId" ||
         attr.key === "pinnedPublicationId"
     );
-    console.log("before", newProfile?.attributes);
     if (!isAlreadyPinned) {
       const newAttribute = {
+        __typename: "Attribute",
         displayType: PublicationMetadataDisplayTypes.String,
         traitType: "pinnedPublicationId",
         key: "pinnedPublicationId",
         value: pubId,
       };
-      const attr = newProfile?.attributes;
-      const attrs = [...attr!, newAttribute];
-      if (newProfile) {
-        newProfile.attributes = attrs;
-      }
-      return;
+      attrs = [...attr!, newAttribute];
     }
-    isAlreadyPinned.value = pubId;
-    console.log("after", newProfile?.metadata);
+    if (isAlreadyPinned) {
+      isAlreadyPinned.value = pubId;
+    }
+    const newMetaData = {
+      version: "1.0.0",
+      metadata_id: uuidV4(),
+      name: currentProfile?.name,
+      bio: currentProfile?.bio,
+      cover_picture: currentProfile?.coverPicture,
+      attributes: isAlreadyPinned ? attr : attrs,
+    };
 
-    console.log(newProfile?.metadata);
-    // uploadMetadata(newProfile as Profile);
+    const hash = await uploadToArweave(newMetaData);
+
+    createSetProfileMetadataViaDispatcherMutation({
+      variables: {
+        request: {
+          metadata: `https://arweave.net/${hash}`,
+          profileId: currentProfile?.id,
+        },
+      },
+      context: {
+        headers: {
+          "x-access-token": `Bearer ${accessToken}`,
+        },
+      },
+    });
   };
 
   const actionList = [
