@@ -3,6 +3,7 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { IBottomSheet } from "../types";
 import React, { useCallback } from "react";
 import { BottomSheetDefaultBackdropProps } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types";
+import { black } from "../constants/Colors";
 
 const Sheet = React.forwardRef<BottomSheetMethods, IBottomSheet>(
   (props, ref) => {
@@ -24,11 +25,10 @@ const Sheet = React.forwardRef<BottomSheetMethods, IBottomSheet>(
         handleIndicatorStyle={{
           width: "15%",
           backgroundColor: "gray",
-          marginTop: 4,
         }}
         backdropComponent={renderBackdrop}
         backgroundStyle={{
-          backgroundColor: "#0f0f0f",
+          backgroundColor: black[600],
         }}
         {...props}
       ></BottomSheet>

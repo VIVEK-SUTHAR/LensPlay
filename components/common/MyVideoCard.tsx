@@ -172,12 +172,12 @@ export const VideoActionSheet = ({ sheetRef, pubId }: SheetProps) => {
   return (
     <Sheet
       ref={sheetRef}
-      snapPoints={["35%"]}
+      snapPoints={["34%"]}
       enablePanDownToClose={true}
       enableOverDrag={true}
+      bottomInset={32}
       style={{
         marginHorizontal: 8,
-        paddingHorizontal: 16,
       }}
       detached={true}
       children={
@@ -186,7 +186,6 @@ export const VideoActionSheet = ({ sheetRef, pubId }: SheetProps) => {
           renderItem={({ item }) => {
             return (
               <Ripple
-                style={{ marginVertical: 8 }}
                 onTap={() => {
                   item.onPress(pubId);
                 }}
@@ -195,7 +194,8 @@ export const VideoActionSheet = ({ sheetRef, pubId }: SheetProps) => {
                   style={{
                     width: "100%",
                     height: "auto",
-                    marginVertical: 4,
+                    paddingVertical: 16,
+                    paddingHorizontal: 16,
                     flexDirection: "row",
                     alignItems: "center",
                   }}
