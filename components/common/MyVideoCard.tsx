@@ -42,8 +42,8 @@ export default function MyVideoCard({ publication, id }: MyVideoCardProps) {
             uri: getIPFSLink(getRawurl(publication?.metadata?.cover)),
           }}
           style={{
-            width: 140,
-            height: 80,
+            width: 160,
+            height: 100,
             borderRadius: 8,
           }}
         />
@@ -51,7 +51,7 @@ export default function MyVideoCard({ publication, id }: MyVideoCardProps) {
       <View
         style={{
           height: "100%",
-          width: "58%",
+          width: "50%",
           marginLeft: 8,
           flexDirection: "row",
           justifyContent: "space-between",
@@ -64,7 +64,7 @@ export default function MyVideoCard({ publication, id }: MyVideoCardProps) {
         >
           <Heading
             title={publication?.metadata?.name}
-            style={{ color: "white", fontSize: 14, fontWeight: "400" }}
+            style={{ color: "white", fontSize: 16, fontWeight: "500" }}
             numberOfLines={3}
           />
           <View
@@ -79,7 +79,7 @@ export default function MyVideoCard({ publication, id }: MyVideoCardProps) {
           </View>
         </View>
         <Pressable>
-          <Icon name="delete" size={16} color="red" />
+          <Icon name="more" size={16} />
         </Pressable>
       </View>
     </Pressable>

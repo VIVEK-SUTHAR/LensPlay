@@ -11,6 +11,7 @@ import Heading from "../UI/Heading";
 import Icon from "../Icon";
 import { useUploadStore } from "../../store/UploadStore";
 import { STATIC_ASSET } from "../../constants";
+import { black } from "../../constants/Colors";
 
 export default function UploadCard() {
   const { title, coverURL, uploadProgress, uploadingStatus } = useUploadStore();
@@ -18,7 +19,7 @@ export default function UploadCard() {
   return (
     <Pressable
       android_ripple={{
-        color: "gray",
+        color: black[400],
       }}
       style={{
         flexDirection: "row",
@@ -36,8 +37,8 @@ export default function UploadCard() {
             uri: coverURL || STATIC_ASSET,
           }}
           style={{
-            width: 140,
-            height: 80,
+            width: 160,
+            height: 100,
             borderRadius: 8,
           }}
         />
@@ -58,7 +59,7 @@ export default function UploadCard() {
       <View
         style={{
           height: "100%",
-          width: "58%",
+          width: "50%",
           marginLeft: 8,
           flexDirection: "row",
           justifyContent: "space-between",
@@ -71,7 +72,7 @@ export default function UploadCard() {
         >
           <Heading
             title={title}
-            style={{ color: "white", fontSize: 14, fontWeight: "400" }}
+            style={{ color: "white", fontSize: 16, fontWeight: "500" }}
             numberOfLines={3}
           />
           <View
