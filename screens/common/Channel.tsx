@@ -1,3 +1,4 @@
+import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
@@ -24,11 +25,14 @@ import { useGuestStore } from "../../store/GuestStore";
 import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
 import {
   Attribute,
+  CreateUnfollowTypedDataMutationResult,
   MediaSet,
   Post,
   Profile,
   PublicationMainFocus,
   PublicationTypes,
+  useBroadcastMutation,
+  useCreateUnfollowTypedDataMutation,
   useProfilePostsQuery,
   useProfileQuery,
   useProxyActionMutation,
@@ -39,6 +43,7 @@ import extractURLs from "../../utils/extractURL";
 import formatHandle from "../../utils/formatHandle";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
+import formatUnfollowTypedData from "../../utils/lens/formatUnfollowTypedData";
 import TrackAction from "../../utils/Track";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
@@ -52,14 +57,32 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
     yt: "",
     site: "",
   });
+
   const theme = useThemeStore();
   const authStore = useAuthStore();
   const toast = useToast();
   const { isGuest } = useGuestStore();
+  const wallet = useWalletConnect();
 
   useEffect(() => {
     setAlreadyFollowing(route?.params?.isFollowdByMe);
   }, []);
+
+  const [sendUnFollowTxn] = useBroadcastMutation({
+    onCompleted: () => {
+      toast.success("Unsubscribed succesfully!");
+      setAlreadyFollowing(false);
+      TrackAction(PROFILE.UNFOLLOW);
+    },
+    onError: () => {
+      toast.error("Something went wrong");
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${authStore.accessToken}`,
+      },
+    },
+  });
 
   const QueryRequest = {
     profileId: route?.params?.profileId,
@@ -103,7 +126,8 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const profile = profileData?.profile;
 
   const [subscribeToChannel] = useProxyActionMutation({
-    onCompleted: () => {
+    onCompleted: (data) => {
+      console.log(data);
       toast.success("Subscribed succesfully!");
       setAlreadyFollowing(true);
     },
@@ -118,6 +142,18 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       },
     },
   });
+
+  const [getTypedData] = useCreateUnfollowTypedDataMutation({
+    onError() {
+      toast.error("Something went wrong");
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${authStore.accessToken}`,
+      },
+    },
+  });
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     refetch({
@@ -254,6 +290,32 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     }
                     try {
                       if (alreadyFollowing) {
+                        const data = await getTypedData({
+                          variables: {
+                            request: {
+                              profile: profileData?.profile?.id,
+                            },
+                          },
+                        });
+                        const message = formatUnfollowTypedData(
+                          data as CreateUnfollowTypedDataMutationResult
+                        );
+                        const msgParams = [
+                          wallet.accounts[0],
+                          JSON.stringify(message),
+                        ];
+                        const sig = await wallet.signTypedData(msgParams);
+                        sendUnFollowTxn({
+                          variables: {
+                            request: {
+                              signature: sig,
+                              id: data?.data?.createUnfollowTypedData?.id,
+                            },
+                          },
+                        });
+                        return;
+                      }
+                      if (!alreadyFollowing) {
                         subscribeToChannel({
                           variables: {
                             request: {

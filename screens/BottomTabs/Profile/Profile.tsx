@@ -56,9 +56,6 @@ type SocialLinks = {
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [afterScroll, setafterScroll] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
-  const [pinnedPublicationId, setPinnedPublicationId] = useState<string | null>(
-    null
-  );
   const theme = useThemeStore();
   const userStore = useProfile();
   const { isGuest } = useGuestStore();
@@ -113,7 +110,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
         profileId: userStore?.currentProfile?.id,
       },
     });
-    getPinnedPublication();
     setRefreshing(false);
   }, []);
 
@@ -138,19 +134,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
       yt: youtube,
     });
   }
-
-  const getPinnedPublication = () => {
-    const attributes = Profile?.profile?.attributes;
-    const pinnedPublication = attributes?.find(
-      (attr: Attribute) =>
-        attr.traitType === "pinnedPublicationId" ||
-        attr.key === "pinnedPublicationId"
-    );
-    if (pinnedPublication) {
-      setPinnedPublicationId(pinnedPublication.value);
-    }
-  };
-
   useEffect(() => {
     getLinks();
   }, []);
@@ -158,10 +141,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   if (isGuest) return <PleaseLogin />;
   if (loading) return <ProfileSkeleton />;
   if (Profile) {
-    useEffect(() => {
-    getPinnedPublication();
-      
-    },[])
     const profile = Profile?.profile;
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -388,11 +367,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 youtube={links.yt}
               />
               <View style={{ marginVertical: 24 }}>
-                {pinnedPublicationId ? (
-                  <PinnedPublication pubId={pinnedPublicationId} />
-                ) : (
-                  <></>
-                )}
+                <PinnedPublication />
                 {AllVideosData && (
                   <AllVideos
                     Videos={AllVideosData?.publications?.items as Post[]}

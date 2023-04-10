@@ -12,7 +12,8 @@ import {
 } from "react-native";
 import { v4 as uuidV4 } from "uuid";
 import { black } from "../../constants/Colors";
-import { SETTINGS } from "../../constants/tracking";
+import { PUBLICATION } from "../../constants/tracking";
+import usePinStore from "../../store/pinStore";
 import {
   useActivePublication,
   useAuthStore,
@@ -21,8 +22,10 @@ import {
 } from "../../store/Store";
 import { ProfileMetaDataV1nput } from "../../types";
 import {
-  Attribute, Mirror,
-  Post, PublicationMetadataDisplayTypes,
+  Attribute,
+  Mirror,
+  Post,
+  PublicationMetadataDisplayTypes,
   Scalars,
   useCreateSetProfileMetadataViaDispatcherMutation
 } from "../../types/generated";
@@ -157,13 +160,15 @@ export const VideoActionSheet = ({ sheetRef, pubId, route }: SheetProps) => {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
   const deleteRef = React.useRef<BottomSheetMethods>(null);
-
+  const pinStore = usePinStore();
   const [
     createSetProfileMetadataViaDispatcherMutation,
   ] = useCreateSetProfileMetadataViaDispatcherMutation({
-    onCompleted: (data) => {
+    onCompleted: () => {
+      pinStore.setHasPinned(true);
+      pinStore.setPinnedPubId(pubId);
       toast.success("Video pinned successfully !");
-      TrackAction(SETTINGS.PROFILE.UPDATE_DETAILS);
+      TrackAction(PUBLICATION.PIN_PUBLICATION);
     },
     onError: () => {
       toast.error("Some error occured please try again");
