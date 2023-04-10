@@ -1,3 +1,4 @@
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -8,37 +9,32 @@ import {
   ScrollView,
   View,
 } from "react-native";
-import SocialLinks from "../../../components/common/SocialLinks";
 import Icon from "../../../components/Icon";
 import PleaseLogin from "../../../components/PleaseLogin";
 import AllVideos from "../../../components/Profile/AllVideos";
-import { v4 as uuidV4 } from "uuid";
 import CollectedVideos from "../../../components/Profile/CollectedVideos";
 import Cover from "../../../components/Profile/Cover";
 import MirroredVideos from "../../../components/Profile/MirroredVideos";
-import PinnedPublication from "../../../components/Profile/PinnedPublication";
+import PinnedPublication, {
+  UnPinSheet,
+} from "../../../components/Profile/PinnedPublication";
 import Avatar from "../../../components/UI/Avatar";
 import Button from "../../../components/UI/Button";
 import Heading from "../../../components/UI/Heading";
 import ProfileSkeleton from "../../../components/UI/ProfileSkeleton";
 import StyledText from "../../../components/UI/StyledText";
+import SocialLinks from "../../../components/common/SocialLinks";
 import { primary, white } from "../../../constants/Colors";
 import VERIFIED_CHANNELS from "../../../constants/Varified";
 import { PROFILE } from "../../../constants/tracking";
 import { useGuestStore } from "../../../store/GuestStore";
-import {
-  useAuthStore,
-  useProfile,
-  useThemeStore,
-  useToast,
-} from "../../../store/Store";
+import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
   Maybe,
   MediaSet,
   Post,
   PublicationMainFocus,
   PublicationTypes,
-  useCreateSetProfileMetadataViaDispatcherMutation,
   useProfilePostsQuery,
   useProfileQuery,
 } from "../../../types/generated";
@@ -48,12 +44,7 @@ import extractURLs from "../../../utils/extractURL";
 import formatHandle from "../../../utils/formatHandle";
 import getIPFSLink from "../../../utils/getIPFSLink";
 import getRawurl from "../../../utils/getRawUrl";
-import { SheetProps } from "../../../components/common/MyVideoCard";
-import Sheet from "../../../components/Bottom";
-import Ripple from "../../../components/UI/Ripple";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import { ProfileMetaDataV1nput } from "../../../types";
-import uploadToArweave from "../../../utils/uploadToArweave";
+import usePinStore from "../../../store/pinStore";
 
 type SocialLinks = {
   twitter: Maybe<string> | undefined;
@@ -72,6 +63,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const userStore = useProfile();
   const { isGuest } = useGuestStore();
   const { accessToken } = useAuthStore();
+  const { hasPinned } = usePinStore();
 
   const QueryRequest = {
     profileId: userStore?.currentProfile?.id,
@@ -386,7 +378,11 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   youtube={links.yt}
                 />
                 <View style={{ marginVertical: 24 }}>
-                  <PinnedPublication sheetRef={sheetRef} />
+                  {hasPinned ? (
+                    <PinnedPublication sheetRef={sheetRef} />
+                  ) : (
+                    <></>
+                  )}
                   {AllVideosData && (
                     <AllVideos
                       Videos={AllVideosData?.publications?.items as Post[]}
@@ -419,91 +415,3 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 };
 
 export default ProfileScreen;
-
-const UnPinSheet = ({ sheetRef }: Pick<SheetProps, "sheetRef">) => {
-  const { currentProfile } = useProfile();
-  const { accessToken } = useAuthStore();
-  const toast = useToast();
-  const RemovepinPublication = async () => {
-    let attr = currentProfile?.attributes;
-    const isAlreadyPinned = attr?.find(
-      (attr) =>
-        attr.traitType === "pinnedPublicationId" ||
-        attr.key === "pinnedPublicationId"
-    );
-
-    if (isAlreadyPinned) {
-      const index = attr?.indexOf(isAlreadyPinned);
-      attr?.splice(index!, 1);
-    }
-
-    const newMetaData: ProfileMetaDataV1nput = {
-      version: "1.0.0",
-      metadata_id: uuidV4(),
-      name: currentProfile?.name || "",
-      bio: currentProfile?.bio || "",
-      cover_picture: getRawurl(currentProfile?.coverPicture),
-      attributes: attr,
-    };
-
-    const hash = await uploadToArweave(newMetaData);
-    useCreateSetProfileMetadataViaDispatcherMutation({
-      variables: {
-        request: {
-          metadata: `ar://${hash}`,
-          profileId: currentProfile?.id,
-        },
-      },
-      context: {
-        headers: {
-          "x-access-token": `Bearer ${accessToken}`,
-        },
-      },
-      onCompleted: () => {
-        toast.success("Pin removed");
-      },
-    });
-  };
-  return (
-    <Sheet
-      ref={sheetRef}
-      snapPoints={["15%"]}
-      enablePanDownToClose={true}
-      enableOverDrag={true}
-      bottomInset={32}
-      style={{
-        marginHorizontal: 8,
-      }}
-      detached={true}
-      children={
-        <Ripple
-          onTap={() => {
-            RemovepinPublication();
-            sheetRef?.current?.close();
-          }}
-        >
-          <View
-            style={{
-              width: "100%",
-              height: "auto",
-              paddingVertical: 16,
-              paddingHorizontal: 16,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Icon name={"delete"} color={"white"} />
-            <StyledText
-              title={"Remove pin"}
-              style={{
-                fontSize: 16,
-                marginHorizontal: 8,
-                color: "white",
-              }}
-            />
-          </View>
-        </Ripple>
-      }
-    />
-  );
-};

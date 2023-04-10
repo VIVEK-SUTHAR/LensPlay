@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import { default as React, useEffect } from "react";
 import {
   Dimensions,
@@ -7,8 +8,7 @@ import {
   View,
 } from "react-native";
 import { v4 as uuidV4 } from "uuid";
-import { black, white } from "../../constants/Colors";
-import { SETTINGS } from "../../constants/tracking";
+import { white } from "../../constants/Colors";
 import {
   useActivePublication,
   useAuthStore,
@@ -23,37 +23,120 @@ import {
   useCreateSetProfileMetadataViaDispatcherMutation,
   usePublicationDetailsLazyQuery,
 } from "../../types/generated";
-import TrackAction from "../../utils/Track";
 import getDifference from "../../utils/getDifference";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
 import uploadToArweave from "../../utils/uploadToArweave";
+import Sheet from "../Bottom";
 import Icon from "../Icon";
 import Heading from "../UI/Heading";
+import Ripple from "../UI/Ripple";
 import StyledText from "../UI/StyledText";
-import { useNavigation } from "@react-navigation/native";
 import { SheetProps } from "../common/MyVideoCard";
+import TrackAction from "../../utils/Track";
+import { PUBLICATION } from "../../constants/tracking";
 
-export function PinnedPublicationSheet() {
-  const toast = useToast();
+export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
+  const { setHasPinned } = usePinStore();
+  const toast = useToast();
 
   const [
     createSetProfileMetadataViaDispatcherMutation,
   ] = useCreateSetProfileMetadataViaDispatcherMutation({
-    onCompleted: (data) => {
-      toast.success("pinned video removed successfully");
-      TrackAction(SETTINGS.PROFILE.UPDATE_DETAILS);
+    onCompleted: () => {
+      setHasPinned(false);
+      toast.success("video unpined successfully");
+      TrackAction(PUBLICATION.PIN_PUBLICATION);
     },
     onError: () => {
       toast.error("Some error occured please try again");
     },
   });
 
-  
+  const RemovepinPublication = async () => {
+    let currentAttributes = currentProfile?.attributes;
+    let attr = [...currentAttributes!];
+    const isAlreadyPinned = attr?.find(
+      (attr) =>
+        attr.traitType === "pinnedPublicationId" ||
+        attr.key === "pinnedPublicationId"
+    );
 
-  return <View></View>;
+    if (isAlreadyPinned) {
+      const index = attr?.indexOf(isAlreadyPinned);
+      attr?.splice(index!, 1);
+    }
+
+    const newMetaData: ProfileMetaDataV1nput = {
+      version: "1.0.0",
+      metadata_id: uuidV4(),
+      name: currentProfile?.name || "",
+      bio: currentProfile?.bio || "",
+      cover_picture: getRawurl(currentProfile?.coverPicture),
+      attributes: attr,
+    };
+
+    const hash = await uploadToArweave(newMetaData);
+
+    createSetProfileMetadataViaDispatcherMutation({
+      variables: {
+        request: {
+          metadata: `ar://${hash}`,
+          profileId: currentProfile?.id,
+        },
+      },
+      context: {
+        headers: {
+          "x-access-token": `Bearer ${accessToken}`,
+        },
+      },
+    });
+  };
+
+  return (
+    <Sheet
+      ref={sheetRef}
+      snapPoints={["15%"]}
+      enablePanDownToClose={true}
+      enableOverDrag={true}
+      bottomInset={32}
+      style={{
+        marginHorizontal: 8,
+      }}
+      detached={true}
+      children={
+        <Ripple
+          onTap={() => {
+            RemovepinPublication();
+            sheetRef?.current?.close();
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              height: "auto",
+              paddingVertical: 16,
+              paddingHorizontal: 16,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Icon name={"delete"} color={"white"} />
+            <StyledText
+              title={"Remove pin"}
+              style={{
+                fontSize: 16,
+                marginHorizontal: 8,
+                color: "white",
+              }}
+            />
+          </View>
+        </Ripple>
+      }
+    />
+  );
 }
 
 export default function PinnedPublication({
