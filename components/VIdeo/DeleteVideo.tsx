@@ -70,7 +70,12 @@ export default function DeleteVideo({ sheetRef, pubId }: SheetProps) {
                 sheetRef.current?.close();
               }}
               title="Cancel"
-              textStyle={{ fontWeight: "600", fontSize: 16, color: "black" }}
+              bg={"rgba(255,255,255,0.1)"}
+              textStyle={{
+                fontWeight: "600",
+                fontSize: 16,
+                color: "white",
+              }}
               py={12}
               borderRadius={8}
             />
@@ -90,9 +95,13 @@ export default function DeleteVideo({ sheetRef, pubId }: SheetProps) {
                 // });
               }}
               mt={16}
-              title="Log Out"
-              bg={"red"}
-              textStyle={{ fontWeight: "600", fontSize: 16, color: "black" }}
+              title="Delete"
+              bg={"#f5f5f5"}
+              textStyle={{
+                fontWeight: "600",
+                fontSize: 16,
+                color: "black",
+              }}
               py={12}
               borderRadius={8}
             />

@@ -139,6 +139,10 @@ export default function MyVideoCard({
             }
             sheetRef?.current?.snapToIndex(0);
           }}
+          style={{
+            padding: 4,
+            height: "30%",
+          }}
         >
           <Icon name="more" size={16} />
         </TouchableOpacity>
