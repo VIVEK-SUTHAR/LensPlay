@@ -41,6 +41,7 @@ import uploadToArweave from "../../utils/uploadToArweave";
 import TrackAction from "../../utils/Track";
 import { SETTINGS } from "../../constants/tracking";
 import { ProfileMetaDataV1nput } from "../../types";
+import DeleteVideo from "../VIdeo/DeleteVideo";
 
 type MyVideoCardProps = {
   publication: Mirror | Post;
@@ -146,7 +147,7 @@ export default function MyVideoCard({
   );
 }
 
-type SheetProps = {
+export type SheetProps = {
   sheetRef: React.RefObject<BottomSheetMethods>;
   pubId: Scalars["InternalPublicationId"];
 };
@@ -155,12 +156,12 @@ export const VideoActionSheet = ({ sheetRef, pubId }: SheetProps) => {
   const toast = useToast();
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
+  const deleteRef = React.useRef<BottomSheetMethods>(null);
 
   const [
     createSetProfileMetadataViaDispatcherMutation,
   ] = useCreateSetProfileMetadataViaDispatcherMutation({
     onCompleted: (data) => {
-      console.log(data);
       toast.success("Video pinned successfully !");
       TrackAction(SETTINGS.PROFILE.UPDATE_DETAILS);
     },
@@ -237,56 +238,63 @@ export const VideoActionSheet = ({ sheetRef, pubId }: SheetProps) => {
     {
       name: "Delete",
       icon: "delete",
-      onPress: (pubid: Scalars["InternalPublicationId"]) => {},
+      onPress: (pubid: Scalars["InternalPublicationId"]) => {
+        sheetRef.current?.close();
+        deleteRef.current?.snapToIndex(0);
+      },
     },
   ];
+
   return (
-    <Sheet
-      ref={sheetRef}
-      snapPoints={["34%"]}
-      enablePanDownToClose={true}
-      enableOverDrag={true}
-      bottomInset={32}
-      style={{
-        marginHorizontal: 8,
-      }}
-      detached={true}
-      children={
-        <FlatList
-          data={actionList}
-          renderItem={({ item }) => {
-            return (
-              <Ripple
-                onTap={() => {
-                  item.onPress(pubId);
-                  sheetRef?.current?.close();
-                }}
-              >
-                <View
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                    paddingVertical: 16,
-                    paddingHorizontal: 16,
-                    flexDirection: "row",
-                    alignItems: "center",
+    <>
+      <Sheet
+        ref={sheetRef}
+        snapPoints={["34%"]}
+        enablePanDownToClose={true}
+        enableOverDrag={true}
+        bottomInset={32}
+        style={{
+          marginHorizontal: 8,
+        }}
+        detached={true}
+        children={
+          <FlatList
+            data={actionList}
+            renderItem={({ item }) => {
+              return (
+                <Ripple
+                  onTap={() => {
+                    item.onPress(pubId);
+                    sheetRef?.current?.close();
                   }}
                 >
-                  <Icon name={item.icon} color={"white"} />
-                  <StyledText
-                    title={item.name}
+                  <View
                     style={{
-                      fontSize: 16,
-                      marginHorizontal: 8,
-                      color: "white",
+                      width: "100%",
+                      height: "auto",
+                      paddingVertical: 16,
+                      paddingHorizontal: 16,
+                      flexDirection: "row",
+                      alignItems: "center",
                     }}
-                  />
-                </View>
-              </Ripple>
-            );
-          }}
-        />
-      }
-    />
+                  >
+                    <Icon name={item.icon} color={"white"} />
+                    <StyledText
+                      title={item.name}
+                      style={{
+                        fontSize: 16,
+                        marginHorizontal: 8,
+                        color: "white",
+                      }}
+                    />
+                  </View>
+                </Ripple>
+              );
+            }}
+          />
+        }
+      />
+      <DeleteVideo sheetRef={deleteRef} pubId={pubId} />
+    </>
   );
 };

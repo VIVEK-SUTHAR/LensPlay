@@ -48,7 +48,10 @@ import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
 import TrackAction from "../../utils/Track";
 
-const VideoPage = ({ navigation,route }: RootStackScreenProps<"VideoPage">) => {
+const VideoPage = ({
+  navigation,
+  route,
+}: RootStackScreenProps<"VideoPage">) => {
   const { activePublication } = useActivePublication();
   const toast = useToast();
   const { accessToken } = useAuthStore();
@@ -171,15 +174,17 @@ const VideoPage = ({ navigation,route }: RootStackScreenProps<"VideoPage">) => {
       collectRef?.current?.close();
     }
   };
-  console.log("livepper",route?.params?.playBackurl);
-  
+
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
         <Player
           poster={getRawurl(activePublication?.metadata?.cover)}
           title={activePublication?.metadata?.name || ""}
-          url={route?.params?.playBackurl ||  activePublication?.metadata?.media[0]?.original?.url}
+          url={
+            route?.params?.playBackurl ||
+            activePublication?.metadata?.media[0]?.original?.url
+          }
           inFullscreen={inFullscreen}
           isMute={isMute}
           setInFullscreen={setInFullsreen}
