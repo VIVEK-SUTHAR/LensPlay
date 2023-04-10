@@ -65,7 +65,7 @@ const UserVideos = ({
             />
           )}
         />
-        <VideoActionSheet sheetRef={actionSheetRef} pubId={pubId} />
+        <VideoActionSheet sheetRef={actionSheetRef} pubId={pubId} route={route} />
       </SafeAreaView>
     </>
   );

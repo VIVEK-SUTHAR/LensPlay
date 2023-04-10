@@ -1,7 +1,6 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { v4 as uuidV4 } from "uuid";
 import {
   Dimensions,
   FlatList,
@@ -9,38 +8,34 @@ import {
   Pressable,
   Share,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
+import { v4 as uuidV4 } from "uuid";
 import { black } from "../../constants/Colors";
+import { SETTINGS } from "../../constants/tracking";
 import {
   useActivePublication,
   useAuthStore,
   useProfile,
-  useToast,
+  useToast
 } from "../../store/Store";
+import { ProfileMetaDataV1nput } from "../../types";
 import {
-  Attribute,
-  InputMaybe,
-  Maybe,
-  Mirror,
-  Post,
-  Profile,
-  PublicationMetadataDisplayTypes,
+  Attribute, Mirror,
+  Post, PublicationMetadataDisplayTypes,
   Scalars,
-  useCreateSetProfileMetadataViaDispatcherMutation,
+  useCreateSetProfileMetadataViaDispatcherMutation
 } from "../../types/generated";
 import getDifference from "../../utils/getDifference";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
+import TrackAction from "../../utils/Track";
+import uploadToArweave from "../../utils/uploadToArweave";
 import Sheet from "../Bottom";
 import Icon from "../Icon";
 import Heading from "../UI/Heading";
 import Ripple from "../UI/Ripple";
 import StyledText from "../UI/StyledText";
-import uploadToArweave from "../../utils/uploadToArweave";
-import TrackAction from "../../utils/Track";
-import { SETTINGS } from "../../constants/tracking";
-import { ProfileMetaDataV1nput } from "../../types";
 import DeleteVideo from "../VIdeo/DeleteVideo";
 
 type MyVideoCardProps = {
@@ -154,9 +149,10 @@ export default function MyVideoCard({
 export type SheetProps = {
   sheetRef: React.RefObject<BottomSheetMethods>;
   pubId: Scalars["InternalPublicationId"];
+  route: any;
 };
 
-export const VideoActionSheet = ({ sheetRef, pubId }: SheetProps) => {
+export const VideoActionSheet = ({ sheetRef, pubId, route }: SheetProps) => {
   const toast = useToast();
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
@@ -249,11 +245,27 @@ export const VideoActionSheet = ({ sheetRef, pubId }: SheetProps) => {
     },
   ];
 
+  const routename = route.params.title;
+  let newListItem;
+  if (routename.includes("collects") || routename.includes("mirror")) {
+    newListItem = [actionList[1], actionList[2]];
+  } else {
+    newListItem = actionList;
+  }
+
+  const getSnapPoint = React.useCallback(() => {
+    if (routename.includes("collects") || routename.includes("mirror")) {
+      return ["24%"];
+    } else {
+      return ["34%"];
+    }
+  }, []);
+
   return (
     <>
       <Sheet
         ref={sheetRef}
-        snapPoints={["34%"]}
+        snapPoints={getSnapPoint()}
         enablePanDownToClose={true}
         enableOverDrag={true}
         bottomInset={32}
@@ -263,7 +275,7 @@ export const VideoActionSheet = ({ sheetRef, pubId }: SheetProps) => {
         detached={true}
         children={
           <FlatList
-            data={actionList}
+            data={newListItem}
             renderItem={({ item }) => {
               return (
                 <Ripple

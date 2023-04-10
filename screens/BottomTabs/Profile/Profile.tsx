@@ -153,12 +153,15 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 
   useEffect(() => {
     getLinks();
-    getPinnedPublication();
   }, []);
 
   if (isGuest) return <PleaseLogin />;
   if (loading) return <ProfileSkeleton />;
   if (Profile) {
+    useEffect(() => {
+    getPinnedPublication();
+      
+    },[])
     const profile = Profile?.profile;
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>

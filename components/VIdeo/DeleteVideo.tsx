@@ -16,6 +16,8 @@ export default function DeleteVideo({ sheetRef, pubId }: SheetProps) {
 
   const [deleteVideo, { data, error, loading }] = useHidePublicationMutation({
     onCompleted: (data) => {
+      console.log(data);
+
       toast.success("video deleted successfully");
       TrackAction(SETTINGS.PROFILE.UPDATE_DETAILS);
     },
@@ -81,18 +83,18 @@ export default function DeleteVideo({ sheetRef, pubId }: SheetProps) {
             />
             <Button
               onPress={() => {
-                // deleteVideo({
-                //   variables: {
-                //     request: {
-                //       publicationId: pubId,
-                //     },
-                //   },
-                //   context: {
-                //     headers: {
-                //       "x-access-token": `Bearer ${accessToken}`,
-                //     },
-                //   },
-                // });
+                deleteVideo({
+                  variables: {
+                    request: {
+                      publicationId: pubId,
+                    },
+                  },
+                  context: {
+                    headers: {
+                      "x-access-token": `Bearer ${accessToken}`,
+                    },
+                  },
+                });
               }}
               mt={16}
               title="Delete"
