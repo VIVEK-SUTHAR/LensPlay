@@ -56,7 +56,6 @@ const UserVideos = ({
             />
           }
           renderItem={({ item }) => (
-            // <VideoCard publication={item} id={item?.id} />
             <MyVideoCard
               publication={item}
               id={item.id}
@@ -65,7 +64,11 @@ const UserVideos = ({
             />
           )}
         />
-        <VideoActionSheet sheetRef={actionSheetRef} pubId={pubId} route={route} />
+        <VideoActionSheet
+          sheetRef={actionSheetRef}
+          pubId={pubId}
+          route={route}
+        />
       </SafeAreaView>
     </>
   );

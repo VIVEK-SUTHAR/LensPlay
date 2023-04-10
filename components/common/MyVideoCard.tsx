@@ -8,7 +8,7 @@ import {
   Pressable,
   Share,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { v4 as uuidV4 } from "uuid";
 import { black } from "../../constants/Colors";
@@ -17,14 +17,16 @@ import {
   useActivePublication,
   useAuthStore,
   useProfile,
-  useToast
+  useToast,
 } from "../../store/Store";
 import { ProfileMetaDataV1nput } from "../../types";
 import {
-  Attribute, Mirror,
-  Post, PublicationMetadataDisplayTypes,
+  Attribute,
+  Mirror,
+  Post,
+  PublicationMetadataDisplayTypes,
   Scalars,
-  useCreateSetProfileMetadataViaDispatcherMutation
+  useCreateSetProfileMetadataViaDispatcherMutation,
 } from "../../types/generated";
 import getDifference from "../../utils/getDifference";
 import getIPFSLink from "../../utils/getIPFSLink";
@@ -226,7 +228,7 @@ export const VideoActionSheet = ({ sheetRef, pubId, route }: SheetProps) => {
       },
     },
     {
-      name: "Share this video",
+      name: "Share",
       icon: "share",
       onPress: (pubid: Scalars["InternalPublicationId"]) => {
         Share.share({

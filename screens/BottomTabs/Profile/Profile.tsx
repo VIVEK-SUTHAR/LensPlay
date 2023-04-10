@@ -64,14 +64,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const { isGuest } = useGuestStore();
   const { accessToken } = useAuthStore();
 
-  const { data: Profile, loading, error, refetch } = useProfileQuery({
-    variables: {
-      request: {
-        profileId: userStore?.currentProfile?.id,
-      },
-    },
-  });
-
   const QueryRequest = {
     profileId: userStore?.currentProfile?.id,
     publicationTypes: [PublicationTypes.Post],
@@ -80,6 +72,14 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
     },
     sources: ["lenstube", "lensplay"],
   };
+
+  const { data: Profile, loading, error, refetch } = useProfileQuery({
+    variables: {
+      request: {
+        profileId: userStore?.currentProfile?.id,
+      },
+    },
+  });
 
   const {
     data: AllVideosData,
@@ -113,7 +113,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
         profileId: userStore?.currentProfile?.id,
       },
     });
-    getPinnedPublication();
     setRefreshing(false);
   }, []);
 
@@ -159,9 +158,8 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   if (loading) return <ProfileSkeleton />;
   if (Profile) {
     useEffect(() => {
-    getPinnedPublication();
-      
-    },[])
+      getPinnedPublication();
+    }, []);
     const profile = Profile?.profile;
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>

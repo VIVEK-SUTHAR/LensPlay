@@ -5,19 +5,24 @@ import StyledText from "../UI/StyledText";
 import { View } from "react-native";
 import Sheet from "../Bottom";
 import { SheetProps } from "../common/MyVideoCard";
-import { useHidePublicationMutation } from "../../types/generated";
+import { Scalars, useHidePublicationMutation } from "../../types/generated";
 import TrackAction from "../../utils/Track";
 import { SETTINGS } from "../../constants/tracking";
 import { useAuthStore, useToast } from "../../store/Store";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 
-export default function DeleteVideo({ sheetRef, pubId }: SheetProps) {
+export type DeleteVideoProps = {
+  sheetRef: React.RefObject<BottomSheetMethods>;
+  pubId: Scalars["InternalPublicationId"];
+};
+
+export default function DeleteVideo({ sheetRef, pubId }: DeleteVideoProps) {
   const toast = useToast();
   const { accessToken } = useAuthStore();
 
   const [deleteVideo, { data, error, loading }] = useHidePublicationMutation({
     onCompleted: (data) => {
       console.log(data);
-
       toast.success("video deleted successfully");
       TrackAction(SETTINGS.PROFILE.UPDATE_DETAILS);
     },
