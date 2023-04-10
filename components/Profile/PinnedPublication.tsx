@@ -32,6 +32,7 @@ import Icon from "../Icon";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
 import { useNavigation } from "@react-navigation/native";
+import { SheetProps } from "../common/MyVideoCard";
 
 export function PinnedPublicationSheet() {
   const toast = useToast();
@@ -50,48 +51,14 @@ export function PinnedPublicationSheet() {
     },
   });
 
-  const RemovepinPublication = async () => {
-    const attr = currentProfile?.attributes;
-    const isAlreadyPinned = attr?.find(
-      (attr) =>
-        attr.traitType === "pinnedPublicationId" ||
-        attr.key === "pinnedPublicationId"
-    );
-
-    if (isAlreadyPinned) {
-      const index = attr?.indexOf(isAlreadyPinned);
-      attr?.splice(index!, 1);
-    }
-
-    const newMetaData: ProfileMetaDataV1nput = {
-      version: "1.0.0",
-      metadata_id: uuidV4(),
-      name: currentProfile?.name || "",
-      bio: currentProfile?.bio || "",
-      cover_picture: getRawurl(currentProfile?.coverPicture),
-      attributes: attr,
-    };
-
-    const hash = await uploadToArweave(newMetaData);
-    createSetProfileMetadataViaDispatcherMutation({
-      variables: {
-        request: {
-          metadata: `ar://${hash}`,
-          profileId: currentProfile?.id,
-        },
-      },
-      context: {
-        headers: {
-          "x-access-token": `Bearer ${accessToken}`,
-        },
-      },
-    });
-  };
+  
 
   return <View></View>;
 }
 
-export default function PinnedPublication() {
+export default function PinnedPublication({
+  sheetRef,
+}: Pick<SheetProps, "sheetRef">) {
   const activeProfile = useProfile();
   const { accessToken } = useAuthStore();
   const pinStore = usePinStore();
@@ -231,7 +198,7 @@ export default function PinnedPublication() {
             <TouchableOpacity
               activeOpacity={0.5}
               onPress={() => {
-                // sheetRef?.current?.snapToIndex(0);
+                sheetRef?.current?.snapToIndex(0);
               }}
               style={{
                 padding: 4,

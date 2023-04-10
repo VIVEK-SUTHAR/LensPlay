@@ -4,11 +4,10 @@ import React, { useState } from "react";
 import {
   FlatList,
   RefreshControl,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  View,
+  SafeAreaView, StyleSheet,
+  View
 } from "react-native";
+import Skeleton from "../../../components/common/Skeleton";
 import PleaseLogin from "../../../components/PleaseLogin";
 import Button from "../../../components/UI/Button";
 import Heading from "../../../components/UI/Heading";
@@ -19,10 +18,9 @@ import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
   FeedItemRoot,
   PublicationMainFocus,
-  useFeedQuery,
+  useFeedQuery
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
-import Skeleton from "../../../components/common/Skeleton";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -175,3 +173,5 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
   },
 });
+
+
