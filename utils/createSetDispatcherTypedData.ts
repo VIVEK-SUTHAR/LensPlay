@@ -1,4 +1,7 @@
-function createSetDispatcherTypedData(response) {
+import { FetchResult } from "@apollo/client";
+import { CreateSetDispatcherTypedDataMutation, CreateSetDispatcherTypedDataMutationResult } from "../types/generated";
+
+function createSetDispatcherTypedData(response: FetchResult<CreateSetDispatcherTypedDataMutation>) {
     const typedData = response?.data?.createSetDispatcherTypedData?.typedData;
     const types = typedData?.types;
     const values = typedData?.value;

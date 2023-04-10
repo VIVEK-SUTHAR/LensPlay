@@ -7,16 +7,13 @@ import { useAuthStore, useProfile, useThemeStore, useToast } from '../../store/S
 import Button from '../../components/UI/Button';
 import { useWalletConnect } from '@walletconnect/react-native-dapp';
 import { ToastType } from '../../types/Store';
-import createProfile from '../../utils/lens/createProfile';
 import getProfiles from '../../utils/lens/getProfiles';
-import enableDispatcher from '../../utils/lens/enableDispatcher';
 import createSetDispatcherTypedData from '../../utils/createSetDispatcherTypedData';
-import broadcastTransaction from '../../utils/lens/broadcastTransaction';
 import ImageCarousel from '../../components/UI/ImageCarousel';
 import StyledText from '../../components/UI/StyledText';
 import Icon from '../../components/Icon';
 import { StatusBar } from 'expo-status-bar';
-import { Scalars } from '../../types/generated';
+import { Scalars, useBroadcastMutation, useCreateProfileMutation, useCreateSetDispatcherTypedDataMutation } from '../../types/generated';
 
 
 const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) => {
@@ -43,9 +40,41 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
         }
     }
 
-    const EnableDispatcher = async (id: string, token: string) => {
+    const [createProfile] = useCreateProfileMutation({
+        onError: (e) => {
+            toast.show("Something went wrong!", ToastType.ERROR, true);
+        },
+    });
+
+    const [setDispatcher] = useCreateSetDispatcherTypedDataMutation({
+        onError: (e) => {
+            toast.show("Something went wrong!", ToastType.ERROR, true);
+        },
+    });
+
+    const [broadcastTransaction] = useBroadcastMutation({
+        onError: (e) => {
+            toast.show("Something went wrong!", ToastType.ERROR, true);
+        },
+    })
+
+
+
+
+    const EnableDispatcher = async (id: Scalars["ProfileId"]) => {
         const address = connector.accounts[0];
-        const data = await enableDispatcher(id, token);
+        const data = await setDispatcher({
+            variables: {
+                request: {
+                    profileId: id
+                }
+            },
+            context: {
+                headers: {
+                    "x-access-token": `Bearer ${accessToken}`,
+                },
+            }
+        });
         console.log('dispatcher enabled');
 
         const formattedTypedData = createSetDispatcherTypedData(data);
@@ -56,8 +85,21 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
         const sig = await connector.signTypedData(msgParams);
         console.log('signed typed data');
 
-
-        const brodcast = broadcastTransaction(data?.data?.createSetDispatcherTypedData?.id, sig, accessToken);
+        const broadcast = await broadcastTransaction(
+            {
+                variables: {
+                    request: {
+                        id: data?.data?.createSetDispatcherTypedData?.id,
+                        signature: sig
+                    }
+                },
+                context: {
+                    headers: {
+                        "x-access-token": `Bearer ${accessToken}`,
+                    },
+                }
+            }
+        )
         console.log('brodcasted');
         setIsloading(false);
     }
@@ -73,7 +115,16 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                 followNFTURI: null,
                 followModule: null,
             };
-            const response = await createProfile(request, accessToken);
+            const response = await createProfile({
+                variables: {
+                    request,
+                },
+                context: {
+                    headers: {
+                        "x-access-token": `Bearer ${accessToken}`,
+                    },
+                }
+            });
 
             if (response?.data?.createProfile?.__typename !== "RelayError") {
                 setTimeout(async () => {
@@ -81,7 +132,7 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                     const profile = await handleDefaultProfile(address);
                     console.log('got the profile', profile);
 
-                    await EnableDispatcher(profile?.id, accessToken);
+                    await EnableDispatcher(profile?.id);
                     navigation.navigate("Root");
                 }, 5000);
 
@@ -165,10 +216,10 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
         },
     ]
     return (
-        <KeyboardAvoidingView style={{flex: 1}}>
-      <StatusBar backgroundColor="black" style="auto" />
+        <KeyboardAvoidingView style={{ flex: 1 }}>
+            <StatusBar backgroundColor="black" style="auto" />
             <ScrollView>
-                <View style={[styles.container , {height: windowHeight}]}>
+                <View style={[styles.container, { height: windowHeight }]}>
                     <View style={{ width: '100%', alignItems: 'center', flex: 1 }}>
                         <View style={styles.textContainer}>
                             <StyledText title={'Create your'} style={{ color: 'white', fontSize: 30, fontWeight: '700' }} />

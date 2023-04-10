@@ -4348,7 +4348,7 @@ export type CreateProfileMutationVariables = Exact<{
 }>;
 
 
-export type CreateProfileMutation = { __typename?: 'Mutation', createProfile: { __typename?: 'RelayError', reason: RelayErrorReasons } | { __typename?: 'RelayerResult', txHash: any } };
+export type CreateProfileMutation = { __typename?: 'Mutation', createProfile: { __typename: 'RelayError', reason: RelayErrorReasons } | { __typename: 'RelayerResult', txHash: any } };
 
 export type HidePublicationMutationVariables = Exact<{
   request: HidePublicationRequest;
@@ -4407,12 +4407,11 @@ export type CreatePostViaDispatcherMutationVariables = Exact<{
 export type CreatePostViaDispatcherMutation = { __typename?: 'Mutation', createPostViaDispatcher: { __typename?: 'RelayError', reason: RelayErrorReasons } | { __typename?: 'RelayerResult', txId: any, txHash: any } };
 
 export type CreateSetDispatcherTypedDataMutationVariables = Exact<{
-  options?: InputMaybe<TypedDataOptions>;
   request: SetDispatcherRequest;
 }>;
 
 
-export type CreateSetDispatcherTypedDataMutation = { __typename?: 'Mutation', createSetDispatcherTypedData: { __typename?: 'CreateSetDispatcherBroadcastItemResult', id: any, typedData: { __typename?: 'CreateSetDispatcherEIP712TypedData', types: { __typename?: 'CreateSetDispatcherEIP712TypedDataTypes', SetDispatcherWithSig: Array<{ __typename?: 'EIP712TypedDataField', name: string, type: string }> }, domain: { __typename?: 'EIP712TypedDataDomain', name: string, chainId: any, version: string, verifyingContract: any }, value: { __typename?: 'CreateSetDispatcherEIP712TypedDataValue', nonce: any, deadline: any, profileId: any, dispatcher: any } } } };
+export type CreateSetDispatcherTypedDataMutation = { __typename?: 'Mutation', createSetDispatcherTypedData: { __typename?: 'CreateSetDispatcherBroadcastItemResult', id: any, expiresAt: any, typedData: { __typename?: 'CreateSetDispatcherEIP712TypedData', types: { __typename?: 'CreateSetDispatcherEIP712TypedDataTypes', SetDispatcherWithSig: Array<{ __typename?: 'EIP712TypedDataField', name: string, type: string }> }, domain: { __typename?: 'EIP712TypedDataDomain', name: string, chainId: any, version: string, verifyingContract: any }, value: { __typename?: 'CreateSetDispatcherEIP712TypedDataValue', nonce: any, deadline: any, profileId: any, dispatcher: any } } } };
 
 export type CreateSetProfileImageUriViaDispatcherMutationVariables = Exact<{
   request: UpdateProfileImageRequest;
@@ -5226,6 +5225,7 @@ export const CreateProfileDocument = gql`
     ... on RelayError {
       reason
     }
+    __typename
   }
 }
     `;
@@ -5510,9 +5510,10 @@ export type CreatePostViaDispatcherMutationHookResult = ReturnType<typeof useCre
 export type CreatePostViaDispatcherMutationResult = Apollo.MutationResult<CreatePostViaDispatcherMutation>;
 export type CreatePostViaDispatcherMutationOptions = Apollo.BaseMutationOptions<CreatePostViaDispatcherMutation, CreatePostViaDispatcherMutationVariables>;
 export const CreateSetDispatcherTypedDataDocument = gql`
-    mutation CreateSetDispatcherTypedData($options: TypedDataOptions, $request: SetDispatcherRequest!) {
-  createSetDispatcherTypedData(options: $options, request: $request) {
+    mutation CreateSetDispatcherTypedData($request: SetDispatcherRequest!) {
+  createSetDispatcherTypedData(request: $request) {
     id
+    expiresAt
     typedData {
       types {
         SetDispatcherWithSig {
@@ -5551,7 +5552,6 @@ export type CreateSetDispatcherTypedDataMutationFn = Apollo.MutationFunction<Cre
  * @example
  * const [createSetDispatcherTypedDataMutation, { data, loading, error }] = useCreateSetDispatcherTypedDataMutation({
  *   variables: {
- *      options: // value for 'options'
  *      request: // value for 'request'
  *   },
  * });
