@@ -1,4 +1,4 @@
-import { default as React } from "react";
+import { default as React, useEffect } from "react";
 import {
   Dimensions,
   Image,
@@ -6,33 +6,34 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { black } from "../../constants/Colors";
+import { v4 as uuidV4 } from "uuid";
+import { black, white } from "../../constants/Colors";
+import { SETTINGS } from "../../constants/tracking";
 import {
   useActivePublication,
   useAuthStore,
   useProfile,
   useToast,
 } from "../../store/Store";
+import usePinStore from "../../store/pinStore";
+import { ProfileMetaDataV1nput } from "../../types";
 import {
+  Attribute,
   Post,
-  PublicationMetadataDisplayTypes,
   useCreateSetProfileMetadataViaDispatcherMutation,
-  usePublicationDetailsQuery,
+  usePublicationDetailsLazyQuery,
 } from "../../types/generated";
+import TrackAction from "../../utils/Track";
 import getDifference from "../../utils/getDifference";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
+import uploadToArweave from "../../utils/uploadToArweave";
 import Icon from "../Icon";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
 import { useNavigation } from "@react-navigation/native";
-import TrackAction from "../../utils/Track";
-import { SETTINGS } from "../../constants/tracking";
-import { ProfileMetaDataV1nput } from "../../types";
-import { v4 as uuidV4 } from "uuid";
-import uploadToArweave from "../../utils/uploadToArweave";
 
-export function PinnedPublicationSheet({ pubId }: { pubId: string }) {
+export function PinnedPublicationSheet() {
   const toast = useToast();
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
@@ -90,21 +91,44 @@ export function PinnedPublicationSheet({ pubId }: { pubId: string }) {
   return <View></View>;
 }
 
-export default function PinnedPublication({ pubId }: { pubId: string }) {
+export default function PinnedPublication() {
   const activeProfile = useProfile();
   const { accessToken } = useAuthStore();
+  const pinStore = usePinStore();
   const navigation = useNavigation();
   const { setActivePublication } = useActivePublication();
 
-  const { data, loading, error } = usePublicationDetailsQuery({
-    variables: {
-      request: {
-        publicationId: pubId,
-      },
-      reactionRequest: {
-        profileId: activeProfile?.currentProfile?.id,
-      },
-    },
+  useEffect(() => {
+    getPinnedPublication();
+  }, [pinStore.publicationId]);
+
+  const getPinnedPublication = () => {
+    const attributes = activeProfile?.currentProfile?.attributes;
+    const pinnedPublication = attributes?.find(
+      (attr: Attribute) =>
+        attr.traitType === "pinnedPublicationId" ||
+        attr.key === "pinnedPublicationId"
+    );
+    if (pinnedPublication) {
+      pinStore.setHasPinned(true);
+      pinStore.setPinnedPubId(pinnedPublication.value);
+      fetchPinnedPublication({
+        variables: {
+          request: {
+            publicationId: pinnedPublication.value,
+          },
+          reactionRequest: {
+            profileId: activeProfile?.currentProfile?.id,
+          },
+        },
+      });
+    }
+  };
+
+  const [
+    fetchPinnedPublication,
+    { data, loading, error },
+  ] = usePublicationDetailsLazyQuery({
     context: {
       headers: {
         "x-access-token": `Bearer ${accessToken}`,
@@ -115,91 +139,110 @@ export default function PinnedPublication({ pubId }: { pubId: string }) {
   if (error) return <></>;
   if (data) {
     return (
-      <Pressable
-        android_ripple={{
-          color: black[400],
-        }}
+      <View
         style={{
-          flexDirection: "row",
-          maxWidth: Dimensions.get("window").width,
-          paddingHorizontal: 16,
-          paddingVertical: 8,
-        }}
-        onPress={() => {
-          setActivePublication(data?.publication as Post);
-          navigation.navigate("VideoPage");
+          marginTop: 16,
+          marginBottom: 32,
         }}
       >
-        <View>
-          <Image
-            source={{
-              uri: getIPFSLink(getRawurl(data?.publication?.metadata?.cover)),
-            }}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Icon name="star" size={12} color={white[200]} />
+          <StyledText
+            title="pinned video"
             style={{
-              width: 160,
-              height: 100,
-              borderRadius: 8,
+              color: white[200],
+              fontSize: 12,
+              marginLeft: 8,
             }}
           />
         </View>
-        <View
+        <Pressable
           style={{
-            height: "100%",
-            width: "50%",
-            marginLeft: 8,
             flexDirection: "row",
-            justifyContent: "space-between",
+            maxWidth: Dimensions.get("window").width,
+            marginTop: 16,
+          }}
+          onPress={() => {
+            setActivePublication(data?.publication as Post);
+            navigation.navigate("VideoPage");
           }}
         >
+          <View>
+            <Image
+              source={{
+                uri: getIPFSLink(getRawurl(data?.publication?.metadata?.cover)),
+              }}
+              style={{
+                width: 160,
+                height: 100,
+                borderRadius: 8,
+              }}
+            />
+          </View>
           <View
             style={{
-              width: "80%",
+              height: "100%",
+              width: "50%",
+              marginLeft: 8,
+              flexDirection: "row",
+              justifyContent: "space-between",
             }}
           >
-            <Heading
-              title={data?.publication?.metadata?.name}
-              style={{ color: "white", fontSize: 16, fontWeight: "500" }}
-              numberOfLines={3}
-            />
             <View
               style={{
-                marginTop: 4,
+                width: "80%",
               }}
             >
-              <StyledText
-                title={
-                  data?.publication?.metadata?.content ||
-                  data?.publication?.metadata?.description
-                }
-                numberOfLines={1}
-                style={{ color: "gray", fontSize: 12 }}
+              <Heading
+                title={data?.publication?.metadata?.name}
+                style={{ color: "white", fontSize: 16, fontWeight: "500" }}
+                numberOfLines={3}
               />
+              <View
+                style={{
+                  marginTop: 4,
+                }}
+              >
+                <StyledText
+                  title={
+                    data?.publication?.metadata?.content ||
+                    data?.publication?.metadata?.description
+                  }
+                  numberOfLines={1}
+                  style={{ color: "gray", fontSize: 12 }}
+                />
+              </View>
+              <View
+                style={{
+                  marginTop: 2,
+                }}
+              >
+                <StyledText
+                  title={getDifference(data?.publication?.createdAt)}
+                  style={{ color: "gray", fontSize: 12 }}
+                />
+              </View>
             </View>
-            <View
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={() => {
+                // sheetRef?.current?.snapToIndex(0);
+              }}
               style={{
-                marginTop: 2,
+                padding: 4,
+                height: "30%",
               }}
             >
-              <StyledText
-                title={getDifference(data?.publication?.createdAt)}
-                style={{ color: "gray", fontSize: 12 }}
-              />
-            </View>
+              <Icon name="more" size={16} />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={() => {
-              // sheetRef?.current?.snapToIndex(0);
-            }}
-            style={{
-              padding: 4,
-              height: "30%",
-            }}
-          >
-            <Icon name="more" size={16} />
-          </TouchableOpacity>
-        </View>
-      </Pressable>
+        </Pressable>
+      </View>
     );
   }
   return <></>;

@@ -39,7 +39,6 @@ const VideoCard = ({
       (item: MetadataAttributeOutput) => {
         if (item?.traitType === "durationInSeconds") {
           setVideoTime(item?.value);
-          
         }
       }
     );
@@ -64,10 +63,8 @@ const VideoCard = ({
         <TouchableWithoutFeedback
           onPress={() => {
             setActivePublication(publication);
-            console.log(playBackurl);
-            
             navigation.navigate("VideoPage", {
-              playBackurl:playBackurl
+              playBackurl: playBackurl,
             });
           }}
         >

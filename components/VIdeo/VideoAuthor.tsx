@@ -106,7 +106,6 @@ const VideoCreator = (props: VideoCreatorProps) => {
             fontSize: 14,
             fontWeight: "600",
           }}
-          animated={true}
           onPress={followCreator}
         />
       )}

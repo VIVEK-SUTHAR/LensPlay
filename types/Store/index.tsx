@@ -8,6 +8,7 @@ import {
   Profile,
   ReferenceModuleParams,
   ReferenceModules,
+  Scalars,
 } from "../generated";
 
 export interface IAuthStore {
@@ -122,6 +123,13 @@ export type ReferenceModuleType = {
     isEnabled: boolean;
     seperationLevel: number;
   } | null;
+};
+
+export type PinStore = {
+  hasPinned: boolean;
+  publicationId: string | undefined;
+  setHasPinned: (newValue: boolean) => void;
+  setPinnedPubId: (pubId: string) => void;
 };
 
 export interface IUploadStore {

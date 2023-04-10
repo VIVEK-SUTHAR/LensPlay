@@ -65,7 +65,7 @@ export default function SocialLinks({
       style={{
         flexDirection: "row",
         alignItems: "center",
-        marginTop: 8,
+        marginTop: 16,
       }}
     >
       {linksData.map((link) =>
