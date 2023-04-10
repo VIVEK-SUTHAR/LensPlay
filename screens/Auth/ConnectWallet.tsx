@@ -19,6 +19,7 @@ import handleWaitlist from "../../utils/handleWaitlist";
 import getDefaultProfile from "../../utils/lens/getDefaultProfile";
 import TrackAction from "../../utils/Track";
 import getProfiles from "../../utils/lens/getProfiles";
+import { Scalars } from "../../types/generated";
 
 // https://eth-mainnet.alchemyapi.io/v2/5Kt3LOs7L13vV5L68P94MERVJM0baCSv
 
@@ -34,8 +35,10 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
     loginRef?.current?.snapToIndex(0);
   }, []);
 
-  async function HandleDefaultProfile(adress: string) {
-    const userDefaultProfile = await getProfiles(adress);
+  async function HandleDefaultProfile(adress: Scalars["EthereumAddress"]) {
+    const userDefaultProfile = await getProfiles({
+      ownedBy: adress
+    });
 
     if (userDefaultProfile) {
       setHasHandle(true);

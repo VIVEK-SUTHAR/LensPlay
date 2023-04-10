@@ -43,7 +43,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         setRefreshToken(tokens?.refreshToken);
         await storeTokens(tokens?.accessToken, tokens?.refreshToken, false);
         if(hasHandle){
-          navigation.replace("CreateProfile");
+          navigation.replace("Root");
         }
         else{
           navigation.replace("CreateProfile");

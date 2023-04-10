@@ -16,6 +16,7 @@ import ImageCarousel from '../../components/UI/ImageCarousel';
 import StyledText from '../../components/UI/StyledText';
 import Icon from '../../components/Icon';
 import { StatusBar } from 'expo-status-bar';
+import { Scalars } from '../../types/generated';
 
 
 const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) => {
@@ -29,8 +30,10 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
     const windowHeight = Dimensions.get('screen').height;
 
 
-    const handleDefaultProfile = async (address: string) => {
-        const defaultProfile = await getProfiles(address);
+    const handleDefaultProfile = async (address: Scalars['EthereumAddress']) => {
+        const defaultProfile = await getProfiles({
+            ownedBy: address
+        });
         if (defaultProfile) {
             setCurrentProfile(defaultProfile);
             return defaultProfile;
@@ -80,7 +83,7 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
 
                     await EnableDispatcher(profile?.id, accessToken);
                     navigation.navigate("Root");
-                }, 10000);
+                }, 5000);
 
             } else if (response?.data?.createProfile?.reason === "HANDLE_TAKEN") {
                 toast.show("Handle already taken", ToastType.ERROR, true);
