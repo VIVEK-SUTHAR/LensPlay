@@ -42,19 +42,23 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
 
     const [createProfile] = useCreateProfileMutation({
         onError: (e) => {
-            toast.show("Something went wrong!", ToastType.ERROR, true);
+            toast.show("Error in create profile!", ToastType.ERROR, true);
+            console.log(e);
+            
         },
     });
 
     const [setDispatcher] = useCreateSetDispatcherTypedDataMutation({
         onError: (e) => {
-            toast.show("Something went wrong!", ToastType.ERROR, true);
+            toast.show("Error in setting", ToastType.ERROR, true);
+            console.log(e);
         },
     });
 
     const [broadcastTransaction] = useBroadcastMutation({
         onError: (e) => {
-            toast.show("Something went wrong!", ToastType.ERROR, true);
+            toast.show("error in broadcast", ToastType.ERROR, true);
+            console.log(e);
         },
     })
 

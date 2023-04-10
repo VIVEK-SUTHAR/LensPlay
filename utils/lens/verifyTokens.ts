@@ -16,6 +16,8 @@ const verifyTokens = async (
   } catch (error) {
     if (error instanceof Error) {
       console.log("[Error]:Error in verify Tokens");
+      console.log(error);
+      
     }
     // throw new Error("[Error]:Error in verifing tokens", {
     //   cause: error,

@@ -14,6 +14,7 @@ const generateChallenge = async (
       variables: {
         request,
       },
+      fetchPolicy: "network-only"
     });
 
     return result?.data?.challenge;
