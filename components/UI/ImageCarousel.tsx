@@ -1,13 +1,22 @@
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { RefObject, useEffect, useRef, useState } from "react";
 import { Dimensions } from "react-native";
 import Animated, { interpolate, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import { primary } from "../../constants/Colors";
 // import { Animated } from "react-native";
 
+interface ImageCarouselTypes{
+  data: carousalData[];
+  autoPlay: boolean;
+}
 
-const ImageCarousel = ({ data, autoPlay }) => {
-  const ScrollViewRef = useAnimatedRef(null);
+interface carousalData{
+    link: string;
+  handle: string;
+}
+
+const ImageCarousel = ({ data, autoPlay }:ImageCarouselTypes) => {
+  const ScrollViewRef = useAnimatedRef<any>();
   const [newData] = useState([
     {key:'spacer-left'},
     ...data,
@@ -16,9 +25,9 @@ const ImageCarousel = ({ data, autoPlay }) => {
   const [isAutoPlay, setIsAutoPlay] = useState(autoPlay);
   const windowWidth = Dimensions.get("window").width;
   const newSize = windowWidth * 0.3;
-  const spacer=(windowWidth-newSize)/2;
-  const x=useSharedValue(0);
-  const interval = useRef();
+  const spacer = (windowWidth-newSize)/2;
+  const x = useSharedValue(0);
+  const interval = useRef(0);
   const offset = useSharedValue(0);
   const onScroll=useAnimatedScrollHandler({
     onScroll:event=>{
@@ -30,14 +39,14 @@ const ImageCarousel = ({ data, autoPlay }) => {
     if(isAutoPlay == true){
       
       let _offset = offset.value;
-      interval.current = setInterval(()=>{
+      interval.current = window.setInterval(()=>{
         if (_offset >= Math.floor(newSize*(data.length - 1) - 10)){
           _offset=0;
         }
         else{
           _offset = Math.floor(_offset + newSize);
         }
-        ScrollViewRef.current.scrollTo({x: _offset, y: 0});
+        ScrollViewRef?.current?.scrollTo({x: _offset, y: 0});
         
       },2000)
     }
