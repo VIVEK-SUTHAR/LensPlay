@@ -2,40 +2,37 @@ import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import {
-  Linking,
   Pressable,
   RefreshControl,
   SafeAreaView,
   ScrollView,
-  View,
+  View
 } from "react-native";
+import SocialLinks from "../../../components/common/SocialLinks";
 import Icon from "../../../components/Icon";
 import PleaseLogin from "../../../components/PleaseLogin";
 import AllVideos from "../../../components/Profile/AllVideos";
 import CollectedVideos from "../../../components/Profile/CollectedVideos";
 import Cover from "../../../components/Profile/Cover";
 import MirroredVideos from "../../../components/Profile/MirroredVideos";
+import PinnedPublication from "../../../components/Profile/PinnedPublication";
 import Avatar from "../../../components/UI/Avatar";
 import Button from "../../../components/UI/Button";
 import Heading from "../../../components/UI/Heading";
 import ProfileSkeleton from "../../../components/UI/ProfileSkeleton";
 import StyledText from "../../../components/UI/StyledText";
-import { STATIC_ASSET } from "../../../constants";
 import { primary, white } from "../../../constants/Colors";
 import { PROFILE } from "../../../constants/tracking";
 import VERIFIED_CHANNELS from "../../../constants/Varified";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
-  Attribute,
   Maybe,
   MediaSet,
-  Post,
-  Profile,
-  PublicationMainFocus,
+  Post, PublicationMainFocus,
   PublicationTypes,
   useProfilePostsQuery,
-  useProfileQuery,
+  useProfileQuery
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
 import extractURLs from "../../../utils/extractURL";
@@ -43,8 +40,6 @@ import formatHandle from "../../../utils/formatHandle";
 import getIPFSLink from "../../../utils/getIPFSLink";
 import getRawurl from "../../../utils/getRawUrl";
 import TrackAction from "../../../utils/Track";
-import SocialLinks from "../../../components/common/SocialLinks";
-import PinnedPublication from "../../../components/Profile/PinnedPublication";
 
 type SocialLinks = {
   twitter: Maybe<string> | undefined;
@@ -61,14 +56,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const { isGuest } = useGuestStore();
   const { accessToken } = useAuthStore();
 
-  const { data: Profile, loading, error, refetch } = useProfileQuery({
-    variables: {
-      request: {
-        profileId: userStore?.currentProfile?.id,
-      },
-    },
-  });
-
   const QueryRequest = {
     profileId: userStore?.currentProfile?.id,
     publicationTypes: [PublicationTypes.Post],
@@ -77,6 +64,14 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
     },
     sources: ["lenstube", "lensplay"],
   };
+
+  const { data: Profile, loading, error, refetch } = useProfileQuery({
+    variables: {
+      request: {
+        profileId: userStore?.currentProfile?.id,
+      },
+    },
+  });
 
   const {
     data: AllVideosData,
