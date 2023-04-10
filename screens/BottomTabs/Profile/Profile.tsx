@@ -378,11 +378,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   youtube={links.yt}
                 />
                 <View style={{ marginVertical: 24 }}>
-                  {hasPinned ? (
-                    <PinnedPublication sheetRef={sheetRef} />
-                  ) : (
-                    <></>
-                  )}
+                  <PinnedPublication sheetRef={sheetRef} />
                   {AllVideosData && (
                     <AllVideos
                       Videos={AllVideosData?.publications?.items as Post[]}

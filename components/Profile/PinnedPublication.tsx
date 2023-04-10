@@ -187,7 +187,7 @@ export default function PinnedPublication({
   });
 
   if (error) return <></>;
-  if (data) {
+  if (data && pinStore.hasPinned) {
     return (
       <View
         style={{
