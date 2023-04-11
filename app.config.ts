@@ -101,7 +101,7 @@ const config: ExpoConfig = {
   },
   updates: {
     fallbackToCacheTimeout: 0,
-    url: "https://u.expo.dev/3b494bf0-e3fd-4a2c-b484-931ab7394de1",
+    url: "https://u.expo.dev/b2fcb561-ea34-43d1-acf0-dabcba685aa2",
   },
   runtimeVersion: {
     policy: "sdkVersion",
@@ -159,7 +159,7 @@ const config: ExpoConfig = {
   },
   extra: {
     // eas: {
-    //   projectId: "3b494bf0-e3fd-4a2c-b484-931ab7394de1",
+    //   projectId: "b2fcb561-ea34-43d1-acf0-dabcba685aa2",
     // },
   },
   plugins: [
@@ -174,6 +174,14 @@ const config: ExpoConfig = {
       "expo-camera",
       {
         cameraPermission: "Allow LensPlay to access your camera.",
+      },
+    ],
+    [
+      "react-native-vision-camera",
+      {
+        cameraPermissionText: "LensPlay needs access to your Camera.",
+        enableMicrophonePermission: true,
+        microphonePermissionText: "LensPlay needs access to your Microphone.",
       },
     ],
   ],

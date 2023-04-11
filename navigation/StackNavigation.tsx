@@ -3,7 +3,7 @@ import Channel from "../screens/common/Channel";
 import LeaderBoard from "../screens/ZooTools/LeaderBoard";
 import Login from "../screens/Auth/Login";
 import Search from "../screens/Header/Search/Search";
-import UserVideos from "../screens/UserVideos";
+import UserVideos from "../screens/common/UserVideos";
 import VideoPage from "../screens/common/VideoPage";
 import { useThemeStore } from "../store/Store";
 import { RootStackParamList } from "../types/navigation/types";
@@ -23,6 +23,12 @@ import QRLogin from "../screens/Auth/QRLogin";
 import Loader from "../screens/common/Loader";
 import Scanner from "../screens/Auth/Scanner";
 import BottomTabNavigator from "./BottomTabNavigation";
+import UploadVideo from "../screens/Header/Upload/Video/UploadVideo";
+import UploadShots from "../screens/Header/Upload/Shots/UploadShots";
+import AddDetails from "../screens/Header/Upload/Video/AddDetails";
+import AddDescription from "../screens/common/AddDescription";
+import VideoTypes from "../screens/common/VideoTypes";
+import ProfileScanner from "../screens/Header/Settings/ProfileScanner";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -98,7 +104,7 @@ export default function StackNavigation() {
             component={Scanner}
             options={{
               animation: "none",
-              headerShown: true,
+              headerShown: false,
               headerTintColor: theme.PRIMARY,
               headerTitleStyle: {
                 fontSize: 16,
@@ -108,12 +114,13 @@ export default function StackNavigation() {
           />
         </Stack.Group>
       </Stack.Group>
+
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}
         options={{
           headerShown: false,
-          animation: "slide_from_right",
+          animation: "default",
           gestureEnabled: false,
         }}
       />
@@ -259,6 +266,84 @@ export default function StackNavigation() {
         options={{
           animation: "none",
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="UploadVideo"
+        component={UploadVideo}
+        options={{
+          animation: "slide_from_right",
+          headerShown: true,
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
+          headerTintColor: "white",
+          headerTitle: "Select Cover",
+        }}
+      />
+      <Stack.Screen
+        name="UploadShots"
+        component={UploadShots}
+        options={{
+          animation: "slide_from_right",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AddDetails"
+        component={AddDetails}
+        options={{
+          animation: "slide_from_right",
+          headerShown: true,
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
+          headerTintColor: "white",
+          headerTitle: "Add Details",
+        }}
+      />
+      <Stack.Screen
+        name="AddDescription"
+        component={AddDescription}
+        options={{
+          animation: "slide_from_right",
+          headerShown: true,
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
+          headerTintColor: "white",
+          headerTitle: "Add Description",
+        }}
+      />
+      <Stack.Screen
+        name="VideoTypes"
+        component={VideoTypes}
+        options={{
+          animation: "slide_from_right",
+          headerShown: true,
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
+          headerTintColor: "white",
+          headerTitle: "Select Video types",
+        }}
+      />
+      <Stack.Screen
+        name="ProfileScanner"
+        component={ProfileScanner}
+        options={{
+          animation: "slide_from_right",
+          headerShown: false,
+          headerTitleStyle: {
+            fontSize: 16,
+            fontWeight: "600",
+          },
+          headerTintColor: "white",
+          headerTitle: "",
         }}
       />
     </Stack.Navigator>

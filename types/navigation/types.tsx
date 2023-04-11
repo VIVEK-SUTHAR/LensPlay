@@ -5,7 +5,7 @@ import {
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { FeedItem, LensPublication, VideoPageStats } from "../Lens/Feed";
-import type { Profile, ProfileQuery } from "../generated";
+import type { Mirror, Post, Profile, ProfileQuery } from "../generated";
 /**
  
  LENS-PLAY NAVIGATION STRUCTURE
@@ -89,7 +89,7 @@ export type RootStackParamList = {
   };
   Search: undefined;
   YourVideos: {
-    videos: LensPublication[];
+    videos: Post[] | Mirror[];
     title: string;
   };
   ShotsComment: {
@@ -106,6 +106,15 @@ export type RootStackParamList = {
   Settings: undefined;
   BugReport: undefined;
   Scanner: undefined;
+  UploadVideo: {
+    localUrl: string;
+    duration?: number | null | undefined;
+  };
+  UploadShots: undefined;
+  AddDetails: undefined;
+  AddDescription: undefined;
+  VideoTypes: undefined;
+  ProfileScanner: undefined;
 };
 
 /**

@@ -45,6 +45,24 @@ export const useToast = create<ToastProps>((set) => ({
   isVisible: false,
   message: "",
   timeOut: 3000,
+  success: (message: string) =>
+    set({
+      isVisible: true,
+      message: message,
+      type: ToastType.SUCCESS,
+    }),
+  error: (errormessage: string) =>
+    set({
+      message: errormessage,
+      isVisible: true,
+      type: ToastType.ERROR,
+    }),
+  info: (message: string) =>
+    set({
+      isVisible: true,
+      message: message,
+      type: ToastType.INFO,
+    }),
   show: (message: string, type: ToastType, isVisible: boolean) =>
     set({ isVisible: isVisible, message: message, type: type }),
 }));

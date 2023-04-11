@@ -1,3 +1,4 @@
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
@@ -46,7 +47,11 @@ import extractURLs from "../../utils/extractURL";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
 import TrackAction from "../../utils/Track";
-const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
+
+const VideoPage = ({
+  navigation,
+  route,
+}: RootStackScreenProps<"VideoPage">) => {
   const { activePublication } = useActivePublication();
   const toast = useToast();
   const { accessToken } = useAuthStore();
@@ -176,7 +181,10 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
         <Player
           poster={getRawurl(activePublication?.metadata?.cover)}
           title={activePublication?.metadata?.name || ""}
-          url={activePublication?.metadata?.media[0]?.original?.url}
+          url={
+            route?.params?.playBackurl ||
+            activePublication?.metadata?.media[0]?.original?.url
+          }
           inFullscreen={inFullscreen}
           isMute={isMute}
           setInFullscreen={setInFullsreen}
@@ -384,8 +392,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
         }}
         snapPoints={["70%", "95%"]}
         children={
-          <View style={{ paddingHorizontal: 16 }}>
-            <ScrollView scrollEnabled={true}>
+          <BottomSheetScrollView>
+            <View style={{ paddingHorizontal: 16 }}>
               <View
                 style={{
                   marginTop: 8,
@@ -502,8 +510,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
                   activePublication?.profile?.stats?.totalFollowers
                 }
               />
-            </ScrollView>
-          </View>
+            </View>
+          </BottomSheetScrollView>
         }
       />
     </>

@@ -1,18 +1,31 @@
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import * as ImagePicker from "expo-image-picker";
 import * as Linking from "expo-linking";
-import React from "react";
-import { AppState, TouchableWithoutFeedback, View } from "react-native";
+import React, { useRef } from "react";
+import {
+  AppState,
+  Pressable,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import Sheet from "../components/Bottom";
 import Icon from "../components/Icon";
 import Avatar from "../components/UI/Avatar";
 import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
-import Bytes from "../screens/BottomTabs/Shots/Bytes";
+import Trending from "../screens/BottomTabs/Explore/Trending";
 import Feed from "../screens/BottomTabs/Home/Feed";
 import Notifications from "../screens/BottomTabs/Notification/Notification";
 import ProfileScreen from "../screens/BottomTabs/Profile/Profile";
-import Trending from "../screens/BottomTabs/Explore/Trending";
-import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
+import Bytes from "../screens/BottomTabs/Shots/Bytes";
+import {
+  useAuthStore,
+  useProfile,
+  useThemeStore,
+  useToast,
+} from "../store/Store";
 import {
   RootStackScreenProps,
   RootTabParamList,
@@ -20,6 +33,10 @@ import {
 import getIPFSLink from "../utils/getIPFSLink";
 import storeTokens from "../utils/storeTokens";
 import { useRefreshTokensMutation } from "../types/generated";
+import { Camera } from "react-native-vision-camera";
+import getFileSize from "../utils/video/getFileSize";
+import canUploadedToIpfs from "../utils/canUploadToIPFS";
+import { useUploadStore } from "../store/UploadStore";
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
@@ -29,6 +46,7 @@ export default function BottomTabNavigator({
   const theme = useThemeStore();
   const user = useProfile();
   const { setAccessToken, setRefreshToken } = useAuthStore();
+  const [status, requestPermission] = ImagePicker.useCameraPermissions();
 
   let PROFILE_PIC_URI = "";
   if (user?.currentProfile?.picture?.__typename === "MediaSet") {
@@ -121,228 +139,460 @@ export default function BottomTabNavigator({
     }
   };
 
+  const uploadRef = useRef<BottomSheetMethods>(null);
+  const uploadTypeRef = useRef<BottomSheetMethods>(null);
+
+  const toast = useToast();
+  const uploadStore = useUploadStore();
   return (
-    <BottomTab.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        headerStyle: { backgroundColor: "black", elevation: 2 },
-        headerTitle: "",
-        headerRight: () => (
-          <View style={{ flexDirection: "row" }}>
-            <TouchableWithoutFeedback
-              onPress={() => {
-                navigation.navigate("Search");
-              }}
-            >
-              <View
-                style={{
-                  paddingHorizontal: 10,
-                  flexDirection: "row",
-                  alignItems: "center",
+    <>
+      <BottomTab.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          headerStyle: { backgroundColor: "black", elevation: 2 },
+          headerTitle: "",
+          headerRight: () => (
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <TouchableWithoutFeedback
+                onPress={() => uploadRef.current?.snapToIndex(0)}
+              >
+                <View
+                  style={{
+                    paddingHorizontal: 8,
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <Icon name="upload" size={24} />
+                </View>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  navigation.navigate("Search");
                 }}
               >
-                <Icon name="search" size={24} />
-              </View>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback
-              onPress={() => {
-                navigation.navigate("Settings");
-              }}
-            >
-              <View
-                style={{
-                  paddingHorizontal: 8,
-                  flexDirection: "row",
-                  alignItems: "center",
+                <View
+                  style={{
+                    paddingHorizontal: 10,
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <Icon name="search" size={24} />
+                </View>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  navigation.navigate("Settings");
                 }}
               >
-                <Icon name="setting" size={24} />
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-        ),
-        headerLeft: () => (
-          <View
-            style={{
-              paddingHorizontal: 10,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Heading
-              title="LensPlay"
-              style={{ fontSize: 24, fontWeight: "600", color: "white" }}
-            />
+                <View
+                  style={{
+                    paddingHorizontal: 8,
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <Icon name="setting" size={24} />
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          ),
+          headerLeft: () => (
             <View
               style={{
-                backgroundColor: theme.PRIMARY,
-                marginHorizontal: 4,
-                paddingHorizontal: 6,
-                paddingVertical: 2,
-                borderRadius: 8,
+                paddingHorizontal: 10,
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              <StyledText
-                title="ALPHA"
-                style={{ color: "black", fontSize: 8, fontWeight: "600" }}
+              <Heading
+                title="LensPlay"
+                style={{ fontSize: 24, fontWeight: "600", color: "white" }}
               />
+              <View
+                style={{
+                  backgroundColor: theme.PRIMARY,
+                  marginHorizontal: 4,
+                  paddingHorizontal: 6,
+                  paddingVertical: 2,
+                  borderRadius: 8,
+                }}
+              >
+                <StyledText
+                  title="ALPHA"
+                  style={{ color: "black", fontSize: 8, fontWeight: "600" }}
+                />
+              </View>
             </View>
+          ),
+          tabBarStyle: {
+            backgroundColor: "black",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingTop: 6,
+            borderTopColor: "transparent",
+            marginBottom: -6,
+            minHeight: 58,
+            paddingHorizontal: 5,
+          },
+          headerShadowVisible: true,
+        }}
+      >
+        <BottomTab.Screen
+          name="Home"
+          component={Feed}
+          options={{
+            tabBarLabel: "",
+            tabBarIcon: ({ focused }) => {
+              return (
+                <View
+                  style={{
+                    padding: 5,
+                    width: 45,
+                    alignContent: "center",
+                    justifyContent: "center",
+                    flexDirection: "row",
+                    height: "100%",
+                  }}
+                >
+                  <Icon
+                    name={focused ? "home_filled" : "home_outline"}
+                    color={"white"}
+                    size={25}
+                  />
+                </View>
+              );
+            },
+          }}
+        />
+        <BottomTab.Screen
+          name="Trending"
+          component={Trending}
+          options={{
+            tabBarLabel: "",
+            tabBarIcon: ({ focused }) => {
+              return (
+                <View
+                  style={{
+                    padding: 5,
+                    width: 45,
+                    alignContent: "center",
+                    justifyContent: "center",
+                    flexDirection: "row",
+                    height: "100%",
+                  }}
+                >
+                  <Icon
+                    name={focused ? "compass_filled" : "compass_outline"}
+                    color={"white"}
+                    size={24}
+                  />
+                </View>
+              );
+            },
+          }}
+        />
+        <BottomTab.Screen
+          name="Bytes"
+          component={Bytes}
+          options={{
+            tabBarLabel: "",
+            headerShown: false,
+            tabBarIcon: ({ focused }) => {
+              return (
+                <View
+                  style={{
+                    padding: 5,
+                    width: 45,
+                    alignContent: "center",
+                    justifyContent: "center",
+                    flexDirection: "row",
+                    height: "100%",
+                  }}
+                >
+                  <Icon
+                    name={focused ? "shots_filled" : "shots_outline"}
+                    color={"white"}
+                    size={24}
+                  />
+                </View>
+              );
+            },
+          }}
+        />
+        <BottomTab.Screen
+          name="Notifications"
+          component={Notifications}
+          options={{
+            tabBarLabel: "",
+            tabBarAccessibilityLabel: "Notifications",
+            tabBarIcon: ({ focused }) => {
+              return (
+                <View
+                  style={{
+                    padding: 5,
+                    width: 45,
+                    alignContent: "center",
+                    justifyContent: "center",
+                    flexDirection: "row",
+                    height: "100%",
+                  }}
+                >
+                  <Icon
+                    name={
+                      focused ? "notification_filled" : "notification_outline"
+                    }
+                    color={"white"}
+                  />
+                </View>
+              );
+            },
+          }}
+        />
+        <BottomTab.Screen
+          name="Account"
+          component={ProfileScreen}
+          options={{
+            tabBarLabel: "",
+            headerShown: false,
+            tabBarIcon: ({ focused }) => {
+              return (
+                <View
+                  style={{
+                    width: 30,
+                    alignContent: "center",
+                    justifyContent: "center",
+                    flexDirection: "row",
+                    height: 30,
+                    borderRadius: 45,
+                    borderColor: focused ? "white" : "transparent",
+                    borderWidth: focused ? 1 : 0,
+                  }}
+                >
+                  <Avatar
+                    src={getIPFSLink(PROFILE_PIC_URI)}
+                    height={28}
+                    width={28}
+                  />
+                </View>
+              );
+            },
+          }}
+        />
+      </BottomTab.Navigator>
+      <Sheet
+        ref={uploadRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "#1d1d1d",
+        }}
+        snapPoints={["25%"]}
+        children={
+          <View
+            style={{
+              maxWidth: "100%",
+              height: "100%",
+            }}
+          >
+            <Pressable
+              android_ripple={{
+                color: "rgba(0,0,0,0.2)",
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+              }}
+              onPress={() => {
+                uploadRef.current?.close();
+                uploadTypeRef.current?.snapToIndex(0);
+              }}
+            >
+              <View
+                style={{
+                  padding: 16,
+                  backgroundColor: "black",
+                  borderRadius: 50,
+                }}
+              >
+                <Icon name="create" size={24} />
+              </View>
+              <StyledText
+                title={"Create a video"}
+                style={{
+                  color: "white",
+                  fontSize: 20,
+                  marginHorizontal: 16,
+                }}
+              />
+            </Pressable>
+            <Pressable
+              android_ripple={{
+                color: "rgba(0,0,0,0.2)",
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+              }}
+              onPress={async () => {
+                const cameraPermission = await Camera.requestCameraPermission();
+                const microphonePermission = await Camera.requestMicrophonePermission();
+                if (
+                  cameraPermission === "authorized" &&
+                  microphonePermission === "authorized"
+                ) {
+                  navigation.push("UploadShots");
+                } else {
+                  uploadRef.current?.close();
+                }
+              }}
+            >
+              <View
+                style={{
+                  padding: 16,
+                  backgroundColor: "black",
+                  borderRadius: 50,
+                }}
+              >
+                <Icon name="shots_outline" size={24} />
+              </View>
+              <StyledText
+                title={"Create a shots"}
+                style={{
+                  color: "white",
+                  fontSize: 20,
+                  marginHorizontal: 16,
+                }}
+              />
+            </Pressable>
           </View>
-        ),
-        tabBarStyle: {
-          backgroundColor: "black",
-          alignItems: "center",
-          justifyContent: "space-between",
-          paddingTop: 6,
-          borderTopColor: "transparent",
-          marginBottom: -6,
-          minHeight: 58,
-          paddingHorizontal: 5,
-        },
-        headerShadowVisible: true,
-      }}
-    >
-      <BottomTab.Screen
-        name="Home"
-        component={Feed}
-        options={{
-          tabBarLabel: "",
-          tabBarIcon: ({ focused }) => {
-            return (
-              <View
-                style={{
-                  padding: 5,
-                  width: 45,
-                  alignContent: "center",
-                  justifyContent: "center",
-                  flexDirection: "row",
-                  height: "100%",
-                }}
-              >
-                <Icon
-                  name={focused ? "home_filled" : "home_outline"}
-                  color={"white"}
-                  size={25}
-                />
-              </View>
-            );
-          },
-        }}
+        }
       />
-      <BottomTab.Screen
-        name="Trending"
-        component={Trending}
-        options={{
-          tabBarLabel: "",
-          tabBarIcon: ({ focused }) => {
-            return (
-              <View
-                style={{
-                  padding: 5,
-                  width: 45,
-                  alignContent: "center",
-                  justifyContent: "center",
-                  flexDirection: "row",
-                  height: "100%",
-                }}
-              >
-                <Icon
-                  name={focused ? "compass_filled" : "compass_outline"}
-                  color={"white"}
-                  size={24}
-                />
-              </View>
-            );
-          },
+      <Sheet
+        ref={uploadTypeRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "#1d1d1d",
         }}
-      />
-      <BottomTab.Screen
-        name="Bytes"
-        component={Bytes}
-        options={{
-          tabBarLabel: "",
-          headerShown: false,
-          tabBarIcon: ({ focused }) => {
-            return (
-              <View
-                style={{
-                  padding: 5,
-                  width: 45,
-                  alignContent: "center",
-                  justifyContent: "center",
-                  flexDirection: "row",
-                  height: "100%",
-                }}
-              >
-                <Icon
-                  name={focused ? "shots_filled" : "shots_outline"}
-                  color={"white"}
-                  size={24}
-                />
-              </View>
-            );
-          },
-        }}
-      />
-      <BottomTab.Screen
-        name="Notifications"
-        component={Notifications}
-        options={{
-          tabBarLabel: "",
-          tabBarAccessibilityLabel: "Notifications",
-          tabBarIcon: ({ focused }) => {
-            return (
-              <View
-                style={{
-                  padding: 5,
-                  width: 45,
-                  alignContent: "center",
-                  justifyContent: "center",
-                  flexDirection: "row",
-                  height: "100%",
-                }}
-              >
-                <Icon
-                  name={
-                    focused ? "notification_filled" : "notification_outline"
+        snapPoints={["25%"]}
+        children={
+          <View
+            style={{
+              maxWidth: "100%",
+              height: "100%",
+            }}
+          >
+            <Pressable
+              android_ripple={{
+                color: "rgba(0,0,0,0.2)",
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+              }}
+              onPress={async () => {
+                if (!status?.granted) {
+                  requestPermission();
+                }
+                if (status?.granted) {
+                  let camera = await ImagePicker.launchCameraAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+                  });
+                  if (camera.canceled) {
+                    // ToastAndroid.show("No Video recorded", ToastAndroid.SHORT);
+                    uploadTypeRef.current?.close();
                   }
-                  color={"white"}
-                />
-              </View>
-            );
-          },
-        }}
-      />
-      <BottomTab.Screen
-        name="Account"
-        component={ProfileScreen}
-        options={{
-          tabBarLabel: "",
-          headerShown: false,
-          tabBarIcon: ({ focused }) => {
-            return (
+                  if (!camera.canceled) {
+                    // setImage(camera.uri);
+                    navigation.push("UploadVideo", {
+                      localUrl: camera.assets[0].uri,
+                      duration: camera.assets[0].duration,
+                    });
+                  }
+                }
+              }}
+            >
               <View
                 style={{
-                  width: 30,
-                  alignContent: "center",
-                  justifyContent: "center",
-                  flexDirection: "row",
-                  height: 30,
-                  borderRadius: 45,
-                  borderColor: focused ? "white" : "transparent",
-                  borderWidth: focused ? 1 : 0,
+                  padding: 16,
+                  backgroundColor: "black",
+                  borderRadius: 50,
                 }}
               >
-                <Avatar
-                  src={getIPFSLink(PROFILE_PIC_URI)}
-                  height={28}
-                  width={28}
-                />
+                <Icon name="record" size={24} />
               </View>
-            );
-          },
-        }}
+              <StyledText
+                title={"Record a video"}
+                style={{
+                  color: "white",
+                  fontSize: 20,
+                  marginHorizontal: 16,
+                }}
+              />
+            </Pressable>
+            <Pressable
+              android_ripple={{
+                color: "rgba(0,0,0,0.2)",
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+              }}
+              onPress={async () => {
+                let result = await ImagePicker.launchImageLibraryAsync({
+                  mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+                  allowsEditing: true,
+                  quality: 1,
+                  base64: true,
+                });
+                if (result.canceled) {
+                  uploadTypeRef.current?.close();
+                }
+                if (!result.canceled) {
+                  const size = await getFileSize(result.assets[0].uri);
+                  if (!canUploadedToIpfs(size)) {
+                    toast.error("Select video less than 100MB");
+                    return;
+                  }
+                  uploadStore.setDuration(result.assets[0].duration!);
+                  navigation.push("UploadVideo", {
+                    localUrl: result.assets[0].uri,
+                    duration: result.assets[0].duration,
+                  });
+                }
+              }}
+            >
+              <View
+                style={{
+                  padding: 16,
+                  backgroundColor: "black",
+                  borderRadius: 50,
+                }}
+              >
+                <Icon name="upload-file" size={24} />
+              </View>
+              <StyledText
+                title={"Select from gallery"}
+                style={{
+                  color: "white",
+                  fontSize: 20,
+                  marginHorizontal: 16,
+                }}
+              />
+            </Pressable>
+          </View>
+        }
       />
-    </BottomTab.Navigator>
+    </>
   );
 }

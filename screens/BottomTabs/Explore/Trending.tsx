@@ -72,7 +72,7 @@ export default function Trending({
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
-    sources: ["lenstube"],
+    sources: ["lensplay","lenstube"],
   };
 
   const { data: ExploreData, error, loading, refetch } = useExploreQuery({
