@@ -83,7 +83,7 @@ export type RootStackParamList = {
   Channel: {
     profileId: string;
     isFollowdByMe?: boolean;
-    name?: string;
+    name?: string | null;
     ethAddress?: string;
     handle?: string;
   };

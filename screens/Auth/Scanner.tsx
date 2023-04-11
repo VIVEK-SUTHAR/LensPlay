@@ -28,9 +28,9 @@ import { ToastType } from "../../types/Store";
 import decryptData from "../../utils/decryptData";
 import handleWaitlist from "../../utils/handleWaitlist";
 import getDefaultProfile from "../../utils/lens/getDefaultProfile";
-import getTokens from "../../utils/lens/getTokens";
 import storeTokens from "../../utils/storeTokens";
 import TrackAction from "../../utils/Track";
+import { useAuthenticateMutation } from "../../types/generated";
 export default function Scanner({
   navigation,
 }: RootStackScreenProps<"Scanner">) {
@@ -42,6 +42,11 @@ export default function Scanner({
   const windowHeight = Dimensions.get("window").height;
   const windowWidth = Dimensions.get("window").width;
   const scale = useSharedValue(0);
+
+  const [
+    getTokens,
+    { data: tokens, error: tokensError, loading: tokenLoading },
+  ] = useAuthenticateMutation();
 
   const scaleStyle = useAnimatedStyle(() => {
     return {
@@ -62,6 +67,7 @@ export default function Scanner({
       true
     );
   }, []);
+  
   if (!permission) {
     return <View />;
   }
@@ -160,19 +166,26 @@ export default function Scanner({
 
           if (result) {
             setHasHandle(true);
-            const tokens = await getTokens({
-              address,
-              signature: decryptedSignature,
+            getTokens({
+              variables: {
+                request: {
+                  address: address,
+                  signature: decryptedSignature,
+                },
+              },
             });
-
             if (!tokens) {
               setHasData(false);
               toast.show("Please regenerate QR", ToastType.ERROR, true);
               return;
             }
-            setAccessToken(tokens?.accessToken);
-            setRefreshToken(tokens?.refreshToken);
-            await storeTokens(tokens?.accessToken, tokens?.refreshToken, true);
+            setAccessToken(tokens?.authenticate?.accessToken);
+            setRefreshToken(tokens?.authenticate?.refreshToken);
+            await storeTokens(
+              tokens?.authenticate?.accessToken,
+              tokens?.authenticate?.refreshToken,
+              true
+            );
             await AsyncStorage.setItem("@viaDeskTop", "true");
             navigation.replace("Root");
             TrackAction(AUTH.QR_LOGIN);

@@ -31,8 +31,8 @@ import {
   RootTabParamList,
 } from "../types/navigation/types";
 import getIPFSLink from "../utils/getIPFSLink";
-import getAccessFromRefresh from "../utils/lens/getAccessFromRefresh";
 import storeTokens from "../utils/storeTokens";
+import { useRefreshTokensMutation } from "../types/generated";
 import { Camera } from "react-native-vision-camera";
 import getFileSize from "../utils/video/getFileSize";
 import canUploadedToIpfs from "../utils/canUploadToIPFS";
@@ -55,6 +55,11 @@ export default function BottomTabNavigator({
   if (user?.currentProfile?.picture?.__typename === "NftImage") {
     PROFILE_PIC_URI = user?.currentProfile?.picture?.uri;
   }
+
+  const [
+    getAccessFromRefresh,
+    { data: newTokens, error, loading },
+  ] = useRefreshTokensMutation();
 
   React.useEffect(() => {
     const handle = async () => {
@@ -106,19 +111,28 @@ export default function BottomTabNavigator({
       if (minute < 25) {
         return;
       } else {
-        const newTokens = await getAccessFromRefresh(tokens.refreshToken);
-        setAccessToken(newTokens?.accessToken);
-        setRefreshToken(newTokens?.refreshToken);
+        getAccessFromRefresh({
+          variables: {
+            request: {
+              refreshToken: tokens.refreshToken,
+            },
+          },
+        });
+        setAccessToken(newTokens?.refresh.accessToken);
+        setRefreshToken(newTokens?.refresh.refreshToken);
         if (tokens.viaDesktop) {
           await storeTokens(
-            newTokens?.accessToken,
-            newTokens?.refreshToken,
+            newTokens?.refresh.accessToken,
+            newTokens?.refresh.refreshToken,
             true
           );
           return;
         }
         if (!tokens.viaDesktop) {
-          storeTokens(newTokens?.accessToken, newTokens?.refreshToken);
+          storeTokens(
+            newTokens?.refresh.accessToken,
+            newTokens?.refresh.refreshToken
+          );
           return;
         }
       }
