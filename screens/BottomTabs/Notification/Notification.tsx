@@ -1,4 +1,3 @@
-import AnimatedLottieView from "lottie-react-native";
 import React, { useState } from "react";
 import {
   FlatList,
@@ -9,21 +8,21 @@ import {
   View,
 } from "react-native";
 import NotificationCard from "../../../components/Notifications";
-import { NotificationTypes } from "../../../components/Notifications/index.d";
 import Skleton from "../../../components/Notifications/Skleton";
+import { NotificationTypes } from "../../../components/Notifications/index.d";
 import PleaseLogin from "../../../components/PleaseLogin";
 import Heading from "../../../components/UI/Heading";
 import Tabs, { Tab } from "../../../components/UI/Tabs";
+import NotFound from "../../../components/common/NotFound";
+import Skeleton from "../../../components/common/Skeleton";
+import { white } from "../../../constants/Colors";
 import { NOTIFICATION } from "../../../constants/tracking";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import { Notification, useNotificationsQuery } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
 import TrackAction from "../../../utils/Track";
-import Skeleton from "../../../components/common/Skeleton";
-import { black, white } from "../../../constants/Colors";
-import Button from "../../../components/UI/Button";
-import Icon from "../../../components/Icon";
+import ErrorMessage from "../../../components/common/ErrorMesasge";
 
 const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -54,7 +53,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   if (loading) return <Skeleton children={<Skleton />} number={10} />;
   if (error)
     return (
-      <NotFound
+      <ErrorMessage
         message={
           "Oh no,LensPlay encounterd some error while loading your notifications,😞😞"
         }
@@ -104,7 +103,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
           keyExtractor={(item, index) => `${item?.notificationId}-${index}`}
           ListEmptyComponent={() => {
             return (
-              <NotFound message="Looks like you don't have any notifications,interact with profiles to get notifications" />
+              <NoNewNotification message="Looks like you don't have any notifications,interact with profiles to get notifications" />
             );
           }}
           refreshControl={
@@ -134,7 +133,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
           keyExtractor={(item, index) => `${item?.notificationId}-${index}`}
           ListEmptyComponent={() => {
             return (
-              <NotFound message="Looks like you don't have any notifications,interact with profiles to get notifications" />
+              <NoNewNotification message="Looks like you don't have any notifications,interact with profiles to get notifications" />
             );
           }}
           refreshControl={
@@ -158,7 +157,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
                 <NotificationCard navigation={navigation} notification={item} />
               );
             }
-            return <View />;
+            return <></>;
           }}
         />
       );
@@ -190,12 +189,13 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
       </SafeAreaView>
     );
   }
+
   return <SafeAreaView style={styles.container}></SafeAreaView>;
 };
 
 export default Notifications;
 
-const NotFound = ({
+const NoNewNotification = ({
   message,
 }: {
   message: string;
@@ -213,8 +213,8 @@ const NotFound = ({
     >
       <Image
         style={{
-          height: 200,
-          width: 200,
+          height: 250,
+          width: 250,
         }}
         resizeMode="contain"
         source={require("../../../assets/images/notification.png")}

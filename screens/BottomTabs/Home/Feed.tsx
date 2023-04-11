@@ -1,5 +1,4 @@
 import { StatusBar } from "expo-status-bar";
-import AnimatedLottieView from "lottie-react-native";
 import React, { useState } from "react";
 import {
   FlatList,
@@ -9,12 +8,14 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import Skeleton from "../../../components/common/Skeleton";
+import Icon from "../../../components/Icon";
 import PleaseLogin from "../../../components/PleaseLogin";
 import Button from "../../../components/UI/Button";
 import Heading from "../../../components/UI/Heading";
 import VideoCardSkeleton from "../../../components/UI/VideoCardSkeleton";
 import VideoCard from "../../../components/VideoCard";
+import Skeleton from "../../../components/common/Skeleton";
+import { black, white } from "../../../constants/Colors";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
@@ -23,8 +24,6 @@ import {
   useFeedQuery,
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
-import { black, white } from "../../../constants/Colors";
-import Icon from "../../../components/Icon";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -115,7 +114,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 export default Feed;
 
 const NotFound = ({ navigation }: { navigation: any }) => {
-  const theme = useThemeStore();
   return (
     <SafeAreaView style={styles.container}>
       <View
