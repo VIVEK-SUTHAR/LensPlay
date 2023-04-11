@@ -72,7 +72,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
       headerRight: () => {
         return (
           <Pressable onPress={() => navigation.push("ProfileScanner")}>
-            <Icon name="close" size={20} />
+            <Icon name="qr" size={20} />
           </Pressable>
         );
       },
@@ -83,7 +83,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="black" style="auto" />
       <ScrollView>
-        <ProfileQR />
+        {!isGuest ? <ProfileQR /> : <></>}
         <View>
           <Heading
             title={"About"}
