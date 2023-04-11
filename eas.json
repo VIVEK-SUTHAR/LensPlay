@@ -1,7 +1,12 @@
 {
-	"build": {
-		"preview": {
-			"channel": "preview"
-		}
-	}
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "dev"
+    },
+    "preview": {
+      "distribution": "internal"
+    }
+  }
 }

@@ -1,10 +1,23 @@
-import BottomSheet from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import React from "react";
 import { IBottomSheet } from "../types";
+import React, { useCallback } from "react";
+import { BottomSheetDefaultBackdropProps } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types";
+import { black } from "../constants/Colors";
 
 const Sheet = React.forwardRef<BottomSheetMethods, IBottomSheet>(
   (props, ref) => {
+    const renderBackdrop = useCallback(
+      (props: JSX.IntrinsicAttributes & BottomSheetDefaultBackdropProps) => (
+        <BottomSheetBackdrop
+          {...props}
+          appearsOnIndex={0}
+          disappearsOnIndex={-1}
+        />
+      ),
+      []
+    );
+
     return (
       <BottomSheet
         index={-1}
@@ -12,10 +25,10 @@ const Sheet = React.forwardRef<BottomSheetMethods, IBottomSheet>(
         handleIndicatorStyle={{
           width: "15%",
           backgroundColor: "gray",
-          marginTop: 4,
         }}
+        backdropComponent={renderBackdrop}
         backgroundStyle={{
-          backgroundColor: "#1d1d1d",
+          backgroundColor: black[600],
         }}
         {...props}
       ></BottomSheet>

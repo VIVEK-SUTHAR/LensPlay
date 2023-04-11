@@ -20,6 +20,7 @@ export type IconProps = {
     | "policy"
     | "mirror"
     | "chat"
+    | "info"
     | "close"
     | "collect"
     | "comment"
@@ -56,10 +57,18 @@ export type IconProps = {
     | "star"
     | "copy"
     | "qr"
+    | "rightArrow"
     | "referal"
     | "report"
     | "success"
-    | "wallet";
+    | "wallet"
+    | "done"
+    | "upload-file"
+    | "record"
+    | "create"
+    | "delete"
+    | "more"
+    | string;
   size?: number;
   color?: string;
   style?: StyleProp<TextStyle>;

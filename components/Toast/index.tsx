@@ -1,9 +1,8 @@
-import { Animated, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useRef } from "react";
 import Constants from "expo-constants";
+import React, { useEffect, useRef } from "react";
+import { Animated, StyleSheet, Text } from "react-native";
 import { useToast } from "../../store/Store";
 import { ToastType } from "../../types/Store";
-import { MaterialIcons } from "@expo/vector-icons";
 import Icon from "../Icon";
 
 const StatusBarHeight = Constants.statusBarHeight;
@@ -15,37 +14,36 @@ const Toast = () => {
   const scale = useRef(new Animated.Value(0.5)).current;
 
   useEffect(() => {
-    if (toastStore.isVisible === true) {
-      Animated.timing(slideIn, {
+    if (toastStore.isVisible) {
+      Animated.spring(slideIn, {
         toValue: 0,
-        duration: 500,
         useNativeDriver: true,
+        damping: 10,
       }).start();
-      Animated.timing(scale, {
+      Animated.spring(scale, {
         toValue: 1,
-        duration: 500,
         useNativeDriver: true,
+        damping: 14,
       }).start();
       setTimeout(() => {
         toastStore.show("", ToastType.INFO, false);
       }, 5000);
     }
-    if (toastStore.isVisible === false) {
-      Animated.timing(scale, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: true,
-      }).start();
-      Animated.timing(slideIn, {
-        toValue: -100,
-        duration: 500,
-        useNativeDriver: true,
-      }).start();
-      // setTimeout(() => {
-      //   toastStore.show("", ToastType.INFO, false);
-      // }, 5000);
-    }
   }, [toastStore.message]);
+  useEffect(() => {
+    if (!toastStore.isVisible) {
+      Animated.spring(slideIn, {
+        toValue: -100,
+        useNativeDriver: true,
+        damping: 10,
+      }).start();
+      Animated.spring(scale, {
+        toValue: 0,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [toastStore.isVisible]);
+
   return (
     <Animated.View
       style={[
@@ -79,7 +77,7 @@ const Toast = () => {
         }
         color={toastStore.type === ToastType.INFO ? "#000000" : "#FFFFFF"}
         style={{ marginHorizontal: 2 }}
-        size={24}
+        size={16}
       />
       <Text
         style={{
@@ -87,7 +85,7 @@ const Toast = () => {
           color: `${
             toastStore.type === ToastType.INFO ? "#000000" : "#FFFFFF"
           }`,
-          fontWeight: "500",
+          fontWeight: "600",
           textAlign: "center",
           marginHorizontal: 2,
         }}

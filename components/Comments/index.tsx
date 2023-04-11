@@ -36,7 +36,6 @@ const Comment = ({
         PublicationMainFocus.TextOnly,
       ],
     },
-    limit: 50,
   };
 
   const { data: commentData, error, loading, refetch } = useCommentsQuery({
@@ -48,6 +47,7 @@ const Comment = ({
     },
     initialFetchPolicy: "network-only",
     refetchWritePolicy: "merge",
+    pollInterval: 100,
     context: {
       headers: {
         "x-access-token": `Bearer ${accessToken}`,

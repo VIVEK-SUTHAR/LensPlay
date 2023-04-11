@@ -45,7 +45,9 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   }
 
   const connectWallet = useCallback(async () => {
-    const walletData = await connector.connect();
+    const walletData = await connector.connect({
+      chainId:80001
+    });
 
     setIsloading(true);
     try {

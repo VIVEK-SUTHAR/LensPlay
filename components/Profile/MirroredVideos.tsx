@@ -71,7 +71,7 @@ const MirroredVideos = ({
           <Heading
             title={"Mirrored Videos"}
             style={{
-              fontSize: 20,
+              fontSize: 16,
               color: "white",
               fontWeight: "600",
             }}
