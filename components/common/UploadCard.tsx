@@ -48,7 +48,10 @@ export default function UploadCard() {
             backgroundColor: "rgba(0,0,0,0.4)",
             width: `${uploadProgress}%`,
             height: "100%",
-            borderRadius: 8,
+            borderTopLeftRadius: 8,
+            borderBottomEndRadius: 8,
+            borderTopRightRadius: uploadProgress === 100 ? 8 : 0,
+            borderBottomRightRadius: uploadProgress === 100 ? 8 : 0,
             justifyContent: "center",
             alignItems: "center",
           }}
@@ -95,9 +98,9 @@ export default function UploadCard() {
             />
           </View>
         </View>
-        <Pressable>
+        {/* <Pressable>
           <Icon name="arrowDown" size={16} />
-        </Pressable>
+        </Pressable> */}
       </View>
     </Pressable>
   );
