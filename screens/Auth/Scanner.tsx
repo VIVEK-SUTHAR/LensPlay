@@ -1,11 +1,26 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BarCodeScanner } from "expo-barcode-scanner";
-import { Camera } from "expo-camera";
-import React, { useState } from "react";
-import { ActivityIndicator, Dimensions, StyleSheet, View } from "react-native";
+import { Camera, FlashMode } from "expo-camera";
+import Constants from "expo-constants";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Dimensions,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from "react-native";
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 import Button from "../../components/UI/Button";
 import Heading from "../../components/UI/Heading";
-import { primary } from "../../constants/Colors";
+import StyledText from "../../components/UI/StyledText";
 import { AUTH } from "../../constants/tracking";
 import { useAuthStore, useProfile, useToast } from "../../store/Store";
 import { RootStackScreenProps } from "../../types/navigation/types";
@@ -16,18 +31,37 @@ import getDefaultProfile from "../../utils/lens/getDefaultProfile";
 import getTokens from "../../utils/lens/getTokens";
 import storeTokens from "../../utils/storeTokens";
 import TrackAction from "../../utils/Track";
-
 export default function Scanner({
   navigation,
 }: RootStackScreenProps<"Scanner">) {
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [hasData, setHasData] = useState<boolean>(false);
-  const windowHeight = Dimensions.get("window").height;
-  const windowWidth = Dimensions.get("window").width;
   const { setAccessToken, setRefreshToken } = useAuthStore();
   const { setCurrentProfile, setHasHandle, hasHandle } = useProfile();
   const toast = useToast();
+  const windowHeight = Dimensions.get("window").height;
+  const windowWidth = Dimensions.get("window").width;
+  const scale = useSharedValue(0);
 
+  const scaleStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          scale: interpolate(scale.value, [1, 0], [1.15, 1]),
+        },
+      ],
+    };
+  });
+
+  useEffect(() => {
+    scale.value = withRepeat(
+      withTiming(1, {
+        duration: 1000,
+      }),
+      -1,
+      true
+    );
+  }, []);
   if (!permission) {
     return <View />;
   }
@@ -86,6 +120,7 @@ export default function Scanner({
   }
 
   const handleBarcodeScanned = async (data: any) => {
+    if (hasData) return;
     const isValidData = isValidQR(data?.data);
 
     if (!isValidData) {
@@ -157,57 +192,139 @@ export default function Scanner({
   };
 
   return (
-    <View style={styles.container}>
-      {hasData ? (
-        <ActivityIndicator size={"large"} color={primary} />
-      ) : (
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: "black",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      {hasData && (
         <View
           style={{
-            borderWidth: 4,
-            borderColor: "white",
+            position: "absolute",
+            height: Dimensions.get("screen").height,
+            width: "100%",
             borderRadius: 8,
+            backgroundColor: "rgba(0,0,0,0.8)",
+            zIndex: 100,
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "row",
           }}
         >
-          <Camera
+          <ActivityIndicator color={"#2A9D5C"} size="large" />
+          <StyledText
+            title="Getting you in..."
             style={{
-              width: windowWidth / 1.5,
-              height: windowHeight / 3,
-              borderRadius: 8,
+              marginHorizontal: 12,
+              color: "white",
+              fontSize: 18,
+              fontWeight: "700",
             }}
-            ratio={"1:1"}
-            barCodeScannerSettings={{
-              barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
-            }}
-            onBarCodeScanned={handleBarcodeScanned}
-          ></Camera>
+          />
         </View>
       )}
-    </View>
+      <StatusBar backgroundColor="transparent" />
+      <View
+        style={{
+          position: "absolute",
+          top: Constants.statusBarHeight + 10,
+          zIndex: 50,
+          backgroundColor: "rgba(0,0,0,0.4)",
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          borderRadius: 8,
+        }}
+      >
+        <Heading
+          title="Scan Desktop QR"
+          style={{
+            color: "white",
+            fontSize: 16,
+            fontWeight: "600",
+          }}
+        />
+      </View>
+      <Animated.View style={[styles.scanner, scaleStyle]}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View
+            style={{
+              height: 50,
+              width: 50,
+              borderLeftColor: "white",
+              borderLeftWidth: 6,
+              borderTopColor: "white",
+              borderTopWidth: 6,
+              borderRadius: 8,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 50,
+              width: 50,
+              borderRightColor: "white",
+              borderRightWidth: 6,
+              borderTopColor: "white",
+              borderTopWidth: 6,
+              borderRadius: 8,
+            }}
+          ></View>
+        </View>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View
+            style={{
+              height: 50,
+              width: 50,
+              borderLeftColor: "white",
+              borderLeftWidth: 6,
+              borderBottomColor: "white",
+              borderBottomWidth: 6,
+              borderRadius: 8,
+            }}
+          ></View>
+          <View
+            style={{
+              height: 50,
+              width: 50,
+              borderBottomColor: "white",
+              borderBottomWidth: 6,
+              borderRightColor: "white",
+              borderRightWidth: 6,
+              borderRadius: 8,
+            }}
+          ></View>
+        </View>
+      </Animated.View>
+      <Camera
+        style={{
+          width: windowWidth,
+          height: windowHeight,
+        }}
+        ratio={"16:9"}
+        autoFocus={true}
+        barCodeScannerSettings={{
+          barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+        }}
+        onBarCodeScanned={handleBarcodeScanned}
+      ></Camera>
+    </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "black",
-    alignItems: "center",
   },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: "row",
-    backgroundColor: "transparent",
-    margin: 64,
-  },
-  button: {
-    flex: 1,
-    alignSelf: "flex-end",
-    alignItems: "center",
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "white",
+  scanner: {
+    position: "absolute",
+    width: 220,
+    height: 220,
+    zIndex: 5,
+    flexDirection: "column",
+    justifyContent: "space-between",
   },
 });
-/* @end */

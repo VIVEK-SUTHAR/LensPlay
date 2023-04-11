@@ -4,6 +4,7 @@ import { v4 as uuidV4 } from "uuid";
 import Button from "../../components/UI/Button";
 import Heading from "../../components/UI/Heading";
 import StyledText from "../../components/UI/StyledText";
+import { dark_primary } from "../../constants/Colors";
 import { APP_ID, LENSPLAY_SITE } from "../../constants";
 import { black } from "../../constants/Colors";
 import { useAuthStore, useProfile, useToast } from "../../store/Store";

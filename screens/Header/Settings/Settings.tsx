@@ -8,6 +8,7 @@ import {
   Linking,
   Pressable,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   View,
 } from "react-native";
@@ -16,12 +17,10 @@ import Icon from "../../../components/Icon";
 import Button from "../../../components/UI/Button";
 import Heading from "../../../components/UI/Heading";
 import StyledText from "../../../components/UI/StyledText";
+import ProfileQR from "../../../components/settings/profileQR";
 import {
-  LENSPLAY_DISCORD,
   LENSPLAY_PRIVACY,
-  LENSPLAY_SITE,
   LENSPLAY_TERMS,
-  LENSPLAY_TWITTER,
   OFFICIAL_EMAIL,
 } from "../../../constants";
 import { dark_primary } from "../../../constants/Colors";
@@ -30,13 +29,8 @@ import { useGuestStore } from "../../../store/GuestStore";
 import { RootStackScreenProps } from "../../../types/navigation/types";
 import TrackAction from "../../../utils/Track";
 import UPADTES from "../../../update.json";
+import Socials from "../../../components/settings/Socials";
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
-
-type SocialMediaBadgeProps = {
-  icon: JSX.Element;
-  name: string;
-  link: string;
-};
 
 type SettingsItemProps = {
   label: string;
@@ -51,72 +45,123 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 
   const SettingItemsList: SettingsItemProps[] = [
     {
-      icon: <Icon name="bug" />,
-      label: "Report a bug",
-      onPress: () => {
-        navigation.navigate("BugReport");
-      },
-    },
-    {
-      icon: <Icon name="policy" />,
+      icon: <Icon name="policy" size={24} />,
       label: "Terms and Conditions",
       onPress: () => {
         Linking.openURL(LENSPLAY_TERMS);
       },
     },
     {
-      icon: <Icon name="terms" />,
+      icon: <Icon name="terms" size={24} />,
       label: "Privacy Policy",
       onPress: () => {
         Linking.openURL(LENSPLAY_PRIVACY);
       },
     },
     {
-      icon: <Icon name="mail" />,
+      icon: <Icon name="mail" size={24} />,
       label: "Contact Us",
       onPress: () => {
         Linking.openURL(`mailto:${OFFICIAL_EMAIL}`);
       },
     },
-    {
-      icon: <Icon name="logout" />,
-      label: isGuest ? "Login" : "Logout",
-      onPress: () => {
-        isGuest ? navigation.push("Login") : logoutref.current?.snapToIndex(0);
-      },
-    },
   ];
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <Pressable onPress={() => navigation.push("ProfileScanner")}>
+            <Icon name="close" size={20} />
+          </Pressable>
+        );
+      },
+    });
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="black" style="auto" />
-      {SettingItemsList.map((item, index) => {
-        return (
-          <SettingsItem
-            key={index}
-            icon={item.icon}
-            label={item.label}
-            onPress={item.onPress}
+      <ScrollView>
+        <ProfileQR />
+        <View>
+          <Heading
+            title={"About"}
+            style={{
+              color: "white",
+              fontSize: 16,
+              fontWeight: "600",
+            }}
           />
-        );
-      })}
-      <View
-        style={{
-          position: "absolute",
-          bottom: 16,
-          width: "100%",
-        }}
-      >
-        <View style={styles.socilaMediaContainer}>
-          {SocialMedia.map((el, index) => (
-            <SocialMediaBadge
-              key={index}
-              icon={el.icon}
-              name={el.name}
-              link={el.link}
-            />
-          ))}
+          <View
+            style={{
+              backgroundColor: dark_primary,
+              marginTop: 16,
+              borderRadius: 12,
+            }}
+          >
+            {SettingItemsList.map((item, index) => {
+              return (
+                <SettingsItem
+                  key={index}
+                  icon={item.icon}
+                  label={item.label}
+                  onPress={item.onPress}
+                />
+              );
+            })}
+          </View>
         </View>
+        <View
+          style={{
+            marginTop: 24,
+          }}
+        >
+          <Heading
+            title={"Bug"}
+            style={{
+              color: "white",
+              fontSize: 16,
+              fontWeight: "600",
+            }}
+          />
+          <View
+            style={{
+              backgroundColor: dark_primary,
+              marginTop: 16,
+              borderRadius: 12,
+            }}
+          >
+            <SettingsItem
+              icon={<Icon name="bug" size={24} />}
+              label={"Report a bug"}
+              onPress={() => navigation.push("BugReport")}
+            />
+          </View>
+        </View>
+        <View
+          style={{
+            marginVertical: 48,
+          }}
+        >
+          <Button
+            title={isGuest ? "Login" : "Logout of LensPlay"}
+            bg={dark_primary}
+            py={16}
+            borderRadius={12}
+            textStyle={{
+              color: "white",
+              fontSize: 16,
+              fontWeight: "500",
+            }}
+            onPress={() => {
+              isGuest
+                ? navigation.push("Login")
+                : logoutref.current?.snapToIndex(0);
+            }}
+          />
+        </View>
+        <Socials />
         <View style={styles.appVersionContainer}>
           <StyledText
             title={`OTA Build:${UPADTES.OTA_BUILD}`}
@@ -127,7 +172,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
             style={{ color: "gray", fontSize: 10 }}
           />
         </View>
-      </View>
+      </ScrollView>
       <Sheet
         ref={logoutref}
         index={-1}
@@ -173,7 +218,12 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                   logoutref.current?.close();
                 }}
                 title="Cancel"
-                textStyle={{ fontWeight: "600", fontSize: 16, color: "black" }}
+                bg={"rgba(255,255,255,0.1)"}
+                textStyle={{
+                  fontWeight: "600",
+                  fontSize: 16,
+                  color: "white",
+                }}
                 py={12}
                 borderRadius={8}
               />
@@ -195,8 +245,12 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                 }}
                 mt={16}
                 title="Log Out"
-                bg={"red"}
-                textStyle={{ fontWeight: "600", fontSize: 16, color: "black" }}
+                bg={"#f5f5f5"}
+                textStyle={{
+                  fontWeight: "600",
+                  fontSize: 16,
+                  color: "black",
+                }}
                 py={12}
                 borderRadius={8}
               />
@@ -210,43 +264,6 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 
 export default Settings;
 
-function SocialMediaBadge({ icon, name, link }: SocialMediaBadgeProps) {
-  return (
-    <Pressable
-      android_ripple={{
-        color: RIPPLE_COLOR,
-        borderless: true,
-        radius: 15,
-      }}
-      style={styles.badgeContainer}
-      onPress={() => {
-        Linking.openURL(link);
-      }}
-    >
-      {icon}
-      <StyledText title={name} style={styles.badgeText} />
-    </Pressable>
-  );
-}
-
-const SocialMedia: SocialMediaBadgeProps[] = [
-  {
-    icon: <Icon name="discord" size={16} color="#7289da" />,
-    name: "Discord",
-    link: LENSPLAY_DISCORD,
-  },
-  {
-    icon: <Icon name="twitter" size={16} color="#1DA1F2" />,
-    name: "Twitter",
-    link: LENSPLAY_TWITTER,
-  },
-  {
-    icon: <Icon name="link" size={16} color="#2AD95C" />,
-    name: "Website",
-    link: LENSPLAY_SITE,
-  },
-];
-
 const Item: FC<SettingsItemProps> = (item: SettingsItemProps) => {
   return (
     <Pressable
@@ -256,8 +273,16 @@ const Item: FC<SettingsItemProps> = (item: SettingsItemProps) => {
       style={styles.itemContainer}
       onPress={item.onPress}
     >
-      {item.icon}
-      <StyledText title={item.label} style={styles.itemText} />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        {item.icon}
+        <StyledText title={item.label} style={styles.itemText} />
+      </View>
+      <Icon name="rightArrow" size={16} />
     </Pressable>
   );
 };
@@ -267,26 +292,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
-  },
-  badgeContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: dark_primary,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 50,
+    padding: 16,
   },
   itemContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
-    borderBottomColor: dark_primary,
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
-  },
-  socilaMediaContainer: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    width: "100%",
+    borderBottomColor: "rgba(0,0,0,0.2)",
   },
   logOutContainer: {
     width: "85%",
@@ -305,12 +319,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 24,
     paddingHorizontal: 12,
-  },
-  badgeText: {
-    color: "white",
-    fontSize: 14,
-    fontWeight: "600",
-    marginLeft: 8,
   },
   appVersionContainer: {
     flexDirection: "row",
