@@ -29,10 +29,6 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
     { data: newTokens, error, loading },
   ] = useRefreshTokensMutation();
 
-  console.log(isvalidTokens, newTokens);
-
-  console.log(verifyError?.message, error?.message, "error");
-
   async function HandleDefaultProfile(adress: string) {
     const userDefaultProfile = await getDefaultProfile(adress);
     if (userDefaultProfile) {
@@ -150,9 +146,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
         console.log(error);
 
         console.log("[Error]:Error in accessing local storage");
-        throw new Error("[Error]:Error in accessing local storage", {
-          cause: error,
-        });
+        throw new Error("[Error]:Error in accessing local storage");
       }
     }
   };

@@ -46,7 +46,6 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           },
         },
       });
-      console.log(data.data?.challenge);
 
       const signature = await connector.sendCustomRequest({
         method: "personal_sign",
@@ -61,7 +60,6 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             },
           },
         });
-        console.log(response?.data?.authenticate);
 
         setAccessToken(response?.data?.authenticate?.accessToken);
         setRefreshToken(response?.data?.authenticate?.accessToken);
