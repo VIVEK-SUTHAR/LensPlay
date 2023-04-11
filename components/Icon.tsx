@@ -67,8 +67,7 @@ export type IconProps = {
     | "record"
     | "create"
     | "delete"
-    | "more"
-    | string;
+    | "more";
   size?: number;
   color?: string;
   style?: StyleProp<TextStyle>;

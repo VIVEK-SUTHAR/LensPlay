@@ -2,6 +2,7 @@ import AnimatedLottieView from "lottie-react-native";
 import React, { useState } from "react";
 import {
   FlatList,
+  Image,
   RefreshControl,
   SafeAreaView,
   StyleSheet,
@@ -20,6 +21,9 @@ import { Notification, useNotificationsQuery } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
 import TrackAction from "../../../utils/Track";
 import Skeleton from "../../../components/common/Skeleton";
+import { black, white } from "../../../constants/Colors";
+import Button from "../../../components/UI/Button";
+import Icon from "../../../components/Icon";
 
 const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -201,21 +205,23 @@ const NotFound = ({
   return (
     <View
       style={{
-        height: "100%",
+        flex: 1,
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "black",
       }}
     >
-      <AnimatedLottieView
-        autoPlay
+      <Image
         style={{
-          height: "auto",
+          height: 200,
+          width: 200,
         }}
-        source={require("../../../assets/notfound.json")}
+        resizeMode="contain"
+        source={require("../../../assets/images/notification.png")}
       />
       <View
         style={{
+          marginTop: 16,
           alignItems: "center",
         }}
       >
@@ -223,11 +229,9 @@ const NotFound = ({
           title={message}
           style={{
             fontSize: 16,
-            color: "white",
-            marginVertical: 5,
-            marginHorizontal: 15,
-            fontWeight: "700",
-            alignSelf: "flex-start",
+            color: white[200],
+            fontWeight: "600",
+            textAlign: "center",
           }}
         />
       </View>
