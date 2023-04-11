@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   image: {
-    height: 300,
-    width: 300,
+    height: 250,
+    width: 250,
     resizeMode: "contain",
   },
   messageContainer: {

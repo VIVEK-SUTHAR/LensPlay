@@ -7,11 +7,12 @@ import {
   SafeAreaView,
   ScrollView,
 } from "react-native";
-import Skeleton from "../../../components/common/Skeleton";
 import NotFound from "../../../components/Profile/NotFound";
 import StyledText from "../../../components/UI/StyledText";
 import VideoCardSkeleton from "../../../components/UI/VideoCardSkeleton";
 import VideoCard from "../../../components/VideoCard";
+import ErrorMessage from "../../../components/common/ErrorMesasge";
+import Skeleton from "../../../components/common/Skeleton";
 import { dark_primary } from "../../../constants/Colors";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
@@ -23,7 +24,6 @@ import {
   PublicationTypes,
   useExploreQuery,
 } from "../../../types/generated";
-import { LensPublication } from "../../../types/Lens/Feed";
 import { RootTabScreenProps } from "../../../types/navigation/types";
 
 type Explore = Post | Mirror;
@@ -58,8 +58,6 @@ export default function Trending({
     name: PublicationSortCriteria;
     active: boolean;
   }>(tags[0]);
-  const [TrendingItems, setTrendingItems] = useState<LensPublication[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const theme = useThemeStore();
   const { accessToken } = useAuthStore();
   const { currentProfile } = useProfile();
@@ -72,7 +70,7 @@ export default function Trending({
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
-    sources: ["lensplay","lenstube"],
+    sources: ["lensplay", "lenstube"],
   };
 
   const { data: ExploreData, error, loading, refetch } = useExploreQuery({
@@ -84,7 +82,7 @@ export default function Trending({
     },
     context: {
       headers: {
-        "x-access-token": `Bearer ${accessToken}`,
+        "x-access-token": `${!isGuest ? `Bearer ${accessToken}` : ""}`,
       },
     },
   });
@@ -95,7 +93,8 @@ export default function Trending({
     });
   }, [currentTag]);
 
-  if (error) return <NotFound />;
+  if (error)
+    return <ErrorMessage message={"Looks like something went wrong"} />;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
