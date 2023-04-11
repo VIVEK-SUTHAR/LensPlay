@@ -1,3 +1,4 @@
+import { CollectModuleType } from "../../utils/getCollectModule";
 import {
   CollectModules,
   FeedItemRoot,
@@ -7,6 +8,7 @@ import {
   Profile,
   ReferenceModuleParams,
   ReferenceModules,
+  Scalars,
 } from "../generated";
 
 export interface IAuthStore {
@@ -43,6 +45,9 @@ export interface ToastProps {
   timeout?: number;
   type?: ToastType;
   show: (message: string, type: ToastType, isVisible: boolean) => void;
+  success: (message: string) => void;
+  error: (errormessage: string) => void;
+  info: (message: string) => void;
 }
 export enum ToastType {
   SUCCESS = "SUCCESS",
@@ -112,17 +117,40 @@ export interface IGuestStore {
   handleGuest: (isGuest: boolean) => void;
 }
 
+export type ReferenceModuleType = {
+  isFollowerOnly: boolean;
+  degreesOfSeparationReferenceModule: {
+    isEnabled: boolean;
+    seperationLevel: number;
+  } | null;
+};
+
+export type PinStore = {
+  hasPinned: boolean;
+  publicationId: string | undefined;
+  setHasPinned: (newValue: boolean) => void;
+  setPinnedPubId: (pubId: string) => void;
+};
+
 export interface IUploadStore {
   videoURL: string | null;
   coverURL: string | null;
-  title: string | null;
+  title: string;
   description: string | null;
+  duration: number | null | undefined;
   isFollowersOnlyCollect: boolean;
-  referenceModule: ReferenceModules;
-  collectModule: CollectModules;
+  referenceModule: ReferenceModuleType | null;
+  collectModule: CollectModuleType;
+  uploadingStatus: null | "UPLOADING" | "PROCCESSING";
+  uploadProgress: number;
+  setDuration: (videoDuration: number) => void;
+  setReferenceModule: (userReferenceModule: ReferenceModuleType | null) => void;
   setURLs: (videoURL: string, coverURL: string) => void;
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
-  setCollectModule: (newCollectModule: CollectModules) => void;
+  setCollectModule: (newCollectModule: CollectModuleType) => void;
   setIsFollowesOnlyCollect: (newValue: boolean) => void;
+  setUploadingStatus: (status: null | "UPLOADING" | "PROCCESSING") => void;
+  setUploadProgress: (progress: number) => void;
+  setClearStore: () => void;
 }

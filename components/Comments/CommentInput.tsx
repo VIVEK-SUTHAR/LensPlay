@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { Pressable, TextInput, View } from "react-native";
-import { getProxyActionStatus } from "../../api";
-import { client } from "../../apollo/client";
-import createCommentViaDispatcher from "../../apollo/mutations/createCommentViaDispatcher";
 import { useGuestStore } from "../../store/GuestStore";
 import {
+  useActivePublication,
   useAuthStore,
   useOptimisticStore,
   useProfile,
   useThemeStore,
   useToast,
 } from "../../store/Store";
+import { useCreateCommentViaDispatcherMutation } from "../../types/generated";
 import { ToastType } from "../../types/Store";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
@@ -23,7 +22,7 @@ type CommentInputProps = {
 };
 
 const CommentInput = ({ publicationId }: CommentInputProps) => {
-  const { optimitisticComment, setOptimitisticComment } = useOptimisticStore();
+  const { setOptimitisticComment } = useOptimisticStore();
 
   const [commentText, setCommentText] = useState<string>("");
   const [isFocused, setIsFocused] = useState<boolean>(false);
@@ -33,6 +32,19 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
   const { accessToken } = useAuthStore();
   const { PRIMARY } = useThemeStore();
   const { isGuest } = useGuestStore();
+  const activePublication = useActivePublication();
+  const canComment = activePublication?.activePublication?.canComment;
+
+  const [createComment] = useCreateCommentViaDispatcherMutation({
+    onError: () => {
+      toast.error("Something went wrong");
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+      },
+    },
+  });
 
   async function publishComment() {
     if (isGuest) {
@@ -43,59 +55,36 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
       toast.show("Please type something", ToastType.ERROR, true);
       return;
     }
+    if (!canComment) {
+      toast.error("You can't comment on this video");
+      return;
+    }
     try {
-      toast.show("Comment submitted", ToastType.SUCCESS, true);
+      toast.success("Comment submitted!");
+      setCommentText("");
+      setIsFocused(false);
       setOptimitisticComment({
         commentText: commentText,
         handle: currentProfile?.handle,
         isIndexing: true,
         username: currentProfile?.name,
       });
-      setCommentText("");
       const contenturi = await uploadMetaDataToArweave(
         commentText,
         currentProfile?.handle
       );
-      const { data, errors } = await client.mutate({
-        mutation: createCommentViaDispatcher,
+      await createComment({
         variables: {
-          profileId: currentProfile?.id,
-          publicationId: publicationId,
-          uri: contenturi,
-        },
-        context: {
-          headers: {
-            "x-access-token": `Bearer ${accessToken}`,
+          request: {
+            profileId: currentProfile?.id,
+            publicationId: publicationId,
+            contentURI: contenturi,
+            collectModule: {
+              revertCollectModule: true,
+            },
           },
         },
       });
-      if (data?.createCommentViaDispatcher?.__typename === "RelayerResult") {
-        while (true) {
-          const status = await getProxyActionStatus(
-            data?.createCommentViaDispatcher?.txId,
-            accessToken
-          );
-          if (status) {
-            setOptimitisticComment({
-              ...optimitisticComment,
-              isIndexing: false,
-            });
-            break;
-          }
-          if (!status) {
-            setOptimitisticComment({
-              ...optimitisticComment,
-              isIndexing: false,
-            });
-            break;
-          }
-          await new Promise((r) => setTimeout(r, 2000));
-        }
-      }
-      if (errors) {
-        toast.show("Something went wrong", ToastType.ERROR, true);
-        return;
-      }
     } catch (error) {
       setCommentText("");
       toast.show("Something Went wrong", ToastType.ERROR, true);
@@ -131,7 +120,7 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
         style={{ flex: 1, color: "white" }}
         selectionColor={PRIMARY}
         value={commentText}
-        onFocus={(e) => {
+        onFocus={() => {
           setIsFocused((state) => !state);
         }}
         onSubmitEditing={() => {

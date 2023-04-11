@@ -1,16 +1,30 @@
-import React, { useState } from "react";
+import React, { useCallback } from "react";
 import {
+  KeyboardAvoidingView,
   SafeAreaView,
   TextInput,
-  View
+  View,
 } from "react-native";
 import Button from "../../components/UI/Button";
 import StyledText from "../../components/UI/StyledText";
-import { useThemeStore } from "../../store/Store";
+import { useThemeStore, useToast } from "../../store/Store";
+import { useUploadStore } from "../../store/UploadStore";
+import { RootStackScreenProps } from "../../types/navigation/types";
 
-export default function AddDescription() {
-  const [description, setDescription] = useState<string | null>(null);
+export default function AddDescription({
+  navigation,
+}: RootStackScreenProps<"AddDescription">) {
   const theme = useThemeStore();
+  const { description, setDescription } = useUploadStore();
+  const toast = useToast();
+
+  const handleDescription = () => {
+    if (!description) return toast.error("Please enter description");
+    if (description.length > 1000)
+      return toast.info("Description length exceed");
+    navigation.replace("AddDetails");
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -18,30 +32,38 @@ export default function AddDescription() {
         backgroundColor: "black",
       }}
     >
-      <View
+      <KeyboardAvoidingView
+        behavior="padding"
         style={{
-          height: "90%",
+          flex: 1,
         }}
       >
-        <TextInput
-          placeholder="Add description for your video"
-          placeholderTextColor={"gray"}
-          selectionColor={theme.PRIMARY}
-          textAlignVertical="top"
-          multiline={true}
+        <View
           style={{
-            paddingHorizontal: 16,
-            paddingVertical: 24,
-            fontSize: 20,
-            height: "100%",
-            color: "white",
+            height: "90%",
           }}
-          autoFocus={true}
-          onChange={(e) => {
-            setDescription(e.nativeEvent.text);
-          }}
-        />
-      </View>
+        >
+          <TextInput
+            placeholder="Add description for your video"
+            placeholderTextColor={"gray"}
+            selectionColor={theme.PRIMARY}
+            textAlignVertical="top"
+            multiline={true}
+            value={description ? description : ""}
+            style={{
+              paddingHorizontal: 16,
+              paddingVertical: 24,
+              fontSize: 20,
+              height: "100%",
+              color: "white",
+            }}
+            autoFocus={true}
+            onChange={useCallback((e: { nativeEvent: { text: string } }) => {
+              setDescription(e.nativeEvent.text.trim());
+            }, [])}
+          />
+        </View>
+      </KeyboardAvoidingView>
       <View
         style={{
           padding: 16,
@@ -64,9 +86,7 @@ export default function AddDescription() {
             fontSize: 16,
             fontWeight: "600",
           }}
-          onPress={() => {
-            // navigation.navigate("AddDetails");
-          }}
+          onPress={handleDescription}
           bg={"white"}
         />
       </View>

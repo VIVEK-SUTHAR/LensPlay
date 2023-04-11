@@ -5,8 +5,15 @@
  */
 
 const getImageBlobFromUri = async (uri: string) => {
-	const response = await fetch(uri);
-	const blob = await response.blob();
-	return blob;
+  try {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    return blob;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log("VIDEO SIZE BADH HAI HAI");
+      console.log(error);
+    }
+  }
 };
 export default getImageBlobFromUri;

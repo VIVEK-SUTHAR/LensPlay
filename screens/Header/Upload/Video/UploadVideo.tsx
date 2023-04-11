@@ -39,14 +39,18 @@ export default function UploadVideo({
     );
   };
 
-  useEffect(() => {
-    generateThumbnail(route.params.localUrl, route.params.duration).then(
-      (res) => {
-        if (res) {
-          setThumbnails(res);
-        }
-      }
+  async function getThumbnails() {
+    const data = await generateThumbnail(
+      route.params.localUrl,
+      route.params.duration
     );
+    if (data) {
+      setThumbnails(data);
+    }
+  }
+
+  useEffect(() => {
+    getThumbnails();
   }, []);
 
   async function selectCoverImage() {
@@ -148,6 +152,7 @@ export default function UploadVideo({
                       backgroundColor: "rgba(0,0,0,0.4)",
                       justifyContent: "center",
                       alignItems: "center",
+                      borderRadius: 4,
                     }}
                   >
                     <Icon name="done" />
