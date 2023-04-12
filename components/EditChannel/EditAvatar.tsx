@@ -65,12 +65,12 @@ export default function EditAvatar() {
       quality: 1,
       base64: true,
     });
-    if (result.canceled) {
+    if (result.cancelled) {
       toast.show("No image selected", ToastType.ERROR, true);
     }
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-      const imgblob = await getImageBlobFromUri(result.assets[0].uri);
+    if (!result.cancelled) {
+      setImage(result.uri);
+      const imgblob = await getImageBlobFromUri(result.uri);
       setImageBlob(imgblob);
     }
   }

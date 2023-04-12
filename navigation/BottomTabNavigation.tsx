@@ -507,15 +507,15 @@ export default function BottomTabNavigator({
                   let camera = await ImagePicker.launchCameraAsync({
                     mediaTypes: ImagePicker.MediaTypeOptions.Videos,
                   });
-                  if (camera.canceled) {
+                  if (camera.cancelled) {
                     // ToastAndroid.show("No Video recorded", ToastAndroid.SHORT);
                     uploadTypeRef.current?.close();
                   }
-                  if (!camera.canceled) {
+                  if (!camera.cancelled) {
                     // setImage(camera.uri);
                     navigation.push("UploadVideo", {
-                      localUrl: camera.assets[0].uri,
-                      duration: camera.assets[0].duration,
+                      localUrl: camera.uri,
+                      duration: camera.duration,
                     });
                   }
                 }
@@ -556,19 +556,19 @@ export default function BottomTabNavigator({
                   quality: 1,
                   base64: true,
                 });
-                if (result.canceled) {
+                if (result.cancelled) {
                   uploadTypeRef.current?.close();
                 }
-                if (!result.canceled) {
-                  const size = await getFileSize(result.assets[0].uri);
+                if (!result.cancelled) {
+                  const size = await getFileSize(result.uri);
                   if (!canUploadedToIpfs(size)) {
                     toast.error("Select video less than 100MB");
                     return;
                   }
-                  uploadStore.setDuration(result.assets[0].duration!);
+                  uploadStore.setDuration(result.duration!);
                   navigation.push("UploadVideo", {
-                    localUrl: result.assets[0].uri,
-                    duration: result.assets[0].duration,
+                    localUrl: result.uri,
+                    duration: result.duration,
                   });
                 }
               }}

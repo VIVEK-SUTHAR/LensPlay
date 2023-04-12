@@ -51,8 +51,8 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
       quality: 1,
       base64: true,
     });
-    if (!coverresult.canceled) {
-      setimage(coverresult?.assets[0]?.uri);
+    if (!coverresult.cancelled) {
+      setimage(coverresult?.uri);
     }
   }
   const [selectData, setselectData] = useState<BugCategory>({ reason: "" });

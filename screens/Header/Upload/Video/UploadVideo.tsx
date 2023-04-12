@@ -61,11 +61,11 @@ export default function UploadVideo({
       aspect: [2, 1],
       base64: true,
     });
-    if (coverresult.canceled) {
+    if (coverresult.cancelled) {
       return;
     }
-    if (!coverresult.canceled) {
-      setCoverPic(coverresult.assets[0].uri);
+    if (!coverresult.cancelled) {
+      setCoverPic(coverresult.uri);
       setSelectedCover(5);
     }
   }

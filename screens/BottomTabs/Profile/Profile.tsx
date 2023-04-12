@@ -143,8 +143,10 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   }, []);
 
   if (isGuest) return <PleaseLogin />;
-  if (!loading) return <ProfileSkeleton />;
+  if (loading) return <ProfileSkeleton />;
   if (Profile) {
+    console.log(Profile);
+    
     const profile = Profile?.profile;
     return (
       <>
