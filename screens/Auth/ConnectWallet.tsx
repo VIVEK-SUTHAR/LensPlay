@@ -3,7 +3,7 @@ import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
 import { MotiView } from "moti";
 import React, { useCallback, useRef, useState } from "react";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
 import Sheet from "../../components/Bottom";
 import Icon from "../../components/Icon";
 import Button from "../../components/UI/Button";
@@ -28,6 +28,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   const toast = useToast();
   const { setCurrentProfile, setHasHandle } = useProfile();
   const [isloading, setIsloading] = useState<boolean>(false);
+  const windowHeight = Dimensions.get("window").height;
 
   const onPress = useCallback(() => {
     loginRef?.current?.snapToIndex(0);
@@ -55,7 +56,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
         if (userData.statusCode === 404) {
           navigation.replace("JoinWaitlist");
         }
-        
+
         if (!userData.fields.hasAccess) {
           navigation.replace("LeaderBoard", {
             referralsCount: userData?.referralsCount,
@@ -90,7 +91,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
         style={{
           justifyContent: "center",
           alignItems: "center",
-          paddingTop: 160,
+          paddingTop: windowHeight / 8,
         }}
       >
         <MotiView
@@ -154,7 +155,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
       <View
         style={{
           justifyContent: "center",
-          marginTop: 120,
+          // marginTop: 120,
         }}
       >
         <MotiView
@@ -231,82 +232,90 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           />
         </MotiView>
       </View>
-      <View
-        style={{
-          paddingHorizontal: 16,
-          width: "100%",
-          marginTop: 10,
-        }}
-      >
-        <Button
-          onPress={async () => {
-            onPress();
-          }}
-          title="Connect Wallet"
-          bg={primary}
-          textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
-          py={12}
-          icon={<Icon name="wallet" color="black" size={24} />}
-          iconPosition="left"
-          animated={true}
-        />
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingHorizontal: 64,
-        }}
-      >
+      <View style={{
+        flexDirection: 'column',
+        // borderColor: 'red',
+        // borderWidth: 2
+      }}>
         <View
           style={{
-            flex: 1,
-            height: 2,
-            backgroundColor: "gray",
-            borderRadius: 20,
+            paddingHorizontal: 16,
+            width: "100%",
+            marginTop: 10,
+            paddingVertical: 16
           }}
-        />
-        <View>
-          <StyledText
-            title={"OR"}
+        >
+          <Button
+            onPress={async () => {
+              onPress();
+            }}
+            title="Connect Wallet"
+            bg={primary}
+            textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
+            py={12}
+            icon={<Icon name="wallet" color="black" size={24} />}
+            iconPosition="left"
+            animated={true}
+          />
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 64,
+          }}
+        >
+          <View
             style={{
-              width: 45,
-              textAlign: "center",
-              color: "gray",
-              fontSize: 16,
-              fontWeight: "600",
+              flex: 1,
+              height: 2,
+              backgroundColor: "gray",
+              borderRadius: 20,
+            }}
+          />
+          <View>
+            <StyledText
+              title={"OR"}
+              style={{
+                width: 45,
+                textAlign: "center",
+                color: "gray",
+                fontSize: 16,
+                fontWeight: "600",
+              }}
+            />
+          </View>
+          <View
+            style={{
+              flex: 1,
+              height: 2,
+              backgroundColor: "gray",
+              borderRadius: 20,
             }}
           />
         </View>
         <View
           style={{
-            flex: 1,
-            height: 2,
-            backgroundColor: "gray",
-            borderRadius: 20,
+            paddingHorizontal: 16,
+            width: "100%",
+            paddingTop: 16
           }}
-        />
-      </View>
-      <View
-        style={{
-          paddingHorizontal: 16,
-          width: "100%",
-        }}
-      >
-        <Button
-          onPress={async () => {
-            handleGuest(true);
-            navigation.navigate("Root");
-            TrackAction(GUEST_MODE);
-          }}
-          title="Continue as Guest"
-          bg={dark_primary}
-          textStyle={{ fontWeight: "600", fontSize: 20, color: "white" }}
-          py={12}
-          icon={<Icon name="referal" color="white" size={24} />}
-          iconPosition="left"
-          animated={true}
-        />
+        >
+          <Button
+            onPress={async () => {
+              handleGuest(true);
+              navigation.navigate("Root");
+              TrackAction(GUEST_MODE);
+            }}
+            title="Continue as Guest"
+            bg={dark_primary}
+            textStyle={{ fontWeight: "600", fontSize: 20, color: "white" }}
+            py={12}
+            icon={<Icon name="referal" color="white" size={24} />}
+            iconPosition="left"
+            animated={true}
+          />
+        </View>
       </View>
       <Sheet
         ref={loginRef}
@@ -434,8 +443,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",
     paddingVertical: 16,
+
   },
   shape1: {
     width: 150,
@@ -469,7 +479,8 @@ const styles = StyleSheet.create({
     zIndex: -1,
     justifyContent: "center",
     paddingLeft: 8,
-    paddingVertical: 10,
+    paddingTop: 10,
+    
   },
   smallShape1: {
     width: 30,

@@ -6,6 +6,7 @@ import * as Linking from "expo-linking";
 import React, { useRef } from "react";
 import {
   AppState,
+  Dimensions,
   Pressable,
   TouchableWithoutFeedback,
   View,
@@ -39,6 +40,7 @@ export default function BottomTabNavigator({
   const user = useProfile();
   const { setAccessToken, setRefreshToken } = useAuthStore();
   const [status, requestPermission] = ImagePicker.useCameraPermissions();
+  const windowHeight = Dimensions.get("window").height;
 
   let PROFILE_PIC_URI = "";
   if (user?.currentProfile?.picture?.__typename === "MediaSet") {
@@ -206,13 +208,12 @@ export default function BottomTabNavigator({
             backgroundColor: "black",
           alignItems: "center",
           justifyContent: "space-between",
-          paddingTop: 6,
           borderTopColor: "transparent",
-          // marginBottom: -5,
-          minHeight: 84,
+          minHeight: windowHeight/14,
           paddingHorizontal: 5,
+          paddingVertical: 10,
           },
-          headerShadowVisible: true,
+          headerShadowVisible: false,
         }}
       >
         <BottomTab.Screen
@@ -224,7 +225,7 @@ export default function BottomTabNavigator({
               return (
                 <View
                   style={{
-                    padding: 5,
+                    // padding: 5,
                     width: 45,
                     alignContent: "center",
                     justifyContent: "center",
@@ -251,7 +252,7 @@ export default function BottomTabNavigator({
               return (
                 <View
                   style={{
-                    padding: 5,
+                    // padding: 5,
                     width: 45,
                     alignContent: "center",
                     justifyContent: "center",
@@ -279,7 +280,7 @@ export default function BottomTabNavigator({
               return (
                 <View
                   style={{
-                    padding: 5,
+                    // padding: 5,
                     width: 45,
                     alignContent: "center",
                     justifyContent: "center",
@@ -307,7 +308,7 @@ export default function BottomTabNavigator({
               return (
                 <View
                   style={{
-                    padding: 5,
+                    // padding: 5,
                     width: 45,
                     alignContent: "center",
                     justifyContent: "center",

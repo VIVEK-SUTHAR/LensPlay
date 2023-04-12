@@ -2,7 +2,7 @@ import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
 import { MotiView } from "moti";
 import React, { useState } from "react";
-import { Linking, SafeAreaView, StyleSheet, View } from "react-native";
+import { Dimensions, Linking, SafeAreaView, StyleSheet, View } from "react-native";
 import Icon from "../../components/Icon";
 import Button from "../../components/UI/Button";
 import StyledText from "../../components/UI/StyledText";
@@ -22,6 +22,8 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const connector = useWalletConnect();
   const toast = useToast();
   const { setAccessToken, setRefreshToken } = useAuthStore();
+  const windowHeight = Dimensions.get("window").height;
+
 
   const loginWithLens = async () => {
     setIsloading(true);
@@ -65,7 +67,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           flexDirection: "column",
           justifyContent: "space-evenly",
           alignItems: "center",
-          paddingTop: 160,
+          paddingTop: windowHeight/8,
         }}
       >
         <MotiView
@@ -283,7 +285,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",
     paddingBottom: 16,
   },
   bottomCircles: {

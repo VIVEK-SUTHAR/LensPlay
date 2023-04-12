@@ -82,15 +82,6 @@ const Button = (props: ButtonProps): JSX.Element => {
         },
       ]}
       {...rest}
-      onPress={
-        onPress && !disabled
-          ? onPress
-          : () => {
-              console.log(
-                "[Error]:onPress handler is missing or disabled button"
-              );
-            }
-      }
       onPressIn={(e) => {
         e.preventDefault();
         if (!animated) return;
@@ -110,7 +101,13 @@ const Button = (props: ButtonProps): JSX.Element => {
         }).start();
       }}
     >
-      <Ripple rippleColor={ripple_color}>
+      <Ripple rippleColor={ripple_color} onTap={onPress && !disabled
+        ? onPress
+        : () => {
+          console.log(
+            "[Error]:onPress handler is missing or disabled button"
+          );
+        }}>
         <Animated.View
           style={{
             display: "flex",
@@ -121,8 +118,8 @@ const Button = (props: ButtonProps): JSX.Element => {
             backgroundColor: disabled
               ? "#c0c0c0"
               : type === "filled"
-              ? bg
-              : "transparent",
+                ? bg
+                : "transparent",
             borderColor: type === "outline" ? borderColor : "transparent",
             borderWidth: type === "outline" ? 1 : 0,
             paddingVertical: py,
