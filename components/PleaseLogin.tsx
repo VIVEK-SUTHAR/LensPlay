@@ -1,45 +1,71 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useThemeStore } from "../store/Store";
+import { black, white } from "../constants/Colors";
+import Icon from "./Icon";
 import Button from "./UI/Button";
 import Heading from "./UI/Heading";
 
 export default function PleaseLogin() {
-  const { PRIMARY } = useThemeStore();
   const navigation = useNavigation();
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: "black",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Heading
-        title="You can't access this screen in guest mode, Please Login to continue"
-        style={{
-          fontSize: 20,
-          color: "white",
-          fontWeight: "600",
-          marginBottom: 16,
-          paddingHorizontal: 8,
-          textAlign: 'center'
-        }}
+    <SafeAreaView style={styles.container}>
+      <Image
+        style={styles.image}
+        source={require("../assets/images/pleaselogin.png")}
       />
-      <Button
-        title="Login"
-        width="50%"
-        my={16}
-        py={8}
-        px={2}
-        bg={PRIMARY}
-        textStyle={{ fontSize: 20, fontWeight: "600" }}
-        onPress={() => navigation.navigate("Login")}
-      />
+      <View style={styles.messageContainer}>
+        <Heading
+          title={"Please login to use all features of LensPlay"}
+          style={styles.message}
+        />
+        <Button
+          title="Login"
+          icon={<Icon name="arrowForward" size={16} color={black[500]} />}
+          iconPosition="right"
+          width={"auto"}
+          bg={white[800]}
+          px={24}
+          py={8}
+          textStyle={styles.buttonText}
+          onPress={() => {
+            navigation.navigate("Login");
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "black",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  image: {
+    height: 300,
+    width: 300,
+    resizeMode: "contain",
+  },
+  messageContainer: {
+    alignItems: "center",
+    paddingHorizontal: 24,
+  },
+  message: {
+    fontSize: 16,
+    color: white[200],
+    fontWeight: "600",
+    alignSelf: "flex-start",
+    textAlign: "center",
+    marginBottom: 24,
+  },
+  buttonText: {
+    color: black[500],
+    fontSize: 16,
+    fontWeight: "600",
+  },
+});

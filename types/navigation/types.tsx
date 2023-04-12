@@ -5,7 +5,7 @@ import {
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { FeedItem, LensPublication, VideoPageStats } from "../Lens/Feed";
-import type { Profile, ProfileQuery } from "../generated";
+import type { Mirror, Post, Profile, ProfileQuery } from "../generated";
 /**
  
  LENS-PLAY NAVIGATION STRUCTURE
@@ -61,6 +61,7 @@ export type RootStackParamList = {
   NotFound: undefined;
   Login: undefined;
   Waitlist: undefined;
+  CreateProfile: undefined;
   Loader: undefined;
   JoinWaitlist: undefined;
   ReportPublication: {
@@ -83,13 +84,13 @@ export type RootStackParamList = {
   Channel: {
     profileId: string;
     isFollowdByMe?: boolean;
-    name?: string;
+    name?: string | null;
     ethAddress?: string;
     handle?: string;
   };
   Search: undefined;
   YourVideos: {
-    videos: LensPublication[];
+    videos: Post[] | Mirror[];
     title: string;
   };
   ShotsComment: {

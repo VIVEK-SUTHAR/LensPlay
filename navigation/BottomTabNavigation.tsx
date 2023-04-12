@@ -21,15 +21,23 @@ import Feed from "../screens/BottomTabs/Home/Feed";
 import Notifications from "../screens/BottomTabs/Notification/Notification";
 import ProfileScreen from "../screens/BottomTabs/Profile/Profile";
 import Bytes from "../screens/BottomTabs/Shots/Bytes";
-import { useAuthStore, useProfile, useThemeStore } from "../store/Store";
+import {
+  useAuthStore,
+  useProfile,
+  useThemeStore,
+  useToast,
+} from "../store/Store";
 import {
   RootStackScreenProps,
   RootTabParamList,
 } from "../types/navigation/types";
 import getIPFSLink from "../utils/getIPFSLink";
-import getAccessFromRefresh from "../utils/lens/getAccessFromRefresh";
 import storeTokens from "../utils/storeTokens";
+import { useRefreshTokensMutation } from "../types/generated";
 import { Camera } from "react-native-vision-camera";
+import getFileSize from "../utils/video/getFileSize";
+import canUploadedToIpfs from "../utils/canUploadToIPFS";
+import { useUploadStore } from "../store/UploadStore";
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
@@ -49,6 +57,11 @@ export default function BottomTabNavigator({
   if (user?.currentProfile?.picture?.__typename === "NftImage") {
     PROFILE_PIC_URI = user?.currentProfile?.picture?.uri;
   }
+
+  const [
+    getAccessFromRefresh,
+    { data: newTokens, error, loading },
+  ] = useRefreshTokensMutation();
 
   React.useEffect(() => {
     const handle = async () => {
@@ -100,19 +113,28 @@ export default function BottomTabNavigator({
       if (minute < 25) {
         return;
       } else {
-        const newTokens = await getAccessFromRefresh(tokens.refreshToken);
-        setAccessToken(newTokens?.accessToken);
-        setRefreshToken(newTokens?.refreshToken);
+        getAccessFromRefresh({
+          variables: {
+            request: {
+              refreshToken: tokens.refreshToken,
+            },
+          },
+        });
+        setAccessToken(newTokens?.refresh.accessToken);
+        setRefreshToken(newTokens?.refresh.refreshToken);
         if (tokens.viaDesktop) {
           await storeTokens(
-            newTokens?.accessToken,
-            newTokens?.refreshToken,
+            newTokens?.refresh.accessToken,
+            newTokens?.refresh.refreshToken,
             true
           );
           return;
         }
         if (!tokens.viaDesktop) {
-          storeTokens(newTokens?.accessToken, newTokens?.refreshToken);
+          storeTokens(
+            newTokens?.refresh.accessToken,
+            newTokens?.refresh.refreshToken
+          );
           return;
         }
       }
@@ -122,6 +144,8 @@ export default function BottomTabNavigator({
   const uploadRef = useRef<BottomSheetMethods>(null);
   const uploadTypeRef = useRef<BottomSheetMethods>(null);
 
+  const toast = useToast();
+  const uploadStore = useUploadStore();
   return (
     <>
       <BottomTab.Navigator
@@ -529,7 +553,6 @@ export default function BottomTabNavigator({
                 let result = await ImagePicker.launchImageLibraryAsync({
                   mediaTypes: ImagePicker.MediaTypeOptions.Videos,
                   allowsEditing: true,
-
                   quality: 1,
                   base64: true,
                 });
@@ -537,6 +560,12 @@ export default function BottomTabNavigator({
                   uploadTypeRef.current?.close();
                 }
                 if (!result.canceled) {
+                  const size = await getFileSize(result.assets[0].uri);
+                  if (!canUploadedToIpfs(size)) {
+                    toast.error("Select video less than 100MB");
+                    return;
+                  }
+                  uploadStore.setDuration(result.assets[0].duration!);
                   navigation.push("UploadVideo", {
                     localUrl: result.assets[0].uri,
                     duration: result.assets[0].duration,

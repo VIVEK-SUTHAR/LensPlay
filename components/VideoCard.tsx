@@ -13,6 +13,7 @@ import formatTime from "../utils/formatTime";
 import getDifference from "../utils/getDifference";
 import getIPFSLink from "../utils/getIPFSLink";
 import getRawurl from "../utils/getRawUrl";
+import getLivePeerURL from "../utils/video/getLivePeerURL";
 import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
 import StyledText from "./UI/StyledText";
@@ -32,7 +33,7 @@ const VideoCard = ({
   const [videoTime, setVideoTime] = React.useState<Maybe<string> | undefined>();
   const { setActivePublication } = useActivePublication();
   const navigation = useNavigation();
-
+  let playBackurl = publication?.metadata?.media[0]?.original?.url;
   React.useEffect(() => {
     publication?.metadata?.attributes?.filter(
       (item: MetadataAttributeOutput) => {
@@ -41,6 +42,13 @@ const VideoCard = ({
         }
       }
     );
+    const assetId = publication?.metadata?.attributes?.filter((item) => {
+      if (item.traitType === "assetId") {
+        getLivePeerURL(item.value).then((res) => {
+          playBackurl = res;
+        });
+      }
+    });
   }, []);
 
   return (
@@ -55,7 +63,9 @@ const VideoCard = ({
         <TouchableWithoutFeedback
           onPress={() => {
             setActivePublication(publication);
-            navigation.navigate("VideoPage");
+            navigation.navigate("VideoPage", {
+              playBackurl: playBackurl,
+            });
           }}
         >
           <Image

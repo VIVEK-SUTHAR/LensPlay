@@ -20,6 +20,7 @@ export type IconProps = {
     | "policy"
     | "mirror"
     | "chat"
+    | "info"
     | "close"
     | "collect"
     | "comment"
@@ -64,7 +65,9 @@ export type IconProps = {
     | "done"
     | "upload-file"
     | "record"
-    | "create";
+    | "create"
+    | "delete"
+    | "more";
   size?: number;
   color?: string;
   style?: StyleProp<TextStyle>;

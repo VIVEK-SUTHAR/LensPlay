@@ -40,13 +40,20 @@ import {
 } from "../../store/Store";
 import { Comments, LensPublication } from "../../types/Lens/Feed";
 import { ToastType } from "../../types/Store";
-import { Mirror, Post } from "../../types/generated";
+import {
+  Mirror,
+  Post,
+  PublicationMainFocus,
+  PublicationsQueryRequest,
+  useCommentsQuery,
+  useRefreshTokensMutation,
+  useVerifyTokensLazyQuery,
+} from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import extractURLs from "../../utils/extractURL";
 import getIPFSLink from "../../utils/getIPFSLink";
-import getAccessFromRefresh from "../../utils/lens/getAccessFromRefresh";
+import getRawurl from "../../utils/getRawUrl";
 import getDefaultProfile from "../../utils/lens/getDefaultProfile";
-import verifyTokens from "../../utils/lens/verifyTokens";
 import storeTokens from "../../utils/storeTokens";
 
 const LinkingVideo = ({
@@ -58,7 +65,6 @@ const LinkingVideo = ({
   const [isMute, setIsMute] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [videoData, setVideoData] = useState<LensPublication>();
-  const [comments, setComments] = useState<Comments[]>([]);
 
   const collectRef = useRef<BottomSheetMethods>(null);
   const mirrorRef = useRef<BottomSheetMethods>(null);
@@ -83,6 +89,16 @@ const LinkingVideo = ({
   >(null);
   const { setHasHandle, currentProfile, setCurrentProfile } = useProfile();
   const toast = useToast();
+
+  const [
+    verifyTokens,
+    { data: isvalidTokens, error: verifyError, loading: verifyLoading },
+  ] = useVerifyTokensLazyQuery();
+
+  const [
+    getAccessFromRefresh,
+    { data: newTokens, error, loading },
+  ] = useRefreshTokensMutation();
 
   const collectPublication = async () => {
     try {
@@ -174,25 +190,40 @@ const LinkingVideo = ({
       } else {
         const accessToken = JSON.parse(userTokens).accessToken;
         const refreshToken = JSON.parse(userTokens).refreshToken;
-        const isvalidTokens = await verifyTokens(accessToken);
+        verifyTokens({
+          variables: {
+            request: {
+              accessToken: accessToken,
+            },
+          },
+        });
         if (waitList) {
-          if (isvalidTokens) {
+          if (isvalidTokens?.verify) {
             const address = JSON.parse(waitList).address;
             setAccessToken(accessToken);
             setRefreshToken(refreshToken);
             const profile = await setProfile(address);
             getVideoById(route?.params?.id, profile?.id, accessToken);
           } else {
-            const newTokens = await getAccessFromRefresh(refreshToken);
+            getAccessFromRefresh({
+              variables: {
+                request: {
+                  refreshToken: refreshToken,
+                },
+              },
+            });
             const address = JSON.parse(waitList).address;
             const profile = await setProfile(address);
-            setAccessToken(newTokens?.accessToken);
-            setRefreshToken(newTokens?.refreshToken);
-            await storeTokens(newTokens?.accessToken, newTokens?.refreshToken);
+            setAccessToken(newTokens?.refresh.accessToken);
+            setRefreshToken(newTokens?.refresh.refreshToken);
+            await storeTokens(
+              newTokens?.refresh.accessToken,
+              newTokens?.refresh.refreshToken
+            );
             getVideoById(
               route?.params?.id,
               profile?.id,
-              newTokens?.accessToken
+              newTokens?.refresh.accessToken
             );
           }
         }
@@ -206,6 +237,41 @@ const LinkingVideo = ({
     BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
     handleAsyncStorage();
   }, []);
+
+  const QueryRequest: PublicationsQueryRequest = {
+    commentsOf: route?.params?.id,
+    metadata: {
+      mainContentFocus: [
+        PublicationMainFocus.Video,
+        PublicationMainFocus.Article,
+        PublicationMainFocus.Embed,
+        PublicationMainFocus.Link,
+        PublicationMainFocus.TextOnly,
+      ],
+    },
+    limit: 50,
+  };
+
+  const {
+    data: commentData,
+    error: commentError,
+    loading: commentLoading,
+    refetch,
+  } = useCommentsQuery({
+    variables: {
+      request: QueryRequest,
+      reactionRequest: {
+        profileId: currentProfile?.id,
+      },
+    },
+    initialFetchPolicy: "network-only",
+    refetchWritePolicy: "merge",
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+      },
+    },
+  });
 
   async function fetchComments(
     publicationId: string,
@@ -505,7 +571,7 @@ const LinkingVideo = ({
           >
             <Image
               source={{
-                uri: getIPFSLink(activePublication?.metadata?.cover),
+                uri: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
               }}
               style={{
                 height: Dimensions.get("screen").height / 4,

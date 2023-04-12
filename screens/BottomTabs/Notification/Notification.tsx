@@ -1,25 +1,28 @@
-import AnimatedLottieView from "lottie-react-native";
 import React, { useState } from "react";
 import {
   FlatList,
+  Image,
   RefreshControl,
   SafeAreaView,
   StyleSheet,
   View,
 } from "react-native";
 import NotificationCard from "../../../components/Notifications";
-import { NotificationTypes } from "../../../components/Notifications/index.d";
 import Skleton from "../../../components/Notifications/Skleton";
+import { NotificationTypes } from "../../../components/Notifications/index.d";
 import PleaseLogin from "../../../components/PleaseLogin";
 import Heading from "../../../components/UI/Heading";
 import Tabs, { Tab } from "../../../components/UI/Tabs";
+import NotFound from "../../../components/common/NotFound";
+import Skeleton from "../../../components/common/Skeleton";
+import { white } from "../../../constants/Colors";
 import { NOTIFICATION } from "../../../constants/tracking";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import { Notification, useNotificationsQuery } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
 import TrackAction from "../../../utils/Track";
-import Skeleton from "../../../components/common/Skeleton";
+import ErrorMessage from "../../../components/common/ErrorMesasge";
 
 const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -50,7 +53,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   if (loading) return <Skeleton children={<Skleton />} number={10} />;
   if (error)
     return (
-      <NotFound
+      <ErrorMessage
         message={
           "Oh no,LensPlay encounterd some error while loading your notifications,😞😞"
         }
@@ -100,7 +103,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
           keyExtractor={(item, index) => `${item?.notificationId}-${index}`}
           ListEmptyComponent={() => {
             return (
-              <NotFound message="Looks like you don't have any notifications,interact with profiles to get notifications" />
+              <NoNewNotification message="Looks like you don't have any notifications,interact with profiles to get notifications" />
             );
           }}
           refreshControl={
@@ -130,7 +133,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
           keyExtractor={(item, index) => `${item?.notificationId}-${index}`}
           ListEmptyComponent={() => {
             return (
-              <NotFound message="Looks like you don't have any notifications,interact with profiles to get notifications" />
+              <NoNewNotification message="Looks like you don't have any notifications,interact with profiles to get notifications" />
             );
           }}
           refreshControl={
@@ -154,7 +157,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
                 <NotificationCard navigation={navigation} notification={item} />
               );
             }
-            return <View />;
+            return <></>;
           }}
         />
       );
@@ -186,12 +189,13 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
       </SafeAreaView>
     );
   }
+
   return <SafeAreaView style={styles.container}></SafeAreaView>;
 };
 
 export default Notifications;
 
-const NotFound = ({
+const NoNewNotification = ({
   message,
 }: {
   message: string;
@@ -201,21 +205,23 @@ const NotFound = ({
   return (
     <View
       style={{
-        height: "100%",
+        flex: 1,
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "black",
       }}
     >
-      <AnimatedLottieView
-        autoPlay
+      <Image
         style={{
-          height: "auto",
+          height: 250,
+          width: 250,
         }}
-        source={require("../../../assets/notfound.json")}
+        resizeMode="contain"
+        source={require("../../../assets/images/notification.png")}
       />
       <View
         style={{
+          marginTop: 16,
           alignItems: "center",
         }}
       >
@@ -223,11 +229,9 @@ const NotFound = ({
           title={message}
           style={{
             fontSize: 16,
-            color: "white",
-            marginVertical: 5,
-            marginHorizontal: 15,
-            fontWeight: "700",
-            alignSelf: "flex-start",
+            color: white[200],
+            fontWeight: "600",
+            textAlign: "center",
           }}
         />
       </View>

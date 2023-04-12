@@ -1,15 +1,13 @@
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import React, { useCallback } from "react";
+import { useGuestStore } from "../../../store/GuestStore";
 import {
-  useAuthStore,
-  useReactionStore,
-  useThemeStore,
-  useToast,
+  useActivePublication, useThemeStore,
+  useToast
 } from "../../../store/Store";
-import Button from "../../UI/Button";
 import { ToastType } from "../../../types/Store";
 import Icon from "../../Icon";
-import { useGuestStore } from "../../../store/GuestStore";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Button from "../../UI/Button";
 
 type CollectVideoPrpos = {
   totalCollects: number;
@@ -24,7 +22,6 @@ type CollectVideoPrpos = {
 const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
   const { PRIMARY } = useThemeStore();
   const toast = useToast();
-  const { accessToken } = useAuthStore();
   const { DARK_PRIMARY } = useThemeStore();
   const { isGuest } = useGuestStore();
 
@@ -34,6 +31,13 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
     collectRef.current?.snapToIndex(0);
   }, []);
 
+  const activePublication = useActivePublication();
+  const isPaidCollet =
+    activePublication?.activePublication?.collectModule?.__typename ===
+    "FeeCollectModuleSettings";
+  const isRevertCollect =
+    activePublication?.activePublication?.collectModule.__typename ===
+    "RevertCollectModuleSettings";
   return (
     <>
       <Button
@@ -47,6 +51,14 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
         onPress={() => {
           if (isGuest) {
             toast.show("Please Login", ToastType.ERROR, true);
+            return;
+          }
+          if (isRevertCollect) {
+            toast.error("This video can't be collected");
+            return;
+          }
+          if (isPaidCollet) {
+            toast.error("Paid collects are coming soon!");
             return;
           }
           onPress();

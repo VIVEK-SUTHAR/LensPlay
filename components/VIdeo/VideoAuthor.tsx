@@ -39,17 +39,17 @@ const VideoCreator = (props: VideoCreatorProps) => {
 
   const followCreator = React.useCallback(async () => {
     if (isGuest) {
-      toast.show("Please Login", ToastType.ERROR, true);
+      toast.error("Please Login");
       return;
     }
     if (following) {
-      toast.show("Currently not supported", ToastType.ERROR, true);
+      toast.error("Currently not supported");
       return;
     }
     try {
       const data = await createFreeSubscribe(profileId, accessToken);
-      if (data.data.proxyAction !== null) {
-        toast.show("Subscribed succesfully", ToastType.SUCCESS, true);
+      if (data?.data?.proxyAction !== null) {
+        toast.success("Subscribed succesfully");
         setFollowing(true);
       }
     } catch (error) {
@@ -106,7 +106,6 @@ const VideoCreator = (props: VideoCreatorProps) => {
             fontSize: 14,
             fontWeight: "600",
           }}
-          animated={true}
           onPress={followCreator}
         />
       )}

@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BarCodeScanner } from "expo-barcode-scanner";
-import { Camera, FlashMode } from "expo-camera";
+import { Camera } from "expo-camera";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
@@ -23,14 +23,14 @@ import Heading from "../../components/UI/Heading";
 import StyledText from "../../components/UI/StyledText";
 import { AUTH } from "../../constants/tracking";
 import { useAuthStore, useProfile, useToast } from "../../store/Store";
-import { RootStackScreenProps } from "../../types/navigation/types";
 import { ToastType } from "../../types/Store";
+import { useAuthenticateMutation } from "../../types/generated";
+import { RootStackScreenProps } from "../../types/navigation/types";
+import TrackAction from "../../utils/Track";
 import decryptData from "../../utils/decryptData";
 import handleWaitlist from "../../utils/handleWaitlist";
 import getDefaultProfile from "../../utils/lens/getDefaultProfile";
-import getTokens from "../../utils/lens/getTokens";
 import storeTokens from "../../utils/storeTokens";
-import TrackAction from "../../utils/Track";
 export default function Scanner({
   navigation,
 }: RootStackScreenProps<"Scanner">) {
@@ -42,6 +42,11 @@ export default function Scanner({
   const windowHeight = Dimensions.get("window").height;
   const windowWidth = Dimensions.get("window").width;
   const scale = useSharedValue(0);
+
+  const [
+    getTokens,
+    { data: tokens, error: tokensError, loading: tokenLoading },
+  ] = useAuthenticateMutation();
 
   const scaleStyle = useAnimatedStyle(() => {
     return {
@@ -62,6 +67,7 @@ export default function Scanner({
       true
     );
   }, []);
+
   if (!permission) {
     return <View />;
   }
@@ -152,6 +158,7 @@ export default function Scanner({
 
         if (userData?.fields?.hasAccess) {
           const result = await HandleDefaultProfile(address);
+          await AsyncStorage.setItem("@viaDeskTop", "true");
 
           if (!result) {
             navigation.replace("LoginWithLens");
@@ -160,19 +167,26 @@ export default function Scanner({
 
           if (result) {
             setHasHandle(true);
-            const tokens = await getTokens({
-              address,
-              signature: decryptedSignature,
+            getTokens({
+              variables: {
+                request: {
+                  address: address,
+                  signature: decryptedSignature,
+                },
+              },
             });
-
             if (!tokens) {
               setHasData(false);
               toast.show("Please regenerate QR", ToastType.ERROR, true);
               return;
             }
-            setAccessToken(tokens?.accessToken);
-            setRefreshToken(tokens?.refreshToken);
-            await storeTokens(tokens?.accessToken, tokens?.refreshToken, true);
+            setAccessToken(tokens?.authenticate?.accessToken);
+            setRefreshToken(tokens?.authenticate?.refreshToken);
+            await storeTokens(
+              tokens?.authenticate?.accessToken,
+              tokens?.authenticate?.refreshToken,
+              true
+            );
             await AsyncStorage.setItem("@viaDeskTop", "true");
             navigation.replace("Root");
             TrackAction(AUTH.QR_LOGIN);

@@ -1,18 +1,13 @@
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { StatusBar } from "expo-status-bar";
 import AnimatedLottieView from "lottie-react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Dimensions,
   Pressable,
-  RefreshControl,
-  SafeAreaView,
-  View,
+  View
 } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
-import { client } from "../../apollo/client";
 import { useGuestStore } from "../../store/GuestStore";
-import getBytes from "../../apollo/Queries/getBytes";
 import { useAuthStore, useProfile, useThemeStore } from "../../store/Store";
 import {
   Mirror,
@@ -20,9 +15,8 @@ import {
   PublicationMainFocus,
   PublicationSortCriteria,
   PublicationTypes,
-  useExploreQuery,
+  useExploreQuery
 } from "../../types/generated";
-import { Root } from "../../types/Lens/Feed";
 import Heading from "../UI/Heading";
 import SingleByte from "./SingleByte";
 
@@ -48,7 +42,7 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
-    sources: ["lenstube", "lenstube-bytes"],
+    sources: ["lensplay","lenstube", "lenstube-bytes"],
   };
 
   const { data: shotsData, error, loading, refetch } = useExploreQuery({
@@ -60,7 +54,7 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
     },
     context: {
       headers: {
-        "x-access-token": `${!accessToken ? '' : `Bearer ${accessToken}`}`,
+        "x-access-token": `${!isGuest ? `Bearer ${accessToken}` : ""}`,
       },
     },
   });

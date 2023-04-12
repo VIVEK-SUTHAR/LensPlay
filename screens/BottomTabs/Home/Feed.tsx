@@ -1,19 +1,21 @@
 import { StatusBar } from "expo-status-bar";
-import AnimatedLottieView from "lottie-react-native";
 import React, { useState } from "react";
 import {
   FlatList,
+  Image,
   RefreshControl,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   View,
 } from "react-native";
+import Icon from "../../../components/Icon";
 import PleaseLogin from "../../../components/PleaseLogin";
 import Button from "../../../components/UI/Button";
 import Heading from "../../../components/UI/Heading";
 import VideoCardSkeleton from "../../../components/UI/VideoCardSkeleton";
 import VideoCard from "../../../components/VideoCard";
+import Skeleton from "../../../components/common/Skeleton";
+import { black, white } from "../../../constants/Colors";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
@@ -22,7 +24,6 @@ import {
   useFeedQuery,
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
-import Skeleton from "../../../components/common/Skeleton";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -36,8 +37,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
-    sources: ["lenstube"],
-    limit: 50,
+    sources: ["lensplay", "lenstube"],
   };
 
   const { data: Feeddata, error, loading, refetch } = useFeedQuery({
@@ -114,7 +114,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 export default Feed;
 
 const NotFound = ({ navigation }: { navigation: any }) => {
-  const theme = useThemeStore();
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -124,40 +123,42 @@ const NotFound = ({ navigation }: { navigation: any }) => {
           alignItems: "center",
         }}
       >
-        <AnimatedLottieView
-          autoPlay
+        <Image
           style={{
-            height: "auto",
+            height: 300,
+            width: 300,
           }}
-          source={require("../../../assets/notfound.json")}
+          resizeMode="contain"
+          source={require("../../../assets/images/home.png")}
         />
         <View
           style={{
             alignItems: "center",
+            paddingHorizontal: 24,
           }}
         >
           <Heading
-            title="Looks like you just landed,follow some profile to view your feed"
+            title="Looks like you just landed,follow some profile to explore feed"
             style={{
               fontSize: 16,
-              color: "white",
-              marginVertical: 5,
-              marginHorizontal: 15,
+              color: white[200],
               fontWeight: "600",
               alignSelf: "flex-start",
               textAlign: "center",
+              marginBottom: 24,
             }}
           />
           <Button
-            title="Explore Feed"
+            title="Explore"
+            icon={<Icon name="arrowForward" size={16} color={black[500]} />}
+            iconPosition="right"
             width={"auto"}
-            type="outline"
-            borderColor={theme.PRIMARY}
-            px={16}
-            my={8}
+            bg={white[800]}
+            px={24}
+            py={8}
             textStyle={{
-              color: "white",
-              fontSize: 20,
+              color: black[500],
+              fontSize: 16,
               fontWeight: "600",
             }}
             onPress={() => {

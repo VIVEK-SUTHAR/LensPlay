@@ -4,7 +4,7 @@ import { Dimensions, Platform } from "react-native";
 const LENS_API_ENDPOINT = "https://api-mumbai.lens.dev/";
 const IS_MAINNET = false;
 //Application
-const APP_ID = "lensplay";
+const APP_ID = "LensPlay";
 
 const APP_NAME = "LensPlay";
 
@@ -17,16 +17,20 @@ const APP_LOGO = "FINAL HONE KE BAD YAHA DAL DENA KOI";
 export const CAPTURE_BUTTON_SIZE = 78;
 
 //Storage
+const IPFS_FREE_UPLOAD_LIMIT = IS_MAINNET ? 5000 : 100;
 const IPFS_GATEWAY = "https://ipfs.io/ipfs/";
 const ARWEAVE_GATEWAY = "https://arweave.net";
 
 //UPLOAD_APIS
 const IPFS_UPLOAD_API = "https://api.web3.storage/upload";
 const BUNDLR_UPLOAD_API = "https://bundlr-upload-server.vercel.app/api/upload";
-
+export const LIVEPEER_API_URL = "https://livepeer.studio/api";
 //Static Media
 const STATIC_ASSET =
   "https://lens.infura-ipfs.io/ipfs/bafybeibv2kpqpjtvuj5uprvq6knnr2reb7ylq3o4bnypqjioqgxmjw2akq/5460475.webp";
+
+//API_TOKENS
+export const LIVEPEER_API_TOKEN = "57f82e71-546c-4bf3-861a-9cdd56d97677";
 
 //Regular Expressions
 const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
@@ -39,7 +43,7 @@ const MENTION_REGEX = /(@[^\s]+)/g;
 export const OFFICIAL_EMAIL = "lensplay.ac@gmail.com";
 export const LENSPLAY_TWITTER = "https://twitter.com/lensplayxyz";
 export const LENSPLAY_DISCORD = "https://discord.gg/tgrzS4Actz";
-export const LENSPLAY_SITE = "https://lensplay.xyz/";
+export const LENSPLAY_SITE = "https://lensplay.xyz";
 export const LENSPLAY_PRIVACY =
   "https://island-hat-05d.notion.site/LensPlay-Privacy-Policy-bc6f36fa5434481bb3b57bf79f1e552d";
 export const LENSPLAY_TERMS =
@@ -54,6 +58,7 @@ export {
   APP_ID,
   STATIC_ASSET,
   URL_REGEX,
+  IPFS_FREE_UPLOAD_LIMIT,
   ADDRESS_REGEX,
   APP_LOGO,
   IS_MAINNET,

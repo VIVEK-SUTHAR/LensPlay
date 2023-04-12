@@ -11,14 +11,15 @@ import ProfileCard from "../../../components/ProfileCard";
 import Heading from "../../../components/UI/Heading";
 import ProfileCardSkeleton from "../../../components/UI/ProfileCardSkeleton";
 import Tabs, { Tab } from "../../../components/UI/Tabs";
-import { useFollowers, useFollowing } from "../../../hooks/useLensQuery";
-import { useProfile, useThemeStore } from "../../../store/Store";
+import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
+import {
+  useAllFollowersQuery,
+  useAllFollowingQuery,
+} from "../../../types/generated";
 import { RootStackScreenProps } from "../../../types/navigation/types";
+import getRawurl from "../../../utils/getRawUrl";
 
-const UserStats = ({
-  navigation,
-  route,
-}: RootStackScreenProps<"UserStats">) => {
+const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
   const [headerTitle, setHeaderTitle] = useState<string>("Subscribers");
   const theme = useThemeStore();
 
@@ -84,7 +85,20 @@ const UserStats = ({
 
 const Suscribers = () => {
   const { currentProfile } = useProfile();
-  const { data, error, loading } = useFollowers(currentProfile?.id);
+  const { accessToken } = useAuthStore();
+
+  const { data, error, loading } = useAllFollowersQuery({
+    variables: {
+      request: {
+        profileId: currentProfile?.id,
+      },
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+      },
+    },
+  });
   if (loading) return <Loader />;
 
   if (data) {
@@ -112,11 +126,26 @@ const Suscribers = () => {
   }
   return <></>;
 };
+
 const SuscriberList = React.memo(Suscribers);
 
 const Subscriptions = () => {
   const { currentProfile } = useProfile();
-  const { data, error, loading } = useFollowing(currentProfile?.ownedBy);
+  const { accessToken } = useAuthStore();
+
+  const { data, error, loading } = useAllFollowingQuery({
+    variables: {
+      request: {
+        address: currentProfile?.ownedBy,
+      },
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+      },
+    },
+  });
+
   if (loading) return <Loader />;
   if (data) {
     return (
@@ -129,7 +158,7 @@ const Subscriptions = () => {
               <ProfileCard
                 handle={item?.profile?.handle}
                 profileName={item?.profile?.name}
-                profileIcon={item?.profile?.picture?.original?.url}
+                profileIcon={item?.profile?.picture}
                 profileId={item?.profile?.id}
                 owner={item?.profile?.handle}
                 isFollowed={item?.profile?.isFollowedByMe}

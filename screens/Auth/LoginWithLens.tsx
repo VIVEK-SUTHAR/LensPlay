@@ -9,12 +9,15 @@ import StyledText from "../../components/UI/StyledText";
 import { primary } from "../../constants/Colors";
 import { AUTH } from "../../constants/tracking";
 import { useAuthStore, useProfile, useToast } from "../../store/Store";
-import { RootStackScreenProps } from "../../types/navigation/types";
 import { ToastType } from "../../types/Store";
-import generateChallenge from "../../utils/lens/getChallenge";
-import getTokens from "../../utils/lens/getTokens";
-import storeTokens from "../../utils/storeTokens";
+import {
+  useAuthenticateMutation,
+  useChallengeLazyQuery,
+} from "../../types/generated";
+import { RootStackScreenProps } from "../../types/navigation/types";
 import TrackAction from "../../utils/Track";
+import storeTokens from "../../utils/storeTokens";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const [isloading, setIsloading] = useState<boolean>(false);
@@ -25,26 +28,54 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const windowHeight = Dimensions.get("window").height;
 
 
+  const [
+    getChallenge,
+    { data: challangeText, error: challangeError, loading: challengeLoading },
+  ] = useChallengeLazyQuery();
+
+  const [
+    getTokens,
+    { data: tokens, error: tokensError, loading: tokenLoading },
+  ] = useAuthenticateMutation();
+
   const loginWithLens = async () => {
     setIsloading(true);
     try {
       const address = connector.accounts[0];
-      const challange = await generateChallenge({
-        address: address,
+      const data = await getChallenge({
+        variables: {
+          request: {
+            address: address,
+          },
+        },
       });
+
       const signature = await connector.sendCustomRequest({
         method: "personal_sign",
-        params: [address, challange?.text],
+        params: [address, data?.data?.challenge?.text],
       });
       if (signature) {
-        const tokens = await getTokens({
-          address: address,
-          signature: signature,
+        const response = await getTokens({
+          variables: {
+            request: {
+              address: address,
+              signature: signature,
+            },
+          },
         });
-        setAccessToken(tokens?.accessToken);
-        setRefreshToken(tokens?.refreshToken);
-        await storeTokens(tokens?.accessToken, tokens?.refreshToken, false);
-        navigation.replace("Root");
+
+        setAccessToken(response?.data?.authenticate?.accessToken);
+        setRefreshToken(response?.data?.authenticate?.accessToken);
+        await storeTokens(
+          response?.data?.authenticate?.accessToken,
+          response?.data?.authenticate?.refreshToken,
+          false
+        );
+        if (hasHandle) {
+          navigation.replace("Root");
+        } else {
+          navigation.replace("CreateProfile");
+        }
         TrackAction(AUTH.SIWL);
       } else {
         toast.show("Something went wrong", ToastType.ERROR, true);
@@ -248,32 +279,24 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           width: "100%",
         }}
       >
-        {hasHandle ? (
-          <Button
-            title="Login With Lens"
-            bg={primary}
-            textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
-            py={12}
-            iconPosition="right"
-            isLoading={isloading}
-            onPress={async () => {
-              await loginWithLens();
-            }}
-            animated={true}
-          />
-        ) : (
-          <Button
-            title="Claim Lens Handle"
-            bg={primary}
-            borderRadius={50}
-            textStyle={{ fontWeight: "600", fontSize: 20 }}
-            py={12}
-            isLoading={isloading}
-            onPress={() => {
+        <Button
+          title={hasHandle ? "Login With Lens" : "Claim Lens Handle"}
+          bg={primary}
+          textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
+          py={12}
+          iconPosition="right"
+          isLoading={isloading}
+          onPress={async () => {
+            const isDesktop = await AsyncStorage.getItem("@viaDeskTop");
+
+            if (isDesktop) {
               Linking.openURL("https://lens-create-profile.vercel.app/");
-            }}
-          />
-        )}
+            } else {
+              await loginWithLens();
+            }
+          }}
+          animated={true}
+        />
       </View>
     </SafeAreaView>
   );

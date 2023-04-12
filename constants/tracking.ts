@@ -9,6 +9,7 @@ export const AUTH = {
 
 export const PROFILE = {
   FOLLOW: "Follow profile",
+  UNFOLLOW:"Unfollow profile",
   LOGOUT: "Profile logout",
   FULL_IMAGE: "Full image",
 };
@@ -20,6 +21,7 @@ export const PUBLICATION = {
   MIRROR: "Mirror publication",
   SHARE: "Share Video",
   REPORT: "Report publication",
+  PIN_PUBLICATION: "Publication Pinned",
   ATTACHMENT: {
     IMAGE: {
       OPEN: "Open full image",

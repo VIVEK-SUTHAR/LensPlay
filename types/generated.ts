@@ -29,8 +29,8 @@ export type Scalars = {
   FollowModuleData: any;
   Handle: any;
   HandleClaimIdScalar: any;
-  IfpsCid: any;
   InternalPublicationId: any;
+  IpfsCid: any;
   Jwt: any;
   LimitScalar: any;
   Locale: any;
@@ -2689,6 +2689,7 @@ export type Notification = NewCollectNotification | NewCommentNotification | New
 export type NotificationRequest = {
   cursor?: InputMaybe<Scalars['Cursor']>;
   customFilters?: InputMaybe<Array<CustomFiltersTypes>>;
+  highSignalFilter?: InputMaybe<Scalars['Boolean']>;
   limit?: InputMaybe<Scalars['LimitScalar']>;
   /** The profile id */
   notificationTypes?: InputMaybe<Array<NotificationTypes>>;
@@ -3174,7 +3175,7 @@ export type PublicMediaRequest = {
   /** The cover for any video or audio you attached */
   cover?: InputMaybe<Scalars['Url']>;
   /** Pre calculated cid of the file to push */
-  itemCid: Scalars['IfpsCid'];
+  itemCid: Scalars['IpfsCid'];
   /** This is the mime type of media */
   type?: InputMaybe<Scalars['MimeType']>;
 };
@@ -4348,7 +4349,7 @@ export type CreateProfileMutationVariables = Exact<{
 }>;
 
 
-export type CreateProfileMutation = { __typename?: 'Mutation', createProfile: { __typename?: 'RelayError', reason: RelayErrorReasons } | { __typename?: 'RelayerResult', txHash: any } };
+export type CreateProfileMutation = { __typename?: 'Mutation', createProfile: { __typename: 'RelayError', reason: RelayErrorReasons } | { __typename: 'RelayerResult', txHash: any } };
 
 export type HidePublicationMutationVariables = Exact<{
   request: HidePublicationRequest;
@@ -4356,6 +4357,13 @@ export type HidePublicationMutationVariables = Exact<{
 
 
 export type HidePublicationMutation = { __typename?: 'Mutation', hidePublication?: any | null };
+
+export type ProfilesQueryVariables = Exact<{
+  request: ProfileQueryRequest;
+}>;
+
+
+export type ProfilesQuery = { __typename?: 'Query', profiles: { __typename?: 'PaginatedProfileResult', items: Array<{ __typename?: 'Profile', id: any, name?: string | null, bio?: string | null, followNftAddress?: any | null, metadata?: any | null, isDefault: boolean, handle: any, ownedBy: any, attributes?: Array<{ __typename?: 'Attribute', displayType?: string | null, traitType?: string | null, key: string, value: string }> | null, picture?: { __typename: 'MediaSet', original: { __typename?: 'Media', url: any, mimeType?: any | null } } | { __typename: 'NftImage', contractAddress: any, tokenId: string, uri: any, verified: boolean } | null, coverPicture?: { __typename: 'MediaSet', original: { __typename?: 'Media', url: any, mimeType?: any | null } } | { __typename: 'NftImage', contractAddress: any, tokenId: string, uri: any, verified: boolean } | null, dispatcher?: { __typename?: 'Dispatcher', address: any, canUseRelay: boolean } | null, stats: { __typename?: 'ProfileStats', totalFollowers: number, totalFollowing: number, totalPosts: number, totalComments: number, totalMirrors: number, totalPublications: number, totalCollects: number }, followModule?: { __typename?: 'FeeFollowModuleSettings', type: FollowModules, recipient: any, amount: { __typename?: 'ModuleFeeAmount', value: string, asset: { __typename?: 'Erc20', symbol: string, name: string, decimals: number, address: any } } } | { __typename?: 'ProfileFollowModuleSettings', type: FollowModules } | { __typename?: 'RevertFollowModuleSettings', type: FollowModules } | { __typename?: 'UnknownFollowModuleSettings' } | null }>, pageInfo: { __typename?: 'PaginatedResultInfo', prev?: any | null, next?: any | null, totalCount?: number | null } } };
 
 export type ProxyActionMutationVariables = Exact<{
   request: ProxyActionRequest;
@@ -4414,12 +4422,11 @@ export type CreatePostViaDispatcherMutationVariables = Exact<{
 export type CreatePostViaDispatcherMutation = { __typename?: 'Mutation', createPostViaDispatcher: { __typename?: 'RelayError', reason: RelayErrorReasons } | { __typename?: 'RelayerResult', txId: any, txHash: any } };
 
 export type CreateSetDispatcherTypedDataMutationVariables = Exact<{
-  options?: InputMaybe<TypedDataOptions>;
   request: SetDispatcherRequest;
 }>;
 
 
-export type CreateSetDispatcherTypedDataMutation = { __typename?: 'Mutation', createSetDispatcherTypedData: { __typename?: 'CreateSetDispatcherBroadcastItemResult', id: any, typedData: { __typename?: 'CreateSetDispatcherEIP712TypedData', types: { __typename?: 'CreateSetDispatcherEIP712TypedDataTypes', SetDispatcherWithSig: Array<{ __typename?: 'EIP712TypedDataField', name: string, type: string }> }, domain: { __typename?: 'EIP712TypedDataDomain', name: string, chainId: any, version: string, verifyingContract: any }, value: { __typename?: 'CreateSetDispatcherEIP712TypedDataValue', nonce: any, deadline: any, profileId: any, dispatcher: any } } } };
+export type CreateSetDispatcherTypedDataMutation = { __typename?: 'Mutation', createSetDispatcherTypedData: { __typename?: 'CreateSetDispatcherBroadcastItemResult', id: any, expiresAt: any, typedData: { __typename?: 'CreateSetDispatcherEIP712TypedData', types: { __typename?: 'CreateSetDispatcherEIP712TypedDataTypes', SetDispatcherWithSig: Array<{ __typename?: 'EIP712TypedDataField', name: string, type: string }> }, domain: { __typename?: 'EIP712TypedDataDomain', name: string, chainId: any, version: string, verifyingContract: any }, value: { __typename?: 'CreateSetDispatcherEIP712TypedDataValue', nonce: any, deadline: any, profileId: any, dispatcher: any } } } };
 
 export type CreateSetProfileImageUriViaDispatcherMutationVariables = Exact<{
   request: UpdateProfileImageRequest;
@@ -4635,6 +4642,13 @@ export type MutualFollowersQueryVariables = Exact<{
 
 
 export type MutualFollowersQuery = { __typename?: 'Query', mutualFollowersProfiles: { __typename?: 'PaginatedProfileResult', items: Array<{ __typename?: 'Profile', id: any, name?: string | null, handle: any, bio?: string | null, ownedBy: any, isDefault: boolean, interests?: Array<any> | null, isFollowedByMe: boolean, dispatcher?: { __typename?: 'Dispatcher', canUseRelay: boolean } | null, attributes?: Array<{ __typename?: 'Attribute', key: string, value: string }> | null, stats: { __typename?: 'ProfileStats', totalFollowers: number, totalFollowing: number, totalPosts: number, totalComments: number, totalMirrors: number, totalPublications: number, totalCollects: number }, coverPicture?: { __typename?: 'MediaSet', original: { __typename?: 'Media', url: any } } | { __typename?: 'NftImage' } | null, picture?: { __typename?: 'MediaSet', original: { __typename?: 'Media', url: any } } | { __typename?: 'NftImage', uri: any } | null, followModule?: { __typename: 'FeeFollowModuleSettings' } | { __typename: 'ProfileFollowModuleSettings' } | { __typename: 'RevertFollowModuleSettings' } | { __typename: 'UnknownFollowModuleSettings' } | null }>, pageInfo: { __typename?: 'PaginatedResultInfo', next?: any | null } } };
+
+export type NotificationCountQueryVariables = Exact<{
+  request: NotificationRequest;
+}>;
+
+
+export type NotificationCountQuery = { __typename?: 'Query', notifications: { __typename?: 'PaginatedNotificationResult', pageInfo: { __typename?: 'PaginatedResultInfo', totalCount?: number | null } } };
 
 export type NotificationsQueryVariables = Exact<{
   request: NotificationRequest;
@@ -5263,6 +5277,7 @@ export const CreateProfileDocument = gql`
     ... on RelayError {
       reason
     }
+    __typename
   }
 }
     `;
@@ -5323,6 +5338,125 @@ export function useHidePublicationMutation(baseOptions?: Apollo.MutationHookOpti
 export type HidePublicationMutationHookResult = ReturnType<typeof useHidePublicationMutation>;
 export type HidePublicationMutationResult = Apollo.MutationResult<HidePublicationMutation>;
 export type HidePublicationMutationOptions = Apollo.BaseMutationOptions<HidePublicationMutation, HidePublicationMutationVariables>;
+export const ProfilesDocument = gql`
+    query Profiles($request: ProfileQueryRequest!) {
+  profiles(request: $request) {
+    items {
+      id
+      name
+      bio
+      attributes {
+        displayType
+        traitType
+        key
+        value
+      }
+      followNftAddress
+      metadata
+      isDefault
+      picture {
+        ... on NftImage {
+          contractAddress
+          tokenId
+          uri
+          verified
+        }
+        ... on MediaSet {
+          original {
+            url
+            mimeType
+          }
+        }
+        __typename
+      }
+      handle
+      coverPicture {
+        ... on NftImage {
+          contractAddress
+          tokenId
+          uri
+          verified
+        }
+        ... on MediaSet {
+          original {
+            url
+            mimeType
+          }
+        }
+        __typename
+      }
+      ownedBy
+      dispatcher {
+        address
+        canUseRelay
+      }
+      stats {
+        totalFollowers
+        totalFollowing
+        totalPosts
+        totalComments
+        totalMirrors
+        totalPublications
+        totalCollects
+      }
+      followModule {
+        ... on FeeFollowModuleSettings {
+          type
+          amount {
+            asset {
+              symbol
+              name
+              decimals
+              address
+            }
+            value
+          }
+          recipient
+        }
+        ... on ProfileFollowModuleSettings {
+          type
+        }
+        ... on RevertFollowModuleSettings {
+          type
+        }
+      }
+    }
+    pageInfo {
+      prev
+      next
+      totalCount
+    }
+  }
+}
+    `;
+
+/**
+ * __useProfilesQuery__
+ *
+ * To run a query within a React component, call `useProfilesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProfilesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProfilesQuery({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useProfilesQuery(baseOptions: Apollo.QueryHookOptions<ProfilesQuery, ProfilesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProfilesQuery, ProfilesQueryVariables>(ProfilesDocument, options);
+      }
+export function useProfilesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProfilesQuery, ProfilesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProfilesQuery, ProfilesQueryVariables>(ProfilesDocument, options);
+        }
+export type ProfilesQueryHookResult = ReturnType<typeof useProfilesQuery>;
+export type ProfilesLazyQueryHookResult = ReturnType<typeof useProfilesLazyQuery>;
+export type ProfilesQueryResult = Apollo.QueryResult<ProfilesQuery, ProfilesQueryVariables>;
 export const ProxyActionDocument = gql`
     mutation proxyAction($request: ProxyActionRequest!) {
   proxyAction(request: $request)
@@ -5581,9 +5715,10 @@ export type CreatePostViaDispatcherMutationHookResult = ReturnType<typeof useCre
 export type CreatePostViaDispatcherMutationResult = Apollo.MutationResult<CreatePostViaDispatcherMutation>;
 export type CreatePostViaDispatcherMutationOptions = Apollo.BaseMutationOptions<CreatePostViaDispatcherMutation, CreatePostViaDispatcherMutationVariables>;
 export const CreateSetDispatcherTypedDataDocument = gql`
-    mutation CreateSetDispatcherTypedData($options: TypedDataOptions, $request: SetDispatcherRequest!) {
-  createSetDispatcherTypedData(options: $options, request: $request) {
+    mutation CreateSetDispatcherTypedData($request: SetDispatcherRequest!) {
+  createSetDispatcherTypedData(request: $request) {
     id
+    expiresAt
     typedData {
       types {
         SetDispatcherWithSig {
@@ -5622,7 +5757,6 @@ export type CreateSetDispatcherTypedDataMutationFn = Apollo.MutationFunction<Cre
  * @example
  * const [createSetDispatcherTypedDataMutation, { data, loading, error }] = useCreateSetDispatcherTypedDataMutation({
  *   variables: {
- *      options: // value for 'options'
  *      request: // value for 'request'
  *   },
  * });
@@ -7025,6 +7159,43 @@ export function useMutualFollowersLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type MutualFollowersQueryHookResult = ReturnType<typeof useMutualFollowersQuery>;
 export type MutualFollowersLazyQueryHookResult = ReturnType<typeof useMutualFollowersLazyQuery>;
 export type MutualFollowersQueryResult = Apollo.QueryResult<MutualFollowersQuery, MutualFollowersQueryVariables>;
+export const NotificationCountDocument = gql`
+    query NotificationCount($request: NotificationRequest!) {
+  notifications(request: $request) {
+    pageInfo {
+      totalCount
+    }
+  }
+}
+    `;
+
+/**
+ * __useNotificationCountQuery__
+ *
+ * To run a query within a React component, call `useNotificationCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNotificationCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNotificationCountQuery({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useNotificationCountQuery(baseOptions: Apollo.QueryHookOptions<NotificationCountQuery, NotificationCountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<NotificationCountQuery, NotificationCountQueryVariables>(NotificationCountDocument, options);
+      }
+export function useNotificationCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NotificationCountQuery, NotificationCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<NotificationCountQuery, NotificationCountQueryVariables>(NotificationCountDocument, options);
+        }
+export type NotificationCountQueryHookResult = ReturnType<typeof useNotificationCountQuery>;
+export type NotificationCountLazyQueryHookResult = ReturnType<typeof useNotificationCountLazyQuery>;
+export type NotificationCountQueryResult = Apollo.QueryResult<NotificationCountQuery, NotificationCountQueryVariables>;
 export const NotificationsDocument = gql`
     query Notifications($request: NotificationRequest!) {
   notifications(request: $request) {

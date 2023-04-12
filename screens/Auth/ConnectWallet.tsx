@@ -18,6 +18,9 @@ import { ToastType } from "../../types/Store";
 import handleWaitlist from "../../utils/handleWaitlist";
 import getDefaultProfile from "../../utils/lens/getDefaultProfile";
 import TrackAction from "../../utils/Track";
+import getProfiles from "../../utils/lens/getProfiles";
+import { Scalars } from "../../types/generated";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // https://eth-mainnet.alchemyapi.io/v2/5Kt3LOs7L13vV5L68P94MERVJM0baCSv
 
@@ -34,8 +37,10 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
     loginRef?.current?.snapToIndex(0);
   }, []);
 
-  async function HandleDefaultProfile(adress: string) {
-    const userDefaultProfile = await getDefaultProfile(adress);
+  async function HandleDefaultProfile(adress: Scalars["EthereumAddress"]) {
+    const userDefaultProfile = await getProfiles({
+      ownedBy: adress,
+    });
 
     if (userDefaultProfile) {
       setHasHandle(true);
@@ -46,7 +51,9 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   }
 
   const connectWallet = useCallback(async () => {
-    const walletData = await connector.connect();
+    const walletData = await connector.connect({
+      chainId: 80001,
+    });
 
     setIsloading(true);
     try {
@@ -68,6 +75,10 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
 
         if (userData.fields.hasAccess) {
           await HandleDefaultProfile(walletData.accounts[0]);
+          const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
+          if (isDeskTopLogin) {
+            await AsyncStorage.removeItem("@viaDeskTop");
+          }
           navigation.push("LoginWithLens");
         }
       } else {
@@ -232,17 +243,19 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           />
         </MotiView>
       </View>
-      <View style={{
-        flexDirection: 'column',
-        // borderColor: 'red',
-        // borderWidth: 2
-      }}>
+      <View
+        style={{
+          flexDirection: "column",
+          // borderColor: 'red',
+          // borderWidth: 2
+        }}
+      >
         <View
           style={{
             paddingHorizontal: 16,
             width: "100%",
             marginTop: 10,
-            paddingVertical: 16
+            paddingVertical: 16,
           }}
         >
           <Button
@@ -298,7 +311,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           style={{
             paddingHorizontal: 16,
             width: "100%",
-            paddingTop: 16
+            paddingTop: 16,
           }}
         >
           <Button
@@ -445,7 +458,6 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     justifyContent: "space-evenly",
     paddingVertical: 16,
-
   },
   shape1: {
     width: 150,
@@ -480,7 +492,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingLeft: 8,
     paddingTop: 10,
-    
   },
   smallShape1: {
     width: 30,

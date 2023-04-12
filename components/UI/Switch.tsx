@@ -24,8 +24,8 @@ const Switch = ({
       spring(switchTranslate, {
         toValue: 21,
         mass: 1,
-        damping: 15,
-        stiffness: 120,
+        damping: 13,
+        stiffness: 130,
         overshootClamping: false,
         restSpeedThreshold: 0.001,
         restDisplacementThreshold: 0.001,

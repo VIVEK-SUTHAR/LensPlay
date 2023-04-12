@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import {
   Image,
   KeyboardAvoidingView,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -122,7 +123,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
     }
   }
   return (
-    <KeyboardAvoidingView style={styles.container}>
+    <KeyboardAvoidingView style={styles.container} >
       <StatusBar backgroundColor="black" style="auto" />
       <ScrollView showsVerticalScrollIndicator={false} style={{width: WINDOW_WIDTH, paddingHorizontal: 12, marginTop: 4}}>
         <View

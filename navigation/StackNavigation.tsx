@@ -3,7 +3,7 @@ import Channel from "../screens/common/Channel";
 import LeaderBoard from "../screens/ZooTools/LeaderBoard";
 import Login from "../screens/Auth/Login";
 import Search from "../screens/Header/Search/Search";
-import UserVideos from "../screens/UserVideos";
+import UserVideos from "../screens/common/UserVideos";
 import VideoPage from "../screens/common/VideoPage";
 import { useThemeStore } from "../store/Store";
 import { RootStackParamList } from "../types/navigation/types";
@@ -29,6 +29,7 @@ import AddDetails from "../screens/Header/Upload/Video/AddDetails";
 import AddDescription from "../screens/common/AddDescription";
 import VideoTypes from "../screens/common/VideoTypes";
 import ProfileScanner from "../screens/Header/Settings/ProfileScanner";
+import CreateProfile from "../screens/Auth/CreateProfile";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -79,6 +80,14 @@ export default function StackNavigation() {
         <Stack.Screen
           name="LoginWithLens"
           component={LoginWithLens}
+          options={{
+            animation: "slide_from_bottom",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="CreateProfile"
+          component={CreateProfile}
           options={{
             animation: "slide_from_bottom",
             headerShown: false,
@@ -286,7 +295,7 @@ export default function StackNavigation() {
         name="UploadShots"
         component={UploadShots}
         options={{
-          animation: "fade",
+          animation: "slide_from_right",
           headerShown: false,
         }}
       />
