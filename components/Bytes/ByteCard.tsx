@@ -52,7 +52,7 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
     },
     context: {
       headers: {
-        "x-access-token": `Bearer ${accessToken}`,
+        "x-access-token": `${!isGuest ? `Bearer ${accessToken}` : ""}`,
       },
     },
   });
