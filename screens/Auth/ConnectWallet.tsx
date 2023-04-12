@@ -20,6 +20,7 @@ import getDefaultProfile from "../../utils/lens/getDefaultProfile";
 import TrackAction from "../../utils/Track";
 import getProfiles from "../../utils/lens/getProfiles";
 import { Scalars } from "../../types/generated";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // https://eth-mainnet.alchemyapi.io/v2/5Kt3LOs7L13vV5L68P94MERVJM0baCSv
 
@@ -71,6 +72,14 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
 
         if (userData.fields.hasAccess) {
           await HandleDefaultProfile(walletData.accounts[0]);
+          const isDeskTopLogin = await AsyncStorage.getItem(
+            "@viaDeskTop"
+          );
+          if(isDeskTopLogin){
+            await AsyncStorage.removeItem(
+              "@viaDeskTop"
+            );
+          }
           navigation.push("LoginWithLens");
         }
       } else {

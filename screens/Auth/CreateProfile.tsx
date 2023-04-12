@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { RootStackScreenProps } from '../../types/navigation/types'
 import { Dimensions, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { dark_primary, primary } from '../../constants/Colors';
 import { useAuthStore, useProfile, useThemeStore, useToast } from '../../store/Store';
 import Button from '../../components/UI/Button';
@@ -24,6 +23,7 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
     const { currentProfile, setCurrentProfile } = useProfile();
     const connector = useWalletConnect();
     const toast = useToast();
+    const [dynamicText, setDynamicText] = useState('Create Handle');
     const windowHeight = Dimensions.get('screen').height;
 
 
@@ -44,7 +44,7 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
         onError: (e) => {
             toast.show("Error in create profile!", ToastType.ERROR, true);
             console.log(e);
-            
+
         },
     });
 
@@ -106,11 +106,14 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
         )
         console.log('brodcasted');
         setIsloading(false);
+        setDynamicText('Create Handle');
     }
 
     const createHandle = async () => {
         setIsloading(true);
+        setDynamicText('Creating Handle');
         const address = connector.accounts[0];
+        setHandle(handle.trim());
 
         try {
             const request = {
@@ -134,6 +137,7 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                 setTimeout(async () => {
                     console.log('profile created');
                     const profile = await handleDefaultProfile(address);
+                    setDynamicText('Signing Dispatcher');
                     console.log('got the profile', profile);
 
                     await EnableDispatcher(profile?.id);
@@ -142,9 +146,13 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
 
             } else if (response?.data?.createProfile?.reason === "HANDLE_TAKEN") {
                 toast.show("Handle already taken", ToastType.ERROR, true);
+                setIsloading(false);
+                setDynamicText('Create Handle');
             }
             else {
                 toast.show("Handle already taken", ToastType.ERROR, true);
+                setIsloading(false);
+                setDynamicText('Create Handle');
             }
 
         }
@@ -154,6 +162,8 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
             if (error instanceof Error) {
                 console.log("[Error]:Error in create profile");
                 console.log(error);
+                setIsloading(false);
+                setDynamicText('Create Handle');
             }
         }
     }
@@ -278,7 +288,7 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
 
                     <View style={styles.buttonContainer}>
                         <Button
-                            title="Create Handle"
+                            title={dynamicText}
                             width={"100%"}
                             py={12}
                             bg={primary}
@@ -289,9 +299,8 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                                 fontWeight: "600",
                                 color: "black",
                             }}
-                            isLoading={isloading}
+                            isDynamic={isloading}
                             onPress={async () => {
-                                // await handleDefaultProfile(connector.accounts[0]);
                                 await createHandle();
                             }}
                         />

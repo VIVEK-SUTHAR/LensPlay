@@ -152,6 +152,7 @@ export default function Scanner({
 
         if (userData?.fields?.hasAccess) {
           const result = await HandleDefaultProfile(address);
+          await AsyncStorage.setItem("@viaDeskTop", "true");
 
           if (!result) {
             navigation.replace("LoginWithLens");
@@ -173,7 +174,6 @@ export default function Scanner({
             setAccessToken(tokens?.accessToken);
             setRefreshToken(tokens?.refreshToken);
             await storeTokens(tokens?.accessToken, tokens?.refreshToken, true);
-            await AsyncStorage.setItem("@viaDeskTop", "true");
             navigation.replace("Root");
             TrackAction(AUTH.QR_LOGIN);
           }

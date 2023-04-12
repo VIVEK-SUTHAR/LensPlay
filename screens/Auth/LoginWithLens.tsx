@@ -15,6 +15,7 @@ import generateChallenge from "../../utils/lens/getChallenge";
 import getTokens from "../../utils/lens/getTokens";
 import storeTokens from "../../utils/storeTokens";
 import TrackAction from "../../utils/Track";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const [isloading, setIsloading] = useState<boolean>(false);
@@ -259,7 +260,15 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             iconPosition="right"
             isLoading={isloading}
             onPress={async () => {
+              const isDesktop = await AsyncStorage.getItem("@viaDeskTop");
+              
+              if(isDesktop){
+                Linking.openURL("https://lens-create-profile.vercel.app/");
+              }
+              else{
               await loginWithLens();
+
+              }
             }}
             animated={true}
           />
