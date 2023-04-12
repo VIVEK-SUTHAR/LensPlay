@@ -82,7 +82,7 @@ export default function EditAvatar() {
         backgroundColor: "black",
         alignItems: "center",
         justifyContent: "space-evenly",
-        height: windowHeight,
+        minHeight: windowHeight,
       }}
     >
       <Avatar

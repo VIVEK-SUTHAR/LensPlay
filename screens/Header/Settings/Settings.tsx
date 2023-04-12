@@ -82,7 +82,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="black" style="auto" />
-      <ScrollView>
+      <ScrollView style={styles.container}>
         {!isGuest ? <ProfileQR /> : <></>}
         <View>
           <Heading
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
-    padding: 16,
+    padding: 20,
   },
   itemContainer: {
     flexDirection: "row",

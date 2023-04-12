@@ -255,7 +255,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             paddingHorizontal: 16,
             width: "100%",
             marginTop: 10,
-            paddingVertical: 16,
+            paddingVertical: 24,
           }}
         >
           <Button

@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderWidth: 1,
     borderRadius: 50,
-    paddingVertical: 4,
+    paddingVertical: 10,
   },
   searchingLoader: {
     fontSize: 16,
@@ -276,6 +276,6 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     color: "white",
-    fontSize: 12,
+    fontSize: 14,
   },
 });
