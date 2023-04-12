@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import React, { FC } from "react";
 import {
+  Dimensions,
   Pressable,
   ScrollView,
   StyleProp,
@@ -14,11 +15,11 @@ import VideoCardSkeleton from "./VideoCardSkeleton";
 
 const ProfileSkeleton = () => {
   return (
-    <View
+    <ScrollView
       style={{
         paddingHorizontal: 10,
-        marginVertical: 10,
         backgroundColor: "#111111",
+        height:Dimensions.get("screen").height
       }}
     >
       <View
@@ -26,7 +27,7 @@ const ProfileSkeleton = () => {
           height: 180,
           alignItems: "flex-start",
           marginBottom: 30,
-          backgroundColor: "rgba(255,255,255,0.7)",
+          backgroundColor: "rgba(255,255,255,0.1)",
         }}
       />
       <View
@@ -36,7 +37,7 @@ const ProfileSkeleton = () => {
           alignItems: "center",
           width: "100%",
           marginTop: "-20%",
-          marginLeft: 18,
+          marginLeft: 8,
         }}
       >
         <View
@@ -44,7 +45,7 @@ const ProfileSkeleton = () => {
             height: 90,
             width: 90,
             borderRadius: 50,
-            backgroundColor: "white",
+            backgroundColor: "#1d1d1d",
           }}
         />
         <View
@@ -55,7 +56,7 @@ const ProfileSkeleton = () => {
             marginTop: 44,
             marginRight: 16,
             borderRadius: 50,
-            backgroundColor: "rgba(255,255,255,0.7)",
+            backgroundColor: "#1d1d1d",
           }}
         />
       </View>
@@ -72,7 +73,7 @@ const ProfileSkeleton = () => {
             marginVertical: 10,
             width: 80,
             height: 16,
-            backgroundColor: "rgba(255,255,255,0.7)",
+            backgroundColor: "#1d1d1d",
           }}
         />
         <View
@@ -80,21 +81,51 @@ const ProfileSkeleton = () => {
             // marginHorizontal: 5,
             width: 100,
             height: 10,
-            backgroundColor: "gray",
+            backgroundColor: "#1d1d1d",
           }}
         />
         <View
           style={{
             height: 10,
             width: 200,
-            backgroundColor: "gray",
+            backgroundColor: "#1d1d1d",
             marginVertical: 10,
             justifyContent: "center",
           }}
         />
       </View>
-
+      <View style={{flexDirection:"row",marginTop:4}}>
+        <View
+          style={{
+            width: 72,
+            height: 12,
+            backgroundColor: "#1d1d1d",
+            marginLeft: 12,
+          }}
+        />
+        <View
+          style={{
+            width: 72,
+            height: 12,
+            backgroundColor: "#1d1d1d",
+            marginLeft: 12,
+          }}
+        />
+      </View>
       <View
+        style={{flexDirection:"row"}}
+      >
+        <View
+          style={{width:36,height:36,borderRadius:50,backgroundColor:'#1d1d1d',marginLeft:12,marginTop:12}}
+        />
+        <View
+          style={{width:36,height:36,borderRadius:50,backgroundColor:'#1d1d1d',marginLeft:8,marginTop:12}}
+        />
+        <View
+          style={{width:36,height:36,borderRadius:50,backgroundColor:'#1d1d1d',marginLeft:8,marginTop:12}}
+        />
+      </View>
+      {/* <View
         style={{
           paddingHorizontal: 10,
         }}
@@ -131,7 +162,7 @@ const ProfileSkeleton = () => {
             />
           </View>
         </View>
-      </View>
+      </View> */}
       <View style={{ marginTop: 24 }}>
         <View>
           <Pressable
@@ -147,6 +178,7 @@ const ProfileSkeleton = () => {
                 fontSize: 20,
                 color: "white",
                 fontWeight: "600",
+                marginLeft:16
               }}
             />
             <Feather name={`chevron-right`} size={24} color="white" />
@@ -176,6 +208,7 @@ const ProfileSkeleton = () => {
                 fontSize: 20,
                 color: "white",
                 fontWeight: "600",
+                marginLeft:16,
               }}
             />
             <Feather name={`chevron-right`} size={24} color="white" />
@@ -192,7 +225,7 @@ const ProfileSkeleton = () => {
           </ScrollView>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

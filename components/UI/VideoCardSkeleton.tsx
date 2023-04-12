@@ -16,11 +16,13 @@ const VideoCardSkeleton = ({ width = "auto" }: videoCardProps) => {
         backgroundColor: "#111111",
         width: width,
       }}
-    >
+      >
       <View
         style={{
-          height: 200,
-          backgroundColor: "rgba(255,255,255,0.1)",
+          height: 160,
+          backgroundColor: "#1d1d1d",
+          // borderTopEndRadius:8,
+          // borderTopLeftRadius:8,
           borderRadius: 10,
         }}
       ></View>
@@ -30,9 +32,10 @@ const VideoCardSkeleton = ({ width = "auto" }: videoCardProps) => {
           flexDirection: "row-reverse",
           justifyContent: "flex-end",
           alignItems: "center",
-          backgroundColor: "black",
-          borderBottomLeftRadius: 10,
-          borderBottomRightRadius: 10,
+          backgroundColor: "#111111",
+          borderRadius:10,
+          // borderBottomLeftRadius: 10,
+          // borderBottomRightRadius: 10,
         }}
       >
         <View
@@ -40,12 +43,13 @@ const VideoCardSkeleton = ({ width = "auto" }: videoCardProps) => {
             flexDirection: "column",
             alignItems: "flex-start",
             marginRight: 4,
-            paddingHorizontal: 16,
+            paddingHorizontal: 8,
+            
           }}
         >
           <View
             style={{
-              backgroundColor: "lightgray",
+              backgroundColor: "#1d1d1d",
               marginVertical: 8,
               width: "50%",
               height: 10,
@@ -54,7 +58,7 @@ const VideoCardSkeleton = ({ width = "auto" }: videoCardProps) => {
           ></View>
           <View
             style={{
-              backgroundColor: "lightgray",
+              backgroundColor: "#1d1d1d",
               minWidth: "70%",
               height: 10,
               borderRadius: 2,
@@ -65,8 +69,9 @@ const VideoCardSkeleton = ({ width = "auto" }: videoCardProps) => {
           style={{
             height: 40,
             width: 40,
-            backgroundColor: "lightgray",
+            backgroundColor: "#1d1d1d",
             borderRadius: 40,
+            marginLeft:8,
           }}
         ></View>
       </View>
