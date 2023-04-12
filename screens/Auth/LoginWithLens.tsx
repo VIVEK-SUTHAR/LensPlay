@@ -17,6 +17,7 @@ import {
 import { RootStackScreenProps } from "../../types/navigation/types";
 import TrackAction from "../../utils/Track";
 import storeTokens from "../../utils/storeTokens";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const [isloading, setIsloading] = useState<boolean>(false);
@@ -68,7 +69,11 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           response?.data?.authenticate?.refreshToken,
           false
         );
-        navigation.replace("Root");
+        if (hasHandle) {
+          navigation.replace("Root");
+        } else {
+          navigation.replace("CreateProfile");
+        }
         TrackAction(AUTH.SIWL);
       } else {
         toast.show("Something went wrong", ToastType.ERROR, true);
@@ -272,32 +277,24 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           width: "100%",
         }}
       >
-        {hasHandle ? (
-          <Button
-            title="Login With Lens"
-            bg={primary}
-            textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
-            py={12}
-            iconPosition="right"
-            isLoading={isloading}
-            onPress={async () => {
-              await loginWithLens();
-            }}
-            animated={true}
-          />
-        ) : (
-          <Button
-            title="Claim Lens Handle"
-            bg={primary}
-            borderRadius={50}
-            textStyle={{ fontWeight: "600", fontSize: 20 }}
-            py={12}
-            isLoading={isloading}
-            onPress={() => {
+        <Button
+          title={hasHandle ? "Login With Lens" : "Claim Lens Handle"}
+          bg={primary}
+          textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
+          py={12}
+          iconPosition="right"
+          isLoading={isloading}
+          onPress={async () => {
+            const isDesktop = await AsyncStorage.getItem("@viaDeskTop");
+
+            if (isDesktop) {
               Linking.openURL("https://lens-create-profile.vercel.app/");
-            }}
-          />
-        )}
+            } else {
+              await loginWithLens();
+            }
+          }}
+          animated={true}
+        />
       </View>
     </SafeAreaView>
   );
