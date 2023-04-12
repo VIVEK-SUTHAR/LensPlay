@@ -29,6 +29,7 @@ import AddDetails from "../screens/Header/Upload/Video/AddDetails";
 import AddDescription from "../screens/common/AddDescription";
 import VideoTypes from "../screens/common/VideoTypes";
 import ProfileScanner from "../screens/Header/Settings/ProfileScanner";
+import CreateProfile from "../screens/Auth/CreateProfile";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -79,6 +80,14 @@ export default function StackNavigation() {
         <Stack.Screen
           name="LoginWithLens"
           component={LoginWithLens}
+          options={{
+            animation: "slide_from_bottom",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="CreateProfile"
+          component={CreateProfile}
           options={{
             animation: "slide_from_bottom",
             headerShown: false,

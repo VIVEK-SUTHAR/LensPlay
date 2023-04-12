@@ -36,6 +36,7 @@ interface ButtonProps {
   bytes?: boolean;
   animated?: boolean;
   scale?: number;
+  isDynamic?: boolean;
 }
 
 const Button = (props: ButtonProps): JSX.Element => {
@@ -64,6 +65,7 @@ const Button = (props: ButtonProps): JSX.Element => {
     bytes = false,
     animated = false,
     scale = 0.9,
+    isDynamic = false,
     ...rest
   } = props;
 
@@ -86,10 +88,10 @@ const Button = (props: ButtonProps): JSX.Element => {
         onPress && !disabled
           ? onPress
           : () => {
-              console.log(
-                "[Error]:onPress handler is missing or disabled button"
-              );
-            }
+            console.log(
+              "[Error]:onPress handler is missing or disabled button"
+            );
+          }
       }
       onPressIn={(e) => {
         e.preventDefault();
@@ -121,8 +123,8 @@ const Button = (props: ButtonProps): JSX.Element => {
             backgroundColor: disabled
               ? "#c0c0c0"
               : type === "filled"
-              ? bg
-              : "transparent",
+                ? bg
+                : "transparent",
             borderColor: type === "outline" ? borderColor : "transparent",
             borderWidth: type === "outline" ? 1 : 0,
             paddingVertical: py,
@@ -144,7 +146,12 @@ const Button = (props: ButtonProps): JSX.Element => {
               animating={true}
               color={"black"}
             />
-          ) : (
+          ) : isDynamic ? <>
+            <View style={{ marginRight: 8 }}>
+              <ActivityIndicator size={"small"} animating={true} color={"black"} />
+            </View>
+            <StyledText title={title} style={newStyle} />
+          </> : (
             <>
               {icon && iconPosition === "left" ? (
                 <View

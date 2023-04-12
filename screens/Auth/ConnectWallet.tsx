@@ -18,6 +18,9 @@ import { ToastType } from "../../types/Store";
 import handleWaitlist from "../../utils/handleWaitlist";
 import getDefaultProfile from "../../utils/lens/getDefaultProfile";
 import TrackAction from "../../utils/Track";
+import getProfiles from "../../utils/lens/getProfiles";
+import { Scalars } from "../../types/generated";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // https://eth-mainnet.alchemyapi.io/v2/5Kt3LOs7L13vV5L68P94MERVJM0baCSv
 
@@ -33,8 +36,10 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
     loginRef?.current?.snapToIndex(0);
   }, []);
 
-  async function HandleDefaultProfile(adress: string) {
-    const userDefaultProfile = await getDefaultProfile(adress);
+  async function HandleDefaultProfile(adress: Scalars["EthereumAddress"]) {
+    const userDefaultProfile = await getProfiles({
+      ownedBy: adress
+    });
 
     if (userDefaultProfile) {
       setHasHandle(true);
@@ -54,6 +59,10 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
       if (walletData) {
         TrackAction(AUTH.WALLET_LOGIN);
         const userData = await handleWaitlist(walletData.accounts[0]);
+        if (userData.statusCode === 404) {
+          navigation.replace("JoinWaitlist");
+        }
+        
         if (!userData.fields.hasAccess) {
           navigation.replace("LeaderBoard", {
             referralsCount: userData?.referralsCount,
@@ -63,12 +72,16 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
           });
         }
 
-        if (userData.statusCode === 404) {
-          navigation.replace("JoinWaitlist");
-        }
-
         if (userData.fields.hasAccess) {
           await HandleDefaultProfile(walletData.accounts[0]);
+          const isDeskTopLogin = await AsyncStorage.getItem(
+            "@viaDeskTop"
+          );
+          if(isDeskTopLogin){
+            await AsyncStorage.removeItem(
+              "@viaDeskTop"
+            );
+          }
           navigation.push("LoginWithLens");
         }
       } else {

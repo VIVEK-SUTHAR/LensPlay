@@ -61,6 +61,7 @@ export type RootStackParamList = {
   NotFound: undefined;
   Login: undefined;
   Waitlist: undefined;
+  CreateProfile: undefined;
   Loader: undefined;
   JoinWaitlist: undefined;
   ReportPublication: {
