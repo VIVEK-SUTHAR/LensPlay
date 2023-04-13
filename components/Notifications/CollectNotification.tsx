@@ -43,39 +43,36 @@ const CollectNotification: React.FC<CollectNotificationProps> = ({
         <Icon name="collect" color="coral" size={24} />
       </View>
       <View style={{ flex: 1 }}>
+        <Pressable
+          onPress={() => {
+            navigation.navigate("Channel", {
+              profileId: notification?.wallet?.defaultProfile?.id,
+            });
+          }}
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+          }}
+        >
+          <Avatar src={getIPFSLink(PROFILE_PIC_URI)} height={35} width={35} />
+          <StyledText
+            title={getDifference(notification?.createdAt)}
+            style={{ fontSize: 12, color: "gray" }}
+          />
+        </Pressable>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <View>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("Channel", {
-                  profileId: notification?.wallet?.defaultProfile?.id,
-                });
-              }}
-            >
-              <Avatar
-                src={getIPFSLink(PROFILE_PIC_URI)}
-                height={35}
-                width={35}
-              />
-            </Pressable>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <StyledText
-                title={
-                  notification?.wallet?.defaultProfile?.handle?.split(".")[0] ||
-                  formatAddress(notification?.wallet?.address)
-                }
-                style={{ color: "white", fontWeight: "500" }}
-              />
-              <StyledText
-                title={" collected your post"}
-                style={{ color: "gray" }}
-              />
-              <StyledText
-                title={getDifference(notification?.createdAt)}
-                style={{ fontSize: 10, color: "gray" }}
-              />
-            </View>
-          </View>
+          <StyledText
+            title={
+              notification?.wallet?.defaultProfile?.handle?.split(".")[0] ||
+              formatAddress(notification?.wallet?.address)
+            }
+            style={{ color: "white", fontWeight: "500" }}
+          />
+          <StyledText
+            title={" collected your post"}
+            style={{ color: "gray" }}
+          />
         </View>
         <StyledText
           title={
