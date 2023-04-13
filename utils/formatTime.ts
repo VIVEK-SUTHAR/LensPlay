@@ -1,17 +1,24 @@
 function formatTime(sec: string) {
-  let seconds = sec.split(".")[0];
+  let second: string = sec.split(".")[0];
+  let totalSeconds: number = parseInt(second);
 
-  var hours = Math.floor(seconds / 3600);
-  hours >= 1 ? (seconds = seconds - hours * 3600) : (hours = "00");
-  var min = Math.floor(seconds / 60);
-  min >= 1 ? (seconds = seconds - min * 60) : (min = "00");
-  seconds < 1 ? (seconds = "00") : void 0;
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
 
-  min.toString().length == 1 ? (min = "0" + min) : void 0;
-  seconds.toString().length == 1 ? (seconds = "0" + seconds) : void 0;
-  if (hours === "00") {
-    return min + ":" + seconds;
+  if (hours === 0) {
+    return [
+      minutes.toString().padStart(2, "0"),
+      seconds.toString().padStart(2, "0"),
+    ].join(":");
   }
-  return hours + ":" + min + ":" + seconds;
+
+  return [
+    hours.toString().padStart(2, "0"),
+    minutes.toString().padStart(2, "0"),
+    seconds.toString().padStart(2, "0"),
+  ].join(":");
 }
+
 export default formatTime;

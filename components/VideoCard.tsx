@@ -44,7 +44,7 @@ const VideoCard = ({
     );
     const assetId = publication?.metadata?.attributes?.filter((item) => {
       if (item.traitType === "assetId") {
-        getLivePeerURL(item.value).then((res) => {
+        getLivePeerURL(item?.value).then((res) => {
           playBackurl = res;
         });
       }
@@ -91,7 +91,7 @@ const VideoCard = ({
               paddingHorizontal: 4,
               paddingVertical: 2,
               height: "auto",
-              backgroundColor: "rgba(0,0,0,0.9)",
+              backgroundColor: "rgba(0,0,0,0.6)",
               borderRadius: 4,
             }}
           >
