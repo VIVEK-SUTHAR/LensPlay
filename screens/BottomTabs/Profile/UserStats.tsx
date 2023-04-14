@@ -13,10 +13,12 @@ import ProfileCardSkeleton from "../../../components/UI/ProfileCardSkeleton";
 import Tabs, { Tab } from "../../../components/UI/Tabs";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
+  MediaSet,
   useAllFollowersQuery,
   useAllFollowingQuery,
 } from "../../../types/generated";
 import { RootStackScreenProps } from "../../../types/navigation/types";
+import getIPFSLink from "../../../utils/getIPFSLink";
 import getRawurl from "../../../utils/getRawUrl";
 
 const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
@@ -112,7 +114,9 @@ const Suscribers = () => {
           }}
           renderItem={({ item }) => (
             <ProfileCard
-              profileIcon={item?.wallet?.defaultProfile?.picture?.original?.url}
+              profileIcon={getIPFSLink(
+                getRawurl(item?.wallet?.defaultProfile?.picture as MediaSet)
+              )}
               profileName={item?.wallet?.defaultProfile?.name}
               handle={item?.wallet?.defaultProfile?.handle}
               profileId={item?.wallet?.defaultProfile?.id}
@@ -158,7 +162,7 @@ const Subscriptions = () => {
               <ProfileCard
                 handle={item?.profile?.handle}
                 profileName={item?.profile?.name}
-                profileIcon={item?.profile?.picture}
+                profileIcon={getIPFSLink(getRawurl(item?.profile?.picture))}
                 profileId={item?.profile?.id}
                 owner={item?.profile?.handle}
                 isFollowed={item?.profile?.isFollowedByMe}
