@@ -50,7 +50,7 @@ const Onboarding = (props: Props) => {
       <View style={{justifyContent:"center",alignItems:'center'}} >
         <Button
           title={""}
-          icon={<Icon name="arrowForward" size={20}  />}
+          icon={<Icon name="arrowForward" size={20} />}
           onPress={scrollTo}
           width={40}
           py={10}
