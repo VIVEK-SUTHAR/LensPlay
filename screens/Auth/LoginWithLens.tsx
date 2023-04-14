@@ -1,8 +1,14 @@
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
 import { MotiView } from "moti";
-import React, { useState } from "react";
-import { Linking, SafeAreaView, StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Dimensions,
+  Linking,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from "react-native";
 import Icon from "../../components/Icon";
 import Button from "../../components/UI/Button";
 import StyledText from "../../components/UI/StyledText";
@@ -18,13 +24,46 @@ import { RootStackScreenProps } from "../../types/navigation/types";
 import TrackAction from "../../utils/Track";
 import storeTokens from "../../utils/storeTokens";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Avatar from "../../components/UI/Avatar";
+import getRawurl from "../../utils/getRawUrl";
+import Heading from "../../components/UI/Heading";
+import Animated, {
+  BounceInDown,
+  RotateInDownLeft,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const [isloading, setIsloading] = useState<boolean>(false);
   const { hasHandle } = useProfile();
   const connector = useWalletConnect();
   const toast = useToast();
+  const { currentProfile } = useProfile();
   const { setAccessToken, setRefreshToken } = useAuthStore();
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
+  const scale = useSharedValue(0);
+  const offset = useSharedValue(0);
+
+  const scaleStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          scale: scale.value,
+          translateX: offset.value * 255,
+        },
+      ],
+    };
+  });
+
+  useEffect(() => {
+    scale.value = withTiming(1, {
+      duration: 1000,
+    });
+  }, []);
 
   const [
     getChallenge,
@@ -91,7 +130,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="light" />
-      <View
+      {/* <View
         style={{
           flexDirection: "column",
           justifyContent: "space-evenly",
@@ -295,6 +334,40 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           }}
           animated={true}
         />
+      </View> */}
+      <View
+        style={{
+          width: windowWidth,
+          height: windowHeight / 1.5,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "cyan",
+        }}
+      >
+        <Heading
+          title={"Welcome Back"}
+          style={{
+            color: "white",
+            fontSize: 32,
+            fontWeight: "600",
+            marginBottom: 32,
+          }}
+        />
+        <Animated.View
+          style={{
+            width: Dimensions.get("window").height / 4,
+            height: Dimensions.get("window").height / 4,
+          }}
+          entering={BounceInDown.duration(1000)}
+        >
+          <Avatar
+            src={getRawurl(currentProfile?.picture)}
+            height={"100%"}
+            width={"100%"}
+            borderWidth={1}
+            borderColor="white"
+          />
+        </Animated.View>
       </View>
     </SafeAreaView>
   );
