@@ -18,12 +18,14 @@ type CollectedVideosProps = {
   navigation: any;
   handle: Scalars["Handle"];
   ethAddress: Scalars["EthereumAddress"];
+  owner: boolean;
 };
 
 const CollectedVideos = ({
   ethAddress,
   handle,
   navigation,
+  owner
 }: CollectedVideosProps) => {
   const { accessToken } = useAuthStore();
   const { currentProfile } = useProfile();
@@ -96,6 +98,7 @@ const CollectedVideos = ({
               navigation.navigate("YourVideos", {
                 videos: collectVideos,
                 title: "Your collects",
+                owner: owner
               });
             }}
           >

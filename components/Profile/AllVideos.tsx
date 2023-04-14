@@ -11,9 +11,10 @@ type AllVideosProps = {
   navigation: any;
   handle?: string;
   Videos: Post[] | undefined;
+  owner?: boolean;
 };
 
-const AllVideos = ({ Videos, navigation }: AllVideosProps) => {
+const AllVideos = ({ Videos, navigation, owner }: AllVideosProps) => {
   return (
     <>
       <Pressable
@@ -56,6 +57,7 @@ const AllVideos = ({ Videos, navigation }: AllVideosProps) => {
             navigation.navigate("YourVideos", {
               videos: Videos,
               title: "Your videos",
+              owner: owner
             });
           }}
         >
