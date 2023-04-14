@@ -53,7 +53,7 @@ export default function EditAvatar() {
           },
         });
         TrackAction(SETTINGS.PROFILE.UPDATE_AVATAR);
-      } catch (error) {}
+      } catch (error) { }
     }
   };
 

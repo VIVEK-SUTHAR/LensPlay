@@ -117,8 +117,8 @@ function Player({
           setStatusBarHidden(false, "fade");
           setInFullscreen ? setInFullscreen(!inFullscreen) : null;
           await ScreenOrientation.lockAsync(
-            ScreenOrientation.OrientationLock.PORTRAIT
-          );
+            ScreenOrientation.OrientationLock.PORTRAIT_UP
+          );        
         },
       }}
       mute={{

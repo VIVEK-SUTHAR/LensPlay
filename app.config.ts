@@ -109,7 +109,8 @@ const config: ExpoConfig = {
   assetBundlePatterns: ["**/*"],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: "com.lensplayxyz.lensplay"
+    requireFullScreen: true,
+    bundleIdentifier: "com.lensplayxyz.lensplay",
   },
   jsEngine: "hermes",
   android: {
@@ -185,6 +186,12 @@ const config: ExpoConfig = {
         microphonePermissionText: "LensPlay needs access to your Microphone.",
       },
     ],
+    [
+      "expo-screen-orientation",
+      {
+        initialOrientation: "DEFAULT"
+      }
+    ]
   ],
 };
 
