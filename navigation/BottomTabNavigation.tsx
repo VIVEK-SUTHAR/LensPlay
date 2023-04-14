@@ -565,7 +565,8 @@ export default function BottomTabNavigator({
                     toast.error("Select video less than 100MB");
                     return;
                   }
-                  uploadStore.setDuration(result.duration!);
+                  // const seconds = Math.floor((milliseconds / 1000) % 60);
+                  uploadStore.setDuration(result.assets[0].duration!);
                   navigation.push("UploadVideo", {
                     localUrl: result.uri,
                     duration: result.duration,

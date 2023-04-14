@@ -14,4 +14,4 @@ async function getLivePeerURL(assetId: string) {
     return jsonResponse.playbackUrl;
   } catch (error) {}
 }
-export default getLivePeerURL
+export default getLivePeerURL;

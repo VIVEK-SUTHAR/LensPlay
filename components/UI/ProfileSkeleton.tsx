@@ -1,14 +1,6 @@
-import { Feather } from "@expo/vector-icons";
-import React, { FC } from "react";
-import {
-  Dimensions,
-  Pressable,
-  ScrollView,
-  StyleProp,
-  Text,
-  TextStyle,
-  View,
-} from "react-native";
+import React from "react";
+import { Dimensions, Pressable, ScrollView, View } from "react-native";
+import Icon from "../Icon";
 import Heading from "./Heading";
 import StyledText from "./StyledText";
 import VideoCardSkeleton from "./VideoCardSkeleton";
@@ -17,9 +9,9 @@ const ProfileSkeleton = () => {
   return (
     <ScrollView
       style={{
-        paddingHorizontal: 10,
+        paddingHorizontal: 8,
         backgroundColor: "#111111",
-        height:Dimensions.get("screen").height
+        height: Dimensions.get("screen").height,
       }}
     >
       <View
@@ -94,7 +86,7 @@ const ProfileSkeleton = () => {
           }}
         />
       </View>
-      <View style={{flexDirection:"row",marginTop:4}}>
+      <View style={{ flexDirection: "row", marginTop: 4 }}>
         <View
           style={{
             width: 72,
@@ -112,17 +104,36 @@ const ProfileSkeleton = () => {
           }}
         />
       </View>
-      <View
-        style={{flexDirection:"row"}}
-      >
+      <View style={{ flexDirection: "row" }}>
         <View
-          style={{width:36,height:36,borderRadius:50,backgroundColor:'#1d1d1d',marginLeft:12,marginTop:12}}
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 50,
+            backgroundColor: "#1d1d1d",
+            marginLeft: 12,
+            marginTop: 12,
+          }}
         />
         <View
-          style={{width:36,height:36,borderRadius:50,backgroundColor:'#1d1d1d',marginLeft:8,marginTop:12}}
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 50,
+            backgroundColor: "#1d1d1d",
+            marginLeft: 8,
+            marginTop: 12,
+          }}
         />
         <View
-          style={{width:36,height:36,borderRadius:50,backgroundColor:'#1d1d1d',marginLeft:8,marginTop:12}}
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 50,
+            backgroundColor: "#1d1d1d",
+            marginLeft: 8,
+            marginTop: 12,
+          }}
         />
       </View>
       {/* <View
@@ -175,23 +186,23 @@ const ProfileSkeleton = () => {
             <StyledText
               title={"Videos"}
               style={{
-                fontSize: 20,
+                fontSize: 16,
                 color: "white",
                 fontWeight: "600",
-                marginLeft:16
+                marginLeft: 16,
               }}
             />
-            <Feather name={`chevron-right`} size={24} color="white" />
+            <Icon name="arrowForward" size={20} />
           </Pressable>
           <ScrollView
             horizontal={true}
-            style={{ marginLeft: -12, marginTop: 8 }}
+            style={{ marginTop: 8 }}
             showsHorizontalScrollIndicator={false}
           >
-            <VideoCardSkeleton width={310} />
-            <VideoCardSkeleton width={310} />
-            <VideoCardSkeleton width={310} />
-            <VideoCardSkeleton width={310} />
+            <VideoCardSkeleton width={300} />
+            <VideoCardSkeleton width={300} />
+            <VideoCardSkeleton width={300} />
+            <VideoCardSkeleton width={300} />
           </ScrollView>
         </View>
         <View style={{ marginTop: 16 }}>
@@ -205,23 +216,23 @@ const ProfileSkeleton = () => {
             <Heading
               title={"Mirrored Videos"}
               style={{
-                fontSize: 20,
+                fontSize: 16,
                 color: "white",
                 fontWeight: "600",
-                marginLeft:16,
+                marginLeft: 16,
               }}
             />
-            <Feather name={`chevron-right`} size={24} color="white" />
+            <Icon name="arrowForward" size={20} />
           </View>
           <ScrollView
             horizontal={true}
-            style={{ marginLeft: -12, marginTop: 8 }}
+            style={{ marginTop: 8 }}
             showsHorizontalScrollIndicator={false}
           >
-            <VideoCardSkeleton width={310} />
-            <VideoCardSkeleton width={310} />
-            <VideoCardSkeleton width={310} />
-            <VideoCardSkeleton width={310} />
+            <VideoCardSkeleton width={300} />
+            <VideoCardSkeleton width={300} />
+            <VideoCardSkeleton width={300} />
+            <VideoCardSkeleton width={300} />
           </ScrollView>
         </View>
       </View>

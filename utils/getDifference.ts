@@ -6,66 +6,38 @@
  */
 
 function getDifference(timestamp: Date | string) {
-	const date = new Date();
-	const currentDate = date.getDate();
-	const currentMonth = date.getMonth();
-	const currentYear = date.getFullYear();
-	const currentSecond = date.getSeconds();
-	const currentMinute = date.getMinutes();
-	const currentHour = date.getHours();
-	const notificationStamp = new Date(timestamp);
+  const date = new Date(timestamp);
 
-	const notificationDate = notificationStamp.getDate();
-	const notificationMonth = notificationStamp.getMonth();
-	const notificationYear = notificationStamp.getFullYear();
-	const notificationSecond = notificationStamp.getSeconds();
-	const notificationMinute = notificationStamp.getMinutes();
-	const notificationHour = notificationStamp.getHours();
+  const seconds = Math.floor((new Date() - date) / 1000);
 
-	if (currentYear != notificationYear) {
-		if (currentYear - notificationYear == 1) {
-			if (notificationMonth - currentMonth != 0 && notificationMonth > currentMonth) {
-				if (currentMonth == 0 && notificationMonth == 11) {
-					if (currentDate > notificationDate) {
-						return `1mon ago`;
-					} else {
-						return findDiffernce(31, notificationDate - currentDate, "d");
-					}
-				} else {
-					return findDiffernce(12, notificationMonth - currentMonth, "mon");
-				}
-			} else {
-				return `1 y ago`;
-			}
-		} else {
-			return findDiffernce(notificationYear, currentYear, "y");
-		}
-	} else if (currentMonth != notificationMonth) {
-		if (currentMonth - notificationMonth == 1) {
-			if (currentDate < notificationDate) {
-				return findDiffernce(31, notificationDate - currentDate, "d");
-			}
-			else {
-				return `1 mon ago`
-			}
-		}
-		else {
-			return findDiffernce(notificationMonth, currentMonth, "mon");
-		}
-	} else if (currentDate != notificationDate) {
-		return findDiffernce(currentDate, notificationDate, "d");
-	} else if (currentHour != notificationHour) {
-		return findDiffernce(currentHour, notificationHour, "h");
-	} else if (currentMinute != notificationMinute) {
-		return findDiffernce(currentMinute, notificationMinute, "min");
-	} else if (currentSecond != notificationSecond) {
-		return findDiffernce(currentSecond, notificationSecond, "sec");
-	}
+  let interval = Math.floor(seconds / 31536000);
+  if (interval > 1) {
+    return interval + " years ago";
+  }
+
+  interval = Math.floor(seconds / 2592000);
+  if (interval > 1) {
+    return "~" + interval + " months ago";
+  }
+
+  interval = Math.floor(seconds / 86400);
+  if (interval > 1) {
+    return "~" + interval + " days ago";
+  }
+
+  interval = Math.floor(seconds / 3600);
+  if (interval > 1) {
+    return "~" + interval + " hours ago";
+  }
+
+  interval = Math.floor(seconds / 60);
+  if (interval > 1) {
+    return "~" + interval + " min ago";
+  }
+
+  if (seconds < 10) return "just now";
+
+  return Math.floor(seconds) + " seconds ago";
 }
-
-const findDiffernce = (x: number, y: number, stamp: string) => {
-	const difference = x - y;
-	return `~${difference}${stamp} ago`;
-};
 
 export default getDifference;
