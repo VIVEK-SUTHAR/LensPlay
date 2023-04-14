@@ -10,115 +10,14 @@ import StyledText from "../../components/UI/StyledText";
 import { LENSPLAY_SITE } from "../../constants";
 import { primary } from "../../constants/Colors";
 import { RootStackScreenProps } from "../../types/navigation/types";
+import Paginator from "../../components/Login/Paginator";
+import {data} from "../../components/Login/data"
+import Onboarding from "../../components/Login/Onboarding";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   return (
     <SafeAreaView style={styles.container}>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "space-evenly",
-        }}
-      >
-        <View style={{ alignItems: "center", marginTop: 16 }}>
-          <View>
-            <MotiView
-              style={styles.box1}
-              from={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                type: "timing",
-                duration: 500,
-                delay: 450,
-              }}
-            >
-              <Icon name="shots_outline" color="white" size={64} />
-            </MotiView>
-          </View>
-          <View style={{ flexDirection: "row", padding: 8 }}>
-            <MotiView
-              style={styles.box2}
-              from={{ opacity: 0, scale: 0.5, translateX: -150 }}
-              animate={{ opacity: 1, scale: 1, translateX: 0 }}
-              transition={{
-                type: "timing",
-                duration: 550,
-                delay: 450,
-              }}
-            >
-              <Icon name="play" color="white" size={36} />
-            </MotiView>
-            <MotiView
-              style={styles.box3}
-              from={{ opacity: 0, scale: 0.5, translateX: 150 }}
-              animate={{ opacity: 1, scale: 1, translateX: 0 }}
-              transition={{
-                type: "timing",
-                duration: 550,
-                delay: 450,
-              }}
-            >
-              <Image
-                style={{ width: 64, height: 64 }}
-                source={require("../../assets/images/lens.png")}
-              />
-            </MotiView>
-          </View>
-        </View>
-        <View
-          style={{
-            alignItems: "center",
-          }}
-        >
-          <View>
-            <Heading
-              title="LensPlay"
-              style={{
-                fontSize: 64,
-                color: "white",
-                fontWeight: "700",
-                textAlign: "center",
-              }}
-            />
-            <View
-              style={{
-                flexDirection: "column",
-                alignItems: "flex-end",
-                marginTop: 8,
-                justifyContent: "flex-end",
-              }}
-            >
-              <StyledText
-                title={"See the world in a"}
-                style={{
-                  fontSize: 20,
-                  color: "white",
-                  textAlign: "right",
-                }}
-              />
-              <View style={{ flexDirection: "row", marginTop: -4 }}>
-                <StyledText
-                  title={"different"}
-                  style={{
-                    fontSize: 20,
-                    color: "#56CBF9",
-                    textAlign: "right",
-                    marginRight: 8,
-                  }}
-                />
-                <StyledText
-                  title={"way"}
-                  style={{
-                    fontSize: 20,
-                    color: "white",
-                    textAlign: "right",
-                  }}
-                />
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
+        <Onboarding/>
       <View
         style={{
           padding: 16,
@@ -159,19 +58,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           }
           style={{ marginBottom: 16 }}
         />
-        <Button
-          onPress={async () => {
-            navigation.navigate("ConnectWallet");
-            // navigation.navigate("CreateProfile");
-          }}
-          title="Get Started"
-          bg={primary}
-          textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
-          py={12}
-          icon={<AntDesign name="arrowright" size={20} />}
-          iconPosition="right"
-          animated={true}
-        />
+
       </View>
     </SafeAreaView>
   );
