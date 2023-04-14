@@ -2,7 +2,6 @@ import {
   Dimensions,
   ImageSourcePropType,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import React from "react";
@@ -11,18 +10,19 @@ import StyledText from "../UI/StyledText";
 type Props = {
   image: ImageSourcePropType;
   title: string;
+  desc: string;
 };
 
-const OnboardingItem = ({ image, title }: Props) => {
+const OnboardingItem = ({ image, title, desc }: Props) => {
   const width = Dimensions.get("window").width;
   const height = Dimensions.get("window").height;
-  
+
   return (
     <View>
       <View
         style={{
           width: width,
-          height: height / 1.5,
+          height: height / 1.6,
           justifyContent: "center",
           alignItems: "center",
         }}
@@ -32,10 +32,28 @@ const OnboardingItem = ({ image, title }: Props) => {
           style={{ resizeMode: "contain", width: "70%", height: "70%" }}
         />
       </View>
-      <View style={{ justifyContent: "center", alignItems: "center" }}>
+      <View
+        style={{
+          width: width,
+          paddingHorizontal: 16,
+          justifyContent: "flex-end",
+        }}
+      >
         <StyledText
           title={title}
-          style={{ color: "white", fontSize: 32, fontWeight: "600" }}
+          style={{
+            color: "white",
+            fontSize: 32,
+            fontWeight: "600",
+          }}
+        />
+        <StyledText
+          title={desc}
+          style={{
+            color: "white",
+            fontSize: 32,
+            fontWeight: "600",
+          }}
         />
       </View>
     </View>

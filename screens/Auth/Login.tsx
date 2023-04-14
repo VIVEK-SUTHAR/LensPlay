@@ -11,13 +11,13 @@ import { LENSPLAY_SITE } from "../../constants";
 import { primary } from "../../constants/Colors";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import Paginator from "../../components/Login/Paginator";
-import {data} from "../../components/Login/data"
+import { data } from "../../components/Login/data";
 import Onboarding from "../../components/Login/Onboarding";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   return (
     <SafeAreaView style={styles.container}>
-        <Onboarding/>
+      <Onboarding />
       <View
         style={{
           padding: 16,
@@ -58,7 +58,6 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           }
           style={{ marginBottom: 16 }}
         />
-
       </View>
     </SafeAreaView>
   );

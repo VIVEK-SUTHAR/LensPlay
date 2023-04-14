@@ -1,14 +1,10 @@
-import { Animated, Dimensions, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import {
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-} from "react-native-reanimated";
+import { Animated, Dimensions, StyleSheet, View } from "react-native";
 
-type Props = {};
+type Props = {
+  data: any;
+  scrollX: any;
+};
 
 const Paginator = ({ data, scrollX }: Props) => {
   const width = Dimensions.get("screen").width;
@@ -16,12 +12,11 @@ const Paginator = ({ data, scrollX }: Props) => {
     <View
       style={{
         flexDirection: "row",
-        height: 64,
         justifyContent: "center",
         alignContent: "center",
       }}
     >
-      {data.map((_, i) => {
+      {data.map((_: any, i: number) => {
         const inputRange = [(i - 1) * width, i * width, (i + 1) * width];
         const dotWidth = scrollX.interpolate({
           inputRange,
@@ -29,13 +24,16 @@ const Paginator = ({ data, scrollX }: Props) => {
           extrapolate: "clamp",
         });
 
-        const opacity= scrollX. interpolate({
-            inputRange,
-            outputRange: [0.3, 1, 0.3],
-            extrapolate: 'clamp',
-            });
+        const opacity = scrollX.interpolate({
+          inputRange,
+          outputRange: [0.3, 1, 0.3],
+          extrapolate: "clamp",
+        });
         return (
-          <Animated.View style={[styles.dot, { width: dotWidth,opacity }]} key={i} />
+          <Animated.View
+            style={[styles.dot, { width: dotWidth, opacity }]}
+            key={i}
+          />
         );
       })}
     </View>

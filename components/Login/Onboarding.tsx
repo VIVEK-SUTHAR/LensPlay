@@ -1,10 +1,18 @@
-import { Animated, FlatList, StyleSheet, Text, View } from "react-native";
+import {
+  Animated,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useRef, useState } from "react";
 import { data } from "./data";
 import OnboardingItem from "./OnboardingItem";
 import Paginator from "./Paginator";
 import Button from "../UI/Button";
 import Icon from "../Icon";
+import { black, white } from "../../constants/Colors";
 type Props = {};
 
 const Onboarding = (props: Props) => {
@@ -42,19 +50,30 @@ const Onboarding = (props: Props) => {
           <OnboardingItem
             title={item.title}
             image={item.imgUrl}
-            key={item.uid}
+            key={item.id}
+            desc={item.desc}
           />
         )}
       />
-      <Paginator data={data} scrollX={scrollX} />
-      <View style={{justifyContent:"center",alignItems:'center'}} >
-        <Button
-          title={""}
-          icon={<Icon name="arrowForward" size={20} />}
+      <View
+        style={{
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexDirection: "row",
+          paddingHorizontal: 16,
+        }}
+      >
+        <Paginator data={data} scrollX={scrollX} />
+        <Pressable
+          style={{
+            backgroundColor: white[700],
+            padding: 16,
+            borderRadius: 50,
+          }}
           onPress={scrollTo}
-          width={40}
-          py={10}
-        />
+        >
+          <Icon name="arrowForward" size={20} color={black[800]} />
+        </Pressable>
       </View>
     </View>
   );
