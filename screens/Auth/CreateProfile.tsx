@@ -126,9 +126,15 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
             if (response?.data?.createProfile?.__typename !== "RelayError") {
                 setTimeout(async () => {
                     const profile = await handleDefaultProfile(address);
-                    setDynamicText('Signing Dispatcher');
-                    await EnableDispatcher(profile?.id);
-                    navigation.navigate("Root");
+                    if (profile) {
+                        setDynamicText('Signing Dispatcher');
+                        await EnableDispatcher(profile?.id);
+                        navigation.navigate("Root");
+                    }
+                    else {
+                        setDynamicText('Create Handle');
+                        setIsloading(false);
+                    }
                 }, 5000);
 
             } else if (response?.data?.createProfile?.reason === "HANDLE_TAKEN") {

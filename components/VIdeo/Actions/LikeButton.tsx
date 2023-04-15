@@ -43,9 +43,6 @@ const LikeButton = ({
   const { accessToken } = useAuthStore();
 
   const [addReaction] = useAddReactionMutation({
-    onError: (e) => {
-      toast.show("Something went wrong!", ToastType.ERROR, true);
-    },
     onCompleted: () => {
       if (bytes) {
         setLikeCount(likeCount + 1);
@@ -54,11 +51,16 @@ const LikeButton = ({
         setVideoPageStats(true, false, like + 1);
       }
     },
+    onError: (e) => {
+      toast.show("Something went wrong while liking!", ToastType.ERROR, true);
+      console.log(e);
+    },
   });
+
 
   const [removeReaction] = useRemoveReactionMutation({
     onError: (e) => {
-      toast.show("Something went wrong!", ToastType.ERROR, true);
+      toast.show("Something went wrong while disliking!", ToastType.ERROR, true);
     },
     onCompleted: () => {
       if (bytes) {
@@ -71,6 +73,8 @@ const LikeButton = ({
   });
 
   const onLike = async () => {
+    console.log('gttff');
+    
     if (isGuest) {
       toast.show("Please Login", ToastType.ERROR, true);
       return;

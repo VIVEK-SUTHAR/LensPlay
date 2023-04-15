@@ -84,15 +84,6 @@ const Button = (props: ButtonProps): JSX.Element => {
         },
       ]}
       {...rest}
-      onPress={
-        onPress && !disabled
-          ? onPress
-          : () => {
-            console.log(
-              "[Error]:onPress handler is missing or disabled button"
-            );
-          }
-      }
       onPressIn={(e) => {
         e.preventDefault();
         if (!animated) return;

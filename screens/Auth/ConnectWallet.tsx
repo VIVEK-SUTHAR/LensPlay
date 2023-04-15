@@ -80,6 +80,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
             await AsyncStorage.removeItem("@viaDeskTop");
           }
           navigation.push("LoginWithLens");
+          
         }
       } else {
         toast.show("Something went wrong", ToastType.ERROR, true);
