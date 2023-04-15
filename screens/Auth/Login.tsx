@@ -12,9 +12,80 @@ import { black, white } from "../../constants/Colors";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import { Image } from "react-native";
 import Button from "../../components/UI/Button";
+import getProfiles from "../../utils/lens/getProfiles";
+import { useGuestStore } from "../../store/GuestStore";
+import { useProfile, useToast } from "../../store/Store";
+import { Scalars } from "../../types/generated";
+import handleWaitlist from "../../utils/handleWaitlist";
+import TrackAction from "../../utils/Track";
+import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import { AUTH } from "../../constants/tracking";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const loginRef = React.useRef<BottomSheetMethods>(null);
+  const connector = useWalletConnect();
+  const { handleGuest } = useGuestStore();
+  const toast = useToast();
+  const { setCurrentProfile, setHasHandle } = useProfile();
+  const [isloading, setIsloading] = React.useState<boolean>(false);
+
+  async function HandleDefaultProfile(adress: Scalars["EthereumAddress"]) {
+    const userDefaultProfile = await getProfiles({
+      ownedBy: adress,
+    });
+
+    if (userDefaultProfile) {
+      setHasHandle(true);
+      setCurrentProfile(userDefaultProfile);
+    } else {
+      setHasHandle(false);
+    }
+  }
+
+  const connectWallet = React.useCallback(async () => {
+    const walletData = await connector.connect({
+      chainId: 80001,
+    });
+
+    setIsloading(true);
+    try {
+      if (walletData) {
+        TrackAction(AUTH.WALLET_LOGIN);
+        const userData = await handleWaitlist(walletData.accounts[0]);
+        if (userData.statusCode === 404) {
+          navigation.replace("JoinWaitlist");
+        }
+
+        if (!userData.fields.hasAccess) {
+          navigation.replace("LeaderBoard", {
+            referralsCount: userData?.referralsCount,
+            rankingPoints: userData?.rankingPoints,
+            rankingPosition: userData?.rankingPosition,
+            refferalLink: `https://form.waitlistpanda.com/go/${userData?.listId}?ref=${userData?.id}`,
+          });
+        }
+
+        if (userData.fields.hasAccess) {
+          await HandleDefaultProfile(walletData.accounts[0]);
+          const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
+          if (isDeskTopLogin) {
+            await AsyncStorage.removeItem("@viaDeskTop");
+          }
+          navigation.push("LoginWithLens");
+        }
+      } else {
+        toast.error("Something went wrong");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log("[Error]:Error in connect wallet");
+        toast.error("Something went wrong");
+      }
+    } finally {
+      setIsloading(false);
+    }
+  }, [connector]);
 
   return (
     <SafeAreaView style={styles.container}>
