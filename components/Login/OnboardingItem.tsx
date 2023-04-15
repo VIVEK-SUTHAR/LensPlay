@@ -15,14 +15,17 @@ type Props = {
 
 const OnboardingItem = ({ image, title, desc }: Props) => {
   const width = Dimensions.get("window").width;
-  const height = Dimensions.get("window").height;
 
   return (
-    <View>
+    <View
+      style={{
+        flex: 1,
+      }}
+    >
       <View
         style={{
           width: width,
-          height: height / 1.6,
+          height: "80%",
           justifyContent: "center",
           alignItems: "center",
         }}
