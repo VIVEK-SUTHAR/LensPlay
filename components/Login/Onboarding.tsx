@@ -46,7 +46,6 @@ const Onboarding = ({
     if (currentIndex < data.length - 1) {
       slidesRef?.current.scrollToIndex({ index: currentIndex + 1 });
     } else {
-      console.log("Last item.");
       Animated.spring(fadeAnim, {
         toValue: 0,
         useNativeDriver: true,
