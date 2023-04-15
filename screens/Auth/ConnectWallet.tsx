@@ -38,7 +38,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
 
   async function HandleDefaultProfile(adress: Scalars["EthereumAddress"]) {
     const userDefaultProfile = await getProfiles({
-      ownedBy: adress
+      ownedBy: adress,
     });
 
     if (userDefaultProfile) {
@@ -50,8 +50,12 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
   }
 
   const connectWallet = useCallback(async () => {
+    if (connector.accounts[0]) {
+      await connector.killSession();
+    }
+
     const walletData = await connector.connect({
-      chainId:80001
+      chainId: 80001,
     });
 
     setIsloading(true);
@@ -62,7 +66,7 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
         if (userData.statusCode === 404) {
           navigation.replace("JoinWaitlist");
         }
-        
+
         if (!userData.fields.hasAccess) {
           navigation.replace("LeaderBoard", {
             referralsCount: userData?.referralsCount,
@@ -74,13 +78,9 @@ function ConnectWallet({ navigation }: RootStackScreenProps<"ConnectWallet">) {
 
         if (userData.fields.hasAccess) {
           await HandleDefaultProfile(walletData.accounts[0]);
-          const isDeskTopLogin = await AsyncStorage.getItem(
-            "@viaDeskTop"
-          );
-          if(isDeskTopLogin){
-            await AsyncStorage.removeItem(
-              "@viaDeskTop"
-            );
+          const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
+          if (isDeskTopLogin) {
+            await AsyncStorage.removeItem("@viaDeskTop");
           }
           navigation.push("LoginWithLens");
         }
