@@ -573,17 +573,20 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                     Videos={AllVideosData?.publications?.items as Post[]}
                     profileId={profile?.id}
                     navigation={navigation}
+                    owner={false}
                   />
                 )}
                 <MirroredVideos
                   navigation={navigation}
                   profileId={profile?.id}
                   handle={profile?.handle}
+                  owner={false}
                 />
                 <CollectedVideos
                   ethAddress={profile?.ownedBy}
                   handle={profile?.handle}
                   navigation={navigation}
+                  owner={false}
                 />
               </View>
             </View>
