@@ -13,11 +13,13 @@ import OnboardingItem from "./OnboardingItem";
 import Paginator from "./Paginator";
 import { data } from "./data";
 import Button from "../UI/Button";
+import ConnectWallet from "./connectWallet";
 type Props = {};
 
 const Onboarding = (props: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [done, setDone] = useState<boolean>(false);
+  const [unDone, setUnDone] = useState<boolean>(true);
   const scrollX = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(1)).current;
   let slideAnimation = useRef(new Animated.Value(0)).current;
@@ -55,18 +57,46 @@ const Onboarding = (props: Props) => {
       }).start();
       setTimeout(() => {
         setDone(true);
+        setUnDone(true);
       }, 2000);
     }
   };
 
+  const reverseAnim = () => {
+    setDone(false);
+    Animated.spring(rotateanimation, {
+      toValue: 0,
+      damping: 15,
+      velocity: 1,
+      useNativeDriver: true,
+    }).start();
+    Animated.spring(slideAnimation, {
+      toValue: 0,
+      damping: 15,
+      velocity: 1,
+      useNativeDriver: true,
+    }).start();
+    scrollX.setValue(0);
+    setTimeout(() => {
+      setUnDone(false);
+    }, 1000);
+    Animated.spring(fadeAnim, {
+      toValue: 1,
+      velocity: 1,
+      damping: 15,
+      useNativeDriver: true,
+    }).start();
+  }
+
   const spin = rotateanimation.interpolate({
     inputRange: [0, 1],
-    outputRange: ["0deg", "180deg"],
+    outputRange: ["0deg", "-180deg"],
   });
 
   return (
     <View style={{ flex: 3 }}>
-      <FlatList
+      {
+        !done?<FlatList
         data={data}
         horizontal={true}
         pagingEnabled={true}
@@ -94,7 +124,9 @@ const Onboarding = (props: Props) => {
             />
           </Animated.View>
         )}
-      />
+      />:<ConnectWallet />
+      }
+      
       <View
         style={{
           justifyContent: "space-between",
@@ -106,7 +138,7 @@ const Onboarding = (props: Props) => {
         <Animated.View
           style={{
             opacity: fadeAnim,
-            display: done ? "none" : "flex",
+            display: done && unDone ? "none" : "flex",
           }}
         >
           <Paginator data={data} scrollX={scrollX} />
@@ -118,7 +150,7 @@ const Onboarding = (props: Props) => {
               padding: 16,
               borderRadius: 50,
             }}
-            onPress={scrollTo}
+            onPress={reverseAnim}
           >
             <Icon name="arrowLeft" size={20} color={black[800]} />
           </Pressable>
