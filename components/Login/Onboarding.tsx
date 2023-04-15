@@ -1,22 +1,35 @@
 import React, { useRef, useState } from "react";
-import { Animated, FlatList, Pressable, StyleSheet, View } from "react-native";
+import {
+  Animated,
+  Dimensions,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
 import { black, white } from "../../constants/Colors";
 import Icon from "../Icon";
 import OnboardingItem from "./OnboardingItem";
 import Paginator from "./Paginator";
 import { data } from "./data";
+import Button from "../UI/Button";
 type Props = {};
 
 const Onboarding = (props: Props) => {
-  const scrollX = useRef(new Animated.Value(0)).current;
-  const fadeAnim = useRef(new Animated.Value(1));
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [done, setDone] = useState<boolean>(false);
+  const scrollX = useRef(new Animated.Value(0)).current;
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  let slideAnimation = useRef(new Animated.Value(0)).current;
+  const rotateanimation = useRef(new Animated.Value(0)).current;
   const slidesRef = useRef(null);
   const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
   const viewableItemsChanged = useRef(({ viewableItems }) => {
     setCurrentIndex(viewableItems[0].index);
   }).current;
+
+  const w = Dimensions.get("window").width * 0.79;
 
   const scrollTo = () => {
     if (currentIndex < data.length - 1) {
@@ -26,9 +39,30 @@ const Onboarding = (props: Props) => {
       Animated.timing(fadeAnim, {
         toValue: 0,
         duration: 1000,
+        useNativeDriver: true,
       }).start();
+      Animated.timing(slideAnimation, {
+        toValue: -w,
+        duration: 1000,
+        delay: 1000,
+        useNativeDriver: true,
+      }).start();
+      Animated.timing(rotateanimation, {
+        toValue: 1,
+        duration: 1000,
+        delay: 1000,
+        useNativeDriver: true,
+      }).start();
+      setTimeout(() => {
+        setDone(true);
+      }, 2000);
     }
   };
+
+  const spin = rotateanimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "180deg"],
+  });
 
   return (
     <View style={{ flex: 3 }}>
@@ -49,9 +83,8 @@ const Onboarding = (props: Props) => {
         renderItem={({ item }) => (
           <Animated.View
             style={{
-              opacity: fadeAnim.current,
+              opacity: fadeAnim,
             }}
-            ref={fadeAnim}
           >
             <OnboardingItem
               title={item.title}
@@ -70,17 +103,67 @@ const Onboarding = (props: Props) => {
           paddingHorizontal: 16,
         }}
       >
-        <Paginator data={data} scrollX={scrollX} />
-        <Pressable
+        <Animated.View
           style={{
-            backgroundColor: white[700],
-            padding: 16,
-            borderRadius: 50,
+            opacity: fadeAnim,
+            display: done ? "none" : "flex",
           }}
-          onPress={scrollTo}
         >
-          <Icon name="arrowForward" size={20} color={black[800]} />
-        </Pressable>
+          <Paginator data={data} scrollX={scrollX} />
+        </Animated.View>
+        {done ? (
+          <Pressable
+            style={{
+              backgroundColor: white[700],
+              padding: 16,
+              borderRadius: 50,
+            }}
+            onPress={scrollTo}
+          >
+            <Icon name="arrowLeft" size={20} color={black[800]} />
+          </Pressable>
+        ) : (
+          <Animated.View
+            style={{
+              transform: [
+                {
+                  translateX: slideAnimation,
+                },
+                {
+                  rotate: spin,
+                },
+              ],
+            }}
+          >
+            <Pressable
+              style={{
+                backgroundColor: white[700],
+                padding: 16,
+                borderRadius: 50,
+              }}
+              onPress={scrollTo}
+            >
+              <Icon name="arrowForward" size={20} color={black[800]} />
+            </Pressable>
+          </Animated.View>
+        )}
+        <Animated.View
+          style={{
+            display: done ? "flex" : "none",
+          }}
+        >
+          <Button
+            title={"Connect wallet"}
+            width={"auto"}
+            bg={white[600]}
+            py={12}
+            px={32}
+            textStyle={{
+              fontSize: 20,
+              fontWeight: "500",
+            }}
+          />
+        </Animated.View>
       </View>
     </View>
   );
