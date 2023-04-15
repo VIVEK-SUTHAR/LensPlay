@@ -19,7 +19,7 @@ import { Scalars } from "../../types/generated";
 import handleWaitlist from "../../utils/handleWaitlist";
 import TrackAction from "../../utils/Track";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import { AUTH } from "../../constants/tracking";
+import { AUTH, GUEST_MODE } from "../../constants/tracking";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
@@ -86,6 +86,18 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
       setIsloading(false);
     }
   }, [connector]);
+
+  const handleDesktopLogin = React.useCallback(async () => {
+    handleGuest(false);
+    loginRef?.current?.close();
+    navigation.push("QRLogin");
+  }, []);
+
+  const handleGuestLogin = React.useCallback(async () => {
+    handleGuest(true);
+    navigation.navigate("Root");
+    TrackAction(GUEST_MODE);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
