@@ -24,6 +24,7 @@ const Onboarding = (props: Props) => {
   const fadeAnim = useRef(new Animated.Value(1)).current;
   let slideAnimation = useRef(new Animated.Value(0)).current;
   const rotateanimation = useRef(new Animated.Value(0)).current;
+  const scaleanimation = useRef(new Animated.Value(0)).current;
   const slidesRef = useRef(null);
   const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
@@ -38,27 +39,40 @@ const Onboarding = (props: Props) => {
       slidesRef?.current.scrollToIndex({ index: currentIndex + 1 });
     } else {
       console.log("Last item.");
-      Animated.timing(fadeAnim, {
+      Animated.spring(fadeAnim, {
         toValue: 0,
-        duration: 1000,
+        // duration: 1000,
         useNativeDriver: true,
       }).start();
-      Animated.timing(slideAnimation, {
+      Animated.spring(slideAnimation, {
         toValue: -w,
-        duration: 1000,
-        delay: 1000,
+        // duration: 1000,
+        damping: 16,
+        velocity: 2,
+        // delay: 1000,
         useNativeDriver: true,
       }).start();
-      Animated.timing(rotateanimation, {
+      Animated.spring(rotateanimation, {
         toValue: 1,
-        duration: 1000,
-        delay: 1000,
+        // duration: 1000,
+        damping: 16,
+        velocity: 2,
+        // delay: 1000,
         useNativeDriver: true,
       }).start();
+      
       setTimeout(() => {
         setDone(true);
         setUnDone(true);
-      }, 2000);
+        Animated.spring(scaleanimation, {
+          toValue: 1,
+          // duration: 1000,
+          damping: 12,
+          velocity: 2,
+          // delay: 1000,
+          useNativeDriver: true,
+        }).start();
+      }, 500);
     }
   };
 
@@ -182,6 +196,9 @@ const Onboarding = (props: Props) => {
         <Animated.View
           style={{
             display: done ? "flex" : "none",
+            transform: [{
+              scale: scaleanimation
+            }]
           }}
         >
           <Button
