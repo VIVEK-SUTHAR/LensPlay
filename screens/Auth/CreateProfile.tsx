@@ -228,8 +228,8 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                         <ImageCarousel data={data} autoPlay={true} />
                         <View style={styles.inputContainer}>
                             <TextInput
-                                numberOfLines={2}
-                                multiline={true}
+                                numberOfLines={1}
+                                multiline={false}
                                 value={handle}
                                 style={styles.input}
                                 placeholderTextColor="gray"
