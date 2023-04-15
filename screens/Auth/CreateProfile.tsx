@@ -35,15 +35,11 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
             setCurrentProfile(defaultProfile);
             return defaultProfile;
         }
-        else {
-            console.log('no profile found');
-        }
     }
 
     const [createProfile] = useCreateProfileMutation({
         onError: (e) => {
             toast.show("Error in create profile!", ToastType.ERROR, true);
-            console.log(e);
 
         },
     });
@@ -51,14 +47,12 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
     const [setDispatcher] = useCreateSetDispatcherTypedDataMutation({
         onError: (e) => {
             toast.show("Error in setting", ToastType.ERROR, true);
-            console.log(e);
         },
     });
 
     const [broadcastTransaction] = useBroadcastMutation({
         onError: (e) => {
             toast.show("error in broadcast", ToastType.ERROR, true);
-            console.log(e);
         },
     })
 
@@ -79,15 +73,12 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                 },
             }
         });
-        console.log('dispatcher enabled');
 
         const formattedTypedData = createSetDispatcherTypedData(data);
-        console.log('got the typed data');
 
         const message = JSON.stringify(formattedTypedData);
         const msgParams = [address, message];
         const sig = await connector.signTypedData(msgParams);
-        console.log('signed typed data');
 
         const broadcast = await broadcastTransaction(
             {
@@ -104,7 +95,6 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                 }
             }
         )
-        console.log('brodcasted');
         setIsloading(false);
         setDynamicText('Create Handle');
     }
@@ -135,11 +125,8 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
 
             if (response?.data?.createProfile?.__typename !== "RelayError") {
                 setTimeout(async () => {
-                    console.log('profile created');
                     const profile = await handleDefaultProfile(address);
                     setDynamicText('Signing Dispatcher');
-                    console.log('got the profile', profile);
-
                     await EnableDispatcher(profile?.id);
                     navigation.navigate("Root");
                 }, 5000);
@@ -160,8 +147,6 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
 
         catch (error) {
             if (error instanceof Error) {
-                console.log("[Error]:Error in create profile");
-                console.log(error);
                 setIsloading(false);
                 setDynamicText('Create Handle');
             }
