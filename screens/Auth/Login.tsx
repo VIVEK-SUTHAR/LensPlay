@@ -1,23 +1,27 @@
 import { AntDesign } from "@expo/vector-icons";
 import { MotiView } from "moti";
 import * as React from "react";
-import { Image, Linking, StyleSheet, View } from "react-native";
+import { Image, Linking, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "../../components/Icon";
 import Button from "../../components/UI/Button";
 import Heading from "../../components/UI/Heading";
 import StyledText from "../../components/UI/StyledText";
 import { LENSPLAY_SITE } from "../../constants";
-import { primary } from "../../constants/Colors";
+import { black, primary, white } from "../../constants/Colors";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import Paginator from "../../components/Login/Paginator";
 import { data } from "../../components/Login/data";
 import Onboarding from "../../components/Login/Onboarding";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Sheet from "../../components/Bottom";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
+  const loginRef = React.useRef<BottomSheetMethods>(null);
+
   return (
     <SafeAreaView style={styles.container}>
-      <Onboarding />
+      <Onboarding loginRef={loginRef} />
       <View
         style={{
           padding: 16,
@@ -59,6 +63,73 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           style={{ marginBottom: 16 }}
         />
       </View>
+      <Sheet
+        ref={loginRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "#1d1d1d",
+        }}
+        snapPoints={["25%"]}
+        children={
+          <View
+            style={{
+              paddingHorizontal: 16,
+              paddingTop: 8,
+              paddingBottom: 16,
+              width: "100%",
+              height: "100%",
+              justifyContent: "space-between",
+            }}
+          >
+            <View>
+              <Heading
+                title="Choose method"
+                style={{ fontSize: 24, color: "white", fontWeight: "500" }}
+              />
+              <StyledText
+                title="Choose method to login and get started"
+                style={{ fontSize: 16, color: white[100], fontWeight: "500" }}
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-around",
+              }}
+            >
+              <Pressable
+                style={{
+                  backgroundColor: white[700],
+                  padding: 16,
+                  borderRadius: 50,
+                }}
+              >
+                <Icon name="wallet" size={20} color={black[800]} />
+              </Pressable>
+              <Pressable
+                style={{
+                  backgroundColor: white[700],
+                  padding: 16,
+                  borderRadius: 50,
+                }}
+              >
+                <Icon name="desktop" size={20} color={black[800]} />
+              </Pressable>
+              <Pressable
+                style={{
+                  backgroundColor: white[700],
+                  padding: 16,
+                  borderRadius: 50,
+                }}
+              >
+                <Icon name="referal" size={20} color={black[800]} />
+              </Pressable>
+            </View>
+          </View>
+        }
+      />
     </SafeAreaView>
   );
 };

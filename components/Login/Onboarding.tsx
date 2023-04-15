@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -9,17 +9,21 @@ import {
 } from "react-native";
 import { black, white } from "../../constants/Colors";
 import Icon from "../Icon";
+import Button from "../UI/Button";
 import OnboardingItem from "./OnboardingItem";
 import Paginator from "./Paginator";
-import { data } from "./data";
-import Button from "../UI/Button";
 import ConnectWallet from "./connectWallet";
-type Props = {};
+import { data } from "./data";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 
-const Onboarding = (props: Props) => {
+const Onboarding = ({
+  loginRef,
+}: {
+  loginRef: React.RefObject<BottomSheetMethods>;
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [done, setDone] = useState<boolean>(false);
-  const [unDone, setUnDone] = useState<boolean>(true);
+  const [animationfinished, setAnimationFinished] = useState<boolean>(false);
+  const [isAnimated, setIsAnimated] = useState<boolean>(true);
   const scrollX = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(1)).current;
   let slideAnimation = useRef(new Animated.Value(0)).current;
@@ -32,6 +36,10 @@ const Onboarding = (props: Props) => {
     setCurrentIndex(viewableItems[0].index);
   }).current;
 
+  const openSheet = useCallback(() => {
+    loginRef?.current?.snapToIndex(0);
+  }, []);
+
   const w = Dimensions.get("window").width * 0.79;
 
   const scrollTo = () => {
@@ -41,35 +49,28 @@ const Onboarding = (props: Props) => {
       console.log("Last item.");
       Animated.spring(fadeAnim, {
         toValue: 0,
-        // duration: 1000,
         useNativeDriver: true,
       }).start();
       Animated.spring(slideAnimation, {
         toValue: -w,
-        // duration: 1000,
         damping: 16,
         velocity: 2,
-        // delay: 1000,
         useNativeDriver: true,
       }).start();
       Animated.spring(rotateanimation, {
         toValue: 1,
-        // duration: 1000,
         damping: 16,
         velocity: 2,
-        // delay: 1000,
         useNativeDriver: true,
       }).start();
-      
+
       setTimeout(() => {
-        setDone(true);
-        setUnDone(true);
+        setAnimationFinished(true);
+        setIsAnimated(true);
         Animated.spring(scaleanimation, {
           toValue: 1,
-          // duration: 1000,
           damping: 12,
           velocity: 2,
-          // delay: 1000,
           useNativeDriver: true,
         }).start();
       }, 500);
@@ -77,7 +78,7 @@ const Onboarding = (props: Props) => {
   };
 
   const reverseAnim = () => {
-    setDone(false);
+    setAnimationFinished(false);
     Animated.spring(rotateanimation, {
       toValue: 0,
       damping: 15,
@@ -92,7 +93,7 @@ const Onboarding = (props: Props) => {
     }).start();
     scrollX.setValue(0);
     setTimeout(() => {
-      setUnDone(false);
+      setIsAnimated(false);
     }, 1000);
     Animated.spring(fadeAnim, {
       toValue: 1,
@@ -100,7 +101,7 @@ const Onboarding = (props: Props) => {
       damping: 15,
       useNativeDriver: true,
     }).start();
-  }
+  };
 
   const spin = rotateanimation.interpolate({
     inputRange: [0, 1],
@@ -109,38 +110,39 @@ const Onboarding = (props: Props) => {
 
   return (
     <View style={{ flex: 3 }}>
-      {
-        !done?<FlatList
-        data={data}
-        horizontal={true}
-        pagingEnabled={true}
-        showsHorizontalScrollIndicator={false}
-        bounces={false}
-        scrollEventThrottle={32}
-        ref={slidesRef}
-        onViewableItemsChanged={viewableItemsChanged}
-        viewabilityConfig={viewConfig}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: false }
-        )}
-        renderItem={({ item }) => (
-          <Animated.View
-            style={{
-              opacity: fadeAnim,
-            }}
-          >
-            <OnboardingItem
-              title={item.title}
-              image={item.imgUrl}
-              key={item.id}
-              desc={item.desc}
-            />
-          </Animated.View>
-        )}
-      />:<ConnectWallet />
-      }
-      
+      {!animationfinished ? (
+        <FlatList
+          data={data}
+          horizontal={true}
+          pagingEnabled={true}
+          showsHorizontalScrollIndicator={false}
+          bounces={false}
+          scrollEventThrottle={32}
+          ref={slidesRef}
+          onViewableItemsChanged={viewableItemsChanged}
+          viewabilityConfig={viewConfig}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+            { useNativeDriver: false }
+          )}
+          renderItem={({ item }) => (
+            <Animated.View
+              style={{
+                opacity: fadeAnim,
+              }}
+            >
+              <OnboardingItem
+                title={item.title}
+                image={item.imgUrl}
+                key={item.id}
+                desc={item.desc}
+              />
+            </Animated.View>
+          )}
+        />
+      ) : (
+        <ConnectWallet />
+      )}
       <View
         style={{
           justifyContent: "space-between",
@@ -152,12 +154,12 @@ const Onboarding = (props: Props) => {
         <Animated.View
           style={{
             opacity: fadeAnim,
-            display: done && unDone ? "none" : "flex",
+            display: animationfinished && isAnimated ? "none" : "flex",
           }}
         >
           <Paginator data={data} scrollX={scrollX} />
         </Animated.View>
-        {done ? (
+        {animationfinished ? (
           <Pressable
             style={{
               backgroundColor: white[700],
@@ -195,10 +197,12 @@ const Onboarding = (props: Props) => {
         )}
         <Animated.View
           style={{
-            display: done ? "flex" : "none",
-            transform: [{
-              scale: scaleanimation
-            }]
+            display: animationfinished ? "flex" : "none",
+            transform: [
+              {
+                scale: scaleanimation,
+              },
+            ],
           }}
         >
           <Button
@@ -211,6 +215,7 @@ const Onboarding = (props: Props) => {
               fontSize: 20,
               fontWeight: "500",
             }}
+            onPress={openSheet}
           />
         </Animated.View>
       </View>
