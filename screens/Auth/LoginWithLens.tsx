@@ -12,7 +12,7 @@ import {
 import Icon from "../../components/Icon";
 import Button from "../../components/UI/Button";
 import StyledText from "../../components/UI/StyledText";
-import { primary } from "../../constants/Colors";
+import { black, primary, white } from "../../constants/Colors";
 import { AUTH } from "../../constants/tracking";
 import { useAuthStore, useProfile, useToast } from "../../store/Store";
 import { ToastType } from "../../types/Store";
@@ -29,12 +29,14 @@ import getRawurl from "../../utils/getRawUrl";
 import Heading from "../../components/UI/Heading";
 import Animated, {
   BounceInDown,
+  BounceInUp,
   RotateInDownLeft,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import formatHandle from "../../utils/formatHandle";
 
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const [isloading, setIsloading] = useState<boolean>(false);
@@ -45,25 +47,6 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const { setAccessToken, setRefreshToken } = useAuthStore();
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-  const scale = useSharedValue(0);
-  const offset = useSharedValue(0);
-
-  const scaleStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          scale: scale.value,
-          translateX: offset.value * 255,
-        },
-      ],
-    };
-  });
-
-  useEffect(() => {
-    scale.value = withTiming(1, {
-      duration: 1000,
-    });
-  }, []);
 
   const [
     getChallenge,
@@ -338,36 +321,70 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
       <View
         style={{
           width: windowWidth,
-          height: windowHeight / 1.5,
+          height: "70%",
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "cyan",
+          padding: 16,
         }}
       >
-        <Heading
-          title={"Welcome Back"}
+        <View
           style={{
-            color: "white",
-            fontSize: 32,
-            fontWeight: "600",
-            marginBottom: 32,
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+            borderColor: black[700],
+            borderRadius: 8,
+            borderWidth: 2,
+            shadowColor: "#bfafb2",
+            shadowOffset: {
+              width: 0,
+              height: 12,
+            },
+            shadowOpacity: 0.58,
+            shadowRadius: 16.0,
+            backgroundColor: black[600],
+            elevation: 24,
           }}
-        />
-        <Animated.View
-          style={{
-            width: Dimensions.get("window").height / 4,
-            height: Dimensions.get("window").height / 4,
-          }}
-          entering={BounceInDown.duration(1000)}
         >
-          <Avatar
-            src={getRawurl(currentProfile?.picture)}
-            height={"100%"}
-            width={"100%"}
-            borderWidth={1}
-            borderColor="white"
-          />
-        </Animated.View>
+          <Animated.View
+            style={{
+              width: Dimensions.get("window").height / 6,
+              height: Dimensions.get("window").height / 6,
+              marginTop: -64,
+            }}
+            entering={BounceInUp.duration(1000)}
+          >
+            <Avatar
+              src={getRawurl(currentProfile?.picture)}
+              height={"100%"}
+              width={"100%"}
+            />
+          </Animated.View>
+          <View
+            style={{
+              marginVertical: 16,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Heading
+              title={currentProfile?.name}
+              style={{
+                fontSize: 24,
+                fontWeight: "600",
+                color: "white",
+              }}
+            />
+            <Heading
+              title={formatHandle(currentProfile?.handle)}
+              style={{
+                fontSize: 12,
+                fontWeight: "500",
+                color: white[200],
+              }}
+            />
+          </View>
+        </View>
       </View>
     </SafeAreaView>
   );

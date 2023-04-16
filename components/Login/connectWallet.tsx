@@ -1,17 +1,14 @@
-import React from 'react'
-import { Dimensions, Image, View } from 'react-native'
-import StyledText from '../UI/StyledText'
-import Animated, { FadeIn } from 'react-native-reanimated';
-
+import React from "react";
+import { Dimensions, Image, View } from "react-native";
+import StyledText from "../UI/StyledText";
+import Animated, { FadeIn } from "react-native-reanimated";
 
 function connectWallet() {
   const width = Dimensions.get("window").width;
 
   return (
     <Animated.View
-    entering={
-        FadeIn.duration(1000)
-    }
+      entering={FadeIn.duration(1000)}
       style={{
         flex: 1,
       }}
@@ -25,7 +22,7 @@ function connectWallet() {
         }}
       >
         <Image
-          source={require('../../assets/images/3d-1.png')}
+          source={require("../../assets/images/3d-1.png")}
           style={{ resizeMode: "contain", width: "70%", height: "70%" }}
         />
       </View>
@@ -37,7 +34,7 @@ function connectWallet() {
         }}
       >
         <StyledText
-          title={'Connect wallet'}
+          title={"Connect wallet"}
           style={{
             color: "white",
             fontSize: 32,
@@ -45,7 +42,7 @@ function connectWallet() {
           }}
         />
         <StyledText
-          title={''}
+          title={""}
           style={{
             color: "white",
             fontSize: 32,
@@ -54,7 +51,7 @@ function connectWallet() {
         />
       </View>
     </Animated.View>
-  )
+  );
 }
 
-export default connectWallet
+export default connectWallet;
