@@ -19,17 +19,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type ConnectWalletSheetProps = {
   loginRef: React.RefObject<BottomSheetMethods>;
+  setIsloading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function ConnectWalletSheet({
   loginRef,
+  setIsloading,
 }: ConnectWalletSheetProps) {
   const connector = useWalletConnect();
   const toast = useToast();
   const navigation = useNavigation();
   const { handleGuest } = useGuestStore();
   const { setCurrentProfile, setHasHandle } = useProfile();
-  const [isloading, setIsloading] = React.useState<boolean>(false);
 
   async function HandleDefaultProfile(adress: Scalars["EthereumAddress"]) {
     const userDefaultProfile = await getProfiles({
@@ -56,6 +57,7 @@ export default function ConnectWalletSheet({
     try {
       if (walletData) {
         setIsloading(true);
+        loginRef?.current?.close();
         TrackAction(AUTH.WALLET_LOGIN);
         const userData = await handleWaitlist(walletData.accounts[0]);
         if (userData?.statusCode === 404) {
@@ -89,7 +91,6 @@ export default function ConnectWalletSheet({
       }
     } finally {
       setIsloading(false);
-      loginRef?.current?.close();
     }
   }, [connector]);
 
@@ -155,7 +156,6 @@ export default function ConnectWalletSheet({
             fontSize: 16,
             color: black[700],
           }}
-          isLoading={isloading}
           py={16}
           icon={<Icon name="wallet" color={black[700]} size={20} />}
         />

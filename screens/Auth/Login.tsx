@@ -11,10 +11,11 @@ import { RootStackScreenProps } from "../../types/navigation/types";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const loginRef = React.useRef<BottomSheetMethods>(null);
+  const [isloading, setIsloading] = React.useState<boolean>(false);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Onboarding loginRef={loginRef} />
+      <Onboarding loginRef={loginRef} isloading={isloading} />
       <View
         style={{
           padding: 16,
@@ -64,7 +65,9 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
           backgroundColor: "#1d1d1d",
         }}
         snapPoints={["70%"]}
-        children={<ConnectWalletSheet loginRef={loginRef} />}
+        children={
+          <ConnectWalletSheet loginRef={loginRef} setIsloading={setIsloading} />
+        }
       />
     </SafeAreaView>
   );

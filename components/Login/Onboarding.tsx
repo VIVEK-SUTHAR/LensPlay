@@ -6,6 +6,7 @@ import {
   Pressable,
   StyleSheet,
   View,
+  ViewToken,
 } from "react-native";
 import { black, white } from "../../constants/Colors";
 import Icon from "../Icon";
@@ -18,10 +19,12 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 
 const Onboarding = ({
   loginRef,
+  isloading,
 }: {
   loginRef: React.RefObject<BottomSheetMethods>;
+  isloading: boolean;
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [animationfinished, setAnimationFinished] = useState<boolean>(false);
   const [isAnimated, setIsAnimated] = useState<boolean>(true);
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -32,9 +35,10 @@ const Onboarding = ({
   const slidesRef = useRef(null);
   const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
-  const viewableItemsChanged = useRef(({ viewableItems }) => {
-    setCurrentIndex(viewableItems[0].index);
-  }).current;
+  const viewableItemsChanged = useRef(
+    ({ viewableItems }: { viewableItems: ViewToken[] }) =>
+      setCurrentIndex(viewableItems[0]?.index)
+  ).current;
 
   const openSheet = useCallback(() => {
     loginRef?.current?.snapToIndex(0);
@@ -207,9 +211,10 @@ const Onboarding = ({
           <Button
             title={"Connect wallet"}
             width={"auto"}
+            isLoading={isloading}
             bg={white[600]}
-            py={12}
-            px={32}
+            py={isloading ? 16 : 12}
+            px={isloading ? 16 : 32}
             textStyle={{
               fontSize: 20,
               fontWeight: "500",

@@ -4,6 +4,7 @@ import { MotiView } from "moti";
 import React, { useEffect, useState } from "react";
 import {
   Dimensions,
+  Image,
   Linking,
   SafeAreaView,
   StyleSheet,
@@ -321,69 +322,33 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
       <View
         style={{
           width: windowWidth,
-          height: "70%",
-          justifyContent: "center",
+          height: "60%",
+          justifyContent: "space-evenly",
           alignItems: "center",
           padding: 16,
+          backgroundColor: black[700],
+          borderBottomLeftRadius: 24,
+          borderBottomRightRadius: 24,
         }}
       >
-        <View
+        <Image
+          source={require("../../assets/images/3d-1.png")}
           style={{
             width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-            borderColor: black[700],
-            borderRadius: 8,
-            borderWidth: 2,
-            shadowColor: "#bfafb2",
-            shadowOffset: {
-              width: 0,
-              height: 12,
-            },
-            shadowOpacity: 0.58,
-            shadowRadius: 16.0,
-            backgroundColor: black[600],
-            elevation: 24,
+            height: "80%",
+            resizeMode: "contain",
+          }}
+        />
+        <View
+          style={{
+            marginBottom: -80,
           }}
         >
-          <Animated.View
-            style={{
-              width: Dimensions.get("window").height / 6,
-              height: Dimensions.get("window").height / 6,
-              marginTop: -64,
-            }}
-            entering={BounceInUp.duration(1000)}
-          >
-            <Avatar
-              src={getRawurl(currentProfile?.picture)}
-              height={"100%"}
-              width={"100%"}
-            />
-          </Animated.View>
-          <View
-            style={{
-              marginVertical: 16,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Heading
-              title={currentProfile?.name}
-              style={{
-                fontSize: 24,
-                fontWeight: "600",
-                color: "white",
-              }}
-            />
-            <Heading
-              title={formatHandle(currentProfile?.handle)}
-              style={{
-                fontSize: 12,
-                fontWeight: "500",
-                color: white[200],
-              }}
-            />
-          </View>
+          <Avatar
+            src={getRawurl(currentProfile?.picture)}
+            height={100}
+            width={100}
+          />
         </View>
       </View>
     </SafeAreaView>
