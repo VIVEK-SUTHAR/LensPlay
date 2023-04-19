@@ -131,7 +131,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="light" />
       <LinearGradient
-        colors={["#2D3436","black","#000000"]}
+        colors={["#2D3436", "black", "#000000"]}
         style={{
           flex: 1,
         }}
@@ -212,7 +212,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
               <Button
                 title={"Disconnect"}
                 width={"auto"}
-                bg={"rgba(0,0,0,0.2)"}
+                bg={"rgba(255,255,255,0.1)"}
                 px={24}
                 py={12}
                 textStyle={{ fontSize: 12, fontWeight: "600", color: "white" }}
