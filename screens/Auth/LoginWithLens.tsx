@@ -145,7 +145,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           }}
         >
           <Image
-            source={require("../../assets/images/3d-4.png")}
+            source={require("../../assets/images/3d-5.png")}
             style={{ resizeMode: "contain", width: "70%", height: "70%" }}
           />
         </View>

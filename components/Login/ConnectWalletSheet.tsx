@@ -120,28 +120,6 @@ export default function ConnectWalletSheet({
     >
       <View
         style={{
-          alignItems: "center",
-        }}
-      >
-        <Image
-          source={require("../../assets/images/icon.png")}
-          style={{
-            width: 100,
-            height: 100,
-            resizeMode: "contain",
-          }}
-        />
-        <Heading
-          title="Welcome to LensPlay"
-          style={{ fontSize: 24, color: "white", fontWeight: "500" }}
-        />
-        <StyledText
-          title="Choose method to login and get started"
-          style={{ fontSize: 16, color: white[100], fontWeight: "500" }}
-        />
-      </View>
-      <View
-        style={{
           justifyContent: "center",
           alignItems: "center",
           marginTop: 32,

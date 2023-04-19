@@ -22,7 +22,7 @@ function connectWallet() {
         }}
       >
         <Image
-          source={require("../../assets/images/3d-1.png")}
+          source={require("../../assets/images/3d-4.png")}
           style={{ resizeMode: "contain", width: "70%", height: "70%" }}
         />
       </View>

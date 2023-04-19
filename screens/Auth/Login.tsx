@@ -75,7 +75,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         backgroundStyle={{
           backgroundColor: "#1d1d1d",
         }}
-        snapPoints={["70%"]}
+        snapPoints={["40%"]}
         children={
           <ConnectWalletSheet loginRef={loginRef} setIsloading={setIsloading} />
         }
