@@ -38,7 +38,7 @@ function Avatar({
         height: height,
         width: width,
         borderRadius: borderRadius,
-        backgroundColor: "black",
+        backgroundColor: "white",
         borderColor: borderColor,
         borderWidth: borderWidth,
         zIndex: 9,

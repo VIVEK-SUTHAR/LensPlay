@@ -1,7 +1,8 @@
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated,
   Dimensions,
   Image,
   SafeAreaView,
@@ -36,6 +37,8 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const { currentProfile } = useProfile();
   const { setAccessToken, setRefreshToken } = useAuthStore();
   const windowWidth = Dimensions.get("window").width;
+  const scaleAnimation = useRef(new Animated.Value(0)).current;
+  const fadeInAnimation = useRef(new Animated.Value(0)).current;
 
   const [
     getChallenge,
@@ -47,9 +50,14 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
     { data: tokens, error: tokensError, loading: tokenLoading },
   ] = useAuthenticateMutation();
 
-  const loginWithLens = async () => {
-    setIsloading(true);
+  const shortenAddress = (address: string): string => {
+    if (!address) return "0X...000";
+    return "0x.." + address.slice(address.length - 4, address.length);
+  };
+
+  const handleLoginWithLens = async () => {
     try {
+      setIsloading(true);
       const address = connector.accounts[0];
       const data = await getChallenge({
         variables: {
@@ -99,6 +107,26 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
     }
   };
 
+  const handleDisconnect = async () => {
+    await connector.killSession();
+    navigation.replace("Login");
+  };
+
+  useEffect(() => {
+    Animated.spring(scaleAnimation, {
+      toValue: 1,
+      damping: 12,
+      velocity: 2,
+      delay: 500,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(fadeInAnimation, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="light" />
@@ -137,11 +165,12 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             }}
           />
           <View>
-            <View
+            <Animated.View
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
+                opacity: fadeInAnimation,
               }}
             >
               <View
@@ -160,22 +189,22 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
                     marginLeft: 8,
                   }}
                 >
-                  {currentProfile?.name && (
-                    <Heading
-                      title={currentProfile?.name}
-                      style={{
-                        color: "white",
-                        fontSize: 16,
-                        fontWeight: "500",
-                      }}
-                    />
-                  )}
+                  <Heading
+                    title={
+                      currentProfile?.name ||
+                      shortenAddress(currentProfile?.ownedBy)
+                    }
+                    style={{
+                      color: "white",
+                      fontSize: 16,
+                      fontWeight: "500",
+                    }}
+                  />
                   <StyledText
                     title={formatHandle(currentProfile?.handle)}
                     style={{
-                      color: currentProfile?.name ? "gray" : "white",
-                      fontSize: currentProfile?.name ? 12 : 16,
-                      marginTop: currentProfile?.name ? 0 : -8,
+                      color: white[200],
+                      fontSize: 12,
                     }}
                   />
                 </View>
@@ -184,21 +213,33 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
                 title={"Disconnect"}
                 width={"auto"}
                 bg={"rgba(0,0,0,0.2)"}
-                px={20}
-                py={10}
+                px={24}
+                py={12}
                 textStyle={{ fontSize: 12, fontWeight: "600", color: "white" }}
+                onPress={handleDisconnect}
               />
-            </View>
-            <View style={{ marginTop: 24 }}>
+            </Animated.View>
+            <Animated.View
+              style={{
+                marginTop: 24,
+                transform: [
+                  {
+                    scale: scaleAnimation,
+                  },
+                ],
+              }}
+            >
               <Button
                 title={"Login with Lens"}
+                isLoading={isloading}
                 textStyle={{ fontSize: 16, fontWeight: "600" }}
                 bg={white[800]}
                 py={16}
                 icon={<Icon name="arrowForward" color="black" size={16} />}
                 iconPosition="right"
+                onPress={handleLoginWithLens}
               />
-            </View>
+            </Animated.View>
           </View>
         </View>
       </LinearGradient>
