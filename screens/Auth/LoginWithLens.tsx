@@ -131,7 +131,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="light" />
       <LinearGradient
-        colors={["#000000", "#2D3436"]}
+        colors={["#2D3436","black","#000000"]}
         style={{
           flex: 1,
         }}
@@ -145,7 +145,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           }}
         >
           <Image
-            source={require("../../assets/images/3d-1.png")}
+            source={require("../../assets/images/3d-4.png")}
             style={{ resizeMode: "contain", width: "70%", height: "70%" }}
           />
         </View>

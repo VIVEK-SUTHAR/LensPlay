@@ -9,6 +9,7 @@ import StyledText from "../../components/UI/StyledText";
 import { LENSPLAY_SITE } from "../../constants";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const loginRef = React.useRef<BottomSheetMethods>(null);
@@ -16,8 +17,10 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor="transparent" style="light" />
+
       <LinearGradient
-        colors={["#000000", "#2D3436"]}
+        colors={["#2D3436",'black' ,"#000000"]}
         style={{
           flex: 1,
         }}
@@ -86,7 +89,7 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "black",
+    backgroundColor: "#2D3436",
     justifyContent: "space-around",
   },
   box1: {
