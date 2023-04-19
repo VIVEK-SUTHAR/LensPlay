@@ -13,7 +13,7 @@ import {
 import Icon from "../../components/Icon";
 import Button from "../../components/UI/Button";
 import StyledText from "../../components/UI/StyledText";
-import { black, primary, white } from "../../constants/Colors";
+import { black, dark_primary, primary, white } from "../../constants/Colors";
 import { AUTH } from "../../constants/tracking";
 import { useAuthStore, useProfile, useToast } from "../../store/Store";
 import { ToastType } from "../../types/Store";
@@ -38,6 +38,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import formatHandle from "../../utils/formatHandle";
+import { BlurView } from "expo-blur";
 
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const [isloading, setIsloading] = useState<boolean>(false);
@@ -48,7 +49,6 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const { setAccessToken, setRefreshToken } = useAuthStore();
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-
   const [
     getChallenge,
     { data: challangeText, error: challangeError, loading: challengeLoading },
@@ -110,245 +110,105 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
       setIsloading(false);
     }
   };
+  const width = Dimensions.get("window").width;
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="light" />
-      {/* <View
-        style={{
-          flexDirection: "column",
-          justifyContent: "space-evenly",
-          alignItems: "center",
-          paddingTop: 160,
-        }}
-      >
-        <MotiView
-          style={styles.circle2}
-          from={{
-            transform: [{ scale: 0 }],
-          }}
-          animate={{
-            transform: [{ scale: 1 }],
-          }}
-          transition={{
-            delay: 300,
-          }}
-        >
-          <Icon name="collect" size={44} color="white" />
-        </MotiView>
-        <View style={styles.bottomCircles}>
-          <MotiView
-            from={{
-              transform: [{ scale: 0 }],
-            }}
-            animate={{
-              transform: [{ scale: 1 }],
-            }}
-            transition={{
-              delay: 400,
-            }}
-            style={styles.circle1}
-          >
-            <Icon name="mirror" size={44} />
-          </MotiView>
-          <MotiView
-            style={styles.circle3}
-            from={{
-              transform: [{ scale: 0 }],
-            }}
-            animate={{
-              transform: [{ scale: 1 }],
-            }}
-            transition={{
-              delay: 450,
-            }}
-          >
-            <Icon name="follow" size={44} />
-          </MotiView>
-        </View>
-      </View>
-
-      <View style={{ justifyContent: "flex-end", marginTop: 80 }}>
-        <View
-          style={{
-            flexDirection: "column",
-            alignItems: "flex-end",
-            paddingHorizontal: 28,
-          }}
-        >
-          <MotiView
-            style={{ flexDirection: "row" }}
-            from={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            transition={{
-              type: "timing",
-              duration: 1500,
-              delay: 100,
-            }}
-          >
-            <StyledText
-              title={"Just one"}
-              style={{
-                fontSize: 28,
-                color: "white",
-                fontWeight: "600",
-                textAlign: "right",
-                marginRight: 8,
-              }}
-            />
-            <StyledText
-              title={"click"}
-              style={{
-                fontSize: 28,
-                color: "#56CBF9",
-                fontWeight: "600",
-                textAlign: "right",
-                marginRight: 8,
-              }}
-            />
-            <StyledText
-              title={"away"}
-              style={{
-                fontSize: 28,
-                color: "white",
-                fontWeight: "600",
-                textAlign: "right",
-                marginRight: 8,
-              }}
-            />
-          </MotiView>
-          <MotiView
-            style={{ flexDirection: "row" }}
-            from={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            transition={{
-              type: "timing",
-              duration: 1500,
-              delay: 100,
-            }}
-          >
-            <StyledText
-              title={"from"}
-              style={{
-                fontSize: 28,
-                color: "white",
-                fontWeight: "600",
-                textAlign: "right",
-                marginRight: 8,
-              }}
-            />
-            <StyledText
-              title={"owning"}
-              style={{
-                fontSize: 28,
-                color: "#9EF01A",
-                fontWeight: "600",
-                textAlign: "right",
-                marginRight: 8,
-              }}
-            />
-            <StyledText
-              title={"your"}
-              style={{
-                fontSize: 28,
-                color: "white",
-                fontWeight: "600",
-                textAlign: "right",
-                marginRight: 8,
-              }}
-            />
-          </MotiView>
-          <MotiView
-            style={{ flexDirection: "row" }}
-            from={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            transition={{
-              type: "timing",
-              duration: 1500,
-              delay: 100,
-            }}
-          >
-            <StyledText
-              title={"content"}
-              style={{
-                fontSize: 28,
-                color: "#FFC600",
-                fontWeight: "600",
-                textAlign: "right",
-                marginRight: 8,
-              }}
-            />
-          </MotiView>
-        </View>
-      </View>
-
       <View
         style={{
-          paddingHorizontal: 16,
-          width: "100%",
+          flex: 1,
         }}
       >
-        <Button
-          title={hasHandle ? "Login With Lens" : "Claim Lens Handle"}
-          bg={primary}
-          textStyle={{ fontWeight: "600", fontSize: 20, color: "black" }}
-          py={12}
-          iconPosition="right"
-          isLoading={isloading}
-          onPress={async () => {
-            const isDesktop = await AsyncStorage.getItem("@viaDeskTop");
-
-            if (isDesktop) {
-              Linking.openURL("https://lens-create-profile.vercel.app/");
-            } else {
-              await loginWithLens();
-            }
-          }}
-          animated={true}
-        />
-      </View> */}
-      <View
-        style={{
-          width: windowWidth,
-          height: "60%",
-          justifyContent: "space-evenly",
-          alignItems: "center",
-          padding: 16,
-          backgroundColor: black[700],
-          borderBottomLeftRadius: 24,
-          borderBottomRightRadius: 24,
-        }}
-      >
-        <Image
-          source={require("../../assets/images/3d-1.png")}
-          style={{
-            width: "100%",
-            height: "80%",
-            resizeMode: "contain",
-          }}
-        />
         <View
           style={{
-            marginBottom: -80,
+            width: width,
+            height: "70%",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <Avatar
-            src={getRawurl(currentProfile?.picture)}
-            height={100}
-            width={100}
+          <Image
+            source={require("../../assets/images/3d-1.png")}
+            style={{ resizeMode: "contain", width: "70%", height: "70%" }}
           />
+        </View>
+        <View
+          style={{
+            width: width,
+            paddingHorizontal: 16,
+            justifyContent: "flex-end",
+          }}
+        >
+          <StyledText
+            title={"Connecttttttt party"}
+            style={{
+              color: "white",
+              fontSize: 32,
+              fontWeight: "600",
+            }}
+          />
+        </View>
+        <View style={{justifyContent:"space-around",flex:1}}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              padding: 10,
+              marginVertical: 4,
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={{ flexDirection: "row", paddingHorizontal: 12 }}>
+              <Avatar
+                src={getRawurl(currentProfile?.picture)}
+                height={40}
+                width={40}
+              />
+              <View
+                style={{
+                  marginLeft: 8,
+                }}
+              >
+                {currentProfile?.name && (
+                  <Heading
+                    title={currentProfile?.name}
+                    style={{
+                      color: "white",
+                      fontSize: 16,
+                      fontWeight: "500",
+                    }}
+                  />
+                )}
+                <StyledText
+                  title={formatHandle(currentProfile?.handle)}
+                  style={{
+                    color: currentProfile?.name ? "gray" : "white",
+                    fontSize: currentProfile?.name ? 12 : 16,
+                    marginTop: currentProfile?.name ? 0 : -8,
+                  }}
+                />
+              </View>
+            </View>
+            <Button
+              title={"Disconnect"}
+              width={"auto"}
+              px={20}
+              py={10}
+              textStyle={{ fontSize: 12, fontWeight: "600" }}
+              bg={white[500]}
+            />
+          </View>
+
+          <View style={{ paddingHorizontal: 16 }}>
+            <Button
+              title={"Login with Lens"}
+              width={"auto"}
+              textStyle={{ fontSize: 20, fontWeight: "600" }}
+              bg={white[500]}
+              py={24}
+            />
+          </View>
         </View>
       </View>
     </SafeAreaView>
