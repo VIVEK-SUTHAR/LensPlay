@@ -34,7 +34,7 @@ function connectWallet() {
         }}
       >
         <StyledText
-          title={"Connect wallet"}
+          title={"Your lens frens are waiting"}
           style={{
             color: "white",
             fontSize: 32,
