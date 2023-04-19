@@ -1,19 +1,18 @@
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
-import { MotiView } from "moti";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Dimensions,
   Image,
-  Linking,
   SafeAreaView,
   StyleSheet,
   View,
 } from "react-native";
-import Icon from "../../components/Icon";
+import Avatar from "../../components/UI/Avatar";
 import Button from "../../components/UI/Button";
+import Heading from "../../components/UI/Heading";
 import StyledText from "../../components/UI/StyledText";
-import { black, dark_primary, primary, white } from "../../constants/Colors";
+import { white } from "../../constants/Colors";
 import { AUTH } from "../../constants/tracking";
 import { useAuthStore, useProfile, useToast } from "../../store/Store";
 import { ToastType } from "../../types/Store";
@@ -23,22 +22,11 @@ import {
 } from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import TrackAction from "../../utils/Track";
-import storeTokens from "../../utils/storeTokens";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Avatar from "../../components/UI/Avatar";
-import getRawurl from "../../utils/getRawUrl";
-import Heading from "../../components/UI/Heading";
-import Animated, {
-  BounceInDown,
-  BounceInUp,
-  RotateInDownLeft,
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
 import formatHandle from "../../utils/formatHandle";
-import { BlurView } from "expo-blur";
+import getRawurl from "../../utils/getRawUrl";
+import storeTokens from "../../utils/storeTokens";
+import { LinearGradient } from "expo-linear-gradient";
+import Icon from "../../components/Icon";
 
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const [isloading, setIsloading] = useState<boolean>(false);
@@ -48,7 +36,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const { currentProfile } = useProfile();
   const { setAccessToken, setRefreshToken } = useAuthStore();
   const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
+
   const [
     getChallenge,
     { data: challangeText, error: challangeError, loading: challengeLoading },
@@ -110,19 +98,19 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
       setIsloading(false);
     }
   };
-  const width = Dimensions.get("window").width;
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="light" />
-      <View
+      <LinearGradient
+        colors={["#000000", "#2D3436"]}
         style={{
           flex: 1,
         }}
       >
         <View
           style={{
-            width: width,
+            width: windowWidth,
             height: "70%",
             justifyContent: "center",
             alignItems: "center",
@@ -135,82 +123,85 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         </View>
         <View
           style={{
-            width: width,
-            paddingHorizontal: 16,
-            justifyContent: "flex-end",
+            padding: 16,
+            justifyContent: "space-between",
+            flex: 1,
           }}
         >
           <StyledText
-            title={"Connecttttttt party"}
+            title={"Login with Lens"}
             style={{
               color: "white",
               fontSize: 32,
               fontWeight: "600",
             }}
           />
-        </View>
-        <View style={{justifyContent:"space-around",flex:1}}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              padding: 10,
-              marginVertical: 4,
-              justifyContent: "space-between",
-            }}
-          >
-            <View style={{ flexDirection: "row", paddingHorizontal: 12 }}>
-              <Avatar
-                src={getRawurl(currentProfile?.picture)}
-                height={40}
-                width={40}
-              />
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
               <View
                 style={{
-                  marginLeft: 8,
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
-                {currentProfile?.name && (
-                  <Heading
-                    title={currentProfile?.name}
+                <Avatar
+                  src={getRawurl(currentProfile?.picture)}
+                  height={40}
+                  width={40}
+                />
+                <View
+                  style={{
+                    marginLeft: 8,
+                  }}
+                >
+                  {currentProfile?.name && (
+                    <Heading
+                      title={currentProfile?.name}
+                      style={{
+                        color: "white",
+                        fontSize: 16,
+                        fontWeight: "500",
+                      }}
+                    />
+                  )}
+                  <StyledText
+                    title={formatHandle(currentProfile?.handle)}
                     style={{
-                      color: "white",
-                      fontSize: 16,
-                      fontWeight: "500",
+                      color: currentProfile?.name ? "gray" : "white",
+                      fontSize: currentProfile?.name ? 12 : 16,
+                      marginTop: currentProfile?.name ? 0 : -8,
                     }}
                   />
-                )}
-                <StyledText
-                  title={formatHandle(currentProfile?.handle)}
-                  style={{
-                    color: currentProfile?.name ? "gray" : "white",
-                    fontSize: currentProfile?.name ? 12 : 16,
-                    marginTop: currentProfile?.name ? 0 : -8,
-                  }}
-                />
+                </View>
               </View>
+              <Button
+                title={"Disconnect"}
+                width={"auto"}
+                bg={"rgba(0,0,0,0.2)"}
+                px={20}
+                py={10}
+                textStyle={{ fontSize: 12, fontWeight: "600", color: "white" }}
+              />
             </View>
-            <Button
-              title={"Disconnect"}
-              width={"auto"}
-              px={20}
-              py={10}
-              textStyle={{ fontSize: 12, fontWeight: "600" }}
-              bg={white[500]}
-            />
-          </View>
-
-          <View style={{ paddingHorizontal: 16 }}>
-            <Button
-              title={"Login with Lens"}
-              width={"auto"}
-              textStyle={{ fontSize: 20, fontWeight: "600" }}
-              bg={white[500]}
-              py={24}
-            />
+            <View style={{ marginTop: 24 }}>
+              <Button
+                title={"Login with Lens"}
+                textStyle={{ fontSize: 16, fontWeight: "600" }}
+                bg={white[800]}
+                py={16}
+                icon={<Icon name="arrowForward" color="black" size={16} />}
+                iconPosition="right"
+              />
+            </View>
           </View>
         </View>
-      </View>
+      </LinearGradient>
     </SafeAreaView>
   );
 }
@@ -222,7 +213,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "black",
     justifyContent: "space-between",
-    paddingBottom: 16,
   },
   bottomCircles: {
     flexDirection: "row",

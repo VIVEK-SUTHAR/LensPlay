@@ -8,6 +8,7 @@ import Onboarding from "../../components/Login/Onboarding";
 import StyledText from "../../components/UI/StyledText";
 import { LENSPLAY_SITE } from "../../constants";
 import { RootStackScreenProps } from "../../types/navigation/types";
+import { LinearGradient } from "expo-linear-gradient";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const loginRef = React.useRef<BottomSheetMethods>(null);
@@ -15,48 +16,55 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Onboarding loginRef={loginRef} isloading={isloading} />
-      <View
+      <LinearGradient
+        colors={["#000000", "#2D3436"]}
         style={{
-          padding: 16,
-          width: "100%",
+          flex: 1,
         }}
       >
-        <StyledText
-          title={
-            <>
-              <StyledText
-                title={"By clicking on get started you agree to our"}
-                style={{ color: "gray", fontSize: 12 }}
-              />{" "}
-              <StyledText
-                style={{
-                  textDecorationLine: "underline",
-                  color: "white",
-                  fontSize: 12,
-                }}
-                title={"Privacy Policy"}
-                onPress={() => {
-                  Linking.openURL(LENSPLAY_SITE);
-                }}
-              />{" "}
-              <StyledText title={"and "} style={{ color: "gray" }} />
-              <StyledText
-                style={{
-                  textDecorationLine: "underline",
-                  color: "white",
-                  fontSize: 12,
-                }}
-                title={"Terms and Condition"}
-                onPress={() => {
-                  Linking.openURL(LENSPLAY_SITE);
-                }}
-              />{" "}
-            </>
-          }
-          style={{ marginBottom: 16 }}
-        />
-      </View>
+        <Onboarding loginRef={loginRef} isloading={isloading} />
+        <View
+          style={{
+            padding: 16,
+            width: "100%",
+          }}
+        >
+          <StyledText
+            title={
+              <>
+                <StyledText
+                  title={"By clicking on get started you agree to our"}
+                  style={{ color: "gray", fontSize: 12 }}
+                />{" "}
+                <StyledText
+                  style={{
+                    textDecorationLine: "underline",
+                    color: "white",
+                    fontSize: 12,
+                  }}
+                  title={"Privacy Policy"}
+                  onPress={() => {
+                    Linking.openURL(LENSPLAY_SITE);
+                  }}
+                />{" "}
+                <StyledText title={"and "} style={{ color: "gray" }} />
+                <StyledText
+                  style={{
+                    textDecorationLine: "underline",
+                    color: "white",
+                    fontSize: 12,
+                  }}
+                  title={"Terms and Condition"}
+                  onPress={() => {
+                    Linking.openURL(LENSPLAY_SITE);
+                  }}
+                />{" "}
+              </>
+            }
+            style={{ marginBottom: 16 }}
+          />
+        </View>
+      </LinearGradient>
       <Sheet
         ref={loginRef}
         index={-1}
