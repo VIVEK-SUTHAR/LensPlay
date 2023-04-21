@@ -20,7 +20,6 @@ export default function UploadVideo({
   const [selectedCover, setSelectedCover] = useState<number>(0);
   const videoRef = useRef<Video>();
   const windowHeight = Dimensions.get("window").height;
-  const windowWidth = Dimensions.get("window").width;
   const { setURLs } = useUploadStore();
 
   const ThumnailSkleton = () => {
@@ -266,7 +265,7 @@ export default function UploadVideo({
             navigation.navigate("AddDetails");
             setURLs(
               route?.params?.localUrl,
-              selectedCover === 6 ? coverPic : thumbnails[selectedCover]
+              selectedCover === 5 ? coverPic : thumbnails[selectedCover]
             );
           }}
           bg={"white"}

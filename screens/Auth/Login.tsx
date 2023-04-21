@@ -161,7 +161,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         />
         <Button
           onPress={async () => {
-            navigation.navigate("UploadVideo");
+            navigation.navigate("ConnectWallet");
             // navigation.navigate("CreateProfile");
           }}
           title="Get Started"
