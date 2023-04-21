@@ -90,7 +90,7 @@ const config: ExpoConfig = {
   name: "LensPlay",
   slug: "lensplay",
   version: "0.0.3",
-  orientation: "portrait",
+  // orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "lensplay",
   userInterfaceStyle: "automatic",

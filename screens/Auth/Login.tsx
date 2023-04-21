@@ -7,7 +7,7 @@ import Icon from "../../components/Icon";
 import Button from "../../components/UI/Button";
 import Heading from "../../components/UI/Heading";
 import StyledText from "../../components/UI/StyledText";
-import { LENSPLAY_SITE } from "../../constants";
+import { LENSPLAY_PRIVACY, LENSPLAY_SITE, LENSPLAY_TERMS } from "../../constants";
 import { primary } from "../../constants/Colors";
 import { RootStackScreenProps } from "../../types/navigation/types";
 
@@ -140,7 +140,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
                 }}
                 title={"Privacy Policy"}
                 onPress={() => {
-                  Linking.openURL(LENSPLAY_SITE);
+                  Linking.openURL(LENSPLAY_PRIVACY);
                 }}
               />{" "}
               <StyledText title={"and "} style={{ color: "gray" }} />
@@ -152,7 +152,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
                 }}
                 title={"Terms and Condition"}
                 onPress={() => {
-                  Linking.openURL(LENSPLAY_SITE);
+                  Linking.openURL(LENSPLAY_TERMS);
                 }}
               />{" "}
             </>

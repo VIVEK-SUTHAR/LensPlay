@@ -39,8 +39,8 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
 
     const [createProfile] = useCreateProfileMutation({
         onError: (e) => {
-            toast.show("Error in create profile!", ToastType.ERROR, true);
-            // console.log(e);
+            // toast.show("Error in create profile!", ToastType.ERROR, true);
+            console.log(e);
         },
     });
 

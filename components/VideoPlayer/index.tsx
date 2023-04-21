@@ -110,7 +110,7 @@ function Player({
           setStatusBarHidden(true, "fade");
           setInFullscreen ? setInFullscreen(!inFullscreen) : null;
           await ScreenOrientation.lockAsync(
-            ScreenOrientation.OrientationLock.LANDSCAPE
+            ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT
           );
         },
         exitFullscreen: async () => {

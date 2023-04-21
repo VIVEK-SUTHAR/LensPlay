@@ -171,7 +171,7 @@ const ReportPublication = ({
           <StyledText title="Additional" style={styles.textStyle} />
           <TextInput
             numberOfLines={6}
-            multiline={true}
+            multiline={false}
             value={addiText}
             style={styles.input}
             placeholderTextColor="gray"
@@ -184,12 +184,12 @@ const ReportPublication = ({
         </View>
       </ScrollView>
       <View
-        style={[styles.inputContainer, { position: "absolute", bottom: 16 }]}
+        style={[styles.inputContainer, { position: "absolute", bottom: 24 }]}
       >
         <Button
           title="Report now"
           width={"100%"}
-          py={8}
+          py={10}
           px={16}
           bg="#DC0000"
           borderRadius={8}
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "black",
     alignItems: "center",
-    paddingHorizontal: 2,
+    paddingHorizontal: 1,
     paddingVertical: 16,
   },
   textStyle: {
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 18,
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingVertical: 20,
     borderRadius: 8,
   },
 });

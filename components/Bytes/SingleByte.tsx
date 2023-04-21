@@ -91,10 +91,10 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
     } catch (error) {
       if (error instanceof Error) {
         toast.show(error.message, ToastType.ERROR, true);
-        collectSheetRef?.current?.close();
+        
       }
     } finally {
-      //
+      collectSheetRef?.current?.close();
     }
   }, []);
 
