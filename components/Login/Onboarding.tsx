@@ -93,22 +93,11 @@ const Onboarding = ({
     },
   });
 
-  const w = Dimensions.get("window").width * 0.79;
 
   const scrollTo = () => {
     if (flatListIndex.value < data.length - 1) {
       flatListRef?.current.scrollToIndex({ index: flatListIndex.value + 1 });
-    } else {
-      navigation.navigate("Root");
-    }
-  };
-
-  const reverseAnim = () => {
-    setAnimationFinished(false);
-    // scrollX.setValue(0);
-    setTimeout(() => {
-      setIsAnimated(false);
-    }, 1000);
+    } 
   };
 
   return (

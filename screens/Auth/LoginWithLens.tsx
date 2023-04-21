@@ -29,6 +29,7 @@ import storeTokens from "../../utils/storeTokens";
 import { LinearGradient } from "expo-linear-gradient";
 import Icon from "../../components/Icon";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { log } from "react-native-reanimated";
 
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const [isloading, setIsloading] = useState<boolean>(false);
@@ -150,6 +151,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
     }).start();
   }, []);
 
+  
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="light" />
@@ -213,7 +215,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
                   <Heading
                     title={
                       currentProfile?.name ||
-                      shortenAddress(currentProfile?.ownedBy)
+                      shortenAddress(connector?.accounts[0])
                     }
                     style={{
                       color: "white",

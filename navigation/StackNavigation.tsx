@@ -42,7 +42,7 @@ export default function StackNavigation() {
           backgroundColor: "black",
         },
       }}
-      initialRouteName={"Login"}
+      initialRouteName={"Loader"}
     >
       <Stack.Group key={"ZooTools Screens"}>
         <Stack.Screen

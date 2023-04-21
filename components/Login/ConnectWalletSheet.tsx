@@ -46,13 +46,12 @@ export default function ConnectWalletSheet({
   }
 
   const handleConnectWallet = React.useCallback(async () => {
-    const walletData = await connector.connect({
-      chainId: 80001,
-    });
-
     if (connector.accounts[0]) {
       await connector.killSession();
     }
+    const walletData = await connector.connect({
+      chainId: 80001,
+    });
 
     try {
       if (walletData) {
@@ -62,6 +61,7 @@ export default function ConnectWalletSheet({
         const userData = await handleWaitlist(walletData.accounts[0]);
         if (userData?.statusCode === 404) {
           navigation.navigate("JoinWaitlist");
+          return;
         }
 
         if (!userData?.fields?.hasAccess) {
