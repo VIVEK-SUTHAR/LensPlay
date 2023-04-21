@@ -28,6 +28,7 @@ import getRawurl from "../../utils/getRawUrl";
 import storeTokens from "../../utils/storeTokens";
 import { LinearGradient } from "expo-linear-gradient";
 import Icon from "../../components/Icon";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const [isloading, setIsloading] = useState<boolean>(false);
@@ -50,6 +51,23 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
     { data: tokens, error: tokensError, loading: tokenLoading },
   ] = useAuthenticateMutation();
 
+  async function getProfileQR() {
+    const qrResponse = await fetch(
+      "https://www.lensplay.xyz/api/generateProfileQR",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          profileID: currentProfile?.id,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const qrData = await qrResponse.json();
+    await AsyncStorage.setItem("@profileQR", qrData.message);
+  }
+
   const shortenAddress = (address: string): string => {
     if (!address) return "0X...000";
     return "0x.." + address.slice(address.length - 4, address.length);
@@ -58,6 +76,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const handleLoginWithLens = async () => {
     try {
       setIsloading(true);
+      const profileQR = await AsyncStorage.getItem("@profileQR");
       const address = connector.accounts[0];
       const data = await getChallenge({
         variables: {
@@ -71,6 +90,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         method: "personal_sign",
         params: [address, data?.data?.challenge?.text],
       });
+
       if (signature) {
         const response = await getTokens({
           variables: {
@@ -89,6 +109,9 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           false
         );
         if (hasHandle) {
+          if (!profileQR) {
+            await getProfileQR();
+          }
           navigation.replace("Root");
         } else {
           navigation.replace("CreateProfile");
