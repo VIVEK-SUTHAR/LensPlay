@@ -27,8 +27,8 @@ export default function UploadVideo({
     return (
       <View
         style={{
-          height: windowWidth / 4,
-          width: windowHeight / 4.5,
+          height: windowHeight / 8,
+          width: "48%",
           backgroundColor: "rgba(255,255,255,0.2)",
           justifyContent: "center",
           alignItems: "center",
@@ -133,8 +133,8 @@ export default function UploadVideo({
             return (
               <Pressable
                 style={{
-                  height: windowWidth / 4,
-                  width: windowHeight / 4.5,
+                  height: windowHeight / 8,
+                  width: "48%",
                   marginTop: 16,
                   position: "relative",
                 }}
@@ -174,8 +174,8 @@ export default function UploadVideo({
         )}
         <View
           style={{
-            height: windowWidth / 4,
-            width: windowHeight / 4.5,
+            height: windowHeight / 8,
+            width: "48%",
             marginTop: 16,
           }}
         >

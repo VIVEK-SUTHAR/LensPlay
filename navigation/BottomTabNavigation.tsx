@@ -512,7 +512,11 @@ export default function BottomTabNavigator({
                     uploadTypeRef.current?.close();
                   }
                   if (!camera.cancelled) {
-                    // setImage(camera.uri);
+                    const size = await getFileSize(camera.uri);
+                  if (!canUploadedToIpfs(size)) {
+                    toast.error("Select video less than 100MB");
+                    return;
+                  }
                     navigation.push("UploadVideo", {
                       localUrl: camera.uri,
                       duration: camera.duration,
@@ -565,7 +569,6 @@ export default function BottomTabNavigator({
                     toast.error("Select video less than 100MB");
                     return;
                   }
-                  // const seconds = Math.floor((milliseconds / 1000) % 60);
                   uploadStore.setDuration(result.assets[0].duration!);
                   navigation.push("UploadVideo", {
                     localUrl: result.uri,
