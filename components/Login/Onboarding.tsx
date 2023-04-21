@@ -1,12 +1,12 @@
 import React, { useCallback, useRef, useState } from "react";
 import {
-  Animated,
   Dimensions,
   FlatList,
   Pressable,
   StyleSheet,
   View,
   ViewToken,
+  useWindowDimensions,
 } from "react-native";
 import { black, white } from "../../constants/Colors";
 import Icon from "../Icon";
@@ -16,6 +16,15 @@ import Paginator from "./Paginator";
 import ConnectWallet from "./connectWallet";
 import { data } from "./data";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Animated, {
+  useAnimatedRef,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
+import { useNavigation } from "@react-navigation/native";
 
 const Onboarding = ({
   loginRef,
@@ -24,128 +33,107 @@ const Onboarding = ({
   loginRef: React.RefObject<BottomSheetMethods>;
   isloading: boolean;
 }) => {
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [animationfinished, setAnimationFinished] = useState<boolean>(false);
   const [isAnimated, setIsAnimated] = useState<boolean>(true);
-  const scrollX = useRef(new Animated.Value(0)).current;
-  const fadeAnim = useRef(new Animated.Value(1)).current;
-  let slideAnimation = useRef(new Animated.Value(0)).current;
-  const rotateanimation = useRef(new Animated.Value(0)).current;
-  const scaleanimation = useRef(new Animated.Value(0)).current;
-  const slidesRef = useRef(null);
-  const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
+  const flatListRef = useAnimatedRef();
+  const x = useSharedValue(0);
+  const flatListIndex = useSharedValue(0);
+  const { width: SCREEN_WIDTH } = useWindowDimensions();
+  const navigation = useNavigation();
+  const scaleValue = useSharedValue(0);
 
-  const viewableItemsChanged = useRef(
-    ({ viewableItems }: { viewableItems: ViewToken[] }) =>
-      setCurrentIndex(viewableItems[0]?.index)
-  ).current;
+  const onViewableItemsChanged = ({ viewableItems }) => {
+    flatListIndex.value = viewableItems[0].index;
+  };
+
+  const arrowAnimationStyle = useAnimatedStyle(() => {
+    return {
+      display: flatListIndex.value === data.length - 1 ? "none" : "flex",
+      transform: [
+        {
+          scale:
+            flatListIndex.value === data.length - 1
+              ? withSpring((scaleValue.value = 0))
+              : withSpring((scaleValue.value = 1)),
+        },
+      ],
+    };
+  });
+
+  const ButtonAnimationStyle = useAnimatedStyle(() => {
+    return {
+      display: flatListIndex.value === data.length - 1 ? "flex" : "none",
+      transform: [
+        {
+          scale:
+            flatListIndex.value === data.length - 1
+              ? withSpring((scaleValue.value = 1))
+              : withSpring((scaleValue.value = 0)),
+        },
+      ],
+    };
+  });
+
+  const viewabilityConfig = {
+    minimumViewTime: 300,
+    viewAreaCoveragePercentThreshold: 10,
+  };
+
+  const viewabilityConfigCallbackPairs = useRef([
+    { viewabilityConfig, onViewableItemsChanged },
+  ]);
 
   const openSheet = useCallback(() => {
     loginRef?.current?.snapToIndex(0);
   }, []);
 
+  const onScroll = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      x.value = event.contentOffset.x;
+    },
+  });
+
   const w = Dimensions.get("window").width * 0.79;
 
   const scrollTo = () => {
-    if (currentIndex < data.length - 1) {
-      slidesRef?.current.scrollToIndex({ index: currentIndex + 1 });
+    if (flatListIndex.value < data.length - 1) {
+      flatListRef?.current.scrollToIndex({ index: flatListIndex.value + 1 });
     } else {
-      Animated.spring(fadeAnim, {
-        toValue: 0,
-        useNativeDriver: true,
-      }).start();
-      Animated.spring(slideAnimation, {
-        toValue: -w,
-        damping: 16,
-        velocity: 2,
-        useNativeDriver: true,
-      }).start();
-      Animated.spring(rotateanimation, {
-        toValue: 1,
-        damping: 16,
-        velocity: 2,
-        useNativeDriver: true,
-      }).start();
-
-      setTimeout(() => {
-        setAnimationFinished(true);
-        setIsAnimated(true);
-        Animated.spring(scaleanimation, {
-          toValue: 1,
-          damping: 12,
-          velocity: 2,
-          useNativeDriver: true,
-        }).start();
-      }, 500);
+      navigation.navigate("Root");
     }
   };
 
   const reverseAnim = () => {
     setAnimationFinished(false);
-    Animated.spring(rotateanimation, {
-      toValue: 0,
-      damping: 15,
-      velocity: 1,
-      useNativeDriver: true,
-    }).start();
-    Animated.spring(slideAnimation, {
-      toValue: 0,
-      damping: 15,
-      velocity: 1,
-      useNativeDriver: true,
-    }).start();
-    scrollX.setValue(0);
+    // scrollX.setValue(0);
     setTimeout(() => {
       setIsAnimated(false);
     }, 1000);
-    Animated.spring(fadeAnim, {
-      toValue: 1,
-      velocity: 1,
-      damping: 15,
-      useNativeDriver: true,
-    }).start();
   };
 
-  const spin = rotateanimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["0deg", "-180deg"],
-  });
-
   return (
-    <View style={{ flex: 3 }}>
-      {!animationfinished ? (
-        <FlatList
-          data={data}
-          horizontal={true}
-          pagingEnabled={true}
-          showsHorizontalScrollIndicator={false}
-          bounces={false}
-          scrollEventThrottle={32}
-          ref={slidesRef}
-          onViewableItemsChanged={viewableItemsChanged}
-          viewabilityConfig={viewConfig}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-            { useNativeDriver: false }
-          )}
-          renderItem={({ item }) => (
-            <Animated.View
-              style={{
-                opacity: fadeAnim,
-              }}
-            >
-              <OnboardingItem
-                title={item.title}
-                image={item.imgUrl}
-                key={item.id}
-                desc={item.desc}
-              />
-            </Animated.View>
-          )}
-        />
-      ) : (
-        <ConnectWallet />
-      )}
+    <>
+      <Animated.FlatList
+        ref={flatListRef}
+        onScroll={onScroll}
+        data={data}
+        renderItem={({ item, index }) => {
+          return (
+            <OnboardingItem
+              title={item.title}
+              image={item.imgUrl}
+              key={item.id}
+              desc={item.desc}
+            />
+          );
+        }}
+        scrollEventThrottle={16}
+        horizontal={true}
+        bounces={false}
+        pagingEnabled={true}
+        showsHorizontalScrollIndicator={false}
+        viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
+      />
       <View
         style={{
           justifyContent: "space-between",
@@ -156,36 +144,32 @@ const Onboarding = ({
       >
         <Animated.View
           style={{
-            opacity: fadeAnim,
             display: animationfinished && isAnimated ? "none" : "flex",
           }}
         >
-          <Paginator data={data} scrollX={scrollX} />
+          <Paginator data={data} x={x} screenWidth={SCREEN_WIDTH} />
         </Animated.View>
-        {animationfinished ? (
-          <Pressable
-            style={{
-              backgroundColor: white[700],
-              padding: 16,
-              borderRadius: 50,
-            }}
-            onPress={reverseAnim}
-          >
-            <Icon name="arrowLeft" size={20} color={black[800]} />
-          </Pressable>
-        ) : (
-          <Animated.View
-            style={{
-              transform: [
-                {
-                  translateX: slideAnimation,
-                },
-                {
-                  rotate: spin,
-                },
-              ],
-            }}
-          >
+        <View
+          style={{
+            height: 54,
+          }}
+        >
+          <Animated.View style={ButtonAnimationStyle}>
+            <Button
+              title={"Connect wallet"}
+              width={"auto"}
+              isLoading={isloading}
+              bg={white[600]}
+              py={12}
+              px={32}
+              textStyle={{
+                fontSize: 16,
+                fontWeight: "500",
+              }}
+              onPress={openSheet}
+            />
+          </Animated.View>
+          <Animated.View style={arrowAnimationStyle}>
             <Pressable
               style={{
                 backgroundColor: white[700],
@@ -197,33 +181,9 @@ const Onboarding = ({
               <Icon name="arrowForward" size={20} color={black[800]} />
             </Pressable>
           </Animated.View>
-        )}
-        <Animated.View
-          style={{
-            display: animationfinished ? "flex" : "none",
-            transform: [
-              {
-                scale: scaleanimation,
-              },
-            ],
-          }}
-        >
-          <Button
-            title={"Connect wallet"}
-            width={"auto"}
-            isLoading={isloading}
-            bg={white[600]}
-            py={isloading ? 16 : 12}
-            px={isloading ? 16 : 32}
-            textStyle={{
-              fontSize: 20,
-              fontWeight: "500",
-            }}
-            onPress={openSheet}
-          />
-        </Animated.View>
+        </View>
       </View>
-    </View>
+    </>
   );
 };
 
