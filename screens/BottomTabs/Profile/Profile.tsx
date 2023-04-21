@@ -191,7 +191,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   justifyContent: "space-between",
                   alignItems: "flex-end",
                   marginLeft: 8,
-                  marginTop: "-20%",
+                  marginTop: "-17%",
                   zIndex: 12,
                 }}
               >

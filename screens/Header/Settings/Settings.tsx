@@ -176,7 +176,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
       <Sheet
         ref={logoutref}
         index={-1}
-        snapPoints={["50%"]}
+        snapPoints={["40%"]}
         bottomInset={32}
         enablePanDownToClose
         detached={true}
@@ -238,12 +238,12 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                     navigation.replace("Login");
                     return;
                   } else {
-                    await Wallet.killSession();
+                    // await Wallet.killSession();
                     navigation.replace("Login");
                   }
                   TrackAction(AUTH.LOGOUT);
                 }}
-                mt={16}
+                mt={20}
                 title="Log Out"
                 bg={"#f5f5f5"}
                 textStyle={{
