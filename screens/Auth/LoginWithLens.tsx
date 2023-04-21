@@ -180,10 +180,10 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           }}
         >
           <StyledText
-            title={"Your Lens frens are waiting!"}
+            title={hasHandle?"Your Lens frens are waiting!":"Oops! You don't have a test handle"}
             style={{
               color: "white",
-              fontSize: 32,
+              fontSize: 30,
               fontWeight: "600",
             }}
           />
@@ -223,13 +223,15 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
                       fontWeight: "500",
                     }}
                   />
-                  <StyledText
+                  {
+                    hasHandle?<StyledText
                     title={formatHandle(currentProfile?.handle)}
                     style={{
                       color: white[200],
                       fontSize: 12,
                     }}
-                  />
+                  />:<></>
+                  }
                 </View>
               </View>
               <Button
@@ -253,7 +255,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
               }}
             >
               <Button
-                title={"Login with Lens"}
+                title={hasHandle?"Login with Lens":"Claim test handle"}
                 isLoading={isloading}
                 textStyle={{ fontSize: 16, fontWeight: "600" }}
                 bg={white[800]}
