@@ -112,7 +112,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           if (!profileQR) {
             await getProfileQR();
           }
-          navigation.replace("Root");
+          navigation.reset({index:0,routes:[{name:"Root"}]})
         } else {
           navigation.replace("CreateProfile");
         }
@@ -153,112 +153,117 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="light" />
-      <View
-        style={{
-          width: windowWidth,
-          height: "70%",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
+      <LinearGradient
+        colors={["#2D3436", "black", "#000000"]}
+        style={{ flex: 1 }}
       >
-        <Image
-          source={require("../../assets/images/3d-5.png")}
-          style={{ resizeMode: "contain", width: "70%", height: "70%" }}
-        />
-      </View>
-      <View
-        style={{
-          padding: 16,
-          justifyContent: "space-between",
-          flex: 1,
-        }}
-      >
-        <StyledText
-          title={"Login with Lens"}
+        <View
           style={{
-            color: "white",
-            fontSize: 32,
-            fontWeight: "600",
+            width: windowWidth,
+            height: "70%",
+            justifyContent: "center",
+            alignItems: "center",
           }}
-        />
-        <View>
-          <Animated.View
+        >
+          <Image
+            source={require("../../assets/images/3D-5.webp")}
+            style={{ resizeMode: "contain", width: "70%", height: "70%" }}
+          />
+        </View>
+        <View
+          style={{
+            padding: 16,
+            justifyContent: "space-between",
+            flex: 1,
+          }}
+        >
+          <StyledText
+            title={"Your Lens frens are waiting!"}
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              opacity: fadeInAnimation,
+              color: "white",
+              fontSize: 32,
+              fontWeight: "600",
             }}
-          >
-            <View
+          />
+          <View>
+            <Animated.View
               style={{
                 flexDirection: "row",
+                justifyContent: "space-between",
                 alignItems: "center",
+                opacity: fadeInAnimation,
               }}
             >
-              <Avatar
-                src={getRawurl(currentProfile?.picture)}
-                height={40}
-                width={40}
-              />
               <View
                 style={{
-                  marginLeft: 8,
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
-                <Heading
-                  title={
-                    currentProfile?.name ||
-                    shortenAddress(currentProfile?.ownedBy)
-                  }
-                  style={{
-                    color: "white",
-                    fontSize: 16,
-                    fontWeight: "500",
-                  }}
+                <Avatar
+                  src={getRawurl(currentProfile?.picture)}
+                  height={40}
+                  width={40}
                 />
-                <StyledText
-                  title={formatHandle(currentProfile?.handle)}
+                <View
                   style={{
-                    color: white[200],
-                    fontSize: 12,
+                    marginLeft: 8,
                   }}
-                />
+                >
+                  <Heading
+                    title={
+                      currentProfile?.name ||
+                      shortenAddress(currentProfile?.ownedBy)
+                    }
+                    style={{
+                      color: "white",
+                      fontSize: 16,
+                      fontWeight: "500",
+                    }}
+                  />
+                  <StyledText
+                    title={formatHandle(currentProfile?.handle)}
+                    style={{
+                      color: white[200],
+                      fontSize: 12,
+                    }}
+                  />
+                </View>
               </View>
-            </View>
-            <Button
-              title={"Disconnect"}
-              width={"auto"}
-              bg={"rgba(255,255,255,0.1)"}
-              px={24}
-              py={12}
-              textStyle={{ fontSize: 12, fontWeight: "600", color: "white" }}
-              onPress={handleDisconnect}
-            />
-          </Animated.View>
-          <Animated.View
-            style={{
-              marginTop: 24,
-              transform: [
-                {
-                  scale: scaleAnimation,
-                },
-              ],
-            }}
-          >
-            <Button
-              title={"Login with Lens"}
-              isLoading={isloading}
-              textStyle={{ fontSize: 16, fontWeight: "600" }}
-              bg={white[800]}
-              py={16}
-              icon={<Icon name="arrowForward" color="black" size={16} />}
-              iconPosition="right"
-              onPress={handleLoginWithLens}
-            />
-          </Animated.View>
+              <Button
+                title={"Disconnect"}
+                width={"auto"}
+                bg={"rgba(255,255,255,0.1)"}
+                px={24}
+                py={12}
+                textStyle={{ fontSize: 12, fontWeight: "600", color: "white" }}
+                onPress={handleDisconnect}
+              />
+            </Animated.View>
+            <Animated.View
+              style={{
+                marginTop: 24,
+                transform: [
+                  {
+                    scale: scaleAnimation,
+                  },
+                ],
+              }}
+            >
+              <Button
+                title={"Login with Lens"}
+                isLoading={isloading}
+                textStyle={{ fontSize: 16, fontWeight: "600" }}
+                bg={white[800]}
+                py={16}
+                icon={<Icon name="arrowForward" color="black" size={16} />}
+                iconPosition="right"
+                onPress={handleLoginWithLens}
+              />
+            </Animated.View>
+          </View>
         </View>
-      </View>
+      </LinearGradient>
     </SafeAreaView>
   );
 }
