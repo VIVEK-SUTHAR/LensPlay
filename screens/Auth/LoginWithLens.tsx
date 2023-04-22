@@ -5,6 +5,7 @@ import {
   Animated,
   Dimensions,
   Image,
+  Linking,
   SafeAreaView,
   StyleSheet,
   View,
@@ -41,6 +42,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const windowWidth = Dimensions.get("window").width;
   const scaleAnimation = useRef(new Animated.Value(0)).current;
   const fadeInAnimation = useRef(new Animated.Value(0)).current;
+  const [isDesktop, setIsDesktop] = useState<boolean>(false);
 
   const [
     getChallenge,
@@ -146,6 +148,18 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
     }
   };
 
+  
+  const handleDesktop = async() => {
+    const isDesktop = await AsyncStorage.getItem("@viaDeskTop");
+    
+    if (isDesktop == "true"){
+      setIsDesktop(true);
+    }
+    else {
+      setIsDesktop(false);
+    }
+  }
+
   useEffect(() => {
     Animated.spring(scaleAnimation, {
       toValue: 1,
@@ -159,7 +173,10 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
       duration: 1000,
       useNativeDriver: true,
     }).start();
+    handleDesktop();
   }, []);
+
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -202,64 +219,66 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             }}
           />
           <View>
-            <Animated.View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                opacity: fadeInAnimation,
-              }}
-            >
-              <View
+            {
+              !isDesktop?(<Animated.View
                 style={{
                   flexDirection: "row",
+                  justifyContent: "space-between",
                   alignItems: "center",
+                  opacity: fadeInAnimation,
                 }}
               >
-                <Avatar
-                  src={getRawurl(currentProfile?.picture)}
-                  height={40}
-                  width={40}
-                />
                 <View
                   style={{
-                    marginLeft: 8,
+                    flexDirection: "row",
+                    alignItems: "center",
                   }}
                 >
-                  <Heading
-                    title={
-                      currentProfile?.name ||
-                      shortenAddress(connector?.accounts[0])
-                    }
-                    style={{
-                      color: "white",
-                      fontSize: 16,
-                      fontWeight: "500",
-                    }}
+                  <Avatar
+                    src={getRawurl(currentProfile?.picture)}
+                    height={40}
+                    width={40}
                   />
-                  {hasHandle ? (
-                    <StyledText
-                      title={formatHandle(currentProfile?.handle)}
+                  <View
+                    style={{
+                      marginLeft: 8,
+                    }}
+                  >
+                    <Heading
+                      title={
+                        currentProfile?.name ||
+                        shortenAddress(connector?.accounts[0])
+                      }
                       style={{
-                        color: white[200],
-                        fontSize: 12,
+                        color: "white",
+                        fontSize: 16,
+                        fontWeight: "500",
                       }}
                     />
-                  ) : (
-                    <></>
-                  )}
+                    {hasHandle ? (
+                      <StyledText
+                        title={formatHandle(currentProfile?.handle)}
+                        style={{
+                          color: white[200],
+                          fontSize: 12,
+                        }}
+                      />
+                    ) : (
+                      <></>
+                    )}
+                  </View>
                 </View>
-              </View>
-              <Button
-                title={"Disconnect"}
-                width={"auto"}
-                bg={"rgba(255,255,255,0.1)"}
-                px={24}
-                py={12}
-                textStyle={{ fontSize: 12, fontWeight: "600", color: "white" }}
-                onPress={handleDisconnect}
-              />
-            </Animated.View>
+                <Button
+                  title={"Disconnect"}
+                  width={"auto"}
+                  bg={"rgba(255,255,255,0.1)"}
+                  px={24}
+                  py={12}
+                  textStyle={{ fontSize: 12, fontWeight: "600", color: "white" }}
+                  onPress={handleDisconnect}
+                />
+              </Animated.View>):<></>
+            }
             <Animated.View
               style={{
                 marginTop: 24,
@@ -278,7 +297,15 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
                 py={16}
                 icon={<Icon name="arrowForward" color="black" size={16} />}
                 iconPosition="right"
-                onPress={handleLoginWithLens}
+                onPress={
+                  async () => {
+                    if (isDesktop) {
+                      Linking.openURL("https://lens-create-profile.vercel.app/");
+                    } else {
+                      await handleLoginWithLens();
+                    }
+                  }
+                }
               />
             </Animated.View>
           </View>
