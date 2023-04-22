@@ -66,7 +66,7 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
   }, []);
   if (loading) return <Loading />;
   if (error) console.log(error);
-  if (shotsData){
+  if (shotsData){    
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
         {shotsData?.explorePublications?.items ? (
@@ -90,10 +90,7 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
               item: ShotsPublication;
               index: number;
             }) => {
-              if (
-                item?.appId === "lenstube" ||
-                item?.appId === "lenstube-bytes"
-              ) {
+
                 return (
                   <View
                     style={{
@@ -107,8 +104,7 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
                     />
                   </View>
                 );
-              }
-              return <></>;
+
             }}
           />
         ) : (
