@@ -112,7 +112,7 @@ const Suscribers = () => {
           }}
           renderItem={({ item }) => (
             <ProfileCard
-              profileIcon={item?.wallet?.defaultProfile?.picture?.original?.url}
+              profileIcon={getRawurl(item?.wallet?.defaultProfile?.picture)}
               profileName={item?.wallet?.defaultProfile?.name}
               handle={item?.wallet?.defaultProfile?.handle}
               profileId={item?.wallet?.defaultProfile?.id}
@@ -158,7 +158,7 @@ const Subscriptions = () => {
               <ProfileCard
                 handle={item?.profile?.handle}
                 profileName={item?.profile?.name}
-                profileIcon={item?.profile?.picture}
+                profileIcon={getRawurl(item?.profile?.picture)}
                 profileId={item?.profile?.id}
                 owner={item?.profile?.handle}
                 isFollowed={item?.profile?.isFollowedByMe}

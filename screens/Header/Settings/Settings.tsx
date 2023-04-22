@@ -23,7 +23,7 @@ import {
   LENSPLAY_TERMS,
   OFFICIAL_EMAIL,
 } from "../../../constants";
-import { dark_primary } from "../../../constants/Colors";
+import { dark_primary, white } from "../../../constants/Colors";
 import { AUTH } from "../../../constants/tracking";
 import { useGuestStore } from "../../../store/GuestStore";
 import { RootStackScreenProps } from "../../../types/navigation/types";
@@ -176,7 +176,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
       <Sheet
         ref={logoutref}
         index={-1}
-        snapPoints={["50%"]}
+        snapPoints={["35%"]}
         bottomInset={32}
         enablePanDownToClose
         detached={true}
@@ -187,13 +187,15 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
           <View
             style={{
               justifyContent: "space-between",
-              padding: 16,
+              paddingHorizontal: 16,
+              paddingTop: 8,
+              paddingBottom: 16,
               height: "100%",
             }}
           >
             <View>
               <Heading
-                title="Do you want to log-out?"
+                title="Are you sure?"
                 style={{
                   color: "white",
                   fontSize: 20,
@@ -212,49 +214,33 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                 }}
               />
             </View>
-            <View>
-              <Button
-                onPress={() => {
-                  logoutref.current?.close();
-                }}
-                title="Cancel"
-                bg={"rgba(255,255,255,0.1)"}
-                textStyle={{
-                  fontWeight: "600",
-                  fontSize: 16,
-                  color: "white",
-                }}
-                py={12}
-                borderRadius={8}
-              />
-              <Button
-                onPress={async () => {
-                  const isDeskTopLogin = await AsyncStorage.getItem(
-                    "@viaDeskTop"
-                  );
-                  await AsyncStorage.removeItem("@user_tokens");
-                  if (isDeskTopLogin) {
-                    await AsyncStorage.removeItem("@viaDeskTop");
-                    navigation.replace("Login");
-                    return;
-                  } else {
-                    await Wallet.killSession();
-                    navigation.replace("Login");
-                  }
-                  TrackAction(AUTH.LOGOUT);
-                }}
-                mt={16}
-                title="Log Out"
-                bg={"#f5f5f5"}
-                textStyle={{
-                  fontWeight: "600",
-                  fontSize: 16,
-                  color: "black",
-                }}
-                py={12}
-                borderRadius={8}
-              />
-            </View>
+            <Button
+              onPress={async () => {
+                const isDeskTopLogin = await AsyncStorage.getItem(
+                  "@viaDeskTop"
+                );
+                await AsyncStorage.removeItem("@user_tokens");
+                if (isDeskTopLogin) {
+                  await AsyncStorage.removeItem("@viaDeskTop");
+                  navigation.replace("Login");
+                  return;
+                } else {
+                  await Wallet.killSession();
+                  navigation.replace("Login");
+                }
+                TrackAction(AUTH.LOGOUT);
+              }}
+              my={16}
+              title="Confirm"
+              bg={white[800]}
+              textStyle={{
+                fontWeight: "600",
+                fontSize: 16,
+                color: "black",
+              }}
+              py={12}
+              borderRadius={8}
+            />
           </View>
         }
       />
