@@ -40,6 +40,8 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
     const [createProfile] = useCreateProfileMutation({
         onError: (e) => {
             toast.show("Error in create profile!", ToastType.ERROR, true);
+            setIsloading(false);
+            setDynamicText('Create Handle');
             // console.log(e);
         },
     });
@@ -47,6 +49,8 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
     const [setDispatcher] = useCreateSetDispatcherTypedDataMutation({
         onError: (e) => {
             toast.show("Error in setting", ToastType.ERROR, true);
+            setIsloading(false);
+            setDynamicText('Create Handle');
             // console.log(e);
         },
     });
@@ -54,6 +58,8 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
     const [broadcastTransaction] = useBroadcastMutation({
         onError: (e) => {
             toast.show("error in broadcast", ToastType.ERROR, true);
+            setIsloading(false);
+            setDynamicText('Create Handle');
             // console.log(e);
         },
     })
@@ -105,7 +111,12 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
         setIsloading(true);
         setDynamicText('Creating Handle');
         const address = connector.accounts[0];
-
+        if(handle.includes(".test")){
+            toast.show("Omit .test", ToastType.ERROR, true);
+            setIsloading(false);
+            setDynamicText('Create Handle');
+            return;
+        }
         try {
             const request = {
                 handle: handle.replace(/\s/g, ""),
@@ -152,7 +163,6 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                 setIsloading(false);
                 setDynamicText('Create Handle');
             }
-
         }
 
 

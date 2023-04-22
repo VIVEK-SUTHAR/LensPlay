@@ -266,7 +266,7 @@ export default function UploadVideo({
             navigation.navigate("AddDetails");
             setURLs(
               route?.params?.localUrl,
-              selectedCover === 6 ? coverPic : thumbnails[selectedCover]
+              selectedCover === 5 ? coverPic : thumbnails[selectedCover]
             );
           }}
           bg={"white"}

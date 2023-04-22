@@ -4,8 +4,8 @@ import getIPFSLink from "../../utils/getIPFSLink";
 
 type AvatarProps = {
   src: string;
-  height: number;
-  width: number;
+  height: number | string;
+  width: number | string;
   borderRadius?: number;
   borderColor?: string;
   borderWidth?: number;
@@ -38,7 +38,7 @@ function Avatar({
         height: height,
         width: width,
         borderRadius: borderRadius,
-        backgroundColor: "black",
+        backgroundColor: "white",
         borderColor: borderColor,
         borderWidth: borderWidth,
         zIndex: 9,

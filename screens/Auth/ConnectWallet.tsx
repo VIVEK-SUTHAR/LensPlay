@@ -1,4 +1,5 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
 import { MotiView } from "moti";
@@ -13,14 +14,12 @@ import { dark_primary, primary } from "../../constants/Colors";
 import { AUTH, GUEST_MODE } from "../../constants/tracking";
 import { useGuestStore } from "../../store/GuestStore";
 import { useProfile, useToast } from "../../store/Store";
-import { RootStackScreenProps } from "../../types/navigation/types";
 import { ToastType } from "../../types/Store";
-import handleWaitlist from "../../utils/handleWaitlist";
-import getDefaultProfile from "../../utils/lens/getDefaultProfile";
-import TrackAction from "../../utils/Track";
-import getProfiles from "../../utils/lens/getProfiles";
 import { Scalars } from "../../types/generated";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { RootStackScreenProps } from "../../types/navigation/types";
+import TrackAction from "../../utils/Track";
+import handleWaitlist from "../../utils/handleWaitlist";
+import getProfiles from "../../utils/lens/getProfiles";
 
 // https://eth-mainnet.alchemyapi.io/v2/5Kt3LOs7L13vV5L68P94MERVJM0baCSv
 

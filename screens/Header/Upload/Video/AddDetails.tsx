@@ -58,7 +58,7 @@ export default function AddDetails({
 
   const handleOnChange = React.useCallback(
     (e: { nativeEvent: { text: string } }) => {
-      setTitle(e.nativeEvent.text.trim());
+      setTitle(e.nativeEvent.text);
     },
     []
   );
@@ -71,8 +71,8 @@ export default function AddDetails({
   );
 
   const handleAddDetails = () => {
-    if (title.length === 0) return toast.error("Please enter title");
-    if (title.length > 100) return toast.info("Title is too long");
+    if (title.trim().length === 0) return toast.error("Please enter title");
+    if (title.trim().length > 100) return toast.info("Title is too long");
     if (!description) return toast.error("Please enter description");
     navigation.push("VideoTypes");
   };
