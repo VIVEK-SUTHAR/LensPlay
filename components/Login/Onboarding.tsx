@@ -16,6 +16,7 @@ import Button from "../UI/Button";
 import OnboardingItem from "./OnboardingItem";
 import Paginator from "./Paginator";
 import { data } from "./data";
+import Heading from "../UI/Heading";
 
 const Onboarding = ({
   loginRef,
@@ -135,6 +136,27 @@ const Onboarding = ({
         showsHorizontalScrollIndicator={false}
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
       />
+      <Animated.View
+        style={[
+          {
+            position: "absolute",
+            top: 0,
+            right: 0,
+            padding: 16,
+          },
+          PaginatorStyle,
+        ]}
+      >
+        <Pressable
+          onPress={() => {
+            flatListRef?.current.scrollToIndex({
+              index: data.length - 1,
+            });
+          }}
+        >
+          <Heading title="skip" style={{ color: white[800] }} />
+        </Pressable>
+      </Animated.View>
       <View
         style={{
           justifyContent: "space-between",
