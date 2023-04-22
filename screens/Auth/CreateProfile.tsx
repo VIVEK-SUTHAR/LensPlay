@@ -35,30 +35,26 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
             setCurrentProfile(defaultProfile);
             return defaultProfile;
         }
-        else {
-            console.log('no profile found');
-        }
     }
 
     const [createProfile] = useCreateProfileMutation({
         onError: (e) => {
             toast.show("Error in create profile!", ToastType.ERROR, true);
-            console.log(e);
-
+            // console.log(e);
         },
     });
 
     const [setDispatcher] = useCreateSetDispatcherTypedDataMutation({
         onError: (e) => {
             toast.show("Error in setting", ToastType.ERROR, true);
-            console.log(e);
+            // console.log(e);
         },
     });
 
     const [broadcastTransaction] = useBroadcastMutation({
         onError: (e) => {
             toast.show("error in broadcast", ToastType.ERROR, true);
-            console.log(e);
+            // console.log(e);
         },
     })
 
@@ -79,15 +75,12 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                 },
             }
         });
-        console.log('dispatcher enabled');
 
         const formattedTypedData = createSetDispatcherTypedData(data);
-        console.log('got the typed data');
 
         const message = JSON.stringify(formattedTypedData);
         const msgParams = [address, message];
         const sig = await connector.signTypedData(msgParams);
-        console.log('signed typed data');
 
         const broadcast = await broadcastTransaction(
             {
@@ -104,7 +97,6 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                 }
             }
         )
-        console.log('brodcasted');
         setIsloading(false);
         setDynamicText('Create Handle');
     }
@@ -113,11 +105,10 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
         setIsloading(true);
         setDynamicText('Creating Handle');
         const address = connector.accounts[0];
-        setHandle(handle.trim());
 
         try {
             const request = {
-                handle,
+                handle: handle.replace(/\s/g, ""),
                 profilePictureUri: null,
                 followNFTURI: null,
                 followModule: null,
@@ -132,16 +123,23 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                     },
                 }
             });
+            
 
             if (response?.data?.createProfile?.__typename !== "RelayError") {
+                
                 setTimeout(async () => {
-                    console.log('profile created');
                     const profile = await handleDefaultProfile(address);
-                    setDynamicText('Signing Dispatcher');
-                    console.log('got the profile', profile);
+                    if (profile) {
+                        setDynamicText('Signing Dispatcher');
 
-                    await EnableDispatcher(profile?.id);
-                    navigation.navigate("Root");
+                        await EnableDispatcher(profile?.id);
+                        navigation.navigate("Root");
+                    }
+                    else {
+                        setDynamicText("Create Handle");
+                        setIsloading(false);
+                        toast.show("Error while creating profile", ToastType.ERROR, true);
+                    }
                 }, 5000);
 
             } else if (response?.data?.createProfile?.reason === "HANDLE_TAKEN") {
@@ -150,7 +148,7 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                 setDynamicText('Create Handle');
             }
             else {
-                toast.show("Handle already taken", ToastType.ERROR, true);
+                toast.show("Error while creating handle", ToastType.ERROR, true);
                 setIsloading(false);
                 setDynamicText('Create Handle');
             }
@@ -160,8 +158,8 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
 
         catch (error) {
             if (error instanceof Error) {
-                console.log("[Error]:Error in create profile");
-                console.log(error);
+                // console.log("[Error]:Error in create profile");
+                // console.log(error);
                 setIsloading(false);
                 setDynamicText('Create Handle');
             }
@@ -244,7 +242,7 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                         <View style={styles.inputContainer}>
                             <TextInput
                                 numberOfLines={2}
-                                multiline={true}
+                                multiline={false}
                                 value={handle}
                                 style={styles.input}
                                 placeholderTextColor="gray"
