@@ -85,6 +85,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             address: address,
           },
         },
+        fetchPolicy: 'network-only'
       });
 
       const signature = await connector.sendCustomRequest({

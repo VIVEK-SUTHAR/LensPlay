@@ -57,6 +57,7 @@ export default function ConnectWalletSheet({
         setIsloading(true);
         loginRef?.current?.close();
         TrackAction(AUTH.WALLET_LOGIN);
+        handleGuest(false);
         const userData = await handleWaitlist(walletData.accounts[0]);
         if (userData?.statusCode === 404) {
           navigation.navigate("JoinWaitlist");
