@@ -4,13 +4,22 @@ import Animated, {
   useAnimatedStyle,
   interpolate,
   Extrapolate,
+  SharedValue,
 } from "react-native-reanimated";
 
-type Props = {
-  data: any;
-  x: any;
-  screenWidth: any;
+type data = {
+  [x: string]: any;
+  id: number;
+  imgUrl: string;
+  title: string;
+  desc: string;
 };
+
+interface Props {
+  data: data;
+  x: SharedValue<number>;
+  screenWidth: number;
+}
 
 const Paginator = ({ data, x, screenWidth }: Props) => {
   const PaginationComp = ({ i }: { i: number }) => {
@@ -37,7 +46,7 @@ const Paginator = ({ data, x, screenWidth }: Props) => {
 
   return (
     <View style={styles.paginationContainer}>
-      {data.map((_, i) => {
+      {data.map((_: any, i: number) => {
         return <PaginationComp i={i} key={i} />;
       })}
     </View>

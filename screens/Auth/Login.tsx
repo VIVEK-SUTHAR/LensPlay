@@ -18,7 +18,10 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="light" />
-      <LinearGradient colors={["#2D3436", "black", "#000000"]}  style={{flex:1}}>
+      <LinearGradient
+        colors={["#2D3436", "black", "#000000"]}
+        style={{ flex: 1 }}
+      >
         <Onboarding loginRef={loginRef} isloading={isloading} />
         <View
           style={{

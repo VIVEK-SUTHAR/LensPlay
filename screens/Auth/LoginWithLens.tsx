@@ -113,7 +113,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           if (!profileQR) {
             await getProfileQR();
           }
-          navigation.reset({index:0,routes:[{name:"Root"}]})
+          navigation.reset({ index: 0, routes: [{ name: "Root" }] });
         } else {
           navigation.replace("CreateProfile");
         }
@@ -132,8 +132,17 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   };
 
   const handleDisconnect = async () => {
-    await connector.killSession();
-    navigation.replace("Login");
+    try {
+      if (connector.accounts[0]) {
+        await connector.killSession();
+      }
+      navigation.replace("Login");
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log("[Error]:Error in Disconnect");
+        console.log(error);
+      }
+    }
   };
 
   useEffect(() => {
@@ -151,7 +160,6 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
     }).start();
   }, []);
 
-  
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="light" />
@@ -174,16 +182,17 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         </View>
         <View
           style={{
-            padding: 16,
+            paddingHorizontal: 16,
+            paddingBottom: 16,
             justifyContent: "space-between",
             flex: 1,
           }}
         >
           <StyledText
-            title={"Your Lens frens are waiting!"}
+            title={"Hurry up, Your Lens frens are waiting!"}
             style={{
               color: "white",
-              fontSize: 32,
+              fontSize: 24,
               fontWeight: "600",
             }}
           />

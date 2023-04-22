@@ -1,7 +1,9 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import React from "react";
-import { Image, Pressable, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { black, white } from "../../constants/Colors";
 import { AUTH, GUEST_MODE } from "../../constants/tracking";
 import { useGuestStore } from "../../store/GuestStore";
@@ -12,10 +14,7 @@ import handleWaitlist from "../../utils/handleWaitlist";
 import getProfiles from "../../utils/lens/getProfiles";
 import Icon from "../Icon";
 import Button from "../UI/Button";
-import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
-import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type ConnectWalletSheetProps = {
   loginRef: React.RefObject<BottomSheetMethods>;
