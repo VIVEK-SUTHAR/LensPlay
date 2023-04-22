@@ -13,10 +13,12 @@ import ProfileCardSkeleton from "../../../components/UI/ProfileCardSkeleton";
 import Tabs, { Tab } from "../../../components/UI/Tabs";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
+  MediaSet,
   useAllFollowersQuery,
   useAllFollowingQuery,
 } from "../../../types/generated";
 import { RootStackScreenProps } from "../../../types/navigation/types";
+import getIPFSLink from "../../../utils/getIPFSLink";
 import getRawurl from "../../../utils/getRawUrl";
 
 const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {

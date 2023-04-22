@@ -16,12 +16,14 @@ type MirroredVideosProps = {
   profileId: string | undefined;
   handle?: string;
   navigation: any;
+  owner?: boolean;
 };
 
 const MirroredVideos = ({
   navigation,
   profileId,
   handle,
+  owner
 }: MirroredVideosProps) => {
   const { accessToken } = useAuthStore();
 
@@ -96,6 +98,7 @@ const MirroredVideos = ({
             navigation.navigate("YourVideos", {
               videos: AllMirrorVideosData?.publications.items,
               title: "Your mirrors",
+              owner: owner
             });
           }}
         >

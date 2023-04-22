@@ -117,7 +117,6 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
             setDynamicText('Create Handle');
             return;
         }
-
         try {
             const request = {
                 handle: handle.replace(/\s/g, ""),
@@ -159,7 +158,11 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                 setIsloading(false);
                 setDynamicText('Create Handle');
             }
-
+            else {
+                toast.show("Error while creating handle", ToastType.ERROR, true);
+                setIsloading(false);
+                setDynamicText('Create Handle');
+            }
         }
 
 
