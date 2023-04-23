@@ -105,9 +105,13 @@ export default function Scanner({
 
     if (userDefaultProfile) {
       setCurrentProfile(userDefaultProfile);
+      console.log(userDefaultProfile);
+      
       return true;
     } else {
       setHasHandle(false);
+      console.log('handle nhi hai');
+      
       return false;
     }
   }
@@ -115,6 +119,8 @@ export default function Scanner({
   function isValidQR(data: any) {
     try {
       const parsedData = JSON.parse(data);
+      console.log(parsedData);
+      
       if (parsedData?.signature && parsedData?.address) {
         return true;
       } else {
@@ -167,7 +173,7 @@ export default function Scanner({
 
           if (result) {
             setHasHandle(true);
-            getTokens({
+            const tokens = await getTokens({
               variables: {
                 request: {
                   address: address,
@@ -180,11 +186,11 @@ export default function Scanner({
               toast.show("Please regenerate QR", ToastType.ERROR, true);
               return;
             }
-            setAccessToken(tokens?.authenticate?.accessToken);
-            setRefreshToken(tokens?.authenticate?.refreshToken);
+            setAccessToken(tokens?.data?.authenticate?.accessToken);
+            setRefreshToken(tokens?.data?.authenticate?.refreshToken);
             await storeTokens(
-              tokens?.authenticate?.accessToken,
-              tokens?.authenticate?.refreshToken,
+              tokens?.data?.authenticate?.accessToken,
+              tokens?.data?.authenticate?.refreshToken,
               true
             );
             await AsyncStorage.setItem("@viaDeskTop", "true");
