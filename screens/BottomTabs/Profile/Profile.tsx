@@ -386,17 +386,20 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                       Videos={AllVideosData?.publications?.items as Post[]}
                       profileId={userStore.currentProfile?.id}
                       navigation={navigation}
+                      owner={true}
                     />
                   )}
                   <MirroredVideos
                     navigation={navigation}
                     profileId={userStore.currentProfile?.id}
                     handle={userStore.currentProfile?.handle}
+                    owner={true}
                   />
                   <CollectedVideos
                     ethAddress={userStore.currentProfile?.ownedBy}
                     handle={userStore.currentProfile?.handle || ""}
                     navigation={navigation}
+                    owner={true}
                   />
                 </View>
               </View>

@@ -19,8 +19,8 @@ export default function AddDescription({
   const toast = useToast();
 
   const handleDescription = () => {
-    if (!description) return toast.error("Please enter description");
-    if (description.length > 1000)
+    if (!description?.trim()) return toast.error("Please enter description");
+    if (description.trim().length > 1000)
       return toast.info("Description length exceed");
     navigation.replace("AddDetails");
   };
@@ -59,7 +59,7 @@ export default function AddDescription({
             }}
             autoFocus={true}
             onChange={useCallback((e: { nativeEvent: { text: string } }) => {
-              setDescription(e.nativeEvent.text.trim());
+              setDescription(e.nativeEvent.text);
             }, [])}
           />
         </View>

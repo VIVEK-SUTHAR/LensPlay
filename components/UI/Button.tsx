@@ -120,8 +120,8 @@ const Button = (props: ButtonProps): JSX.Element => {
             backgroundColor: disabled
               ? "#c0c0c0"
               : type === "filled"
-                ? bg
-                : "transparent",
+              ? bg
+              : "transparent",
             borderColor: type === "outline" ? borderColor : "transparent",
             borderWidth: type === "outline" ? 1 : 0,
             paddingVertical: py,
@@ -143,12 +143,18 @@ const Button = (props: ButtonProps): JSX.Element => {
               animating={true}
               color={"black"}
             />
-          ) : isDynamic ? <>
-            <View style={{ marginRight: 8 }}>
-              <ActivityIndicator size={"small"} animating={true} color={"black"} />
-            </View>
-            <StyledText title={title} style={newStyle} />
-          </> : (
+          ) : isDynamic ? (
+            <>
+              <View style={{ marginRight: 8 }}>
+                <ActivityIndicator
+                  size={"small"}
+                  animating={true}
+                  color={"black"}
+                />
+              </View>
+              <StyledText title={title} style={newStyle} />
+            </>
+          ) : (
             <>
               {icon && iconPosition === "left" ? (
                 <View
