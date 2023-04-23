@@ -68,54 +68,10 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
       request: QueryRequest,
     });
   }, []);
+  if (loading) return <Loading/>;
   if (shotsData){    
     return (
       <>
-      {loading ? (
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "black",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Pressable
-            style={{
-              height: 500,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <AnimatedLottieView
-              autoPlay
-              style={{
-                height: "auto",
-              }}
-              source={require("../../assets/loader.json")}
-            />
-            <View
-              style={{
-                alignItems: "center",
-              }}
-            >
-              <Heading
-                title="Getting Shots for you"
-                style={{
-                  fontSize: 16,
-                  color: "white",
-                  marginVertical: 5,
-                  marginHorizontal: 15,
-                  fontWeight: "600",
-                  alignSelf: "flex-start",
-                }}
-              />
-            </View>
-          </Pressable>
-        </View>
-      ) : (
-        <></>
-      )}
       {shotsData?.explorePublications?.items ? (
         <SwiperFlatList
           vertical={true}

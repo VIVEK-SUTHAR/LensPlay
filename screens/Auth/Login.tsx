@@ -44,7 +44,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
                   }}
                   title={"Privacy Policy"}
                   onPress={() => {
-                    Linking.openURL(LENSPLAY_SITE);
+                    Linking.openURL(LENSPLAY_PRIVACY);
                   }}
                 />{" "}
                 <StyledText title={"and "} style={{ color: "gray" }} />
@@ -56,7 +56,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
                   }}
                   title={"Terms and Condition"}
                   onPress={() => {
-                    Linking.openURL(LENSPLAY_SITE);
+                    Linking.openURL(LENSPLAY_TERMS);
                   }}
                 />{" "}
               </>
