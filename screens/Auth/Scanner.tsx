@@ -105,12 +105,10 @@ export default function Scanner({
 
     if (userDefaultProfile) {
       setCurrentProfile(userDefaultProfile);
-      console.log(userDefaultProfile);
       
       return true;
     } else {
       setHasHandle(false);
-      console.log('handle nhi hai');
       
       return false;
     }
@@ -119,7 +117,6 @@ export default function Scanner({
   function isValidQR(data: any) {
     try {
       const parsedData = JSON.parse(data);
-      console.log(parsedData);
       
       if (parsedData?.signature && parsedData?.address) {
         return true;

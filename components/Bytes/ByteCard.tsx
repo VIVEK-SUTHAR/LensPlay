@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import {
   Dimensions,
   Pressable,
+  RefreshControl,
+  SafeAreaView,
   View
 } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
@@ -66,54 +68,79 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
       request: QueryRequest,
     });
   }, []);
-  if (loading) return <Loading />;
-  if (error) console.log(error);
   if (shotsData){    
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-        {shotsData?.explorePublications?.items ? (
-          <SwiperFlatList
-            refreshControl={
-              <RefreshControl
-                onRefresh={onRefresh}
-                refreshing={isRefreshing}
-                colors={[PRIMARY]}
-                progressBackgroundColor={"black"}
-              />
-            }
-            vertical={true}
-            keyExtractor={(item, index) => index.toString()}
-            onChangeIndex={handleChangeIndexValue}
-            data={shotsData?.explorePublications?.items}
-            renderItem={({
-              item,
-              index,
-            }: {
-              item: ShotsPublication;
-              index: number;
-            }) => {
-
-                return (
-                  <View
-                    style={{
-                      height: Dimensions.get("window").height,
-                    }}
-                  >
-                    <SingleByte
-                      item={item}
-                      index={index}
-                      currentIndex={currentIndex}
-                    />
-                  </View>
-                );
-
+      <>
+      {loading ? (
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "black",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Pressable
+            style={{
+              height: 500,
+              justifyContent: "center",
+              alignItems: "center",
             }}
-          />
-        ) : (
-          <></>
-        )}
-      </SafeAreaView>
-    );
+          >
+            <AnimatedLottieView
+              autoPlay
+              style={{
+                height: "auto",
+              }}
+              source={require("../../assets/loader.json")}
+            />
+            <View
+              style={{
+                alignItems: "center",
+              }}
+            >
+              <Heading
+                title="Getting Shots for you"
+                style={{
+                  fontSize: 16,
+                  color: "white",
+                  marginVertical: 5,
+                  marginHorizontal: 15,
+                  fontWeight: "600",
+                  alignSelf: "flex-start",
+                }}
+              />
+            </View>
+          </Pressable>
+        </View>
+      ) : (
+        <></>
+      )}
+      {shotsData?.explorePublications?.items ? (
+        <SwiperFlatList
+          vertical={true}
+          keyExtractor={(item, index) => index.toString()}
+          onChangeIndex={handleChangeIndexValue}
+          data={bytesData}
+          renderItem={({ item, index }) => (
+            <View
+            style={{
+              height: Dimensions.get("window").height,
+            }}
+          >
+            <SingleByte
+              item={item}
+              index={index}
+              currentIndex={currentIndex}
+            />
+          </View>
+          )}
+        />
+      ) : (
+        <></>
+      )}</>
+
+  );
   }
 
   

@@ -1,7 +1,7 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
-import React, { useCallback, useRef, useState } from "react";
-import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
+import React, { forwardRef, useCallback, useRef, useState } from "react";
+import { FlatList, Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
@@ -25,11 +25,12 @@ const Onboarding = ({
   loginRef: React.RefObject<BottomSheetMethods>;
   isloading: boolean;
 }) => {
-  const flatListRef = useAnimatedRef();
-  const x = useSharedValue(0);
+  const flatListRef = useRef();
+  // const x = useSharedValue(0);
   const flatListIndex = useSharedValue(0);
   const { width: SCREEN_WIDTH } = useWindowDimensions();
   const scaleValue = useSharedValue(0);
+  const [x, setX] = useState(0);
 
   const onViewableItemsChanged = ({
     viewableItems,
@@ -60,7 +61,7 @@ const Onboarding = ({
         {
           scale:
             flatListIndex.value === data.length - 1
-              ? withSpring((scaleValue.value = 1))
+              ? withSpring((scaleValue.value = 1),{mass: 0.7})
               : withSpring((scaleValue.value = 0)),
         },
       ],
@@ -115,9 +116,11 @@ const Onboarding = ({
 
   return (
     <>
-      <Animated.FlatList
+      <FlatList
         ref={flatListRef}
-        onScroll={onScroll}
+        onScroll={(e)=>{
+          setX(e.nativeEvent.contentOffset.x);
+        }}
         data={data}
         renderItem={({ item, index }) => {
           return (

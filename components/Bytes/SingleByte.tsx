@@ -33,6 +33,7 @@ import { LikeButton } from "../VIdeo";
 import Constants from "expo-constants";
 
 import { ShotsPublication } from "./ByteCard";
+import { useGuestStore } from "../../store/GuestStore";
 
 interface SingleByteProps {
   item: ShotsPublication;
@@ -61,6 +62,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const StatusBarHeight = Constants.statusBarHeight;
+  const {isGuest} = useGuestStore();
   navigation.addListener("blur", (e) => {
     ref.current?.pauseAsync();
   });
@@ -81,6 +83,10 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
 
   const collectPublication = React.useCallback(async () => {
     try {
+      if (isGuest){
+        toast.show("Please Login", ToastType.ERROR, true);
+        return;
+      }
       const data = await freeCollectPublication(item?.id, accessToken);
       if (data) {
         toast.show("Collect Submitted", ToastType.SUCCESS, true);

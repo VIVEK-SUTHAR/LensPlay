@@ -7,8 +7,6 @@ import ConnectWalletSheet from "../../components/Login/ConnectWalletSheet";
 import Onboarding from "../../components/Login/Onboarding";
 import StyledText from "../../components/UI/StyledText";
 import { LENSPLAY_PRIVACY, LENSPLAY_SITE, LENSPLAY_TERMS } from "../../constants";
-import { primary } from "../../constants/Colors";
-import { LENSPLAY_SITE } from "../../constants";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
