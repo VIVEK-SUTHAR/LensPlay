@@ -60,7 +60,7 @@ const Onboarding = ({
         {
           scale:
             flatListIndex.value === data.length - 1
-              ? withSpring((scaleValue.value = 1))
+              ? withSpring((scaleValue.value = 1),{mass: 0.7, stiffness: 90})
               : withSpring((scaleValue.value = 0)),
         },
       ],

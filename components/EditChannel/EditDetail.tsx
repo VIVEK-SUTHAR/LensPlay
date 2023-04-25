@@ -46,7 +46,7 @@ export default function EditDetail() {
     youtube: "",
     website: "",
   });
-  const [coverPic, setCoverPic] = useState<string | null>();
+  const [coverPic, setCoverPic] = useState<string>('');
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [coverImageBlob, setCoverImageBlob] = useState<Blob>();
   const toast = useToast();
@@ -164,7 +164,7 @@ export default function EditDetail() {
       socialLinks.twitter.length > 0 ||
       socialLinks.website.length > 0 ||
       socialLinks.youtube.length > 0 ||
-      !coverPic
+      coverPic.length > 0
     );
   };
 

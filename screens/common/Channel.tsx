@@ -45,6 +45,7 @@ import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
 import formatUnfollowTypedData from "../../utils/lens/formatUnfollowTypedData";
 import TrackAction from "../../utils/Track";
+import SocialLinks from "../../components/common/SocialLinks";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -399,117 +400,12 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
               ) : (
                 <></>
               )}
-              <View
-                style={{
-                  // backgroundColor:"red",
-                  marginVertical: 4,
-                  // height:45,
-                  width: "100%",
-                  flexDirection: "row",
-                }}
-              >
-                {links.twitter?.length > 0 ? (
-                  <Pressable
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                    onPress={(e) => {
-                      e.preventDefault();
-                      Linking.openURL(`https://twitter.com/${links.twitter}`);
-                    }}
-                  >
-                    <Icon name="twitter" size={16} color="#1DA1F2" />
-                    <StyledText
-                      style={{ color: theme.PRIMARY, marginRight: 4 }}
-                      title={`@${links.twitter}`}
-                    ></StyledText>
-                  </Pressable>
-                ) : (
-                  <></>
-                )}
-                {links.yt?.length > 0 ? (
-                  <Pressable
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                    onPress={(e) => {
-                      e.preventDefault();
-                      Linking.openURL(`https://www.youtube.com/@${links.yt}`);
-                    }}
-                  >
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <Icon name="youtube" size={16} color="#FF0000" />
-                      <StyledText
-                        style={{ color: theme.PRIMARY, marginRight: 4 }}
-                        title={links.yt}
-                      ></StyledText>
-                    </View>
-                  </Pressable>
-                ) : (
-                  <></>
-                )}
-              </View>
-              <View
-                style={{
-                  // backgroundColor:"red",
-                  marginVertical: 4,
-                  // height:45,
-                  width: "100%",
-                  flexDirection: "row",
-                }}
-              >
-                {links.insta?.length > 0 ? (
-                  <Pressable
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                    onPress={(e) => {
-                      e.preventDefault();
-                      Linking.openURL(
-                        `https://www.instagram.com/${links.insta}`
-                      );
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Icon name="instagram" size={16} color="#405DE6" />
-
-                      <StyledText
-                        style={{ color: theme.PRIMARY, marginRight: 4 }}
-                        title={links.insta}
-                      ></StyledText>
-                    </View>
-                  </Pressable>
-                ) : (
-                  <></>
-                )}
-                {links.site?.length > 0 ? (
-                  <Pressable
-                    style={{ flexDirection: "row", alignItems: "center" }}
-                    onPress={(e) => {
-                      e.preventDefault();
-                      Linking.openURL(links.site);
-                    }}
-                  >
-                    <Icon name="link" size={16} color="white" />
-                    <StyledText
-                      style={{ color: theme.PRIMARY, marginLeft: 4 }}
-                      title={links.site}
-                    ></StyledText>
-                  </Pressable>
-                ) : (
-                  <></>
-                )}
-              </View>
+              <SocialLinks
+                  instagram={links.insta}
+                  website={links.site}
+                  twitter={links.twitter}
+                  youtube={links.yt}
+                />
               <View
                 style={{
                   flexDirection: "row",

@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Dimensions, Image, View } from "react-native";
 import { APP_OPEN } from "../../constants/tracking";
 import { useAuthStore, useProfile } from "../../store/Store";
@@ -21,6 +21,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import StyledText from "../../components/UI/StyledText";
+import Heading from "../../components/UI/Heading";
 
 export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
   const { setCurrentProfile, currentProfile, setHasHandle } = useProfile();
@@ -28,6 +29,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
   const whiteBox = useSharedValue(1);
   const blackBox = useSharedValue(1);
   const image = useSharedValue(0);
+  const textOpacity = useSharedValue(0);
 
   const [
     verifyTokens,
@@ -162,12 +164,15 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
   };
 
   useEffect(() => {
-    // getLocalStorage();
     whiteBox.value = withTiming(10, {
-      duration: 500,
+      duration: 1000,
     });
-    blackBox.value = withDelay(100, withTiming(10, { duration: 500 }));
-    image.value = withDelay(1000, withSpring(1));
+    blackBox.value = withDelay(100, withTiming(10, { duration: 1000 }));
+    image.value = withDelay(1000, withSpring(1, {mass: 1,}));
+    textOpacity.value = withDelay(1500, withTiming(1, { duration: 1000 }));
+    setTimeout(()=>{
+      getLocalStorage();
+    }, 4000);
   }, []);
 
   const whiteBoxAnimationStyle = useAnimatedStyle(() => {
@@ -198,6 +203,12 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
         },
       ],
     };
+  });
+
+  const TextAnimationStyle = useAnimatedStyle(() => {
+    return {
+      opacity: textOpacity.value,
+    }
   });
 
   return (
@@ -236,12 +247,14 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
           blackBoxAnimationStyle,
         ]}
       ></Animated.View>
-      <View>
+      <View style={{
+        alignItems: "center"
+      }}>
         <Animated.View
           style={[
             {
-              height: 300,
-              width: 300,
+              height: 200,
+              width: 200,
             },
             ImageAnimationStyle,
           ]}
@@ -251,17 +264,22 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
             style={{ height: "100%", width: "100%", resizeMode: "contain" }}
           />
         </Animated.View>
-        {/* <View
-          style={{
-            alignItems: "center",
-          }}
-        >
-          <StyledText
-            title={"LensPlay"}
-            style={{ color: "white", fontSize: 48, fontWeight: "600" }}
-          />
-        </View> */}
       </View>
+      <Animated.View
+          style={[
+            {
+            alignItems: "center",
+            position: "absolute",
+            bottom: 20
+            },
+            TextAnimationStyle,
+          ]}
+        >
+          <Heading
+            title={"LensPlay"}
+            style={{ color: "white", fontSize: 40, fontWeight: "600" }}
+          />
+        </Animated.View>
     </View>
   );
 }

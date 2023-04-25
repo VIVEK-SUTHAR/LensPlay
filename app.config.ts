@@ -99,6 +99,7 @@ const config: ExpoConfig = {
     resizeMode: "contain",
     backgroundColor: "#000000",
   },
+  backgroundColor: "#000000",
   updates: {
     fallbackToCacheTimeout: 0,
     url: "https://u.expo.dev/b2fcb561-ea34-43d1-acf0-dabcba685aa2",

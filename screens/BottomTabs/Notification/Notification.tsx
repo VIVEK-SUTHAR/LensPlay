@@ -50,20 +50,11 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const notifications = data?.notifications?.items as Notification[];
 
   if (isGuest) return <PleaseLogin />;
-  if (loading) return <Skeleton children={<Skleton />} number={10} />;
   if (error)
     return (
       <ErrorMessage
         message={
           "Oh no,LensPlay encounterd some error while loading your notifications,😞😞"
-        }
-      />
-    );
-  if (!data)
-    return (
-      <NotFound
-        message={
-          "Looks like you don't have any notifications,interact with profiles to get notifications"
         }
       />
     );
@@ -164,33 +155,35 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
     }
   };
 
-  if (data) {
-    TrackAction(NOTIFICATION.NOTIFICATIONS);
-    return (
-      <SafeAreaView style={styles.container}>
-        <Tabs>
-          {NotificationTabs.map((tab, index) => (
-            <Tab.Screen
-              name={tab.name}
-              key={index}
-              children={() => (
-                <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: "black",
-                  }}
-                >
-                  <FilterNotification notificationType={tab.type} />
-                </View>
-              )}
-            />
-          ))}
-        </Tabs>
-      </SafeAreaView>
-    );
-  }
 
-  return <SafeAreaView style={styles.container}></SafeAreaView>;
+  TrackAction(NOTIFICATION.NOTIFICATIONS);
+  return (
+    <SafeAreaView style={styles.container}>
+      <Tabs>
+        {NotificationTabs.map((tab, index) => (
+          <Tab.Screen
+            name={tab.name}
+            key={index}
+            children={() => (
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: "black",
+                }}
+              >
+                {
+                  loading ? (<Skeleton children={<Skleton />} number={10} />) : (
+                    <FilterNotification notificationType={tab.type} />
+                  )
+                }
+              </View>
+            )}
+          />
+        ))}
+      </Tabs>
+    </SafeAreaView>
+  );
+
 };
 
 export default Notifications;

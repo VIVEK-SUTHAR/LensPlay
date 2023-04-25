@@ -67,7 +67,10 @@ export default function StackNavigation() {
         <Stack.Screen
           name="Login"
           component={Login}
-          options={{ headerShown: false }}
+          options={{
+            animation: "default",
+            headerShown: false,
+          }}
         />
         <Stack.Screen
           name="ConnectWallet"
@@ -81,7 +84,7 @@ export default function StackNavigation() {
           name="LoginWithLens"
           component={LoginWithLens}
           options={{
-            animation: "slide_from_bottom",
+            animation: "default",
             headerShown: false,
           }}
         />
