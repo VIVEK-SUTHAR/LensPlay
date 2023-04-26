@@ -68,7 +68,6 @@ export type RootStackParamList = {
     publicationId: string;
   };
   LoginWithLens: undefined;
-  ConnectWallet: undefined;
   EditProfile: undefined;
   LeaderBoard: {
     referralsCount: number;

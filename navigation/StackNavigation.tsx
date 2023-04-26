@@ -11,7 +11,6 @@ import React from "react";
 import LinkingVideo from "../screens/common/LinkingVideo";
 import UserStats from "../screens/BottomTabs/Profile/UserStats";
 import EditProfile from "../screens/BottomTabs/Profile/EditProfile";
-import ConnectWallet from "../screens/Auth/ConnectWallet";
 import LoginWithLens from "../screens/Auth/LoginWithLens";
 import ReportPublication from "../screens/common/ReportPublication";
 import Settings from "../screens/Header/Settings/Settings";
@@ -69,14 +68,6 @@ export default function StackNavigation() {
           component={Login}
           options={{
             animation: "default",
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="ConnectWallet"
-          component={ConnectWallet}
-          options={{
-            animation: "slide_from_bottom",
             headerShown: false,
           }}
         />
