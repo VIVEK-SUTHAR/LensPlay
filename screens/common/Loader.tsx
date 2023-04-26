@@ -165,14 +165,14 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 
   useEffect(() => {
     whiteBox.value = withTiming(10, {
-      duration: 1000,
+      duration: 500,
     });
-    blackBox.value = withDelay(100, withTiming(10, { duration: 1000 }));
-    image.value = withDelay(1000, withSpring(1, {mass: 1,}));
+    blackBox.value = withDelay(100, withTiming(10, { duration: 500 }));
+    image.value = withDelay(1000, withSpring(1, { mass: 1 }));
     textOpacity.value = withDelay(1500, withTiming(1, { duration: 1000 }));
-    setTimeout(()=>{
+    setTimeout(() => {
       getLocalStorage();
-    }, 4000);
+    }, 2000);
   }, []);
 
   const whiteBoxAnimationStyle = useAnimatedStyle(() => {
@@ -208,7 +208,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
   const TextAnimationStyle = useAnimatedStyle(() => {
     return {
       opacity: textOpacity.value,
-    }
+    };
   });
 
   return (
@@ -247,9 +247,11 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
           blackBoxAnimationStyle,
         ]}
       ></Animated.View>
-      <View style={{
-        alignItems: "center"
-      }}>
+      <View
+        style={{
+          alignItems: "center",
+        }}
+      >
         <Animated.View
           style={[
             {
@@ -266,20 +268,20 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
         </Animated.View>
       </View>
       <Animated.View
-          style={[
-            {
+        style={[
+          {
             alignItems: "center",
             position: "absolute",
-            bottom: 20
-            },
-            TextAnimationStyle,
-          ]}
-        >
-          <Heading
-            title={"LensPlay"}
-            style={{ color: "white", fontSize: 40, fontWeight: "600" }}
-          />
-        </Animated.View>
+            bottom: 20,
+          },
+          TextAnimationStyle,
+        ]}
+      >
+        <Heading
+          title={"LensPlay"}
+          style={{ color: "white", fontSize: 40, fontWeight: "600" }}
+        />
+      </Animated.View>
     </View>
   );
 }
