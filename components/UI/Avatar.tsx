@@ -1,6 +1,7 @@
+import { Image } from "expo-image";
 import React from "react";
-import { Image } from "react-native";
 import getIPFSLink from "../../utils/getIPFSLink";
+import getPlaceHolderImage from "../../utils/getPlaceHolder";
 
 type AvatarProps = {
   src: string;
@@ -23,6 +24,9 @@ function Avatar({
 }: AvatarProps) {
   return (
     <Image
+      placeholder={getPlaceHolderImage(true)}
+      placeholderContentFit="cover"
+      transition={500}
       source={{
         uri: `${
           getIPFSLink(src) ===
