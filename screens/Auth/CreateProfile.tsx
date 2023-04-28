@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { RootStackScreenProps } from '../../types/navigation/types'
-import { Dimensions, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Animated, Dimensions, Easing, Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { dark_primary, primary } from '../../constants/Colors';
 import { useAuthStore, useProfile, useThemeStore, useToast } from '../../store/Store';
 import Button from '../../components/UI/Button';
@@ -8,11 +8,11 @@ import { useWalletConnect } from '@walletconnect/react-native-dapp';
 import { ToastType } from '../../types/Store';
 import getProfiles from '../../utils/lens/getProfiles';
 import createSetDispatcherTypedData from '../../utils/createSetDispatcherTypedData';
-import ImageCarousel from '../../components/UI/ImageCarousel';
 import StyledText from '../../components/UI/StyledText';
 import Icon from '../../components/Icon';
 import { StatusBar } from 'expo-status-bar';
 import { Scalars, useBroadcastMutation, useCreateProfileMutation, useCreateSetDispatcherTypedDataMutation } from '../../types/generated';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) => {
@@ -25,6 +25,7 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
     const toast = useToast();
     const [dynamicText, setDynamicText] = useState('Create Handle');
     const windowHeight = Dimensions.get('screen').height;
+    const windowWidth = Dimensions.get('screen').width;
 
 
     const handleDefaultProfile = async (address: Scalars['EthereumAddress']) => {
@@ -175,80 +176,38 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
             }
         }
     }
-    const data = [
-        {
-            link: 'https://gateway.ipfscdn.io/ipfs/bafkreibypw2ovrxub6mcpgw4e7gh3753emni5qtan3o3m6kdvpse3cmi44',
-            handle: 'iamharsh.test'
-        },
-        {
-            link: 'https://gateway.ipfscdn.io/ipfs/QmS2wmPQwnbpuZtqbRmEKPqNPCR39a2FTpEF7iv5G7Nixd',
-            handle: 'iamvivek.test'
-        },
-        {
-            link: 'https://gateway.ipfscdn.io/ipfs/QmZXK1cSNrj9SDZKnGaHJP9hdZvvUjUwf7uUiYqjnA5eX7',
-            handle: 'wagmi.test'
-        },
-        {
-            link: 'https://lens.infura-ipfs.io/ipfs/QmVBfhfgfhGsRVxTNURVUgceqyzjdVe11ic5rCghmePuKX',
-            handle: 'nader.test'
-        },
-        {
-            link: 'https://gateway.ipfscdn.io/ipfs/bafybeiehsyi2xtlfr7zmsuadruhwvodc4sxs6oh57bzd3fhd2mcjsybaiy',
-            handle: 'stani.test'
-        },
-        {
-            link: 'https://gateway.ipfscdn.io/ipfs/bafkreibypw2ovrxub6mcpgw4e7gh3753emni5qtan3o3m6kdvpse3cmi44',
-            handle: 'iamharsh.test'
-        },
-        {
-            link: 'https://gateway.ipfscdn.io/ipfs/QmS2wmPQwnbpuZtqbRmEKPqNPCR39a2FTpEF7iv5G7Nixd',
-            handle: 'iamvivek.test'
-        },
-        {
-            link: 'https://gateway.ipfscdn.io/ipfs/QmZXK1cSNrj9SDZKnGaHJP9hdZvvUjUwf7uUiYqjnA5eX7',
-            handle: 'wagmi.test'
-        },
-        {
-            link: 'https://lens.infura-ipfs.io/ipfs/QmVBfhfgfhGsRVxTNURVUgceqyzjdVe11ic5rCghmePuKX',
-            handle: 'nader.test'
-        },
-        {
-            link: 'https://gateway.ipfscdn.io/ipfs/bafybeiehsyi2xtlfr7zmsuadruhwvodc4sxs6oh57bzd3fhd2mcjsybaiy',
-            handle: 'stani.test'
-        },
-        {
-            link: 'https://gateway.ipfscdn.io/ipfs/bafkreibypw2ovrxub6mcpgw4e7gh3753emni5qtan3o3m6kdvpse3cmi44',
-            handle: 'iamharsh.test'
-        },
-        {
-            link: 'https://gateway.ipfscdn.io/ipfs/QmS2wmPQwnbpuZtqbRmEKPqNPCR39a2FTpEF7iv5G7Nixd',
-            handle: 'iamvivek.test'
-        },
-        {
-            link: 'https://gateway.ipfscdn.io/ipfs/QmZXK1cSNrj9SDZKnGaHJP9hdZvvUjUwf7uUiYqjnA5eX7',
-            handle: 'wagmi.test'
-        },
-        {
-            link: 'https://lens.infura-ipfs.io/ipfs/QmVBfhfgfhGsRVxTNURVUgceqyzjdVe11ic5rCghmePuKX',
-            handle: 'nader.test'
-        },
-        {
-            link: 'https://gateway.ipfscdn.io/ipfs/bafybeiehsyi2xtlfr7zmsuadruhwvodc4sxs6oh57bzd3fhd2mcjsybaiy',
-            handle: 'stani.test'
-        },
-    ]
+    
     return (
         <KeyboardAvoidingView style={{ flex: 1 }}>
             <StatusBar backgroundColor="black" style="auto" />
-            <ScrollView>
+            <LinearGradient
+        colors={["#2D3436", "black", "#000000"]}
+        style={{ flex: 1 }}
+      >
+        <ScrollView>
                 <View style={[styles.container, { height: windowHeight }]}>
-                    <View style={{ width: '100%', alignItems: 'center', flex: 1 }}>
+                        <View style={{
+                            position: "relative",
+                            marginTop: -100
+                        }}>
+                            <Animated.Image source={require('../../assets/images/circle.png')} style={{
+                                height: 400,
+                                width: 400,
+                            }}/>
+                            <View style={{position: "absolute", height: 400, width: 400,flex: 1, justifyContent: "center", alignItems: "center"}}>
+                            <Image source={require('../../assets/images/icon.png')} style={{
+                                height: 50,
+                                width: 50,
+                                // backgroundColor: "red"
+                            }}/>
+                            </View>
+                        </View>
+                        {/* <ImageCarousel data={data} autoPlay={true} /> */}
                         <View style={styles.textContainer}>
-                            <StyledText title={'Create your'} style={{ color: 'white', fontSize: 30, fontWeight: '700' }} />
-                            <StyledText title={'Test Profile'} style={{ color: primary, fontSize: 38, fontWeight: '700' }} />
+                            <StyledText title={'Create your'} style={{ color: 'white', fontSize: 34, fontWeight: '700' }} />
+                            <StyledText title={'Test Profile'} style={{ color: primary, fontSize: 42, fontWeight: '700' }} />
 
                         </View>
-                        <ImageCarousel data={data} autoPlay={true} />
                         <View style={styles.inputContainer}>
                             <TextInput
                                 numberOfLines={2}
@@ -264,35 +223,6 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                                 placeholder='Enter Test handle'
                             />
                         </View>
-                        <View style={styles.desc}>
-                            <View style={styles.descContainer}>
-                                <View>
-                                    <Icon name='compass_filled' size={30} />
-                                </View>
-                                <View style={{
-                                    width: '80%'
-                                }}>
-                                    <Text style={styles.descTitleText}>Click</Text>
-                                    <Text style={styles.descText}>
-                                        Click on create handle and check for available handles
-                                    </Text>
-                                </View>
-                            </View>
-                            <View style={styles.descContainer}>
-                                <View>
-                                    <Icon name='mirror' size={30} />
-                                </View>
-                                <View style={{
-                                    width: '80%'
-                                }}>
-                                    <Text style={styles.descTitleText}>Sign</Text>
-                                    <Text style={styles.descText}>
-                                        Sign the dispatcher and explore lensplay
-                                    </Text>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
 
                     <View style={styles.buttonContainer}>
                         <Button
@@ -315,6 +245,7 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                     </View>
                 </View>
             </ScrollView>
+      </LinearGradient>
         </KeyboardAvoidingView>
     )
 }
@@ -325,7 +256,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: "black",
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingBottom: 20,
@@ -339,7 +269,7 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     textContainer: {
-        marginVertical: 30,
+        marginTop: 80,
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
