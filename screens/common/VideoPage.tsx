@@ -1,18 +1,17 @@
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { Image } from "expo-image";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
 import {
   BackHandler,
   Dimensions,
-  Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
 } from "react-native";
-import VideoPlayer from "expo-video-player";
 import { freeCollectPublication, freeMirror } from "../../api";
 import Sheet from "../../components/Bottom";
 import Comment from "../../components/Comments";
@@ -42,22 +41,24 @@ import {
   useReactionStore,
   useToast,
 } from "../../store/Store";
+import useVideoURLStore from "../../store/videoURL";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import { ToastType } from "../../types/Store";
 import extractURLs from "../../utils/extractURL";
+import getImageProxyURL from "../../utils/getImageProxyURL";
 import getIPFSLink from "../../utils/getIPFSLink";
+import getPlaceHolderImage from "../../utils/getPlaceHolder";
 import getRawurl from "../../utils/getRawUrl";
 import TrackAction from "../../utils/Track";
+import createLivePeerAsset from "../../utils/video/createLivePeerAsset";
 import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
 
-const VideoPage = ({
-  navigation,
-  route,
-}: RootStackScreenProps<"VideoPage">) => {
+const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
   const { activePublication } = useActivePublication();
   const toast = useToast();
   const { accessToken } = useAuthStore();
   const userStore = useProfile();
+
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(false);
   const {
@@ -175,20 +176,54 @@ const VideoPage = ({
       collectRef?.current?.close();
     }
   };
-  let LIVEPEER_LINK = "";
+  const LENS_MEDIA_URL = activePublication?.metadata?.media[0].original?.url;
+  const { setVideoURI, uri } = useVideoURLStore();
+  useEffect(() => {
+    checkIfLivePeerAsset(LENS_MEDIA_URL).then((res) => {
+      if (res) {
+        setVideoURI(res);
+      } else {
+        createLivePeerAsset(LENS_MEDIA_URL);
+        setVideoURI(getIPFSLink(LENS_MEDIA_URL));
+      }
+    });
+  }, []);
 
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-        <Player
-          poster={getRawurl(activePublication?.metadata?.cover)}
-          title={activePublication?.metadata?.name || ""}
-          url={activePublication?.metadata?.media[0]?.original?.url}
-          inFullscreen={inFullscreen}
-          isMute={isMute}
-          setInFullscreen={setInFullsreen}
-          setIsMute={setIsMute}
-        />
+        {uri ? (
+          <Player
+            poster={getRawurl(activePublication?.metadata?.cover)}
+            title={activePublication?.metadata?.name || ""}
+            url={uri}
+            inFullscreen={inFullscreen}
+            isMute={isMute}
+            setInFullscreen={setInFullsreen}
+            setIsMute={setIsMute}
+          />
+        ) : (
+          <Image
+            placeholder={getPlaceHolderImage()}
+            transition={500}
+            placeholderContentFit="contain"
+            source={{
+              uri: getImageProxyURL({
+                formattedLink: getIPFSLink(
+                  getRawurl(activePublication?.metadata?.cover)
+                ),
+              }),
+            }}
+            style={{
+              width: inFullscreen
+                ? Dimensions.get("screen").height
+                : Dimensions.get("screen").width,
+              height: inFullscreen
+                ? Dimensions.get("screen").width * 0.95
+                : 280,
+            }}
+          />
+        )}
         <ScrollView>
           <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
             <VideoMeta
@@ -299,13 +334,15 @@ const VideoPage = ({
               source={{
                 uri: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
               }}
+              placeholder={getPlaceHolderImage()}
+              transition={500}
+              placeholderContentFit="contain"
               style={{
                 height: Dimensions.get("screen").height / 4,
                 borderRadius: 8,
                 width: Dimensions.get("screen").width - 48,
                 resizeMode: "cover",
               }}
-              progressiveRenderingEnabled={true}
             />
             <Button
               title={
@@ -350,13 +387,15 @@ const VideoPage = ({
               source={{
                 uri: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
               }}
+              placeholder={getPlaceHolderImage()}
+              transition={500}
+              placeholderContentFit="contain"
               style={{
                 height: Dimensions.get("screen").height / 4,
                 borderRadius: 8,
                 width: Dimensions.get("screen").width - 48,
                 resizeMode: "cover",
               }}
-              progressiveRenderingEnabled={true}
             />
             <Button
               title={

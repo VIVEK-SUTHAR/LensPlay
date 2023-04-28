@@ -16,7 +16,6 @@ import getImageProxyURL from "../utils/getImageProxyURL";
 import getIPFSLink from "../utils/getIPFSLink";
 import getPlaceHolderImage from "../utils/getPlaceHolder";
 import getRawurl from "../utils/getRawUrl";
-import getLivePeerURL from "../utils/video/getLivePeerURL";
 import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
 import StyledText from "./UI/StyledText";
@@ -46,8 +45,6 @@ const VideoCard = ({
       }
     );
   }, []);
-  console.log('new',publication?.metadata?.media[0]?.original?.url);
-  
   return (
     <View
       style={{
@@ -151,4 +148,4 @@ const VideoCard = ({
   );
 };
 
-export default VideoCard;
+export default React.memo(VideoCard);

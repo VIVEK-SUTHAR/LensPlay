@@ -1,15 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
-import { setStatusBarHidden } from "expo-status-bar";
 import { ResizeMode, Video } from "expo-av";
+import * as ScreenOrientation from "expo-screen-orientation";
+import { setStatusBarHidden } from "expo-status-bar";
+import VideoPlayer from "expo-video-player";
+import React, { useRef } from "react";
 import { Dimensions, View } from "react-native";
 import { primary } from "../../constants/Colors";
-import * as ScreenOrientation from "expo-screen-orientation";
-import VideoPlayer from "expo-video-player";
+import { useThemeStore } from "../../store/Store";
 import getIPFSLink from "../../utils/getIPFSLink";
-import StyledText from "../UI/StyledText";
 import Icon from "../Icon";
-import { useActivePublication, useThemeStore } from "../../store/Store";
-import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
+import StyledText from "../UI/StyledText";
 
 interface VideoPlayerProps {
   url: string;
@@ -34,24 +33,9 @@ function Player({
   setInFullscreen,
   setIsMute,
 }: VideoPlayerProps) {
-  const [playbackUrl, setPlaybackUrl] = useState("");
   const videoRef = useRef<Video>();
   const { PRIMARY } = useThemeStore();
-  const { activePublication } = useActivePublication();
-  useEffect(() => {
-    videoRef.current?.pauseAsync();
-    checkIfLivePeerAsset(url).then((res) => {
-      if (res) {
-        console.log(res);
-        setPlaybackUrl(res);
-      } else {
-        setPlaybackUrl(
-          getIPFSLink(activePublication?.metadata?.media[0].original?.url)
-        );
-      }
-      videoRef.current?.playAsync();
-    });
-  }, []);
+
   return (
     <VideoPlayer
       style={{
@@ -113,14 +97,14 @@ function Player({
         posterStyle: {
           height: "100%",
           width: "100%",
-          resizeMode: "contain",
+          resizeMode: "cover",
         },
         isMuted: isMute,
         resizeMode: ResizeMode.CONTAIN,
+        shouldPlay: true,
         source: {
-          uri: playbackUrl,
+          uri: url,
         },
-        
       }}
       fullscreen={{
         inFullscreen: inFullscreen,
@@ -149,4 +133,4 @@ function Player({
   );
 }
 
-export default Player;
+export default React.memo(Player);
