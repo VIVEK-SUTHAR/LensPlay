@@ -8,7 +8,7 @@ import {
   Maybe,
   MetadataAttributeOutput,
   Mirror,
-  Post,
+  Post
 } from "../types/generated";
 import formatTime from "../utils/formatTime";
 import getDifference from "../utils/getDifference";
@@ -45,15 +45,9 @@ const VideoCard = ({
         }
       }
     );
-    const assetId = publication?.metadata?.attributes?.filter((item) => {
-      if (item.traitType === "assetId") {
-        getLivePeerURL(item?.value).then((res) => {
-          playBackurl = res;
-        });
-      }
-    });
   }, []);
-
+  console.log('new',publication?.metadata?.media[0]?.original?.url);
+  
   return (
     <View
       style={{

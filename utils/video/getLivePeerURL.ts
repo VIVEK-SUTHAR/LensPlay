@@ -9,8 +9,6 @@ async function getLivePeerURL(assetId: string) {
       },
     });
     const jsonResponse = await response.json();
-    console.log(jsonResponse);
-
     return jsonResponse.playbackUrl;
   } catch (error) {}
 }

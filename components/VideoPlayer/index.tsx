@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { setStatusBarHidden } from "expo-status-bar";
-import { ResizeMode } from "expo-av";
+import { ResizeMode, Video } from "expo-av";
 import { Dimensions, View } from "react-native";
 import { primary } from "../../constants/Colors";
 import * as ScreenOrientation from "expo-screen-orientation";
@@ -8,7 +8,8 @@ import VideoPlayer from "expo-video-player";
 import getIPFSLink from "../../utils/getIPFSLink";
 import StyledText from "../UI/StyledText";
 import Icon from "../Icon";
-import { useThemeStore } from "../../store/Store";
+import { useActivePublication, useThemeStore } from "../../store/Store";
+import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
 
 interface VideoPlayerProps {
   url: string;
@@ -33,7 +34,24 @@ function Player({
   setInFullscreen,
   setIsMute,
 }: VideoPlayerProps) {
+  const [playbackUrl, setPlaybackUrl] = useState("");
+  const videoRef = useRef<Video>();
   const { PRIMARY } = useThemeStore();
+  const { activePublication } = useActivePublication();
+  useEffect(() => {
+    videoRef.current?.pauseAsync();
+    checkIfLivePeerAsset(url).then((res) => {
+      if (res) {
+        console.log(res);
+        setPlaybackUrl(res);
+      } else {
+        setPlaybackUrl(
+          getIPFSLink(activePublication?.metadata?.media[0].original?.url)
+        );
+      }
+      videoRef.current?.playAsync();
+    });
+  }, []);
   return (
     <VideoPlayer
       style={{
@@ -86,6 +104,7 @@ function Player({
         </View>
       }
       videoProps={{
+        ref: videoRef,
         isLooping: loop,
         usePoster: true,
         posterSource: {
@@ -96,13 +115,12 @@ function Player({
           width: "100%",
           resizeMode: "contain",
         },
-
         isMuted: isMute,
-        shouldPlay: true,
         resizeMode: ResizeMode.CONTAIN,
         source: {
-          uri: getIPFSLink(url),
+          uri: playbackUrl,
         },
+        
       }}
       fullscreen={{
         inFullscreen: inFullscreen,

@@ -12,6 +12,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import VideoPlayer from "expo-video-player";
 import { freeCollectPublication, freeMirror } from "../../api";
 import Sheet from "../../components/Bottom";
 import Comment from "../../components/Comments";
@@ -47,6 +48,7 @@ import extractURLs from "../../utils/extractURL";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
 import TrackAction from "../../utils/Track";
+import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
 
 const VideoPage = ({
   navigation,
@@ -56,7 +58,6 @@ const VideoPage = ({
   const toast = useToast();
   const { accessToken } = useAuthStore();
   const userStore = useProfile();
-
   const [inFullscreen, setInFullsreen] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(false);
   const {
@@ -174,6 +175,7 @@ const VideoPage = ({
       collectRef?.current?.close();
     }
   };
+  let LIVEPEER_LINK = "";
 
   return (
     <>
@@ -181,10 +183,7 @@ const VideoPage = ({
         <Player
           poster={getRawurl(activePublication?.metadata?.cover)}
           title={activePublication?.metadata?.name || ""}
-          url={
-            route?.params?.playBackurl ||
-            activePublication?.metadata?.media[0]?.original?.url
-          }
+          url={activePublication?.metadata?.media[0]?.original?.url}
           inFullscreen={inFullscreen}
           isMute={isMute}
           setInFullscreen={setInFullsreen}
