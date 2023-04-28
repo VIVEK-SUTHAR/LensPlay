@@ -1,6 +1,7 @@
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { Camera } from "expo-camera";
 import Constants from "expo-constants";
+import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
@@ -11,21 +12,20 @@ import Animated, {
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
+import Button from "../../../components/UI/Button";
 import Heading from "../../../components/UI/Heading";
 import { RootStackScreenProps } from "../../../types/navigation/types";
 
 export default function ProfileScanner({
   navigation,
 }: RootStackScreenProps<"ProfileScanner">) {
+  const [permission, requestPermission] = Camera.useCameraPermissions();
+  useEffect(() => {
+    requestPermission();
+  }, []);
+
   const windowHeight = Dimensions.get("window").height;
   const windowWidth = Dimensions.get("window").width;
-
-  function isValidQR(data: any) {
-    try {
-    } catch (e) {
-      return false;
-    }
-  }
 
   const scale = useSharedValue(0);
 
@@ -48,11 +48,83 @@ export default function ProfileScanner({
       true
     );
   }, []);
-  const handleBarcodeScanned = async (data: any) => {
+
+  const handleBarcodeScanned = React.useCallback((data) => {
     navigation.replace("Channel", {
       profileId: data?.data,
     });
-  };
+  }, []);
+  if (!permission) {
+    return (
+      <>
+        <Heading
+          title="We need your permission to scan QR"
+          style={{
+            fontSize: 28,
+            fontWeight: "600",
+            color: "white",
+            marginBottom: 24,
+            marginHorizontal: 16,
+            textAlign: "center",
+          }}
+        />
+        <Button
+          onPress={requestPermission}
+          title="Allow to use camera"
+          width={"auto"}
+          px={24}
+          py={8}
+          textStyle={{
+            fontSize: 20,
+            fontWeight: "600",
+          }}
+        />
+      </>
+    );
+  }
+  if (!permission!.granted) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "black",
+        }}
+      >
+        <Image
+          style={{
+            height: 300,
+            width: 300,
+          }}
+          contentFit="contain"
+          source={require("../../../assets/images/notfound.png")}
+        />
+        <Heading
+          title="We need your permission to scan QR"
+          style={{
+            fontSize: 28,
+            fontWeight: "600",
+            color: "white",
+            marginBottom: 24,
+            marginHorizontal: 16,
+            textAlign: "center",
+          }}
+        />
+        <Button
+          onPress={requestPermission}
+          title="Allow to use camera"
+          width={"auto"}
+          px={24}
+          py={8}
+          textStyle={{
+            fontSize: 20,
+            fontWeight: "600",
+          }}
+        />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView
@@ -64,22 +136,6 @@ export default function ProfileScanner({
       }}
     >
       <StatusBar backgroundColor="transparent" />
-      {/* <View
-        style={{
-          position: "absolute",
-          bottom: 100,
-          right:45,
-          height: 50,
-          width: 50,
-          backgroundColor: "rgba(0,0,0,0.5)",
-          zIndex: 5,
-          borderRadius: 50,
-          justifyContent: "center",
-          alignItems:"center"
-        }}
-      >
-        <Icon name="close"/>
-      </View> */}
       <View
         style={{
           position: "absolute",
