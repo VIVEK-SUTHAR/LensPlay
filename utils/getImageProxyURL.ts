@@ -19,7 +19,8 @@ function getImageProxyURL({ formattedLink, options }: ImageProxyOptions) {
   };
   const ImageOptionsString = `tr=w-${imageOptions.w},h-${imageOptions.h},bl-${imageOptions.bl},f-webp`;
   const CDN_LINK = `${IMAGE_KIT_PREFIX}${FORMATTED_LINK}?${ImageOptionsString}`;
-  return CDN_LINK;
+  // return CDN_LINK;
+  return formattedLink;
 }
 
 export default getImageProxyURL;
