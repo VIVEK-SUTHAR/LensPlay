@@ -30,7 +30,8 @@ const STATIC_ASSET =
   "https://lens.infura-ipfs.io/ipfs/bafybeibv2kpqpjtvuj5uprvq6knnr2reb7ylq3o4bnypqjioqgxmjw2akq/5460475.webp";
 
 //API_TOKENS
-export const LIVEPEER_API_TOKEN = "57f82e71-546c-4bf3-861a-9cdd56d97677";
+// export const LIVEPEER_API_TOKEN = "57f82e71-546c-4bf3-861a-9cdd56d97677";
+export const LIVEPEER_API_TOKEN = "8d89f7e5-9b5a-416e-94bc-50c4e87a07f2";
 
 //Regular Expressions
 const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
