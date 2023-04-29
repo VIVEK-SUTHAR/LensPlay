@@ -104,8 +104,6 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   useEffect(() => {
     checkIfLivePeerAsset(LENS_MEDIA_URL).then((res) => {
       if (res) {
-        console.log(res);
-
         setPlabackUrl(res);
       } else {
         createLivePeerAsset(LENS_MEDIA_URL);

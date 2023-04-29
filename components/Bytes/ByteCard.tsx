@@ -1,5 +1,5 @@
 import AnimatedLottieView from "lottie-react-native";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Dimensions,
   Pressable,
@@ -66,6 +66,19 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
   }, []);
   if (loading) return <Loading />;
   if (error) console.log(error);
+
+  const renderItem = ({ item, index }) => {
+    return (
+      <View
+        style={{
+          height: Dimensions.get("window").height,
+        }}
+      >
+        <SingleByte item={item} index={index} currentIndex={currentIndex} />
+      </View>
+    );
+  };
+  const renderMemoizedValue = useMemo(() => renderItem, []);
   if (shotsData) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -82,28 +95,9 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
             vertical={true}
             keyExtractor={(item, index) => index.toString()}
             onChangeIndex={handleChangeIndexValue}
+            initialNumToRender={7}
             data={shotsData?.explorePublications?.items}
-            renderItem={({
-              item,
-              index,
-            }: {
-              item: ShotsPublication;
-              index: number;
-            }) => {
-              return (
-                <View
-                  style={{
-                    height: Dimensions.get("window").height,
-                  }}
-                >
-                  <SingleByte
-                    item={item}
-                    index={index}
-                    currentIndex={currentIndex}
-                  />
-                </View>
-              );
-            }}
+            renderItem={renderMemoizedValue}
           />
         ) : (
           <></>
