@@ -5,7 +5,7 @@ import {
   Pressable,
   RefreshControl,
   SafeAreaView,
-  View
+  View,
 } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import { useGuestStore } from "../../store/GuestStore";
@@ -16,7 +16,7 @@ import {
   PublicationMainFocus,
   PublicationSortCriteria,
   PublicationTypes,
-  useExploreQuery
+  useExploreQuery,
 } from "../../types/generated";
 import Heading from "../UI/Heading";
 import SingleByte from "./SingleByte";
@@ -40,7 +40,7 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
-    sources: ["lensplay","lenstube", "lenstube-bytes"],
+    sources: ["lensplay", "lenstube", "lenstube-bytes"],
   };
 
   const { data: shotsData, error, loading, refetch } = useExploreQuery({
@@ -66,7 +66,7 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
   }, []);
   if (loading) return <Loading />;
   if (error) console.log(error);
-  if (shotsData){    
+  if (shotsData) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
         {shotsData?.explorePublications?.items ? (
@@ -90,21 +90,19 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
               item: ShotsPublication;
               index: number;
             }) => {
-
-                return (
-                  <View
-                    style={{
-                      height: Dimensions.get("window").height,
-                    }}
-                  >
-                    <SingleByte
-                      item={item}
-                      index={index}
-                      currentIndex={currentIndex}
-                    />
-                  </View>
-                );
-
+              return (
+                <View
+                  style={{
+                    height: Dimensions.get("window").height,
+                  }}
+                >
+                  <SingleByte
+                    item={item}
+                    index={index}
+                    currentIndex={currentIndex}
+                  />
+                </View>
+              );
             }}
           />
         ) : (
@@ -113,53 +111,52 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
       </SafeAreaView>
     );
   }
-
-  
 };
 
-
 const Loading = () => {
-  return <View
-  style={{
-    flex: 1,
-    backgroundColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
-  }}
->
-  <Pressable
-    style={{
-      height: 500,
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
-    <AnimatedLottieView
-      autoPlay
-      style={{
-        height: "auto",
-      }}
-      source={require("../../assets/loader.json")}
-    />
+  return (
     <View
       style={{
+        flex: 1,
+        backgroundColor: "black",
+        justifyContent: "center",
         alignItems: "center",
       }}
     >
-      <Heading
-        title="Getting Shots for you"
+      <Pressable
         style={{
-          fontSize: 16,
-          color: "white",
-          marginVertical: 5,
-          marginHorizontal: 15,
-          fontWeight: "600",
-          alignSelf: "flex-start",
+          height: 500,
+          justifyContent: "center",
+          alignItems: "center",
         }}
-      />
+      >
+        <AnimatedLottieView
+          autoPlay
+          style={{
+            height: "auto",
+          }}
+          source={require("../../assets/loader.json")}
+        />
+        <View
+          style={{
+            alignItems: "center",
+          }}
+        >
+          <Heading
+            title="Getting Shots for you"
+            style={{
+              fontSize: 16,
+              color: "white",
+              marginVertical: 5,
+              marginHorizontal: 15,
+              fontWeight: "600",
+              alignSelf: "flex-start",
+            }}
+          />
+        </View>
+      </Pressable>
     </View>
-  </Pressable>
-</View>
-}
+  );
+};
 
 export default ByteCard;

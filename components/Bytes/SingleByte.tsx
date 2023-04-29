@@ -3,12 +3,13 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import { ResizeMode, Video } from "expo-av";
+import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import VideoPlayer from "expo-video-player";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
+  ActivityIndicator,
   Dimensions,
-  Image,
   Pressable,
   ScrollView,
   Share,
@@ -23,6 +24,8 @@ import { ToastType } from "../../types/Store";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
 import TrackAction from "../../utils/Track";
+import createLivePeerAsset from "../../utils/video/createLivePeerAsset";
+import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
 import Sheet from "../Bottom";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
@@ -44,6 +47,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const [totalCollects, setTotalCollects] = useState<number>(
     item?.stats?.totalAmountOfCollects
   );
+  const [plabackUrl, setPlabackUrl] = useState("");
 
   const ref = React.useRef<Video>(null);
   const descriptionRef = useRef<BottomSheetMethods>(null);
@@ -95,6 +99,21 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
     }
   }, []);
 
+  const LENS_MEDIA_URL = item?.metadata?.media[0]?.original?.url;
+
+  useEffect(() => {
+    checkIfLivePeerAsset(LENS_MEDIA_URL).then((res) => {
+      if (res) {
+        console.log(res);
+
+        setPlabackUrl(res);
+      } else {
+        createLivePeerAsset(LENS_MEDIA_URL);
+        setPlabackUrl(getIPFSLink(LENS_MEDIA_URL));
+      }
+    });
+  }, []);
+
   return (
     <>
       <View
@@ -116,46 +135,57 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             position: "absolute",
           }}
         >
-          <VideoPlayer
-            defaultControlsVisible={false}
-            videoProps={{
-              ref: ref,
-              source: {
-                uri: getIPFSLink(item?.metadata?.media[0]?.original?.url),
-              },
-              onError(error) {
-                // console.log(error);
-              },
-
-              shouldPlay: currentIndex === index ? true : false,
-              resizeMode: ResizeMode.CONTAIN,
-              isMuted: mute,
-              posterSource: {
-                uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
-              },
-              isLooping: true,
-              posterStyle: {
+          {plabackUrl ? (
+            <VideoPlayer
+              defaultControlsVisible={false}
+              videoProps={{
+                ref: ref,
+                source: {
+                  uri: getIPFSLink(item?.metadata?.media[0]?.original?.url),
+                },
+                onError(error) {
+                  // console.log(error);
+                },
+                shouldPlay: currentIndex === index,
                 resizeMode: ResizeMode.CONTAIN,
-              },
-            }}
-            slider={{
-              visible: false,
-            }}
-            fullscreen={{
-              visible: false,
-            }}
-            mute={{
-              visible: false,
-            }}
-            timeVisible={false}
-            icon={{
-              size: 48,
-              play: <Icon name="play" size={48} />,
-              pause: <Icon name="pause" size={52} />,
-              replay: <Icon name="replay" size={48} />,
-            }}
-            autoHidePlayer={true}
-          />
+                isMuted: mute,
+                posterSource: {
+                  uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
+                },
+                isLooping: true,
+                posterStyle: {
+                  resizeMode: ResizeMode.CONTAIN,
+                },
+              }}
+              slider={{
+                visible: false,
+              }}
+              fullscreen={{
+                visible: false,
+              }}
+              mute={{
+                visible: false,
+              }}
+              timeVisible={false}
+              icon={{
+                size: 48,
+                play: <Icon name="play" size={48} />,
+                pause: <Icon name="pause" size={52} />,
+                replay: <Icon name="replay" size={48} />,
+              }}
+              autoHidePlayer={true}
+            />
+          ) : (
+            <View
+              style={{
+                height: windowHeight,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ActivityIndicator color={PRIMARY} size="large" />
+            </View>
+          )}
         </TouchableOpacity>
         <Ionicons
           name="volume-mute"

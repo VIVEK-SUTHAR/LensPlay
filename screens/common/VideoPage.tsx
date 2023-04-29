@@ -176,17 +176,24 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
       collectRef?.current?.close();
     }
   };
-  const LENS_MEDIA_URL = activePublication?.metadata?.media[0].original?.url;
+  const LENS_MEDIA_URL = activePublication?.metadata?.media[0]?.original?.url;
   const { setVideoURI, uri } = useVideoURLStore();
   useEffect(() => {
     checkIfLivePeerAsset(LENS_MEDIA_URL).then((res) => {
       if (res) {
         setVideoURI(res);
+        console.log(uri);
       } else {
         createLivePeerAsset(LENS_MEDIA_URL);
         setVideoURI(getIPFSLink(LENS_MEDIA_URL));
       }
     });
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      setVideoURI("");
+    };
   }, []);
 
   return (
