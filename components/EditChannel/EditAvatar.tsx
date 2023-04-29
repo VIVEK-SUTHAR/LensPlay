@@ -53,7 +53,7 @@ export default function EditAvatar() {
           },
         });
         TrackAction(SETTINGS.PROFILE.UPDATE_AVATAR);
-      } catch (error) { }
+      } catch (error) {}
     }
   };
 
@@ -76,13 +76,12 @@ export default function EditAvatar() {
   }
 
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
         backgroundColor: "black",
         alignItems: "center",
         justifyContent: "space-evenly",
-        minHeight: windowHeight,
       }}
     >
       <Avatar
@@ -136,6 +135,6 @@ export default function EditAvatar() {
           onPress={uploadToIPFS}
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }

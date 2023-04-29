@@ -23,7 +23,6 @@ async function uploadToTus(params: TusUploadRequestOptions): Promise<void> {
       onProgress(bytesUploaded, bytesTotal);
     },
     onSuccess: () => {
-      console.log("Upload finished:");
       onSucessCallBack();
     },
   });

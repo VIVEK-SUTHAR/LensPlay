@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Pressable, SafeAreaView, ScrollView, View } from "react-native";
+import {
+  Platform,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  View,
+} from "react-native";
 import { v4 as uuidV4 } from "uuid";
 import Button from "../../components/UI/Button";
 import Heading from "../../components/UI/Heading";
@@ -152,7 +158,6 @@ export default function VideoTypes({
         onProgress: function (_sentBytes, _totalBytes): void {
           const percentage = ((_sentBytes / _totalBytes) * 100).toFixed(2);
           setUploadProgress(parseFloat(percentage));
-          console.log("Uploaded " + percentage + "%");
         },
       };
       uploadToTus(uploadRequest);
@@ -169,11 +174,9 @@ export default function VideoTypes({
       const imageBlob = await getImageBlobFromUri(uploadStore.coverURL!);
 
       const coverImageURI = await uploadImageToIPFS(imageBlob);
-      console.log("Cover uploaded", coverImageURI);
 
       const videoBlob = await getImageBlobFromUri(uploadStore.videoURL!);
       const ipfsVideoUrl = await uploadImageToIPFS(videoBlob);
-      console.log("Video uploaded to ipfs", ipfsVideoUrl);
 
       const attributes: MetadataAttributeInput[] = [
         {
@@ -223,7 +226,6 @@ export default function VideoTypes({
         appId: APP_ID,
       };
       const metadataUri = await uploadToArweave(metadata);
-      console.log(metadataUri);
       createPost({
         variables: {
           request: {
@@ -239,9 +241,6 @@ export default function VideoTypes({
           },
         },
       });
-      console.log("Metadata uploaded to arweave", metadataUri);
-      console.log("Collect Module of Post", uploadStore.collectModule);
-      console.log("Reference Module of Post", uploadStore.referenceModule);
     } catch (error) {
       console.log(error);
     }
@@ -334,7 +333,7 @@ export default function VideoTypes({
       <View
         style={{
           position: "absolute",
-          bottom: 16,
+          bottom: Platform.OS === "ios" ? 48 : 16,
           paddingHorizontal: 16,
           width: "100%",
         }}

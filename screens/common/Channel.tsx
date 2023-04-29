@@ -128,7 +128,6 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
 
   const [subscribeToChannel] = useProxyActionMutation({
     onCompleted: (data) => {
-      console.log(data);
       toast.success("Subscribed succesfully!");
       setAlreadyFollowing(true);
     },
@@ -400,12 +399,12 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
               ) : (
                 <></>
               )}
-               <SocialLinks
-                  instagram={links.insta}
-                  website={links.site}
-                  twitter={links.twitter}
-                  youtube={links.yt}
-                />
+              <SocialLinks
+                instagram={links.insta}
+                website={links.site}
+                twitter={links.twitter}
+                youtube={links.yt}
+              />
               <View
                 style={{
                   flexDirection: "row",

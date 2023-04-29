@@ -191,7 +191,7 @@ export default function EditDetail() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView style={{ width: "100%", height: "100%" }}>
         <Pressable
           onPress={selectCoverImage}
@@ -316,7 +316,7 @@ export default function EditDetail() {
           />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 

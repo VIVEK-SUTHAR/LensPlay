@@ -87,7 +87,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             address: address,
           },
         },
-        fetchPolicy: 'network-only'
+        fetchPolicy: "network-only",
       });
 
       const signature = await connector.sendCustomRequest({
@@ -106,12 +106,6 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         });
 
         setAccessToken(response?.data?.authenticate?.accessToken);
-        console.log("access token");
-        console.log(response?.data?.authenticate?.accessToken);
-        console.log("refresh token");
-        console.log(response?.data?.authenticate?.refreshToken);
-
-        
         setRefreshToken(response?.data?.authenticate?.refreshToken);
         await storeTokens(
           response?.data?.authenticate?.accessToken,
@@ -154,17 +148,15 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
     }
   };
 
-  
-  const handleDesktop = async() => {
+  const handleDesktop = async () => {
     const isDesktop = await AsyncStorage.getItem("@viaDeskTop");
-    
-    if (isDesktop == "true"){
+
+    if (isDesktop == "true") {
       setIsDesktop(true);
-    }
-    else {
+    } else {
       setIsDesktop(false);
     }
-  }
+  };
 
   useEffect(() => {
     Animated.spring(scaleAnimation, {
@@ -181,8 +173,6 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
     }).start();
     handleDesktop();
   }, []);
-
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -225,8 +215,8 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
             }}
           />
           <View>
-            {
-              !isDesktop?(<Animated.View
+            {!isDesktop ? (
+              <Animated.View
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
@@ -280,11 +270,17 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
                   bg={"rgba(255,255,255,0.1)"}
                   px={24}
                   py={12}
-                  textStyle={{ fontSize: 12, fontWeight: "600", color: "white" }}
+                  textStyle={{
+                    fontSize: 12,
+                    fontWeight: "600",
+                    color: "white",
+                  }}
                   onPress={handleDisconnect}
                 />
-              </Animated.View>):<></>
-            }
+              </Animated.View>
+            ) : (
+              <></>
+            )}
             <Animated.View
               style={{
                 marginTop: 24,
@@ -303,15 +299,13 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
                 py={16}
                 icon={<Icon name="arrowForward" color="black" size={16} />}
                 iconPosition="right"
-                onPress={
-                  async () => {
-                    if (isDesktop) {
-                      Linking.openURL("https://lens-create-profile.vercel.app/");
-                    } else {
-                      await handleLoginWithLens();
-                    }
+                onPress={async () => {
+                  if (isDesktop) {
+                    Linking.openURL("https://lens-create-profile.vercel.app/");
+                  } else {
+                    await handleLoginWithLens();
                   }
-                }
+                }}
               />
             </Animated.View>
           </View>

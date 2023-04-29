@@ -1,6 +1,11 @@
 import { client } from "../../apollo/client";
 import getProfileByAddress from "../../apollo/Queries/getProfileByAddress";
-import { Profile, ProfileQueryRequest, ProfilesDocument, Scalars } from "../../types/generated";
+import {
+  Profile,
+  ProfileQueryRequest,
+  ProfilesDocument,
+  Scalars,
+} from "../../types/generated";
 
 const getProfiles = async (
   request: ProfileQueryRequest
@@ -9,13 +14,10 @@ const getProfiles = async (
     const result = await client.query({
       query: ProfilesDocument,
       variables: {
-        request
+        request,
       },
-      fetchPolicy: 'network-only'
+      fetchPolicy: "network-only",
     });
-    console.log(result?.data?.profiles?.items,'idhaer');
-    
-
     return result?.data?.profiles?.items[0];
   } catch (error) {
     console.log("[Error]:Error in getting created profile");

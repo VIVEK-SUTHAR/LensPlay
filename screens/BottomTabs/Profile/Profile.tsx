@@ -146,7 +146,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   if (loading) return <ProfileSkeleton />;
   if (Profile) {
     console.log(Profile);
-    
+
     const profile = Profile?.profile;
     return (
       <>

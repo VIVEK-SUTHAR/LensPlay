@@ -7,6 +7,7 @@ import {
   BackHandler,
   Dimensions,
   Image,
+  KeyboardAvoidingView,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -278,11 +279,15 @@ const VideoPage = ({
             <Comment publicationId={activePublication?.id} shots={false} />
           </View>
         </ScrollView>
-        {!inFullscreen && <CommentInput publicationId={activePublication?.id} />}
+        <KeyboardAvoidingView behavior="padding">
+          {!inFullscreen && (
+            <CommentInput publicationId={activePublication?.id} />
+          )}
+        </KeyboardAvoidingView>
       </SafeAreaView>
       <>
-        {
-          !inFullscreen && <>
+        {!inFullscreen && (
+          <>
             <Sheet
               ref={collectRef}
               index={-1}
@@ -302,7 +307,9 @@ const VideoPage = ({
                 >
                   <Image
                     source={{
-                      uri: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
+                      uri: getIPFSLink(
+                        getRawurl(activePublication?.metadata?.cover)
+                      ),
                     }}
                     style={{
                       height: Dimensions.get("screen").height / 4,
@@ -353,7 +360,9 @@ const VideoPage = ({
                 >
                   <Image
                     source={{
-                      uri: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
+                      uri: getIPFSLink(
+                        getRawurl(activePublication?.metadata?.cover)
+                      ),
                     }}
                     style={{
                       height: Dimensions.get("screen").height / 4,
@@ -448,17 +457,27 @@ const VideoPage = ({
                       </View>
                       <View style={styles.verticleCenter}>
                         <StyledText
-                          title={activePublication?.stats?.totalAmountOfCollects || 0}
+                          title={
+                            activePublication?.stats?.totalAmountOfCollects || 0
+                          }
                           style={styles.statsLabel}
                         />
-                        <StyledText title="Collects" style={{ color: "white" }} />
+                        <StyledText
+                          title="Collects"
+                          style={{ color: "white" }}
+                        />
                       </View>
                       <View style={styles.verticleCenter}>
                         <StyledText
-                          title={activePublication?.stats?.totalAmountOfMirrors || 0}
+                          title={
+                            activePublication?.stats?.totalAmountOfMirrors || 0
+                          }
                           style={styles.statsLabel}
                         />
-                        <StyledText title="Mirrors" style={{ color: "white" }} />
+                        <StyledText
+                          title="Mirrors"
+                          style={{ color: "white" }}
+                        />
                       </View>
                     </View>
                     <StyledText
@@ -475,9 +494,10 @@ const VideoPage = ({
                       }}
                     />
                     <StyledText
-                      title={`Posted via ${activePublication?.appId?.charAt(0)?.toUpperCase() +
-                        activePublication?.appId?.slice(1) || "LensPlay"
-                        }`}
+                      title={`Posted via ${
+                        activePublication?.appId?.charAt(0)?.toUpperCase() +
+                          activePublication?.appId?.slice(1) || "LensPlay"
+                      }`}
                       style={{
                         color: "white",
                         marginTop: 16,
@@ -500,7 +520,8 @@ const VideoPage = ({
                         activePublication?.profile?.isFollowedByMe || false
                       }
                       avatarLink={
-                        getRawurl(activePublication?.profile?.picture) || STATIC_ASSET
+                        getRawurl(activePublication?.profile?.picture) ||
+                        STATIC_ASSET
                       }
                       profileId={activePublication?.profile?.id}
                       uploadedBy={
@@ -516,9 +537,9 @@ const VideoPage = ({
                   </View>
                 </BottomSheetScrollView>
               }
-            /></>
-        }
-
+            />
+          </>
+        )}
       </>
     </>
   );

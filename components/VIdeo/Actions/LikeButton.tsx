@@ -57,10 +57,13 @@ const LikeButton = ({
     },
   });
 
-
   const [removeReaction] = useRemoveReactionMutation({
     onError: (e) => {
-      toast.show("Something went wrong while disliking!", ToastType.ERROR, true);
+      toast.show(
+        "Something went wrong while disliking!",
+        ToastType.ERROR,
+        true
+      );
     },
     onCompleted: () => {
       if (bytes) {
@@ -73,8 +76,6 @@ const LikeButton = ({
   });
 
   const onLike = async () => {
-    console.log('gttff');
-    
     if (isGuest) {
       toast.show("Please Login", ToastType.ERROR, true);
       return;

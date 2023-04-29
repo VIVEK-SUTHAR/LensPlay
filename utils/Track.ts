@@ -1,6 +1,5 @@
 async function TrackAction(event: string) {
   if (__DEV__) {
-    // console.log("dev mode");
     return;
   }
   const options = {

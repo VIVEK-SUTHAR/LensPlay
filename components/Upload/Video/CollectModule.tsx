@@ -110,7 +110,6 @@ function CollectModuleSheet({ collectModuleRef }: CollectModuleSheetProp) {
         isRevertCollect: false,
       });
     }
-    
   }, [isFollowersOnlyCollect]);
   useEffect(() => {
     if (isCollectEnabled) {
@@ -129,11 +128,11 @@ function CollectModuleSheet({ collectModuleRef }: CollectModuleSheetProp) {
         isRevertCollect: true,
       });
     }
-  },[isCollectEnabled])
+  }, [isCollectEnabled]);
   return (
     <Sheet
       ref={collectModuleRef}
-      snapPoints={["98%"]}
+      snapPoints={["50%"]}
       containerStyle={{
         height: "auto",
       }}
@@ -146,18 +145,16 @@ function CollectModuleSheet({ collectModuleRef }: CollectModuleSheetProp) {
           }}
         >
           <View style={{ padding: 16 }}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Heading
-                title={"Collect Settings"}
-                style={{
-                  color: "white",
-                  fontSize: 20,
-                  marginHorizontal: 8,
-                  marginBottom: 16,
-                  fontWeight: "600",
-                }}
-              />
-            </View>
+            <Heading
+              title={"Collect Settings"}
+              style={{
+                color: "white",
+                fontSize: 20,
+                marginHorizontal: 8,
+                marginBottom: 16,
+                fontWeight: "600",
+              }}
+            />
             <View
               style={{
                 backgroundColor: dark_secondary,

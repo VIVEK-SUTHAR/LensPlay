@@ -22,7 +22,6 @@ export default function DeleteVideo({ sheetRef, pubId }: DeleteVideoProps) {
 
   const [deleteVideo, { data, error, loading }] = useHidePublicationMutation({
     onCompleted: (data) => {
-      console.log(data);
       toast.success("video deleted successfully");
       TrackAction(SETTINGS.PROFILE.UPDATE_DETAILS);
     },

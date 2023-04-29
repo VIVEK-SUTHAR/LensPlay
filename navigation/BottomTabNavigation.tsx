@@ -38,6 +38,7 @@ import { Camera } from "react-native-vision-camera";
 import getFileSize from "../utils/video/getFileSize";
 import canUploadedToIpfs from "../utils/canUploadToIPFS";
 import { useUploadStore } from "../store/UploadStore";
+import { black } from "../constants/Colors";
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
@@ -230,12 +231,12 @@ export default function BottomTabNavigator({
           ),
           tabBarStyle: {
             backgroundColor: "black",
-          alignItems: "center",
-          justifyContent: "space-between",
-          borderTopColor: "transparent",
-          minHeight: windowHeight/14,
-          paddingHorizontal: 5,
-          paddingVertical: 10,
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderTopColor: "transparent",
+            minHeight: windowHeight / 14,
+            paddingHorizontal: 5,
+            paddingVertical: 10,
           },
           headerShadowVisible: false,
         }}
@@ -415,7 +416,7 @@ export default function BottomTabNavigator({
               <View
                 style={{
                   padding: 16,
-                  backgroundColor: "black",
+                  backgroundColor: black[700],
                   borderRadius: 50,
                 }}
               >
@@ -456,7 +457,7 @@ export default function BottomTabNavigator({
               <View
                 style={{
                   padding: 16,
-                  backgroundColor: "black",
+                  backgroundColor: black[700],
                   borderRadius: 50,
                 }}
               >
@@ -513,10 +514,10 @@ export default function BottomTabNavigator({
                   }
                   if (!camera.cancelled) {
                     const size = await getFileSize(camera.uri);
-                  if (!canUploadedToIpfs(size)) {
-                    toast.error("Select video less than 100MB");
-                    return;
-                  }
+                    if (!canUploadedToIpfs(size)) {
+                      toast.error("Select video less than 100MB");
+                      return;
+                    }
                     navigation.push("UploadVideo", {
                       localUrl: camera.uri,
                       duration: camera.duration,
@@ -569,7 +570,7 @@ export default function BottomTabNavigator({
                     toast.error("Select video less than 100MB");
                     return;
                   }
-                  uploadStore.setDuration(result.assets[0].duration!);
+                  uploadStore.setDuration(result.duration!);
                   navigation.push("UploadVideo", {
                     localUrl: result.uri,
                     duration: result.duration,

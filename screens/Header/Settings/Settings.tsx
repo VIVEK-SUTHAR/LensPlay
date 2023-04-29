@@ -6,6 +6,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { FC, useRef } from "react";
 import {
   Linking,
+  Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -278,7 +279,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
-    padding: 20,
+    padding: 16,
   },
   itemContainer: {
     flexDirection: "row",

@@ -5,8 +5,6 @@ function formatUnfollowTypedData(
   const typedData = response?.data?.createUnfollowTypedData?.typedData;
   const values = typedData?.value;
   const domain = typedData?.domain;
-//   console.log(values, "values");
-//   console.log(domain, "domain");
 
   const formattedTypedData = {
     types: {

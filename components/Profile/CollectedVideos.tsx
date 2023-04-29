@@ -25,12 +25,12 @@ const CollectedVideos = ({
   ethAddress,
   handle,
   navigation,
-  owner
+  owner,
 }: CollectedVideosProps) => {
   const { accessToken } = useAuthStore();
   const { currentProfile } = useProfile();
   const QueryRequest: PublicationsQueryRequest = {
-    collectedBy: currentProfile?.ownedBy,
+    collectedBy: ethAddress,
     publicationTypes: [PublicationTypes.Post, PublicationTypes.Mirror],
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
@@ -98,7 +98,7 @@ const CollectedVideos = ({
               navigation.navigate("YourVideos", {
                 videos: collectVideos,
                 title: "Your collects",
-                owner: owner
+                owner: owner,
               });
             }}
           >
