@@ -191,132 +191,128 @@ export default function EditDetail() {
   }
 
   return (
-    <View style={styles.container}>
-      <ScrollView style={{ width: "100%", height: "100%" }}>
-        <Pressable
-          onPress={selectCoverImage}
+    <ScrollView style={styles.container}>
+      <Pressable
+        onPress={selectCoverImage}
+        style={{
+          height: windowHeight / 4,
+          width: "100%",
+        }}
+      >
+        <View
           style={{
-            height: windowHeight / 4,
+            position: "absolute",
+            height: "100%",
             width: "100%",
+            backgroundColor: "rgba(255,255,255,0.02)",
+            zIndex: 4,
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <View
-            style={{
-              position: "absolute",
-              height: "100%",
-              width: "100%",
-              backgroundColor: "rgba(255,255,255,0.02)",
-              zIndex: 4,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Icon name="edit" />
-          </View>
-          <Image
-            source={{
-              uri:
-                coverPic ||
-                getIPFSLink(getRawurl(currentProfile?.coverPicture)),
-            }}
-            style={{
-              opacity: 0.5,
-              height: "100%",
-              width: "100%",
-              resizeMode: "cover",
-            }}
-          />
-        </Pressable>
-        <View style={{ padding: 16 }}>
-          <Input
-            label="Name"
-            value={userData.name}
-            placeHolder={
-              currentProfile?.name || formatHandle(currentProfile?.handle)
-            }
-            onChange={(e) => {
-              setUserData({
-                name: e.nativeEvent.text,
-                bio: userData.bio,
-              });
-            }}
-          />
-          <TextArea
-            label="Bio"
-            placeHolder={currentProfile?.bio || "What describes you..."}
-            value={userData.bio}
-            onChange={(e) => {
-              setUserData({
-                name: userData.name,
-                bio: e.nativeEvent.text,
-              });
-            }}
-          />
-          <StyledText title="Social Links" style={styles.textStyle} />
-          <Input
-            label="Twitter"
-            value={socialLinks.twitter}
-            placeHolder={initialSocialLinks.twitter}
-            onChange={(e) => {
-              setSocialLinks({
-                ...socialLinks,
-                twitter: e.nativeEvent.text,
-              });
-            }}
-          />
-          <Input
-            label="Instagram"
-            placeHolder={initialSocialLinks.instagram || "@username"}
-            value={socialLinks.instagram}
-            onChange={(e) => {
-              setSocialLinks({
-                ...socialLinks,
-                instagram: e.nativeEvent.text,
-              });
-            }}
-          />
-          <Input
-            label="Youtube"
-            placeHolder={initialSocialLinks.youtube || "Youtube link"}
-            value={socialLinks.youtube}
-            onChange={(e) => {
-              setSocialLinks({
-                ...socialLinks,
-                youtube: e.nativeEvent.text,
-              });
-            }}
-          />
-          <Input
-            label="Website"
-            value={socialLinks.website}
-            placeHolder={initialSocialLinks.website || "https://your-site.com"}
-            onChange={(e) => {
-              setSocialLinks({
-                ...socialLinks,
-                website: e.nativeEvent.text,
-              });
-            }}
-          />
+          <Icon name="edit" />
         </View>
-        <View style={[styles.inputContainer]}>
-          <Button
-            title="Update details"
-            width={"100%"}
-            px={12}
-            py={8}
-            my={16}
-            borderRadius={8}
-            textStyle={{
-              textAlign: "center",
-              fontSize: 16,
-              fontWeight: "600",
-            }}
-            isLoading={isUpdating}
-            onPress={handleUpdate}
-          />
-        </View>
-      </ScrollView>
-    </View>
+        <Image
+          source={{
+            uri:
+              coverPic || getIPFSLink(getRawurl(currentProfile?.coverPicture)),
+          }}
+          style={{
+            opacity: 0.5,
+            height: "100%",
+            width: "100%",
+            resizeMode: "cover",
+          }}
+        />
+      </Pressable>
+      <View style={{ padding: 16 }}>
+        <Input
+          label="Name"
+          value={userData.name}
+          placeHolder={
+            currentProfile?.name || formatHandle(currentProfile?.handle)
+          }
+          onChange={(e) => {
+            setUserData({
+              name: e.nativeEvent.text,
+              bio: userData.bio,
+            });
+          }}
+        />
+        <TextArea
+          label="Bio"
+          placeHolder={currentProfile?.bio || "What describes you..."}
+          value={userData.bio}
+          rows={6}
+          onChange={(e) => {
+            setUserData({
+              name: userData.name,
+              bio: e.nativeEvent.text,
+            });
+          }}
+        />
+        <StyledText title="Social Links" style={styles.textStyle} />
+        <Input
+          label="Twitter"
+          value={socialLinks.twitter}
+          placeHolder={initialSocialLinks.twitter}
+          onChange={(e) => {
+            setSocialLinks({
+              ...socialLinks,
+              twitter: e.nativeEvent.text,
+            });
+          }}
+        />
+        <Input
+          label="Instagram"
+          placeHolder={initialSocialLinks.instagram || "@username"}
+          value={socialLinks.instagram}
+          onChange={(e) => {
+            setSocialLinks({
+              ...socialLinks,
+              instagram: e.nativeEvent.text,
+            });
+          }}
+        />
+        <Input
+          label="Youtube"
+          placeHolder={initialSocialLinks.youtube || "Youtube link"}
+          value={socialLinks.youtube}
+          onChange={(e) => {
+            setSocialLinks({
+              ...socialLinks,
+              youtube: e.nativeEvent.text,
+            });
+          }}
+        />
+        <Input
+          label="Website"
+          value={socialLinks.website}
+          placeHolder={initialSocialLinks.website || "https://your-site.com"}
+          onChange={(e) => {
+            setSocialLinks({
+              ...socialLinks,
+              website: e.nativeEvent.text,
+            });
+          }}
+        />
+      </View>
+      <View style={[styles.inputContainer]}>
+        <Button
+          title="Save"
+          width={"100%"}
+          py={16}
+          my={16}
+          textStyle={{
+            textAlign: "center",
+            fontSize: 16,
+            fontWeight: "600",
+          }}
+          isLoading={isUpdating}
+          onPress={handleUpdate}
+        />
+      </View>
+    </ScrollView>
   );
 }
 
@@ -324,7 +320,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
-    alignItems: "center",
   },
   textStyle: {
     color: "white",

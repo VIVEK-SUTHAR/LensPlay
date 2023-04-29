@@ -1,6 +1,7 @@
 import React from "react";
 import {
   NativeSyntheticEvent,
+  Platform,
   StyleProp,
   StyleSheet,
   TextInput,
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     backgroundColor: dark_primary,
     color: "white",
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingVertical: Platform.OS === "ios" ? 16 : 8,
     borderRadius: 8,
   },
 });

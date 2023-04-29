@@ -1,6 +1,7 @@
 import React from "react";
 import {
   NativeSyntheticEvent,
+  Platform,
   StyleSheet,
   TextInput,
   TextInputChangeEventData,
@@ -31,9 +32,14 @@ const TextArea = ({
       <StyledText title={label} style={styles.textStyle} />
       <TextInput
         multiline={true}
-        numberOfLines={rows}
+        numberOfLines={Platform.OS === "ios" ? undefined : rows}
         onChange={onChange}
-        style={styles.input}
+        style={[
+          styles.input,
+          {
+            minHeight: Platform.OS === "ios" && rows ? 16 * rows : undefined,
+          },
+        ]}
         placeholder={value || placeHolder}
         placeholderTextColor="gray"
         selectionColor={PRIMARY}
@@ -61,7 +67,7 @@ const styles = StyleSheet.create({
     backgroundColor: dark_primary,
     color: "white",
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingVertical: Platform.OS === "ios" ? 24 : 8,
     borderRadius: 8,
   },
 });
