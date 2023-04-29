@@ -136,7 +136,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 
   const handleDisconnect = async () => {
     try {
-      if (connector.accounts[0]) {
+      if (connector?.accounts[0]) {
         await connector.killSession();
       }
       navigation.replace("Login");

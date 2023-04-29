@@ -16,6 +16,7 @@ import getRawurl from "../../utils/getRawUrl";
 import uploadMetaDataToArweave from "../../utils/uploadMetaToArweave";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
+import { black } from "../../constants/Colors";
 
 type CommentInputProps = {
   publicationId: string;
@@ -94,7 +95,7 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
   return (
     <View
       style={{
-        backgroundColor: "#1A1A1A",
+        backgroundColor: black[600],
         width: "100%",
         height: 60,
         flexDirection: "row",
@@ -140,29 +141,25 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
         }}
         placeholderTextColor={"white"}
       />
-      {isFocused ? (
-        <Pressable
-          android_ripple={{
-            color: commentText.length === 0 ? "gray" : PRIMARY,
-            radius: 20,
-          }}
-          style={{
-            height: 60,
-            justifyContent: "center",
-            alignItems: "center",
-            paddingHorizontal: 12,
-          }}
-          onPressIn={publishComment}
-        >
-          <Icon
-            name="send"
-            color={commentText.length === 0 ? "gray" : PRIMARY}
-            size={24}
-          />
-        </Pressable>
-      ) : (
-        <></>
-      )}
+      <Pressable
+        android_ripple={{
+          color: commentText.length === 0 ? "gray" : PRIMARY,
+          radius: 20,
+        }}
+        style={{
+          height: 60,
+          justifyContent: "center",
+          alignItems: "center",
+          paddingHorizontal: 12,
+        }}
+        onPressIn={publishComment}
+      >
+        <Icon
+          name="send"
+          color={commentText.length === 0 ? "gray" : PRIMARY}
+          size={24}
+        />
+      </Pressable>
     </View>
   );
 };

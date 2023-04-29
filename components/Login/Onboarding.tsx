@@ -1,7 +1,13 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
 import React, { forwardRef, useCallback, useRef, useState } from "react";
-import { FlatList, Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
@@ -37,7 +43,7 @@ const Onboarding = ({
   }: {
     viewableItems: any;
   }) => {
-    flatListIndex.value = viewableItems[0].index;
+    flatListIndex.value = viewableItems[0]?.index;
   };
 
   const arrowAnimationStyle = useAnimatedStyle(() => {
@@ -61,7 +67,7 @@ const Onboarding = ({
         {
           scale:
             flatListIndex.value === data.length - 1
-              ? withSpring((scaleValue.value = 1),{mass: 0.7})
+              ? withSpring((scaleValue.value = 1), { mass: 0.7 })
               : withSpring((scaleValue.value = 0)),
         },
       ],
@@ -118,7 +124,7 @@ const Onboarding = ({
     <>
       <FlatList
         ref={flatListRef}
-        onScroll={(e)=>{
+        onScroll={(e) => {
           setX(e.nativeEvent.contentOffset.x);
         }}
         data={data}

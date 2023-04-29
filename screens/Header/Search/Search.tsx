@@ -26,6 +26,7 @@ import {
   SearchRequestTypes,
 } from "../../../types/generated";
 import { RootStackScreenProps } from "../../../types/navigation/types";
+import NotFound from "../../../components/common/NotFound";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const { DARK_PRIMARY } = useThemeStore();
@@ -104,8 +105,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
     navigation.setOptions({
       headerStyle: { backgroundColor: "black" },
       headerTitle: "",
-      headerTintColor: "white",
-      headerTransparent: false,
+      headerTransparent: true,
       headerLeft: () => {
         return (
           <View
@@ -116,7 +116,10 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                 e.preventDefault();
                 navigation.goBack();
               }}
-              style={{ marginRight: 8 }}
+              style={{
+                marginRight: 8,
+                paddingHorizontal: 4,
+              }}
             >
               <Icon name="arrowLeft" size={20} />
             </Pressable>
@@ -186,7 +189,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                 backgroundColor: "black",
                 height: "100%",
               }}
-              ListEmptyComponent={<NotFound />}
+              ListEmptyComponent={<NotFound message={"No videos found"} />}
               data={
                 searchType === SearchRequestTypes.Publication
                   ? result?.search?.items
@@ -213,42 +216,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 
 export default Search;
 
-function NotFound() {
-  return (
-    <View
-      style={{
-        backgroundColor: "black",
-        height: "100%",
-      }}
-    >
-      <AnimatedLottieView
-        autoPlay
-        style={{
-          height: "auto",
-        }}
-        source={require("../../../assets/notfound.json")}
-      />
-      <View
-        style={{
-          alignItems: "center",
-        }}
-      >
-        <StyledText
-          title="No data found"
-          style={{
-            fontSize: 16,
-            color: "white",
-            marginVertical: 4,
-            marginHorizontal: 16,
-            fontWeight: "600",
-            textAlign: "center",
-          }}
-        />
-      </View>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -259,23 +226,23 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    width: Dimensions.get("window").width * 0.94,
+    width: Dimensions.get("window").width * 0.9,
     paddingHorizontal: 8,
-    borderWidth: 1,
     borderRadius: 50,
-    paddingVertical: 10,
+    paddingVertical: 8,
   },
   searchingLoader: {
     fontSize: 16,
     color: "white",
-    marginVertical: 5,
-    marginHorizontal: 15,
+    marginVertical: 4,
+    marginHorizontal: 16,
     fontWeight: "600",
     alignSelf: "flex-start",
   },
   textInput: {
     flex: 1,
     color: "white",
-    fontSize: 14,
+    fontSize: 12,
+    paddingVertical: 4,
   },
 });
