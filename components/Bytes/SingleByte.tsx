@@ -6,7 +6,13 @@ import { ResizeMode, Video } from "expo-av";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import VideoPlayer from "expo-video-player";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ActivityIndicator,
   Dimensions,
@@ -105,9 +111,10 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
     checkIfLivePeerAsset(LENS_MEDIA_URL).then((res) => {
       if (res) {
         setPlabackUrl(res);
+        // console.log(res);
       } else {
-        createLivePeerAsset(LENS_MEDIA_URL);
         setPlabackUrl(getIPFSLink(LENS_MEDIA_URL));
+        createLivePeerAsset(LENS_MEDIA_URL);
       }
     });
   }, []);
@@ -133,57 +140,42 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             position: "absolute",
           }}
         >
-          {plabackUrl ? (
-            <VideoPlayer
-              defaultControlsVisible={false}
-              videoProps={{
-                ref: ref,
-                source: {
-                  uri: getIPFSLink(item?.metadata?.media[0]?.original?.url),
-                },
-                onError(error) {
-                  // console.log(error);
-                },
-                shouldPlay: currentIndex === index,
+          <VideoPlayer
+            defaultControlsVisible={false}
+            videoProps={{
+              ref: ref,
+              source: {
+                uri: plabackUrl,
+              },
+              shouldPlay: index === currentIndex,
+              resizeMode: ResizeMode.CONTAIN,
+              isMuted: mute,
+              posterSource: {
+                uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
+              },
+              isLooping: true,
+              posterStyle: {
                 resizeMode: ResizeMode.CONTAIN,
-                isMuted: mute,
-                posterSource: {
-                  uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
-                },
-                isLooping: true,
-                posterStyle: {
-                  resizeMode: ResizeMode.CONTAIN,
-                },
-              }}
-              slider={{
-                visible: false,
-              }}
-              fullscreen={{
-                visible: false,
-              }}
-              mute={{
-                visible: false,
-              }}
-              timeVisible={false}
-              icon={{
-                size: 48,
-                play: <Icon name="play" size={48} />,
-                pause: <Icon name="pause" size={52} />,
-                replay: <Icon name="replay" size={48} />,
-              }}
-              autoHidePlayer={true}
-            />
-          ) : (
-            <View
-              style={{
-                height: windowHeight,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <ActivityIndicator color={PRIMARY} size="large" />
-            </View>
-          )}
+              },
+            }}
+            slider={{
+              visible: false,
+            }}
+            fullscreen={{
+              visible: false,
+            }}
+            mute={{
+              visible: false,
+            }}
+            timeVisible={false}
+            icon={{
+              size: 48,
+              play: <Icon name="play" size={48} />,
+              pause: <Icon name="pause" size={52} />,
+              replay: <Icon name="replay" size={48} />,
+            }}
+            autoHidePlayer={true}
+          />
         </TouchableOpacity>
         <Ionicons
           name="volume-mute"

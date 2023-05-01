@@ -2,7 +2,7 @@ import { LIVEPEER_API_TOKEN, LIVEPEER_API_URL } from "./../../constants/index";
 async function checkIfLivePeerAsset(ipfsOrArweaveHash: string) {
   try {
     const livepeerResponse = await fetch(
-      `${LIVEPEER_API_URL}/asset?sourceUrl=${ipfsOrArweaveHash}`,
+      `${LIVEPEER_API_URL}/asset?sourceUrl=${ipfsOrArweaveHash}&phase=ready`,
       {
         method: "GET",
         headers: {

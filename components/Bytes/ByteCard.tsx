@@ -58,15 +58,6 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
   });
 
   const bytesData = shotsData?.explorePublications?.items as ShotsPublication[];
-
-  const onRefresh = React.useCallback(() => {
-    refetch({
-      request: QueryRequest,
-    });
-  }, []);
-  if (loading) return <Loading />;
-  if (error) console.log(error);
-
   const renderItem = ({ item, index }) => {
     return (
       <View
@@ -79,6 +70,14 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
     );
   };
   const renderMemoizedValue = useMemo(() => renderItem, []);
+  const onRefresh = React.useCallback(() => {
+    refetch({
+      request: QueryRequest,
+    });
+  }, []);
+  if (loading) return <Loading />;
+  if (error) console.log(error);
+
   if (shotsData) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -95,8 +94,10 @@ const ByteCard = ({ navigation }: { navigation: any }) => {
             vertical={true}
             keyExtractor={(item, index) => index.toString()}
             onChangeIndex={handleChangeIndexValue}
-            initialNumToRender={7}
-            data={shotsData?.explorePublications?.items}
+            initialNumToRender={2}
+            data={shotsData?.explorePublications?.items.filter(
+              (item) => !item.hidden
+            )}
             renderItem={renderMemoizedValue}
           />
         ) : (
