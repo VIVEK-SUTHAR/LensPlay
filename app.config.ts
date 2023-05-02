@@ -160,11 +160,7 @@ const config: ExpoConfig = {
   },
   extra: {
     // eas: {
-<<<<<<< HEAD
-      // projectId: "b2fcb561-ea34-43d1-acf0-dabcba685aa2",
-=======
     //   projectId: "b2fcb561-ea34-43d1-acf0-dabcba685aa2",
->>>>>>> 8462635fd4d24b00847ed859f7d5992814f9f20c
     // },
   },
   plugins: [
