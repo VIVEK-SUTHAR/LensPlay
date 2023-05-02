@@ -62,12 +62,12 @@ export default function EditDetail() {
       aspect: [2, 1],
       base64: true,
     });
-    if (coverresult.cancelled) {
-      toast.show("No image selected", ToastType.ERROR, true);
+    if (coverresult.canceled) {
+      return;
     }
-    if (!coverresult.cancelled) {
-      setCoverPic(coverresult.uri);
-      const imgblob = await getImageBlobFromUri(coverresult.uri);
+    if (!coverresult.canceled) {
+      setCoverPic(coverresult.assets[0].uri);
+      const imgblob = await getImageBlobFromUri(coverresult.assets[0].uri);
       setCoverImageBlob(imgblob);
     }
   }

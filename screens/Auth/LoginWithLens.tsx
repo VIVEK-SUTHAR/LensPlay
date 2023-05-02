@@ -320,7 +320,7 @@ export default LoginWithLens;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "black",
+    backgroundColor: "#2D3436",
     justifyContent: "space-between",
   },
   bottomCircles: {

@@ -51,8 +51,8 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
       quality: 1,
       base64: true,
     });
-    if (!coverresult.cancelled) {
-      setimage(coverresult?.uri);
+    if (!coverresult.canceled) {
+      setimage(coverresult?.assets[0].uri);
     }
   }
   const [selectData, setselectData] = useState<BugCategory>({ reason: "" });
@@ -123,9 +123,12 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
     }
   }
   return (
-    <KeyboardAvoidingView style={styles.container} >
+    <KeyboardAvoidingView style={styles.container}>
       <StatusBar backgroundColor="black" style="auto" />
-      <ScrollView showsVerticalScrollIndicator={false} style={{width: WINDOW_WIDTH, paddingHorizontal: 12, marginTop: 4}}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ width: WINDOW_WIDTH, paddingHorizontal: 12, marginTop: 4 }}
+      >
         <View
           style={{
             width: "100%",
@@ -133,7 +136,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
         >
           <StyledText
             title="Tell us where you found bug,we'll be happy to fix it"
-            style={{ color: "white", textAlign: 'center' }}
+            style={{ color: "white", textAlign: "center" }}
           />
         </View>
         <Dropdown

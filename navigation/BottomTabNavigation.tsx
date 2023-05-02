@@ -508,19 +508,19 @@ export default function BottomTabNavigator({
                   let camera = await ImagePicker.launchCameraAsync({
                     mediaTypes: ImagePicker.MediaTypeOptions.Videos,
                   });
-                  if (camera.cancelled) {
+                  if (camera.canceled) {
                     // ToastAndroid.show("No Video recorded", ToastAndroid.SHORT);
                     uploadTypeRef.current?.close();
                   }
-                  if (!camera.cancelled) {
-                    const size = await getFileSize(camera.uri);
+                  if (!camera.canceled) {
+                    const size = await getFileSize(camera.assets[0].uri);
                     if (!canUploadedToIpfs(size)) {
                       toast.error("Select video less than 100MB");
                       return;
                     }
                     navigation.push("UploadVideo", {
-                      localUrl: camera.uri,
-                      duration: camera.duration,
+                      localUrl: camera.assets[0].uri,
+                      duration: camera.assets[0].duration,
                     });
                   }
                 }
@@ -561,19 +561,19 @@ export default function BottomTabNavigator({
                   quality: 1,
                   base64: true,
                 });
-                if (result.cancelled) {
+                if (result.canceled) {
                   uploadTypeRef.current?.close();
                 }
-                if (!result.cancelled) {
-                  const size = await getFileSize(result.uri);
+                if (!result.canceled) {
+                  const size = await getFileSize(result.assets[0].uri);
                   if (!canUploadedToIpfs(size)) {
                     toast.error("Select video less than 100MB");
                     return;
                   }
-                  uploadStore.setDuration(result.duration!);
+                  uploadStore.setDuration(result.assets[0].duration!);
                   navigation.push("UploadVideo", {
-                    localUrl: result.uri,
-                    duration: result.duration,
+                    localUrl: result.assets[0].uri,
+                    duration: result.assets[0].duration,
                   });
                 }
               }}
