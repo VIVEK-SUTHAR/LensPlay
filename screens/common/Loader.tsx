@@ -1,8 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
-import AnimatedLottieView from "lottie-react-native";
-import React, { useEffect } from "react";
-import { View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Dimensions, Image, View } from "react-native";
 import { APP_OPEN } from "../../constants/tracking";
 import { useAuthStore, useProfile } from "../../store/Store";
 import {
@@ -14,10 +13,23 @@ import TrackAction from "../../utils/Track";
 import handleWaitlist from "../../utils/handleWaitlist";
 import getDefaultProfile from "../../utils/lens/getDefaultProfile";
 import storeTokens from "../../utils/storeTokens";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
+import StyledText from "../../components/UI/StyledText";
+import Heading from "../../components/UI/Heading";
 
 export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
   const { setCurrentProfile, currentProfile, setHasHandle } = useProfile();
   const { setAccessToken, setRefreshToken } = useAuthStore();
+  const whiteBox = useSharedValue(1);
+  const blackBox = useSharedValue(1);
+  const image = useSharedValue(0);
+  const textOpacity = useSharedValue(0);
 
   const [
     verifyTokens,
@@ -152,27 +164,124 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
   };
 
   useEffect(() => {
-    getLocalStorage();
+    whiteBox.value = withTiming(10, {
+      duration: 500,
+    });
+    blackBox.value = withDelay(100, withTiming(10, { duration: 500 }));
+    image.value = withDelay(1000, withSpring(1, { mass: 1 }));
+    textOpacity.value = withDelay(1500, withTiming(1, { duration: 1000 }));
+    setTimeout(() => {
+      getLocalStorage();
+    }, 2000);
   }, []);
+
+  const whiteBoxAnimationStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          scale: whiteBox.value,
+        },
+      ],
+    };
+  });
+
+  const blackBoxAnimationStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          scale: blackBox.value,
+        },
+      ],
+    };
+  });
+
+  const ImageAnimationStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          scale: image.value,
+        },
+      ],
+    };
+  });
+
+  const TextAnimationStyle = useAnimatedStyle(() => {
+    return {
+      opacity: textOpacity.value,
+    };
+  });
 
   return (
     <View
       style={{
-        height: "100%",
-        width: "100%",
+        flex: 1,
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "black",
       }}
     >
       <StatusBar style="light" backgroundColor="transparent" />
-      <AnimatedLottieView
-        autoPlay
+      <Animated.View
+        style={[
+          {
+            height: 100,
+            width: 100,
+            backgroundColor: "white",
+            borderRadius: 50,
+            position: "absolute",
+            top: Dimensions.get("window").height / 2,
+          },
+          whiteBoxAnimationStyle,
+        ]}
+      ></Animated.View>
+      <Animated.View
+        style={[
+          {
+            height: 100,
+            width: 100,
+            backgroundColor: "black",
+            borderRadius: 50,
+            position: "absolute",
+            top: Dimensions.get("window").height / 2,
+          },
+          blackBoxAnimationStyle,
+        ]}
+      ></Animated.View>
+      <View
         style={{
-          height: "auto",
+          alignItems: "center",
         }}
-        source={require("../../assets/loader.json")}
-      />
+      >
+        <Animated.View
+          style={[
+            {
+              height: 400,
+              width: 400,
+            },
+            ImageAnimationStyle,
+          ]}
+        >
+          <Image
+            source={require("../../assets/images/adaptive-icon.png")}
+            style={{ height: "100%", width: "100%", resizeMode: "contain" }}
+          />
+        </Animated.View>
+      </View>
+      <Animated.View
+        style={[
+          {
+            alignItems: "center",
+            position: "absolute",
+            bottom: 20,
+          },
+          TextAnimationStyle,
+        ]}
+      >
+        <Heading
+          title={"LensPlay"}
+          style={{ color: "white", fontSize: 40, fontWeight: "600" }}
+        />
+      </Animated.View>
     </View>
   );
 }
