@@ -93,7 +93,7 @@ export default function StackNavigation() {
             component={QRLogin}
             options={{
               animation: "fade_from_bottom",
-              headerShown: true,
+              headerShown: false,
               headerTintColor: theme.PRIMARY,
               headerTitle: "Desktop Login",
               headerTitleStyle: {
