@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
+import { Image } from "expo-image";
 import * as React from "react";
-import { Image, TouchableWithoutFeedback, View } from "react-native";
+import { TouchableWithoutFeedback, View } from "react-native";
 import { useActivePublication } from "../store/Store";
 import {
   FeedItemRoot,
@@ -11,7 +12,9 @@ import {
 } from "../types/generated";
 import formatTime from "../utils/formatTime";
 import getDifference from "../utils/getDifference";
+import getImageProxyURL from "../utils/getImageProxyURL";
 import getIPFSLink from "../utils/getIPFSLink";
+import getPlaceHolderImage from "../utils/getPlaceHolder";
 import getRawurl from "../utils/getRawUrl";
 import getLivePeerURL from "../utils/video/getLivePeerURL";
 import Avatar from "./UI/Avatar";
@@ -69,9 +72,15 @@ const VideoCard = ({
           }}
         >
           <Image
-            progressiveRenderingEnabled={true}
+            placeholder={getPlaceHolderImage()}
+            contentFit="cover"
+            transition={500}
             source={{
-              uri: getIPFSLink(getRawurl(publication?.metadata?.cover)),
+              uri: getImageProxyURL({
+                formattedLink: getIPFSLink(
+                  getRawurl(publication?.metadata?.cover)
+                ),
+              }),
             }}
             style={{
               height: "100%",
