@@ -41,13 +41,11 @@ export default function ConnectWalletSheet({
       setCurrentProfile(userDefaultProfile);
     } else {
       setHasHandle(false);
+      setCurrentProfile(undefined);
     }
   }
 
   const handleConnectWallet = React.useCallback(async () => {
-    if (connector.accounts[0]) {
-      await connector.killSession();
-    }
     const walletData = await connector.connect({
       chainId: 80001,
     });
