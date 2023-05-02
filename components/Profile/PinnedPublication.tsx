@@ -5,36 +5,36 @@ import {
   Image,
   Pressable,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { v4 as uuidV4 } from "uuid";
 import { white } from "../../constants/Colors";
+import { PUBLICATION } from "../../constants/tracking";
+import usePinStore from "../../store/pinStore";
 import {
   useActivePublication,
   useAuthStore,
   useProfile,
-  useToast,
+  useToast
 } from "../../store/Store";
-import usePinStore from "../../store/pinStore";
 import { ProfileMetaDataV1nput } from "../../types";
 import {
   Attribute,
   Post,
   useCreateSetProfileMetadataViaDispatcherMutation,
-  usePublicationDetailsLazyQuery,
+  usePublicationDetailsLazyQuery
 } from "../../types/generated";
 import getDifference from "../../utils/getDifference";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
+import TrackAction from "../../utils/Track";
 import uploadToArweave from "../../utils/uploadToArweave";
 import Sheet from "../Bottom";
+import { SheetProps } from "../common/MyVideoCard";
 import Icon from "../Icon";
 import Heading from "../UI/Heading";
 import Ripple from "../UI/Ripple";
 import StyledText from "../UI/StyledText";
-import { SheetProps } from "../common/MyVideoCard";
-import TrackAction from "../../utils/Track";
-import { PUBLICATION } from "../../constants/tracking";
 
 export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
   const { currentProfile } = useProfile();
@@ -139,9 +139,7 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
   );
 }
 
-export default function PinnedPublication({
-  sheetRef,
-}: Pick<SheetProps, "sheetRef">) {
+function PinnedPublication({ sheetRef }: Pick<SheetProps, "sheetRef">) {
   const activeProfile = useProfile();
   const { accessToken } = useAuthStore();
   const pinStore = usePinStore();
@@ -203,7 +201,7 @@ export default function PinnedPublication({
         >
           <Icon name="star" size={12} color={white[200]} />
           <StyledText
-            title="pinned video"
+            title="Pinned video"
             style={{
               color: white[200],
               fontSize: 12,
@@ -219,7 +217,9 @@ export default function PinnedPublication({
           }}
           onPress={() => {
             setActivePublication(data?.publication as Post);
-            navigation.navigate("VideoPage");
+            navigation.navigate("VideoPage", {
+              playBackurl: "",
+            });
           }}
         >
           <View>
@@ -297,3 +297,5 @@ export default function PinnedPublication({
   }
   return <></>;
 }
+
+export default React.memo(PinnedPublication);

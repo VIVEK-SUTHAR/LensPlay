@@ -57,7 +57,7 @@ const AllVideos = ({ Videos, navigation, owner }: AllVideosProps) => {
             navigation.navigate("YourVideos", {
               videos: Videos,
               title: "Your videos",
-              owner: owner
+              owner: owner,
             });
           }}
         >
@@ -103,4 +103,4 @@ const AllVideos = ({ Videos, navigation, owner }: AllVideosProps) => {
   );
 };
 
-export default AllVideos;
+export default React.memo(AllVideos);

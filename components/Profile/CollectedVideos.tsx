@@ -25,7 +25,7 @@ const CollectedVideos = ({
   ethAddress,
   handle,
   navigation,
-  owner
+  owner,
 }: CollectedVideosProps) => {
   const { accessToken } = useAuthStore();
   const { currentProfile } = useProfile();
@@ -98,7 +98,7 @@ const CollectedVideos = ({
               navigation.navigate("YourVideos", {
                 videos: collectVideos,
                 title: "Your collects",
-                owner: owner
+                owner: owner,
               });
             }}
           >
@@ -150,4 +150,4 @@ const CollectedVideos = ({
   return <></>;
 };
 
-export default CollectedVideos;
+export default React.memo(CollectedVideos);

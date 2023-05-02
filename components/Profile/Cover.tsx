@@ -36,4 +36,4 @@ const Cover = ({ url, navigation }: CoverProps) => {
   );
 };
 
-export default Cover;
+export default React.memo(Cover);

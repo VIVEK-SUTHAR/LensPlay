@@ -150,4 +150,4 @@ const MirroredVideos = ({
   );
 };
 
-export default MirroredVideos;
+export default React.memo(MirroredVideos);
