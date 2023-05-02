@@ -52,24 +52,28 @@ const AllVideos = ({ Videos, navigation, owner }: AllVideosProps) => {
             <></>
           )}
         </View>
-        <Pressable
-          onPress={() => {
-            navigation.navigate("YourVideos", {
-              videos: Videos,
-              title: "Your videos",
-              owner: owner
-            });
-          }}
-        >
-          <Icon
-            name="arrowForward"
-            size={24}
-            color="white"
-            style={{
-              display: Videos ? "flex" : "none",
+        {Videos && Videos?.length > 0 ? (
+          <Pressable
+            onPress={() => {
+              navigation.navigate("YourVideos", {
+                videos: Videos,
+                title: "Your videos",
+                owner: owner,
+              });
             }}
-          />
-        </Pressable>
+          >
+            <Icon
+              name="arrowForward"
+              size={24}
+              color="white"
+              style={{
+                display: Videos ? "flex" : "none",
+              }}
+            />
+          </Pressable>
+        ) : (
+          <></>
+        )}
       </Pressable>
       <ScrollView
         horizontal={true}
@@ -103,4 +107,4 @@ const AllVideos = ({ Videos, navigation, owner }: AllVideosProps) => {
   );
 };
 
-export default AllVideos;
+export default React.memo(AllVideos);

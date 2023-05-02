@@ -150,4 +150,4 @@ const CollectedVideos = ({
   return <></>;
 };
 
-export default CollectedVideos;
+export default React.memo(CollectedVideos);

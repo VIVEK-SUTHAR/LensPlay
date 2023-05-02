@@ -23,7 +23,7 @@ const MirroredVideos = ({
   navigation,
   profileId,
   handle,
-  owner
+  owner,
 }: MirroredVideosProps) => {
   const { accessToken } = useAuthStore();
 
@@ -93,26 +93,31 @@ const MirroredVideos = ({
             <></>
           )}
         </View>
-        <Pressable
-          onPress={() => {
-            navigation.navigate("YourVideos", {
-              videos: AllMirrorVideosData?.publications.items,
-              title: "Your mirrors",
-              owner: owner
-            });
-          }}
-        >
-          <Icon
-            name="arrowForward"
-            size={24}
-            color="white"
-            style={{
-              display: AllMirrorVideosData?.publications.items
-                ? "flex"
-                : "none",
+        {AllMirrorVideosData?.publications.items &&
+        AllMirrorVideosData?.publications.items.length > 0 ? (
+          <Pressable
+            onPress={() => {
+              navigation.navigate("YourVideos", {
+                videos: AllMirrorVideosData?.publications.items,
+                title: "Your mirrors",
+                owner: owner,
+              });
             }}
-          />
-        </Pressable>
+          >
+            <Icon
+              name="arrowForward"
+              size={24}
+              color="white"
+              style={{
+                display: AllMirrorVideosData?.publications.items
+                  ? "flex"
+                  : "none",
+              }}
+            />
+          </Pressable>
+        ) : (
+          <></>
+        )}
       </View>
       <ScrollView
         horizontal={true}
@@ -150,4 +155,4 @@ const MirroredVideos = ({
   );
 };
 
-export default MirroredVideos;
+export default React.memo(MirroredVideos);

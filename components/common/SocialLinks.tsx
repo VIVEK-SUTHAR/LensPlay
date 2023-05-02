@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Linking, Pressable, View } from "react-native";
 import Icon, { IconProps } from "../Icon";
 import { Maybe } from "../../types/generated";
 import { dark_primary } from "../../constants/Colors";
+import { useProfile } from "../../store/Store";
 
 type socialLinksProps = {
   instagram: Maybe<string> | undefined;
@@ -30,32 +31,58 @@ function getLink(key: string, value: Maybe<string> | undefined) {
       break;
   }
 }
+function _SocialLinks() {
+  const userStore = useProfile();
+  const [links, setLinks] = useState<socialLinksProps>({
+    twitter: "",
+    instagram: "",
+    youtube: "",
+    website: "",
+  });
+  const getLinks = React.useCallback(() => {
+    const twitter = userStore.currentProfile?.attributes?.find(
+      (item) => item.key === "twitter"
+    )?.value;
+    const youtube = userStore.currentProfile?.attributes?.find(
+      (item) => item.key === "youtube"
+    )?.value;
+    const insta = userStore.currentProfile?.attributes?.find(
+      (item) => item.key === "instagram"
+    )?.value;
+    const website = userStore.currentProfile?.attributes?.find(
+      (item) => item.key === "website"
+    )?.value;
+    setLinks({
+      instagram: insta,
+      website: website,
+      twitter: twitter,
+      youtube: youtube,
+    });
+  }, []);
 
-export default function SocialLinks({
-  instagram,
-  website,
-  twitter,
-  youtube,
-}: socialLinksProps) {
+  useEffect(() => {
+    getLinks();
+  }, []);
+
   const linksData: linksData[] = [
     {
       icon: "twitter",
-      link: getLink("twitter", twitter),
+      link: getLink("twitter", links.twitter),
       color: "#1DA1F2",
     },
     {
       icon: "instagram",
-      link: getLink("instagram", instagram),
+      link: getLink("instagram", links.instagram),
       color: "#1DA1F2",
     },
     {
       icon: "youtube",
-      link: getLink("youtube", youtube),
+      link: getLink("youtube", links.youtube),
       color: "#1DA1F2",
     },
     {
       icon: "link",
-      link: website,
+      link: links.website,
       color: "#1DA1F2",
     },
   ];
@@ -94,3 +121,5 @@ export default function SocialLinks({
     </View>
   );
 }
+const SocialLinks = React.memo(_SocialLinks);
+export default SocialLinks;

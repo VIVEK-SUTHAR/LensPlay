@@ -114,4 +114,4 @@ Switch.defaultProps = {
   thumbColor: "#FFF",
 };
 
-export default Switch;
+export default React.memo(Switch);
