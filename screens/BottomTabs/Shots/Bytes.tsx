@@ -1,48 +1,71 @@
-import Constants from "expo-constants";
-import React from "react";
-import { Dimensions, Pressable, Text, View } from "react-native";
-import ByteCard from "../../../components/Bytes/ByteCard";
-import Icon from "../../../components/Icon";
+import React, { useState } from "react";
+import { Dimensions, View } from "react-native";
+import SwiperFlatList from "react-native-swiper-flatlist";
+import { ShotsPublication } from "../../../components/Bytes/ByteCard";
+import SingleByte from "../../../components/Bytes/SingleByte";
+import { useGuestStore } from "../../../store/GuestStore";
+import { useAuthStore, useProfile } from "../../../store/Store";
+import {
+  PublicationMainFocus,
+  PublicationSortCriteria,
+  PublicationTypes,
+  useExploreQuery,
+} from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
+import SingleShot from "../../../components/Shots/SingleShot";
+import { Player } from "@livepeer/react-native";
+
 const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
-  const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
-  const StatusBarHeight = Constants.statusBarHeight;
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const { currentProfile } = useProfile();
+  const { isGuest, profileId } = useGuestStore();
+  const { accessToken } = useAuthStore();
+
+  const QueryRequest = {
+    sortCriteria: PublicationSortCriteria.Latest,
+    publicationTypes: [PublicationTypes.Mirror, PublicationTypes.Post],
+    metadata: {
+      mainContentFocus: [PublicationMainFocus.Video],
+    },
+    sources: ["lensplay", "lenstube", "lenstube-bytes"],
+  };
+
+  const { data: shotsData, error, loading, refetch } = useExploreQuery({
+    variables: {
+      request: QueryRequest,
+      reactionRequest: {
+        profileId: isGuest ? profileId : currentProfile?.id,
+      },
+    },
+    context: {
+      headers: {
+        "x-access-token": `${!isGuest ? `Bearer ${accessToken}` : ""}`,
+      },
+    },
+  });
+
+  const bytesData = shotsData?.explorePublications?.items as ShotsPublication[];
+
+  const handleChangeIndexValue = ({ index }: { index: number }) => {
+    setCurrentIndex(index);
+  };
+
   return (
     <View
       style={{
-        width: windowWidth,
-        height: windowHeight,
-        backgroundColor: "white",
-        position: "relative",
+        flex: 1,
+        backgroundColor: "cyan",
       }}
     >
-      <View
-        style={{
-          position: "absolute",
-          top: StatusBarHeight,
-          left: 0,
-          right: 0,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          zIndex: 1,
-          paddingVertical: 8,
-          paddingHorizontal: 16,
-        }}
-      >
-        <Text style={{ fontSize: 20, fontWeight: "bold", color: "white" }}>
-          Shots
-        </Text>
-        <Pressable
-          onPress={(e) => {
-            e.preventDefault();
-            navigation.navigate("Search");
-          }}
-        >
-          <Icon name="search" size={25} />
-        </Pressable>
-      </View>
-      <ByteCard navigation={navigation} />
+      <SwiperFlatList
+        vertical={true}
+        keyExtractor={(item, index) => index.toString()}
+        onChangeIndex={handleChangeIndexValue}
+        data={bytesData}
+        renderItem={({ item, index }) => (
+          <SingleShot item={item} index={index} currentIndex={currentIndex} />
+        )}
+      />
     </View>
   );
 };

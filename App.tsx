@@ -9,6 +9,15 @@ import Toast from "./components/Toast";
 import useCachedResources from "./hooks/useCachedResources";
 import Navigation from "./navigation";
 import "expo-dev-client";
+import {
+  createReactClient,
+  LivepeerConfig,
+  studioProvider,
+} from "@livepeer/react-native";
+
+const LPClient = createReactClient({
+  provider: studioProvider({ apiKey: "8d89f7e5-9b5a-416e-94bc-50c4e87a07f2" }),
+});
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -20,10 +29,12 @@ export default function App() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
           <Toast />
-          <ApolloProvider client={client}>
-            <StatusBar style="dark" />
-            <Navigation />
-          </ApolloProvider>
+          <LivepeerConfig client={LPClient}>
+            <ApolloProvider client={client}>
+              <StatusBar style="dark" />
+              <Navigation />
+            </ApolloProvider>
+          </LivepeerConfig>
         </SafeAreaProvider>
       </GestureHandlerRootView>
     );

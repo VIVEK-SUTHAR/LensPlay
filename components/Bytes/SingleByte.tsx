@@ -34,6 +34,7 @@ import Constants from "expo-constants";
 
 import { ShotsPublication } from "./ByteCard";
 import { useGuestStore } from "../../store/GuestStore";
+import { Player } from "@livepeer/react-native";
 
 interface SingleByteProps {
   item: ShotsPublication;
@@ -62,7 +63,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const StatusBarHeight = Constants.statusBarHeight;
-  const {isGuest} = useGuestStore();
+  const { isGuest } = useGuestStore();
   navigation.addListener("blur", (e) => {
     ref.current?.pauseAsync();
   });
@@ -83,7 +84,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
 
   const collectPublication = React.useCallback(async () => {
     try {
-      if (isGuest){
+      if (isGuest) {
         toast.show("Please Login", ToastType.ERROR, true);
         return;
       }
@@ -97,7 +98,6 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
     } catch (error) {
       if (error instanceof Error) {
         toast.show(error.message, ToastType.ERROR, true);
-        
       }
     } finally {
       collectSheetRef?.current?.close();
@@ -118,7 +118,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
         }}
       >
         <StatusBar backgroundColor="transparent" />
-        <TouchableOpacity
+        {/* <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => setMute(!mute)}
           style={{
@@ -167,7 +167,18 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             }}
             autoHidePlayer={true}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Player
+          src={getIPFSLink(item?.metadata?.media[0]?.original?.url)}
+          aspectRatio="9to16"
+          autoUrlUpload={{
+            fallback: true,
+            ipfsGateway: "https://cloudflare-ipfs.com/",
+          }}
+          objectFit="cover"
+          autoPlay={currentIndex === index ? true : false}
+          children={<></>}
+        />
         <View
           style={{
             position: "absolute",
