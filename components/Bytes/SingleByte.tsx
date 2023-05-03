@@ -3,12 +3,19 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import { ResizeMode, Video } from "expo-av";
+import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import VideoPlayer from "expo-video-player";
-import React, { useCallback, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
+  ActivityIndicator,
   Dimensions,
-  Image,
   Pressable,
   ScrollView,
   Share,
@@ -23,6 +30,8 @@ import { ToastType } from "../../types/Store";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
 import TrackAction from "../../utils/Track";
+import createLivePeerAsset from "../../utils/video/createLivePeerAsset";
+import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
 import Sheet from "../Bottom";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
@@ -44,6 +53,7 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
   const [totalCollects, setTotalCollects] = useState<number>(
     item?.stats?.totalAmountOfCollects
   );
+  const [plabackUrl, setPlabackUrl] = useState("");
 
   const ref = React.useRef<Video>(null);
   const descriptionRef = useRef<BottomSheetMethods>(null);
@@ -95,6 +105,20 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
     }
   }, []);
 
+  const LENS_MEDIA_URL = item?.metadata?.media[0]?.original?.url;
+
+  useEffect(() => {
+    checkIfLivePeerAsset(LENS_MEDIA_URL).then((res) => {
+      if (res) {
+        setPlabackUrl(res);
+        // console.log(res);
+      } else {
+        setPlabackUrl(getIPFSLink(LENS_MEDIA_URL));
+        createLivePeerAsset(LENS_MEDIA_URL);
+      }
+    });
+  }, []);
+
   return (
     <>
       <View
@@ -121,13 +145,9 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
             videoProps={{
               ref: ref,
               source: {
-                uri: getIPFSLink(item?.metadata?.media[0]?.original?.url),
+                uri: plabackUrl,
               },
-              onError(error) {
-                // console.log(error);
-              },
-
-              shouldPlay: currentIndex === index ? true : false,
+              shouldPlay: index === currentIndex,
               resizeMode: ResizeMode.CONTAIN,
               isMuted: mute,
               posterSource: {

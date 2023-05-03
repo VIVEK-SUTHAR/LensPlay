@@ -20,6 +20,7 @@ import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
   FeedItemRoot,
+  FeedRequest,
   PublicationMainFocus,
   useFeedQuery,
 } from "../../../types/generated";
@@ -32,7 +33,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const { isGuest } = useGuestStore();
   const { currentProfile } = useProfile();
 
-  const QueryRequest = {
+  const QueryRequest: FeedRequest = {
     profileId: currentProfile?.id,
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
@@ -98,12 +99,14 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
             />
           }
           renderItem={({ item }) => {
-            return (
-              <VideoCard
-                publication={item?.root as FeedItemRoot}
-                id={item?.root?.id}
-              />
-            );
+            if (!item.root.hidden) {
+              return (
+                <VideoCard
+                  publication={item?.root as FeedItemRoot}
+                  id={item?.root?.id}
+                />
+              );
+            }
           }}
         />
       </SafeAreaView>

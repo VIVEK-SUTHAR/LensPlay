@@ -167,7 +167,6 @@ export default function Trending({
           }
           renderItem={({ item }: { item: Explore }) => {
             if (item?.appId === "lenstube") {
-              
               return <VideoCard publication={item as Explore} id={item.id} />;
             }
             return <></>;

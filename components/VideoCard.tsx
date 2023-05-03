@@ -8,7 +8,7 @@ import {
   Maybe,
   MetadataAttributeOutput,
   Mirror,
-  Post,
+  Post
 } from "../types/generated";
 import formatTime from "../utils/formatTime";
 import getDifference from "../utils/getDifference";
@@ -16,7 +16,6 @@ import getImageProxyURL from "../utils/getImageProxyURL";
 import getIPFSLink from "../utils/getIPFSLink";
 import getPlaceHolderImage from "../utils/getPlaceHolder";
 import getRawurl from "../utils/getRawUrl";
-import getLivePeerURL from "../utils/video/getLivePeerURL";
 import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
 import StyledText from "./UI/StyledText";
@@ -45,15 +44,7 @@ const VideoCard = ({
         }
       }
     );
-    const assetId = publication?.metadata?.attributes?.filter((item) => {
-      if (item.traitType === "assetId") {
-        getLivePeerURL(item?.value).then((res) => {
-          playBackurl = res;
-        });
-      }
-    });
   }, []);
-
   return (
     <View
       style={{
@@ -157,4 +148,4 @@ const VideoCard = ({
   );
 };
 
-export default VideoCard;
+export default React.memo(VideoCard);
