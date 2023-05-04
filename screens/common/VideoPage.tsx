@@ -6,7 +6,6 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   BackHandler,
   Dimensions,
-  Image,
   KeyboardAvoidingView,
   SafeAreaView,
   ScrollView,
@@ -48,6 +47,12 @@ import extractURLs from "../../utils/extractURL";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
 import TrackAction from "../../utils/Track";
+import useVideoURLStore from "../../store/videoURL";
+import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
+import createLivePeerAsset from "../../utils/video/createLivePeerAsset";
+import getPlaceHolderImage from "../../utils/getPlaceHolder";
+import getImageProxyURL from "../../utils/getImageProxyURL";
+import { Image } from "expo-image";
 
 const VideoPage = ({
   navigation,
@@ -177,21 +182,60 @@ const VideoPage = ({
     }
   };
 
+  const LENS_MEDIA_URL = activePublication?.metadata?.media[0]?.original?.url;
+  const { setVideoURI, uri } = useVideoURLStore();
+  useEffect(() => {
+    checkIfLivePeerAsset(LENS_MEDIA_URL).then((res) => {
+      if (res) {
+        setVideoURI(res);
+      } else {
+        createLivePeerAsset(LENS_MEDIA_URL);
+        setVideoURI(getIPFSLink(LENS_MEDIA_URL));
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      setVideoURI("");
+    };
+  }, []);
+
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-        <Player
-          poster={getRawurl(activePublication?.metadata?.cover)}
-          title={activePublication?.metadata?.name || ""}
-          url={
-            route?.params?.playBackurl ||
-            activePublication?.metadata?.media[0]?.original?.url
-          }
-          inFullscreen={inFullscreen}
-          isMute={isMute}
-          setInFullscreen={setInFullsreen}
-          setIsMute={setIsMute}
-        />
+        {uri ? (
+          <Player
+            poster={getRawurl(activePublication?.metadata?.cover)}
+            title={activePublication?.metadata?.name || ""}
+            url={uri}
+            inFullscreen={inFullscreen}
+            isMute={isMute}
+            setInFullscreen={setInFullsreen}
+            setIsMute={setIsMute}
+          />
+        ) : (
+          <Image
+            placeholder={getPlaceHolderImage()}
+            transition={500}
+            placeholderContentFit="contain"
+            source={{
+              uri: getImageProxyURL({
+                formattedLink: getIPFSLink(
+                  getRawurl(activePublication?.metadata?.cover)
+                ),
+              }),
+            }}
+            style={{
+              width: inFullscreen
+                ? Dimensions.get("screen").height
+                : Dimensions.get("screen").width,
+              height: inFullscreen
+                ? Dimensions.get("screen").width * 0.95
+                : 280,
+            }}
+          />
+        )}
         <ScrollView>
           <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
             <VideoMeta
@@ -311,13 +355,15 @@ const VideoPage = ({
                         getRawurl(activePublication?.metadata?.cover)
                       ),
                     }}
+                    placeholder={getPlaceHolderImage()}
+                    transition={500}
+                    placeholderContentFit="contain"
                     style={{
                       height: Dimensions.get("screen").height / 4,
                       borderRadius: 8,
                       width: Dimensions.get("screen").width - 48,
                       resizeMode: "cover",
                     }}
-                    progressiveRenderingEnabled={true}
                   />
                   <Button
                     title={
@@ -364,13 +410,15 @@ const VideoPage = ({
                         getRawurl(activePublication?.metadata?.cover)
                       ),
                     }}
+                    placeholder={getPlaceHolderImage()}
+                    transition={500}
+                    placeholderContentFit="contain"
                     style={{
                       height: Dimensions.get("screen").height / 4,
                       borderRadius: 8,
                       width: Dimensions.get("screen").width - 48,
                       resizeMode: "cover",
                     }}
-                    progressiveRenderingEnabled={true}
                   />
                   <Button
                     title={

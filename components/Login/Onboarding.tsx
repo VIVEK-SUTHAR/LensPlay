@@ -184,11 +184,11 @@ const Onboarding = ({
               width={"100%"}
               isLoading={isloading}
               bg={white[600]}
-              py={12}
-              px={32}
+              py={16}
               textStyle={{
+                fontWeight: "600",
                 fontSize: 16,
-                fontWeight: "500",
+                color: black[700],
               }}
               onPress={openSheet}
             />
