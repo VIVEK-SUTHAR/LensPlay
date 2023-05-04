@@ -116,7 +116,6 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       },
     },
     onCompleted: () => {
-      getLinks(profileData?.profile as Profile);
     },
   });
 
@@ -161,29 +160,6 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       setRefreshing(false);
     });
   }, []);
-
-  function getLinks(profile: Profile | null) {
-    const twitter =
-      profile?.attributes?.find((item: Attribute) => item.key === "twitter")
-        ?.value || "";
-    const youtube =
-      profile?.attributes?.find((item: Attribute) => item.key === "youtube")
-        ?.value || "";
-
-    const insta =
-      profile?.attributes?.find((item: Attribute) => item.key === "instagram")
-        ?.value || "";
-    const website =
-      profile?.attributes?.find((item: Attribute) => item.key === "website")
-        ?.value || "";
-
-    setLinks({
-      insta: insta,
-      site: website,
-      twitter: twitter,
-      yt: youtube,
-    });
-  }
 
   if (profileLoading) {
     return (
@@ -402,10 +378,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                 <></>
               )}
               <SocialLinks
-                instagram={links.insta}
-                website={links.site}
-                twitter={links.twitter}
-                youtube={links.yt}
+                profile={profile as Profile}
               />
               <View
                 style={{

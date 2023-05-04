@@ -34,6 +34,7 @@ import CommonStyles from "../../../styles";
 import {
   MediaSet,
   Post,
+  Profile,
   PublicationMainFocus,
   PublicationTypes,
   useProfilePostsQuery,
@@ -281,7 +282,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   />
                 </Pressable>
               </View>
-              <SocialLinks />
+              <SocialLinks profile={profile as Profile}/>
               <View style={{ marginVertical: 24 }}>
                 <PinnedPublication sheetRef={sheetRef} />
                 {AllVideosData && (

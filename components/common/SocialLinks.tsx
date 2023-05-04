@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Linking, Pressable, View } from "react-native";
 import Icon, { IconProps } from "../Icon";
-import { Maybe } from "../../types/generated";
+import { Maybe, Profile } from "../../types/generated";
 import { dark_primary } from "../../constants/Colors";
 import { useProfile } from "../../store/Store";
 
@@ -31,7 +31,8 @@ function getLink(key: string, value: Maybe<string> | undefined) {
       break;
   }
 }
-function _SocialLinks() {
+function _SocialLinks({ profile }: { profile: Profile }) {
+
   const userStore = useProfile();
   const [links, setLinks] = useState<socialLinksProps>({
     twitter: "",
@@ -40,16 +41,16 @@ function _SocialLinks() {
     website: "",
   });
   const getLinks = React.useCallback(() => {
-    const twitter = userStore.currentProfile?.attributes?.find(
+    const twitter = profile?.attributes?.find(
       (item) => item.key === "twitter"
     )?.value;
-    const youtube = userStore.currentProfile?.attributes?.find(
+    const youtube = profile?.attributes?.find(
       (item) => item.key === "youtube"
     )?.value;
-    const insta = userStore.currentProfile?.attributes?.find(
+    const insta = profile?.attributes?.find(
       (item) => item.key === "instagram"
     )?.value;
-    const website = userStore.currentProfile?.attributes?.find(
+    const website = profile?.attributes?.find(
       (item) => item.key === "website"
     )?.value;
     setLinks({

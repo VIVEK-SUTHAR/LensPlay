@@ -74,12 +74,9 @@ const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
         onChangeIndex={handleChangeIndexValue}
         data={bytesData}
         initialNumToRender={2}
-        renderItem={({ item, index }) => {
-          if(item?.metadata?.media[0]?.original?.mimeType != 'video/quicktime'){
-            return <_singleShot item={item} index={index}/>
-          }
-          
-        }}
+        renderItem={({ item, index }) => (
+          <_singleShot item={item} index={index}/>
+        )}
       />
     </View>
   );
