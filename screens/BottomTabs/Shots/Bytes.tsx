@@ -6,6 +6,7 @@ import SingleByte from "../../../components/Bytes/SingleByte";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile } from "../../../store/Store";
 import {
+  ExplorePublicationRequest,
   PublicationMainFocus,
   PublicationSortCriteria,
   PublicationTypes,
@@ -21,13 +22,14 @@ const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
   const { isGuest, profileId } = useGuestStore();
   const { accessToken } = useAuthStore();
 
-  const QueryRequest = {
+  const QueryRequest: ExplorePublicationRequest = {
     sortCriteria: PublicationSortCriteria.Latest,
-    publicationTypes: [PublicationTypes.Mirror, PublicationTypes.Post],
+    publicationTypes: [PublicationTypes.Post],
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
-    sources: ["lensplay", "lenstube", "lenstube-bytes"],
+    sources: ["lensplay", "lenstube-bytes"],
+    limit: 5,
   };
 
   const { data: shotsData, error, loading, refetch } = useExploreQuery({
@@ -54,7 +56,6 @@ const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
     <View
       style={{
         flex: 1,
-        backgroundColor: "cyan",
       }}
     >
       <SwiperFlatList

@@ -1,14 +1,20 @@
-import React from "react";
-import { View, useWindowDimensions } from "react-native";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { ResizeMode, Video } from "expo-av";
+import VideoPlayer from "expo-video-player";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Pressable,
+  View,
+  useWindowDimensions,
+} from "react-native";
+import getIPFSLink from "../../utils/getIPFSLink";
+import getRawurl from "../../utils/getRawUrl";
 import { ShotsPublication } from "../Bytes/ByteCard";
 import Icon from "../Icon";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import VideoPlayer from "expo-video-player";
-import getIPFSLink from "../../utils/getIPFSLink";
-import { ResizeMode, Video } from "expo-av";
-import getRawurl from "../../utils/getRawUrl";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { Player } from "@livepeer/react-native";
+import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
+import createLivePeerAsset from "../../utils/video/createLivePeerAsset";
+import { useNavigation } from "@react-navigation/native";
 
 interface SingleByteProps {
   item: ShotsPublication;
@@ -16,14 +22,31 @@ interface SingleByteProps {
   currentIndex: number;
 }
 
-export default function SingleShot({
-  item,
-  index,
-  currentIndex,
-}: SingleByteProps) {
+function SingleShot({ item, index, currentIndex }: SingleByteProps) {
   const ref = React.useRef<Video>(null);
   const { height, width } = useWindowDimensions();
   const bottomTabBarHeight = useBottomTabBarHeight();
+  const [mute, setMute] = useState(false);
+  const [videoURL, setVideoURL] = useState(
+    getIPFSLink(item?.metadata?.media[0]?.original?.url)
+  );
+
+  const navigation = useNavigation();
+
+  navigation.addListener("blur", (e) => {
+    ref.current?.pauseAsync();
+  });
+
+  useEffect(() => {
+    checkIfLivePeerAsset(videoURL).then((res) => {
+      if (res) {
+        setVideoURL(res);
+        console.log(res, "hell");
+      } else {
+        createLivePeerAsset(videoURL);
+      }
+    });
+  }, []);
 
   return (
     <View
@@ -33,14 +56,13 @@ export default function SingleShot({
         position: "relative",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "red",
       }}
     >
-      <TouchableOpacity
-        activeOpacity={0.9}
-        //   onPress={() => setMute(!mute)}
+      <Pressable
+        onPress={() => setMute(!mute)}
         style={{
           flex: 1,
+          backgroundColor: "cyan",
         }}
       >
         <VideoPlayer
@@ -48,14 +70,14 @@ export default function SingleShot({
           videoProps={{
             ref: ref,
             source: {
-              uri: getIPFSLink(item?.metadata?.media[0]?.original?.url),
+              uri: videoURL,
             },
             onError(error) {
               // console.log(error);
             },
             shouldPlay: currentIndex === index ? true : false,
             resizeMode: ResizeMode.COVER,
-            //   isMuted: mute,
+            isMuted: mute,
             posterSource: {
               uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
             },
@@ -82,7 +104,21 @@ export default function SingleShot({
           }}
           autoHidePlayer={true}
         />
-      </TouchableOpacity>
+        {/* <Player
+          src={getIPFSLink(item?.metadata?.media[0]?.original?.url)}
+          loop
+          aspectRatio="9to16"
+          objectFit="cover"
+          autoUrlUpload={{
+            fallback: true,
+            ipfsGateway: "https://ipfs.io/ipfs",
+          }}
+          autoPlay={currentIndex === index ? true : false}
+          children={<></>}
+        /> */}
+      </Pressable>
     </View>
   );
 }
+
+export default React.memo(SingleShot);
