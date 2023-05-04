@@ -29,7 +29,6 @@ const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
       mainContentFocus: [PublicationMainFocus.Video],
     },
     sources: ["lensplay", "lenstube-bytes"],
-    limit: 5,
   };
 
   const { data: shotsData, error, loading, refetch } = useExploreQuery({

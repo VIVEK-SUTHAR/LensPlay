@@ -6,11 +6,11 @@ const Skleton = () => {
     <View
       style={{
         flexDirection: "row",
-        backgroundColor: "#111111",
-        padding: 9,
-        marginVertical: 2,
-        marginHorizontal: 4,
-        borderRadius: 8,
+        backgroundColor: "black",
+        paddingHorizontal: 9,
+        paddingVertical: 16,
+        borderBottomColor: "#1d1d1d",
+        borderBottomWidth: 1,
       }}
     >
       <View
@@ -20,11 +20,11 @@ const Skleton = () => {
           marginHorizontal: 4,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "grey",
+          backgroundColor: "#1d1d1d",
           borderRadius: 40,
         }}
       ></View>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, marginLeft: 6 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View>
             <Pressable>
@@ -32,7 +32,7 @@ const Skleton = () => {
                 style={{
                   height: 35,
                   width: 35,
-                  backgroundColor: "grey",
+                  backgroundColor: "#1d1d1d",
                   borderRadius: 40,
                 }}
               ></View>
@@ -41,7 +41,7 @@ const Skleton = () => {
               style={{
                 height: 8,
                 width: 150,
-                backgroundColor: "grey",
+                backgroundColor: "rgba(255,255,255,0.1)",
                 marginVertical: 8,
                 borderRadius: 2,
               }}
@@ -51,7 +51,7 @@ const Skleton = () => {
                 height: 8,
                 width: 200,
                 borderRadius: 2,
-                backgroundColor: "grey",
+                backgroundColor: "rgba(255,255,255,0.1)",
               }}
             ></View>
           </View>

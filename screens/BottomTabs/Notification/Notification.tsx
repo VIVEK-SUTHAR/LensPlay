@@ -155,7 +155,6 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
     }
   };
 
-
   TrackAction(NOTIFICATION.NOTIFICATIONS);
   return (
     <SafeAreaView style={styles.container}>
@@ -171,11 +170,11 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
                   backgroundColor: "black",
                 }}
               >
-                {
-                  loading ? (<Skeleton children={<Skleton />} number={10} />) : (
-                    <FilterNotification notificationType={tab.type} />
-                  )
-                }
+                {loading ? (
+                  <Skeleton children={<Skleton />} number={10} />
+                ) : (
+                  <FilterNotification notificationType={tab.type} />
+                )}
               </View>
             )}
           />
@@ -183,7 +182,6 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
       </Tabs>
     </SafeAreaView>
   );
-
 };
 
 export default Notifications;
