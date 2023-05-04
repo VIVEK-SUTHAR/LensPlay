@@ -1,7 +1,7 @@
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { ResizeMode, Video } from "expo-av";
 import VideoPlayer from "expo-video-player";
-import React, { useEffect, useState } from "react";
+import React, { MutableRefObject, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -15,6 +15,8 @@ import Icon from "../Icon";
 import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
 import createLivePeerAsset from "../../utils/video/createLivePeerAsset";
 import { useNavigation } from "@react-navigation/native";
+import ShotData from "./ShotData";
+import ShotReaction from "./ShotReaction";
 
 interface SingleByteProps {
   item: ShotsPublication;
@@ -30,11 +32,13 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
   const [videoURL, setVideoURL] = useState(
     getIPFSLink(item?.metadata?.media[0]?.original?.url)
   );
-
   const navigation = useNavigation();
-
   navigation.addListener("blur", (e) => {
     ref.current?.pauseAsync();
+  });
+
+  navigation.addListener("focus", (e) => {
+    ref.current?.playAsync();
   });
 
   useEffect(() => {
@@ -49,75 +53,67 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
   }, []);
 
   return (
-    <View
-      style={{
-        width: width,
-        height: height - bottomTabBarHeight,
-        position: "relative",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Pressable
-        onPress={() => setMute(!mute)}
+    <>
+      <View
         style={{
-          flex: 1,
-          backgroundColor: "cyan",
+          width: width,
+          height: height - bottomTabBarHeight,
+          position: "relative",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        <VideoPlayer
-          defaultControlsVisible={false}
-          videoProps={{
-            ref: ref,
-            source: {
-              uri: videoURL,
-            },
-            onError(error) {
-              // console.log(error);
-            },
-            shouldPlay: currentIndex === index ? true : false,
-            resizeMode: ResizeMode.COVER,
-            isMuted: mute,
-            posterSource: {
-              uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
-            },
-            isLooping: true,
-            posterStyle: {
+        <Pressable
+          onPress={() => setMute(!mute)}
+          style={{
+            flex: 1,
+            backgroundColor: "cyan",
+          }}
+        >
+          <VideoPlayer
+            defaultControlsVisible={false}
+            videoProps={{
+              ref: ref as MutableRefObject<Video>,
+              source: {
+                uri: videoURL,
+              },
+              onError(error) {
+                // console.log(error);
+              },
+              shouldPlay: currentIndex === index ? true : false,
               resizeMode: ResizeMode.COVER,
-            },
-          }}
-          slider={{
-            visible: false,
-          }}
-          fullscreen={{
-            visible: false,
-          }}
-          mute={{
-            visible: false,
-          }}
-          timeVisible={false}
-          icon={{
-            size: 48,
-            play: <Icon name="play" size={48} />,
-            pause: <Icon name="pause" size={52} />,
-            replay: <Icon name="replay" size={48} />,
-          }}
-          autoHidePlayer={true}
-        />
-        {/* <Player
-          src={getIPFSLink(item?.metadata?.media[0]?.original?.url)}
-          loop
-          aspectRatio="9to16"
-          objectFit="cover"
-          autoUrlUpload={{
-            fallback: true,
-            ipfsGateway: "https://ipfs.io/ipfs",
-          }}
-          autoPlay={currentIndex === index ? true : false}
-          children={<></>}
-        /> */}
-      </Pressable>
-    </View>
+              isMuted: mute,
+              posterSource: {
+                uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
+              },
+              isLooping: true,
+              posterStyle: {
+                resizeMode: ResizeMode.COVER,
+              },
+            }}
+            slider={{
+              visible: false,
+            }}
+            fullscreen={{
+              visible: false,
+            }}
+            mute={{
+              visible: false,
+            }}
+            timeVisible={false}
+            icon={{
+              size: 48,
+              play: <Icon name="play" size={48} />,
+              pause: <Icon name="pause" size={52} />,
+              replay: <Icon name="replay" size={48} />,
+            }}
+            autoHidePlayer={true}
+          />
+        </Pressable>
+      </View>
+      <ShotReaction item={item} />
+      <ShotData item={item} />
+    </>
   );
 }
 

@@ -31,7 +31,6 @@ import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
 import { LikeButton } from "../VIdeo";
 import Constants from "expo-constants";
-
 import { ShotsPublication } from "./ByteCard";
 import { useGuestStore } from "../../store/GuestStore";
 import { Player } from "@livepeer/react-native";
@@ -313,92 +312,6 @@ const SingleByte = ({ item, index, currentIndex }: SingleByteProps) => {
           </TouchableOpacity>
         </View>
       </View>
-      <Sheet
-        ref={collectSheetRef}
-        index={-1}
-        enablePanDownToClose={true}
-        backgroundStyle={{
-          backgroundColor: "#1d1d1d",
-        }}
-        snapPoints={["50%"]}
-        children={
-          <View style={{ paddingHorizontal: 8 }}>
-            <ScrollView
-              style={{
-                padding: 8,
-                zIndex: 1,
-                // borderColor: "red",
-                // borderWidth: 0,
-              }}
-            >
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "space-between",
-                  height: Dimensions.get("screen").height / 3,
-                }}
-              >
-                <Image
-                  source={{
-                    uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
-                  }}
-                  style={{
-                    height: 180,
-                    borderRadius: 8,
-                    resizeMode: "cover",
-                  }}
-                  progressiveRenderingEnabled={true}
-                />
-                <Button
-                  title={`Collect the Shot for free`}
-                  // width={"90%"}
-                  mx={12}
-                  py={12}
-                  textStyle={{
-                    fontSize: 20,
-                    fontWeight: "700",
-                    textAlign: "center",
-                  }}
-                  onPress={collectPublication}
-                />
-              </View>
-            </ScrollView>
-          </View>
-        }
-      />
-      <Sheet
-        ref={descriptionRef}
-        index={-1}
-        enablePanDownToClose={true}
-        backgroundStyle={{
-          backgroundColor: "#1d1d1d",
-        }}
-        snapPoints={["50%"]}
-        children={
-          <View style={{ paddingHorizontal: 8 }}>
-            <ScrollView style={{ padding: 8 }}>
-              <Heading
-                title={item?.metadata?.name}
-                style={{
-                  fontSize: 18,
-                  fontWeight: "600",
-                  color: "white",
-                }}
-              />
-              <StyledText
-                title={
-                  item?.metadata?.description ||
-                  item?.metadata?.content ||
-                  "No description provided by creator"
-                }
-                style={{
-                  color: "white",
-                }}
-              />
-            </ScrollView>
-          </View>
-        }
-      />
     </>
   );
 };
