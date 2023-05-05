@@ -52,7 +52,7 @@ const DisLikeButton = ({ isalreadyDisLiked, id }: DisLikeButtonProps) => {
 
   const [removeReaction] = useRemoveReactionMutation({
     onError: (error) => {
-      console.log(error.message, "remove e");
+      // console.log(error.message, "remove e");
       toast.show("Something went wrong!", ToastType.ERROR, true);
     },
     onCompleted: (data) => {

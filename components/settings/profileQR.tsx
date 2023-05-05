@@ -125,7 +125,7 @@ function ProfileQRSheet() {
         innerEyesOptions={{
           borderRadius: 8,
         }}
-        pieceBorderRadius={4}
+        pieceBorderRadius={6}
         logo={{
           href: require("../../assets/images/icon.png"),
           padding: 0,

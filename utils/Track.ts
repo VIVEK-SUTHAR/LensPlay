@@ -18,7 +18,6 @@ async function TrackAction(event: string) {
 
   fetch("https://api.mixpanel.com/track", options)
     .then((res) => res.json())
-    .then((res) => console.log(res))
     .catch((err) => console.error(err));
 }
 export default TrackAction;

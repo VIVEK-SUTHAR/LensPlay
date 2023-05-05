@@ -36,10 +36,6 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
     ref.current?.pauseAsync();
   });
 
-  navigation.addListener("focus", (e) => {
-    ref.current?.playAsync();
-  });
-
   useEffect(() => {
     checkIfLivePeerAsset(videoURL)
       .then((res) => {
