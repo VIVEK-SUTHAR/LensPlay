@@ -135,7 +135,6 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
         }}
         placeholderTextColor={"white"}
       />
-      {isFocused ? (
         <Pressable
           android_ripple={{
             color: commentText.length === 0 ? "gray" : PRIMARY,
@@ -155,9 +154,6 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
             size={24}
           />
         </Pressable>
-      ) : (
-        <></>
-      )}
     </View>
   );
 };

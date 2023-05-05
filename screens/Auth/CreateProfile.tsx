@@ -26,7 +26,7 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
     const [dynamicText, setDynamicText] = useState('Create Handle');
     const windowHeight = Dimensions.get('screen').height;
     const windowWidth = Dimensions.get('screen').width;
-
+    let intervalId:NodeJS.Timer;
 
     const handleDefaultProfile = async (address: Scalars['EthereumAddress']) => {
         const defaultProfile = await getProfiles({
@@ -40,28 +40,28 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
 
     const [createProfile] = useCreateProfileMutation({
         onError: (e) => {
-            toast.show("Error while creating profile", ToastType.ERROR, true);
+            toast.show("Error in create profile!", ToastType.ERROR, true);
             setIsloading(false);
             setDynamicText('Create Handle');
-            // console.log(e);
+            console.log(e);
         },
     });
 
     const [setDispatcher] = useCreateSetDispatcherTypedDataMutation({
         onError: (e) => {
-            toast.show("Something went wrong", ToastType.ERROR, true);
+            toast.show("Error in setting", ToastType.ERROR, true);
             setIsloading(false);
             setDynamicText('Create Handle');
-            // console.log(e);
+            console.log(e);
         },
     });
 
     const [broadcastTransaction] = useBroadcastMutation({
         onError: (e) => {
-            toast.show("Something went wrong", ToastType.ERROR, true);
+            toast.show("error in broadcast", ToastType.ERROR, true);
             setIsloading(false);
             setDynamicText('Create Handle');
-            // console.log(e);
+            console.log(e);
         },
     })
 
@@ -112,7 +112,13 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
         setIsloading(true);
         setDynamicText('Creating Handle');
         const address = connector.accounts[0];
-        if (handle.includes(".test")) {
+        if (handle.length == 0) {
+            toast.show("Enter handle name", ToastType.ERROR, true) ;
+            setIsloading(false);
+             setDynamicText('Create Handle');
+             return;
+         } 
+        if(handle.includes(".test")){
             toast.show("Omit .test", ToastType.ERROR, true);
             setIsloading(false);
             setDynamicText('Create Handle');
@@ -135,24 +141,26 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                     },
                 }
             });
-
+            
 
             if (response?.data?.createProfile?.__typename !== "RelayError") {
-
-                setTimeout(async () => {
+                
+                intervalId = setInterval(async () => {
                     const profile = await handleDefaultProfile(address);
                     if (profile) {
                         setDynamicText('Signing Dispatcher');
-
+                        console.log('Got the profile');
+                        clearInterval(intervalId);
                         await EnableDispatcher(profile?.id);
                         navigation.navigate("Root");
                     }
-                    else {
-                        setDynamicText("Create Handle");
-                        setIsloading(false);
-                        toast.show("Error while creating profile", ToastType.ERROR, true);
-                    }
-                }, 5000);
+                    // else {
+                    //     // console.log('Not get profile yet');
+                    //     // setDynamicText("Create Handle");
+                    //     // setIsloading(false);
+                    //     // toast.show("Error while creating profile", ToastType.ERROR, true);
+                    // }
+                }, 2000);
 
             } else if (response?.data?.createProfile?.reason === "HANDLE_TAKEN") {
                 toast.show("Handle already taken", ToastType.ERROR, true);
@@ -176,16 +184,16 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
             }
         }
     }
-
+    
     return (
         <KeyboardAvoidingView style={{ flex: 1 }}>
             <StatusBar backgroundColor="black" style="auto" />
             <LinearGradient
-                colors={["#2D3436", "black", "#000000"]}
-                style={{ flex: 1 }}
-            >
-                <ScrollView>
-                    <View style={[styles.container, { height: windowHeight }]}>
+        colors={["#2D3436", "black", "#000000"]}
+        style={{ flex: 1 }}
+      >
+        <ScrollView>
+                <View style={[styles.container, { height: windowHeight }]}>
                         <View style={{
                             position: "relative",
                             marginTop: -100
@@ -193,14 +201,13 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                             <Animated.Image source={require('../../assets/images/circle.webp')} style={{
                                 height: 400,
                                 width: 400,
-                            }} />
-                            <View style={{ position: "absolute", height: 400, width: 400, flex: 1, justifyContent: "center", alignItems: "center" }}>
-                                <Image source={require('../../assets/images/icon.png')} style={{
-                                    height: 80,
-                                    width: 80,
-                                    resizeMode: 'contain'
-                                    // backgroundColor: "red"
-                                }} />
+                            }}/>
+                            <View style={{position: "absolute", height: 400, width: 400,flex: 1, justifyContent: "center", alignItems: "center"}}>
+                            <Image source={require('../../assets/images/icon.png')} style={{
+                                height: 50,
+                                width: 50,
+                                // backgroundColor: "red"
+                            }}/>
                             </View>
                         </View>
                         {/* <ImageCarousel data={data} autoPlay={true} /> */}
@@ -225,28 +232,28 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                             />
                         </View>
 
-                        <View style={styles.buttonContainer}>
-                            <Button
-                                title={dynamicText}
-                                width={"100%"}
-                                py={12}
-                                bg={primary}
-                                borderRadius={50}
-                                textStyle={{
-                                    textAlign: "center",
-                                    fontSize: 20,
-                                    fontWeight: "600",
-                                    color: "black",
-                                }}
-                                isDynamic={isloading}
-                                onPress={async () => {
-                                    await createHandle();
-                                }}
-                            />
-                        </View>
+                    <View style={styles.buttonContainer}>
+                        <Button
+                            title={dynamicText}
+                            width={"100%"}
+                            py={12}
+                            bg={primary}
+                            borderRadius={50}
+                            textStyle={{
+                                textAlign: "center",
+                                fontSize: 20,
+                                fontWeight: "600",
+                                color: "black",
+                            }}
+                            isDynamic={isloading}
+                            onPress={async () => {
+                                await createHandle();
+                            }}
+                        />
                     </View>
-                </ScrollView>
-            </LinearGradient>
+                </View>
+            </ScrollView>
+      </LinearGradient>
         </KeyboardAvoidingView>
     )
 }
