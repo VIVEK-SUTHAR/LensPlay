@@ -1,10 +1,10 @@
 import AnimatedLottieView from "lottie-react-native";
-import { ScrollView } from "moti";
 import React from "react";
 import {
   KeyboardAvoidingView,
   Linking,
   Platform,
+  ScrollView,
   StyleSheet,
   View,
 } from "react-native";
