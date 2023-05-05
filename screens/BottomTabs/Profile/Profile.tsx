@@ -175,7 +175,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 />
               </View>
             </View>
-            <View style={CommonStyles.mh_16}>
+            <View style={CommonStyles.mx_16}>
               <View
                 style={{
                   flexDirection: "row",
@@ -282,7 +282,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   />
                 </Pressable>
               </View>
-              <SocialLinks profile={profile as Profile}/>
+              <SocialLinks profile={profile as Profile} />
               <View style={{ marginVertical: 24 }}>
                 <PinnedPublication sheetRef={sheetRef} />
                 {AllVideosData && (

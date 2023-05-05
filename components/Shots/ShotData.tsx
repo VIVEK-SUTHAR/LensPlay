@@ -9,9 +9,13 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { white } from "../../constants/Colors";
 import { ShotsPublication } from "../../types";
 
-function ShotData({ item }: { item: ShotsPublication }) {
-  const descriptionRef = useRef<BottomSheetMethods>(null);
-
+function ShotData({
+  item,
+  descriptionRef,
+}: {
+  item: ShotsPublication;
+  descriptionRef: any;
+}) {
   const handleSheet = useCallback(() => {
     descriptionRef?.current?.snapToIndex(0);
   }, []);
@@ -76,41 +80,37 @@ function ShotData({ item }: { item: ShotsPublication }) {
           </View>
         </View>
       </View>
-      <Sheet
-        ref={descriptionRef}
-        index={-1}
-        enablePanDownToClose={true}
-        backgroundStyle={{
-          backgroundColor: "#1d1d1d",
-        }}
-        snapPoints={["50%"]}
-        children={
-          <View style={{ paddingHorizontal: 8 }}>
-            <ScrollView style={{ padding: 8 }}>
-              <Heading
-                title={item?.metadata?.name}
-                style={{
-                  fontSize: 18,
-                  fontWeight: "600",
-                  color: "white",
-                }}
-              />
-              <StyledText
-                title={
-                  item?.metadata?.description ||
-                  item?.metadata?.content ||
-                  "No description provided by creator"
-                }
-                style={{
-                  color: "white",
-                }}
-              />
-            </ScrollView>
-          </View>
-        }
-      />
     </>
   );
 }
 
 export default React.memo(ShotData);
+
+function DiscriptionSheet({ item }: { item: ShotsPublication }) {
+  return (
+    <View style={{ paddingHorizontal: 8 }}>
+      <ScrollView style={{ padding: 8 }}>
+        <Heading
+          title={item?.metadata?.name}
+          style={{
+            fontSize: 18,
+            fontWeight: "600",
+            color: "white",
+          }}
+        />
+        <StyledText
+          title={
+            item?.metadata?.description ||
+            item?.metadata?.content ||
+            "No description provided by creator"
+          }
+          style={{
+            color: "white",
+          }}
+        />
+      </ScrollView>
+    </View>
+  );
+}
+
+export { DiscriptionSheet };
