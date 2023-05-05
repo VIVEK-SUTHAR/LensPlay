@@ -114,17 +114,23 @@ function ProfileQRSheet() {
         }}
         pieceSize={(height / width) * 6}
         color={"white"}
+        gradient={{
+          options: {
+            colors: ["white"],
+          },
+        }}
         outerEyesOptions={{
           borderRadius: 24,
         }}
         innerEyesOptions={{
           borderRadius: 8,
         }}
-        pieceBorderRadius={4}
+        pieceBorderRadius={6}
         logo={{
           href: require("../../assets/images/icon.png"),
-          padding: 4,
+          padding: 0,
           scale: 1,
+          hidePieces: true,
         }}
       />
     </View>
