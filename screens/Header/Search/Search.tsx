@@ -26,6 +26,7 @@ import {
   SearchRequestTypes,
 } from "../../../types/generated";
 import { RootStackScreenProps } from "../../../types/navigation/types";
+import NotFound from "../../../components/common/NotFound";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const { DARK_PRIMARY } = useThemeStore();
@@ -186,7 +187,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                 backgroundColor: "black",
                 height: "100%",
               }}
-              ListEmptyComponent={<NotFound />}
+              ListEmptyComponent={<NotFound message="Result not found" />}
               data={
                 searchType === SearchRequestTypes.Publication
                   ? result?.search?.items
@@ -213,41 +214,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 
 export default Search;
 
-function NotFound() {
-  return (
-    <View
-      style={{
-        backgroundColor: "black",
-        height: "100%",
-      }}
-    >
-      <AnimatedLottieView
-        autoPlay
-        style={{
-          height: "auto",
-        }}
-        source={require("../../../assets/notfound.json")}
-      />
-      <View
-        style={{
-          alignItems: "center",
-        }}
-      >
-        <StyledText
-          title="No data found"
-          style={{
-            fontSize: 16,
-            color: "white",
-            marginVertical: 4,
-            marginHorizontal: 16,
-            fontWeight: "600",
-            textAlign: "center",
-          }}
-        />
-      </View>
-    </View>
-  );
-}
+
 
 const styles = StyleSheet.create({
   container: {

@@ -190,7 +190,7 @@ const CreateProfile = ({ navigation }: RootStackScreenProps<"CreateProfile">) =>
                             position: "relative",
                             marginTop: -100
                         }}>
-                            <Animated.Image source={require('../../assets/images/circle.png')} style={{
+                            <Animated.Image source={require('../../assets/images/circle.webp')} style={{
                                 height: 400,
                                 width: 400,
                             }}/>
