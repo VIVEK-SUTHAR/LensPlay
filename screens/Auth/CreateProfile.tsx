@@ -44,6 +44,7 @@ const CreateProfile = ({
   const toast = useToast();
   const [dynamicText, setDynamicText] = useState("Create Handle");
   const windowHeight = Dimensions.get("screen").height;
+  let intervalId: NodeJS.Timer;
 
   const handleDefaultProfile = async (address: Scalars["EthereumAddress"]) => {
     const defaultProfile = await getProfiles({
@@ -57,28 +58,28 @@ const CreateProfile = ({
 
   const [createProfile] = useCreateProfileMutation({
     onError: (e) => {
-      toast.show("Error while creating profile", ToastType.ERROR, true);
+      toast.show("Error in create profile!", ToastType.ERROR, true);
       setIsloading(false);
       setDynamicText("Create Handle");
-      // console.log(e);
+      console.log(e);
     },
   });
 
   const [setDispatcher] = useCreateSetDispatcherTypedDataMutation({
     onError: (e) => {
-      toast.show("Something went wrong", ToastType.ERROR, true);
+      toast.show("Error in setting", ToastType.ERROR, true);
       setIsloading(false);
       setDynamicText("Create Handle");
-      // console.log(e);
+      console.log(e);
     },
   });
 
   const [broadcastTransaction] = useBroadcastMutation({
     onError: (e) => {
-      toast.show("Something went wrong", ToastType.ERROR, true);
+      toast.show("error in broadcast", ToastType.ERROR, true);
       setIsloading(false);
       setDynamicText("Create Handle");
-      // console.log(e);
+      console.log(e);
     },
   });
 
@@ -124,6 +125,12 @@ const CreateProfile = ({
     setIsloading(true);
     setDynamicText("Creating Handle");
     const address = connector.accounts[0];
+    if (handle.length == 0) {
+      toast.show("Enter handle name", ToastType.ERROR, true);
+      setIsloading(false);
+      setDynamicText("Create Handle");
+      return;
+    }
     if (handle.includes(".test")) {
       toast.show("Omit .test", ToastType.ERROR, true);
       setIsloading(false);
@@ -149,19 +156,22 @@ const CreateProfile = ({
       });
 
       if (response?.data?.createProfile?.__typename !== "RelayError") {
-        setTimeout(async () => {
+        intervalId = setInterval(async () => {
           const profile = await handleDefaultProfile(address);
           if (profile) {
             setDynamicText("Signing Dispatcher");
-
+            console.log("Got the profile");
+            clearInterval(intervalId);
             await EnableDispatcher(profile?.id);
             navigation.navigate("Root");
-          } else {
-            setDynamicText("Create Handle");
-            setIsloading(false);
-            toast.show("Error while creating profile", ToastType.ERROR, true);
           }
-        }, 5000);
+          // else {
+          //     // console.log('Not get profile yet');
+          //     // setDynamicText("Create Handle");
+          //     // setIsloading(false);
+          //     // toast.show("Error while creating profile", ToastType.ERROR, true);
+          // }
+        }, 2000);
       } else if (response?.data?.createProfile?.reason === "HANDLE_TAKEN") {
         toast.show("Handle already taken", ToastType.ERROR, true);
         setIsloading(false);
@@ -216,10 +226,8 @@ const CreateProfile = ({
                 <Image
                   source={require("../../assets/images/icon.png")}
                   style={{
-                    height: 80,
-                    width: 80,
-                    resizeMode: "contain",
-                    // backgroundColor: "red"
+                    height: 50,
+                    width: 50,
                   }}
                 />
               </View>
@@ -250,7 +258,6 @@ const CreateProfile = ({
                 placeholder="Enter Test handle"
               />
             </View>
-
             <View style={styles.buttonContainer}>
               <Button
                 title={dynamicText}
@@ -322,12 +329,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   descContainer: {
-    // flex: 1,
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
     marginVertical: 10,
-    // backgroundColor: 'red'
   },
   descTitleText: {
     color: "white",
