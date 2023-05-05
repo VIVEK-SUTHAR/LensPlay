@@ -1,6 +1,6 @@
 import { BottomSheetProps } from "@gorhom/bottom-sheet";
 import React from "react";
-import { Attribute, InputMaybe, Scalars } from "./generated";
+import { Attribute, InputMaybe, Mirror, Post, Scalars } from "./generated";
 
 export type IconProps = { width: number; height: number; filled?: boolean };
 
@@ -30,6 +30,9 @@ export interface Size {
 export interface IBottomSheet extends BottomSheetProps {
   children: React.ReactNode;
 }
+
+export type ShotsPublication = Post | Mirror;
+
 
 export type ProfileMetaDataV1nput = {
   version: Scalars["String"];

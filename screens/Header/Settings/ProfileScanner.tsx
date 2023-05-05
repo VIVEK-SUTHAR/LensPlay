@@ -148,7 +148,7 @@ export default function ProfileScanner({
         }}
       >
         <Heading
-          title="Scan profile QR"
+          title="Scan Profile QR"
           style={{
             color: "white",
             fontSize: 16,

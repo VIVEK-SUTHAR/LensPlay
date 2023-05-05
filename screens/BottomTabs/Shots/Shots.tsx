@@ -1,10 +1,10 @@
-import React, { useMemo, useState } from "react";
-import { Dimensions, View, useWindowDimensions } from "react-native";
+import React, { useState } from "react";
+import { useWindowDimensions, View } from "react-native";
 import SwiperFlatList from "react-native-swiper-flatlist";
-import { ShotsPublication } from "../../../components/Bytes/ByteCard";
-import SingleByte from "../../../components/Bytes/SingleByte";
+import SingleShot from "../../../components/Shots/SingleShot";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile } from "../../../store/Store";
+import { ShotsPublication } from "../../../types";
 import {
   ExplorePublicationRequest,
   PublicationMainFocus,
@@ -13,15 +13,13 @@ import {
   useExploreQuery,
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
-import SingleShot from "../../../components/Shots/SingleShot";
-// import { Player } from "@livepeer/react-native";
 
 const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const { currentProfile } = useProfile();
   const { isGuest, profileId } = useGuestStore();
   const { accessToken } = useAuthStore();
-  const {height, width} = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
 
   const QueryRequest: ExplorePublicationRequest = {
     sortCriteria: PublicationSortCriteria.Latest,
@@ -52,10 +50,18 @@ const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
     setCurrentIndex(index);
   };
 
-  const singleShotComponent = ({item, index} : {item: ShotsPublication, index: number}) => {
-    return  <View style={{ height: height }}>
-    <SingleShot item={item} index={index} currentIndex={currentIndex} />
-   </View>
+  const singleShotComponent = ({
+    item,
+    index,
+  }: {
+    item: ShotsPublication;
+    index: number;
+  }) => {
+    return (
+      <View style={{ height: height }}>
+        <SingleShot item={item} index={index} currentIndex={currentIndex} />
+      </View>
+    );
   };
 
   const _singleShot = React.memo(singleShotComponent);
@@ -65,7 +71,7 @@ const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
       style={{
         // flex: 1,
         height: height,
-        width: width
+        width: width,
       }}
     >
       <SwiperFlatList
@@ -75,7 +81,7 @@ const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
         data={bytesData}
         initialNumToRender={2}
         renderItem={({ item, index }) => (
-          <_singleShot item={item} index={index}/>
+          <_singleShot item={item} index={index} />
         )}
       />
     </View>

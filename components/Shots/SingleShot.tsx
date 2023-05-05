@@ -1,23 +1,19 @@
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useNavigation } from "@react-navigation/native";
 import { ResizeMode, Video } from "expo-av";
 import VideoPlayer from "expo-video-player";
 import React, { MutableRefObject, useEffect, useState } from "react";
 import {
-  ActivityIndicator,
-  Pressable,
-  View,
-  useWindowDimensions,
+  Pressable, useWindowDimensions, View
 } from "react-native";
+import { ShotsPublication } from "../../types";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
-import { ShotsPublication } from "../Bytes/ByteCard";
-import Icon from "../Icon";
-import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
 import createLivePeerAsset from "../../utils/video/createLivePeerAsset";
-import { useNavigation } from "@react-navigation/native";
+import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
+import Icon from "../Icon";
 import ShotData from "./ShotData";
 import ShotReaction from "./ShotReaction";
-
 interface SingleByteProps {
   item: ShotsPublication;
   index: number;
@@ -33,8 +29,9 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
     getIPFSLink(item?.metadata?.media[0]?.original?.url)
   );
   console.log(item?.metadata?.media[0]?.original?.mimeType);
-  
+
   const navigation = useNavigation();
+
   navigation.addListener("blur", (e) => {
     ref.current?.pauseAsync();
   });
@@ -44,14 +41,15 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
   });
 
   useEffect(() => {
-    checkIfLivePeerAsset(videoURL).then((res) => {
-      if (res) {
-        setVideoURL(res);
-        console.log(res, "hell");
-      } else {
-        createLivePeerAsset(videoURL);
-      }
-    });
+    checkIfLivePeerAsset(videoURL)
+      .then((res) => {
+        if (res) {
+          setVideoURL(res);
+        } else {
+          createLivePeerAsset(videoURL);
+        }
+      })
+      .catch((err) => {});
   }, []);
 
   return (

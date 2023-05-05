@@ -1,38 +1,25 @@
 import * as Clipboard from "expo-clipboard";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { Dimensions, Vibration, View, useWindowDimensions } from "react-native";
+import { primary, white } from "../../constants/Colors";
 import { useProfile, useToast } from "../../store/Store";
-import {
-  Dimensions,
-  Image,
-  Pressable,
-  Share,
-  Vibration,
-  View,
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Avatar from "../UI/Avatar";
+import { ToastType } from "../../types/Store";
+import formatHandle from "../../utils/formatHandle";
 import getRawurl from "../../utils/getRawUrl";
+import Avatar from "../UI/Avatar";
+import Button from "../UI/Button";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
-import formatHandle from "../../utils/formatHandle";
-import { dark_primary } from "../../constants/Colors";
-import Icon from "../Icon";
-import { ToastType } from "../../types/Store";
+import QRCodeStyled from "react-native-qrcode-styled";
 
-export default function ProfileQR() {
-  const [profileQR, setProfileQR] = useState<string | null>(null);
+function ProfileQR({ QRCodeRef }: { QRCodeRef: any }) {
   const { currentProfile } = useProfile();
   const toast = useToast();
   const windowWidth = Dimensions.get("window").width;
   const profileLink = `https://lensplay.xyz/channel/${currentProfile?.id}`;
 
-  async function getQR() {
-    const profileQR = await AsyncStorage.getItem("@profileQR");
-    setProfileQR(profileQR);
-  }
-
-  useEffect(() => {
-    getQR();
+  const handleSheet = React.useCallback(() => {
+    QRCodeRef?.current?.snapToIndex(0);
   }, []);
 
   return (
@@ -67,68 +54,91 @@ export default function ProfileQR() {
       </View>
       <View
         style={{
-          backgroundColor: dark_primary,
-          borderRadius: 16,
-          width: "100%",
-          justifyContent: "center",
+          flexDirection: "row",
           alignItems: "center",
+          justifyContent: "space-between",
+          width: "100%",
           marginVertical: 24,
         }}
       >
-        {profileQR ? (
-          <Image
-            source={{
-              uri: profileQR,
-            }}
-            style={{
-              height: 200,
-              width: 200,
-              borderRadius: 16,
-              marginTop: 24,
-            }}
-          />
-        ) : (
-          <></>
-        )}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-            padding: 24,
+        <Button
+          title={"Copy link"}
+          width={"48%"}
+          bg={white[800]}
+          py={16}
+          textStyle={{
+            textAlign: "center",
+            fontSize: 16,
+            fontWeight: "600",
           }}
-        >
-          <Pressable
-            style={{
-              backgroundColor: "white",
-              padding: 8,
-              borderRadius: 50,
-            }}
-            onPress={async () => {
-              await Clipboard.setStringAsync("");
-              Vibration.vibrate(100, true);
-              toast.show("Link copied", ToastType.SUCCESS, true);
-            }}
-          >
-            <Icon name="copy" color="black" />
-          </Pressable>
-          <Pressable
-            style={{
-              backgroundColor: "white",
-              padding: 8,
-              borderRadius: 50,
-            }}
-            onPress={() => {
-              Share.share({
-                message: profileLink,
-              });
-            }}
-          >
-            <Icon name="share" color="black" />
-          </Pressable>
-        </View>
+          onPress={async () => {
+            await Clipboard.setStringAsync(profileLink);
+            Vibration.vibrate(100, true);
+            toast.show("Link copied", ToastType.SUCCESS, true);
+          }}
+        />
+        <Button
+          title={"Show QR"}
+          width={"48%"}
+          bg={white[800]}
+          py={16}
+          textStyle={{
+            textAlign: "center",
+            fontSize: 16,
+            fontWeight: "600",
+          }}
+          onPress={handleSheet}
+        />
       </View>
     </View>
   );
 }
+
+function ProfileQRSheet() {
+  const { width, height } = useWindowDimensions();
+  const { currentProfile } = useProfile();
+
+  return (
+    <View
+      style={{
+        paddingHorizontal: 8,
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+      }}
+    >
+      <QRCodeStyled
+        data={currentProfile?.id}
+        style={{
+          backgroundColor: "transparent",
+        }}
+        pieceSize={(height / width) * 6}
+        color={"white"}
+        gradient={{
+          options: {
+            colors: ["white"],
+          },
+        }}
+        outerEyesOptions={{
+          borderRadius: 24,
+        }}
+        innerEyesOptions={{
+          borderRadius: 8,
+        }}
+        pieceBorderRadius={4}
+        logo={{
+          href: require("../../assets/images/icon.png"),
+          padding: 0,
+          scale: 1,
+          hidePieces: true,
+        }}
+      />
+    </View>
+  );
+}
+
+export default React.memo(ProfileQR);
+
+const ProfileSheet = React.memo(ProfileQRSheet);
+
+export { ProfileSheet };

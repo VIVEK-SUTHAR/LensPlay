@@ -7,14 +7,14 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import ErrorMessage from "../../../components/common/ErrorMesasge";
+import Skeleton from "../../../components/common/Skeleton";
 import NotificationCard from "../../../components/Notifications";
-import Skleton from "../../../components/Notifications/Skleton";
 import { NotificationTypes } from "../../../components/Notifications/index.d";
+import Skleton from "../../../components/Notifications/Skleton";
 import PleaseLogin from "../../../components/PleaseLogin";
 import Heading from "../../../components/UI/Heading";
 import Tabs, { Tab } from "../../../components/UI/Tabs";
-import NotFound from "../../../components/common/NotFound";
-import Skeleton from "../../../components/common/Skeleton";
 import { white } from "../../../constants/Colors";
 import { NOTIFICATION } from "../../../constants/tracking";
 import { useGuestStore } from "../../../store/GuestStore";
@@ -22,7 +22,6 @@ import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import { Notification, useNotificationsQuery } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
 import TrackAction from "../../../utils/Track";
-import ErrorMessage from "../../../components/common/ErrorMesasge";
 
 const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -155,7 +154,6 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
     }
   };
 
-
   TrackAction(NOTIFICATION.NOTIFICATIONS);
   return (
     <SafeAreaView style={styles.container}>
@@ -171,11 +169,11 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
                   backgroundColor: "black",
                 }}
               >
-                {
-                  loading ? (<Skeleton children={<Skleton />} number={10} />) : (
-                    <FilterNotification notificationType={tab.type} />
-                  )
-                }
+                {loading ? (
+                  <Skeleton children={<Skleton />} number={10} />
+                ) : (
+                  <FilterNotification notificationType={tab.type} />
+                )}
               </View>
             )}
           />
@@ -183,7 +181,6 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
       </Tabs>
     </SafeAreaView>
   );
-
 };
 
 export default Notifications;

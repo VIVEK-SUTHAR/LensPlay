@@ -21,7 +21,7 @@ type ConnectWalletSheetProps = {
   setIsloading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function ConnectWalletSheet({
+function ConnectWalletSheet({
   loginRef,
   setIsloading,
 }: ConnectWalletSheetProps) {
@@ -203,3 +203,4 @@ export default function ConnectWalletSheet({
     </View>
   );
 }
+export default React.memo(ConnectWalletSheet);

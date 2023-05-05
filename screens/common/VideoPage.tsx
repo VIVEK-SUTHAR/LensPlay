@@ -181,8 +181,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
   useEffect(() => {
     checkIfLivePeerAsset(LENS_MEDIA_URL).then((res) => {
       if (res) {
+        // console.log(res);
         setVideoURI(res);
-        console.log(uri);
       } else {
         createLivePeerAsset(LENS_MEDIA_URL);
         setVideoURI(getIPFSLink(LENS_MEDIA_URL));
@@ -213,7 +213,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
           <Image
             placeholder={getPlaceHolderImage()}
             transition={500}
-            placeholderContentFit="contain"
+            placeholderContentFit="cover"
             source={{
               uri: getImageProxyURL({
                 formattedLink: getIPFSLink(

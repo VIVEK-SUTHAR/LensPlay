@@ -19,7 +19,7 @@ import Trending from "../screens/BottomTabs/Explore/Trending";
 import Feed from "../screens/BottomTabs/Home/Feed";
 import Notifications from "../screens/BottomTabs/Notification/Notification";
 import ProfileScreen from "../screens/BottomTabs/Profile/Profile";
-import Bytes from "../screens/BottomTabs/Shots/Bytes";
+import Bytes from "../screens/BottomTabs/Shots/Shots";
 import {
   useAuthStore,
   useProfile,
@@ -153,7 +153,7 @@ export default function BottomTabNavigator({
           headerTitle: "",
           headerRight: () => (
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <TouchableWithoutFeedback
+              {/* <TouchableWithoutFeedback
                 onPress={() => uploadRef.current?.snapToIndex(0)}
               >
                 <View
@@ -165,7 +165,7 @@ export default function BottomTabNavigator({
                 >
                   <Icon name="upload" size={24} />
                 </View>
-              </TouchableWithoutFeedback>
+              </TouchableWithoutFeedback> */}
               <TouchableWithoutFeedback
                 onPress={() => {
                   navigation.navigate("Search");

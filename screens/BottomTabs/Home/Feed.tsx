@@ -107,6 +107,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
                 />
               );
             }
+            return <></>
           }}
         />
       </SafeAreaView>

@@ -166,7 +166,7 @@ export default function Trending({
             />
           }
           renderItem={({ item }: { item: Explore }) => {
-            if (item?.appId === "lenstube") {
+            if (item?.appId === "lenstube" && !item.hidden) {
               return <VideoCard publication={item as Explore} id={item.id} />;
             }
             return <></>;
