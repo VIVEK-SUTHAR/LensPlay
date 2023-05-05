@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { freeCollectPublication } from "../../api";
-import { SHOT } from "../../constants/tracking";
+import { PUBLICATION, SHOT } from "../../constants/tracking";
 import { useGuestStore } from "../../store/GuestStore";
 import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
 import { ToastType } from "../../types/Store";
@@ -63,11 +63,11 @@ function ShotReaction({ item }: { item: ShotsPublication }) {
   const shareVideo = React.useCallback(async () => {
     try {
       const result = await Share.share({
-        message: `Let's watch ${item?.metadata?.name} on LensPlay,here's link,https://lensplay.xyz/watch/${item.id}`,
+        message: `Let's watch ${item?.metadata?.name} on LensPlay, here's link, https://lensplay.xyz/watch/${item?.id}
+        `,
       });
-    } catch (error) {
-      // console.log(error);
-    }
+      TrackAction(PUBLICATION.SHARE);
+    } catch (error) {}
   }, []);
 
   const handleSheet = React.useCallback(() => {
