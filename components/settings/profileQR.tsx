@@ -124,7 +124,7 @@ function ProfileQRSheet() {
         logo={{
           href: require("../../assets/images/icon.png"),
           padding: 4,
-          scale: 1.4,
+          scale: 1,
         }}
       />
     </View>

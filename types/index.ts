@@ -1,6 +1,6 @@
 import { BottomSheetProps } from "@gorhom/bottom-sheet";
 import React from "react";
-import { Attribute, InputMaybe, Scalars } from "./generated";
+import { Attribute, InputMaybe, Mirror, Post, Scalars } from "./generated";
 
 export type IconProps = { width: number; height: number; filled?: boolean };
 
@@ -39,3 +39,5 @@ export type ProfileMetaDataV1nput = {
   cover_picture: InputMaybe<Scalars["String"]>;
   attributes: InputMaybe<Attribute[]> | undefined;
 };
+
+export type ShotsPublication = Post | Mirror;

@@ -20,10 +20,10 @@ import TrackAction from "../../utils/Track";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
 import Sheet from "../Bottom";
-import { ShotsPublication } from "../Bytes/ByteCard";
 import Icon from "../Icon";
 import Button from "../UI/Button";
 import { LikeButton } from "../VIdeo";
+import { ShotsPublication } from "../../types";
 
 function ShotReaction({ item }: { item: ShotsPublication }) {
   const [totalCollects, setTotalCollects] = useState<number>(

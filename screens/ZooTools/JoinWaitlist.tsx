@@ -1,10 +1,10 @@
 import AnimatedLottieView from "lottie-react-native";
-import { ScrollView } from "moti";
 import React from "react";
 import {
   KeyboardAvoidingView,
   Linking,
   Platform,
+  ScrollView,
   StyleSheet,
   View,
 } from "react-native";
@@ -12,9 +12,7 @@ import Button from "../../components/UI/Button";
 import Heading from "../../components/UI/Heading";
 import { primary } from "../../constants/Colors";
 
-type Props = {};
-
-const JoinWaitlist = (props: Props) => {
+const JoinWaitlist = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}

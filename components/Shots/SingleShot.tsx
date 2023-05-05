@@ -1,20 +1,15 @@
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useNavigation } from "@react-navigation/native";
 import { ResizeMode, Video } from "expo-av";
 import VideoPlayer from "expo-video-player";
 import React, { MutableRefObject, useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Pressable,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { Pressable, View, useWindowDimensions } from "react-native";
+import { ShotsPublication } from "../../types";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
-import { ShotsPublication } from "../Bytes/ByteCard";
-import Icon from "../Icon";
-import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
 import createLivePeerAsset from "../../utils/video/createLivePeerAsset";
-import { useNavigation } from "@react-navigation/native";
+import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
+import Icon from "../Icon";
 import ShotData from "./ShotData";
 import ShotReaction from "./ShotReaction";
 
@@ -33,12 +28,9 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
     getIPFSLink(item?.metadata?.media[0]?.original?.url)
   );
   const navigation = useNavigation();
+
   navigation.addListener("blur", (e) => {
     ref.current?.pauseAsync();
-  });
-
-  navigation.addListener("focus", (e) => {
-    ref.current?.playAsync();
   });
 
   useEffect(() => {

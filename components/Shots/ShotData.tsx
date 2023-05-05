@@ -6,8 +6,8 @@ import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
 import Sheet from "../Bottom";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import { ShotsPublication } from "../Bytes/ByteCard";
 import { white } from "../../constants/Colors";
+import { ShotsPublication } from "../../types";
 
 function ShotData({ item }: { item: ShotsPublication }) {
   const descriptionRef = useRef<BottomSheetMethods>(null);
