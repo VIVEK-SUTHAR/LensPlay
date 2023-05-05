@@ -1,7 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Dimensions, Image, View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
+import Heading from "../../components/UI/Heading";
 import { APP_OPEN } from "../../constants/tracking";
 import { useAuthStore, useProfile } from "../../store/Store";
 import {
@@ -13,15 +21,6 @@ import TrackAction from "../../utils/Track";
 import handleWaitlist from "../../utils/handleWaitlist";
 import getDefaultProfile from "../../utils/lens/getDefaultProfile";
 import storeTokens from "../../utils/storeTokens";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withSpring,
-  withTiming,
-} from "react-native-reanimated";
-import StyledText from "../../components/UI/StyledText";
-import Heading from "../../components/UI/Heading";
 
 export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
   const { setCurrentProfile, currentProfile, setHasHandle } = useProfile();
@@ -51,29 +50,11 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
     }
   }
 
-  async function getProfileQR() {
-    const qrResponse = await fetch(
-      "https://www.lensplay.xyz/api/generateProfileQR",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          profileID: currentProfile?.id,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const qrData = await qrResponse.json();
-    await AsyncStorage.setItem("@profileQR", qrData.message);
-  }
-
   const getLocalStorage = async () => {
     try {
       TrackAction(APP_OPEN);
       const waitList = await AsyncStorage.getItem("@waitlist");
       const userTokens = await AsyncStorage.getItem("@user_tokens");
-      const profileQR = await AsyncStorage.getItem("@profileQR");
 
       if (!userTokens) {
         navigation.replace("Login");
@@ -125,9 +106,6 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
               setAccessToken(accessToken);
               setRefreshToken(refreshToken);
               await HandleDefaultProfile(address);
-              if (!profileQR) {
-                await getProfileQR();
-              }
               navigation.replace("Root");
             } else {
               const newData = await getAccessFromRefresh({
@@ -139,9 +117,6 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
               });
               const address = JSON.parse(waitList).address;
               await HandleDefaultProfile(address);
-              if (!profileQR) {
-                await getProfileQR();
-              }
               setAccessToken(newData?.data?.refresh?.accessToken);
               setRefreshToken(newData?.data?.refresh?.refreshToken);
               await storeTokens(
