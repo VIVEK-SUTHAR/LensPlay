@@ -89,7 +89,7 @@ const withPackageVisibility: ConfigPlugin = (config) => {
 const config: ExpoConfig = {
   name: "LensPlay",
   slug: "lensplay",
-  version: "0.0.2",
+  version: "0.0.4",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "lensplay",
@@ -114,7 +114,7 @@ const config: ExpoConfig = {
   jsEngine: "hermes",
   android: {
     package: "com.lensplayxyz.lensplay",
-    versionCode: 2,
+    versionCode: 4,
     adaptiveIcon: {
       foregroundImage: "./assets/images/adaptive-icon.png",
       backgroundColor: "#000000",

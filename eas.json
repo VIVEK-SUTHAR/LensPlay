@@ -1,12 +1,21 @@
 {
-  "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal",
-      "channel": "dev"
-    },
-    "preview": {
-      "distribution": "internal"
-    }
-  }
+	"build": {
+		"development": {
+			"developmentClient": true,
+			"distribution": "internal",
+			"channel": "dev"
+		},
+		"preview": {
+			"distribution": "internal"
+		},
+		"alpha": {
+			"channel": "alpha"
+		},
+		"beta": {
+			"channel": "beta"
+		},
+		"prod": {
+			"channel": "prod"
+		}
+	}
 }
