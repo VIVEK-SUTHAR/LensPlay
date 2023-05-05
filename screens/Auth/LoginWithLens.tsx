@@ -126,8 +126,8 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
       }
     } catch (error) {
       if (error instanceof Error) {
-        console.log("[Error]:Error in login with lens");
-        console.log(error);
+        // console.log("[Error]:Error in login with lens");
+        // console.log(error);
       }
     } finally {
       setIsloading(false);
@@ -142,8 +142,8 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
       navigation.replace("Login");
     } catch (error) {
       if (error instanceof Error) {
-        console.log("[Error]:Error in Disconnect");
-        console.log(error);
+        // console.log("[Error]:Error in Disconnect");
+        // console.log(error);
       }
     }
   };

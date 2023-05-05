@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { RootStackScreenProps } from "../../types/navigation/types";
+import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
 import {
   Animated,
   Dimensions,
-  Easing,
   Image,
   KeyboardAvoidingView,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from "react-native";
+import Button from "../../components/UI/Button";
+import StyledText from "../../components/UI/StyledText";
 import { dark_primary, primary } from "../../constants/Colors";
 import {
   useAuthStore,
@@ -19,21 +21,16 @@ import {
   useThemeStore,
   useToast,
 } from "../../store/Store";
-import Button from "../../components/UI/Button";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { ToastType } from "../../types/Store";
-import getProfiles from "../../utils/lens/getProfiles";
-import createSetDispatcherTypedData from "../../utils/createSetDispatcherTypedData";
-import StyledText from "../../components/UI/StyledText";
-import Icon from "../../components/Icon";
-import { StatusBar } from "expo-status-bar";
 import {
   Scalars,
   useBroadcastMutation,
   useCreateProfileMutation,
   useCreateSetDispatcherTypedDataMutation,
 } from "../../types/generated";
-import { LinearGradient } from "expo-linear-gradient";
+import { RootStackScreenProps } from "../../types/navigation/types";
+import createSetDispatcherTypedData from "../../utils/createSetDispatcherTypedData";
+import getProfiles from "../../utils/lens/getProfiles";
 
 const CreateProfile = ({
   navigation,
@@ -41,19 +38,12 @@ const CreateProfile = ({
   const [handle, setHandle] = useState<string>("");
   const [isloading, setIsloading] = useState<boolean>(false);
   const theme = useThemeStore();
-  const {
-    accessToken,
-    refreshToken,
-    setAccessToken,
-    setRefreshToken,
-  } = useAuthStore();
-  const { currentProfile, setCurrentProfile } = useProfile();
+  const { accessToken } = useAuthStore();
+  const { setCurrentProfile } = useProfile();
   const connector = useWalletConnect();
   const toast = useToast();
   const [dynamicText, setDynamicText] = useState("Create Handle");
   const windowHeight = Dimensions.get("screen").height;
-  const windowWidth = Dimensions.get("screen").width;
-  let intervalId: NodeJS.Timer;
 
   const handleDefaultProfile = async (address: Scalars["EthereumAddress"]) => {
     const defaultProfile = await getProfiles({
@@ -67,7 +57,7 @@ const CreateProfile = ({
 
   const [createProfile] = useCreateProfileMutation({
     onError: (e) => {
-      toast.show("Error in create profile!", ToastType.ERROR, true);
+      toast.show("Error while creating profile", ToastType.ERROR, true);
       setIsloading(false);
       setDynamicText("Create Handle");
       // console.log(e);
@@ -76,7 +66,7 @@ const CreateProfile = ({
 
   const [setDispatcher] = useCreateSetDispatcherTypedDataMutation({
     onError: (e) => {
-      toast.show("Error in setting", ToastType.ERROR, true);
+      toast.show("Something went wrong", ToastType.ERROR, true);
       setIsloading(false);
       setDynamicText("Create Handle");
       // console.log(e);
@@ -85,7 +75,7 @@ const CreateProfile = ({
 
   const [broadcastTransaction] = useBroadcastMutation({
     onError: (e) => {
-      toast.show("error in broadcast", ToastType.ERROR, true);
+      toast.show("Something went wrong", ToastType.ERROR, true);
       setIsloading(false);
       setDynamicText("Create Handle");
       // console.log(e);
@@ -159,21 +149,19 @@ const CreateProfile = ({
       });
 
       if (response?.data?.createProfile?.__typename !== "RelayError") {
-        intervalId = setInterval(async () => {
+        setTimeout(async () => {
           const profile = await handleDefaultProfile(address);
           if (profile) {
             setDynamicText("Signing Dispatcher");
-            clearInterval(intervalId);
+
             await EnableDispatcher(profile?.id);
             navigation.navigate("Root");
+          } else {
+            setDynamicText("Create Handle");
+            setIsloading(false);
+            toast.show("Error while creating profile", ToastType.ERROR, true);
           }
-          // else {
-          //     // console.log('Not get profile yet');
-          //     // setDynamicText("Create Handle");
-          //     // setIsloading(false);
-          //     // toast.show("Error while creating profile", ToastType.ERROR, true);
-          // }
-        }, 2000);
+        }, 5000);
       } else if (response?.data?.createProfile?.reason === "HANDLE_TAKEN") {
         toast.show("Handle already taken", ToastType.ERROR, true);
         setIsloading(false);
@@ -228,8 +216,9 @@ const CreateProfile = ({
                 <Image
                   source={require("../../assets/images/icon.png")}
                   style={{
-                    height: 50,
-                    width: 50,
+                    height: 80,
+                    width: 80,
+                    resizeMode: "contain",
                     // backgroundColor: "red"
                   }}
                 />
@@ -246,7 +235,6 @@ const CreateProfile = ({
                 style={{ color: primary, fontSize: 42, fontWeight: "700" }}
               />
             </View>
-
             <View style={styles.inputContainer}>
               <TextInput
                 numberOfLines={2}

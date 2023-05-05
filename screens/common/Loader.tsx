@@ -155,9 +155,8 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
       }
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error);
-
-        console.log("[Error]:Error in accessing local storage");
+        // console.log(error);
+        // console.log("[Error]:Error in accessing local storage");
         throw new Error("[Error]:Error in accessing local storage");
       }
     }

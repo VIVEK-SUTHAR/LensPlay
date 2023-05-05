@@ -16,7 +16,7 @@ const storeTokens = async (
     await AsyncStorage.setItem("@user_tokens", jsonValue);
   } catch (error) {
     if (error instanceof Error) {
-      console.log("[Error]:Error in store Tokens");
+      // console.log("[Error]:Error in store Tokens");
       // throw new Error("[Error]:Error in store Tokens", {
       //   cause: error,
       // });

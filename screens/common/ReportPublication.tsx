@@ -122,7 +122,7 @@ const ReportPublication = ({
       TrackAction(PUBLICATION.REPORT);
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error);
+        // console.log(error);
       }
     } finally {
       setSelectedSubReason({ reason: "" });

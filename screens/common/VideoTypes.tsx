@@ -163,7 +163,7 @@ export default function VideoTypes({
       uploadToTus(uploadRequest);
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error);
+        // console.log(error);
       }
     }
   };
@@ -242,7 +242,7 @@ export default function VideoTypes({
         },
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 

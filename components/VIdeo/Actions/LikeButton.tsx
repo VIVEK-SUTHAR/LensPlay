@@ -53,7 +53,7 @@ const LikeButton = ({
     },
     onError: (e) => {
       toast.show("Something went wrong!", ToastType.ERROR, true);
-      console.log(e);
+      // console.log(e);
     },
   });
 

@@ -66,7 +66,7 @@ function ShotReaction({ item }: { item: ShotsPublication }) {
         message: `Let's watch ${item?.metadata?.name} on LensPlay,here's link,https://lensplay.xyz/watch/${item.id}`,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }, []);
 

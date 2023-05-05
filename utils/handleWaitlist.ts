@@ -10,9 +10,6 @@ export default async function handleWaitlist(address: string) {
     await AsyncStorage.setItem("@waitlist", JSON.stringify(handleUser));
     return userData;
   } catch (error) {
-    console.log("[Error]:Error in checking waitlist");
-    throw new Error("[Error]:Error in checking waitlist", {
-      cause: error,
-    });
+    // console.log("[Error]:Error in checking waitlist");
   }
 }

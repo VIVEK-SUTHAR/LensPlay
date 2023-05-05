@@ -11,7 +11,7 @@ const getImageBlobFromUri = async (uri: string) => {
     return blob;
   } catch (error) {
     if (error instanceof Error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 };

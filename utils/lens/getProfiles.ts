@@ -20,7 +20,7 @@ const getProfiles = async (
     });
     return result?.data?.profiles?.items[0];
   } catch (error) {
-    console.log("[Error]:Error in getting created profile");
+    // console.log("[Error]:Error in getting created profile");
   }
 };
 
