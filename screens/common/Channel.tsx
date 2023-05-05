@@ -1,14 +1,7 @@
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
-import {
-  Image,
-  Linking,
-  Pressable,
-  RefreshControl,
-  ScrollView,
-  View,
-} from "react-native";
+import { Pressable, RefreshControl, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "../../components/Icon";
 import AllVideos from "../../components/Profile/AllVideos";
@@ -46,6 +39,9 @@ import getRawurl from "../../utils/getRawUrl";
 import formatUnfollowTypedData from "../../utils/lens/formatUnfollowTypedData";
 import TrackAction from "../../utils/Track";
 import SocialLinks from "../../components/common/SocialLinks";
+import { Image } from "expo-image";
+import getPlaceHolderImage from "../../utils/getPlaceHolder";
+import getImageProxyURL from "../../utils/getImageProxyURL";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -120,7 +116,6 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       },
     },
     onCompleted: () => {
-      getLinks(profileData?.profile as Profile);
     },
   });
 
@@ -128,6 +123,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
 
   const [subscribeToChannel] = useProxyActionMutation({
     onCompleted: (data) => {
+      console.log(data);
       toast.success("Subscribed succesfully!");
       setAlreadyFollowing(true);
     },
@@ -164,29 +160,6 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       setRefreshing(false);
     });
   }, []);
-
-  function getLinks(profile: Profile | null) {
-    const twitter =
-      profile?.attributes?.find((item: Attribute) => item.key === "twitter")
-        ?.value || "";
-    const youtube =
-      profile?.attributes?.find((item: Attribute) => item.key === "youtube")
-        ?.value || "";
-
-    const insta =
-      profile?.attributes?.find((item: Attribute) => item.key === "instagram")
-        ?.value || "";
-    const website =
-      profile?.attributes?.find((item: Attribute) => item.key === "website")
-        ?.value || "";
-
-    setLinks({
-      insta: insta,
-      site: website,
-      twitter: twitter,
-      yt: youtube,
-    });
-  }
 
   if (profileLoading) {
     return (
@@ -226,10 +199,15 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                 }}
               >
                 <Image
+                  placeholder={getPlaceHolderImage()}
+                  placeholderContentFit="cover"
+                  transition={500}
                   source={{
-                    uri: getIPFSLink(
-                      getRawurl(profile?.coverPicture as MediaSet)
-                    ),
+                    uri: getImageProxyURL({
+                      formattedLink: getIPFSLink(
+                        getRawurl(profile?.coverPicture as MediaSet)
+                      ),
+                    }),
                   }}
                   style={{
                     height: "100%",
@@ -400,10 +378,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                 <></>
               )}
               <SocialLinks
-                instagram={links.insta}
-                website={links.site}
-                twitter={links.twitter}
-                youtube={links.yt}
+                profile={profile as Profile}
               />
               <View
                 style={{

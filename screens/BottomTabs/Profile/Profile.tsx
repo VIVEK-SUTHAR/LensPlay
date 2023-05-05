@@ -31,10 +31,10 @@ import VERIFIED_CHANNELS from "../../../constants/Varified";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import CommonStyles from "../../../styles";
-
 import {
   MediaSet,
   Post,
+  Profile,
   PublicationMainFocus,
   PublicationTypes,
   useProfilePostsQuery,
@@ -175,7 +175,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 />
               </View>
             </View>
-            <View style={CommonStyles.mx_16}>
+            <View style={CommonStyles.mh_16}>
               <View
                 style={{
                   flexDirection: "row",
@@ -282,7 +282,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                   />
                 </Pressable>
               </View>
-              <SocialLinks />
+              <SocialLinks profile={profile as Profile}/>
               <View style={{ marginVertical: 24 }}>
                 <PinnedPublication sheetRef={sheetRef} />
                 {AllVideosData && (
