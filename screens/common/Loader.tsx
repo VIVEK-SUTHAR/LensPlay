@@ -51,29 +51,13 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
     }
   }
 
-  async function getProfileQR() {
-    const qrResponse = await fetch(
-      "https://www.lensplay.xyz/api/generateProfileQR",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          profileID: currentProfile?.id,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const qrData = await qrResponse.json();
-    await AsyncStorage.setItem("@profileQR", qrData.message);
-  }
+  
 
   const getLocalStorage = async () => {
     try {
       TrackAction(APP_OPEN);
       const waitList = await AsyncStorage.getItem("@waitlist");
       const userTokens = await AsyncStorage.getItem("@user_tokens");
-      const profileQR = await AsyncStorage.getItem("@profileQR");
 
       if (!userTokens) {
         navigation.replace("Login");
@@ -125,9 +109,6 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
               setAccessToken(accessToken);
               setRefreshToken(refreshToken);
               await HandleDefaultProfile(address);
-              if (!profileQR) {
-                await getProfileQR();
-              }
               navigation.replace("Root");
             } else {
               const newData = await getAccessFromRefresh({
@@ -139,9 +120,6 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
               });
               const address = JSON.parse(waitList).address;
               await HandleDefaultProfile(address);
-              if (!profileQR) {
-                await getProfileQR();
-              }
               setAccessToken(newData?.data?.refresh?.accessToken);
               setRefreshToken(newData?.data?.refresh?.refreshToken);
               await storeTokens(

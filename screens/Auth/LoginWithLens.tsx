@@ -54,22 +54,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
     { data: tokens, error: tokensError, loading: tokenLoading },
   ] = useAuthenticateMutation();
 
-  async function getProfileQR() {
-    const qrResponse = await fetch(
-      "https://www.lensplay.xyz/api/generateProfileQR",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          profileID: currentProfile?.id,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const qrData = await qrResponse.json();
-    await AsyncStorage.setItem("@profileQR", qrData.message);
-  }
+  
 
   const shortenAddress = (address: string): string => {
     if (!address) return "0X...000";
@@ -79,7 +64,6 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const handleLoginWithLens = async () => {
     try {
       setIsloading(true);
-      const profileQR = await AsyncStorage.getItem("@profileQR");
       const address = connector.accounts[0];
       const data = await getChallenge({
         variables: {
@@ -113,9 +97,6 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
           false
         );
         if (hasHandle) {
-          if (!profileQR) {
-            await getProfileQR();
-          }
           navigation.reset({ index: 0, routes: [{ name: "Root" }] });
         } else {
           navigation.replace("CreateProfile");
