@@ -32,8 +32,7 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
   const { accessToken } = useAuthStore();
   const { PRIMARY } = useThemeStore();
   const { isGuest } = useGuestStore();
-  const activePublication = useActivePublication();
-  const canComment = activePublication?.activePublication?.canComment;
+  
 
   const [createComment] = useCreateCommentViaDispatcherMutation({
     onError: () => {
@@ -55,20 +54,16 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
       toast.show("Please type something", ToastType.ERROR, true);
       return;
     }
-    if (!canComment) {
-      toast.error("You can't comment on this video");
-      return;
-    }
     try {
       toast.success("Comment submitted!");
       setCommentText("");
       setIsFocused(false);
-      setOptimitisticComment({
-        commentText: commentText,
-        handle: currentProfile?.handle,
-        isIndexing: true,
-        username: currentProfile?.name,
-      });
+      // setOptimitisticComment({
+      //   commentText: commentText,
+      //   handle: currentProfile?.handle,
+      //   isIndexing: true,
+      //   username: currentProfile?.name,
+      // });
       const contenturi = await uploadMetaDataToArweave(
         commentText,
         currentProfile?.handle
