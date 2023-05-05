@@ -2,17 +2,10 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import React, { useRef, useState } from "react";
-import {
-  Dimensions,
-  Image,
-  Share,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Dimensions, Share, Text, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { freeCollectPublication } from "../../api";
-import { SHOT } from "../../constants/tracking";
+import { PUBLICATION, SHOT } from "../../constants/tracking";
 import { useGuestStore } from "../../store/GuestStore";
 import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
 import { ToastType } from "../../types/Store";
@@ -20,10 +13,13 @@ import TrackAction from "../../utils/Track";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
 import Sheet from "../Bottom";
-import { ShotsPublication } from "../Bytes/ByteCard";
 import Icon from "../Icon";
 import Button from "../UI/Button";
 import { LikeButton } from "../VIdeo";
+import { ShotsPublication } from "../../types";
+import { Image } from "expo-image";
+import getPlaceHolderImage from "../../utils/getPlaceHolder";
+import getImageProxyURL from "../../utils/getImageProxyURL";
 
 function ShotReaction({ item }: { item: ShotsPublication }) {
   const [totalCollects, setTotalCollects] = useState<number>(
@@ -63,15 +59,14 @@ function ShotReaction({ item }: { item: ShotsPublication }) {
   const shareVideo = React.useCallback(async () => {
     try {
       const result = await Share.share({
-        message: `Let's watch ${item?.metadata?.name} on LensPlay,here's link,https://lensplay.xyz/watch/${item.id}`,
+        message: `Let's watch ${item?.metadata?.name} on LensPlay, here's link, https://lensplay.xyz/watch/${item?.id}
+        `,
       });
-    } catch (error) {
-      // console.log(error);
-    }
+      TrackAction(PUBLICATION.SHARE);
+    } catch (error) {}
   }, []);
 
   const handleSheet = React.useCallback(() => {
-    console.log("here here");
     collectSheetRef?.current?.snapToIndex(0);
   }, []);
 
@@ -171,24 +166,29 @@ function ShotReaction({ item }: { item: ShotsPublication }) {
                 }}
               >
                 <Image
+                  placeholder={getPlaceHolderImage()}
+                  contentFit="cover"
+                  transition={500}
                   source={{
-                    uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
+                    uri: getImageProxyURL({
+                      formattedLink: getIPFSLink(
+                        getRawurl(item?.metadata?.cover)
+                      ),
+                    }),
                   }}
                   style={{
                     height: 180,
                     borderRadius: 8,
                     resizeMode: "cover",
                   }}
-                  progressiveRenderingEnabled={true}
                 />
                 <Button
                   title={`Collect the Shot for free`}
-                  // width={"90%"}
                   mx={12}
-                  py={12}
+                  py={16}
                   textStyle={{
                     fontSize: 20,
-                    fontWeight: "700",
+                    fontWeight: "600",
                     textAlign: "center",
                   }}
                   onPress={collectPublication}

@@ -2,18 +2,19 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import { ResizeMode, Video } from "expo-av";
 import VideoPlayer from "expo-video-player";
-import React, { MutableRefObject, useEffect, useState } from "react";
-import {
-  Pressable, useWindowDimensions, View
-} from "react-native";
+import React, { MutableRefObject, useEffect, useRef, useState } from "react";
+import { Pressable, View, useWindowDimensions } from "react-native";
 import { ShotsPublication } from "../../types";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
 import createLivePeerAsset from "../../utils/video/createLivePeerAsset";
 import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
 import Icon from "../Icon";
-import ShotData from "./ShotData";
+import ShotData, { DiscriptionSheet } from "./ShotData";
 import ShotReaction from "./ShotReaction";
+import Sheet from "../Bottom";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+
 interface SingleByteProps {
   item: ShotsPublication;
   index: number;
@@ -28,24 +29,22 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
   const [videoURL, setVideoURL] = useState(
     getIPFSLink(item?.metadata?.media[0]?.original?.url)
   );
-  console.log(item?.metadata?.media[0]?.original?.mimeType);
-
   const navigation = useNavigation();
 
   navigation.addListener("blur", (e) => {
     ref.current?.pauseAsync();
   });
 
+  const descriptionRef = useRef<BottomSheetMethods>(null);
+
   useEffect(() => {
-    checkIfLivePeerAsset(videoURL)
-      .then((res) => {
-        if (res) {
-          setVideoURL(res);
-        } else {
-          createLivePeerAsset(videoURL);
-        }
-      })
-      .catch((err) => {});
+    checkIfLivePeerAsset(videoURL).then((res) => {
+      if (res) {
+        setVideoURL(res);
+      } else {
+        createLivePeerAsset(videoURL);
+      }
+    });
   }, []);
 
   return (
@@ -107,8 +106,18 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
           />
         </Pressable>
       </View>
+      <ShotData item={item} descriptionRef={descriptionRef} />
       <ShotReaction item={item} />
-      <ShotData item={item} />
+      <Sheet
+        ref={descriptionRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "#1d1d1d",
+        }}
+        snapPoints={["50%"]}
+        children={<DiscriptionSheet item={item} />}
+      />
     </>
   );
 }

@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { View } from "react-native";
 import SwiperFlatList from "react-native-swiper-flatlist";
 import SingleShot from "../../../components/Shots/SingleShot";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile } from "../../../store/Store";
-import { ShotsPublication } from "../../../types";
 import {
   ExplorePublicationRequest,
   PublicationMainFocus,
@@ -13,13 +12,13 @@ import {
   useExploreQuery,
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
+import { ShotsPublication } from "../../../types";
 
-const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
+const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const { currentProfile } = useProfile();
   const { isGuest, profileId } = useGuestStore();
   const { accessToken } = useAuthStore();
-  const { height, width } = useWindowDimensions();
 
   const QueryRequest: ExplorePublicationRequest = {
     sortCriteria: PublicationSortCriteria.Latest,
@@ -50,28 +49,10 @@ const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
     setCurrentIndex(index);
   };
 
-  const singleShotComponent = ({
-    item,
-    index,
-  }: {
-    item: ShotsPublication;
-    index: number;
-  }) => {
-    return (
-      <View style={{ height: height }}>
-        <SingleShot item={item} index={index} currentIndex={currentIndex} />
-      </View>
-    );
-  };
-
-  const _singleShot = React.memo(singleShotComponent);
-
   return (
     <View
       style={{
-        // flex: 1,
-        height: height,
-        width: width,
+        flex: 1,
       }}
     >
       <SwiperFlatList
@@ -79,13 +60,12 @@ const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
         keyExtractor={(item, index) => index.toString()}
         onChangeIndex={handleChangeIndexValue}
         data={bytesData}
-        initialNumToRender={2}
         renderItem={({ item, index }) => (
-          <_singleShot item={item} index={index} />
+          <SingleShot item={item} index={index} currentIndex={currentIndex} />
         )}
       />
     </View>
   );
 };
 
-export default Bytes;
+export default Shots;

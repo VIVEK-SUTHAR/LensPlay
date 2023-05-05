@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { Camera } from "react-native-vision-camera";
 import Sheet from "../components/Bottom";
 import Icon from "../components/Icon";
 import Avatar from "../components/UI/Avatar";
@@ -19,24 +20,23 @@ import Trending from "../screens/BottomTabs/Explore/Trending";
 import Feed from "../screens/BottomTabs/Home/Feed";
 import Notifications from "../screens/BottomTabs/Notification/Notification";
 import ProfileScreen from "../screens/BottomTabs/Profile/Profile";
-import Bytes from "../screens/BottomTabs/Shots/Shots";
+import Shots from "../screens/BottomTabs/Shots/Shots";
 import {
   useAuthStore,
   useProfile,
   useThemeStore,
   useToast,
 } from "../store/Store";
+import { useUploadStore } from "../store/UploadStore";
+import { useRefreshTokensMutation } from "../types/generated";
 import {
   RootStackScreenProps,
   RootTabParamList,
 } from "../types/navigation/types";
+import canUploadedToIpfs from "../utils/canUploadToIPFS";
 import getIPFSLink from "../utils/getIPFSLink";
 import storeTokens from "../utils/storeTokens";
-import { useRefreshTokensMutation } from "../types/generated";
-import { Camera } from "react-native-vision-camera";
 import getFileSize from "../utils/video/getFileSize";
-import canUploadedToIpfs from "../utils/canUploadToIPFS";
-import { useUploadStore } from "../store/UploadStore";
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
@@ -294,8 +294,8 @@ export default function BottomTabNavigator({
           }}
         />
         <BottomTab.Screen
-          name="Bytes"
-          component={Bytes}
+          name="Shots"
+          component={Shots}
           options={{
             tabBarLabel: "",
             headerShown: false,
