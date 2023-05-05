@@ -66,12 +66,11 @@ function ShotReaction({ item }: { item: ShotsPublication }) {
         message: `Let's watch ${item?.metadata?.name} on LensPlay,here's link,https://lensplay.xyz/watch/${item.id}`,
       });
     } catch (error) {
-      // console.log(error);
+      console.log(error);
     }
   }, []);
 
   const handleSheet = React.useCallback(() => {
-    console.log("here here");
     collectSheetRef?.current?.snapToIndex(0);
   }, []);
 

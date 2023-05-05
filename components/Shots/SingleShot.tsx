@@ -37,7 +37,6 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
     checkIfLivePeerAsset(videoURL).then((res) => {
       if (res) {
         setVideoURL(res);
-        console.log(res, "hell");
       } else {
         createLivePeerAsset(videoURL);
       }

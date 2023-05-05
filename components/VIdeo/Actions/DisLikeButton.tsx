@@ -1,6 +1,7 @@
 import React from "react";
-import Button from "../../UI/Button";
 import { dark_primary } from "../../../constants/Colors";
+import { PUBLICATION } from "../../../constants/tracking";
+import { useGuestStore } from "../../../store/GuestStore";
 import {
   useAuthStore,
   useProfile,
@@ -8,18 +9,15 @@ import {
   useThemeStore,
   useToast,
 } from "../../../store/Store";
-import { removeLike, addLike } from "../../../api";
-import { ToastAndroid } from "react-native";
-import Icon from "../../Icon";
-import { useGuestStore } from "../../../store/GuestStore";
 import { ToastType } from "../../../types/Store";
-import TrackAction from "../../../utils/Track";
-import { PUBLICATION } from "../../../constants/tracking";
 import {
   ReactionTypes,
   useAddReactionMutation,
   useRemoveReactionMutation,
 } from "../../../types/generated";
+import TrackAction from "../../../utils/Track";
+import Icon from "../../Icon";
+import Button from "../../UI/Button";
 
 type DisLikeButtonProps = {
   id: string;
@@ -52,7 +50,6 @@ const DisLikeButton = ({ isalreadyDisLiked, id }: DisLikeButtonProps) => {
 
   const [removeReaction] = useRemoveReactionMutation({
     onError: (error) => {
-      console.log(error.message, "remove e");
       toast.show("Something went wrong!", ToastType.ERROR, true);
     },
     onCompleted: (data) => {

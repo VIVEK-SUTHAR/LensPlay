@@ -163,7 +163,6 @@ const CreateProfile = ({
           const profile = await handleDefaultProfile(address);
           if (profile) {
             setDynamicText("Signing Dispatcher");
-            console.log("Got the profile");
             clearInterval(intervalId);
             await EnableDispatcher(profile?.id);
             navigation.navigate("Root");
