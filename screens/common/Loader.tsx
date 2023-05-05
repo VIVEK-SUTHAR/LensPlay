@@ -229,8 +229,8 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
         <Animated.View
           style={[
             {
-              height: 400,
-              width: 400,
+              height: Dimensions.get("window").width,
+              width: Dimensions.get("window").width,
             },
             ImageAnimationStyle,
           ]}
