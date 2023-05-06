@@ -27,7 +27,7 @@ function ShotData({
           position: "absolute",
           width: Dimensions.get("window").width,
           zIndex: 0,
-          bottom: 0,
+          bottom: 10,
           padding: 10,
         }}
       >
