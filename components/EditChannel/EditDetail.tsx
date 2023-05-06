@@ -148,7 +148,7 @@ export default function EditDetail() {
       }
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error);
+        // console.log(error);
         toast.show("Something went wronng", ToastType.ERROR, true);
       }
     } finally {

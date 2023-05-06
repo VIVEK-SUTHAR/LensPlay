@@ -1,22 +1,19 @@
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useNavigation } from "@react-navigation/native";
 import { ResizeMode, Video } from "expo-av";
 import VideoPlayer from "expo-video-player";
-import React, { MutableRefObject, useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Pressable,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import React, { MutableRefObject, useEffect, useRef, useState } from "react";
+import { Pressable, View, useWindowDimensions } from "react-native";
+import { ShotsPublication } from "../../types";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
-import { ShotsPublication } from "../Bytes/ByteCard";
-import Icon from "../Icon";
-import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
 import createLivePeerAsset from "../../utils/video/createLivePeerAsset";
-import { useNavigation } from "@react-navigation/native";
-import ShotData from "./ShotData";
+import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
+import Icon from "../Icon";
+import ShotData, { DiscriptionSheet } from "./ShotData";
 import ShotReaction from "./ShotReaction";
+import Sheet from "../Bottom";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 
 interface SingleByteProps {
   item: ShotsPublication;
@@ -33,19 +30,17 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
     getIPFSLink(item?.metadata?.media[0]?.original?.url)
   );
   const navigation = useNavigation();
+
   navigation.addListener("blur", (e) => {
     ref.current?.pauseAsync();
   });
 
-  navigation.addListener("focus", (e) => {
-    ref.current?.playAsync();
-  });
+  const descriptionRef = useRef<BottomSheetMethods>(null);
 
   useEffect(() => {
     checkIfLivePeerAsset(videoURL).then((res) => {
       if (res) {
         setVideoURL(res);
-        console.log(res, "hell");
       } else {
         createLivePeerAsset(videoURL);
       }
@@ -111,8 +106,18 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
           />
         </Pressable>
       </View>
+      <ShotData item={item} descriptionRef={descriptionRef} />
       <ShotReaction item={item} />
-      <ShotData item={item} />
+      <Sheet
+        ref={descriptionRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "#1d1d1d",
+        }}
+        snapPoints={["50%"]}
+        children={<DiscriptionSheet item={item} />}
+      />
     </>
   );
 }

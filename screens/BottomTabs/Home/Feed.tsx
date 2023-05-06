@@ -55,7 +55,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   });
 
   if (error) {
-    console.log(error);
+    // console.log(error);
     refetch({
       request: QueryRequest,
     });

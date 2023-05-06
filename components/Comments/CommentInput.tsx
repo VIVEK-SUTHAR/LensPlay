@@ -1,22 +1,21 @@
 import React, { useState } from "react";
 import { Pressable, TextInput, View } from "react-native";
+import { black } from "../../constants/Colors";
 import { useGuestStore } from "../../store/GuestStore";
 import {
-  useActivePublication,
   useAuthStore,
   useOptimisticStore,
   useProfile,
   useThemeStore,
   useToast,
 } from "../../store/Store";
-import { useCreateCommentViaDispatcherMutation } from "../../types/generated";
 import { ToastType } from "../../types/Store";
+import { useCreateCommentViaDispatcherMutation } from "../../types/generated";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
 import uploadMetaDataToArweave from "../../utils/uploadMetaToArweave";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
-import { black } from "../../constants/Colors";
 
 type CommentInputProps = {
   publicationId: string;
@@ -33,8 +32,6 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
   const { accessToken } = useAuthStore();
   const { PRIMARY } = useThemeStore();
   const { isGuest } = useGuestStore();
-  const activePublication = useActivePublication();
-  const canComment = activePublication?.activePublication?.canComment;
 
   const [createComment] = useCreateCommentViaDispatcherMutation({
     onError: () => {
@@ -54,10 +51,6 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
     }
     if (commentText.length === 0) {
       toast.show("Please type something", ToastType.ERROR, true);
-      return;
-    }
-    if (!canComment) {
-      toast.error("You can't comment on this video");
       return;
     }
     try {

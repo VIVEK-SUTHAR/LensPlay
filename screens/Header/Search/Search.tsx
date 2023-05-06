@@ -1,6 +1,5 @@
 import { useLazyQuery } from "@apollo/client";
 import { StatusBar } from "expo-status-bar";
-import AnimatedLottieView from "lottie-react-native";
 import React, { useEffect, useState } from "react";
 import {
   Dimensions,
@@ -14,9 +13,9 @@ import {
 import Icon from "../../../components/Icon";
 import ProfileCard from "../../../components/ProfileCard";
 import Recommended from "../../../components/Search/Recommended";
-import StyledText from "../../../components/UI/StyledText";
 import Tabs, { Tab } from "../../../components/UI/Tabs";
 import VideoCard from "../../../components/VideoCard";
+import NotFound from "../../../components/common/NotFound";
 import useDebounce from "../../../hooks/useDebounce";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useThemeStore } from "../../../store/Store";
@@ -26,7 +25,6 @@ import {
   SearchRequestTypes,
 } from "../../../types/generated";
 import { RootStackScreenProps } from "../../../types/navigation/types";
-import NotFound from "../../../components/common/NotFound";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const { DARK_PRIMARY } = useThemeStore();
@@ -189,7 +187,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                 backgroundColor: "black",
                 height: "100%",
               }}
-              ListEmptyComponent={<NotFound message={"No videos found"} />}
+              ListEmptyComponent={<NotFound message="Result not found" />}
               data={
                 searchType === SearchRequestTypes.Publication
                   ? result?.search?.items

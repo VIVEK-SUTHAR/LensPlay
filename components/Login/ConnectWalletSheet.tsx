@@ -84,8 +84,8 @@ export default function ConnectWalletSheet({
       }
     } catch (error) {
       if (error instanceof Error) {
-        console.log("[Error]:Error in connect wallet");
         toast.error("Something went wrong");
+        // console.log("[Error]:Error in connect wallet");
       }
     } finally {
       setIsloading(false);

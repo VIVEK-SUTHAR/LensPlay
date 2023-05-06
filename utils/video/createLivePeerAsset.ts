@@ -17,7 +17,7 @@ async function createLivePeerAsset(fileUrl: string) {
       return jsonData.asset.playbackId;
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 }
 export default createLivePeerAsset;

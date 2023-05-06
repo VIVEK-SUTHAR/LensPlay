@@ -32,7 +32,6 @@ export default function UploadShots({
         flash: "on",
         onRecordingFinished: (video) => {
           setIsRecording(false);
-          console.log(video);
         },
         onRecordingError: (error) => console.error(error),
       });

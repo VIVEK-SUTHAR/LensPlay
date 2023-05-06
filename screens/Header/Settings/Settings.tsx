@@ -6,7 +6,6 @@ import { StatusBar } from "expo-status-bar";
 import React, { FC, useRef } from "react";
 import {
   Linking,
-  Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -18,7 +17,10 @@ import Icon from "../../../components/Icon";
 import Button from "../../../components/UI/Button";
 import Heading from "../../../components/UI/Heading";
 import StyledText from "../../../components/UI/StyledText";
-import ProfileQR from "../../../components/settings/profileQR";
+import Socials from "../../../components/settings/Socials";
+import ProfileQR, {
+  ProfileSheet,
+} from "../../../components/settings/profileQR";
 import {
   LENSPLAY_PRIVACY,
   LENSPLAY_TERMS,
@@ -28,9 +30,9 @@ import { dark_primary, white } from "../../../constants/Colors";
 import { AUTH } from "../../../constants/tracking";
 import { useGuestStore } from "../../../store/GuestStore";
 import { RootStackScreenProps } from "../../../types/navigation/types";
-import TrackAction from "../../../utils/Track";
 import UPADTES from "../../../update.json";
-import Socials from "../../../components/settings/Socials";
+import TrackAction from "../../../utils/Track";
+
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
 type SettingsItemProps = {
@@ -43,6 +45,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
   const Wallet = useWalletConnect();
   const { isGuest } = useGuestStore();
   const logoutref = useRef<BottomSheetMethods>(null);
+  const QRCodeRef = useRef<BottomSheetMethods>(null);
 
   const SettingItemsList: SettingsItemProps[] = [
     {
@@ -84,7 +87,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="black" style="auto" />
       <ScrollView style={styles.container}>
-        {!isGuest ? <ProfileQR /> : <></>}
+        {!isGuest ? <ProfileQR QRCodeRef={QRCodeRef} /> : <></>}
         <View>
           <Heading
             title={"About"}
@@ -245,6 +248,16 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
           </View>
         }
       />
+      <Sheet
+        ref={QRCodeRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{
+          backgroundColor: "rgba(0,0,0,0.8)",
+        }}
+        snapPoints={["80%"]}
+        children={<ProfileSheet />}
+      />
     </SafeAreaView>
   );
 };
@@ -273,6 +286,7 @@ const Item: FC<SettingsItemProps> = (item: SettingsItemProps) => {
     </Pressable>
   );
 };
+
 const SettingsItem = React.memo(Item);
 
 const styles = StyleSheet.create({

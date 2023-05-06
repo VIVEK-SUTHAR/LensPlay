@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Dimensions, View } from "react-native";
+import { View } from "react-native";
 import SwiperFlatList from "react-native-swiper-flatlist";
-import { ShotsPublication } from "../../../components/Bytes/ByteCard";
-import SingleByte from "../../../components/Bytes/SingleByte";
+import SingleShot from "../../../components/Shots/SingleShot";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile } from "../../../store/Store";
 import {
@@ -13,10 +12,9 @@ import {
   useExploreQuery,
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
-import SingleShot from "../../../components/Shots/SingleShot";
-import { Player } from "@livepeer/react-native";
+import { ShotsPublication } from "../../../types";
 
-const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
+const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const { currentProfile } = useProfile();
   const { isGuest, profileId } = useGuestStore();
@@ -70,4 +68,4 @@ const Bytes = ({ navigation }: RootTabScreenProps<"Bytes">) => {
   );
 };
 
-export default Bytes;
+export default Shots;

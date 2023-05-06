@@ -11,34 +11,34 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { Camera } from "react-native-vision-camera";
 import Sheet from "../components/Bottom";
 import Icon from "../components/Icon";
 import Avatar from "../components/UI/Avatar";
 import Heading from "../components/UI/Heading";
 import StyledText from "../components/UI/StyledText";
+import { black } from "../constants/Colors";
 import Trending from "../screens/BottomTabs/Explore/Trending";
 import Feed from "../screens/BottomTabs/Home/Feed";
 import Notifications from "../screens/BottomTabs/Notification/Notification";
 import ProfileScreen from "../screens/BottomTabs/Profile/Profile";
-import Bytes from "../screens/BottomTabs/Shots/Bytes";
+import Shots from "../screens/BottomTabs/Shots/Shots";
 import {
   useAuthStore,
   useProfile,
   useThemeStore,
   useToast,
 } from "../store/Store";
+import { useUploadStore } from "../store/UploadStore";
+import { useRefreshTokensMutation } from "../types/generated";
 import {
   RootStackScreenProps,
   RootTabParamList,
 } from "../types/navigation/types";
+import canUploadedToIpfs from "../utils/canUploadToIPFS";
 import getIPFSLink from "../utils/getIPFSLink";
 import storeTokens from "../utils/storeTokens";
-import { useRefreshTokensMutation } from "../types/generated";
-import { Camera } from "react-native-vision-camera";
 import getFileSize from "../utils/video/getFileSize";
-import canUploadedToIpfs from "../utils/canUploadToIPFS";
-import { useUploadStore } from "../store/UploadStore";
-import { black } from "../constants/Colors";
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
@@ -156,7 +156,7 @@ export default function BottomTabNavigator({
           headerTitle: "",
           headerRight: () => (
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <TouchableWithoutFeedback
+              {/* <TouchableWithoutFeedback
                 onPress={() => uploadRef.current?.snapToIndex(0)}
               >
                 <View
@@ -168,7 +168,7 @@ export default function BottomTabNavigator({
                 >
                   <Icon name="upload" size={24} />
                 </View>
-              </TouchableWithoutFeedback>
+              </TouchableWithoutFeedback> */}
               <TouchableWithoutFeedback
                 onPress={() => {
                   navigation.navigate("Search");
@@ -296,8 +296,8 @@ export default function BottomTabNavigator({
           }}
         />
         <BottomTab.Screen
-          name="Bytes"
-          component={Bytes}
+          name="Shots"
+          component={Shots}
           options={{
             tabBarLabel: "",
             headerShown: false,

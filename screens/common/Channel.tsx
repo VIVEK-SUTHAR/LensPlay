@@ -115,15 +115,13 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
         profileId: route?.params?.profileId,
       },
     },
-    onCompleted: () => {
-    },
+    onCompleted: () => {},
   });
 
   const profile = profileData?.profile;
 
   const [subscribeToChannel] = useProxyActionMutation({
     onCompleted: (data) => {
-      console.log(data);
       toast.success("Subscribed succesfully!");
       setAlreadyFollowing(true);
     },
@@ -309,7 +307,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
                       TrackAction(PROFILE.FOLLOW);
                     } catch (error) {
                       if (error instanceof Error) {
-                        console.log(error);
+                        // console.log(error);
                       }
                     }
                   }}
@@ -377,9 +375,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
               ) : (
                 <></>
               )}
-              <SocialLinks
-                profile={profile as Profile}
-              />
+              <SocialLinks profile={profile as Profile} />
               <View
                 style={{
                   flexDirection: "row",

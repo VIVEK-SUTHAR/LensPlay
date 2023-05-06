@@ -52,18 +52,14 @@ const LikeButton = ({
       }
     },
     onError: (e) => {
-      toast.show("Something went wrong while liking!", ToastType.ERROR, true);
-      console.log(e);
+      toast.show("Something went wrong!", ToastType.ERROR, true);
+      // console.log(e);
     },
   });
 
   const [removeReaction] = useRemoveReactionMutation({
     onError: (e) => {
-      toast.show(
-        "Something went wrong while disliking!",
-        ToastType.ERROR,
-        true
-      );
+      toast.show("Something went wrong!", ToastType.ERROR, true);
     },
     onCompleted: () => {
       if (bytes) {
