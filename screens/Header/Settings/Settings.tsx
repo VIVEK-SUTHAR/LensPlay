@@ -226,11 +226,11 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                 await AsyncStorage.removeItem("@user_tokens");
                 if (isDeskTopLogin) {
                   await AsyncStorage.removeItem("@viaDeskTop");
-                  navigation.replace("Login");
+                  navigation.reset({ index: 0, routes: [{ name: "Login" }] });
                   return;
                 } else {
                   await Wallet.killSession();
-                  navigation.replace("Login");
+                  navigation.reset({ index: 0, routes: [{ name: "Login" }] });
                 }
                 TrackAction(AUTH.LOGOUT);
               }}

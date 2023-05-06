@@ -41,6 +41,7 @@ function ConnectWalletSheet({
       setCurrentProfile(userDefaultProfile);
     } else {
       setHasHandle(false);
+      setCurrentProfile(undefined);
     }
   }
 
