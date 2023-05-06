@@ -1,10 +1,15 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import { useNavigation } from "@react-navigation/native";
-import React, { useCallback, useRef, useState } from "react";
-import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
+import React, { useCallback, useRef } from "react";
+import {
+  FlatList,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  Pressable,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import Animated, {
-  useAnimatedRef,
-  useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -13,11 +18,10 @@ import Animated, {
 import { black, white } from "../../constants/Colors";
 import Icon from "../Icon";
 import Button from "../UI/Button";
+import Heading from "../UI/Heading";
+import { data } from "./data";
 import OnboardingItem from "./OnboardingItem";
 import Paginator from "./Paginator";
-import { data } from "./data";
-import Heading from "../UI/Heading";
-
 const Onboarding = ({
   loginRef,
   isloading,
@@ -25,27 +29,18 @@ const Onboarding = ({
   loginRef: React.RefObject<BottomSheetMethods>;
   isloading: boolean;
 }) => {
-  const flatListRef = useAnimatedRef();
+  const flatListRef = useRef(null);
   const x = useSharedValue(0);
-  const flatListIndex = useSharedValue(0);
   const { width: SCREEN_WIDTH } = useWindowDimensions();
   const scaleValue = useSharedValue(0);
 
-  const onViewableItemsChanged = ({
-    viewableItems,
-  }: {
-    viewableItems: any;
-  }) => {
-    flatListIndex.value = viewableItems[0].index;
-  };
-
   const arrowAnimationStyle = useAnimatedStyle(() => {
     return {
-      display: flatListIndex.value === data.length - 1 ? "none" : "flex",
+      display: x.value > 720 ? "none" : "flex",
       transform: [
         {
           scale:
-            flatListIndex.value === data.length - 1
+            x.value > 720
               ? withSpring((scaleValue.value = 0))
               : withSpring((scaleValue.value = 1)),
         },
@@ -55,12 +50,12 @@ const Onboarding = ({
 
   const ButtonAnimationStyle = useAnimatedStyle(() => {
     return {
-      display: flatListIndex.value === data.length - 1 ? "flex" : "none",
+      display: x.value > 720 ? "flex" : "none",
       transform: [
         {
           scale:
-            flatListIndex.value === data.length - 1
-              ? withSpring((scaleValue.value = 1),{mass: 0.7, stiffness: 90})
+            x.value > 720
+              ? withSpring((scaleValue.value = 1), { mass: 0.7, stiffness: 90 })
               : withSpring((scaleValue.value = 0)),
         },
       ],
@@ -69,16 +64,16 @@ const Onboarding = ({
 
   const ButtonContainerStyle = useAnimatedStyle(() => {
     return {
-      width: flatListIndex.value === data.length - 1 ? "100%" : "auto",
+      width: x.value > 720 ? "100%" : "auto",
       height: 54,
     };
   });
 
   const PaginatorStyle = useAnimatedStyle(() => {
     return {
-      display: flatListIndex.value === data.length - 1 ? "none" : "flex",
+      display: x.value > 720 ? "none" : "flex",
       opacity:
-        flatListIndex.value === data.length - 1
+        x.value > 720
           ? withTiming(0, {
               duration: 1000,
             })
@@ -88,38 +83,37 @@ const Onboarding = ({
     };
   });
 
-  const viewabilityConfig = {
-    minimumViewTime: 300,
-    viewAreaCoveragePercentThreshold: 10,
-  };
-
-  const viewabilityConfigCallbackPairs = useRef([
-    { viewabilityConfig, onViewableItemsChanged },
-  ]);
-
   const openSheet = useCallback(() => {
     loginRef?.current?.snapToIndex(0);
   }, []);
 
-  const onScroll = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      x.value = event.contentOffset.x;
-    },
-  });
-
   const scrollTo = () => {
-    if (flatListIndex.value < data.length - 1) {
-      flatListRef?.current.scrollToIndex({ index: flatListIndex.value + 1 });
+    // console.log(x.value);
+    //THIS CODE CAN BREAK,PLEASE USE IT ON YOUR OWN RISK
+    if (x?.value === 0) {
+      flatListRef?.current?.scrollToIndex({ index: 1 });
+    } else if (x?.value === 360) {
+      flatListRef?.current?.scrollToIndex({ index: 2 });
+    } else if (x?.value === 720) {
+      flatListRef?.current?.scrollToIndex({ index: 3 });
     }
   };
 
+  const onScroll = React.useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      x.value = e.nativeEvent.contentOffset.x;
+    },
+    []
+  );
+
   return (
     <>
-      <Animated.FlatList
+      <FlatList
         ref={flatListRef}
         onScroll={onScroll}
         data={data}
-        renderItem={({ item, index }) => {
+        initialNumToRender={1}
+        renderItem={({ item }) => {
           return (
             <OnboardingItem
               title={item.title}
@@ -129,12 +123,12 @@ const Onboarding = ({
             />
           );
         }}
-        scrollEventThrottle={16}
+        scrollEventThrottle={1}
         horizontal={true}
         bounces={false}
         pagingEnabled={true}
         showsHorizontalScrollIndicator={false}
-        viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
+        // viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
       />
       <Animated.View
         style={[
@@ -154,7 +148,7 @@ const Onboarding = ({
             });
           }}
         >
-          <Heading title="skip" style={{ color: white[800] }} />
+          <Heading title="Skip" style={{ color: white[800] }} />
         </Pressable>
       </Animated.View>
       <View
