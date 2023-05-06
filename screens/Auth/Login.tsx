@@ -1,4 +1,6 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { Linking, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -6,10 +8,8 @@ import Sheet from "../../components/Bottom";
 import ConnectWalletSheet from "../../components/Login/ConnectWalletSheet";
 import Onboarding from "../../components/Login/Onboarding";
 import StyledText from "../../components/UI/StyledText";
-import { LENSPLAY_PRIVACY, LENSPLAY_SITE, LENSPLAY_TERMS } from "../../constants";
+import { LENSPLAY_PRIVACY, LENSPLAY_TERMS } from "../../constants";
 import { RootStackScreenProps } from "../../types/navigation/types";
-import { LinearGradient } from "expo-linear-gradient";
-import { StatusBar } from "expo-status-bar";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const loginRef = React.useRef<BottomSheetMethods>(null);

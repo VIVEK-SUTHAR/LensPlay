@@ -77,7 +77,7 @@ export default function ConnectWalletSheet({
           if (isDeskTopLogin) {
             await AsyncStorage.removeItem("@viaDeskTop");
           }
-          navigation.navigate("LoginWithLens");
+          navigation.reset({ index: 0, routes: [{ name: "LoginWithLens" }] });
         }
       } else {
         toast.error("Something went wrong");
