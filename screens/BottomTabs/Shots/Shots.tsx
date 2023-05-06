@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { Dimensions, View, useWindowDimensions } from "react-native";
 import SwiperFlatList from "react-native-swiper-flatlist";
 import SingleShot from "../../../components/Shots/SingleShot";
 import { useGuestStore } from "../../../store/GuestStore";
@@ -13,12 +13,15 @@ import {
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
 import { ShotsPublication } from "../../../types";
+import Loader from "../../common/Loader";
+import NotFound from "../../../components/common/NotFound";
 
 const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const { currentProfile } = useProfile();
   const { isGuest, profileId } = useGuestStore();
   const { accessToken } = useAuthStore();
+  const {height, width} = useWindowDimensions();
 
   const QueryRequest: ExplorePublicationRequest = {
     sortCriteria: PublicationSortCriteria.Latest,
@@ -27,6 +30,7 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
       mainContentFocus: [PublicationMainFocus.Video],
     },
     sources: ["lensplay", "lenstube-bytes"],
+    limit: 20
   };
 
   const { data: shotsData, error, loading, refetch } = useExploreQuery({
@@ -48,11 +52,13 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
   const handleChangeIndexValue = ({ index }: { index: number }) => {
     setCurrentIndex(index);
   };
+  if (loading) return <NotFound message="Getting shots for you"/>
 
   return (
     <View
       style={{
-        flex: 1,
+        height: height,
+        width: width
       }}
     >
       <SwiperFlatList
@@ -61,7 +67,9 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
         onChangeIndex={handleChangeIndexValue}
         data={bytesData}
         renderItem={({ item, index }) => (
-          <SingleShot item={item} index={index} currentIndex={currentIndex} />
+          <View style={{height: height}}>
+            <SingleShot item={item} index={index} currentIndex={currentIndex} />
+          </View>
         )}
       />
     </View>
