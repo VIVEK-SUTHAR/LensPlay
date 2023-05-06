@@ -89,7 +89,7 @@ const withPackageVisibility: ConfigPlugin = (config) => {
 const config: ExpoConfig = {
   name: "LensPlay",
   slug: "lensplay",
-  version: "0.0.4",
+  version: "0.0.2",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "lensplay",
@@ -102,7 +102,7 @@ const config: ExpoConfig = {
   backgroundColor: "#000000",
   updates: {
     fallbackToCacheTimeout: 0,
-    url: "https://u.expo.dev/b2fcb561-ea34-43d1-acf0-dabcba685aa2",
+    url: "https://u.expo.dev/3b494bf0-e3fd-4a2c-b484-931ab7394de1",
   },
   runtimeVersion: {
     policy: "sdkVersion",
@@ -114,7 +114,7 @@ const config: ExpoConfig = {
   jsEngine: "hermes",
   android: {
     package: "com.lensplayxyz.lensplay",
-    versionCode: 4,
+    versionCode: 5,
     adaptiveIcon: {
       foregroundImage: "./assets/images/adaptive-icon.png",
       backgroundColor: "#000000",
@@ -159,9 +159,9 @@ const config: ExpoConfig = {
     favicon: "./assets/images/favicon.png",
   },
   extra: {
-    // eas: {
-      // projectId: "b2fcb561-ea34-43d1-acf0-dabcba685aa2",
-    // },
+    eas: {
+      projectId: "3b494bf0-e3fd-4a2c-b484-931ab7394de1",
+    },
   },
   plugins: [
     [
