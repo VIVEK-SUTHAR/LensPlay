@@ -113,6 +113,8 @@ const config: ExpoConfig = {
     requireFullScreen: true,
     bundleIdentifier: "com.lensplayxyz.lensplay",
     buildNumber: "1.0.0",
+    icon: "./assets/images/icon.png",
+    backgroundColor: "#000000",
   },
   jsEngine: "hermes",
   android: {
@@ -162,9 +164,9 @@ const config: ExpoConfig = {
     favicon: "./assets/images/favicon.png",
   },
   extra: {
-    // eas: {
-    //   projectId: "3b494bf0-e3fd-4a2c-b484-931ab7394de1",
-    // },
+    eas: {
+      projectId: "3b494bf0-e3fd-4a2c-b484-931ab7394de1",
+    },
   },
   plugins: [
     [

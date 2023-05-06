@@ -7,8 +7,8 @@
 			  "simulator": true
 			}
 		  },
-		  "test-flight": {
-			"channel": "test-flight"
+		  "alpha-test-flight": {
+			"channel": "alpha-test-flight"
 		  }
 	}
 }
