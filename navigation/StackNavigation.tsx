@@ -29,11 +29,14 @@ import AddDescription from "../screens/common/AddDescription";
 import VideoTypes from "../screens/common/VideoTypes";
 import ProfileScanner from "../screens/Header/Settings/ProfileScanner";
 import CreateProfile from "../screens/Auth/CreateProfile";
+import useVideoURLStore from "../store/videoURL";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
   const theme = useThemeStore();
+  const { setVideoURI } = useVideoURLStore();
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -130,6 +133,13 @@ export default function StackNavigation() {
       <Stack.Screen
         name="VideoPage"
         component={VideoPage}
+        listeners={{
+          blur: () => {
+            // console.log("going back");
+
+            setVideoURI("");
+          },
+        }}
         options={{
           headerShown: false,
           presentation: "card",

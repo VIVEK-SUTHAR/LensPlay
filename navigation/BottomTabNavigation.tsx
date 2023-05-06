@@ -28,6 +28,7 @@ import {
   useToast,
 } from "../store/Store";
 import { useUploadStore } from "../store/UploadStore";
+import useVideoURLStore from "../store/videoURL";
 import { useRefreshTokensMutation } from "../types/generated";
 import {
   RootStackScreenProps,
@@ -144,10 +145,17 @@ export default function BottomTabNavigator({
 
   const toast = useToast();
   const uploadStore = useUploadStore();
+  const { setVideoURI } = useVideoURLStore();
   return (
     <>
       <BottomTab.Navigator
         initialRouteName="Home"
+        screenListeners={{
+          focus: () => {
+            // console.log("teb focued");
+            setVideoURI("");
+          },
+        }}
         screenOptions={{
           headerStyle: { backgroundColor: "black", elevation: 2 },
           headerTitle: "",

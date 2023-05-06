@@ -1,5 +1,6 @@
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { useFocusEffect } from "@react-navigation/native";
 import { Image } from "expo-image";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
@@ -178,28 +179,28 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
   };
   const LENS_MEDIA_URL = activePublication?.metadata?.media[0]?.original?.url;
   const { setVideoURI, uri } = useVideoURLStore();
-  useEffect(() => {
-    checkIfLivePeerAsset(LENS_MEDIA_URL).then((res) => {
-      if (res) {
-        // console.log(res);
-        setVideoURI(res);
-      } else {
-        createLivePeerAsset(LENS_MEDIA_URL);
-        setVideoURI(getIPFSLink(LENS_MEDIA_URL));
-      }
-    });
-  }, []);
 
-  useEffect(() => {
-    return () => {
-      setVideoURI("");
-    };
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      checkIfLivePeerAsset(LENS_MEDIA_URL).then((res) => {
+        if (res) {
+          // console.log(res);
+          setVideoURI(res);
+        } else {
+          setVideoURI(getIPFSLink(LENS_MEDIA_URL));
+          createLivePeerAsset(LENS_MEDIA_URL);
+        }
+      });
+      return () => {
+        setVideoURI("");
+      };
+    }, [])
+  );
 
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-        {uri ? (
+        {uri.length > 0 ? (
           <Player
             poster={getRawurl(activePublication?.metadata?.cover)}
             title={activePublication?.metadata?.name || ""}
