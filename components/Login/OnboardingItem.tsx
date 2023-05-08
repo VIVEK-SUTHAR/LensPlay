@@ -38,6 +38,7 @@ const OnboardingItem = ({ image, title, desc }: Props) => {
       <View
         style={{
           width: width,
+          flex: 1,
           paddingHorizontal: 16,
           justifyContent: "flex-end",
         }}

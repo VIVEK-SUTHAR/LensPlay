@@ -71,7 +71,7 @@ const Onboarding = ({
 
   const PaginatorStyle = useAnimatedStyle(() => {
     return {
-      display: x.value > 721 ? "none" : "flex",
+      display: x.value > 720 ? "none" : "flex",
       opacity:
         x.value > 720
           ? withTiming(0, {
@@ -89,11 +89,11 @@ const Onboarding = ({
 
   const scrollTo = () => {
     //THIS CODE CAN BREAK,PLEASE USE IT ON YOUR OWN RISK
-    if (x?.value === 0) {
+    if (x?.value <= 0) {
       flatListRef?.current?.scrollToIndex({ index: 1 });
-    } else if (x?.value === 360) {
+    } else if (x?.value <= 360) {
       flatListRef?.current?.scrollToIndex({ index: 2 });
-    } else if (x?.value === 720) {
+    } else if (x?.value <= 720) {
       flatListRef?.current?.scrollToIndex({ index: 3 });
     }
     // } else if (x.value > 720) {
@@ -103,7 +103,7 @@ const Onboarding = ({
 
   const onScroll = React.useCallback(
     (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-      x.value = e.nativeEvent.contentOffset.x;
+      x.value = e.nativeEvent.contentOffset.x;      
     },
     []
   );
