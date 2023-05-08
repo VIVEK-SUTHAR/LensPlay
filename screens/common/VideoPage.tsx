@@ -98,6 +98,10 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
   const { data: ReactionData, error, loading } = useReaction(
     activePublication?.id
   );
+  // console.log(currentProfil?.id);
+  
+  if (error){console.log(error)};
+  
 
   if (ReactionData) {
     if (!reaction) {
@@ -115,6 +119,10 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
         ReactionData?.publication?.mirrors?.length > 0,
         ReactionData?.publication?.stats?.totalAmountOfMirrors
       );
+      console.log(ReactionData?.publication?.stats);
+      console.log(ReactionData?.publication?.mirrors?.length);
+      
+      
     }
   }
 
@@ -134,6 +142,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
         userStore.currentProfile?.id,
         activePublication?.id
       );
+      console.log(data);
+      
       if (data) {
         toast.show("Mirror submitted", ToastType.SUCCESS, true);
         setMirrorStats(true, mirrorStats.mirrorCount + 1);
