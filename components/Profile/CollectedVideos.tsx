@@ -30,7 +30,7 @@ const CollectedVideos = ({
   const { accessToken } = useAuthStore();
   const { currentProfile } = useProfile();
   const QueryRequest: PublicationsQueryRequest = {
-    collectedBy: currentProfile?.ownedBy,
+    collectedBy: ethAddress,
     publicationTypes: [PublicationTypes.Post, PublicationTypes.Mirror],
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],

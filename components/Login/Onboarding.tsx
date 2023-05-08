@@ -33,7 +33,6 @@ const Onboarding = ({
   const x = useSharedValue(0);
   const { width: SCREEN_WIDTH } = useWindowDimensions();
   const scaleValue = useSharedValue(0);
-  console.log("kya he:",SCREEN_WIDTH);
   
   const arrowAnimationStyle = useAnimatedStyle(() => {
     return {
@@ -97,15 +96,14 @@ const Onboarding = ({
     } else if (x?.value <= SCREEN_WIDTH*2) {
       flatListRef?.current?.scrollToIndex({ index: 3 });
     }
-    else if (x.value <= SCREEN_WIDTH*3) {
-      flatListRef?.current?.scrollToIndex({ index: 4 });
-    }
+    // else if (x.value <= SCREEN_WIDTH*3) {
+    //   flatListRef?.current?.scrollToIndex({ index: 4 });
+    // }
   };
 
   const onScroll = React.useCallback(
     (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-      x.value = e.nativeEvent.contentOffset.x; 
-      console.log(x.value);           
+      x.value = e.nativeEvent.contentOffset.x;         
     },
     []
   );

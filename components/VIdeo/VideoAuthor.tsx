@@ -74,11 +74,14 @@ const VideoCreator = (props: VideoCreatorProps) => {
         <View style={{ marginHorizontal: 8 }}>
           <Heading
             title={uploadedBy}
+            numberOfLines={1}
             style={{
               color: "white",
               fontSize: 16,
               fontWeight: "500",
-            }}
+              maxWidth: 160
+            }
+          }
           />
           <StyledText
             title={
