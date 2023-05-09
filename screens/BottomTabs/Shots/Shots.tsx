@@ -100,6 +100,7 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
     <View
       style={{
         flex: 1,
+        backgroundColor: "black",
       }}
     >
       <SwiperFlatList
