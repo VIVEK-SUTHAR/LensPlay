@@ -3,19 +3,32 @@ import { Image, SafeAreaView, StyleSheet, View } from "react-native";
 import Heading from "../UI/Heading";
 import { white } from "../../constants/Colors";
 
-export default function ErrorMessage({ message }: { message: string }) {
+type ErrorMessageProps = {
+  message: string;
+  withImage?: boolean;
+  withButton?: boolean;
+};
+const ErrorMesasge: React.FC<ErrorMessageProps> = ({
+  message,
+  withButton = false,
+  withImage = false,
+}) => {
   return (
     <SafeAreaView style={styles.container}>
-      <Image
-        style={styles.image}
-        source={require("../../assets/images/error.png")}
-      />
+      {withImage ? (
+        <Image
+          style={styles.image}
+          source={require("../../assets/images/error.png")}
+        />
+      ) : (
+        <></>
+      )}
       <View style={styles.messageContainer}>
         <Heading title={message} style={styles.message} />
       </View>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -42,3 +55,4 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
 });
+export default React.memo(ErrorMesasge);
