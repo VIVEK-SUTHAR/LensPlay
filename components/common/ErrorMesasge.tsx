@@ -11,7 +11,7 @@ type ErrorMessageProps = {
 const ErrorMesasge: React.FC<ErrorMessageProps> = ({
   message,
   withButton = false,
-  withImage = false,
+  withImage = true,
 }) => {
   return (
     <SafeAreaView style={styles.container}>

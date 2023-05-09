@@ -29,7 +29,13 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
     sources: ["lensplay", "lenstube-bytes"],
   };
 
-  const { data: shotsData, error, loading, refetch } = useExploreQuery({
+  const {
+    data: shotsData,
+    error,
+    loading,
+    refetch,
+    fetchMore,
+  } = useExploreQuery({
     variables: {
       request: QueryRequest,
       reactionRequest: {
@@ -43,10 +49,48 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
     },
   });
 
-  const bytesData = shotsData?.explorePublications?.items as ShotsPublication[];
+  const data = shotsData?.explorePublications?.items as ShotsPublication[];
+
+  const pageInfo = shotsData?.explorePublications.pageInfo;
 
   const handleChangeIndexValue = ({ index }: { index: number }) => {
     setCurrentIndex(index);
+  };
+
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: ShotsPublication;
+    index: number;
+  }) => {
+    if (!item.hidden) {
+      return (
+        <SingleShot
+          item={item}
+          key={item.id}
+          index={index}
+          currentIndex={currentIndex}
+        />
+      );
+    }
+    return <></>;
+  };
+
+  const keyExtractor = (item: ShotsPublication) => item.id.toString();
+
+  const onEndCallBack = () => {
+    if (!pageInfo?.next) {
+      return;
+    }
+    fetchMore({
+      variables: {
+        request: {
+          cursor: pageInfo?.next,
+          ...QueryRequest,
+        },
+      },
+    }).catch((err) => {});
   };
 
   return (
@@ -57,12 +101,14 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
     >
       <SwiperFlatList
         vertical={true}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={keyExtractor}
         onChangeIndex={handleChangeIndexValue}
-        data={bytesData}
-        renderItem={({ item, index }) => (
-          <SingleShot item={item} index={index} currentIndex={currentIndex} />
-        )}
+        data={data}
+        renderItem={renderItem}
+        initialNumToRender={3}
+        maxToRenderPerBatch={5}
+        onEndReachedThreshold={1}
+        onEndReached={onEndCallBack}
       />
     </View>
   );
