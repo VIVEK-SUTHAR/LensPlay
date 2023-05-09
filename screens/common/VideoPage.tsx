@@ -119,8 +119,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
         ReactionData?.publication?.mirrors?.length > 0,
         ReactionData?.publication?.stats?.totalAmountOfMirrors
       );
-      console.log(ReactionData?.publication?.stats);
-      console.log(ReactionData?.publication?.mirrors?.length);
       
       
     }
@@ -259,6 +257,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
               alreadyFollowing={
                 activePublication?.profile?.isFollowedByMe || false
               }
+              ownedBy={activePublication?.profile?.ownedBy}
             />
             <ScrollView
               style={{

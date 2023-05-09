@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { TouchableWithoutFeedback, View } from "react-native";
 import { createFreeSubscribe } from "../../api";
 import { useGuestStore } from "../../store/GuestStore";
 import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
@@ -8,6 +8,8 @@ import Avatar from "../UI/Avatar";
 import Button from "../UI/Button";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
+import { useNavigation } from "@react-navigation/native";
+
 
 type VideoCreatorProps = {
   avatarLink: string;
@@ -17,6 +19,7 @@ type VideoCreatorProps = {
   showSubscribeButton?: boolean;
   showSubscribers?: boolean;
   subscribersCount?: number;
+  ownedBy: string
 };
 
 const VideoCreator = (props: VideoCreatorProps) => {
@@ -28,6 +31,7 @@ const VideoCreator = (props: VideoCreatorProps) => {
     showSubscribers = false,
     subscribersCount = 0,
     showSubscribeButton = true,
+    ownedBy
   } = props;
 
   const [following, setFollowing] = useState<boolean>(alreadyFollowing);
@@ -36,6 +40,8 @@ const VideoCreator = (props: VideoCreatorProps) => {
   const { PRIMARY } = useThemeStore();
   const toast = useToast();
   const { isGuest } = useGuestStore();
+  const navigation = useNavigation();
+
 
   const followCreator = React.useCallback(async () => {
     if (isGuest) {
@@ -59,7 +65,17 @@ const VideoCreator = (props: VideoCreatorProps) => {
   }, []);
 
   return (
-    <View
+    <TouchableWithoutFeedback
+        onPress={() => {
+          navigation.navigate("Channel", {
+            profileId: profileId,
+            isFollowdByMe: alreadyFollowing,
+            name: uploadedBy,
+            ethAddress: ownedBy,
+          });
+        }}
+      >
+        <View
       style={{
         width: "100%",
         flexDirection: "row",
@@ -113,6 +129,7 @@ const VideoCreator = (props: VideoCreatorProps) => {
         />
       )}
     </View>
+      </TouchableWithoutFeedback>
   );
 };
 
