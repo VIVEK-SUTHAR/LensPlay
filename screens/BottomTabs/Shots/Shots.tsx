@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import SwiperFlatList from "react-native-swiper-flatlist";
 import SingleShot from "../../../components/Shots/SingleShot";
@@ -13,12 +13,15 @@ import {
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
 import { ShotsPublication } from "../../../types";
+import * as ScreenOrientation from "expo-screen-orientation";
 
 const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const { currentProfile } = useProfile();
   const { isGuest, profileId } = useGuestStore();
   const { accessToken } = useAuthStore();
+
+  ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
 
   const QueryRequest: ExplorePublicationRequest = {
     sortCriteria: PublicationSortCriteria.Latest,
