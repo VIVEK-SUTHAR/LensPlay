@@ -154,7 +154,7 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
     setRefreshing(true);
     refetch({
       request: {
-        profileId: profile?.id,
+        profileId: route?.params?.profileId,
       },
     }).then(() => {
       setRefreshing(false);
