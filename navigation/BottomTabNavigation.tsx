@@ -170,6 +170,19 @@ export default function BottomTabNavigator({
                 </View>
               </TouchableWithoutFeedback> */}
               <TouchableWithoutFeedback
+                onPress={() => navigation.push("Invite")}
+              >
+                <View
+                  style={{
+                    paddingHorizontal: 8,
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <Icon name="invite" size={20} />
+                </View>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
                 onPress={() => {
                   navigation.navigate("Search");
                 }}

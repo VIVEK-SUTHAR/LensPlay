@@ -70,7 +70,7 @@ export default function StackNavigation() {
         name="Invite"
         component={Invite}
         options={{
-          animation: "default",
+          animation: "fade_from_bottom",
           headerShown: false,
         }}
       />
