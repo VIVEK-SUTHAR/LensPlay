@@ -1,18 +1,20 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { View } from "react-native";
-import Animated, { FadeInDown } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Heading from "../../components/UI/Heading";
-import StyledText from "../../components/UI/StyledText";
 import InviteCard, {
   InviteCardOptions,
 } from "../../components/invite/InviteCard";
+import Avatar from "../../components/UI/Avatar";
+import Heading from "../../components/UI/Heading";
+import StyledText from "../../components/UI/StyledText";
 import { black, white } from "../../constants/Colors";
+import { useProfile } from "../../store/Store";
 import CommonStyles from "../../styles";
+import getRawurl from "../../utils/getRawUrl";
 
-export default function Invite() {
-  const AnimatedView = Animated.createAnimatedComponent(View);
+const Invite = () => {
+  const { currentProfile } = useProfile();
 
   const InviteCardData: InviteCardOptions[] = [
     {
@@ -50,9 +52,20 @@ export default function Invite() {
     >
       <StatusBar style="auto" />
       <View style={{ alignItems: "center", paddingVertical: 36 }}>
+        <Avatar
+          src={getRawurl(currentProfile?.picture)}
+          height={120}
+          width={120}
+          borderRadius={100}
+        />
         <Heading
           title="5/5"
-          style={{ color: white[600], fontSize: 36, fontWeight: "600" }}
+          style={{
+            color: white[600],
+            fontSize: 36,
+            fontWeight: "600",
+            marginTop: 4,
+          }}
         />
         <StyledText
           title="Invites Left"
@@ -66,14 +79,13 @@ export default function Invite() {
       </View>
       <View
         style={{
-          flex: 0.8,
+          flex: 1,
         }}
       >
         {InviteCardData &&
           InviteCardData.map((invite, index) => {
             return (
-              <AnimatedView
-                entering={FadeInDown.delay((4 - index) * 300).springify()}
+              <View
                 key={index}
                 style={{
                   alignItems: "center",
@@ -85,11 +97,14 @@ export default function Invite() {
                   bgColor={invite.bgColor}
                   color={invite.color}
                   inviteCode={invite.inviteCode}
+                  index={index}
                 />
-              </AnimatedView>
+              </View>
             );
           })}
       </View>
     </SafeAreaView>
   );
-}
+};
+
+export default Invite;

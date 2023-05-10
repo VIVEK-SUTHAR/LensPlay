@@ -1,16 +1,13 @@
 import * as Clipboard from "expo-clipboard";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
+  Animated,
   Dimensions,
   StyleSheet,
   TouchableOpacity,
   Vibration,
   View,
 } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-} from "react-native-reanimated";
 import { useToast } from "../../store/Store";
 import Icon from "../Icon";
 import StyledText from "../UI/StyledText";
@@ -19,6 +16,7 @@ export type InviteCardOptions = {
   bgColor: string;
   color: string;
   inviteCode: string;
+  index?: number;
 };
 
 const height = Dimensions.get("screen").height;
@@ -28,35 +26,41 @@ const InviteCard: React.FC<InviteCardOptions> = ({
   bgColor,
   color,
   inviteCode,
+  index,
 }) => {
   const toast = useToast();
 
   const copyInviteCode = React.useCallback(() => {
     Clipboard.setStringAsync(inviteCode).then(() => {
-      Vibration.vibrate(10);
+      Vibration.vibrate(100);
       toast.success("Invite code copied");
     });
   }, []);
 
-  const xvalue = useSharedValue(0);
-  const yvalue = useSharedValue(0);
+  const cardRef = useRef(new Animated.Value(500)).current;
 
-  const style = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateX: xvalue.value,
-        },
-        {
-          translateY: yvalue.value,
-        },
-      ],
-    };
-  });
+  useEffect(() => {
+    Animated.spring(cardRef, {
+      toValue: 0,
+      useNativeDriver: true,
+      delay: (4 - index!) * 300,
+      damping: 14,
+    }).start();
+  }, []);
 
   return (
     <Animated.View
-      style={[styles.inviteCardContainer, { backgroundColor: bgColor }, style]}
+      style={[
+        styles.inviteCardContainer,
+        {
+          backgroundColor: bgColor,
+          transform: [
+            {
+              translateY: cardRef,
+            },
+          ],
+        },
+      ]}
     >
       <View style={styles.inviteCodeTextContainer}>
         <StyledText
