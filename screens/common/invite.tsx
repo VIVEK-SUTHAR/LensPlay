@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import InviteCard, {
   InviteCardOptions,
@@ -51,35 +51,46 @@ const Invite = () => {
       ]}
     >
       <StatusBar style="auto" />
-      <View style={{ alignItems: "center", paddingVertical: 36 }}>
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "space-around",
+          height: "30%",
+        }}
+      >
         <Avatar
           src={getRawurl(currentProfile?.picture)}
           height={120}
           width={120}
           borderRadius={100}
         />
-        <Heading
-          title="5/5"
+        <View
           style={{
-            color: white[600],
-            fontSize: 36,
-            fontWeight: "600",
-            marginTop: 4,
+            alignItems: "center",
           }}
-        />
-        <StyledText
-          title="Invites Left"
-          style={{
-            color: white[100],
-            fontSize: 24,
-            fontWeight: "500",
-            marginTop: 4,
-          }}
-        />
+        >
+          <Heading
+            title="5/5"
+            style={{
+              color: white[600],
+              fontSize: 36,
+              fontWeight: "600",
+            }}
+          />
+          <StyledText
+            title="Invites Left"
+            style={{
+              color: white[100],
+              fontSize: 24,
+              fontWeight: "500",
+              marginTop: 4,
+            }}
+          />
+        </View>
       </View>
       <View
         style={{
-          flex: 1,
+          height: "70%",
         }}
       >
         {InviteCardData &&
