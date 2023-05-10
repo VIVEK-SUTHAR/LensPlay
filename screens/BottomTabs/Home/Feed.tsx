@@ -29,6 +29,7 @@ import {
   useFeedQuery,
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
+import * as ScreenOrientation from "expo-screen-orientation";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -37,6 +38,8 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const { accessToken } = useAuthStore();
   const { isGuest } = useGuestStore();
   const { currentProfile } = useProfile();
+
+  ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
 
   const QueryRequest: FeedRequest = {
     profileId: currentProfile?.id,
