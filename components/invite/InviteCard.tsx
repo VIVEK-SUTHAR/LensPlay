@@ -44,7 +44,7 @@ const InviteCard: React.FC<InviteCardOptions> = ({
       toValue: 0,
       useNativeDriver: true,
       delay: (4 - index!) * 300,
-      damping: 14,
+      damping: 20,
     }).start();
   }, []);
 

@@ -1,20 +1,24 @@
+import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { ScrollView, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import InviteCard, {
-  InviteCardOptions,
-} from "../../components/invite/InviteCard";
+import Icon from "../../components/Icon";
 import Avatar from "../../components/UI/Avatar";
 import Heading from "../../components/UI/Heading";
 import StyledText from "../../components/UI/StyledText";
+import InviteCard, {
+  InviteCardOptions,
+} from "../../components/invite/InviteCard";
 import { black, white } from "../../constants/Colors";
 import { useProfile } from "../../store/Store";
 import CommonStyles from "../../styles";
 import getRawurl from "../../utils/getRawUrl";
+import { RootStackScreenProps } from "../../types/navigation/types";
 
-const Invite = () => {
+const Invite = ({ navigation }: RootStackScreenProps<"Invite">) => {
   const { currentProfile } = useProfile();
+  const StatusBarHeight = Constants.statusBarHeight;
 
   const InviteCardData: InviteCardOptions[] = [
     {
@@ -51,6 +55,17 @@ const Invite = () => {
       ]}
     >
       <StatusBar style="auto" />
+      <Pressable
+        style={{
+          position: "absolute",
+          top: StatusBarHeight - 8,
+          right: 0,
+          padding: 16,
+        }}
+        onPress={() => navigation.pop()}
+      >
+        <Icon name="close" size={20} />
+      </Pressable>
       <View
         style={{
           alignItems: "center",
@@ -60,8 +75,8 @@ const Invite = () => {
       >
         <Avatar
           src={getRawurl(currentProfile?.picture)}
-          height={120}
-          width={120}
+          height={100}
+          width={100}
           borderRadius={100}
         />
         <View
@@ -73,7 +88,7 @@ const Invite = () => {
             title="5/5"
             style={{
               color: white[600],
-              fontSize: 36,
+              fontSize: 32,
               fontWeight: "600",
             }}
           />
