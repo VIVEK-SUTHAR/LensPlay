@@ -30,6 +30,7 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
       mainContentFocus: [PublicationMainFocus.Video],
     },
     sources: ["lensplay", "lenstube-bytes"],
+    limit: 3,
   };
 
   const {

@@ -29,11 +29,15 @@ import AddDescription from "../screens/common/AddDescription";
 import VideoTypes from "../screens/common/VideoTypes";
 import ProfileScanner from "../screens/Header/Settings/ProfileScanner";
 import CreateProfile from "../screens/Auth/CreateProfile";
+import useVideoURLStore from "../store/videoURL";
+import Invite from "../screens/common/invite";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
   const theme = useThemeStore();
+  const { setVideoURI } = useVideoURLStore();
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -62,17 +66,29 @@ export default function StackNavigation() {
         />
       </Stack.Group>
 
+      <Stack.Screen
+        name="Invite"
+        component={Invite}
+        options={{
+          animation: "default",
+          headerShown: false,
+        }}
+      />
+
       <Stack.Group key={"Auth Screens"}>
         <Stack.Screen
           name="Login"
           component={Login}
-          options={{ headerShown: false }}
+          options={{
+            animation: "default",
+            headerShown: false,
+          }}
         />
         <Stack.Screen
           name="LoginWithLens"
           component={LoginWithLens}
           options={{
-            animation: "slide_from_bottom",
+            animation: "default",
             headerShown: false,
           }}
         />
@@ -127,6 +143,13 @@ export default function StackNavigation() {
       <Stack.Screen
         name="VideoPage"
         component={VideoPage}
+        listeners={{
+          blur: () => {
+            // console.log("going back");
+
+            setVideoURI("");
+          },
+        }}
         options={{
           headerShown: false,
           presentation: "card",
