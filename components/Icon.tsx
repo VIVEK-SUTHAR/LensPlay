@@ -1,7 +1,7 @@
-import React from "react";
-import { View, StyleSheet, StyleProp, TextStyle } from "react-native";
-import { useFonts } from "expo-font";
 import { createIconSetFromIcoMoon } from "@expo/vector-icons";
+import { useFonts } from "expo-font";
+import React from "react";
+import { StyleProp, TextStyle } from "react-native";
 
 const LensIcon = createIconSetFromIcoMoon(
   require("../assets/selection.json"),
@@ -67,7 +67,10 @@ export type IconProps = {
     | "record"
     | "create"
     | "delete"
-    | "more";
+    | "more"
+    | "invite"
+    | "pin"
+    | "unpin";
   size?: number;
   color?: string;
   style?: StyleProp<TextStyle>;

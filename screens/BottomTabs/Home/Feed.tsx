@@ -70,6 +70,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
       request: QueryRequest,
     });
   }
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     try {
@@ -91,7 +92,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 
   const pageInfo = Feeddata?.feed.pageInfo;
 
-  const keyExtractor = (item: FeedItem) => item.root.id.toString();
+  const keyExtractor = (item: FeedItem) => item?.root?.id?.toString();
 
   const ITEM_HEIGHT = 200;
 
