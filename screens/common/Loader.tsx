@@ -55,22 +55,28 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
       TrackAction(APP_OPEN);
       const waitList = await AsyncStorage.getItem("@waitlist");
       const userTokens = await AsyncStorage.getItem("@user_tokens");
+      const userData = await AsyncStorage.getItem("@user_data");
 
-      if (!userTokens) {
+      if (!userTokens && userData) {
         navigation.replace("Login");
         return;
       }
 
-      if (userTokens) {
+      if (userTokens && userData) {
         const accessToken = JSON.parse(userTokens).accessToken;
         const refreshToken = JSON.parse(userTokens).refreshToken;
+        const created_at = JSON.parse(userData).createdAt;
+
+        //compare date
+        // if current - created_at === 5 then create invitecodes
+        // else return
 
         if (!accessToken || !refreshToken) {
           navigation.replace("Login");
           return;
         }
 
-        if (!waitList) {
+        if (!userData) {
           navigation.replace("Login");
           return;
         }

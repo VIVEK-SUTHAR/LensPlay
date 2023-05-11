@@ -12,6 +12,7 @@ import Button from "../../components/UI/Button";
 import Heading from "../../components/UI/Heading";
 import { black, white } from "../../constants/Colors";
 import { useProfile, useThemeStore, useToast } from "../../store/Store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function InviteCode() {
   const [inviteCode, setInviteCode] = useState<string>("");
@@ -42,6 +43,12 @@ export default function InviteCode() {
       );
       const jsonRes = await apiResponse.json();
       if (apiResponse.status === 200) {
+        await AsyncStorage.setItem(
+          "@user_data",
+          JSON.stringify({
+            createdAt: jsonRes?.message?.created_at,
+          })
+        );
         toast.success("Redeemed successfully");
       }
     } catch (error) {

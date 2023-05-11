@@ -39,6 +39,10 @@ export default function ConnectWalletSheet({
     if (userDefaultProfile) {
       setHasHandle(true);
       setCurrentProfile(userDefaultProfile);
+
+      // checkuser
+      // if !user go to redeem code
+      // else store in async storage
     } else {
       setHasHandle(false);
       setCurrentProfile(undefined);
