@@ -170,7 +170,7 @@ export default function BottomTabNavigator({
                 </View>
               </TouchableWithoutFeedback> */}
               <TouchableWithoutFeedback
-                onPress={() => navigation.push("Invite")}
+                onPress={() => navigation.push("InviteCode")}
               >
                 <View
                   style={{

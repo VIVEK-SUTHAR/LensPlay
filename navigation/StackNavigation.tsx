@@ -30,7 +30,8 @@ import VideoTypes from "../screens/common/VideoTypes";
 import ProfileScanner from "../screens/Header/Settings/ProfileScanner";
 import CreateProfile from "../screens/Auth/CreateProfile";
 import useVideoURLStore from "../store/videoURL";
-import Invite from "../screens/common/invite";
+import Invite from "../screens/common/Invite";
+import InviteCode from "../screens/common/InviteCode";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -66,14 +67,24 @@ export default function StackNavigation() {
         />
       </Stack.Group>
 
-      <Stack.Screen
-        name="Invite"
-        component={Invite}
-        options={{
-          animation: "fade_from_bottom",
-          headerShown: false,
-        }}
-      />
+      <Stack.Group key={"Invite Code"}>
+        <Stack.Screen
+          name="Invite"
+          component={Invite}
+          options={{
+            animation: "fade_from_bottom",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="InviteCode"
+          component={InviteCode}
+          options={{
+            animation: "fade_from_bottom",
+            headerShown: false,
+          }}
+        />
+      </Stack.Group>
 
       <Stack.Group key={"Auth Screens"}>
         <Stack.Screen
