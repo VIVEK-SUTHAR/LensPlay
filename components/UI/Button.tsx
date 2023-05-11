@@ -103,13 +103,18 @@ const Button = (props: ButtonProps): JSX.Element => {
         }).start();
       }}
     >
-      <Ripple rippleColor={ripple_color} onTap={onPress && !disabled
-        ? onPress
-        : () => {
-          console.log(
-            "[Error]:onPress handler is missing or disabled button"
-          );
-        }}>
+      <Ripple
+        rippleColor={ripple_color}
+        onTap={
+          onPress && !disabled && !isLoading
+            ? onPress
+            : () => {
+                console.log(
+                  "[Error]:onPress handler is missing or disabled button"
+                );
+              }
+        }
+      >
         <Animated.View
           style={{
             display: "flex",
