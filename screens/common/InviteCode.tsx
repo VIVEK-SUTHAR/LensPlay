@@ -14,6 +14,7 @@ import { black, white } from "../../constants/Colors";
 import { useProfile, useThemeStore, useToast } from "../../store/Store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootStackScreenProps } from "../../types/navigation/types";
+import createUser from "../../utils/invites/createUser";
 
 export default function InviteCode({
   navigation,
@@ -26,39 +27,6 @@ export default function InviteCode({
 
   const handleInput = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
     setInviteCode(e.nativeEvent.text);
-  };
-
-  const createUser = async (invitedBy: string) => {
-    try {
-      const apiResponse = await fetch(
-        "https://lensplay-api.vercel.app/api/user/create",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            profileId: currentProfile?.id,
-            address: currentProfile?.ownedBy,
-            invitedBy: invitedBy,
-          }),
-        }
-      );
-      const jsonRes = await apiResponse.json();
-      if (apiResponse.status === 200) {
-        await AsyncStorage.setItem(
-          "@user_data",
-          JSON.stringify({
-            createdAt: jsonRes?.message?.created_at,
-            hasInviteCodes: false,
-          })
-        );
-        toast.success("Redeemed successfully");
-        navigation.replace("Login");
-      }
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const checkIsValidInviteCode = () => {
@@ -101,7 +69,17 @@ export default function InviteCode({
       }
 
       if (apiResponse.status === 200) {
-        createUser(jsonRes?.message?.profileId);
+        const isUser = await createUser(
+          currentProfile?.id,
+          currentProfile?.ownedBy,
+          jsonRes?.message?.profileId
+        );
+        if (isUser) {
+          toast.success("Redeemed successfully");
+          navigation.replace("Login");
+        } else {
+          toast.error("Something went wrong");
+        }
       }
     } catch (error) {
       toast.error("Something went wrong");

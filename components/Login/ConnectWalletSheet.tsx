@@ -10,11 +10,11 @@ import { useGuestStore } from "../../store/GuestStore";
 import { useProfile, useToast } from "../../store/Store";
 import { Scalars } from "../../types/generated";
 import TrackAction from "../../utils/Track";
-import handleWaitlist from "../../utils/handleWaitlist";
 import getProfiles from "../../utils/lens/getProfiles";
 import Icon from "../Icon";
 import Button from "../UI/Button";
 import StyledText from "../UI/StyledText";
+import handleUser from "../../utils/invites/handleUser";
 
 type ConnectWalletSheetProps = {
   loginRef: React.RefObject<BottomSheetMethods>;
@@ -30,58 +30,6 @@ export default function ConnectWalletSheet({
   const navigation = useNavigation();
   const { handleGuest } = useGuestStore();
   const { setCurrentProfile, setHasHandle, currentProfile } = useProfile();
-
-  async function handleUser() {
-    try {
-      //isAlready user or not
-
-      const isUserRes = await fetch(
-        "https://lensplay-api.vercel.app/api/user/checkUser",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            profileId: currentProfile?.id,
-          }),
-        }
-      );
-      const isUser = await isUserRes.json();
-
-      //hasInvitecodes or not
-
-      const hasInviteRes = await fetch(
-        "https://lensplay-api.vercel.app/api/invites/checkInvite",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            profileId: currentProfile?.id,
-          }),
-        }
-      );
-      const hasInvite = await hasInviteRes.json();
-
-      if (isUserRes.status === 200 && hasInviteRes.status === 200) {
-        await AsyncStorage.setItem(
-          "@user_data",
-          JSON.stringify({
-            createdAt: isUser?.message?.created_at,
-            hasInviteCodes: hasInvite.found,
-          })
-        );
-      }
-      if (!isUser?.message?.id) {
-        navigation.navigate("InviteCode");
-        return;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   async function HandleDefaultProfile(adress: Scalars["EthereumAddress"]) {
     const userDefaultProfile = await getProfiles({
@@ -112,7 +60,11 @@ export default function ConnectWalletSheet({
         handleGuest(false);
         await HandleDefaultProfile(walletData.accounts[0]);
         if (!userData) {
-          await handleUser();
+          const isUser = await handleUser(currentProfile?.id);
+          if (!isUser) {
+            navigation.navigate("InviteCode");
+            return;
+          }
         }
         const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
         if (isDeskTopLogin) {

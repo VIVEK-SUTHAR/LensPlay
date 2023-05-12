@@ -22,6 +22,8 @@ import TrackAction from "../../utils/Track";
 import getDateDifference from "../../utils/getDateDifference";
 import getDefaultProfile from "../../utils/lens/getDefaultProfile";
 import storeTokens from "../../utils/storeTokens";
+import handleUser from "../../utils/invites/handleUser";
+import createInviteCode from "../../utils/invites/createInviteCodes";
 
 export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
   const { setCurrentProfile, currentProfile, setHasHandle } = useProfile();
@@ -42,58 +44,6 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
     { data: newTokens, error, loading },
   ] = useRefreshTokensMutation();
 
-  async function handleUser() {
-    try {
-      //isAlready user or not
-
-      const isUserRes = await fetch(
-        "https://lensplay-api.vercel.app/api/user/checkUser",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            profileId: currentProfile?.id,
-          }),
-        }
-      );
-      const isUser = await isUserRes.json();
-
-      //hasInvitecodes or not
-
-      const hasInviteRes = await fetch(
-        "https://lensplay-api.vercel.app/api/invites/checkInvite",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            profileId: currentProfile?.id,
-          }),
-        }
-      );
-      const hasInvite = await hasInviteRes.json();
-
-      if (isUserRes.status === 200 && hasInviteRes.status === 200) {
-        await AsyncStorage.setItem(
-          "@user_data",
-          JSON.stringify({
-            createdAt: isUser?.message?.created_at,
-            hasInviteCodes: hasInvite.found,
-          })
-        );
-      }
-      if (!isUser?.message?.id) {
-        navigation.replace("InviteCode");
-        return;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   async function HandleDefaultProfile(adress: string) {
     const userDefaultProfile = await getDefaultProfile(adress);
     if (userDefaultProfile) {
@@ -101,26 +51,6 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
       setCurrentProfile(userDefaultProfile);
     } else {
       setHasHandle(false);
-    }
-  }
-
-  async function createInviteCode() {
-    try {
-      const apiResponse = await fetch(
-        "https://lensplay-api.vercel.app/api/invites/create",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            profileId: currentProfile?.id,
-          }),
-        }
-      );
-      const jsonRes = await apiResponse.json();
-    } catch (error) {
-      console.log(error);
     }
   }
 
@@ -151,7 +81,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
             })
           );
         } else {
-          await createInviteCode();
+          await createInviteCode(currentProfile?.id);
         }
       } catch (error) {
         console.log(error);
@@ -173,7 +103,11 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
       await HandleDefaultProfile(accounts[0]);
 
       if (!userData) {
-        await handleUser();
+        const isUser = await handleUser(currentProfile?.id);
+        if (!isUser) {
+          navigation.replace("InviteCode");
+          return;
+        }
       }
 
       if (userTokens && userData) {

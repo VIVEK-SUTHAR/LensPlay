@@ -28,7 +28,6 @@ import { useAuthenticateMutation } from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import TrackAction from "../../utils/Track";
 import decryptData from "../../utils/decryptData";
-import handleWaitlist from "../../utils/handleWaitlist";
 import getDefaultProfile from "../../utils/lens/getDefaultProfile";
 import storeTokens from "../../utils/storeTokens";
 export default function Scanner({
