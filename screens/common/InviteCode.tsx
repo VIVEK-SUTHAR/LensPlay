@@ -47,6 +47,7 @@ export default function InviteCode() {
           "@user_data",
           JSON.stringify({
             createdAt: jsonRes?.message?.created_at,
+            hasInviteCodes: false,
           })
         );
         toast.success("Redeemed successfully");

@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import { Dimensions, Image, View } from "react-native";
@@ -18,7 +19,7 @@ import {
 } from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import TrackAction from "../../utils/Track";
-import handleWaitlist from "../../utils/handleWaitlist";
+import getDateDifference from "../../utils/getDatedifference";
 import getDefaultProfile from "../../utils/lens/getDefaultProfile";
 import storeTokens from "../../utils/storeTokens";
 
@@ -29,6 +30,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
   const blackBox = useSharedValue(1);
   const image = useSharedValue(0);
   const textOpacity = useSharedValue(0);
+  const { accounts } = useWalletConnect();
 
   const [
     verifyTokens,
@@ -50,10 +52,58 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
     }
   }
 
+  async function createInviteCode() {
+    try {
+      const apiResponse = await fetch(
+        "https://lensplay-api.vercel.app/api/invites/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            profileId: currentProfile?.id,
+          }),
+        }
+      );
+      const jsonRes = await apiResponse.json();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function handleInviteCode(created_at: string) {
+    const dateDiff = getDateDifference(created_at);
+
+    if (dateDiff > 5) {
+      try {
+        const apiResponse = await fetch(
+          "https://lensplay-api.vercel.app/api/invites/checkInvite",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              profileId: currentProfile?.id,
+            }),
+          }
+        );
+        const jsonRes = await apiResponse.json();
+        if (jsonRes?.found) {
+          return;
+        } else {
+          createInviteCode();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
   const getLocalStorage = async () => {
     try {
       TrackAction(APP_OPEN);
-      const waitList = await AsyncStorage.getItem("@waitlist");
       const userTokens = await AsyncStorage.getItem("@user_tokens");
       const userData = await AsyncStorage.getItem("@user_data");
 
@@ -66,10 +116,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
         const accessToken = JSON.parse(userTokens).accessToken;
         const refreshToken = JSON.parse(userTokens).refreshToken;
         const created_at = JSON.parse(userData).createdAt;
-
-        //compare date
-        // if current - created_at === 5 then create invitecodes
-        // else return
+        const hasInviteCodes = JSON.parse(userData).hasInviteCodes;
 
         if (!accessToken || !refreshToken) {
           navigation.replace("Login");
@@ -81,57 +128,41 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
           return;
         }
 
-        if (waitList) {
-          const address = JSON.parse(waitList).address;
-          const userData = await handleWaitlist(address);
+        await verifyTokens({
+          variables: {
+            request: {
+              accessToken: accessToken,
+            },
+          },
+        });
 
-          if (!userData.fields.hasAccess) {
-            navigation.replace("LeaderBoard", {
-              referralsCount: userData.referralsCount,
-              rankingPoints: userData.rankingPoints,
-              rankingPosition: userData.rankingPosition,
-              refferalLink: `https://form.waitlistpanda.com/go/${userData.listId}?ref=${userData.id}`,
-            });
+        if (isvalidTokens?.verify) {
+          setAccessToken(accessToken);
+          setRefreshToken(refreshToken);
+          await HandleDefaultProfile(accounts[0]);
+          if (!hasInviteCodes) {
+            await handleInviteCode(created_at);
           }
-
-          if (userData?.statusCode === 404) {
-            navigation.replace("JoinWaitlist");
-            return;
-          }
-
-          if (userData?.fields?.hasAccess) {
-            await verifyTokens({
-              variables: {
-                request: {
-                  accessToken: accessToken,
-                },
+          navigation.replace("Root");
+        } else {
+          const newData = await getAccessFromRefresh({
+            variables: {
+              request: {
+                refreshToken: refreshToken,
               },
-            });
-
-            if (isvalidTokens?.verify) {
-              setAccessToken(accessToken);
-              setRefreshToken(refreshToken);
-              await HandleDefaultProfile(address);
-              navigation.replace("Root");
-            } else {
-              const newData = await getAccessFromRefresh({
-                variables: {
-                  request: {
-                    refreshToken: refreshToken,
-                  },
-                },
-              });
-              const address = JSON.parse(waitList).address;
-              await HandleDefaultProfile(address);
-              setAccessToken(newData?.data?.refresh?.accessToken);
-              setRefreshToken(newData?.data?.refresh?.refreshToken);
-              await storeTokens(
-                newData?.data?.refresh?.accessToken,
-                newData?.data?.refresh?.refreshToken
-              );
-              navigation.replace("Root");
-            }
+            },
+          });
+          await HandleDefaultProfile(accounts[0]);
+          if (!hasInviteCodes) {
+            await handleInviteCode(created_at);
           }
+          setAccessToken(newData?.data?.refresh?.accessToken);
+          setRefreshToken(newData?.data?.refresh?.refreshToken);
+          await storeTokens(
+            newData?.data?.refresh?.accessToken,
+            newData?.data?.refresh?.refreshToken
+          );
+          navigation.replace("Root");
         }
       }
     } catch (error) {
