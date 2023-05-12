@@ -29,7 +29,58 @@ export default function ConnectWalletSheet({
   const toast = useToast();
   const navigation = useNavigation();
   const { handleGuest } = useGuestStore();
-  const { setCurrentProfile, setHasHandle } = useProfile();
+  const { setCurrentProfile, setHasHandle, currentProfile } = useProfile();
+
+  async function handleUser() {
+    try {
+      //isAlready user or not
+
+      const isUserRes = await fetch(
+        "https://lensplay-api.vercel.app/api/user/checkUser",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            profileId: currentProfile?.id,
+          }),
+        }
+      );
+      const isUser = await isUserRes.json();
+
+      //hasInvitecodes or not
+
+      const hasInviteRes = await fetch(
+        "https://lensplay-api.vercel.app/api/invites/checkInvite",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            profileId: currentProfile?.id,
+          }),
+        }
+      );
+      const hasInvite = await hasInviteRes.json();
+
+      if (isUserRes.status === 200 && hasInviteRes.status === 200) {
+        await AsyncStorage.setItem(
+          "@user_data",
+          JSON.stringify({
+            createdAt: isUser?.message?.created_at,
+            hasInviteCodes: hasInvite.found,
+          })
+        );
+      } else {
+        navigation.navigate("InviteCode");
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   async function HandleDefaultProfile(adress: Scalars["EthereumAddress"]) {
     const userDefaultProfile = await getProfiles({
@@ -46,6 +97,8 @@ export default function ConnectWalletSheet({
   }
 
   const handleConnectWallet = React.useCallback(async () => {
+    const userData = await AsyncStorage.getItem("@user_data");
+
     const walletData = await connector.connect({
       chainId: 80001,
     });
@@ -57,6 +110,9 @@ export default function ConnectWalletSheet({
         TrackAction(AUTH.WALLET_LOGIN);
         handleGuest(false);
         await HandleDefaultProfile(walletData.accounts[0]);
+        if (!userData) {
+          await handleUser();
+        }
         const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
         if (isDeskTopLogin) {
           await AsyncStorage.removeItem("@viaDeskTop");

@@ -19,7 +19,7 @@ import {
 } from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import TrackAction from "../../utils/Track";
-import getDateDifference from "../../utils/getDatedifference";
+import getDateDifference from "../../utils/getDateDifference";
 import getDefaultProfile from "../../utils/lens/getDefaultProfile";
 import storeTokens from "../../utils/storeTokens";
 
@@ -84,8 +84,10 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
             hasInviteCodes: hasInvite.found,
           })
         );
-      } else {
+      }
+      if (!isUser?.message?.id) {
         navigation.replace("InviteCode");
+        return;
       }
     } catch (error) {
       console.log(error);
@@ -141,7 +143,13 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
         );
         const jsonRes = await apiResponse.json();
         if (jsonRes?.found) {
-          return;
+          await AsyncStorage.setItem(
+            "@user_data",
+            JSON.stringify({
+              createdAt: created_at,
+              hasInviteCodes: true,
+            })
+          );
         } else {
           await createInviteCode();
         }
@@ -162,9 +170,17 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
         return;
       }
 
-      if (userTokens) {
+      await HandleDefaultProfile(accounts[0]);
+
+      if (!userData) {
+        await handleUser();
+      }
+
+      if (userTokens && userData) {
         const accessToken = JSON.parse(userTokens).accessToken;
         const refreshToken = JSON.parse(userTokens).refreshToken;
+        const created_at = JSON.parse(userData).createdAt;
+        const hasInviteCodes = JSON.parse(userData).hasInviteCodes;
 
         if (!accessToken || !refreshToken) {
           navigation.replace("Login");
@@ -182,15 +198,8 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
         if (isvalidTokens?.verify) {
           setAccessToken(accessToken);
           setRefreshToken(refreshToken);
-          await HandleDefaultProfile(accounts[0]);
-          if (userData) {
-            const created_at = JSON.parse(userData).createdAt;
-            const hasInviteCodes = JSON.parse(userData).hasInviteCodes;
-            if (!hasInviteCodes) {
-              await handleInviteCode(created_at);
-            }
-          } else {
-            await handleUser();
+          if (!hasInviteCodes) {
+            await handleInviteCode(created_at);
           }
           navigation.replace("Root");
         } else {
@@ -201,15 +210,8 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
               },
             },
           });
-          await HandleDefaultProfile(accounts[0]);
-          if (userData) {
-            const created_at = JSON.parse(userData).createdAt;
-            const hasInviteCodes = JSON.parse(userData).hasInviteCodes;
-            if (!hasInviteCodes) {
-              await handleInviteCode(created_at);
-            }
-          } else {
-            await handleUser();
+          if (!hasInviteCodes) {
+            await handleInviteCode(created_at);
           }
           setAccessToken(newData?.data?.refresh?.accessToken);
           setRefreshToken(newData?.data?.refresh?.refreshToken);
