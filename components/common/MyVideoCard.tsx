@@ -4,7 +4,6 @@ import React from "react";
 import {
   Dimensions,
   FlatList,
-  Image,
   Pressable,
   Share,
   TouchableOpacity,
@@ -40,6 +39,9 @@ import Heading from "../UI/Heading";
 import Ripple from "../UI/Ripple";
 import StyledText from "../UI/StyledText";
 import DeleteVideo from "../VIdeo/DeleteVideo";
+import { Image } from "expo-image";
+import getPlaceHolderImage from "../../utils/getPlaceHolder";
+import getImageProxyURL from "../../utils/getImageProxyURL";
 
 type MyVideoCardProps = {
   publication: Mirror | Post;
@@ -75,8 +77,15 @@ export default function MyVideoCard({
     >
       <View>
         <Image
+          placeholder={getPlaceHolderImage()}
+          contentFit="cover"
+          transition={500}
           source={{
-            uri: getIPFSLink(getRawurl(publication?.metadata?.cover)),
+            uri: getImageProxyURL({
+              formattedLink: getIPFSLink(
+                getRawurl(publication?.metadata?.cover)
+              ),
+            }),
           }}
           style={{
             width: 160,
@@ -252,7 +261,7 @@ export const VideoActionSheet = ({ sheetRef, pubId, route }: SheetProps) => {
 
   const routename = route.params.title;
   const isOwner = route.params.owner;
-  
+
   let newListItem;
   if (routename.includes("collects") || routename.includes("mirror")) {
     newListItem = [actionList[1], actionList[2]];
@@ -260,15 +269,14 @@ export const VideoActionSheet = ({ sheetRef, pubId, route }: SheetProps) => {
     newListItem = actionList;
   }
 
-  if(!isOwner){
+  if (!isOwner) {
     newListItem = [actionList[1]];
   }
 
   const getSnapPoint = React.useCallback(() => {
-    if(!route.params.owner){  
+    if (!route.params.owner) {
       return ["14%"];
-    }
-    else if (routename.includes("collects") || routename.includes("mirror")) {
+    } else if (routename.includes("collects") || routename.includes("mirror")) {
       return ["24%"];
     } else {
       return ["34%"];
