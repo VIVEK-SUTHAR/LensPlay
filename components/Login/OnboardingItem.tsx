@@ -38,7 +38,6 @@ const OnboardingItem = ({ image, title, desc }: Props) => {
       <View
         style={{
           width: width,
-          flex: 1,
           paddingHorizontal: 16,
           justifyContent: "flex-end",
         }}
@@ -47,7 +46,7 @@ const OnboardingItem = ({ image, title, desc }: Props) => {
           title={title}
           style={{
             color: "white",
-            fontSize: 32,
+            fontSize: width*0.086,
             fontWeight: "600",
           }}
         />
@@ -55,7 +54,7 @@ const OnboardingItem = ({ image, title, desc }: Props) => {
           title={desc}
           style={{
             color: "white",
-            fontSize: 32,
+            fontSize: width*0.086,
             fontWeight: "600",
           }}
         />
