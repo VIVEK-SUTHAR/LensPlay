@@ -39,10 +39,6 @@ export default function ConnectWalletSheet({
     if (userDefaultProfile) {
       setHasHandle(true);
       setCurrentProfile(userDefaultProfile);
-
-      // checkuser
-      // if !user go to redeem code
-      // else store in async storage
     } else {
       setHasHandle(false);
       setCurrentProfile(undefined);
@@ -60,29 +56,12 @@ export default function ConnectWalletSheet({
         loginRef?.current?.close();
         TrackAction(AUTH.WALLET_LOGIN);
         handleGuest(false);
-        const userData = await handleWaitlist(walletData.accounts[0]);
-        if (userData?.statusCode === 404) {
-          navigation.navigate("JoinWaitlist");
-          return;
+        await HandleDefaultProfile(walletData.accounts[0]);
+        const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
+        if (isDeskTopLogin) {
+          await AsyncStorage.removeItem("@viaDeskTop");
         }
-
-        if (!userData?.fields?.hasAccess) {
-          navigation.navigate("LeaderBoard", {
-            referralsCount: userData?.referralsCount,
-            rankingPoints: userData?.rankingPoints,
-            rankingPosition: userData?.rankingPosition,
-            refferalLink: `https://form.waitlistpanda.com/go/${userData?.listId}?ref=${userData?.id}`,
-          });
-        }
-
-        if (userData?.fields?.hasAccess) {
-          await HandleDefaultProfile(walletData.accounts[0]);
-          const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
-          if (isDeskTopLogin) {
-            await AsyncStorage.removeItem("@viaDeskTop");
-          }
-          navigation.reset({ index: 0, routes: [{ name: "LoginWithLens" }] });
-        }
+        navigation.reset({ index: 0, routes: [{ name: "LoginWithLens" }] });
       } else {
         toast.error("Something went wrong");
       }
