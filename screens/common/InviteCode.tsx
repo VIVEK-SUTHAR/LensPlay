@@ -13,8 +13,11 @@ import Heading from "../../components/UI/Heading";
 import { black, white } from "../../constants/Colors";
 import { useProfile, useThemeStore, useToast } from "../../store/Store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { RootStackScreenProps } from "../../types/navigation/types";
 
-export default function InviteCode() {
+export default function InviteCode({
+  navigation,
+}: RootStackScreenProps<"InviteCode">) {
   const [inviteCode, setInviteCode] = useState<string>("");
   const [isChecking, setIsChecking] = useState<boolean>(false);
   const { PRIMARY } = useThemeStore();
@@ -51,6 +54,7 @@ export default function InviteCode() {
           })
         );
         toast.success("Redeemed successfully");
+        navigation.replace("Login");
       }
     } catch (error) {
       console.log(error);

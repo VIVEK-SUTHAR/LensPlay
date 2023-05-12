@@ -42,6 +42,56 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
     { data: newTokens, error, loading },
   ] = useRefreshTokensMutation();
 
+  async function handleUser() {
+    try {
+      //isAlready user or not
+
+      const isUserRes = await fetch(
+        "https://lensplay-api.vercel.app/api/user/checkUser",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            profileId: currentProfile?.id,
+          }),
+        }
+      );
+      const isUser = await isUserRes.json();
+
+      //hasInvitecodes or not
+
+      const hasInviteRes = await fetch(
+        "https://lensplay-api.vercel.app/api/invites/checkInvite",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            profileId: currentProfile?.id,
+          }),
+        }
+      );
+      const hasInvite = await hasInviteRes.json();
+
+      if (isUserRes.status === 200 && hasInviteRes.status === 200) {
+        await AsyncStorage.setItem(
+          "@user_data",
+          JSON.stringify({
+            createdAt: isUser?.message?.created_at,
+            hasInviteCodes: hasInvite.found,
+          })
+        );
+      } else {
+        navigation.replace("InviteCode");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async function HandleDefaultProfile(adress: string) {
     const userDefaultProfile = await getDefaultProfile(adress);
     if (userDefaultProfile) {
@@ -93,7 +143,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
         if (jsonRes?.found) {
           return;
         } else {
-          createInviteCode();
+          await createInviteCode();
         }
       } catch (error) {
         console.log(error);
@@ -107,23 +157,16 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
       const userTokens = await AsyncStorage.getItem("@user_tokens");
       const userData = await AsyncStorage.getItem("@user_data");
 
-      if (!userTokens && userData) {
+      if (!userTokens) {
         navigation.replace("Login");
         return;
       }
 
-      if (userTokens && userData) {
+      if (userTokens) {
         const accessToken = JSON.parse(userTokens).accessToken;
         const refreshToken = JSON.parse(userTokens).refreshToken;
-        const created_at = JSON.parse(userData).createdAt;
-        const hasInviteCodes = JSON.parse(userData).hasInviteCodes;
 
         if (!accessToken || !refreshToken) {
-          navigation.replace("Login");
-          return;
-        }
-
-        if (!userData) {
           navigation.replace("Login");
           return;
         }
@@ -140,8 +183,14 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
           setAccessToken(accessToken);
           setRefreshToken(refreshToken);
           await HandleDefaultProfile(accounts[0]);
-          if (!hasInviteCodes) {
-            await handleInviteCode(created_at);
+          if (userData) {
+            const created_at = JSON.parse(userData).createdAt;
+            const hasInviteCodes = JSON.parse(userData).hasInviteCodes;
+            if (!hasInviteCodes) {
+              await handleInviteCode(created_at);
+            }
+          } else {
+            await handleUser();
           }
           navigation.replace("Root");
         } else {
@@ -153,8 +202,14 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
             },
           });
           await HandleDefaultProfile(accounts[0]);
-          if (!hasInviteCodes) {
-            await handleInviteCode(created_at);
+          if (userData) {
+            const created_at = JSON.parse(userData).createdAt;
+            const hasInviteCodes = JSON.parse(userData).hasInviteCodes;
+            if (!hasInviteCodes) {
+              await handleInviteCode(created_at);
+            }
+          } else {
+            await handleUser();
           }
           setAccessToken(newData?.data?.refresh?.accessToken);
           setRefreshToken(newData?.data?.refresh?.refreshToken);
