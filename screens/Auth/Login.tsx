@@ -2,7 +2,7 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import { Linking, StyleSheet, View } from "react-native";
+import { Linking, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Sheet from "../../components/Bottom";
 import ConnectWalletSheet from "../../components/Login/ConnectWalletSheet";
@@ -74,7 +74,12 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         }}
         snapPoints={["40%"]}
         children={
-          <ConnectWalletSheet loginRef={loginRef} setIsloading={setIsloading} />
+          <ScrollView>
+            <ConnectWalletSheet
+              loginRef={loginRef}
+              setIsloading={setIsloading}
+            />
+          </ScrollView>
         }
       />
     </SafeAreaView>

@@ -17,6 +17,7 @@ export type InviteCardOptions = {
   color: string;
   inviteCode: string;
   index?: number;
+  isValid: boolean;
 };
 
 const height = Dimensions.get("screen").height;
@@ -27,12 +28,17 @@ const InviteCard: React.FC<InviteCardOptions> = ({
   color,
   inviteCode,
   index,
+  isValid,
 }) => {
   const toast = useToast();
 
   const copyInviteCode = React.useCallback(() => {
+    Vibration.vibrate(100);
+    if (!isValid) {
+      toast.error("Already used");
+      return;
+    }
     Clipboard.setStringAsync(inviteCode).then(() => {
-      Vibration.vibrate(100);
       toast.success("Invite code copied");
     });
   }, []);
@@ -65,7 +71,12 @@ const InviteCard: React.FC<InviteCardOptions> = ({
       <View style={styles.inviteCodeTextContainer}>
         <StyledText
           title={inviteCode}
-          style={{ fontSize: 20, color, fontWeight: "600" }}
+          style={{
+            fontSize: 20,
+            color,
+            fontWeight: "600",
+            textDecorationLine: isValid ? "none" : "line-through",
+          }}
         />
         <TouchableOpacity
           style={styles.copyIconContainer}
@@ -83,7 +94,7 @@ export default React.memo(InviteCard);
 const styles = StyleSheet.create({
   inviteCardContainer: {
     marginBottom: -48,
-    height: height * 0.15,
+    height: height * 0.18,
     width: width,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,

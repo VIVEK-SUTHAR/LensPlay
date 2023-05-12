@@ -25,6 +25,8 @@ const ARWEAVE_GATEWAY = "https://arweave.net";
 const IPFS_UPLOAD_API = "https://api.web3.storage/upload";
 const BUNDLR_UPLOAD_API = "https://bundlr-upload-server.vercel.app/api/upload";
 export const LIVEPEER_API_URL = "https://livepeer.studio/api";
+export const LENSPLAY_API = "https://lensplay-api.vercel.app/api/";
+
 //Static Media
 const STATIC_ASSET =
   "https://lens.infura-ipfs.io/ipfs/bafybeibv2kpqpjtvuj5uprvq6knnr2reb7ylq3o4bnypqjioqgxmjw2akq/5460475.webp";

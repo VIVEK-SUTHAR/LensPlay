@@ -46,7 +46,7 @@ const OnboardingItem = ({ image, title, desc }: Props) => {
           title={title}
           style={{
             color: "white",
-            fontSize: 32,
+            fontSize: Dimensions.get("window").width / 12,
             fontWeight: "600",
           }}
         />
@@ -54,7 +54,7 @@ const OnboardingItem = ({ image, title, desc }: Props) => {
           title={desc}
           style={{
             color: "white",
-            fontSize: 32,
+            fontSize: Dimensions.get("window").width / 12,
             fontWeight: "600",
           }}
         />

@@ -12,7 +12,6 @@ import Button from "../../components/UI/Button";
 import Heading from "../../components/UI/Heading";
 import { black, white } from "../../constants/Colors";
 import { useProfile, useThemeStore, useToast } from "../../store/Store";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import createUser from "../../utils/invites/createUser";
 
@@ -63,7 +62,7 @@ export default function InviteCode({
         return;
       }
 
-      if (apiResponse.status === 400) {
+      if (apiResponse.status === 404) {
         toast.error(jsonRes?.message);
         return;
       }
@@ -76,7 +75,7 @@ export default function InviteCode({
         );
         if (isUser) {
           toast.success("Redeemed successfully");
-          navigation.replace("Login");
+          navigation.replace("LoginWithLens");
         } else {
           toast.error("Something went wrong");
         }
