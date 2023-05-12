@@ -73,7 +73,8 @@ export default function ConnectWalletSheet({
             hasInviteCodes: hasInvite.found,
           })
         );
-      } else {
+      }
+      if (!isUser?.message?.id) {
         navigation.navigate("InviteCode");
         return;
       }
