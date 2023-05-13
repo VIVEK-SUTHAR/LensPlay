@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   RefreshControl,
@@ -13,16 +14,45 @@ import { NotificationTypes } from "../../../components/Notifications/index.d";
 import PleaseLogin from "../../../components/PleaseLogin";
 import Heading from "../../../components/UI/Heading";
 import Tabs, { Tab } from "../../../components/UI/Tabs";
-import NotFound from "../../../components/common/NotFound";
+import ErrorMessage from "../../../components/common/ErrorMesasge";
 import Skeleton from "../../../components/common/Skeleton";
 import { white } from "../../../constants/Colors";
 import { NOTIFICATION } from "../../../constants/tracking";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
-import { Notification, useNotificationsQuery } from "../../../types/generated";
+import {
+  Notification,
+  NotificationRequest,
+  useNotificationsQuery,
+} from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
 import TrackAction from "../../../utils/Track";
-import ErrorMessage from "../../../components/common/ErrorMesasge";
+import Logger from "../../../utils/logger";
+
+const NotificationTabs = [
+  {
+    name: "All",
+    type: "All",
+  },
+  {
+    name: "Collect",
+    type: NotificationTypes.COLLECT_NOTIFICATION,
+  },
+  {
+    name: "Comment",
+    type: NotificationTypes.COMMENT_NOTIFICATION,
+  },
+  {
+    name: "Follow",
+    type: NotificationTypes.FOLLOW_NOTIFICATION,
+  },
+  {
+    name: "Mention",
+    type: NotificationTypes.MENTION_NOTIFICATION,
+  },
+];
+
+TrackAction(NOTIFICATION.NOTIFICATIONS);
 
 const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -31,12 +61,14 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
   const { accessToken } = useAuthStore();
   const { isGuest } = useGuestStore();
 
-  const { data, error, loading, refetch } = useNotificationsQuery({
+  const QueryRequest: NotificationRequest = {
+    profileId: currentProfile?.id,
+    limit: 7,
+  };
+
+  const { data, error, loading, refetch, fetchMore } = useNotificationsQuery({
     variables: {
-      request: {
-        profileId: currentProfile?.id,
-        sources: ["LensPlay"],
-      },
+      request: QueryRequest,
     },
     pollInterval: 100,
     fetchPolicy: "network-only",
@@ -49,8 +81,72 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
 
   const notifications = data?.notifications?.items as Notification[];
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    try {
+      refetch({
+        request: QueryRequest,
+      })
+        .then(() => {
+          setRefreshing(false);
+        })
+        .catch((err) => {});
+    } catch (error) {
+      // Logger.Log(error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, []);
+
+  const onEndCallBack = () => {
+    if (!pageInfo?.next) {
+      return;
+    }
+    fetchMore({
+      variables: {
+        request: {
+          cursor: pageInfo?.next,
+          ...QueryRequest,
+        },
+      },
+    }).catch((err) => {});
+  };
+
+  const _RefreshControl = (
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      colors={[theme.PRIMARY]}
+      progressBackgroundColor={"black"}
+    />
+  );
+
+  const pageInfo = data?.notifications?.pageInfo;
+
+  Logger.Log(pageInfo?.next);
+
+  const keyExtractor = (item: Notification) => item?.notificationId.toString();
+
+  const _MoreLoader = () => {
+    return (
+      <>
+        {pageInfo?.next ? (
+          <ActivityIndicator size={"large"} color={theme.PRIMARY} />
+        ) : (
+          <ErrorMessage message="No more Videos to load" withImage={false} />
+        )}
+      </>
+    );
+  };
+
+  const MoreLoader = React.memo(_MoreLoader);
+
+  const renderAllNotifications = ({ item }: { item: Notification }) => (
+    <NotificationCard navigation={navigation} notification={item} />
+  );
+
   if (isGuest) return <PleaseLogin />;
-  if (error)
+  if (error) {
     return (
       <ErrorMessage
         message={
@@ -58,29 +154,7 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
         }
       />
     );
-
-  const NotificationTabs = [
-    {
-      name: "All",
-      type: "All",
-    },
-    {
-      name: "Collect",
-      type: NotificationTypes.COLLECT_NOTIFICATION,
-    },
-    {
-      name: "Comment",
-      type: NotificationTypes.COMMENT_NOTIFICATION,
-    },
-    {
-      name: "Follow",
-      type: NotificationTypes.FOLLOW_NOTIFICATION,
-    },
-    {
-      name: "Mention",
-      type: NotificationTypes.MENTION_NOTIFICATION,
-    },
-  ];
+  }
 
   const FilterNotification = ({
     notificationType,
@@ -91,57 +165,35 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
       return (
         <FlatList
           data={notifications}
-          keyExtractor={(item, index) => `${item?.notificationId}-${index}`}
-          ListEmptyComponent={() => {
-            return (
-              <NoNewNotification message="Looks like you don't have any notifications,interact with profiles to get notifications" />
-            );
-          }}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => {
-                setRefreshing(true);
-                refetch({
-                  request: {
-                    profileId: currentProfile?.id,
-                  },
-                }).then(() => setRefreshing(false));
-              }}
-              colors={[theme.PRIMARY]}
-              progressBackgroundColor={"black"}
-            />
+          keyExtractor={keyExtractor}
+          ListEmptyComponent={
+            <NoNewNotification message="Looks like you don't have any notifications,interact with profiles to get notifications" />
           }
-          renderItem={({ item }) => (
-            <NotificationCard navigation={navigation} notification={item} />
-          )}
+          refreshControl={_RefreshControl}
+          initialNumToRender={7}
+          maxToRenderPerBatch={10}
+          ListFooterComponent={<MoreLoader />}
+          onEndReachedThreshold={0.5}
+          onEndReached={onEndCallBack}
+          renderItem={renderAllNotifications}
         />
       );
     } else {
       return (
         <FlatList
           data={notifications}
-          keyExtractor={(item, index) => `${item?.notificationId}-${index}`}
+          keyExtractor={keyExtractor}
           ListEmptyComponent={() => {
             return (
               <NoNewNotification message="Looks like you don't have any notifications,interact with profiles to get notifications" />
             );
           }}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => {
-                setRefreshing(true);
-                refetch({
-                  request: {
-                    profileId: currentProfile?.id,
-                  },
-                }).then(() => setRefreshing(false));
-              }}
-              colors={[theme.PRIMARY]}
-              progressBackgroundColor={"black"}
-            />
-          }
+          refreshControl={_RefreshControl}
+          initialNumToRender={7}
+          maxToRenderPerBatch={10}
+          ListFooterComponent={<MoreLoader />}
+          onEndReachedThreshold={0.5}
+          onEndReached={onEndCallBack}
           renderItem={({ item }) => {
             if (item.__typename === notificationType) {
               return (
@@ -155,7 +207,6 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
     }
   };
 
-  TrackAction(NOTIFICATION.NOTIFICATIONS);
   return (
     <SafeAreaView style={styles.container}>
       <Tabs>

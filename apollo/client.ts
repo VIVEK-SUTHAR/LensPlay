@@ -11,6 +11,7 @@ const client = new ApolloClient({
             "request",
             ["sortCriteria", "noRandomize", "profileId", "metadata"],
           ]),
+          Notifications: cursorBasedPagination(["request", ["profileId"]]),
         },
       },
     },
