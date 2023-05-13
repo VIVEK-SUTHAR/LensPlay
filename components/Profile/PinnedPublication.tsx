@@ -123,7 +123,7 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
               alignItems: "center",
             }}
           >
-            <Icon name={"delete"} color={"white"} />
+            <Icon name={"unpin"} color={"white"} />
             <StyledText
               title={"Remove pin"}
               style={{

@@ -68,7 +68,7 @@ export default function MyVideoCard({
       style={{
         flexDirection: "row",
         maxWidth: Dimensions.get("window").width,
-        padding: 16,
+        padding: 8,
       }}
       onPress={() => {
         setActivePublication(publication);
@@ -97,7 +97,7 @@ export default function MyVideoCard({
       <View
         style={{
           height: "100%",
-          width: "50%",
+          width: "55%",
           marginLeft: 8,
           flexDirection: "row",
           justifyContent: "space-between",
@@ -277,7 +277,7 @@ export const VideoActionSheet = ({ sheetRef, pubId, route }: SheetProps) => {
     if (!route.params.owner) {
       return ["14%"];
     } else if (routename.includes("collects") || routename.includes("mirror")) {
-      return ["24%"];
+      return [150];
     } else {
       return ["34%"];
     }

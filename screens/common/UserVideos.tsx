@@ -1,3 +1,4 @@
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import React, { useLayoutEffect } from "react";
 import {
   FlatList,
@@ -5,16 +6,14 @@ import {
   SafeAreaView,
   StyleSheet,
 } from "react-native";
-import VideoCard from "../../components/VideoCard";
+import MyVideoCard, {
+  VideoActionSheet,
+} from "../../components/common/MyVideoCard";
 import UploadCard from "../../components/common/UploadCard";
 import { useThemeStore } from "../../store/Store";
 import { useUploadStore } from "../../store/UploadStore";
 import { Post } from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
-import MyVideoCard, {
-  VideoActionSheet,
-} from "../../components/common/MyVideoCard";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 
 const UserVideos = ({
   navigation,
