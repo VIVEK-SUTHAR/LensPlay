@@ -66,12 +66,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
     },
   });
 
-  if (error) {
-    refetch({
-      request: QueryRequest,
-    });
-  }
-
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     try {
@@ -133,7 +127,16 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
     return (
       <>
         {pageInfo?.next ? (
-          <ActivityIndicator size={"large"} color={theme.PRIMARY} />
+          <View
+            style={{
+              height: 200,
+              width: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator size={"large"} color={theme.PRIMARY} />
+          </View>
         ) : (
           <ErrorMessage message="No more Videos to load" withImage={false} />
         )}

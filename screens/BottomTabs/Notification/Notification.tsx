@@ -123,15 +123,22 @@ const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
 
   const pageInfo = data?.notifications?.pageInfo;
 
-  Logger.Log(pageInfo?.next);
-
   const keyExtractor = (item: Notification) => item?.notificationId.toString();
 
   const _MoreLoader = () => {
     return (
       <>
         {pageInfo?.next ? (
-          <ActivityIndicator size={"large"} color={theme.PRIMARY} />
+          <View
+            style={{
+              height: 200,
+              width: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator size={"large"} color={theme.PRIMARY} />
+          </View>
         ) : (
           <ErrorMessage message="No more Videos to load" withImage={false} />
         )}
