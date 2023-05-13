@@ -253,6 +253,7 @@ const VideoPage = ({
               alreadyFollowing={
                 activePublication?.profile?.isFollowedByMe || false
               }
+              ownedBy={activePublication?.profile?.ownedBy}
             />
             <ScrollView
               style={{
@@ -581,6 +582,7 @@ const VideoPage = ({
                       subscribersCount={
                         activePublication?.profile?.stats?.totalFollowers
                       }
+                      ownedBy={activePublication?.profile?.ownedBy}
                     />
                   </View>
                 </BottomSheetScrollView>
