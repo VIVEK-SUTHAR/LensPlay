@@ -1,3 +1,4 @@
+import * as ScreenOrientation from "expo-screen-orientation";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
@@ -6,17 +7,18 @@ import {
   Image,
   RefreshControl,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   View,
 } from "react-native";
-import ErrorMessage from "../../../components/common/ErrorMesasge";
-import Skeleton from "../../../components/common/Skeleton";
 import Icon from "../../../components/Icon";
 import PleaseLogin from "../../../components/PleaseLogin";
 import Button from "../../../components/UI/Button";
 import Heading from "../../../components/UI/Heading";
 import VideoCardSkeleton from "../../../components/UI/VideoCardSkeleton";
 import VideoCard from "../../../components/VideoCard";
+import ErrorMessage from "../../../components/common/ErrorMesasge";
+import Skeleton from "../../../components/common/Skeleton";
 import { black, white } from "../../../constants/Colors";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
@@ -29,7 +31,6 @@ import {
   useFeedQuery,
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
-import * as ScreenOrientation from "expo-screen-orientation";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -86,9 +87,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
       setRefreshing(false);
     }
   }, []);
-
-  if (isGuest) return <PleaseLogin />;
-  if (error) return <NotFound navigation={navigation} />;
 
   const pageInfo = Feeddata?.feed.pageInfo;
 
@@ -153,6 +151,23 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
       progressBackgroundColor={"black"}
     />
   );
+
+  if (isGuest) return <PleaseLogin />;
+  if (error)
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView
+          refreshControl={_RefreshControl}
+          contentContainerStyle={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <NotFound navigation={navigation} />
+        </ScrollView>
+      </SafeAreaView>
+    );
 
   return (
     <SafeAreaView style={styles.container}>
