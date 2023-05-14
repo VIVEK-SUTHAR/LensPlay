@@ -12,7 +12,7 @@ export type InviteCardOptions = {
 };
 
 const InviteCard: React.FC<InviteCardOptions> = ({ inviteCode, isValid }) => {
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const toast = useToast();
 
   const copyInviteCode = React.useCallback(() => {
@@ -45,7 +45,7 @@ const InviteCard: React.FC<InviteCardOptions> = ({ inviteCode, isValid }) => {
     >
       <Heading
         title={inviteCode}
-        style={{ color: white[500], fontSize: 20, fontWeight: "600" }}
+        style={{ color: white[500], fontSize: width / 18, fontWeight: "600" }}
       />
       <Button
         title={isValid ? "Share" : "Used"}
