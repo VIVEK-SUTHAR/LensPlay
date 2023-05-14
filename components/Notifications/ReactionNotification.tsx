@@ -10,17 +10,17 @@ import getRawurl from "../../utils/getRawUrl";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
+import { useNavigation } from "@react-navigation/native";
 
 type ReactionNotificationProps = {
-  navigation: any;
   notification: NewReactionNotification;
 };
 
 const ReactionNotification: React.FC<ReactionNotificationProps> = ({
-  navigation,
   notification,
 }) => {
   const { PRIMARY } = useThemeStore();
+  const navigation = useNavigation();
 
   return (
     <>

@@ -7,28 +7,17 @@ import getIPFSLink from "../../utils/getIPFSLink";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
+import getRawurl from "../../utils/getRawUrl";
+import { useNavigation } from "@react-navigation/native";
 
 type CollectNotificationProps = {
-  navigation: any;
   notification: NewCollectNotification;
 };
 
 const CollectNotification: React.FC<CollectNotificationProps> = ({
-  navigation,
   notification,
 }) => {
-  let PROFILE_PIC_URI = "";
-  if (
-    notification?.wallet?.defaultProfile?.picture?.__typename === "MediaSet"
-  ) {
-    PROFILE_PIC_URI =
-      notification?.wallet?.defaultProfile?.picture?.original?.url;
-  }
-  if (
-    notification?.wallet?.defaultProfile?.picture?.__typename === "NftImage"
-  ) {
-    PROFILE_PIC_URI = notification?.wallet?.defaultProfile?.picture?.uri;
-  }
+  const navigation = useNavigation();
   return (
     <>
       <View
@@ -55,7 +44,13 @@ const CollectNotification: React.FC<CollectNotificationProps> = ({
             alignItems: "flex-start",
           }}
         >
-          <Avatar src={getIPFSLink(PROFILE_PIC_URI)} height={35} width={35} />
+          <Avatar
+            src={getIPFSLink(
+              getRawurl(notification?.wallet?.defaultProfile?.picture)
+            )}
+            height={35}
+            width={35}
+          />
           <StyledText
             title={getDifference(notification?.createdAt)}
             style={{ fontSize: 12, color: "gray" }}

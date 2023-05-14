@@ -8,16 +8,16 @@ import getRawurl from "../../utils/getRawUrl";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
+import { useNavigation } from "@react-navigation/native";
 
 type CommentNotificationProps = {
-  navigation: any;
   notification: NewCommentNotification;
 };
 
 const CommentNotification: React.FC<CommentNotificationProps> = ({
-  navigation,
   notification,
 }) => {
+  const navigation = useNavigation();
   return (
     <>
       <View

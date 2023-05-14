@@ -156,62 +156,54 @@ export default function BottomTabNavigator({
           headerTitle: "",
           headerRight: () => (
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {/* <TouchableWithoutFeedback
+              {/* <Pressable
                 onPress={() => uploadRef.current?.snapToIndex(0)}
+                style={{
+                  paddingHorizontal: 8,
+                  height: "100%",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
-                <View
-                  style={{
-                    paddingHorizontal: 8,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Icon name="upload" size={24} />
-                </View>
-              </TouchableWithoutFeedback> */}
-              <TouchableWithoutFeedback
+                <Icon name="upload" size={24} />
+              </Pressable> */}
+              <Pressable
                 onPress={() => navigation.push("Invite")}
-              >
-                <View
-                  style={{
-                    paddingHorizontal: 8,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Icon name="invite" size={20} />
-                </View>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback
-                onPress={() => {
-                  navigation.navigate("Search");
+                style={{
+                  paddingHorizontal: 8,
+                  height: "100%",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                <View
-                  style={{
-                    paddingHorizontal: 10,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Icon name="search" size={24} />
-                </View>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback
+                <Icon name="invite" size={20} />
+              </Pressable>
+              <Pressable
                 onPress={() => {
-                  navigation.navigate("Settings");
+                  navigation.push("Search");
+                }}
+                style={{
+                  paddingHorizontal: 8,
+                  height: "100%",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                <View
-                  style={{
-                    paddingHorizontal: 8,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Icon name="setting" size={24} />
-                </View>
-              </TouchableWithoutFeedback>
+                <Icon name="search" size={24} />
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  navigation.push("Settings");
+                }}
+                style={{
+                  paddingHorizontal: 8,
+                  height: "100%",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Icon name="setting" size={24} />
+              </Pressable>
             </View>
           ),
           headerLeft: () => (

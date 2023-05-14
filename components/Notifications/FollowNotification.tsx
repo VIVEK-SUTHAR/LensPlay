@@ -8,16 +8,18 @@ import getRawurl from "../../utils/getRawUrl";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
+import { useNavigation } from "@react-navigation/native";
+import formatHandle from "../../utils/formatHandle";
 
 type FollowNotificationProps = {
-  navigation: any;
   notification: NewFollowerNotification;
 };
 
 const FollowNotification: React.FC<FollowNotificationProps> = ({
-  navigation,
   notification,
 }) => {
+  const navigation = useNavigation();
+
   return (
     <>
       <View
@@ -63,8 +65,8 @@ const FollowNotification: React.FC<FollowNotificationProps> = ({
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <StyledText
             title={
-              notification?.wallet?.defaultProfile?.handle?.split(".")[0] ||
-              formatAddress(notification?.wallet?.address)
+              formatHandle(notification?.wallet?.defaultProfile?.handle) ||
+              formatAddress(notification?.wallet?.defaultProfile?.id)
             }
             style={{ color: "white", fontWeight: "500" }}
           />

@@ -9,16 +9,14 @@ import getRawurl from "../../utils/getRawUrl";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
+import { useNavigation } from "@react-navigation/native";
 
 type MentionNotificationProps = {
-  navigation: any;
   notification: NewMentionNotification;
 };
 
-const MentionNotification = ({
-  navigation,
-  notification,
-}: MentionNotificationProps) => {
+const MentionNotification = ({ notification }: MentionNotificationProps) => {
+  const navigation = useNavigation();
   return (
     <>
       <View

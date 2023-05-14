@@ -1,5 +1,6 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import cursorBasedPagination from "./curserBasedPagination";
+
 const client = new ApolloClient({
   uri: "https://api-mumbai.lens.dev",
   cache: new InMemoryCache({
@@ -11,7 +12,10 @@ const client = new ApolloClient({
             "request",
             ["sortCriteria", "noRandomize", "profileId", "metadata"],
           ]),
-          Notifications: cursorBasedPagination(["request", ["profileId"]]),
+          notifications: cursorBasedPagination([
+            "request",
+            ["profileId", "notificationTypes"],
+          ]),
         },
       },
     },

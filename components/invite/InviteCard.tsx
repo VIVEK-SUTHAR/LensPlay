@@ -1,126 +1,64 @@
 import * as Clipboard from "expo-clipboard";
-import React, { useEffect, useRef } from "react";
-import {
-  Animated,
-  Dimensions,
-  StyleSheet,
-  TouchableOpacity,
-  Vibration,
-  View,
-} from "react-native";
+import React from "react";
+import { Share, Vibration, View, useWindowDimensions } from "react-native";
+import { black, white } from "../../constants/Colors";
 import { useToast } from "../../store/Store";
-import Icon from "../Icon";
-import StyledText from "../UI/StyledText";
+import Button from "../UI/Button";
+import Heading from "../UI/Heading";
 
 export type InviteCardOptions = {
-  bgColor: string;
-  color: string;
   inviteCode: string;
-  index?: number;
   isValid: boolean;
 };
 
-const height = Dimensions.get("screen").height;
-const width = Dimensions.get("screen").width;
-
-const InviteCard: React.FC<InviteCardOptions> = ({
-  bgColor,
-  color,
-  inviteCode,
-  index,
-  isValid,
-}) => {
+const InviteCard: React.FC<InviteCardOptions> = ({ inviteCode, isValid }) => {
+  const { height } = useWindowDimensions();
   const toast = useToast();
 
   const copyInviteCode = React.useCallback(() => {
     Vibration.vibrate(100);
-    if (!isValid) {
-      toast.error("Already used");
-      return;
-    }
     Clipboard.setStringAsync(inviteCode).then(() => {
       toast.success("Invite code copied");
     });
   }, []);
 
-  const cardRef = useRef(new Animated.Value(500)).current;
-
-  useEffect(() => {
-    Animated.spring(cardRef, {
-      toValue: 0,
-      useNativeDriver: true,
-      delay: (4 - index!) * 300,
-      damping: 20,
-    }).start();
+  const ShareCode = React.useCallback(async (inviteCode: string) => {
+    try {
+      const result = await Share.share({
+        message: `Join lensplay by using my invite code, Invite code: ${inviteCode}`,
+      });
+    } catch (error) {}
   }, []);
 
   return (
-    <Animated.View
-      style={[
-        styles.inviteCardContainer,
-        {
-          backgroundColor: bgColor,
-          transform: [
-            {
-              translateY: cardRef,
-            },
-          ],
-        },
-      ]}
+    <View
+      style={{
+        height: height / 6,
+        width: "48%",
+        marginTop: 16,
+        position: "relative",
+        backgroundColor: black[600],
+        borderRadius: 16,
+        padding: 16,
+        justifyContent: "space-between",
+      }}
     >
-      <View style={styles.inviteCodeTextContainer}>
-        <StyledText
-          title={inviteCode}
-          style={{
-            fontSize: 20,
-            color,
-            fontWeight: "600",
-            textDecorationLine: isValid ? "none" : "line-through",
-          }}
-        />
-        <TouchableOpacity
-          style={styles.copyIconContainer}
-          onPress={copyInviteCode}
-        >
-          <Icon name="copy" size={16} style={{ color: color }} />
-        </TouchableOpacity>
-      </View>
-    </Animated.View>
+      <Heading
+        title={inviteCode}
+        style={{ color: white[500], fontSize: 20, fontWeight: "600" }}
+      />
+      <Button
+        title={isValid ? "Share" : "Used"}
+        disabled={!isValid}
+        bg={white[500]}
+        py={8}
+        textStyle={{ textAlign: "center", fontWeight: "600", fontSize: 16 }}
+        onPress={() => {
+          ShareCode(inviteCode);
+        }}
+      />
+    </View>
   );
 };
 
 export default React.memo(InviteCard);
-
-const styles = StyleSheet.create({
-  inviteCardContainer: {
-    marginBottom: -48,
-    height: height * 0.18,
-    width: width,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-    elevation: 6,
-    zIndex: 2,
-  },
-  inviteCodeTextContainer: {
-    flexDirection: "row",
-    padding: 16,
-    justifyContent: "space-between",
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    alignItems: "center",
-  },
-
-  copyIconContainer: {
-    backgroundColor: "rgba(255,255,255,0.3)",
-    padding: 16,
-    opacity: 0.7,
-    borderRadius: 100,
-  },
-});

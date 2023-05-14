@@ -8,16 +8,14 @@ import getRawurl from "../../utils/getRawUrl";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
+import { useNavigation } from "@react-navigation/native";
 
 type MirrorNotificationProps = {
-  navigation: any;
   notification: NewMirrorNotification;
 };
 
-const MirrorNotification = ({
-  navigation,
-  notification,
-}: MirrorNotificationProps) => {
+const MirrorNotification = ({ notification }: MirrorNotificationProps) => {
+  const navigation = useNavigation();
   return (
     <>
       <View
