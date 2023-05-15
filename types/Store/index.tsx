@@ -1,15 +1,5 @@
 import { CollectModuleType } from "../../utils/getCollectModule";
-import {
-  CollectModules,
-  FeedItemRoot,
-  Maybe,
-  Mirror,
-  Post,
-  Profile,
-  ReferenceModuleParams,
-  ReferenceModules,
-  Scalars,
-} from "../generated";
+import { FeedItemRoot, Maybe, Mirror, Post, Profile } from "../generated";
 
 export interface IAuthStore {
   accessToken: string;
@@ -115,6 +105,26 @@ export interface IGuestStore {
   isGuest: boolean;
   profileId: string;
   handleGuest: (isGuest: boolean) => void;
+}
+
+export enum GetInviteResponse {
+  ZERO_INVITES = "ZERO INVITES",
+  ERROR = "ERROR",
+}
+
+export type GetInviteCodeAPIResponse = {
+  profileId: string;
+  inviteCode: string;
+  isValid: boolean;
+  id: string;
+};
+
+export interface InviteStore {
+  invites: GetInviteCodeAPIResponse[] | [];
+  handleInvites: (invites: GetInviteCodeAPIResponse[]) => void;
+  inviteError: GetInviteResponse | "";
+  handleError: (error: GetInviteResponse) => void;
+  clearInvites: () => void;
 }
 
 export type ReferenceModuleType = {
