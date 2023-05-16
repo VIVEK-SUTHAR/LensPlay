@@ -1,24 +1,25 @@
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useState } from "react";
 import {
   Dimensions,
   Pressable,
+  RefreshControl,
   StyleSheet,
-  View,
   useWindowDimensions,
+  View,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ErrorMessage from "../../components/common/ErrorMesasge";
 import Icon from "../../components/Icon";
+import InviteCard from "../../components/invite/InviteCard";
 import Avatar from "../../components/UI/Avatar";
 import Heading from "../../components/UI/Heading";
 import StyledText from "../../components/UI/StyledText";
-import ErrorMessage from "../../components/common/ErrorMesasge";
-import InviteCard from "../../components/invite/InviteCard";
 import { black, white } from "../../constants/Colors";
 import useInviteCodes, { GetInviteResponse } from "../../hooks/useInviteCodes";
-import { useProfile } from "../../store/Store";
+import { useProfile, useThemeStore } from "../../store/Store";
 import CommonStyles from "../../styles";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import formatHandle from "../../utils/formatHandle";
@@ -28,12 +29,33 @@ const StatusBarHeight = Constants.statusBarHeight;
 
 const Invite = ({ navigation }: RootStackScreenProps<"Invite">) => {
   const { currentProfile } = useProfile();
-  const { inviteCodes, error, isLoading } = useInviteCodes(currentProfile?.id);
-  const { width } = useWindowDimensions();
+  const { invites, inviteError, isLoading, refetch } = useInviteCodes(
+    currentProfile?.id
+  );
+  const { width, height } = useWindowDimensions();
+  const theme = useThemeStore();
+  const [refreshing, setRefreshing] = useState(false);
 
-  if (isLoading) return <InviteSkleton />;
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    try {
+      refetch();
+    } catch (error) {
+    } finally {
+      setRefreshing(false);
+    }
+  }, []);
 
-  if (error === GetInviteResponse.ZERO_INVITES) {
+  const _RefreshControl = (
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      colors={[theme.PRIMARY]}
+      progressBackgroundColor={"black"}
+    />
+  );
+
+  if (inviteError === GetInviteResponse.ZERO_INVITES) {
     return (
       <View style={CommonStyles.screenContainer}>
         <Pressable
@@ -46,7 +68,8 @@ const Invite = ({ navigation }: RootStackScreenProps<"Invite">) => {
       </View>
     );
   }
-  if (error === GetInviteResponse.ERROR) {
+
+  if (inviteError === GetInviteResponse.ERROR) {
     return (
       <View style={CommonStyles.screenContainer}>
         <Pressable
@@ -60,23 +83,21 @@ const Invite = ({ navigation }: RootStackScreenProps<"Invite">) => {
     );
   }
 
-  if (inviteCodes) {
-    const leftInvites = inviteCodes.filter((code) => code.isValid).length;
-    return (
-      <SafeAreaView style={[CommonStyles.screenContainer]}>
-        <StatusBar style="auto" />
-        <Pressable
-          style={styles.closeContainer}
-          onPress={() => navigation.pop()}
-        >
-          <Icon name="close" size={20} />
-        </Pressable>
+  const leftInvites = invites.filter((code) => code.isValid).length;
+  return (
+    <SafeAreaView style={[CommonStyles.screenContainer]}>
+      <StatusBar style="auto" />
+      <Pressable style={styles.closeContainer} onPress={() => navigation.pop()}>
+        <Icon name="close" size={20} />
+      </Pressable>
+      {invites ? (
         <ScrollView
           style={[CommonStyles.screenContainer, { padding: 16 }]}
           contentContainerStyle={{
             alignItems: "center",
             justifyContent: "space-around",
           }}
+          refreshControl={_RefreshControl}
         >
           <View style={styles.upperContainer}>
             <Avatar
@@ -118,7 +139,7 @@ const Invite = ({ navigation }: RootStackScreenProps<"Invite">) => {
               flexWrap: "wrap",
             }}
           >
-            {inviteCodes.map((invite) => {
+            {invites.map((invite) => {
               return (
                 <InviteCard
                   key={invite.id}
@@ -150,9 +171,11 @@ const Invite = ({ navigation }: RootStackScreenProps<"Invite">) => {
             </View>
           </View>
         </ScrollView>
-      </SafeAreaView>
-    );
-  }
+      ) : (
+        <InviteSkleton />
+      )}
+    </SafeAreaView>
+  );
 };
 export default Invite;
 
@@ -187,18 +210,18 @@ const _InviteSkleton = () => {
             <View
               style={{
                 height: 22,
-                width: Dimensions.get("screen").width / 3,
+                width: Dimensions.get("screen").width / 2.5,
                 backgroundColor: "#1d1d1d",
                 borderRadius: 4,
               }}
             />
-            <View
+            <StyledText
+              title={`Invites Left`}
               style={{
-                height: 22,
-                width: Dimensions.get("screen").width / 2,
-                backgroundColor: "#1d1d1d",
-                borderRadius: 4,
-                marginTop: 8,
+                color: white[100],
+                fontSize: 24,
+                fontWeight: "500",
+                marginTop: 4,
               }}
             />
           </View>
@@ -210,49 +233,231 @@ const _InviteSkleton = () => {
             flexWrap: "wrap",
           }}
         >
-          {[...Array(6)].map((_, index) => (
-            <View
-              key={index}
-              style={{
-                height: 150,
-                width: "48%",
-                marginTop: 16,
-                position: "relative",
-                backgroundColor: "#111111",
-                borderRadius: 16,
-                padding: 16,
-                justifyContent: "space-between",
-              }}
-            >
-              <View style={{ marginVertical: 2 }}>
-                <View
-                  style={{
-                    height: 12,
-                    width: "80%",
-                    backgroundColor: "#1d1d1d",
-                    marginVertical: 4,
-                  }}
-                />
-                <View
-                  style={{
-                    height: 12,
-                    width: "60%",
-                    backgroundColor: "#1d1d1d",
-                    marginVertical: 4,
-                  }}
-                />
-              </View>
+          <View
+            style={{
+              height: 150,
+              width: "48%",
+              marginTop: 16,
+              position: "relative",
+              backgroundColor: "#111111",
+              borderRadius: 16,
+              padding: 16,
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={{ marginVertical: 2 }}>
               <View
                 style={{
-                  height: 32,
-                  borderRadius: 50,
-                  width: "95%",
-                  alignSelf: "center",
+                  height: 12,
+                  width: "80%",
                   backgroundColor: "#1d1d1d",
+                  marginVertical: 4,
+                }}
+              />
+              <View
+                style={{
+                  height: 12,
+                  width: "60%",
+                  backgroundColor: "#1d1d1d",
+                  marginVertical: 4,
                 }}
               />
             </View>
-          ))}
+            <View
+              style={{
+                height: 32,
+                borderRadius: 50,
+                width: "90%",
+                alignSelf: "center",
+                backgroundColor: "#1d1d1d",
+              }}
+            />
+          </View>
+          <View
+            style={{
+              height: 150,
+              width: "48%",
+              marginTop: 16,
+              position: "relative",
+              backgroundColor: "#111111",
+              borderRadius: 16,
+              padding: 16,
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={{ marginVertical: 2 }}>
+              <View
+                style={{
+                  height: 12,
+                  width: "80%",
+                  backgroundColor: "#1d1d1d",
+                  marginVertical: 4,
+                }}
+              />
+              <View
+                style={{
+                  height: 12,
+                  width: "60%",
+                  backgroundColor: "#1d1d1d",
+                  marginVertical: 4,
+                }}
+              />
+            </View>
+            <View
+              style={{
+                height: 32,
+                borderRadius: 50,
+                width: "90%",
+                alignSelf: "center",
+                backgroundColor: "#1d1d1d",
+              }}
+            />
+          </View>
+
+          <View
+            style={{
+              height: 150,
+              width: "48%",
+              marginTop: 16,
+              position: "relative",
+              backgroundColor: "#111111",
+              borderRadius: 16,
+              padding: 16,
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={{ marginVertical: 2 }}>
+              <View
+                style={{
+                  height: 12,
+                  width: "80%",
+                  backgroundColor: "#1d1d1d",
+                  marginVertical: 4,
+                }}
+              />
+              <View
+                style={{
+                  height: 12,
+                  width: "60%",
+                  backgroundColor: "#1d1d1d",
+                  marginVertical: 4,
+                }}
+              />
+            </View>
+            <View
+              style={{
+                height: 32,
+                borderRadius: 50,
+                width: "90%",
+                alignSelf: "center",
+                backgroundColor: "#1d1d1d",
+              }}
+            />
+          </View>
+
+          <View
+            style={{
+              height: 150,
+              width: "48%",
+              marginTop: 16,
+              position: "relative",
+              backgroundColor: "#111111",
+              borderRadius: 16,
+              padding: 16,
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={{ marginVertical: 2 }}>
+              <View
+                style={{
+                  height: 12,
+                  width: "80%",
+                  backgroundColor: "#1d1d1d",
+                  marginVertical: 4,
+                }}
+              />
+              <View
+                style={{
+                  height: 12,
+                  width: "60%",
+                  backgroundColor: "#1d1d1d",
+                  marginVertical: 4,
+                }}
+              />
+            </View>
+            <View
+              style={{
+                height: 32,
+                borderRadius: 50,
+                width: "90%",
+                alignSelf: "center",
+                backgroundColor: "#1d1d1d",
+              }}
+            />
+          </View>
+
+          <View
+            style={{
+              height: 150,
+              width: "48%",
+              marginTop: 16,
+              position: "relative",
+              backgroundColor: "#111111",
+              borderRadius: 16,
+              padding: 16,
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={{ marginVertical: 2 }}>
+              <View
+                style={{
+                  height: 12,
+                  width: "80%",
+                  backgroundColor: "#1d1d1d",
+                  marginVertical: 4,
+                }}
+              />
+              <View
+                style={{
+                  height: 12,
+                  width: "60%",
+                  backgroundColor: "#1d1d1d",
+                  marginVertical: 4,
+                }}
+              />
+            </View>
+            <View
+              style={{
+                height: 32,
+                borderRadius: 50,
+                width: "90%",
+                alignSelf: "center",
+                backgroundColor: "#1d1d1d",
+              }}
+            />
+          </View>
+
+          <View
+            style={{
+              height: 150,
+              width: "48%",
+              marginTop: 16,
+              position: "relative",
+              backgroundColor: "#111111",
+              borderRadius: 8,
+              padding: 16,
+              justifyContent: "space-between",
+            }}
+          >
+            <Heading
+              title={"Bring your friend to LensPlay 😉"}
+              style={{
+                color: white[500],
+                fontSize: 24,
+                fontWeight: "600",
+              }}
+            />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

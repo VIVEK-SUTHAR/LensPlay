@@ -30,9 +30,8 @@ import VideoTypes from "../screens/common/VideoTypes";
 import ProfileScanner from "../screens/Header/Settings/ProfileScanner";
 import CreateProfile from "../screens/Auth/CreateProfile";
 import useVideoURLStore from "../store/videoURL";
-import Invite from "../screens/common/Invite";
 import InviteCode from "../screens/common/InviteCode";
-
+import Invite from "../screens/common/Invite";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {

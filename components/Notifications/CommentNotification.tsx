@@ -9,6 +9,7 @@ import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
 import { useNavigation } from "@react-navigation/native";
+import { dark_primary } from "../../constants/Colors";
 
 type CommentNotificationProps = {
   notification: NewCommentNotification;
@@ -19,7 +20,18 @@ const CommentNotification: React.FC<CommentNotificationProps> = ({
 }) => {
   const navigation = useNavigation();
   return (
-    <>
+    <Pressable
+      android_ripple={{
+        borderless: false,
+        color: "rgba(255,255,255,0.1)",
+      }}
+      style={{
+        flexDirection: "row",
+        padding: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: dark_primary,
+      }}
+    >
       <View
         style={{
           height: 35,
@@ -82,7 +94,7 @@ const CommentNotification: React.FC<CommentNotificationProps> = ({
           style={{ fontSize: 10, color: "gray" }}
         />
       </View>
-    </>
+    </Pressable>
   );
 };
 export default CommentNotification;
