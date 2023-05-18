@@ -1,239 +1,508 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  BackHandler,
-  KeyboardAvoidingView,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
+	BackHandler,
+	FlatList,
+	KeyboardAvoidingView,
+	Pressable,
+	ScrollView,
+	StyleSheet,
+	TextInput,
+	View,
 } from "react-native";
 import Button from "../../components/UI/Button";
-import Dropdown from "../../components/UI/Dropdown";
 import Heading from "../../components/UI/Heading";
 import StyledText from "../../components/UI/StyledText";
 import { dark_primary } from "../../constants/Colors";
 import { PUBLICATION } from "../../constants/tracking";
 import { useGuestStore } from "../../store/GuestStore";
 import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
-import {
-  PublicationReportingReason,
-  useReportPublicationMutation,
-} from "../../types/generated";
+import { PublicationReportingReason, useReportPublicationMutation } from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import { ToastType } from "../../types/Store";
 import TrackAction from "../../utils/Track";
+import Icon from "../../components/Icon";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Sheet from "../../components/Bottom";
 
 type subreason = {
-  reason: string;
+	reason: string;
 };
 
 export type RESONTYPEDATA = {
-  reason: PublicationReportingReason;
-  subReason: subreason[];
+	reason: PublicationReportingReason;
+	subReason: subreason[];
 };
 
-const ReportPublication = ({
-  navigation,
-  route,
-}: RootStackScreenProps<"ReportPublication">) => {
-  const handleBack = () => {
-    navigation.goBack();
-    return true;
-  };
+const ReportPublication = ({ navigation, route }: RootStackScreenProps<"ReportPublication">) => {
+	const handleBack = () => {
+		navigation.goBack();
+		return true;
+	};
 
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", handleBack);
-  }, []);
+	useEffect(() => {
+		BackHandler.addEventListener("hardwareBackPress", handleBack);
+	}, []);
 
-  const [selectedData, setselectedData] = useState<RESONTYPEDATA>();
-  const [selectedSubReason, setSelectedSubReason] = useState<subreason>();
-  const [addiText, setAddiText] = useState<string>("");
-  const theme = useThemeStore();
-  const toast = useToast();
-  const { accessToken } = useAuthStore();
-  const { isGuest } = useGuestStore();
+	const reportData: RESONTYPEDATA[] = [
+		{
+			reason: PublicationReportingReason.Sensitive,
+			subReason: [{ reason: "NSFW" }, { reason: "OFFENSIVE" }],
+		},
+		{
+			reason: PublicationReportingReason.Illegal,
+			subReason: [{ reason: "ANIMAL_ABUSE" }, { reason: "HUMAN_ABUSE" }],
+		},
+		{
+			reason: PublicationReportingReason.Fraud,
+			subReason: [{ reason: "SCAM" }, { reason: "IMPERSONATION" }],
+		},
+	];
 
-  const reportData: RESONTYPEDATA[] = [
-    {
-      reason: PublicationReportingReason.Sensitive,
-      subReason: [{ reason: "NSFW" }, { reason: "OFFENSIVE" }],
-    },
-    {
-      reason: PublicationReportingReason.Illegal,
-      subReason: [{ reason: "ANIMAL_ABUSE" }, { reason: "HUMAN_ABUSE" }],
-    },
-    {
-      reason: PublicationReportingReason.Fraud,
-      subReason: [{ reason: "SCAM" }, { reason: "IMPERSONATION" }],
-    },
-  ];
+	const [activeReason, setActiveReason] = useState<RESONTYPEDATA>(reportData[0]);
+	const [activeSubReason, setActiveSubReason] = useState<string>(activeReason.subReason[0].reason);
+	const [addiText, setAddiText] = useState<string>("");
+	const theme = useThemeStore();
+	const toast = useToast();
+	const { accessToken } = useAuthStore();
+	const { isGuest } = useGuestStore();
+	const reportRef = useRef<BottomSheetMethods>(null);
+	const subReasonRef = useRef<BottomSheetMethods>(null);
 
-  const getReasonType = (type: string) => {
-    if (type === "ILLEGAL") {
-      return "illegalReason";
-    }
-    if (type === "FRAUD") {
-      return "fraudReason";
-    }
-    if (type === "SENSITIVE") {
-      return "sensitiveReason";
-    }
-    return "illegalReason";
-  };
+	const handleReasonChange = React.useCallback((type: RESONTYPEDATA) => {
+		setActiveReason(type);
+	}, []);
 
-  const [createReport] = useReportPublicationMutation({
-    onError: () => {
-      toast.show("Something went wrong!", ToastType.ERROR, true);
-    },
-    onCompleted: () => {
-      toast.show("Thanks for reporting", ToastType.SUCCESS, true);
-    },
-  });
+	const handleSubReasonChange = React.useCallback((subreason: string) => {
+		setActiveSubReason(subreason);
+	}, []);
 
-  const handleReport = async () => {
-    if (!selectedData?.reason || !selectedSubReason?.reason) {
-      toast.show("Please select type and reason", ToastType.ERROR, true);
-      return;
-    }
-    if (isGuest) {
-      toast.show("Please Login", ToastType.ERROR, true);
-      return;
-    }
-    try {
-      createReport({
-        variables: {
-          request: {
-            publicationId: route.params.publicationId,
-            reason: {
-              [getReasonType(selectedData.reason)]: {
-                reason: selectedData.reason,
-                subreason: selectedData.subReason,
-              },
-            },
-            additionalComments: addiText ? addiText : null,
-          },
-        },
-        context: {
-          headers: {
-            "x-access-token": `Bearer ${accessToken}`,
-          },
-        },
-      });
-      TrackAction(PUBLICATION.REPORT);
-    } catch (error) {
-      if (error instanceof Error) {
-        // console.log(error);
-      }
-    } finally {
-      setSelectedSubReason({ reason: "" });
-      setselectedData({ reason: "", subReason: [{ reason: "" }] });
-      setAddiText("");
-    }
-  };
+	const getReasonType = (type: string) => {
+		if (type === "ILLEGAL") {
+			return "illegalReason";
+		}
+		if (type === "FRAUD") {
+			return "fraudReason";
+		}
+		if (type === "SENSITIVE") {
+			return "sensitiveReason";
+		}
+		return "illegalReason";
+	};
 
-  return (
-    <KeyboardAvoidingView style={styles.container} behavior="height">
-      <ScrollView
-        style={{ width: "100%", flex: 1 }}
-        contentContainerStyle={{
-          alignItems: "center",
-        }}
-      >
-        <View style={{ justifyContent: "flex-start", width: "100%" }}>
-          <Heading
-            title="Tell us what's wrong with this post."
-            style={{
-              color: "white",
-              fontWeight: "700",
-              fontSize: 18,
-              alignSelf: "flex-start",
-              paddingHorizontal: 16,
-              marginBottom: 18,
-            }}
-          />
-        </View>
-        <Dropdown
-          label="Select Type"
-          data={reportData}
-          onSelect={setselectedData}
-          width={"90%"}
-        />
-        {selectedData?.reason && (
-          <Dropdown
-            width={"90%"}
-            label="Reason"
-            data={selectedData.subReason}
-            onSelect={setSelectedSubReason}
-          />
-        )}
+	const [createReport] = useReportPublicationMutation({
+		onError: () => {
+			toast.show("Something went wrong!", ToastType.ERROR, true);
+		},
+		onCompleted: () => {
+			toast.show("Thanks for reporting", ToastType.SUCCESS, true);
+		},
+	});
 
-        <View style={styles.inputContainer}>
-          <StyledText title="Additional" style={styles.textStyle} />
-          <TextInput
-            numberOfLines={6}
-            multiline={false}
-            value={addiText}
-            style={styles.input}
-            placeholderTextColor="gray"
-            selectionColor={theme.PRIMARY}
-            onChange={(e) => {
-              e.preventDefault();
-              setAddiText(e.nativeEvent.text);
-            }}
-          />
-        </View>
-      </ScrollView>
-      <View
-        style={[styles.inputContainer, { position: "absolute", bottom: 24 }]}
-      >
-        <Button
-          title="Report now"
-          width={"100%"}
-          py={10}
-          px={16}
-          bg="#DC0000"
-          borderRadius={8}
-          disabled={!selectedData?.reason || !selectedSubReason?.reason}
-          textStyle={{
-            textAlign: "center",
-            fontSize: 16,
-            fontWeight: "600",
-            color: "white",
-          }}
-          onPress={handleReport}
-        />
-      </View>
-    </KeyboardAvoidingView>
-  );
+	const handleReport = async () => {
+		if (!activeReason?.reason || !activeSubReason) {
+			toast.show("Please select type and reason", ToastType.ERROR, true);
+			return;
+		}
+		if (isGuest) {
+			toast.show("Please Login", ToastType.ERROR, true);
+			return;
+		}
+		try {
+			createReport({
+				variables: {
+					request: {
+						publicationId: route.params.publicationId,
+						reason: {
+							[getReasonType(activeReason.reason)]: {
+								reason: activeReason.reason,
+								subreason: activeSubReason,
+							},
+						},
+						additionalComments: addiText ? addiText : null,
+					},
+				},
+				context: {
+					headers: {
+						"x-access-token": `Bearer ${accessToken}`,
+					},
+				},
+			});
+			TrackAction(PUBLICATION.REPORT);
+		} catch (error) {
+			if (error instanceof Error) {
+				console.log(error);
+			}
+		} finally {
+			setAddiText("");
+		}
+	};
+
+	return (
+		<KeyboardAvoidingView style={styles.container} behavior="height">
+			<ScrollView
+				style={{ width: "100%", flex: 1 }}
+				contentContainerStyle={{
+					alignItems: "center",
+				}}
+			>
+				<View style={{ justifyContent: "flex-start", width: "100%" }}>
+					<Heading
+						title="Tell us what's wrong with this post."
+						style={{
+							color: "white",
+							fontWeight: "700",
+							fontSize: 18,
+							alignSelf: "flex-start",
+							paddingHorizontal: 16,
+							marginBottom: 18,
+						}}
+					/>
+				</View>
+
+				<StyledText
+					title={"Select Reason"}
+					style={{
+						color: "white",
+						fontSize: 20,
+						fontWeight: "700",
+						alignSelf: "flex-start",
+						paddingHorizontal: 16,
+					}}
+				/>
+
+				<Pressable
+					style={{
+						paddingHorizontal: 16,
+						paddingVertical: 16,
+						marginHorizontal: 8,
+						borderRadius: 8,
+						backgroundColor: dark_primary,
+						marginVertical: 16,
+						width: "90%",
+					}}
+					onPress={(e) => {
+						reportRef?.current?.snapToIndex(0);
+					}}
+				>
+					<View
+						style={{
+							flexDirection: "row",
+							justifyContent: "space-between",
+							alignItems: "center",
+						}}
+					>
+						<StyledText
+							title={activeReason.reason}
+							style={{
+								color: "white",
+								fontSize: 16,
+								fontWeight: "500",
+								maxWidth: "75%",
+							}}
+						/>
+						<Icon name="arrowForward" size={16} />
+					</View>
+				</Pressable>
+				<StyledText
+					title={"Select Type"}
+					style={{
+						color: "white",
+						fontSize: 20,
+						fontWeight: "700",
+						alignSelf: "flex-start",
+						paddingHorizontal: 16,
+					}}
+				/>
+
+				<Pressable
+					style={{
+						paddingHorizontal: 16,
+						paddingVertical: 16,
+						marginHorizontal: 8,
+						borderRadius: 8,
+						backgroundColor: dark_primary,
+						marginVertical: 16,
+						width: "90%",
+					}}
+					onPress={(e) => {
+						subReasonRef?.current?.snapToIndex(0);
+					}}
+				>
+					<View
+						style={{
+							flexDirection: "row",
+							justifyContent: "space-between",
+							alignItems: "center",
+						}}
+					>
+						<StyledText
+							title={activeSubReason.replace("_", " ")}
+							style={{
+								color: "white",
+								fontSize: 16,
+								fontWeight: "500",
+								maxWidth: "75%",
+							}}
+						/>
+						<Icon name="arrowForward" size={16} />
+					</View>
+				</Pressable>
+				<View style={styles.inputContainer}>
+					<StyledText title="Additional" style={styles.textStyle} />
+					<TextInput
+						numberOfLines={6}
+						multiline={true}
+						value={addiText}
+						style={styles.input}
+						placeholderTextColor="gray"
+						selectionColor={theme.PRIMARY}
+						onChange={(e) => {
+							e.preventDefault();
+							setAddiText(e.nativeEvent.text);
+						}}
+					/>
+				</View>
+			</ScrollView>
+			<View style={[styles.inputContainer, { position: "absolute", bottom: 16 }]}>
+				<Button
+					title="Report now"
+					width={"100%"}
+					py={8}
+					px={16}
+					bg="#DC0000"
+					borderRadius={8}
+					disabled={!activeReason.reason || !activeSubReason}
+					textStyle={{
+						textAlign: "center",
+						fontSize: 16,
+						fontWeight: "600",
+						color: "white",
+					}}
+					onPress={handleReport}
+				/>
+			</View>
+			<ReportTypeSheet
+				reportRef={reportRef}
+				reasonData={reportData}
+				activeReason={activeReason}
+				setActiveReason={handleReasonChange}
+				setActiveSubReason={handleSubReasonChange}
+			/>
+			<ReportSubReasonSheet
+				subReasonRef={subReasonRef}
+				subreasonData={activeReason.subReason}
+				activeSubReason={activeSubReason}
+				setActiveSubReason={handleSubReasonChange}
+			/>
+		</KeyboardAvoidingView>
+	);
 };
+
+function ReportTypeSheet({
+	reportRef,
+	reasonData,
+	activeReason,
+	setActiveReason,
+	setActiveSubReason,
+}: {
+	reportRef: React.RefObject<BottomSheetMethods>;
+	reasonData: RESONTYPEDATA[];
+	activeReason: RESONTYPEDATA;
+	setActiveReason: (reason: RESONTYPEDATA) => void;
+	setActiveSubReason: (subreason: string) => void;
+}) {
+	const theme = useThemeStore();
+	return (
+		<Sheet
+			ref={reportRef}
+			snapPoints={[290]}
+			style={{
+				height: "auto",
+			}}
+			enablePanDownToClose={true}
+			children={
+				<View style={{ padding: 16 }}>
+					<StyledText
+						title={"Select the type of report"}
+						style={{
+							color: "white",
+							fontSize: 18,
+							fontWeight: "500",
+							marginVertical: 8,
+						}}
+					/>
+					<FlatList
+						data={reasonData}
+						renderItem={({ item, index }) => {
+							return (
+								<Pressable
+									style={{
+										flexDirection: "row",
+										alignItems: "center",
+										justifyContent: "space-between",
+									}}
+									onPress={() => {
+										setActiveReason(item);
+										setActiveSubReason(item.subReason[0].reason);
+										reportRef.current?.close();
+									}}
+								>
+									<StyledText
+										title={item.reason}
+										style={{
+											color: "rgba(255,255,255,0.8)",
+											fontSize: 18,
+											fontWeight: "400",
+											marginVertical: 16,
+										}}
+									/>
+									{activeReason.reason === item.reason ? (
+										<View
+											style={{
+												height: "auto",
+												width: "auto",
+												backgroundColor:
+													activeReason.reason === item.reason ? theme.PRIMARY : "black",
+												borderRadius: 50,
+												padding: 4,
+												marginVertical: 16,
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Icon
+												name={"done"}
+												color={activeReason.reason === item.reason ? "black" : "white"}
+												size={18}
+											/>
+										</View>
+									) : (
+										<></>
+									)}
+								</Pressable>
+							);
+						}}
+					/>
+				</View>
+			}
+		/>
+	);
+}
+
+function ReportSubReasonSheet({
+	subReasonRef,
+	subreasonData,
+	activeSubReason,
+	setActiveSubReason,
+}: {
+	subReasonRef: React.RefObject<BottomSheetMethods>;
+	subreasonData: subreason[];
+	activeSubReason: string;
+	setActiveSubReason: (subreason: string) => void;
+}) {
+	const theme = useThemeStore();
+	return (
+		<Sheet
+			ref={subReasonRef}
+			snapPoints={[210]}
+			style={{
+				height: "auto",
+			}}
+			enablePanDownToClose={true}
+			children={
+				<View style={{ padding: 16 }}>
+					<StyledText
+						title={"Select the type of report"}
+						style={{
+							color: "white",
+							fontSize: 18,
+							fontWeight: "500",
+							marginVertical: 8,
+						}}
+					/>
+					<FlatList
+						data={subreasonData}
+						renderItem={({ item, index }) => {
+							return (
+								<Pressable
+									style={{
+										flexDirection: "row",
+										alignItems: "center",
+										justifyContent: "space-between",
+									}}
+									onPress={() => {
+										setActiveSubReason(item.reason);
+										subReasonRef.current?.close();
+									}}
+								>
+									<StyledText
+										title={item.reason.replace("_", " ")}
+										style={{
+											color: "rgba(255,255,255,0.8)",
+											fontSize: 18,
+											fontWeight: "400",
+											marginVertical: 16,
+										}}
+									/>
+									{activeSubReason === item.reason ? (
+										<View
+											style={{
+												height: "auto",
+												width: "auto",
+												backgroundColor: activeSubReason === item.reason ? theme.PRIMARY : "black",
+												borderRadius: 50,
+												padding: 4,
+												marginVertical: 16,
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<Icon
+												name={"done"}
+												color={activeSubReason === item.reason ? "black" : "white"}
+												size={18}
+											/>
+										</View>
+									) : (
+										<></>
+									)}
+								</Pressable>
+							);
+						}}
+					/>
+				</View>
+			}
+		/>
+	);
+}
 
 export default ReportPublication;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "black",
-    alignItems: "center",
-    paddingHorizontal: 1,
-    paddingVertical: 16,
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "700",
-    marginBottom: 4,
-    fontSize: 16,
-  },
-  inputContainer: {
-    width: "90%",
-    marginVertical: 12,
-  },
-  input: {
-    backgroundColor: dark_primary,
-    color: "white",
-    borderWidth: 1,
-    marginTop: 18,
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-    borderRadius: 8,
-  },
+	container: {
+		flex: 1,
+		backgroundColor: "black",
+		alignItems: "center",
+		paddingHorizontal: 2,
+		paddingVertical: 16,
+	},
+	textStyle: {
+		color: "white",
+		fontWeight: "700",
+		marginBottom: 4,
+		fontSize: 16,
+	},
+	inputContainer: {
+		width: "90%",
+		marginVertical: 12,
+	},
+	input: {
+		backgroundColor: dark_primary,
+		color: "white",
+		borderWidth: 1,
+		marginTop: 18,
+		paddingHorizontal: 16,
+		paddingVertical: 8,
+		borderRadius: 8,
+	},
 });
