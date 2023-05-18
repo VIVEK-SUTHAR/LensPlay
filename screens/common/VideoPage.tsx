@@ -340,7 +340,7 @@ const VideoPage = ({
               backgroundStyle={{
                 backgroundColor: "#1d1d1d",
               }}
-              snapPoints={["50%"]}
+              snapPoints={[390]}
               children={
                 <View
                   style={{
@@ -395,7 +395,7 @@ const VideoPage = ({
               backgroundStyle={{
                 backgroundColor: "#1d1d1d",
               }}
-              snapPoints={["50%"]}
+              snapPoints={[390]}
               children={
                 <View
                   style={{
@@ -452,7 +452,7 @@ const VideoPage = ({
                 padding: 16,
                 // borderBottomWidth: 1,
               }}
-              snapPoints={["70%", "95%"]}
+              snapPoints={[550, 740]}
               children={
                 <BottomSheetScrollView>
                   <View style={{ paddingHorizontal: 16 }}>

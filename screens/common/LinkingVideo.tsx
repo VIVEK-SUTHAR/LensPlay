@@ -508,7 +508,7 @@ const LinkingVideo = ({
         backgroundStyle={{
           backgroundColor: "#1d1d1d",
         }}
-        snapPoints={["50%"]}
+        snapPoints={[390]}
         children={
           <View
             style={{
@@ -559,7 +559,7 @@ const LinkingVideo = ({
         backgroundStyle={{
           backgroundColor: "#1d1d1d",
         }}
-        snapPoints={["50%"]}
+        snapPoints={[390]}
         children={
           <View
             style={{
@@ -608,7 +608,7 @@ const LinkingVideo = ({
         backgroundStyle={{
           backgroundColor: "#1d1d1d",
         }}
-        snapPoints={["70%", "95%"]}
+        snapPoints={[550, 740]}
         children={
           <View style={{ paddingHorizontal: 16 }}>
             <ScrollView>

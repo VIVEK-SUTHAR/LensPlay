@@ -180,7 +180,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
       <Sheet
         ref={logoutref}
         index={-1}
-        snapPoints={["35%"]}
+        snapPoints={[230]}
         bottomInset={32}
         enablePanDownToClose
         detached={true}
@@ -255,7 +255,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
         backgroundStyle={{
           backgroundColor: "rgba(0,0,0,0.8)",
         }}
-        snapPoints={["80%"]}
+        snapPoints={[550]}
         children={<ProfileSheet />}
       />
     </SafeAreaView>

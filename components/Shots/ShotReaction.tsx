@@ -149,7 +149,7 @@ function ShotReaction({ item }: { item: ShotsPublication }) {
         backgroundStyle={{
           backgroundColor: "#1d1d1d",
         }}
-        snapPoints={["50%"]}
+        snapPoints={[390]}
         children={
           <View style={{ paddingHorizontal: 8 }}>
             <ScrollView

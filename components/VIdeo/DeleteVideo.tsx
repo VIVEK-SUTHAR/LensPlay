@@ -33,7 +33,7 @@ export default function DeleteVideo({ sheetRef, pubId }: DeleteVideoProps) {
   return (
     <Sheet
       ref={sheetRef}
-      snapPoints={["50%"]}
+      snapPoints={[390]}
       enablePanDownToClose={true}
       enableOverDrag={true}
       bottomInset={32}

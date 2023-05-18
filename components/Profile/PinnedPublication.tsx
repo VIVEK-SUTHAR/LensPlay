@@ -98,7 +98,7 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
   return (
     <Sheet
       ref={sheetRef}
-      snapPoints={["15%"]}
+      snapPoints={[100]}
       enablePanDownToClose={true}
       enableOverDrag={true}
       bottomInset={32}

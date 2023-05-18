@@ -115,7 +115,7 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
         backgroundStyle={{
           backgroundColor: "#1d1d1d",
         }}
-        snapPoints={["50%"]}
+        snapPoints={[390]}
         children={<DiscriptionSheet item={item} />}
       />
     </>

@@ -131,7 +131,7 @@ function CommentModuleSheet({
   return (
     <Sheet
       ref={referenceModuleRef}
-      snapPoints={["50%"]}
+      snapPoints={[390]}
       style={{
         height: "auto",
       }}

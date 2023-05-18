@@ -132,7 +132,7 @@ function CollectModuleSheet({ collectModuleRef }: CollectModuleSheetProp) {
   return (
     <Sheet
       ref={collectModuleRef}
-      snapPoints={["50%"]}
+      snapPoints={[390]}
       containerStyle={{
         height: "auto",
       }}

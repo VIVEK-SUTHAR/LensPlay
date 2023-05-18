@@ -72,7 +72,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         backgroundStyle={{
           backgroundColor: "#1d1d1d",
         }}
-        snapPoints={["40%"]}
+        snapPoints={[320]}
         children={
           <ScrollView>
             <ConnectWalletSheet

@@ -275,11 +275,14 @@ export const VideoActionSheet = ({ sheetRef, pubId, route }: SheetProps) => {
 
   const getSnapPoint = React.useCallback(() => {
     if (!route.params.owner) {
-      return ["14%"];
+
+      return [90];
     } else if (routename.includes("collects") || routename.includes("mirror")) {
+
       return [150];
     } else {
-      return ["34%"];
+      
+      return [220];
     }
   }, []);
 

@@ -395,7 +395,7 @@ export default function BottomTabNavigator({
         backgroundStyle={{
           backgroundColor: "#1d1d1d",
         }}
-        snapPoints={["25%"]}
+        snapPoints={[190]}
         children={
           <View
             style={{
@@ -487,7 +487,7 @@ export default function BottomTabNavigator({
         backgroundStyle={{
           backgroundColor: "#1d1d1d",
         }}
-        snapPoints={["25%"]}
+        snapPoints={[190]}
         children={
           <View
             style={{
