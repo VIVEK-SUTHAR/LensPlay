@@ -12,7 +12,7 @@ export default function Tabs({ children }: { children: ReactNode }) {
           fontSize: 16,
           fontWeight: "600",
           textTransform: "capitalize",
-          fontFamily: "OpenSans_Bold",
+          fontFamily: "OpenSans_SemiBold",
         },
         tabBarItemStyle: {
           width: "auto",
