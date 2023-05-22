@@ -1,14 +1,13 @@
-import React, { useState } from "react";
-import { TouchableWithoutFeedback, View } from "react-native";
-import { createFreeSubscribe } from "../../api";
+import React, { useCallback, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { LENSPLAY_SITE } from "../../constants";
 import { useGuestStore } from "../../store/GuestStore";
-import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
-import { ToastType } from "../../types/Store";
+import { useAuthStore, useToast } from "../../store/Store";
+import { useProxyActionMutation } from "../../types/generated";
 import Avatar from "../UI/Avatar";
 import Button from "../UI/Button";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
-import { useNavigation } from "@react-navigation/native";
 
 type VideoCreatorProps = {
   avatarLink: string;
@@ -18,10 +17,9 @@ type VideoCreatorProps = {
   showSubscribeButton?: boolean;
   showSubscribers?: boolean;
   subscribersCount?: number;
-  ownedBy: string;
 };
 
-const VideoCreator = (props: VideoCreatorProps) => {
+const VideoCreator: React.FC<VideoCreatorProps> = React.memo((props) => {
   const {
     profileId,
     uploadedBy,
@@ -30,20 +28,19 @@ const VideoCreator = (props: VideoCreatorProps) => {
     showSubscribers = false,
     subscribersCount = 0,
     showSubscribeButton = true,
-    ownedBy,
   } = props;
 
   const [following, setFollowing] = useState<boolean>(alreadyFollowing);
 
   const { accessToken } = useAuthStore();
-  const { PRIMARY } = useThemeStore();
-  const toast = useToast();
   const { isGuest } = useGuestStore();
-  const navigation = useNavigation();
+  const toast = useToast();
 
-  const followCreator = React.useCallback(async () => {
+  const [freeFollow] = useProxyActionMutation();
+
+  const followCreator = useCallback(() => {
     if (isGuest) {
-      toast.error("Please Login");
+      toast.error("Please Login to follow");
       return;
     }
     if (following) {
@@ -51,83 +48,98 @@ const VideoCreator = (props: VideoCreatorProps) => {
       return;
     }
     try {
-      const data = await createFreeSubscribe(profileId, accessToken);
-      if (data?.data?.proxyAction !== null) {
-        toast.success("Subscribed succesfully");
-        setFollowing(true);
-      }
+      toast.success("Followed");
+      setFollowing(true);
+      freeFollow({
+        variables: {
+          request: {
+            follow: {
+              freeFollow: {
+                profileId: profileId,
+              },
+            },
+          },
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${accessToken}`,
+            origin: LENSPLAY_SITE,
+          },
+        },
+      });
     } catch (error) {
       if (error instanceof Error) {
+        toast.error("Failed to follow...");
+        setFollowing(false);
+        // Handle errors like follow module set
+        // Any one take
       }
     }
   }, []);
 
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        navigation.navigate("Channel", {
-          profileId: profileId,
-          isFollowdByMe: alreadyFollowing,
-          name: uploadedBy,
-          ethAddress: ownedBy,
-        });
-      }}
-    >
-      <View
-        style={{
-          width: "100%",
-          flexDirection: "row",
-          alignItems: "center",
-          paddingVertical: 4,
-          justifyContent: "space-between",
-          marginTop: 16,
-        }}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Avatar src={avatarLink} width={40} height={40} />
-          <View style={{ marginHorizontal: 8 }}>
-            <Heading
-              title={uploadedBy}
-              numberOfLines={1}
-              style={{
-                color: "white",
-                fontSize: 16,
-                fontWeight: "500",
-                maxWidth: 160,
-              }}
-            />
-            <StyledText
-              title={
-                showSubscribers
-                  ? `${subscribersCount} Subscribers`
-                  : `@${uploadedBy}`
-              }
-              style={{
-                color: "gray",
-                fontSize: 12,
-                fontWeight: "500",
-              }}
-            />
-          </View>
-        </View>
-        {Boolean(showSubscribeButton) && (
-          <Button
-            title={following ? "Unsubscribe" : "Subscribe"}
-            width={"auto"}
-            px={24}
-            py={8}
-            type={"filled"}
-            bg={"white"}
-            textStyle={{
-              fontSize: 14,
-              fontWeight: "600",
-            }}
-            onPress={followCreator}
+    <View style={styles.container}>
+      <View style={styles.contentContainer}>
+        <Avatar src={avatarLink} width={40} height={40} />
+        <View style={styles.textContainer}>
+          <Heading title={uploadedBy} style={styles.heading} />
+          <StyledText
+            title={
+              showSubscribers
+                ? `${subscribersCount} Subscribers`
+                : `@${uploadedBy}`
+            }
+            style={styles.subtext}
           />
-        )}
+        </View>
       </View>
-    </TouchableWithoutFeedback>
+      {Boolean(showSubscribeButton) && (
+        <Button
+          title={following ? "Unsubscribe" : "Subscribe"}
+          width={"auto"}
+          px={24}
+          py={8}
+          type={"filled"}
+          bg={"white"}
+          textStyle={styles.buttonText}
+          onPress={followCreator}
+        />
+      )}
+    </View>
   );
-};
+});
 
-export default React.memo(VideoCreator);
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 4,
+    justifyContent: "space-between",
+    marginTop: 16,
+  },
+  contentContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  textContainer: {
+    marginHorizontal: 8,
+    maxWidth: 185,
+  },
+  heading: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  subtext: {
+    color: "gray",
+    fontSize: 12,
+    fontWeight: "500",
+  },
+  buttonText: {
+    fontSize: 14,
+    fontWeight: "600",
+  },
+});
+
+export default VideoCreator;

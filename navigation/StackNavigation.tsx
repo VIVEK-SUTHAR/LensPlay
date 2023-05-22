@@ -32,6 +32,7 @@ import CreateProfile from "../screens/Auth/CreateProfile";
 import useVideoURLStore from "../store/videoURL";
 import InviteCode from "../screens/common/InviteCode";
 import Invite from "../screens/common/Invite";
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
@@ -79,7 +80,7 @@ export default function StackNavigation() {
           name="InviteCode"
           component={InviteCode}
           options={{
-            animation: "fade_from_bottom",
+            animation: "default",
             headerShown: false,
           }}
         />
@@ -163,7 +164,7 @@ export default function StackNavigation() {
         options={{
           headerShown: false,
           presentation: "card",
-          animation: "slide_from_right",
+          animation: "default",
         }}
       />
       <Stack.Screen
@@ -179,7 +180,7 @@ export default function StackNavigation() {
         name="Channel"
         component={Channel}
         options={{
-          animation: "slide_from_left",
+          animation: "default",
           headerShown: false,
           headerTintColor: theme.PRIMARY.toString(),
         }}
@@ -243,7 +244,7 @@ export default function StackNavigation() {
         name="Settings"
         component={Settings}
         options={{
-          animation: "slide_from_right",
+          animation: "slide_from_bottom",
           headerShown: true,
           headerTintColor: theme.PRIMARY,
           headerTitle: "Settings",

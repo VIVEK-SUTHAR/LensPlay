@@ -1,143 +1,96 @@
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "expo-image";
 import * as React from "react";
-import { TouchableWithoutFeedback, View } from "react-native";
+import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import { useActivePublication } from "../store/Store";
-import {
-  FeedItemRoot,
-  Maybe,
-  MetadataAttributeOutput,
-  Mirror,
-  Post,
-} from "../types/generated";
+import { FeedItemRoot, MetadataOutput, Mirror, Post } from "../types/generated";
 import formatTime from "../utils/formatTime";
 import getDifference from "../utils/getDifference";
 import getImageProxyURL from "../utils/getImageProxyURL";
 import getIPFSLink from "../utils/getIPFSLink";
 import getPlaceHolderImage from "../utils/getPlaceHolder";
 import getRawurl from "../utils/getRawUrl";
-import getLivePeerURL from "../utils/video/getLivePeerURL";
+import getVideoDuration from "../utils/getVideoDuration";
 import Avatar from "./UI/Avatar";
 import Heading from "./UI/Heading";
 import StyledText from "./UI/StyledText";
 
-type videoPageProp = {
+type VideoCardProp = {
   publication: FeedItemRoot | Mirror | Post;
   id: string;
   height?: number | string;
   width?: number | string;
 };
 
-const VideoCard = ({
+const VideoCard: React.FC<VideoCardProp> = ({
   width = "auto",
   height = 200,
   publication,
-}: videoPageProp) => {
-  const [videoTime, setVideoTime] = React.useState<Maybe<string> | undefined>();
+}) => {
   const { setActivePublication } = useActivePublication();
+
   const navigation = useNavigation();
-  let playBackurl = publication?.metadata?.media[0]?.original?.url;
-  React.useEffect(() => {
-    publication?.metadata?.attributes?.filter(
-      (item: MetadataAttributeOutput) => {
-        if (item?.traitType === "durationInSeconds") {
-          setVideoTime(item?.value);
-        }
-      }
-    );
-    const assetId = publication?.metadata?.attributes?.filter((item) => {
-      if (item.traitType === "assetId") {
-        getLivePeerURL(item?.value).then((res) => {
-          playBackurl = res;
-        });
-      }
+
+  let playBackurl = React.useMemo(
+    () => publication?.metadata?.media[0]?.original?.url,
+    []
+  );
+  const navigateToVideoPage = React.useCallback(() => {
+    navigation.navigate("VideoPage", {
+      playBackurl: playBackurl,
     });
+    setActivePublication(publication);
   }, []);
 
+  const navigateToUserChannel = React.useCallback(() => {
+    navigation.navigate("Channel", {
+      profileId: publication?.profile?.id,
+      isFollowdByMe: publication?.profile?.isFollowedByMe,
+      name: publication?.profile?.name || publication?.profile?.handle,
+      ethAddress: publication?.profile?.ownedBy,
+    });
+    setActivePublication(publication);
+  }, []);
+
+  const coverImage = React.useMemo(
+    () =>
+      getImageProxyURL({
+        formattedLink: getIPFSLink(getRawurl(publication?.metadata?.cover)),
+      }),
+    []
+  );
+
   return (
-    <View
-      style={{
-        margin: 10,
-        borderRadius: 10,
-        width: width,
-      }}
-    >
+    <View style={[styles.videoCardContainer, { width: width }]}>
       <View style={{ height: height }}>
-        <TouchableWithoutFeedback
-          onPress={() => {
-            setActivePublication(publication);
-            navigation.navigate("VideoPage", {
-              playBackurl: playBackurl,
-            });
-          }}
-        >
+        <TouchableWithoutFeedback onPress={navigateToVideoPage}>
           <Image
             placeholder={getPlaceHolderImage()}
             contentFit="cover"
             transition={500}
             source={{
-              uri: getImageProxyURL({
-                formattedLink: getIPFSLink(
-                  getRawurl(publication?.metadata?.cover)
-                ),
-              }),
+              uri: coverImage,
             }}
-            style={{
-              height: "100%",
-              width: "100%",
-              borderRadius: 10,
-              resizeMode: "cover",
-            }}
+            style={styles.coverImage}
           />
         </TouchableWithoutFeedback>
-        {videoTime?.length ? (
-          <View
-            style={{
-              position: "absolute",
-              bottom: 8,
-              right: 8,
-              width: "auto",
-              paddingHorizontal: 4,
-              paddingVertical: 2,
-              height: "auto",
-              backgroundColor: "rgba(0,0,0,0.6)",
-              borderRadius: 4,
-            }}
-          >
+        {getVideoDuration(publication.metadata) && (
+          <View style={styles.videoDurationBox}>
             <StyledText
-              title={formatTime(videoTime)}
+              title={formatTime(getVideoDuration(publication.metadata))}
               style={{ color: "white", fontSize: 12 }}
             ></StyledText>
           </View>
-        ) : (
-          <></>
         )}
       </View>
-      <TouchableWithoutFeedback
-        onPress={() => {
-          setActivePublication(publication);
-          navigation.navigate("Channel", {
-            profileId: publication?.profile?.id,
-            isFollowdByMe: publication?.profile?.isFollowedByMe,
-            name: publication?.profile?.name || publication?.profile?.handle,
-            ethAddress: publication?.profile?.ownedBy,
-          });
-        }}
-      >
-        <View
-          style={{
-            paddingVertical: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+      <TouchableWithoutFeedback onPress={navigateToUserChannel}>
+        <View style={styles.videoTitleContainer}>
           <Avatar
             src={getRawurl(publication?.profile?.picture)}
             height={40}
             width={40}
           />
-          <View style={{ flex: 0.95 }}>
+          <View style={styles.videoTitle}>
             <Heading
               title={publication?.metadata?.name}
               style={{ fontSize: 16, fontWeight: "600", color: "white" }}
@@ -157,4 +110,37 @@ const VideoCard = ({
   );
 };
 
-export default VideoCard;
+export default React.memo(VideoCard);
+
+const styles = StyleSheet.create({
+  videoCardContainer: {
+    margin: 10,
+    borderRadius: 10,
+  },
+  coverImage: {
+    height: "100%",
+    width: "100%",
+    borderRadius: 10,
+    resizeMode: "cover",
+  },
+  videoDurationBox: {
+    position: "absolute",
+    bottom: 8,
+    right: 8,
+    width: "auto",
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+    height: "auto",
+    backgroundColor: "rgba(0,0,0,0.6)",
+    borderRadius: 4,
+  },
+  videoTitleContainer: {
+    paddingVertical: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  videoTitle: {
+    flex: 0.95,
+  },
+});

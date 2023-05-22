@@ -1,18 +1,22 @@
 import React, { useState } from "react";
 import { Pressable, TextInput, View } from "react-native";
-import { black } from "../../constants/Colors";
+import { LENSPLAY_SITE } from "../../constants";
 import { useGuestStore } from "../../store/GuestStore";
 import {
+  useActivePublication,
   useAuthStore,
-  useOptimisticStore,
   useProfile,
   useThemeStore,
   useToast,
 } from "../../store/Store";
+import {
+  useCreateCommentViaDispatcherMutation,
+  useCreateDataAvailabilityCommentViaDispatcherMutation,
+} from "../../types/generated";
 import { ToastType } from "../../types/Store";
-import { useCreateCommentViaDispatcherMutation } from "../../types/generated";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
+import Logger from "../../utils/logger";
 import uploadMetaDataToArweave from "../../utils/uploadMetaToArweave";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
@@ -22,8 +26,6 @@ type CommentInputProps = {
 };
 
 const CommentInput = ({ publicationId }: CommentInputProps) => {
-  const { setOptimitisticComment } = useOptimisticStore();
-
   const [commentText, setCommentText] = useState<string>("");
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
@@ -32,15 +34,29 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
   const { accessToken } = useAuthStore();
   const { PRIMARY } = useThemeStore();
   const { isGuest } = useGuestStore();
+  const { activePublication } = useActivePublication();
+
+  Logger.Warn("isDA Video", activePublication?.isDataAvailability);
 
   const [createComment] = useCreateCommentViaDispatcherMutation({
-    onError: () => {
+    onCompleted: (data) => {
+      Logger.Success("Done", data);
+    },
+    onError: (errr) => {
+      Logger.Error("Error in commentiing", errr);
       toast.error("Something went wrong");
     },
-    context: {
-      headers: {
-        "x-access-token": `Bearer ${accessToken}`,
-      },
+  });
+
+  const [
+    createDataAvaibalityComment,
+  ] = useCreateDataAvailabilityCommentViaDispatcherMutation({
+    onCompleted: (data) => {
+      Logger.Success("DA Comment published", data);
+      toast.success("Comment submitted!");
+    },
+    onError: (err, cliOpt) => {
+      Logger.Error("Error in DA Comment", err, "\nClient Option", cliOpt);
     },
   });
 
@@ -53,16 +69,35 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
       toast.show("Please type something", ToastType.ERROR, true);
       return;
     }
+
+    const isDAPublication = activePublication?.isDataAvailability;
+
+    if (isDAPublication) {
+      const contenturi = await uploadMetaDataToArweave(
+        commentText,
+        currentProfile?.handle
+      );
+      createDataAvaibalityComment({
+        variables: {
+          request: {
+            commentOn: publicationId,
+            contentURI: contenturi,
+            from: currentProfile?.id,
+          },
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${accessToken}`,
+            origin: LENSPLAY_SITE,
+          },
+        },
+      });
+      return;
+    }
     try {
       toast.success("Comment submitted!");
       setCommentText("");
       setIsFocused(false);
-      setOptimitisticComment({
-        commentText: commentText,
-        handle: currentProfile?.handle,
-        isIndexing: true,
-        username: currentProfile?.name,
-      });
       const contenturi = await uploadMetaDataToArweave(
         commentText,
         currentProfile?.handle
@@ -78,6 +113,12 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
             },
           },
         },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${accessToken}`,
+            origin: LENSPLAY_SITE,
+          },
+        },
       });
     } catch (error) {
       setCommentText("");
@@ -88,7 +129,7 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
   return (
     <View
       style={{
-        backgroundColor: black[600],
+        backgroundColor: "#1A1A1A",
         width: "100%",
         height: 60,
         flexDirection: "row",

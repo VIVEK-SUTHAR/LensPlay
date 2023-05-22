@@ -1,24 +1,13 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
-import cursorBasedPagination from "./curserBasedPagination";
+import { ApolloClient, from, HttpLink } from "@apollo/client";
+import cache from "./cache";
+
+const httpLink = new HttpLink({
+  uri: "https://api.lens.dev",
+  fetch,
+});
 
 const client = new ApolloClient({
-  uri: "https://api-mumbai.lens.dev",
-  cache: new InMemoryCache({
-    typePolicies: {
-      Query: {
-        fields: {
-          feed: cursorBasedPagination(["request", ["profileId", "metadata"]]),
-          explorePublications: cursorBasedPagination([
-            "request",
-            ["sortCriteria", "noRandomize", "profileId", "metadata"],
-          ]),
-          notifications: cursorBasedPagination([
-            "request",
-            ["profileId", "notificationTypes"],
-          ]),
-        },
-      },
-    },
-  }),
+  link: from([httpLink]),
+  cache: cache,
 });
 export { client };

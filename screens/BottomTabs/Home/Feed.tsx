@@ -31,6 +31,9 @@ import {
   useFeedQuery,
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
+import useInviteCodes from "../../../hooks/useInviteCodes";
+import { useInviteStore } from "../../../store/InviteStore";
+import Logger from "../../../utils/logger";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -42,14 +45,14 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 
   ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
 
-  const QueryRequest: FeedRequest = {
+  const QueryRequest = {
     profileId: currentProfile?.id,
+    limit: 20,
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
-    feedEventItemTypes: [FeedEventItemType.Post, FeedEventItemType.Mirror],
+    feedEventItemTypes: [FeedEventItemType.Post],
     sources: ["lensplay", "lenstube"],
-    limit: 10,
   };
 
   const { data: Feeddata, error, loading, refetch, fetchMore } = useFeedQuery({
@@ -59,6 +62,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
         profileId: currentProfile?.id,
       },
     },
+    fetchPolicy: "network-only",
     context: {
       headers: {
         "x-access-token": `Bearer ${accessToken}`,
@@ -103,8 +107,8 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
     fetchMore({
       variables: {
         request: {
-          cursor: pageInfo?.next,
           ...QueryRequest,
+          cursor: pageInfo?.next,
         },
       },
     }).catch((err) => {});
@@ -156,7 +160,8 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   );
 
   if (isGuest) return <PleaseLogin />;
-  if (error)
+  if (error) {
+    Logger.Error("e", error);
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView
@@ -171,7 +176,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
         </ScrollView>
       </SafeAreaView>
     );
-
+  }
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={"black"} />
@@ -184,6 +189,8 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
           getItemLayout={getItemLayout}
           initialNumToRender={3}
           maxToRenderPerBatch={5}
+          removeClippedSubviews={true}
+          windowSize={15}
           refreshControl={_RefreshControl}
           ListFooterComponent={<MoreLoader />}
           onEndReachedThreshold={0.5}
