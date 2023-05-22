@@ -134,7 +134,7 @@ export default function Trending({
 
   const keyExtractor = (item: Explore) => item.id.toString();
 
-  const ITEM_HEIGHT = 200;
+  const ITEM_HEIGHT = 280;
 
   const getItemLayout = (_: any, index: number) => {
     return {
