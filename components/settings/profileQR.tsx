@@ -41,6 +41,7 @@ function ProfileQR({ QRCodeRef }: { QRCodeRef: any }) {
             color: "white",
             fontSize: 20,
             fontWeight: "600",
+            marginTop: 16,
           }}
         />
         <StyledText
