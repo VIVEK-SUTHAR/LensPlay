@@ -11,7 +11,12 @@ interface SubHeadingProps {
 
 SplashScreen.preventAutoHideAsync();
 
-const StyledText: FC<SubHeadingProps> = ({ title, style, onPress,...rest }) => {
+const StyledText: FC<SubHeadingProps> = ({
+  title,
+  style,
+  onPress,
+  ...rest
+}) => {
   const [fontsLoaded] = useFonts({
     OpenSans_Regular: require("../../assets/fonts/OpenSans-Regular.ttf"),
     OpenSans_Medium: require("../../assets/fonts/OpenSans-Medium.ttf"),
@@ -45,8 +50,14 @@ const StyledText: FC<SubHeadingProps> = ({ title, style, onPress,...rest }) => {
   var newStyle = Object.assign({}, style, {
     fontFamily: getFontFamily(parseInt(style?.fontWeight)),
   });
+
   return (
-    <Text style={newStyle} {...rest} onLayout={onLayoutRootView} onPress={onPress}>
+    <Text
+      style={newStyle}
+      {...rest}
+      onLayout={onLayoutRootView}
+      onPress={onPress}
+    >
       {title}
     </Text>
   );

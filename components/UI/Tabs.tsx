@@ -1,6 +1,6 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import React, { ReactNode } from "react";
-import { primary } from "../../constants/Colors";
+import { black, primary } from "../../constants/Colors";
 
 export const Tab = createMaterialTopTabNavigator();
 
@@ -9,9 +9,10 @@ export default function Tabs({ children }: { children: ReactNode }) {
     <Tab.Navigator
       screenOptions={{
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: "500",
+          fontSize: 16,
+          fontWeight: "600",
           textTransform: "capitalize",
+          fontFamily: "OpenSans_Bold",
         },
         tabBarItemStyle: {
           width: "auto",
@@ -23,12 +24,13 @@ export default function Tabs({ children }: { children: ReactNode }) {
         },
         tabBarActiveTintColor: "white",
         tabBarInactiveTintColor: "gray",
-        tabBarStyle: { backgroundColor: "black" },
+        tabBarStyle: {
+          backgroundColor: "black",
+          borderBottomWidth: 1,
+          borderBottomColor: black[300],
+        },
         tabBarIndicatorStyle: {
-          backgroundColor: primary,
-          height: 3,
-          borderTopLeftRadius: 4,
-          borderTopRightRadius: 4,
+          display: "none",
         },
       }}
     >
