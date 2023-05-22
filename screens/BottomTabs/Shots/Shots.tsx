@@ -1,6 +1,6 @@
 import * as ScreenOrientation from "expo-screen-orientation";
 import React, { useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { Platform, View, useWindowDimensions } from "react-native";
 import SwiperFlatList from "react-native-swiper-flatlist";
 import SingleShot from "../../../components/Shots/SingleShot";
 import { useGuestStore } from "../../../store/GuestStore";
@@ -72,7 +72,7 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
   }) => {
     if (!item.hidden) {
       return (
-        <View style={{ height: height }}>
+        <View style={{ height: Platform.OS === "ios" ? "auto" : height }}>
           <SingleShot
             item={item}
             key={item.id}
@@ -105,8 +105,9 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
     <View
       style={{
         backgroundColor: "black",
-        height: height,
-        width: width,
+        height: Platform.OS === "ios" ? "auto" : height,
+        width: Platform.OS === "ios" ? "auto" : height,
+        flex: Platform.OS === "ios" ? 1 : "auto",
       }}
     >
       <SwiperFlatList

@@ -26,13 +26,10 @@ import {
   FeedEventItemType,
   FeedItem,
   FeedItemRoot,
-  FeedRequest,
   PublicationMainFocus,
   useFeedQuery,
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
-import useInviteCodes from "../../../hooks/useInviteCodes";
-import { useInviteStore } from "../../../store/InviteStore";
 import Logger from "../../../utils/logger";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
@@ -47,7 +44,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 
   const QueryRequest = {
     profileId: currentProfile?.id,
-    limit: 20,
+    limit: 10,
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
@@ -187,13 +184,12 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
           data={Feeddata?.feed.items as FeedItem[]}
           keyExtractor={keyExtractor}
           getItemLayout={getItemLayout}
-          initialNumToRender={3}
-          maxToRenderPerBatch={5}
           removeClippedSubviews={true}
           windowSize={15}
           refreshControl={_RefreshControl}
           ListFooterComponent={<MoreLoader />}
-          onEndReachedThreshold={0.5}
+          initialNumToRender={7}
+          onEndReachedThreshold={0.7}
           onEndReached={onEndCallBack}
           renderItem={renderItem}
         />
