@@ -87,7 +87,18 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 
   const keyExtractor = (item: FeedItem) => item?.root?.id?.toString();
 
-  const ITEM_HEIGHT = 200;
+  /**
+   * This ITEM_HEIGHT refers to The height of rendering Component.
+   * By specifying the height upfront, we are eliminating
+   * the runtime calculation of item heights which is done By FlatList at runtime,
+   * The more this value is accurate, the more optimizations
+   * To Get Correct value,
+   * 1).Open Dev-Tools
+   * 2).Click on toggle Element Inspector
+   * 3).Select the FlatList renderItem components
+   * 4).See the value in Box-Model and set it accordingly
+   */
+  const ITEM_HEIGHT = 280;
 
   const getItemLayout = (_: any, index: number) => {
     return {
@@ -97,7 +108,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
     };
   };
 
-  const onEndCallBack = () => {
+  const onEndCallBack = React.useCallback(() => {
     if (!pageInfo?.next) {
       return;
     }
@@ -109,7 +120,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
         },
       },
     }).catch((err) => {});
-  };
+  }, [pageInfo?.next]);
 
   const renderItem = ({ item }: { item: FeedItem }) => {
     if (!item.root.hidden) {
@@ -185,7 +196,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
           keyExtractor={keyExtractor}
           getItemLayout={getItemLayout}
           removeClippedSubviews={true}
-          windowSize={15}
+          windowSize={20}
           refreshControl={_RefreshControl}
           ListFooterComponent={<MoreLoader />}
           initialNumToRender={7}
