@@ -5,7 +5,6 @@ import * as ImagePicker from "expo-image-picker";
 import * as Linking from "expo-linking";
 import React, { useRef } from "react";
 import { AppState, Dimensions, Pressable, View } from "react-native";
-import { Camera } from "react-native-vision-camera";
 import Sheet from "../components/Bottom";
 import Icon from "../components/Icon";
 import Avatar from "../components/UI/Avatar";
@@ -244,7 +243,6 @@ export default function BottomTabNavigator({
           name="Home"
           component={Feed}
           options={{
-            unmountOnBlur: true,
             tabBarLabel: "",
             tabBarIcon: ({ focused }) => {
               return (
@@ -442,16 +440,16 @@ export default function BottomTabNavigator({
                 paddingVertical: 8,
               }}
               onPress={async () => {
-                const cameraPermission = await Camera.requestCameraPermission();
-                const microphonePermission = await Camera.requestMicrophonePermission();
-                if (
-                  cameraPermission === "authorized" &&
-                  microphonePermission === "authorized"
-                ) {
-                  navigation.push("UploadShots");
-                } else {
-                  uploadRef.current?.close();
-                }
+                //   const cameraPermission = await Camera.requestCameraPermission();
+                //   const microphonePermission = await Camera.requestMicrophonePermission();
+                //   if (
+                //     cameraPermission === "authorized" &&
+                //     microphonePermission === "authorized"
+                //   ) {
+                //     navigation.push("UploadShots");
+                //   } else {
+                //     uploadRef.current?.close();
+                //   }
               }}
             >
               <View

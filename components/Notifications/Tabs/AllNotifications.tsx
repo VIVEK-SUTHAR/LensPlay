@@ -52,7 +52,6 @@ function AllNotifications() {
     variables: {
       request: QueryRequest,
     },
-    pollInterval: 100,
     fetchPolicy: "network-only",
     context: {
       headers: {

@@ -100,7 +100,6 @@ const config: ExpoConfig = {
     resizeMode: "contain",
     backgroundColor: "#000000",
   },
-  backgroundColor: "#000000",
   updates: {
     fallbackToCacheTimeout: 0,
     url: "https://u.expo.dev/3b494bf0-e3fd-4a2c-b484-931ab7394de1",
@@ -160,7 +159,6 @@ const config: ExpoConfig = {
         category: ["BROWSABLE", "DEFAULT"],
       },
     ],
-    
   },
   web: {
     favicon: "./assets/images/favicon.png",
@@ -182,14 +180,6 @@ const config: ExpoConfig = {
       "expo-camera",
       {
         cameraPermission: "Allow LensPlay to access your camera.",
-      },
-    ],
-    [
-      "react-native-vision-camera",
-      {
-        cameraPermissionText: "LensPlay needs access to your Camera.",
-        enableMicrophonePermission: true,
-        microphonePermissionText: "LensPlay needs access to your Microphone.",
       },
     ],
     [

@@ -31,21 +31,6 @@ const NotificationCard = ({ notification }: NotificationCardProps) => {
         return <MentionNotification notification={notification} />;
     }
   };
-  return (
-    <Pressable
-      android_ripple={{
-        borderless: false,
-        color: "rgba(255,255,255,0.1)",
-      }}
-      style={{
-        flexDirection: "row",
-        padding: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: dark_primary,
-      }}
-    >
-      {getNotification()}
-    </Pressable>
-  );
+  return <>{getNotification()}</>;
 };
 export default NotificationCard;

@@ -2,13 +2,11 @@ import React, { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
-  Pressable,
   RefreshControl,
   SafeAreaView,
   StyleSheet,
   View,
 } from "react-native";
-import { dark_primary } from "../../../constants/Colors";
 import { NOTIFICATION } from "../../../constants/tracking";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
@@ -48,7 +46,6 @@ function MentionNotifications() {
     variables: {
       request: QueryRequest,
     },
-    pollInterval: 100,
     fetchPolicy: "network-only",
     context: {
       headers: {
@@ -128,22 +125,7 @@ function MentionNotifications() {
   TrackAction(NOTIFICATION.NOTIFICATIONS);
 
   const renderItem = ({ item }: { item: NewMentionNotification }) => {
-    return (
-      <Pressable
-        android_ripple={{
-          borderless: false,
-          color: "rgba(255,255,255,0.1)",
-        }}
-        style={{
-          flexDirection: "row",
-          padding: 12,
-          borderBottomWidth: 1,
-          borderBottomColor: dark_primary,
-        }}
-      >
-        <MentionNotification notification={item} />
-      </Pressable>
-    );
+    return <MentionNotification notification={item} />;
   };
 
   if (loading) {

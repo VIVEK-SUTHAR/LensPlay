@@ -28,6 +28,7 @@ import { useGuestStore } from "../../../store/GuestStore";
 import { RootStackScreenProps } from "../../../types/navigation/types";
 import UPADTES from "../../../update.json";
 import TrackAction from "../../../utils/Track";
+import { useInviteStore } from "../../../store/InviteStore";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 

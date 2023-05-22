@@ -85,14 +85,14 @@ const CommentNotification: React.FC<CommentNotificationProps> = ({
             style={{ color: "gray" }}
           />
         </View>
-        <StyledText
+        {/* <StyledText
           title={
             notification?.comment?.metadata?.description ||
             notification?.comment?.metadata?.content
           }
           numberOfLines={2}
           style={{ fontSize: 10, color: "gray" }}
-        />
+        /> */}
       </View>
     </Pressable>
   );

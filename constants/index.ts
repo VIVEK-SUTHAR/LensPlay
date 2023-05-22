@@ -22,14 +22,12 @@ const IPFS_GATEWAY = "https://ipfs.io/ipfs/";
 const ARWEAVE_GATEWAY = "https://arweave.net";
 
 //LENSPLAY-API's
-export const LENSPLAY_API="https://lensplay-api.vercel.app/api/"
-
+export const LENSPLAY_API = "https://lensplay-api.vercel.app/api/";
 
 //UPLOAD_APIS
 const IPFS_UPLOAD_API = "https://api.web3.storage/upload";
 const BUNDLR_UPLOAD_API = "https://bundlr-upload-server.vercel.app/api/upload";
 export const LIVEPEER_API_URL = "https://livepeer.studio/api";
-export const LENSPLAY_API = "https://lensplay-api.vercel.app/api/";
 
 //Static Media
 const STATIC_ASSET =
