@@ -104,6 +104,7 @@ export default function Trending({
 
   if (error)
     return <ErrorMessage message={"Looks like something went wrong"} />;
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     try {
@@ -184,61 +185,58 @@ export default function Trending({
     }
     return <></>;
   };
-  const RenderEmpty = () => <NotFound />;
 
-  if (loading) return <Skeleton children={<VideoCardSkeleton />} number={10} />;
-
-  if (ExploreData) {
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-        <ScrollView
-          style={{
-            height: 60,
-            paddingVertical: 8,
-            maxHeight: 60,
-            marginLeft: 10,
-          }}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-        >
-          {tags.map((item, index) => {
-            return (
-              <Pressable
-                android_ripple={{
-                  color: "transparent",
-                }}
-                onTouchEndCapture={() => {
-                  setCurrentTag(tags[index]);
-                }}
-                key={index}
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+      <ScrollView
+        style={{
+          height: 60,
+          paddingVertical: 8,
+          maxHeight: 60,
+          marginLeft: 10,
+        }}
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+      >
+        {tags.map((item, index) => {
+          return (
+            <Pressable
+              android_ripple={{
+                color: "transparent",
+              }}
+              onTouchEndCapture={() => {
+                setCurrentTag(tags[index]);
+              }}
+              key={index}
+              style={{
+                marginHorizontal: 4,
+                backgroundColor: `${
+                  currentTag.name === item.name ? theme.PRIMARY : dark_primary
+                }`,
+                width: "auto",
+                maxHeight: 34,
+                paddingHorizontal: 12,
+                paddingVertical: 6,
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 8,
+              }}
+            >
+              <StyledText
+                title={item.name.replace(/_/g, " ")}
                 style={{
-                  marginHorizontal: 4,
-                  backgroundColor: `${
-                    currentTag.name === item.name ? theme.PRIMARY : dark_primary
-                  }`,
-                  width: "auto",
-                  maxHeight: 34,
-                  paddingHorizontal: 12,
-                  paddingVertical: 6,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 8,
+                  fontSize: 12,
+                  fontWeight: "600",
+                  color: `${currentTag.name === item.name ? "black" : "white"}`,
                 }}
-              >
-                <StyledText
-                  title={item.name.replace(/_/g, " ")}
-                  style={{
-                    fontSize: 12,
-                    fontWeight: "600",
-                    color: `${
-                      currentTag.name === item.name ? "black" : "white"
-                    }`,
-                  }}
-                />
-              </Pressable>
-            );
-          })}
-        </ScrollView>
+              />
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+      {loading ? (
+        <Skeleton children={<VideoCardSkeleton />} number={10} />
+      ) : (
         <FlatList
           data={ExploreData?.explorePublications.items as Explore[]}
           keyExtractor={keyExtractor}
@@ -251,8 +249,7 @@ export default function Trending({
           refreshControl={Refresh}
           renderItem={RenderItem}
         />
-      </SafeAreaView>
-    );
-  }
-  return <></>;
+      )}
+    </SafeAreaView>
+  );
 }

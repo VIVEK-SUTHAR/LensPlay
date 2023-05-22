@@ -62,7 +62,7 @@ function CommentNotifications() {
   });
 
   const notifications = data?.notifications?.items as Notification[];
-  const ITEM_HEIGHT = 35;
+  const ITEM_HEIGHT = 20;
 
   const getItemLayout = (_: any, index: number) => {
     return {
@@ -89,20 +89,19 @@ function CommentNotifications() {
 
   const _MoreLoader = () => {
     return (
-      <View
-        style={{
-          height: 200,
-        }}
-      >
+      <>
         {pageInfo?.next ? (
-          <ActivityIndicator size={"large"} color={theme.PRIMARY} />
+          <View
+            style={{
+              height: 200,
+            }}
+          >
+            <ActivityIndicator size={"large"} color={theme.PRIMARY} />
+          </View>
         ) : (
-          <ErrorMessage
-            message="No more notifications to load"
-            withImage={false}
-          />
+          <></>
         )}
-      </View>
+      </>
     );
   };
 

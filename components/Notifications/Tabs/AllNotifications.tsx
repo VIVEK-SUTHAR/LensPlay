@@ -96,10 +96,7 @@ function AllNotifications() {
         {pageInfo?.next ? (
           <ActivityIndicator size={"large"} color={theme.PRIMARY} />
         ) : (
-          <ErrorMessage
-            message="No more notifications to load"
-            withImage={false}
-          />
+          <></>
         )}
       </View>
     );
