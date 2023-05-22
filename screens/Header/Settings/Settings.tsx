@@ -21,11 +21,7 @@ import Socials from "../../../components/settings/Socials";
 import ProfileQR, {
   ProfileSheet,
 } from "../../../components/settings/profileQR";
-import {
-  LENSPLAY_PRIVACY,
-  LENSPLAY_TERMS,
-  OFFICIAL_EMAIL,
-} from "../../../constants";
+import { LENSPLAY_PRIVACY, OFFICIAL_EMAIL } from "../../../constants";
 import { dark_primary, white } from "../../../constants/Colors";
 import { AUTH } from "../../../constants/tracking";
 import { useGuestStore } from "../../../store/GuestStore";
@@ -46,13 +42,15 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
   const { isGuest } = useGuestStore();
   const logoutref = useRef<BottomSheetMethods>(null);
   const QRCodeRef = useRef<BottomSheetMethods>(null);
+  const { clearInvites } = useInviteStore();
 
   const SettingItemsList: SettingsItemProps[] = [
     {
       icon: <Icon name="policy" size={24} />,
       label: "Terms and Conditions",
       onPress: () => {
-        Linking.openURL(LENSPLAY_TERMS);
+        // Linking.openURL(LENSPLAY_TERMS);
+        navigation.navigate("Invite");
       },
     },
     {
@@ -226,10 +224,12 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
                 await AsyncStorage.removeItem("@user_tokens");
                 if (isDeskTopLogin) {
                   await AsyncStorage.removeItem("@viaDeskTop");
+                  clearInvites();
                   navigation.reset({ index: 0, routes: [{ name: "Login" }] });
                   return;
                 } else {
                   await Wallet.killSession();
+                  clearInvites();
                   navigation.reset({ index: 0, routes: [{ name: "Login" }] });
                 }
                 TrackAction(AUTH.LOGOUT);
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
-    padding: 16,
+    padding: 8,
   },
   itemContainer: {
     flexDirection: "row",

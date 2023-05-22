@@ -54,6 +54,7 @@ const Invite = ({ navigation }: RootStackScreenProps<"Invite">) => {
       progressBackgroundColor={"black"}
     />
   );
+  if (isLoading) return <InviteSkleton />;
 
   if (inviteError === GetInviteResponse.ZERO_INVITES) {
     return (
@@ -83,14 +84,17 @@ const Invite = ({ navigation }: RootStackScreenProps<"Invite">) => {
     );
   }
 
-  const leftInvites = invites.filter((code) => code.isValid).length;
-  return (
-    <SafeAreaView style={[CommonStyles.screenContainer]}>
-      <StatusBar style="auto" />
-      <Pressable style={styles.closeContainer} onPress={() => navigation.pop()}>
-        <Icon name="close" size={20} />
-      </Pressable>
-      {invites ? (
+  if (invites) {
+    const leftInvites = invites.filter((code) => code.isValid).length;
+    return (
+      <SafeAreaView style={[CommonStyles.screenContainer]}>
+        <StatusBar style="auto" />
+        <Pressable
+          style={styles.closeContainer}
+          onPress={() => navigation.pop()}
+        >
+          <Icon name="close" size={20} />
+        </Pressable>
         <ScrollView
           style={[CommonStyles.screenContainer, { padding: 16 }]}
           contentContainerStyle={{
@@ -171,11 +175,10 @@ const Invite = ({ navigation }: RootStackScreenProps<"Invite">) => {
             </View>
           </View>
         </ScrollView>
-      ) : (
-        <InviteSkleton />
-      )}
-    </SafeAreaView>
-  );
+      </SafeAreaView>
+    );
+  }
+  return <></>;
 };
 export default Invite;
 

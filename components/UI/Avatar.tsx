@@ -13,7 +13,7 @@ type AvatarProps = {
   opacity?: number;
 };
 
-function Avatar({
+const Avatar: React.FC<AvatarProps> = ({
   src,
   height,
   width,
@@ -21,33 +21,35 @@ function Avatar({
   borderColor = "transparent",
   borderWidth = 0,
   opacity = 1,
-}: AvatarProps) {
+}) => {
+  const STATIC_COVER =
+    "https://lens.infura-ipfs.io/ipfs/bafybeibv2kpqpjtvuj5uprvq6knnr2reb7ylq3o4bnypqjioqgxmjw2akq/5460475.webp";
+  const resolvedSrc =
+    getIPFSLink(src) === STATIC_COVER
+      ? `https://xsgames.co/randomusers/assets/avatars/pixel/${Math.floor(
+          53 * Math.random()
+        )}.jpg`
+      : getIPFSLink(src);
+
   return (
     <Image
       placeholder={getPlaceHolderImage(true)}
       placeholderContentFit="cover"
       transition={500}
       source={{
-        uri: `${
-          getIPFSLink(src) ===
-          "https://lens.infura-ipfs.io/ipfs/bafybeibv2kpqpjtvuj5uprvq6knnr2reb7ylq3o4bnypqjioqgxmjw2akq/5460475.webp"
-            ? `https://xsgames.co/randomusers/assets/avatars/pixel/${Math.floor(
-                53 * Math.random()
-              )}.jpg`
-            : getIPFSLink(src)
-        }`,
+        uri: resolvedSrc,
       }}
       style={{
-        opacity: opacity,
-        height: height,
-        width: width,
-        borderRadius: borderRadius,
+        opacity,
+        height,
+        width,
+        borderRadius,
         backgroundColor: "white",
-        borderColor: borderColor,
-        borderWidth: borderWidth,
+        borderColor,
+        borderWidth,
         zIndex: 9,
       }}
     />
   );
-}
+};
 export default React.memo(Avatar);

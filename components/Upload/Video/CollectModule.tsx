@@ -6,7 +6,6 @@ import {
   dark_secondary,
   primary,
 } from "../../../constants/Colors";
-import { useThemeStore } from "../../../store/Store";
 import { useUploadStore } from "../../../store/UploadStore";
 import Sheet from "../../Bottom";
 import Icon from "../../Icon";
@@ -132,7 +131,7 @@ function CollectModuleSheet({ collectModuleRef }: CollectModuleSheetProp) {
   return (
     <Sheet
       ref={collectModuleRef}
-      snapPoints={[390]}
+      snapPoints={[680]}
       containerStyle={{
         height: "auto",
       }}

@@ -1,15 +1,15 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import { LinearGradient } from "expo-linear-gradient";
-import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import { Linking, ScrollView, StyleSheet, View } from "react-native";
+import { Linking, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Sheet from "../../components/Bottom";
 import ConnectWalletSheet from "../../components/Login/ConnectWalletSheet";
 import Onboarding from "../../components/Login/Onboarding";
 import StyledText from "../../components/UI/StyledText";
-import { LENSPLAY_PRIVACY, LENSPLAY_TERMS } from "../../constants";
+import { LENSPLAY_SITE } from "../../constants";
 import { RootStackScreenProps } from "../../types/navigation/types";
+import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
   const loginRef = React.useRef<BottomSheetMethods>(null);
@@ -19,7 +19,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="light" />
       <LinearGradient
-        colors={["#2D3436", "black", "#000000"]}
+        colors={["#2D3436", "#000000", "#000000"]}
         style={{ flex: 1 }}
       >
         <Onboarding loginRef={loginRef} isloading={isloading} />
@@ -44,7 +44,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
                   }}
                   title={"Privacy Policy"}
                   onPress={() => {
-                    Linking.openURL(LENSPLAY_PRIVACY);
+                    Linking.openURL(LENSPLAY_SITE);
                   }}
                 />{" "}
                 <StyledText title={"and "} style={{ color: "gray" }} />
@@ -56,7 +56,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
                   }}
                   title={"Terms and Condition"}
                   onPress={() => {
-                    Linking.openURL(LENSPLAY_TERMS);
+                    Linking.openURL(LENSPLAY_SITE);
                   }}
                 />{" "}
               </>
@@ -74,12 +74,7 @@ const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
         }}
         snapPoints={[320]}
         children={
-          <ScrollView>
-            <ConnectWalletSheet
-              loginRef={loginRef}
-              setIsloading={setIsloading}
-            />
-          </ScrollView>
+          <ConnectWalletSheet loginRef={loginRef} setIsloading={setIsloading} />
         }
       />
     </SafeAreaView>

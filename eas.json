@@ -1,14 +1,31 @@
 {
-	"build": {
-		"development-simulator": {
-			"developmentClient": true,
-			"distribution": "internal",
-			"ios": {
-			  "simulator": true
-			}
-		  },
-		  "alpha-test-flight": {
-			"channel": "alpha-test-flight"
-		  }
-	}
+  "build": {
+    "development-simulator": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      }
+    },
+    "alpha-test-flight": {
+      "channel": "alpha-test-flight"
+    }
+  },
+  "development": {
+    "developmentClient": true,
+    "distribution": "internal",
+    "channel": "dev"
+  },
+  "preview": {
+    "distribution": "internal"
+  },
+  "alpha": {
+    "channel": "alpha"
+  },
+  "beta": {
+    "channel": "beta"
+  },
+  "prod": {
+    "channel": "prod"
+  }
 }

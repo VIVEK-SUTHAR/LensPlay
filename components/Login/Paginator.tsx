@@ -17,7 +17,7 @@ type data = {
 
 interface Props {
   data: data;
-  x: number;
+  x: SharedValue<number>;
   screenWidth: number;
 }
 
@@ -25,13 +25,13 @@ const Paginator = ({ data, x, screenWidth }: Props) => {
   const PaginationComp = ({ i }: { i: number }) => {
     const animatedDotStyle = useAnimatedStyle(() => {
       const widthAnimation = interpolate(
-        x,
+        x.value,
         [(i - 1) * screenWidth, i * screenWidth, (i + 1) * screenWidth],
         [10, 20, 10],
         Extrapolate.CLAMP
       );
       const opacityAnimation = interpolate(
-        x,
+        x.value,
         [(i - 1) * screenWidth, i * screenWidth, (i + 1) * screenWidth],
         [0.5, 1, 0.5],
         Extrapolate.CLAMP

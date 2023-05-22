@@ -1,14 +1,14 @@
-import React from "react";
+import { ResizeMode, Video } from "expo-av";
+import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
-import { ResizeMode } from "expo-av";
+import VideoPlayer from "expo-video-player";
+import React, { MutableRefObject, useRef } from "react";
 import { Dimensions, View } from "react-native";
 import { primary } from "../../constants/Colors";
-import * as ScreenOrientation from "expo-screen-orientation";
-import VideoPlayer from "expo-video-player";
-import getIPFSLink from "../../utils/getIPFSLink";
-import StyledText from "../UI/StyledText";
-import Icon from "../Icon";
 import { useThemeStore } from "../../store/Store";
+import getIPFSLink from "../../utils/getIPFSLink";
+import Icon from "../Icon";
+import StyledText from "../UI/StyledText";
 
 interface VideoPlayerProps {
   url: string;
@@ -33,7 +33,9 @@ function Player({
   setInFullscreen,
   setIsMute,
 }: VideoPlayerProps) {
+  const videoRef = useRef<Video>();
   const { PRIMARY } = useThemeStore();
+
   return (
     <VideoPlayer
       style={{
@@ -86,6 +88,7 @@ function Player({
         </View>
       }
       videoProps={{
+        ref: videoRef as MutableRefObject<Video>,
         isLooping: loop,
         usePoster: true,
         posterSource: {
@@ -94,14 +97,13 @@ function Player({
         posterStyle: {
           height: "100%",
           width: "100%",
-          resizeMode: "contain",
+          resizeMode: "cover",
         },
-
         isMuted: isMute,
-        shouldPlay: true,
         resizeMode: ResizeMode.CONTAIN,
+        shouldPlay: true,
         source: {
-          uri: getIPFSLink(url),
+          uri: url,
         },
       }}
       fullscreen={{
@@ -131,4 +133,4 @@ function Player({
   );
 }
 
-export default Player;
+export default React.memo(Player);

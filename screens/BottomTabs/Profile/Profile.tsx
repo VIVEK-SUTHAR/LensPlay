@@ -10,7 +10,6 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import SocialLinks from "../../../components/common/SocialLinks";
 import Icon from "../../../components/Icon";
 import PleaseLogin from "../../../components/PleaseLogin";
 import AllVideos from "../../../components/Profile/AllVideos";
@@ -25,9 +24,10 @@ import Button from "../../../components/UI/Button";
 import Heading from "../../../components/UI/Heading";
 import ProfileSkeleton from "../../../components/UI/ProfileSkeleton";
 import StyledText from "../../../components/UI/StyledText";
+import SocialLinks from "../../../components/common/SocialLinks";
 import { primary, white } from "../../../constants/Colors";
-import { PROFILE } from "../../../constants/tracking";
 import VERIFIED_CHANNELS from "../../../constants/Varified";
+import { PROFILE } from "../../../constants/tracking";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import CommonStyles from "../../../styles";
@@ -41,11 +41,11 @@ import {
   useProfileQuery,
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
+import TrackAction from "../../../utils/Track";
 import extractURLs from "../../../utils/extractURL";
 import formatHandle from "../../../utils/formatHandle";
 import getIPFSLink from "../../../utils/getIPFSLink";
 import getRawurl from "../../../utils/getRawUrl";
-import TrackAction from "../../../utils/Track";
 
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [refreshing, setRefreshing] = useState(false);

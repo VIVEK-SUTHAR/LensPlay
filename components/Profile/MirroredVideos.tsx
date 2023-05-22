@@ -129,6 +129,7 @@ const MirroredVideos = ({
             if (item?.appId?.includes("lenstube")) {
               return (
                 <VideoCard
+                  key={`${item.id}-${item.createdAt}`}
                   publication={item}
                   id={item?.id}
                   height={150}

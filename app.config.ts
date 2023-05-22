@@ -100,6 +100,7 @@ const config: ExpoConfig = {
     resizeMode: "contain",
     backgroundColor: "#000000",
   },
+  backgroundColor: "#000000",
   updates: {
     fallbackToCacheTimeout: 0,
     url: "https://u.expo.dev/3b494bf0-e3fd-4a2c-b484-931ab7394de1",
@@ -119,7 +120,7 @@ const config: ExpoConfig = {
   jsEngine: "hermes",
   android: {
     package: "com.lensplayxyz.lensplay",
-    versionCode: 2,
+    versionCode: 5,
     adaptiveIcon: {
       foregroundImage: "./assets/images/adaptive-icon.png",
       backgroundColor: "#000000",
@@ -159,6 +160,7 @@ const config: ExpoConfig = {
         category: ["BROWSABLE", "DEFAULT"],
       },
     ],
+    
   },
   web: {
     favicon: "./assets/images/favicon.png",

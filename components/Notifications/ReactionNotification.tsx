@@ -1,5 +1,7 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Pressable, View } from "react-native";
+import { dark_primary } from "../../constants/Colors";
 import { useThemeStore } from "../../store/Store";
 import { NewReactionNotification } from "../../types/generated";
 import extractURLs from "../../utils/extractURL";
@@ -10,8 +12,6 @@ import getRawurl from "../../utils/getRawUrl";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
-import { useNavigation } from "@react-navigation/native";
-import { dark_primary } from "../../constants/Colors";
 
 type ReactionNotificationProps = {
   notification: NewReactionNotification;

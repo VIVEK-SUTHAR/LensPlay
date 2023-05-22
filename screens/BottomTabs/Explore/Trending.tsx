@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   Pressable,
   RefreshControl,
@@ -12,7 +13,6 @@ import StyledText from "../../../components/UI/StyledText";
 import VideoCardSkeleton from "../../../components/UI/VideoCardSkeleton";
 import VideoCard from "../../../components/VideoCard";
 import ErrorMessage from "../../../components/common/ErrorMesasge";
-import Skeleton from "../../../components/common/Skeleton";
 import { dark_primary } from "../../../constants/Colors";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
@@ -25,6 +25,7 @@ import {
   useExploreQuery,
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
+import Skeleton from "../../../components/common/Skeleton";
 
 type Explore = Post | Mirror;
 
@@ -66,14 +67,22 @@ export default function Trending({
 
   const QueryRequest = {
     sortCriteria: currentTag.name,
-    publicationTypes: [PublicationTypes.Mirror, PublicationTypes.Post],
+    noRandomize: true,
+    publicationTypes: [PublicationTypes.Post],
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
     sources: ["lensplay", "lenstube"],
+    limit: 10,
   };
 
-  const { data: ExploreData, error, loading, refetch } = useExploreQuery({
+  const {
+    data: ExploreData,
+    error,
+    loading,
+    refetch,
+    fetchMore,
+  } = useExploreQuery({
     variables: {
       request: QueryRequest,
       reactionRequest: {
@@ -95,84 +104,155 @@ export default function Trending({
 
   if (error)
     return <ErrorMessage message={"Looks like something went wrong"} />;
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    try {
+      refetch({
+        request: QueryRequest,
+      })
+        .then(() => {
+          setRefreshing(false);
+        })
+        .catch((err) => {});
+    } catch (error) {
+    } finally {
+      setRefreshing(false);
+    }
+  }, []);
 
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-      <ScrollView
-        style={{
-          height: 60,
-          paddingVertical: 8,
-          maxHeight: 60,
-          marginLeft: 10,
-        }}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-      >
-        {tags.map((item, index) => {
-          return (
-            <Pressable
-              android_ripple={{
-                color: "transparent",
-              }}
-              onTouchEndCapture={() => {
-                setCurrentTag(tags[index]);
-              }}
-              key={index}
-              style={{
-                marginHorizontal: 4,
-                backgroundColor: `${
-                  currentTag.name === item.name ? theme.PRIMARY : dark_primary
-                }`,
-                width: "auto",
-                maxHeight: 34,
-                paddingHorizontal: 12,
-                paddingVertical: 6,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 8,
-              }}
-            >
-              <StyledText
-                title={item.name.replace(/_/g, " ")}
-                style={{
-                  fontSize: 12,
-                  fontWeight: "600",
-                  color: `${currentTag.name === item.name ? "black" : "white"}`,
+  const Refresh = (
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      colors={[theme.PRIMARY]}
+      progressBackgroundColor={"black"}
+    />
+  );
+
+  const pageInfo = ExploreData?.explorePublications?.pageInfo;
+
+  const keyExtractor = (item: Explore) => item.id.toString();
+
+  const ITEM_HEIGHT = 200;
+
+  const getItemLayout = (_: any, index: number) => {
+    return {
+      length: ITEM_HEIGHT,
+      offset: ITEM_HEIGHT * index,
+      index,
+    };
+  };
+
+  const onEndCallBack = () => {
+    if (!pageInfo?.next) {
+      // console.log("sab khatam ho gaya");
+      return;
+    }
+    fetchMore({
+      variables: {
+        request: {
+          cursor: pageInfo?.next,
+          ...QueryRequest,
+        },
+      },
+    }).catch((err) => {});
+  };
+
+  const _MoreLoader = () => {
+    return (
+      <>
+        {pageInfo?.next ? (
+          <ActivityIndicator size={"large"} color={theme.PRIMARY} />
+        ) : (
+          <ErrorMessage message="No more Videos to load" withImage={false} />
+        )}
+      </>
+    );
+  };
+
+  const MoreLoader = React.memo(_MoreLoader);
+
+  const RenderItem = ({ item }: { item: Explore }) => {
+    if (!item.hidden) {
+      return (
+        <VideoCard
+          key={`${item.id}-${item.createdAt}`}
+          publication={item as Explore}
+          id={item.id}
+        />
+      );
+    }
+    return <></>;
+  };
+  const RenderEmpty = () => <NotFound />;
+
+  if (loading) return <Skeleton children={<VideoCardSkeleton />} number={10} />;
+
+  if (ExploreData) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+        <ScrollView
+          style={{
+            height: 60,
+            paddingVertical: 8,
+            maxHeight: 60,
+            marginLeft: 10,
+          }}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+        >
+          {tags.map((item, index) => {
+            return (
+              <Pressable
+                android_ripple={{
+                  color: "transparent",
                 }}
-              />
-            </Pressable>
-          );
-        })}
-      </ScrollView>
-      {loading ? (
-        <Skeleton children={<VideoCardSkeleton />} number={10} />
-      ) : (
+                onTouchEndCapture={() => {
+                  setCurrentTag(tags[index]);
+                }}
+                key={index}
+                style={{
+                  marginHorizontal: 4,
+                  backgroundColor: `${
+                    currentTag.name === item.name ? theme.PRIMARY : dark_primary
+                  }`,
+                  width: "auto",
+                  maxHeight: 34,
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 8,
+                }}
+              >
+                <StyledText
+                  title={item.name.replace(/_/g, " ")}
+                  style={{
+                    fontSize: 12,
+                    fontWeight: "600",
+                    color: `${
+                      currentTag.name === item.name ? "black" : "white"
+                    }`,
+                  }}
+                />
+              </Pressable>
+            );
+          })}
+        </ScrollView>
         <FlatList
           data={ExploreData?.explorePublications.items as Explore[]}
-          ListEmptyComponent={() => {
-            return <NotFound />;
-          }}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => {
-                setRefreshing(true);
-                refetch({
-                  request: QueryRequest,
-                }).then(() => setRefreshing(false));
-              }}
-              colors={[theme.PRIMARY]}
-              progressBackgroundColor={"black"}
-            />
-          }
-          renderItem={({ item }: { item: Explore }) => {
-            if (item?.appId === "lenstube") {
-              return <VideoCard publication={item as Explore} id={item.id} />;
-            }
-            return <></>;
-          }}
+          keyExtractor={keyExtractor}
+          getItemLayout={getItemLayout}
+          initialNumToRender={3}
+          maxToRenderPerBatch={5}
+          ListFooterComponent={<MoreLoader />}
+          onEndReached={onEndCallBack}
+          onEndReachedThreshold={0.5}
+          refreshControl={Refresh}
+          renderItem={RenderItem}
         />
-      )}
-    </SafeAreaView>
-  );
+      </SafeAreaView>
+    );
+  }
+  return <></>;
 }

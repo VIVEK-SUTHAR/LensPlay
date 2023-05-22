@@ -184,7 +184,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
     React.useCallback(() => {
       checkIfLivePeerAsset(LENS_MEDIA_URL).then((res) => {
         if (res) {
-          Logger.Success("LivePeer uri", res);
+          // console.log(res);
+          Logger.Success(res);
           setVideoURI(res);
         } else {
           setVideoURI(getIPFSLink(LENS_MEDIA_URL));

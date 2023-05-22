@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import * as ScreenOrientation from "expo-screen-orientation";
+import React, { useState } from "react";
+import { View, useWindowDimensions } from "react-native";
 import SwiperFlatList from "react-native-swiper-flatlist";
 import SingleShot from "../../../components/Shots/SingleShot";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile } from "../../../store/Store";
+import { ShotsPublication } from "../../../types";
 import {
   ExplorePublicationRequest,
   PublicationMainFocus,
@@ -12,14 +14,14 @@ import {
   useExploreQuery,
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
-import { ShotsPublication } from "../../../types";
-import * as ScreenOrientation from "expo-screen-orientation";
 
 const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const { currentProfile } = useProfile();
   const { isGuest, profileId } = useGuestStore();
   const { accessToken } = useAuthStore();
+
+  const { height, width } = useWindowDimensions();
 
   ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
 
@@ -70,12 +72,14 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
   }) => {
     if (!item.hidden) {
       return (
-        <SingleShot
-          item={item}
-          key={item.id}
-          index={index}
-          currentIndex={currentIndex}
-        />
+        <View style={{ height: height }}>
+          <SingleShot
+            item={item}
+            key={item.id}
+            index={index}
+            currentIndex={currentIndex}
+          />
+        </View>
       );
     }
     return <></>;
@@ -100,8 +104,9 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
   return (
     <View
       style={{
-        flex: 1,
         backgroundColor: "black",
+        height: height,
+        width: width,
       }}
     >
       <SwiperFlatList

@@ -5,8 +5,8 @@ import {
   View,
 } from "react-native";
 import React from "react";
-import { Image } from "react-native";
 import StyledText from "../UI/StyledText";
+import { Image } from "expo-image";
 type Props = {
   image: ImageSourcePropType;
   title: string;
@@ -46,7 +46,7 @@ const OnboardingItem = ({ image, title, desc }: Props) => {
           title={title}
           style={{
             color: "white",
-            fontSize: Dimensions.get("window").width / 12,
+            fontSize: 32,
             fontWeight: "600",
           }}
         />
@@ -54,7 +54,7 @@ const OnboardingItem = ({ image, title, desc }: Props) => {
           title={desc}
           style={{
             color: "white",
-            fontSize: Dimensions.get("window").width / 12,
+            fontSize: 32,
             fontWeight: "600",
           }}
         />

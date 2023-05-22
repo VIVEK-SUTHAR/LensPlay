@@ -1,4 +1,5 @@
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { Pressable, RefreshControl, ScrollView, View } from "react-native";
@@ -12,12 +13,14 @@ import Button from "../../components/UI/Button";
 import Heading from "../../components/UI/Heading";
 import ProfileSkeleton from "../../components/UI/ProfileSkeleton";
 import StyledText from "../../components/UI/StyledText";
-import { PROFILE } from "../../constants/tracking";
+import SocialLinks from "../../components/common/SocialLinks";
+import { LENSPLAY_SITE } from "../../constants";
 import VERIFIED_CHANNELS from "../../constants/Varified";
+import { PROFILE } from "../../constants/tracking";
 import { useGuestStore } from "../../store/GuestStore";
 import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
+import { ToastType } from "../../types/Store";
 import {
-  Attribute,
   CreateUnfollowTypedDataMutationResult,
   MediaSet,
   Post,
@@ -31,17 +34,15 @@ import {
   useProxyActionMutation,
 } from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
-import { ToastType } from "../../types/Store";
+import TrackAction from "../../utils/Track";
 import extractURLs from "../../utils/extractURL";
 import formatHandle from "../../utils/formatHandle";
 import getIPFSLink from "../../utils/getIPFSLink";
+import getImageProxyURL from "../../utils/getImageProxyURL";
+import getPlaceHolderImage from "../../utils/getPlaceHolder";
 import getRawurl from "../../utils/getRawUrl";
 import formatUnfollowTypedData from "../../utils/lens/formatUnfollowTypedData";
-import TrackAction from "../../utils/Track";
-import SocialLinks from "../../components/common/SocialLinks";
-import { Image } from "expo-image";
-import getPlaceHolderImage from "../../utils/getPlaceHolder";
-import getImageProxyURL from "../../utils/getImageProxyURL";
+import Logger from "../../utils/logger";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -129,10 +130,12 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
       if (error?.message?.includes("already following")) {
         toast.error("Currently not supported");
       }
+      Logger.Error("Error in Following", error.message);
     },
     context: {
       headers: {
         "x-access-token": `Bearer ${authStore.accessToken}`,
+        origin: LENSPLAY_SITE,
       },
     },
   });

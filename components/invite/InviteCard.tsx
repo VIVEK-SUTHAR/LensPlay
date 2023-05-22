@@ -12,7 +12,7 @@ export type InviteCardOptions = {
 };
 
 const InviteCard: React.FC<InviteCardOptions> = ({ inviteCode, isValid }) => {
-  const { width } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const toast = useToast();
 
   const copyInviteCode = React.useCallback(() => {

@@ -31,6 +31,9 @@ export interface IBottomSheet extends BottomSheetProps {
   children: React.ReactNode;
 }
 
+export type ShotsPublication = Post | Mirror;
+
+
 export type ProfileMetaDataV1nput = {
   version: Scalars["String"];
   metadata_id: Scalars["String"];

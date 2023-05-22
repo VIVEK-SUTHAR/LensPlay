@@ -1,16 +1,16 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Pressable, View } from "react-native";
+import { dark_primary } from "../../constants/Colors";
 import { NewFollowerNotification } from "../../types/generated";
 import formatAddress from "../../utils/formatAddress";
+import formatHandle from "../../utils/formatHandle";
 import getDifference from "../../utils/getDifference";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
-import { useNavigation } from "@react-navigation/native";
-import formatHandle from "../../utils/formatHandle";
-import { dark_primary } from "../../constants/Colors";
 
 type FollowNotificationProps = {
   notification: NewFollowerNotification;

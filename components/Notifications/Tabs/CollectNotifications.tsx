@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
-  ListRenderItem,
   Pressable,
   RefreshControl,
   SafeAreaView,

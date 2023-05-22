@@ -1,10 +1,10 @@
 import Constants from "expo-constants";
+import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
   Animated,
   ColorValue,
-  Image,
   PanResponder,
   Pressable,
   SafeAreaView,
@@ -14,6 +14,7 @@ import {
 import Icon from "../../components/Icon";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import getIPFSLink from "../../utils/getIPFSLink";
+import getPlaceHolderImage from "../../utils/getPlaceHolder";
 const StatusBarHeight = Constants.statusBarHeight;
 
 const FullImage = ({
@@ -29,9 +30,9 @@ const FullImage = ({
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
-    onPanResponderStart: (e) => {
+    onPanResponderStart: React.useCallback(() => {
       setBgColor("rgba(0,0,0,0.4)");
-    },
+    }, []),
     onPanResponderMove: Animated.event(
       [
         null,
@@ -42,18 +43,21 @@ const FullImage = ({
       ],
       { useNativeDriver: false }
     ),
-    onPanResponderEnd: () => {
+    onPanResponderEnd: React.useCallback(() => {
       setBgColor("rgba(0,0,0,1)");
-    },
-    onPanResponderRelease: (e) => {
-      if (e.nativeEvent.pageY > 505 || e.nativeEvent.pageY < 330) {
-        goBack();
-      }
-      Animated.spring(pan, {
-        toValue: { x: 0, y: 0 },
-        useNativeDriver: false,
-      }).start();
-    },
+    }, []),
+    onPanResponderRelease: React.useCallback(
+      (e: { nativeEvent: { pageY: number } }) => {
+        if (e.nativeEvent.pageY > 505 || e.nativeEvent.pageY < 330) {
+          goBack();
+        }
+        Animated.spring(pan, {
+          toValue: { x: 0, y: 0 },
+          useNativeDriver: false,
+        }).start();
+      },
+      []
+    ),
   });
 
   return (
@@ -69,6 +73,7 @@ const FullImage = ({
         style={[pan.getLayout(), styles.imageContainer]}
       >
         <Image
+          placeholder={getPlaceHolderImage(isAvatar)}
           source={{ uri: getIPFSLink(route.params.url) }}
           style={isAvatar ? styles.avatarStyle : styles.imageStyle}
         />
@@ -77,7 +82,7 @@ const FullImage = ({
   );
 };
 
-export default FullImage;
+export default React.memo(FullImage);
 
 const styles = StyleSheet.create({
   container: {

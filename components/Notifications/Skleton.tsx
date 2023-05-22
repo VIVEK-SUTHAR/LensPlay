@@ -1,5 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { Pressable, StyleSheet, View } from "react-native";
 
 const Skleton = () => {
   return (
@@ -9,6 +9,9 @@ const Skleton = () => {
         backgroundColor: "black",
         paddingHorizontal: 9,
         paddingVertical: 16,
+        // marginVertical: 2,
+        // marginHorizontal: 4,
+        // borderRadius: 8,
         borderBottomColor: "#1d1d1d",
         borderBottomWidth: 1,
       }}

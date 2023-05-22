@@ -12,6 +12,7 @@ async function checkIfLivePeerAsset(ipfsOrArweaveHash: string) {
     );
     if (livepeerResponse.ok) {
       const jsonData = await livepeerResponse.json();
+      //   console.log(jsonData[0].playbackUrl);
       return jsonData[0].playbackUrl;
     }
   } catch (error) {}

@@ -1,15 +1,15 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Pressable, View } from "react-native";
+import { dark_primary } from "../../constants/Colors";
 import { NewCollectNotification } from "../../types/generated";
 import formatAddress from "../../utils/formatAddress";
 import getDifference from "../../utils/getDifference";
 import getIPFSLink from "../../utils/getIPFSLink";
+import getRawurl from "../../utils/getRawUrl";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
-import getRawurl from "../../utils/getRawUrl";
-import { useNavigation } from "@react-navigation/native";
-import { dark_primary } from "../../constants/Colors";
 
 type CollectNotificationProps = {
   notification: NewCollectNotification;

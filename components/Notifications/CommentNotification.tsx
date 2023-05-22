@@ -1,5 +1,7 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Pressable, View } from "react-native";
+import { dark_primary } from "../../constants/Colors";
 import { NewCommentNotification } from "../../types/generated";
 import formatAddress from "../../utils/formatAddress";
 import getDifference from "../../utils/getDifference";
@@ -8,8 +10,6 @@ import getRawurl from "../../utils/getRawUrl";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
 import StyledText from "../UI/StyledText";
-import { useNavigation } from "@react-navigation/native";
-import { dark_primary } from "../../constants/Colors";
 
 type CommentNotificationProps = {
   notification: NewCommentNotification;

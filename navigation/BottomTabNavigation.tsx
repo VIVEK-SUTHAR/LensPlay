@@ -4,13 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import * as ImagePicker from "expo-image-picker";
 import * as Linking from "expo-linking";
 import React, { useRef } from "react";
-import {
-  AppState,
-  Dimensions,
-  Pressable,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { AppState, Dimensions, Pressable, View } from "react-native";
 import { Camera } from "react-native-vision-camera";
 import Sheet from "../components/Bottom";
 import Icon from "../components/Icon";
@@ -235,7 +229,7 @@ export default function BottomTabNavigator({
             </View>
           ),
           tabBarStyle: {
-            backgroundColor: "black",
+            backgroundColor: black[800],
             alignItems: "center",
             justifyContent: "space-between",
             borderTopColor: "transparent",
@@ -250,6 +244,7 @@ export default function BottomTabNavigator({
           name="Home"
           component={Feed}
           options={{
+            unmountOnBlur: true,
             tabBarLabel: "",
             tabBarIcon: ({ focused }) => {
               return (

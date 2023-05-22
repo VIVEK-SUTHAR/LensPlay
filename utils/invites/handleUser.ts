@@ -23,7 +23,7 @@ export default async function handleUser(profileId: string) {
     const hasInviteRes = await fetch(
       "https://lensplay-api.vercel.app/api/invites/checkInvite",
       {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },

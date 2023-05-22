@@ -20,10 +20,10 @@ import {
 import { RootStackScreenProps } from "../../types/navigation/types";
 import TrackAction from "../../utils/Track";
 import getDateDifference from "../../utils/getDateDifference";
+import createInviteCode from "../../utils/invites/createInviteCodes";
+import handleUser from "../../utils/invites/handleUser";
 import getDefaultProfile from "../../utils/lens/getDefaultProfile";
 import storeTokens from "../../utils/storeTokens";
-import handleUser from "../../utils/invites/handleUser";
-import createInviteCode from "../../utils/invites/createInviteCodes";
 
 export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
   const { setCurrentProfile, currentProfile, setHasHandle } = useProfile();
@@ -158,7 +158,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
       }
     } catch (error) {
       if (error instanceof Error) {
-        // console.log(error);
+        console.log(error);
         // console.log("[Error]:Error in accessing local storage");
         throw new Error("[Error]:Error in accessing local storage");
       }

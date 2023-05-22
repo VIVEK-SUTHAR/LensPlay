@@ -1,12 +1,14 @@
 import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
 import { Dimensions, SafeAreaView, View } from "react-native";
+import { LENSPLAY_SITE } from "../../constants";
 import { SETTINGS } from "../../constants/tracking";
 import { useAuthStore, useProfile, useToast } from "../../store/Store";
 import { useCreateSetProfileImageUriViaDispatcherMutation } from "../../types/generated";
 import { ToastType } from "../../types/Store";
 import getImageBlobFromUri from "../../utils/getImageBlobFromUri";
 import getRawurl from "../../utils/getRawUrl";
+import Logger from "../../utils/logger";
 import TrackAction from "../../utils/Track";
 import uploadImageToIPFS from "../../utils/uploadImageToIPFS";
 import Avatar from "../UI/Avatar";
@@ -24,12 +26,14 @@ export default function EditAvatar() {
   const [
     createSetProfileImageUriViaDispatcherMutation,
   ] = useCreateSetProfileImageUriViaDispatcherMutation({
-    onCompleted: () => {
+    onCompleted: (data) => {
+      Logger.Success("updated", data);
       setIsUpdating(false);
       toast.show("Channel image updated", ToastType.SUCCESS, true);
     },
-    onError: () => {
+    onError: (error) => {
       setIsUpdating(false);
+      Logger.Error("Error in Update ProfilePic", error);
       toast.show("Something went wrong", ToastType.ERROR, true);
     },
   });
@@ -49,6 +53,7 @@ export default function EditAvatar() {
           context: {
             headers: {
               "x-access-token": `Bearer ${accessToken}`,
+              origin: LENSPLAY_SITE,
             },
           },
         });

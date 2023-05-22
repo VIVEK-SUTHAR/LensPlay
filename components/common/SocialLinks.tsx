@@ -32,7 +32,6 @@ function getLink(key: string, value: Maybe<string> | undefined) {
   }
 }
 function _SocialLinks({ profile }: { profile: Profile }) {
-
   const userStore = useProfile();
   const [links, setLinks] = useState<socialLinksProps>({
     twitter: "",
@@ -41,18 +40,14 @@ function _SocialLinks({ profile }: { profile: Profile }) {
     website: "",
   });
   const getLinks = React.useCallback(() => {
-    const twitter = profile?.attributes?.find(
-      (item) => item.key === "twitter"
-    )?.value;
-    const youtube = profile?.attributes?.find(
-      (item) => item.key === "youtube"
-    )?.value;
-    const insta = profile?.attributes?.find(
-      (item) => item.key === "instagram"
-    )?.value;
-    const website = profile?.attributes?.find(
-      (item) => item.key === "website"
-    )?.value;
+    const twitter = profile?.attributes?.find((item) => item.key === "twitter")
+      ?.value;
+    const youtube = profile?.attributes?.find((item) => item.key === "youtube")
+      ?.value;
+    const insta = profile?.attributes?.find((item) => item.key === "instagram")
+      ?.value;
+    const website = profile?.attributes?.find((item) => item.key === "website")
+      ?.value;
     setLinks({
       instagram: insta,
       website: website,

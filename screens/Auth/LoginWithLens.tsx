@@ -1,4 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -10,39 +12,41 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import Icon from "../../components/Icon";
 import Avatar from "../../components/UI/Avatar";
 import Button from "../../components/UI/Button";
 import Heading from "../../components/UI/Heading";
 import StyledText from "../../components/UI/StyledText";
+import { LENSPLAY_SITE } from "../../constants";
 import { white } from "../../constants/Colors";
 import { AUTH } from "../../constants/tracking";
 import { useAuthStore, useProfile, useToast } from "../../store/Store";
-import { ToastType } from "../../types/Store";
 import {
   useAuthenticateMutation,
   useChallengeLazyQuery,
 } from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
-import TrackAction from "../../utils/Track";
+import { ToastType } from "../../types/Store";
 import formatHandle from "../../utils/formatHandle";
 import getRawurl from "../../utils/getRawUrl";
+import Logger from "../../utils/logger";
 import storeTokens from "../../utils/storeTokens";
-import { LinearGradient } from "expo-linear-gradient";
-import Icon from "../../components/Icon";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { log } from "react-native-reanimated";
+import TrackAction from "../../utils/Track";
+
+const windowWidth = Dimensions.get("window").width;
 
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
   const [isloading, setIsloading] = useState<boolean>(false);
+  const [isDesktop, setIsDesktop] = useState<boolean>(false);
+
   const { hasHandle } = useProfile();
   const connector = useWalletConnect();
   const toast = useToast();
   const { currentProfile } = useProfile();
   const { setAccessToken, setRefreshToken } = useAuthStore();
-  const windowWidth = Dimensions.get("window").width;
+
   const scaleAnimation = useRef(new Animated.Value(0)).current;
   const fadeInAnimation = useRef(new Animated.Value(0)).current;
-  const [isDesktop, setIsDesktop] = useState<boolean>(false);
 
   const [
     getChallenge,
@@ -67,6 +71,11 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
         variables: {
           request: {
             address: address,
+          },
+        },
+        context: {
+          headers: {
+            origin: LENSPLAY_SITE,
           },
         },
         fetchPolicy: "network-only",
@@ -105,8 +114,10 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
       }
     } catch (error) {
       if (error instanceof Error) {
-        // console.log("[Error]:Error in login with lens");
-        // console.log(error);
+        Logger.Error("Error in Login with lens", error);
+        if (error.message.includes("Rejected")) {
+          toast.error("User rejected signature");
+        }
       }
     } finally {
       setIsloading(false);
@@ -121,16 +132,14 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
       navigation.replace("Login");
     } catch (error) {
       if (error instanceof Error) {
-        // console.log("[Error]:Error in Disconnect");
-        // console.log(error);
+        Logger.Error("Error in disconnect", error);
       }
     }
   };
 
   const handleDesktop = async () => {
     const isDesktop = await AsyncStorage.getItem("@viaDeskTop");
-
-    if (isDesktop == "true") {
+    if (isDesktop === "true") {
       setIsDesktop(true);
     } else {
       setIsDesktop(false);
