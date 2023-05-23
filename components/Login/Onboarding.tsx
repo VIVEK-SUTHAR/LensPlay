@@ -36,11 +36,11 @@ const Onboarding = ({
 
   const arrowAnimationStyle = useAnimatedStyle(() => {
     return {
-      display: x.value > 720 ? "none" : "flex",
+      display: x.value >= SCREEN_WIDTH * 3 ? "none" : "flex",
       transform: [
         {
           scale:
-            x.value > 720
+            x.value >= SCREEN_WIDTH * 3
               ? withSpring((scaleValue.value = 0))
               : withSpring((scaleValue.value = 1)),
         },
@@ -50,11 +50,11 @@ const Onboarding = ({
 
   const ButtonAnimationStyle = useAnimatedStyle(() => {
     return {
-      display: x.value > 720 ? "flex" : "none",
+      display: x.value >= SCREEN_WIDTH * 3 ? "flex" : "none",
       transform: [
         {
           scale:
-            x.value > 720
+            x.value >= SCREEN_WIDTH * 3
               ? withSpring((scaleValue.value = 1), { mass: 0.7, stiffness: 90 })
               : withSpring((scaleValue.value = 0)),
         },
@@ -64,16 +64,16 @@ const Onboarding = ({
 
   const ButtonContainerStyle = useAnimatedStyle(() => {
     return {
-      width: x.value > 720 ? "100%" : "auto",
+      width: x.value >= SCREEN_WIDTH * 3 ? "100%" : "auto",
       height: 54,
     };
   });
 
   const PaginatorStyle = useAnimatedStyle(() => {
     return {
-      display: x.value > 721 ? "none" : "flex",
+      display: x.value >= SCREEN_WIDTH * 3 ? "none" : "flex",
       opacity:
-        x.value > 720
+        x.value >= SCREEN_WIDTH * 3
           ? withTiming(0, {
               duration: 1000,
             })
@@ -89,14 +89,14 @@ const Onboarding = ({
 
   const scrollTo = () => {
     //THIS CODE CAN BREAK,PLEASE USE IT ON YOUR OWN RISK
-    if (x?.value === 0) {
+    if (x?.value <= 0) {
       flatListRef?.current?.scrollToIndex({ index: 1 });
-    } else if (x?.value === 360) {
+    } else if (x?.value <= SCREEN_WIDTH) {
       flatListRef?.current?.scrollToIndex({ index: 2 });
-    } else if (x?.value === 720) {
+    } else if (x?.value <= SCREEN_WIDTH * 2) {
       flatListRef?.current?.scrollToIndex({ index: 3 });
     }
-    // } else if (x.value > 720) {
+    // else if (x.value <= SCREEN_WIDTH*3) {
     //   flatListRef?.current?.scrollToIndex({ index: 4 });
     // }
   };
