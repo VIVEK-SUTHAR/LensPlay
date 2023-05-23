@@ -36,8 +36,6 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
   const { isGuest } = useGuestStore();
   const { activePublication } = useActivePublication();
 
-  Logger.Warn("isDA Video", activePublication?.isDataAvailability);
-
   const [createComment] = useCreateCommentViaDispatcherMutation({
     onCompleted: (data) => {
       Logger.Success("Done", data);
