@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>922497587220-uk4fe5bp5gn8t6tjfgoodkubcqi5o842.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.922497587220-uk4fe5bp5gn8t6tjfgoodkubcqi5o842</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAfYQmCfv6pIy-gsJoWoBXXRRm8gcdn1iQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>922497587220</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.lensplayxyz.lensplay</string>
+	<key>PROJECT_ID</key>
+	<string>lensplay-73fc4</string>
+	<key>STORAGE_BUCKET</key>
+	<string>lensplay-73fc4.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:922497587220:ios:4dfbdd21b763b90e56ef01</string>
+</dict>
+</plist>
