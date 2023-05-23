@@ -204,6 +204,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
           onEndReachedThreshold={0.7}
           onEndReached={onEndCallBack}
           renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
         />
       )}
     </SafeAreaView>

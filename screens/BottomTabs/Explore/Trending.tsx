@@ -248,6 +248,7 @@ export default function Trending({
           onEndReachedThreshold={0.5}
           refreshControl={Refresh}
           renderItem={RenderItem}
+          showsVerticalScrollIndicator={false}
         />
       )}
     </SafeAreaView>
