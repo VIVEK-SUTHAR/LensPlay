@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   FlatList,
+  Platform,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -103,7 +104,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
     navigation.setOptions({
       headerStyle: { backgroundColor: "black" },
       headerTitle: "",
-      headerTransparent: true,
+      headerTransparent: false,
       headerLeft: () => {
         return (
           <View
@@ -241,6 +242,6 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "white",
     fontSize: 12,
-    paddingVertical: 4,
+    paddingVertical: Platform.OS == "ios"? 4 : 0,
   },
 });
