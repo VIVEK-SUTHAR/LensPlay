@@ -126,6 +126,14 @@ export interface InviteStore {
   handleError: (error: GetInviteResponse) => void;
   clearInvites: () => void;
 }
+export interface BgColorStore {
+  isAvatar: "AVATAR" | "COVER";
+  avatar: string | null;
+  cover: string | null;
+  setAvatarColors: (avatarColor: string) => void;
+  setCoverColors: (CoverColor: string) => void;
+  handleIsAvatar: (isAvatar: "AVATAR" | "COVER") => void;
+}
 
 export type ReferenceModuleType = {
   isFollowerOnly: boolean;
