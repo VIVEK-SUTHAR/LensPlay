@@ -16,7 +16,7 @@ type ProfileCardProps = {
   profileId: string;
 };
 
-export default function ProfileCard({
+function ProfileCard({
   profileIcon,
   profileName,
   handle,
@@ -40,10 +40,11 @@ export default function ProfileCard({
         style={{
           flexDirection: "row",
           alignItems: "center",
-          padding: 10,
+          padding: 8,
           marginVertical: 4,
           borderBottomWidth: 1,
           borderBottomColor: dark_primary,
+          height:70
         }}
       >
         <Avatar src={profileIcon} height={40} width={40} />
@@ -75,3 +76,5 @@ export default function ProfileCard({
     </Pressable>
   );
 }
+
+export default React.memo(ProfileCard)

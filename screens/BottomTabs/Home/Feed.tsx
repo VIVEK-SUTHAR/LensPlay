@@ -133,7 +133,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
         />
       );
     }
-    return <></>;
+    return null;
   };
 
   const _MoreLoader = () => {
