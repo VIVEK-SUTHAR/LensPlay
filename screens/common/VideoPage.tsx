@@ -31,7 +31,7 @@ import {
 import DisLikeButton from "../../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../../components/VIdeo/Actions/MirrorButton";
 import Player from "../../components/VideoPlayer";
-import { STATIC_ASSET } from "../../constants";
+import { LENSPLAY_SITE, STATIC_ASSET } from "../../constants";
 import { dark_primary, primary } from "../../constants/Colors";
 import { PUBLICATION } from "../../constants/tracking";
 import { useReaction } from "../../hooks/useLensQuery";
@@ -54,6 +54,7 @@ import Logger from "../../utils/logger";
 import TrackAction from "../../utils/Track";
 import createLivePeerAsset from "../../utils/video/createLivePeerAsset";
 import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
+import { useCreateDataAvailabilityMirrorViaDispatcherMutation } from "../../types/generated";
 
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
   const { activePublication } = useActivePublication();
@@ -76,6 +77,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
     setCollectStats,
     setMirrorStats,
   } = useReactionStore();
+  const isDAPublication = activePublication?.isDataAvailability;
 
   function handleBackButtonClick() {
     setStatusBarHidden(false, "fade");
@@ -119,6 +121,21 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
     }
   }
 
+  const [createDataAvaibalityMirror] = useCreateDataAvailabilityMirrorViaDispatcherMutation(
+    {
+      onCompleted: (data) => {
+        Logger.Success("DA Mirrored", data);
+        toast.success("Mirror submitted");
+        setMirrorStats(true, mirrorStats.mirrorCount + 1);
+        mirrorRef.current?.close();
+      },
+      onError: (err, cliOpt) => {
+        Logger.Error("Error in DA Mirror", err, "\nClient Option", cliOpt);
+        toast.show(err.message, ToastType.ERROR, true);
+      },
+    }
+  );
+
   const collectRef = useRef<BottomSheetMethods>(null);
   const mirrorRef = useRef<BottomSheetMethods>(null);
   const descRef = useRef<BottomSheetMethods>(null);
@@ -126,6 +143,23 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
     if (mirrorStats?.isMirrored) {
       toast.show("Already mirrored", ToastType.ERROR, true);
       mirrorRef.current?.close();
+      return;
+    }
+    if (isDAPublication){
+      createDataAvaibalityMirror({
+        variables: {
+          request:{
+            from: userStore?.currentProfile?.id,
+            mirror: activePublication?.id
+          }
+        },
+        context: {
+          headers: {
+            "x-access-token": `Bearer ${accessToken}`,
+            origin: LENSPLAY_SITE,
+          },
+        },
+      });
       return;
     }
     try {

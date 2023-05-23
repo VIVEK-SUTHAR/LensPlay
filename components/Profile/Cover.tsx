@@ -25,6 +25,7 @@ const Cover = ({ url, navigation }: CoverProps) => {
       quality: "lowest",
       pixelSpacing: 500,
     }).then((colors) => {
+      console.log(colors);
       switch (colors.platform) {
         case "android":
           setCoverColors(colors.average);
@@ -36,7 +37,10 @@ const Cover = ({ url, navigation }: CoverProps) => {
           setCoverColors("black");
       }
     });
+    
+    
   }, []);
+
 
   return (
     <Pressable
