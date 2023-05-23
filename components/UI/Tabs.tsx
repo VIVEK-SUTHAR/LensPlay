@@ -8,6 +8,7 @@ export default function Tabs({ children }: { children: ReactNode }) {
   return (
     <Tab.Navigator
       screenOptions={{
+        tabBarScrollEnabled: true,
         tabBarLabelStyle: {
           fontSize: 16,
           fontWeight: "600",
