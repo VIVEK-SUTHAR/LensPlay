@@ -15,6 +15,7 @@ import Tabs, { Tab } from "../../../components/UI/Tabs";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
   Follower,
+  FollowersRequest,
   MediaSet,
   useAllFollowersQuery,
   useAllFollowingQuery,
@@ -56,7 +57,7 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
   );
 };
 
-const ITEM_HEIGHT = 70;
+const ITEM_HEIGHT = 78;
 
 const getItemLayout = (_: any, index: number) => {
   return {
@@ -70,7 +71,11 @@ const Suscribers = () => {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
   const { PRIMARY } = useThemeStore();
-  const request = { profileId: currentProfile?.id, limit: 30 };
+
+  const request: FollowersRequest = {
+    profileId: currentProfile?.id,
+    limit: 30,
+  };
 
   const { data, error, loading, fetchMore } = useAllFollowersQuery({
     variables: {
@@ -84,6 +89,7 @@ const Suscribers = () => {
   });
 
   const subscribers = data?.followers?.items as Follower[];
+
   const pageInfo = data?.followers?.pageInfo;
 
   const keyExtractor = (item: Follower) =>
@@ -102,6 +108,7 @@ const Suscribers = () => {
       },
     }).catch((err) => {});
   }, [pageInfo?.next]);
+
   const _MoreLoader = () => {
     return pageInfo?.next ? (
       <View
@@ -115,7 +122,7 @@ const Suscribers = () => {
         <ActivityIndicator size={"small"} color={PRIMARY} />
       </View>
     ) : (
-      <ErrorMessage message="No more Videos to load" withImage={false} />
+      <ErrorMessage message="Looks like you reached at end" withImage={false} />
     );
   };
 
@@ -124,6 +131,7 @@ const Suscribers = () => {
   const renderItem = ({ item }: { item: Follower }) => {
     return (
       <ProfileCard
+        key={item?.wallet?.address}
         profileIcon={getRawurl(item?.wallet?.defaultProfile?.picture)}
         profileName={item?.wallet?.defaultProfile?.name}
         handle={item?.wallet?.defaultProfile?.handle}
@@ -136,6 +144,7 @@ const Suscribers = () => {
 
   if (loading)
     return <Skeleton children={<ProfileCardSkeleton />} number={10} />;
+
   if (data?.followers?.items?.length === 0)
     return (
       <ErrorMessage
@@ -143,6 +152,7 @@ const Suscribers = () => {
         withImage
       />
     );
+
   if (data) {
     return (
       <View style={{ backgroundColor: "black", minHeight: "100%", padding: 8 }}>
