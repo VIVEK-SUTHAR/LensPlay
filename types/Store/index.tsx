@@ -172,3 +172,8 @@ export interface IUploadStore {
   setUploadProgress: (progress: number) => void;
   setClearStore: () => void;
 }
+
+export interface INetWorkStore {
+  isOffline: boolean;
+  setIsOffline: (newState: boolean) => void;
+}
