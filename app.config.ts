@@ -102,7 +102,7 @@ const config: ExpoConfig = {
   },
   updates: {
     fallbackToCacheTimeout: 0,
-    url: "https://u.expo.dev/3b494bf0-e3fd-4a2c-b484-931ab7394de1",
+    url: "https://u.expo.dev/2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f",
   },
   runtimeVersion: {
     policy: "sdkVersion",
@@ -115,6 +115,7 @@ const config: ExpoConfig = {
     buildNumber: "1.0.0",
     icon: "./assets/images/icon.png",
     backgroundColor: "#000000",
+    googleServicesFile: "./GoogleService-Info.plist"
   },
   jsEngine: "hermes",
   android: {
@@ -165,7 +166,7 @@ const config: ExpoConfig = {
   },
   extra: {
     eas: {
-      // projectId: "e7d8274d-41e8-4289-a3f3-00e5e8cac9fc",
+      projectId: "2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f",
     },
   },
   plugins: [
@@ -188,6 +189,17 @@ const config: ExpoConfig = {
         initialOrientation: "DEFAULT",
       },
     ],
+    [
+      "expo-build-properties",
+      {
+        "ios": {
+          "useFrameworks": "static"
+        }
+      }
+    ],
+    "@react-native-firebase/app",
+    "@react-native-firebase/perf",
+    "@react-native-firebase/crashlytics"
   ],
 };
 
