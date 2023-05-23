@@ -61,37 +61,10 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const { isGuest } = useGuestStore();
   const { accessToken } = useAuthStore();
 
-  const QueryRequest = {
-    profileId: userStore?.currentProfile?.id,
-    publicationTypes: [PublicationTypes.Post],
-    metadata: {
-      mainContentFocus: [PublicationMainFocus.Video],
-    },
-    sources: ["lenstube", "lensplay"],
-  };
-
   const { data: Profile, loading, error, refetch } = useProfileQuery({
     variables: {
       request: {
         profileId: userStore?.currentProfile?.id,
-      },
-    },
-  });
-
-  const {
-    data: AllVideosData,
-    error: AllVideoError,
-    loading: AllVideosLoading,
-  } = useProfilePostsQuery({
-    variables: {
-      request: QueryRequest,
-      reactionRequest: {
-        profileId: userStore?.currentProfile?.id,
-      },
-    },
-    context: {
-      headers: {
-        "x-access-token": `Bearer ${accessToken}`,
       },
     },
   });
@@ -318,35 +291,19 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 </Pressable>
               </View>
               <SocialLinks profile={profile as Profile} />
-              <View style={{ marginVertical: 24 }}>
-                <PinnedPublication sheetRef={sheetRef} />
-                {AllVideosData && (
-                  <AllVideos
-                    Videos={AllVideosData?.publications?.items as Post[]}
-                    profileId={userStore.currentProfile?.id}
-                    navigation={navigation}
-                    owner={true}
-                  />
-                )}
-                <MirroredVideos
-                  navigation={navigation}
-                  profileId={userStore.currentProfile?.id}
-                  handle={userStore.currentProfile?.handle}
-                  owner={true}
-                />
-                <CollectedVideos
-                  ethAddress={userStore.currentProfile?.ownedBy}
-                  handle={userStore.currentProfile?.handle || ""}
-                  navigation={navigation}
-                  owner={true}
-                />
-              </View>
+              <PinnedPublication sheetRef={sheetRef} />
             </View>
-            {/* <Tabs>
-              <Tab.Screen name="All Videos" children={() => <></>} />
-              <Tab.Screen name="Mirror Videos" children={() => <></>} />
-              <Tab.Screen name="Collected Videos" children={() => <></>} />
-            </Tabs> */}
+            <Tabs>
+              <Tab.Screen name="All Videos" children={() => <AllVideos />} />
+              <Tab.Screen
+                name="Mirror Videos"
+                children={() => <MirroredVideos />}
+              />
+              <Tab.Screen
+                name="Collected Videos"
+                children={() => <CollectedVideos />}
+              />
+            </Tabs>
           </ScrollView>
         </SafeAreaView>
         <UnPinSheet sheetRef={sheetRef} />
