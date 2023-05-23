@@ -242,6 +242,6 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "white",
     fontSize: 12,
-    paddingVertical: Platform.OS == "ios"? 4 : 0,
+    paddingVertical: Platform.OS == "ios" ? 4 : 0,
   },
 });

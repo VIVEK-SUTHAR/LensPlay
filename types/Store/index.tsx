@@ -130,8 +130,8 @@ export interface BgColorStore {
   isAvatar: "AVATAR" | "COVER";
   avatar: string | null;
   cover: string | null;
-  setAvatarColors: (avatarColor: string) => void;
-  setCoverColors: (CoverColor: string) => void;
+  setAvatarColors: (avatarColor: string | null) => void;
+  setCoverColors: (CoverColor: string | null) => void;
   handleIsAvatar: (isAvatar: "AVATAR" | "COVER") => void;
 }
 

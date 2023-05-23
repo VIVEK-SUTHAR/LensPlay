@@ -5,11 +5,11 @@ export const useBgColorStore = create<BgColorStore>((set) => ({
   isAvatar: "AVATAR",
   avatar: null,
   cover: null,
-  setAvatarColors: (avatarColor: string) =>
+  setAvatarColors: (avatarColor: string | null) =>
     set({
       avatar: avatarColor,
     }),
-  setCoverColors: (coverColor: string) =>
+  setCoverColors: (coverColor: string | null) =>
     set({
       cover: coverColor,
     }),

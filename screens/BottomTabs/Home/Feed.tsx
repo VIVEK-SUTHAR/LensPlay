@@ -31,6 +31,7 @@ import {
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
 import Logger from "../../../utils/logger";
+import { useBgColorStore } from "../../../store/BgColorStore";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);

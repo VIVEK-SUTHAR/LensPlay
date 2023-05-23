@@ -5,6 +5,7 @@ import getPlaceHolderImage from "../../utils/getPlaceHolder";
 import { Image } from "expo-image";
 import { getColors } from "react-native-image-colors";
 import { useBgColorStore } from "../../store/BgColorStore";
+import getImageProxyURL from "../../utils/getImageProxyURL";
 
 type CoverProps = {
   url: string;
@@ -12,16 +13,17 @@ type CoverProps = {
 };
 
 const Cover = ({ url, navigation }: CoverProps) => {
-  const { handleIsAvatar, setCoverColors } = useBgColorStore();
+  const { setCoverColors } = useBgColorStore();
 
   React.useEffect(() => {
-    handleIsAvatar("AVATAR");
-    const finalURL = getIPFSLink(url);
+    const coverURL = getImageProxyURL({
+      formattedLink: getIPFSLink(url),
+    });
 
-    getColors(finalURL, {
-      fallback: "#228B22",
+    getColors(coverURL, {
+      fallback: "#000000",
       cache: true,
-      key: finalURL,
+      key: coverURL,
       quality: "lowest",
       pixelSpacing: 500,
     }).then((colors) => {
@@ -36,6 +38,10 @@ const Cover = ({ url, navigation }: CoverProps) => {
           setCoverColors("black");
       }
     });
+
+    return () => {
+      setCoverColors(null);
+    };
   }, []);
 
   return (

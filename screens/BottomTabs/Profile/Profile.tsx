@@ -46,10 +46,15 @@ import extractURLs from "../../../utils/extractURL";
 import formatHandle from "../../../utils/formatHandle";
 import getIPFSLink from "../../../utils/getIPFSLink";
 import getRawurl from "../../../utils/getRawUrl";
+import Tabs, { Tab } from "../../../components/UI/Tabs";
+import { useBgColorStore } from "../../../store/BgColorStore";
+import getImageProxyURL from "../../../utils/getImageProxyURL";
+import { getColors } from "react-native-image-colors";
 
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
   const [refreshing, setRefreshing] = useState(false);
   const sheetRef = React.useRef<BottomSheetMethods>(null);
+  const { setAvatarColors } = useBgColorStore();
 
   const theme = useThemeStore();
   const userStore = useProfile();
@@ -122,6 +127,36 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
       profileId: userStore.currentProfile?.id,
       activeTab: "subscriber",
     });
+  }, []);
+
+  React.useEffect(() => {
+    const coverURL = getImageProxyURL({
+      formattedLink: getIPFSLink(getRawurl(userStore.currentProfile?.picture)),
+    });
+
+    getColors(coverURL, {
+      fallback: "#000000",
+      cache: true,
+      key: coverURL,
+      quality: "lowest",
+      pixelSpacing: 500,
+    }).then((colors) => {
+      console.log(colors);
+      switch (colors.platform) {
+        case "android":
+          setAvatarColors(colors.average);
+          break;
+        case "ios":
+          setAvatarColors(colors.primary);
+          break;
+        default:
+          setAvatarColors("black");
+      }
+    });
+
+    return () => {
+      setAvatarColors(null);
+    };
   }, []);
 
   if (isGuest) return <PleaseLogin />;
@@ -307,6 +342,11 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
                 />
               </View>
             </View>
+            {/* <Tabs>
+              <Tab.Screen name="All Videos" children={() => <></>} />
+              <Tab.Screen name="Mirror Videos" children={() => <></>} />
+              <Tab.Screen name="Collected Videos" children={() => <></>} />
+            </Tabs> */}
           </ScrollView>
         </SafeAreaView>
         <UnPinSheet sheetRef={sheetRef} />

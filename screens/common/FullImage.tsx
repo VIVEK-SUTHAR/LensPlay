@@ -15,6 +15,8 @@ import Icon from "../../components/Icon";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getPlaceHolderImage from "../../utils/getPlaceHolder";
+import { useBgColorStore } from "../../store/BgColorStore";
+import Logger from "../../utils/logger";
 const StatusBarHeight = Constants.statusBarHeight;
 
 const FullImage = ({
@@ -23,6 +25,9 @@ const FullImage = ({
 }: RootStackScreenProps<"FullImage">) => {
   const isAvatar = route.params.source === "avatar";
   const [bgColor, setBgColor] = useState<ColorValue>("rgba(0,0,0,1)");
+  const { cover, avatar } = useBgColorStore();
+
+  Logger.Success(`${avatar} from full`);
 
   const goBack = () => navigation.goBack();
 
@@ -61,7 +66,12 @@ const FullImage = ({
   });
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: bgColor }]}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        { backgroundColor: isAvatar ? (avatar as string) : (cover as string) },
+      ]}
+    >
       <StatusBar backgroundColor="transparent" style="auto" />
       <View style={styles.headerStyle}>
         <Pressable onPress={goBack}>

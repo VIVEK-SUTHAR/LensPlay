@@ -1,5 +1,4 @@
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { Pressable, RefreshControl, ScrollView, View } from "react-native";
@@ -7,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "../../components/Icon";
 import AllVideos from "../../components/Profile/AllVideos";
 import CollectedVideos from "../../components/Profile/CollectedVideos";
+import Cover from "../../components/Profile/Cover";
 import MirroredVideos from "../../components/Profile/MirroredVideos";
 import Avatar from "../../components/UI/Avatar";
 import Button from "../../components/UI/Button";
@@ -38,11 +38,12 @@ import TrackAction from "../../utils/Track";
 import extractURLs from "../../utils/extractURL";
 import formatHandle from "../../utils/formatHandle";
 import getIPFSLink from "../../utils/getIPFSLink";
-import getImageProxyURL from "../../utils/getImageProxyURL";
-import getPlaceHolderImage from "../../utils/getPlaceHolder";
 import getRawurl from "../../utils/getRawUrl";
 import formatUnfollowTypedData from "../../utils/lens/formatUnfollowTypedData";
 import Logger from "../../utils/logger";
+import getImageProxyURL from "../../utils/getImageProxyURL";
+import { useBgColorStore } from "../../store/BgColorStore";
+import { getColors } from "react-native-image-colors";
 
 const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -61,9 +62,38 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
   const toast = useToast();
   const { isGuest } = useGuestStore();
   const wallet = useWalletConnect();
+  const { setAvatarColors, avatar, cover } = useBgColorStore();
 
   useEffect(() => {
     setAlreadyFollowing(route?.params?.isFollowdByMe);
+
+    const avatarURL = getImageProxyURL({
+      formattedLink: getIPFSLink(getRawurl(profile?.picture as MediaSet)),
+    });
+
+    console.log(avatarURL);
+
+    getColors(avatarURL, {
+      fallback: "#000000",
+      cache: true,
+      key: avatarURL,
+    }).then((colors) => {
+      console.log(colors);
+      switch (colors.platform) {
+        case "android":
+          setAvatarColors(colors.average);
+          break;
+        case "ios":
+          setAvatarColors(colors.detail);
+          break;
+        default:
+          setAvatarColors("black");
+      }
+    });
+
+    return () => {
+      setAvatarColors(null);
+    };
   }, []);
 
   const [sendUnFollowTxn] = useBroadcastMutation({
@@ -184,40 +214,11 @@ const Channel = ({ navigation, route }: RootStackScreenProps<"Channel">) => {
           }
         >
           <View>
-            <Pressable
-              onPress={(e) => {
-                e.preventDefault();
-                navigation.navigate("FullImage", {
-                  url: getRawurl(profile?.coverPicture as MediaSet),
-                  source: "cover",
-                });
-              }}
-            >
-              <View
-                style={{
-                  height: 180,
-                  marginBottom: 34,
-                }}
-              >
-                <Image
-                  placeholder={getPlaceHolderImage()}
-                  placeholderContentFit="cover"
-                  transition={500}
-                  source={{
-                    uri: getImageProxyURL({
-                      formattedLink: getIPFSLink(
-                        getRawurl(profile?.coverPicture as MediaSet)
-                      ),
-                    }),
-                  }}
-                  style={{
-                    height: "100%",
-                    width: "100%",
-                    resizeMode: "cover",
-                  }}
-                />
-              </View>
-            </Pressable>
+            <Cover
+              key={"ChannelCoverImage"}
+              url={getRawurl(profile?.coverPicture as MediaSet)}
+              navigation={navigation}
+            />
             <View
               style={{
                 flexDirection: "row",
