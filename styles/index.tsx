@@ -2,8 +2,8 @@ import { StyleSheet } from "react-native";
 
 const CommonStyles = StyleSheet.create({
   screenContainer: {
-    backgroundColor: "black",
     flex: 1,
+    backgroundColor: "black",
   },
   mx_4: {
     marginHorizontal: 4,

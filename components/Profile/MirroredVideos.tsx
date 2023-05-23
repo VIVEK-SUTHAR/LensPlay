@@ -15,6 +15,7 @@ import Ripple from "../UI/Ripple";
 import StyledText from "../UI/StyledText";
 import Icon from "../Icon";
 import DeleteVideo from "../VIdeo/DeleteVideo";
+import { NoVideosFound } from "./AllVideos";
 
 const MirroredVideos = ({}) => {
   const { accessToken } = useAuthStore();
@@ -55,10 +56,16 @@ const MirroredVideos = ({}) => {
   }, []);
 
   return (
-    <>
+    <View
+      style={{
+        backgroundColor: "black",
+        flex: 1,
+      }}
+    >
       <FlatList
         data={AllMirrorVideos as Mirror[]}
         keyExtractor={(item) => item.id}
+        ListEmptyComponent={<NoVideosFound />}
         refreshControl={
           <RefreshControl
             refreshing={false}
@@ -76,7 +83,7 @@ const MirroredVideos = ({}) => {
         )}
       />
       <MirroredVideoSheet sheetRef={MirroredVideoSheetRef} pubId={pubId} />
-    </>
+    </View>
   );
 };
 

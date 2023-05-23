@@ -31,6 +31,7 @@ import Ripple from "../UI/Ripple";
 import StyledText from "../UI/StyledText";
 import DeleteVideo from "../VIdeo/DeleteVideo";
 import MyVideoCard, { SheetProps, actionListType } from "../common/MyVideoCard";
+import { black } from "../../constants/Colors";
 
 const AllVideos = () => {
   const { accessToken } = useAuthStore();
@@ -70,10 +71,16 @@ const AllVideos = () => {
   }, []);
 
   return (
-    <>
+    <View
+      style={{
+        backgroundColor: "black",
+        flex: 1,
+      }}
+    >
       <FlatList
         data={AllVideos as Post[]}
         keyExtractor={(item) => item.id}
+        ListEmptyComponent={<NoVideosFound />}
         refreshControl={
           <RefreshControl
             refreshing={false}
@@ -91,7 +98,7 @@ const AllVideos = () => {
         )}
       />
       <AllVideoSheet sheetRef={AllVideoSheetRef} pubId={pubId} />
-    </>
+    </View>
   );
 };
 
@@ -244,5 +251,31 @@ export const AllVideoSheet = ({ sheetRef, pubId }: SheetProps) => {
     </>
   );
 };
+
+const _NoVideosFound = () => {
+  return (
+    <View
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        paddingVertical: 32,
+        paddingHorizontal: 16,
+      }}
+    >
+      <StyledText
+        title={"No videos found"}
+        style={{
+          color: black[100],
+          fontSize: 16,
+          fontWeight: "500",
+        }}
+      />
+    </View>
+  );
+};
+
+const NoVideosFound = React.memo(_NoVideosFound);
+
+export { NoVideosFound };
 
 export default React.memo(AllVideos);

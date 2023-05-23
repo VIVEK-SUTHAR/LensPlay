@@ -293,19 +293,19 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
               <SocialLinks profile={profile as Profile} />
               <PinnedPublication sheetRef={sheetRef} />
             </View>
-            <Tabs>
-              <Tab.Screen name="All Videos" children={() => <AllVideos />} />
-              <Tab.Screen
-                name="Mirror Videos"
-                children={() => <MirroredVideos />}
-              />
-              <Tab.Screen
-                name="Collected Videos"
-                children={() => <CollectedVideos />}
-              />
-            </Tabs>
           </ScrollView>
         </SafeAreaView>
+        <Tabs>
+          <Tab.Screen name="All Videos" children={() => <AllVideos />} />
+          <Tab.Screen
+            name="Mirror Videos"
+            children={() => <MirroredVideos />}
+          />
+          <Tab.Screen
+            name="Collected Videos"
+            children={() => <CollectedVideos />}
+          />
+        </Tabs>
         <UnPinSheet sheetRef={sheetRef} />
       </>
     );

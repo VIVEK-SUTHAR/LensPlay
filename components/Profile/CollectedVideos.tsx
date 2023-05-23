@@ -16,6 +16,7 @@ import Icon from "../Icon";
 import Ripple from "../UI/Ripple";
 import StyledText from "../UI/StyledText";
 import MyVideoCard, { SheetProps, actionListType } from "../common/MyVideoCard";
+import { NoVideosFound } from "./AllVideos";
 
 const CollectedVideos = () => {
   const { accessToken } = useAuthStore();
@@ -58,10 +59,17 @@ const CollectedVideos = () => {
   if (data) {
     const collectVideos = data?.publications?.items;
     return (
-      <>
+      <View
+        style={{
+          backgroundColor: "black",
+          flex: 1,
+          paddingVertical: 16,
+        }}
+      >
         <FlatList
           data={collectVideos as Post[]}
           keyExtractor={(item) => item.id}
+          ListEmptyComponent={<NoVideosFound />}
           refreshControl={
             <RefreshControl
               refreshing={false}
@@ -79,7 +87,7 @@ const CollectedVideos = () => {
           )}
         />
         <CollectedVideoSheet sheetRef={CollectedVideoSheetRef} pubId={pubId} />
-      </>
+      </View>
     );
   }
   return <></>;
