@@ -23,6 +23,8 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
 
   const { height, width } = useWindowDimensions();
 
+  const isAndroid = Platform.OS === "android";
+
   ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
 
   const QueryRequest: ExplorePublicationRequest = {
@@ -72,7 +74,7 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
   }) => {
     if (!item.hidden) {
       return (
-        <View style={{ height: Platform.OS === "ios" ? "auto" : height }}>
+        <View style={{ height: isAndroid ? height : "auto" }}>
           <SingleShot
             item={item}
             key={item.id}
@@ -102,26 +104,48 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
   };
 
   return (
-    <View
-      style={{
-        backgroundColor: "black",
-        height: Platform.OS === "ios" ? "auto" : height,
-        width: Platform.OS === "ios" ? "auto" : height,
-        flex: Platform.OS === "ios" ? 1 : "auto",
-      }}
-    >
-      <SwiperFlatList
-        vertical={true}
-        keyExtractor={keyExtractor}
-        onChangeIndex={handleChangeIndexValue}
-        data={data}
-        renderItem={renderItem}
-        initialNumToRender={3}
-        maxToRenderPerBatch={5}
-        onEndReachedThreshold={1}
-        onEndReached={onEndCallBack}
-      />
-    </View>
+    <>
+      {isAndroid ? (
+        <View
+          style={{
+            backgroundColor: "black",
+            height: height,
+            width: width,
+          }}
+        >
+          <SwiperFlatList
+            vertical={true}
+            keyExtractor={keyExtractor}
+            onChangeIndex={handleChangeIndexValue}
+            data={data}
+            renderItem={renderItem}
+            initialNumToRender={3}
+            maxToRenderPerBatch={5}
+            onEndReachedThreshold={1}
+            onEndReached={onEndCallBack}
+          />
+        </View>
+      ) : (
+        <View
+          style={{
+            backgroundColor: "black",
+            flex: 1,
+          }}
+        >
+          <SwiperFlatList
+            vertical={true}
+            keyExtractor={keyExtractor}
+            onChangeIndex={handleChangeIndexValue}
+            data={data}
+            renderItem={renderItem}
+            initialNumToRender={3}
+            maxToRenderPerBatch={5}
+            onEndReachedThreshold={1}
+            onEndReached={onEndCallBack}
+          />
+        </View>
+      )}
+    </>
   );
 };
 
