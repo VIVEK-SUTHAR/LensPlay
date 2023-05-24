@@ -44,7 +44,7 @@ export default function MyVideoCard({
       }}
       onPress={() => {
         setActivePublication(publication);
-        navigation.navigate("VideoPage");
+        // navigation.navigate("VideoPage");
       }}
     >
       <View>

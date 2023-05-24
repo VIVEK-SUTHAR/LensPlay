@@ -4,7 +4,7 @@ import { black, primary } from "../../constants/Colors";
 
 export const Tab = createMaterialTopTabNavigator();
 
-export default function Tabs({ children }: { children: ReactNode }) {
+export default function Tabs({ children, tabbar }: { children: ReactNode, tabbar?:any }) {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -34,6 +34,7 @@ export default function Tabs({ children }: { children: ReactNode }) {
           display: "none",
         },
       }}
+      tabBar={tabbar}
     >
       {children}
     </Tab.Navigator>

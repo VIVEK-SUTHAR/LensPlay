@@ -35,8 +35,14 @@ import Icon from "../Icon";
 import Ripple from "../UI/Ripple";
 import StyledText from "../UI/StyledText";
 import DeleteVideo from "../VIdeo/DeleteVideo";
+import Animated from "react-native-reanimated";
 
-const AllVideos = () => {
+
+export const AnimatedFlatList: typeof FlatList = Animated.createAnimatedComponent(
+  FlatList
+);
+
+const AllVideos = (props: any) => {
   const { accessToken } = useAuthStore();
   const { currentProfile } = useProfile();
   const { PRIMARY } = useThemeStore();
@@ -124,24 +130,15 @@ const AllVideos = () => {
       >
         <ActivityIndicator size={"small"} color={PRIMARY} />
       </View>
-    ) : (
-      <ErrorMesasge message="No more Videos to load" withImage={false} />
-    );
+    ) : null;
   };
 
   const MoreLoader = React.memo(_MoreLoader);
 
-  if (AllVideos?.length === 0)
-    return (
-      <ErrorMesasge
-        message="Seems like you haven't uploaded any videos yet"
-        withImage
-      />
-    );
 
   return (
     <View style={[CommonStyles.screenContainer]}>
-      <FlatList
+      <AnimatedFlatList
         data={AllVideos as Post[]}
         getItemLayout={getItemLayout}
         keyExtractor={(item) => item.id}
@@ -151,6 +148,7 @@ const AllVideos = () => {
         onEndReached={onEndCallBack}
         onEndReachedThreshold={0.9}
         renderItem={renderItem}
+        {...props}
       />
       <AllVideoSheet sheetRef={AllVideoSheetRef} pubId={pubId} />
     </View>

@@ -15,9 +15,9 @@ import Ripple from "../UI/Ripple";
 import StyledText from "../UI/StyledText";
 import Icon from "../Icon";
 import DeleteVideo from "../VIdeo/DeleteVideo";
-import { NoVideosFound } from "./AllVideos";
+import { AnimatedFlatList, NoVideosFound } from "./AllVideos";
 
-const MirroredVideos = ({}) => {
+const MirroredVideos = (props) => {
   const { accessToken } = useAuthStore();
   const { PRIMARY } = useThemeStore();
   const { currentProfile } = useProfile();
@@ -62,7 +62,7 @@ const MirroredVideos = ({}) => {
         flex: 1,
       }}
     >
-      <FlatList
+      <AnimatedFlatList
         data={AllMirrorVideos as Mirror[]}
         keyExtractor={(item) => item.id}
         ListEmptyComponent={<NoVideosFound />}
@@ -81,6 +81,7 @@ const MirroredVideos = ({}) => {
             setPubId={handlePubId}
           />
         )}
+        {...props}
       />
       <MirroredVideoSheet sheetRef={MirroredVideoSheetRef} pubId={pubId} />
     </View>
