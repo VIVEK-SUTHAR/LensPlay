@@ -7,16 +7,17 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import ErrorMessage from "../../../components/common/ErrorMesasge";
-import Skeleton from "../../../components/common/Skeleton";
 import ProfileCard from "../../../components/ProfileCard";
 import ProfileCardSkeleton from "../../../components/UI/ProfileCardSkeleton";
 import Tabs, { Tab } from "../../../components/UI/Tabs";
+import ErrorMessage from "../../../components/common/ErrorMesasge";
+import Skeleton from "../../../components/common/Skeleton";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
   Follower,
   FollowersRequest,
-  MediaSet,
+  Following,
+  FollowingRequest,
   useAllFollowersQuery,
   useAllFollowingQuery,
 } from "../../../types/generated";
@@ -122,7 +123,7 @@ const Suscribers = () => {
         <ActivityIndicator size={"small"} color={PRIMARY} />
       </View>
     ) : (
-      <ErrorMessage message="Looks like you reached at end" withImage={false} />
+      <></>
     );
   };
 
@@ -177,12 +178,16 @@ const SuscriberList = React.memo(Suscribers);
 const Subscriptions = () => {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
+  const { PRIMARY } = useThemeStore();
 
-  const { data, error, loading } = useAllFollowingQuery({
+  const request: FollowingRequest = {
+    address: currentProfile?.ownedBy,
+    limit: 30,
+  };
+
+  const { data, error, loading, fetchMore } = useAllFollowingQuery({
     variables: {
-      request: {
-        address: currentProfile?.ownedBy,
-      },
+      request,
     },
     context: {
       headers: {
@@ -191,28 +196,83 @@ const Subscriptions = () => {
     },
   });
 
+  const subscriptions = data?.following?.items as Following[];
+
+  const pageInfo = data?.following?.pageInfo;
+
+  const keyExtractor = (item: Following) =>
+    item?.profile?.id || item?.profile?.ownedBy;
+
+  const onEndCallBack = React.useCallback(() => {
+    if (!pageInfo?.next) {
+      return;
+    }
+    fetchMore({
+      variables: {
+        request: {
+          ...request,
+          cursor: pageInfo?.next,
+        },
+      },
+    }).catch((err) => {});
+  }, [pageInfo?.next]);
+
+  const _MoreLoader = () => {
+    return pageInfo?.next ? (
+      <View
+        style={{
+          height: ITEM_HEIGHT,
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator size={"small"} color={PRIMARY} />
+      </View>
+    ) : (
+      <></>
+    );
+  };
+
+  const MoreLoader = React.memo(_MoreLoader);
+
+  const renderItem = ({ item }: { item: Following }) => {
+    return (
+      <ProfileCard
+        key={item?.profile?.id}
+        profileIcon={getRawurl(item?.profile?.picture)}
+        profileName={item?.profile?.name}
+        handle={item?.profile?.handle}
+        profileId={item?.profile?.id}
+        owner={item?.profile?.ownedBy}
+        isFollowed={false}
+      />
+    );
+  };
+
   if (loading)
     return <Skeleton children={<ProfileCardSkeleton />} number={10} />;
 
+  if (data?.following?.items?.length === 0)
+    return (
+      <ErrorMessage
+        message="Looks like you don't have any subscribers"
+        withImage
+      />
+    );
+
   if (data) {
     return (
-      <View style={{ backgroundColor: "black", minHeight: "100%" }}>
+      <View style={{ backgroundColor: "black", minHeight: "100%", padding: 8 }}>
         <FlatList
-          data={data.following.items}
+          data={subscriptions}
+          keyExtractor={keyExtractor}
           getItemLayout={getItemLayout}
-          keyExtractor={(_, index) => index.toString()}
-          renderItem={({ item }) => {
-            return (
-              <ProfileCard
-                handle={item?.profile?.handle}
-                profileName={item?.profile?.name}
-                profileIcon={getRawurl(item?.profile?.picture as MediaSet)}
-                profileId={item?.profile?.id}
-                owner={item?.profile?.handle}
-                isFollowed={item?.profile?.isFollowedByMe}
-              />
-            );
-          }}
+          ListFooterComponent={<MoreLoader />}
+          onEndReached={onEndCallBack}
+          onEndReachedThreshold={0.1}
+          removeClippedSubviews={true}
+          renderItem={renderItem}
         />
       </View>
     );
