@@ -181,7 +181,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
               <Cover
                 navigation={navigation}
                 url={getIPFSLink(
-                  getRawurl(userStore.currentProfile?.coverPicture)
+                  getRawurl(profile?.coverPicture as MediaSet)
                 )}
               />
             </Pressable>

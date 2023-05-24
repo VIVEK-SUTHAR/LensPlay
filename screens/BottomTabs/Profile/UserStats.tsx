@@ -27,15 +27,11 @@ import getRawurl from "../../../utils/getRawUrl";
 const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
   const { currentProfile } = useProfile();
 
-  useLayoutEffect(
-    React.useCallback(() => {
-      navigation.setOptions({
-        title: currentProfile?.name || currentProfile?.handle,
-      });
-    }, []),
-    []
-  );
-
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: currentProfile?.name || currentProfile?.handle,
+    });
+  }, [navigation, currentProfile]);
   return (
     <SafeAreaView style={styles.container}>
       <Tabs>
@@ -164,6 +160,7 @@ const Suscribers = () => {
           ListFooterComponent={<MoreLoader />}
           onEndReached={onEndCallBack}
           onEndReachedThreshold={0.1}
+          initialNumToRender={12}
           removeClippedSubviews={true}
           renderItem={renderItem}
         />
