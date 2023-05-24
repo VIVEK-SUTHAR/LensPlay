@@ -17,5 +17,14 @@ const CommonStyles = StyleSheet.create({
   mx_16: {
     marginHorizontal: 16,
   },
+  px_2: {
+    paddingHorizontal:2
+  },
+  px_4: {
+    paddingHorizontal:4
+  },
+  px_8: {
+    paddingHorizontal:8
+  }
 });
 export default CommonStyles;

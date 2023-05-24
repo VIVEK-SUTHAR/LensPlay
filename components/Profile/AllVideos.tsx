@@ -1,16 +1,18 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import React from "react";
-import { Share, View } from "react-native";
-import { FlatList, RefreshControl } from "react-native-gesture-handler";
+import { ActivityIndicator, Share, View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import { v4 as uuidV4 } from "uuid";
+import { black } from "../../constants/Colors";
 import { PUBLICATION } from "../../constants/tracking";
+import usePinStore from "../../store/pinStore";
 import {
   useAuthStore,
   useProfile,
   useThemeStore,
   useToast,
 } from "../../store/Store";
-import usePinStore from "../../store/pinStore";
+import CommonStyles from "../../styles";
 import { ProfileMetaDataV1nput } from "../../types";
 import {
   Attribute,
@@ -22,21 +24,22 @@ import {
   useCreateSetProfileMetadataViaDispatcherMutation,
   useProfilePostsQuery,
 } from "../../types/generated";
-import TrackAction from "../../utils/Track";
 import getRawurl from "../../utils/getRawUrl";
+import Logger from "../../utils/logger";
+import TrackAction from "../../utils/Track";
 import uploadToArweave from "../../utils/uploadToArweave";
 import Sheet from "../Bottom";
+import ErrorMesasge from "../common/ErrorMesasge";
+import MyVideoCard, { actionListType, SheetProps } from "../common/MyVideoCard";
 import Icon from "../Icon";
 import Ripple from "../UI/Ripple";
 import StyledText from "../UI/StyledText";
 import DeleteVideo from "../VIdeo/DeleteVideo";
-import MyVideoCard, { SheetProps, actionListType } from "../common/MyVideoCard";
-import { black } from "../../constants/Colors";
 
 const AllVideos = () => {
   const { accessToken } = useAuthStore();
-  const { PRIMARY } = useThemeStore();
   const { currentProfile } = useProfile();
+  const { PRIMARY } = useThemeStore();
   const AllVideoSheetRef = React.useRef<BottomSheetMethods>(null);
 
   const QueryRequest = {
@@ -46,9 +49,10 @@ const AllVideos = () => {
       mainContentFocus: [PublicationMainFocus.Video],
     },
     sources: ["lenstube", "lensplay"],
+    limit: 10,
   };
 
-  const { data, error, loading } = useProfilePostsQuery({
+  const { data, error, loading, fetchMore } = useProfilePostsQuery({
     variables: {
       request: QueryRequest,
       reactionRequest: {
@@ -61,8 +65,11 @@ const AllVideos = () => {
       },
     },
   });
+  const AllVideos = React.useMemo(() => data?.publications?.items, [
+    data?.publications?.items,
+  ]);
 
-  const AllVideos = data?.publications?.items;
+  const pageInfo = data?.publications?.pageInfo;
 
   const [pubId, setPubId] = React.useState("");
 
@@ -70,32 +77,80 @@ const AllVideos = () => {
     setPubId(pubId);
   }, []);
 
+  const ITEM_HEIGHT = 116;
+
+  const getItemLayout = (_: any, index: number) => {
+    return {
+      length: ITEM_HEIGHT,
+      offset: ITEM_HEIGHT * index,
+      index,
+    };
+  };
+
+  const onEndCallBack = React.useCallback(() => {
+    if (!pageInfo?.next) {
+      return;
+    }
+    fetchMore({
+      variables: {
+        request: {
+          ...QueryRequest,
+          cursor: pageInfo?.next,
+        },
+      },
+    }).catch((err) => {});
+  }, [pageInfo?.next]);
+
+  const renderItem = React.useCallback(({ item }: { item: Post }) => {
+    return (
+      <MyVideoCard
+        publication={item}
+        id={item.id}
+        sheetRef={AllVideoSheetRef}
+        setPubId={handlePubId}
+      />
+    );
+  }, []);
+
+  const _MoreLoader = () => {
+    return pageInfo?.next ? (
+      <View
+        style={{
+          height: "auto",
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator size={"small"} color={PRIMARY} />
+      </View>
+    ) : (
+      <ErrorMesasge message="No more Videos to load" withImage={false} />
+    );
+  };
+
+  const MoreLoader = React.memo(_MoreLoader);
+
+  if (AllVideos?.length === 0)
+    return (
+      <ErrorMesasge
+        message="Seems like you haven't uploaded any videos yet"
+        withImage
+      />
+    );
+
   return (
-    <View
-      style={{
-        backgroundColor: "black",
-        flex: 1,
-      }}
-    >
+    <View style={[CommonStyles.screenContainer]}>
       <FlatList
         data={AllVideos as Post[]}
+        getItemLayout={getItemLayout}
         keyExtractor={(item) => item.id}
         ListEmptyComponent={<NoVideosFound />}
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            colors={[PRIMARY]}
-            progressBackgroundColor={"black"}
-          />
-        }
-        renderItem={({ item }) => (
-          <MyVideoCard
-            publication={item}
-            id={item.id}
-            sheetRef={AllVideoSheetRef}
-            setPubId={handlePubId}
-          />
-        )}
+        ListFooterComponent={<MoreLoader />}
+        removeClippedSubviews={true}
+        onEndReached={onEndCallBack}
+        onEndReachedThreshold={0.9}
+        renderItem={renderItem}
       />
       <AllVideoSheet sheetRef={AllVideoSheetRef} pubId={pubId} />
     </View>
