@@ -13,25 +13,22 @@ import CommonStyles from "../../../styles";
 import { RootTabScreenProps } from "../../../types/navigation/types";
 
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
-  const sheetRef = React.useRef<BottomSheetMethods>(null);
-  const { currentProfile } = useProfile();
-  return (
-    <>
-      <SafeAreaView style={[CommonStyles.screenContainer]}>
-        <StatusBar style={"auto"} />
-        <ProfileHeader profileId={currentProfile?.id} />
-      </SafeAreaView>
-      <Tabs>
-        <Tab.Screen name="All Videos" children={() => <AllVideos />} />
-        <Tab.Screen name="Mirror Videos" children={() => <MirroredVideos />} />
-        <Tab.Screen
-          name="Collected Videos"
-          children={() => <CollectedVideos />}
-        />
-      </Tabs>
-      <UnPinSheet sheetRef={sheetRef} />
-    </>
-  );
+	const sheetRef = React.useRef<BottomSheetMethods>(null);
+	const { currentProfile } = useProfile();
+	return (
+		<>
+			<SafeAreaView style={[CommonStyles.screenContainer]}>
+				<StatusBar style={"auto"} />
+				<ProfileHeader profileId={currentProfile?.id} />
+				<Tabs>
+					<Tab.Screen name="All Videos" children={() => <AllVideos />} />
+					<Tab.Screen name="Mirror Videos" children={() => <MirroredVideos />} />
+					<Tab.Screen name="Collected Videos" children={() => <CollectedVideos />} />
+				</Tabs>
+				<UnPinSheet sheetRef={sheetRef} />
+			</SafeAreaView>
+		</>
+	);
 };
 
 export default ProfileScreen;
