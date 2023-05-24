@@ -207,7 +207,7 @@ export default function StackNavigation() {
         name="UserStats"
         component={UserStats}
         options={{
-          animation: "slide_from_right",
+          animation: "default",
           headerShown: true,
           headerTintColor: theme.PRIMARY,
         }}

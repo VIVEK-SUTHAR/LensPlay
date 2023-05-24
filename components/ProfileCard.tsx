@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { Pressable, TouchableWithoutFeedback, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { dark_primary } from "../constants/Colors";
 import formatHandle from "../utils/formatHandle";
 import Avatar from "./UI/Avatar";
@@ -44,7 +44,7 @@ function ProfileCard({
           marginVertical: 4,
           borderBottomWidth: 1,
           borderBottomColor: dark_primary,
-          height:70
+          height: 70,
         }}
       >
         <Avatar src={profileIcon} height={40} width={40} />
@@ -77,4 +77,4 @@ function ProfileCard({
   );
 }
 
-export default React.memo(ProfileCard)
+export default React.memo(ProfileCard);
