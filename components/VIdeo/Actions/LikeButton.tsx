@@ -43,31 +43,28 @@ const LikeButton = ({
   const { accessToken } = useAuthStore();
 
   const [addReaction] = useAddReactionMutation({
-    onCompleted: () => {
-      if (bytes) {
-        setLikeCount(likeCount + 1);
-        setIsLiked(true);
-      } else {
-        setVideoPageStats(true, false, like + 1);
-      }
-    },
-    onError: (e) => {
-      toast.show("Something went wrong!", ToastType.ERROR, true);
-      // console.log(e);
-    },
-  });
-
-  const [removeReaction] = useRemoveReactionMutation({
-    onError: (e) => {
-      toast.show("Something went wrong!", ToastType.ERROR, true);
-    },
-    onCompleted: () => {
+    onCompleted: () => {},
+    onError: () => {
       if (bytes) {
         setLikeCount(likeCount - 1);
         setIsLiked(false);
       } else {
         setVideoPageStats(false, false, like - 1);
       }
+      toast.show("Something went wrong!", ToastType.ERROR, true);
+    },
+  });
+
+  const [removeReaction] = useRemoveReactionMutation({
+    onCompleted: () => {},
+    onError: () => {
+      if (bytes) {
+        setLikeCount(likeCount + 1);
+        setIsLiked(true);
+      } else {
+        setVideoPageStats(true, false, like + 1);
+      }
+      toast.show("Something went wrong!", ToastType.ERROR, true);
     },
   });
 
@@ -77,6 +74,12 @@ const LikeButton = ({
       return;
     }
     if (!isalreadyLiked) {
+      if (bytes) {
+        setLikeCount(likeCount + 1);
+        setIsLiked(true);
+      } else {
+        setVideoPageStats(true, false, like + 1);
+      }
       addReaction({
         variables: {
           request: {
@@ -93,6 +96,12 @@ const LikeButton = ({
       });
       TrackAction(bytes ? SHOT.SHOTS_LIKE : PUBLICATION.LIKE);
     } else {
+      if (bytes) {
+        setLikeCount(likeCount - 1);
+        setIsLiked(false);
+      } else {
+        setVideoPageStats(false, false, like - 1);
+      }
       removeReaction({
         variables: {
           request: {

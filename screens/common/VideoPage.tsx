@@ -121,20 +121,20 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
     }
   }
 
-  const [createDataAvaibalityMirror] = useCreateDataAvailabilityMirrorViaDispatcherMutation(
-    {
-      onCompleted: (data) => {
-        Logger.Success("DA Mirrored", data);
-        toast.success("Mirror submitted");
-        setMirrorStats(true, mirrorStats.mirrorCount + 1);
-        mirrorRef.current?.close();
-      },
-      onError: (err, cliOpt) => {
-        Logger.Error("Error in DA Mirror", err, "\nClient Option", cliOpt);
-        toast.show(err.message, ToastType.ERROR, true);
-      },
-    }
-  );
+  const [
+    createDataAvaibalityMirror,
+  ] = useCreateDataAvailabilityMirrorViaDispatcherMutation({
+    onCompleted: (data) => {
+      Logger.Success("DA Mirrored", data);
+      toast.success("Mirror submitted");
+      setMirrorStats(true, mirrorStats.mirrorCount + 1);
+      mirrorRef.current?.close();
+    },
+    onError: (err, cliOpt) => {
+      Logger.Error("Error in DA Mirror", err, "\nClient Option", cliOpt);
+      toast.show(err.message, ToastType.ERROR, true);
+    },
+  });
 
   const collectRef = useRef<BottomSheetMethods>(null);
   const mirrorRef = useRef<BottomSheetMethods>(null);
@@ -145,13 +145,13 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
       mirrorRef.current?.close();
       return;
     }
-    if (isDAPublication){
+    if (isDAPublication) {
       createDataAvaibalityMirror({
         variables: {
-          request:{
+          request: {
             from: userStore?.currentProfile?.id,
-            mirror: activePublication?.id
-          }
+            mirror: activePublication?.id,
+          },
         },
         context: {
           headers: {
@@ -504,7 +504,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
               />
               <View
                 style={{
-                  // height: "auto",
                   paddingVertical: 10,
                   width: "100%",
                   paddingHorizontal: 8,
@@ -513,7 +512,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
                   flexDirection: "row",
                   borderBottomColor: "gray",
                   borderBottomWidth: 1,
-                  // backgroundColor: "red",
                 }}
               >
                 <View style={styles.verticleCenter}>

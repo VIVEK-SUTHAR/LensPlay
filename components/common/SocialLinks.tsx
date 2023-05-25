@@ -4,6 +4,7 @@ import Icon, { IconProps } from "../Icon";
 import { Maybe, Profile } from "../../types/generated";
 import { dark_primary } from "../../constants/Colors";
 import { useProfile } from "../../store/Store";
+import Logger from "../../utils/logger";
 
 type socialLinksProps = {
   instagram: Maybe<string> | undefined;
@@ -21,7 +22,13 @@ type linksData = {
 function getLink(key: string, value: Maybe<string> | undefined) {
   switch (key) {
     case "twitter":
+      console.log(value);
+
+      if (value?.startsWith("@")) {
+        return value ? `https://twitter.com/${value.slice(1)}` : undefined;
+      }
       return value ? `https://twitter.com/${value}` : undefined;
+
     case "instagram":
       return value ? `https://www.instagram.com/${value}` : undefined;
     case "youtube":
@@ -40,8 +47,9 @@ function _SocialLinks({ profile }: { profile: Profile }) {
     website: "",
   });
   const getLinks = React.useCallback(() => {
-    const twitter = profile?.attributes?.find((item) => item.key === "twitter")
-      ?.value;
+    const twitter = profile?.attributes?.find(
+      (item) => item.key || item.traitType === "twitter"
+    )?.value;
     const youtube = profile?.attributes?.find((item) => item.key === "youtube")
       ?.value;
     const insta = profile?.attributes?.find((item) => item.key === "instagram")
@@ -82,7 +90,6 @@ function _SocialLinks({ profile }: { profile: Profile }) {
       color: "#1DA1F2",
     },
   ];
-
   return (
     <View
       style={{

@@ -11,6 +11,7 @@ import NetworkStatus from "./components/NetworkStatus";
 import Toast from "./components/Toast";
 import useCachedResources from "./hooks/useCachedResources";
 import Navigation from "./navigation";
+import "expo-dev-client";
 import useNetworkStore from "./store/NetworkStore";
 import Logger from "./utils/logger";
 

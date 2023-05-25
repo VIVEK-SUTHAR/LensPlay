@@ -189,14 +189,14 @@ const config: ExpoConfig = {
         initialOrientation: "DEFAULT",
       },
     ],
-    // [
-    //   "expo-build-properties",
-    //   {
-    //     ios: {
-    //       useFrameworks: "static",
-    //     },
-    //   },
-    // ],
+    [
+      "expo-build-properties",
+      {
+        ios: {
+          useFrameworks: "static",
+        },
+      },
+    ],
     "@react-native-firebase/app",
     "@react-native-firebase/perf",
     "@react-native-firebase/crashlytics",

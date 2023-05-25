@@ -35,27 +35,25 @@ const DisLikeButton = ({ isalreadyDisLiked, id }: DisLikeButtonProps) => {
 
   const [addReaction] = useAddReactionMutation({
     onError: (error) => {
-      toast.show("Something went wrong!", ToastType.ERROR, true);
-    },
-    onCompleted: (data) => {
       setVideoPageStats(
         false,
-        true,
+        false,
         videopageStats.isLiked
-          ? videopageStats.likeCount - 1
+          ? videopageStats.likeCount + 1
           : videopageStats.likeCount
       );
+      toast.show("Something went wrong!", ToastType.ERROR, true);
     },
+    onCompleted: (data) => {},
   });
 
   const [removeReaction] = useRemoveReactionMutation({
     onError: (error) => {
       // console.log(error.message, "remove e");
+      setVideoPageStats(false, false, videopageStats.likeCount);
       toast.show("Something went wrong!", ToastType.ERROR, true);
     },
-    onCompleted: (data) => {
-      setVideoPageStats(false, false, videopageStats.likeCount);
-    },
+    onCompleted: (data) => {},
   });
 
   const onDislike = async () => {
@@ -64,6 +62,13 @@ const DisLikeButton = ({ isalreadyDisLiked, id }: DisLikeButtonProps) => {
       return;
     }
     if (!isalreadyDisLiked) {
+      setVideoPageStats(
+        false,
+        true,
+        videopageStats.isLiked
+          ? videopageStats.likeCount - 1
+          : videopageStats.likeCount
+      );
       addReaction({
         variables: {
           request: {
@@ -80,6 +85,7 @@ const DisLikeButton = ({ isalreadyDisLiked, id }: DisLikeButtonProps) => {
       });
       TrackAction(PUBLICATION.DISLIKE);
     } else {
+      setVideoPageStats(false, false, videopageStats.likeCount);
       removeReaction({
         variables: {
           request: {

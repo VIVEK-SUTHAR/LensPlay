@@ -1,6 +1,6 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import React, { ReactNode } from "react";
-import { black, primary } from "../../constants/Colors";
+import { black } from "../../constants/Colors";
 
 export const Tab = createMaterialTopTabNavigator();
 

@@ -79,9 +79,7 @@ export type RootStackParamList = {
     profileId?: string;
     activeTab: string;
   };
-  VideoPage: {
-    playBackurl?: string;
-  };
+  VideoPage: undefined;
   Channel: {
     profileId: string;
     isFollowdByMe?: boolean;

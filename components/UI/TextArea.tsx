@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: "white",
-    fontWeight: "700",
+    fontWeight: "600",
     marginBottom: 8,
     fontSize: 16,
   },

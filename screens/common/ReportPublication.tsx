@@ -4,6 +4,7 @@ import {
   BackHandler,
   FlatList,
   KeyboardAvoidingView,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -26,6 +27,7 @@ import {
 } from "../../types/generated";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import TrackAction from "../../utils/Track";
+import TextArea from "../../components/UI/TextArea";
 
 type subreason = {
   reason: string;
@@ -155,26 +157,12 @@ const ReportPublication = ({
           alignItems: "center",
         }}
       >
-        <View style={{ justifyContent: "flex-start", width: "100%" }}>
-          <Heading
-            title="Tell us what's wrong with this post."
-            style={{
-              color: "white",
-              fontWeight: "700",
-              fontSize: 18,
-              alignSelf: "flex-start",
-              paddingHorizontal: 16,
-              marginBottom: 18,
-            }}
-          />
-        </View>
-
         <StyledText
           title={"Select Reason"}
           style={{
             color: "white",
-            fontSize: 20,
-            fontWeight: "700",
+            fontSize: 16,
+            fontWeight: "600",
             alignSelf: "flex-start",
             paddingHorizontal: 16,
           }}
@@ -217,8 +205,8 @@ const ReportPublication = ({
           title={"Select Type"}
           style={{
             color: "white",
-            fontSize: 20,
-            fontWeight: "700",
+            fontSize: 16,
+            fontWeight: "600",
             alignSelf: "flex-start",
             paddingHorizontal: 16,
           }}
@@ -258,14 +246,11 @@ const ReportPublication = ({
           </View>
         </Pressable>
         <View style={styles.inputContainer}>
-          <StyledText title="Additional" style={styles.textStyle} />
-          <TextInput
-            numberOfLines={6}
-            multiline={true}
+          <TextArea
+            rows={6}
+            placeHolder={""}
+            label="Additional"
             value={addiText}
-            style={styles.input}
-            placeholderTextColor="gray"
-            selectionColor={theme.PRIMARY}
             onChange={(e) => {
               e.preventDefault();
               setAddiText(e.nativeEvent.text);
@@ -274,12 +259,15 @@ const ReportPublication = ({
         </View>
       </ScrollView>
       <View
-        style={[styles.inputContainer, { position: "absolute", bottom: 16 }]}
+        style={[
+          styles.inputContainer,
+          { position: "absolute", bottom: Platform.OS === "ios" ? 32 : 16 },
+        ]}
       >
         <Button
           title="Report now"
           width={"100%"}
-          py={8}
+          py={12}
           px={16}
           bg="#DC0000"
           borderRadius={8}
@@ -506,7 +494,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "black",
     alignItems: "center",
-    paddingHorizontal: 2,
     paddingVertical: 16,
   },
   textStyle: {

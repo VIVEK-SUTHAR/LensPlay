@@ -181,7 +181,7 @@ export default function StackNavigation() {
         component={Channel}
         options={{
           animation: "default",
-          headerShown: false,
+          headerShown: true,
           headerTintColor: theme.PRIMARY.toString(),
         }}
       />
@@ -244,7 +244,7 @@ export default function StackNavigation() {
         name="Settings"
         component={Settings}
         options={{
-          animation: "slide_from_bottom",
+          animation: "default",
           headerShown: true,
           headerTintColor: theme.PRIMARY,
           headerTitle: "Settings",
