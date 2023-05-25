@@ -32,6 +32,9 @@ import {
 import { RootTabScreenProps } from "../../../types/navigation/types";
 import Logger from "../../../utils/logger";
 import { useBgColorStore } from "../../../store/BgColorStore";
+import TrackAction from "../../../utils/Track";
+import { HOME } from "../../../constants/tracking";
+import { data } from "../../../components/Login/data";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -67,17 +70,17 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
       },
     },
   });
-
+  
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     try {
       refetch({
         request: QueryRequest,
       })
-        .then(() => {
-          setRefreshing(false);
-        })
-        .catch((err) => {});
+      .then(() => {
+        setRefreshing(false);
+      })
+      .catch((err) => {});
     } catch (error) {
     } finally {
       setRefreshing(false);
@@ -98,17 +101,17 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
    * 2).Click on toggle Element Inspector
    * 3).Select the FlatList renderItem components
    * 4).See the value in Box-Model and set it accordingly
-   */
-  const ITEM_HEIGHT = 280;
-
-  const getItemLayout = (_: any, index: number) => {
-    return {
-      length: ITEM_HEIGHT,
+  */
+ const ITEM_HEIGHT = 280;
+ 
+ const getItemLayout = (_: any, index: number) => {
+   return {
+     length: ITEM_HEIGHT,
       offset: ITEM_HEIGHT * index,
       index,
     };
   };
-
+  
   const onEndCallBack = React.useCallback(() => {
     if (!pageInfo?.next) {
       return;
@@ -122,57 +125,61 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
       },
     }).catch((err) => {});
   }, [pageInfo?.next]);
-
+  
   const renderItem = ({ item }: { item: FeedItem }) => {
     if (!item.root.hidden) {
       return (
         <VideoCard
-          key={`${item?.root?.id}-${item?.root?.createdAt}`}
-          publication={item?.root as FeedItemRoot}
-          id={item?.root?.id}
+        key={`${item?.root?.id}-${item?.root?.createdAt}`}
+        publication={item?.root as FeedItemRoot}
+        id={item?.root?.id}
         />
-      );
-    }
-    return <></>;
-  };
+        );
+      }
+      return null;
+    };
 
+    if(data){
+      TrackAction(HOME.SWITCH_HOME_TAB)
+    }
+    
   const _MoreLoader = () => {
     return (
       <>
         {pageInfo?.next ? (
           <View
-            style={{
+          style={{
               height: 200,
               width: "100%",
               justifyContent: "center",
               alignItems: "center",
             }}
-          >
+            >
             <ActivityIndicator size={"large"} color={theme.PRIMARY} />
           </View>
         ) : (
           <ErrorMessage message="No more Videos to load" withImage={false} />
-        )}
+          )}
       </>
     );
   };
-
+  
   const MoreLoader = React.memo(_MoreLoader);
-
+  
   const _RefreshControl = (
     <RefreshControl
-      refreshing={refreshing}
-      onRefresh={onRefresh}
-      colors={[theme.PRIMARY]}
-      progressBackgroundColor={"black"}
+    refreshing={refreshing}
+    onRefresh={onRefresh}
+    colors={[theme.PRIMARY]}
+    progressBackgroundColor={"black"}
     />
-  );
-
-  if (isGuest) return <PleaseLogin />;
-  if (error) {
-    Logger.Error("e", error);
-    return (
-      <SafeAreaView style={styles.container}>
+    );
+    
+    if (isGuest) return <PleaseLogin />;
+    if (error) {
+      Logger.Error("e", error);
+      return (
+        <SafeAreaView style={styles.container}>
         <ScrollView
           refreshControl={_RefreshControl}
           contentContainerStyle={{
@@ -180,7 +187,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
             alignItems: "center",
             justifyContent: "center",
           }}
-        >
+          >
           <NotFound navigation={navigation} />
         </ScrollView>
       </SafeAreaView>
@@ -191,8 +198,8 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
       <StatusBar backgroundColor={"black"} />
       {loading ? (
         <Skeleton children={<VideoCardSkeleton />} number={10} />
-      ) : (
-        <FlatList
+        ) : (
+          <FlatList
           data={Feeddata?.feed.items as FeedItem[]}
           keyExtractor={keyExtractor}
           getItemLayout={getItemLayout}

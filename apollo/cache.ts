@@ -14,6 +14,7 @@ const cache = new InMemoryCache({
           "request",
           ["profileId", "notificationTypes", "highSignalFilter"],
         ]),
+        followers: cursorBasedPagination(["request", ["profileId"]]),
       },
     },
   },

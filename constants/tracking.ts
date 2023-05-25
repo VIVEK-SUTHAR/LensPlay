@@ -44,7 +44,12 @@ export const SHOT = {
 export const EXPLORE = {
   SWITCH_EXPLORE_FEED_TAB: "Switch explore feed tab",
 };
-
+export const HOME = {
+  SWITCH_HOME_TAB: "Switch to home tab",
+};
+export const SEARCH = {
+  SEARCH_VIDEOS_TAB: "Search Videos and profile",
+};
 export const SETTINGS = {
   PROFILE: {
     UPDATE_DETAILS: "Update details",

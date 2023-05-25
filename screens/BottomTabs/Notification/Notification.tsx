@@ -7,6 +7,8 @@ import FollowNotifications from "../../../components/Notifications/Tabs/FollowNo
 import MentionNotifications from "../../../components/Notifications/Tabs/MentionNotifications";
 import Tabs, { Tab } from "../../../components/UI/Tabs";
 import { RootTabScreenProps } from "../../../types/navigation/types";
+import TrackAction from "../../../utils/Track";
+import { NOTIFICATION } from "../../../constants/tracking";
 
 type NotificationTabsType = {
   name: string;
@@ -37,6 +39,7 @@ const NotificationTabs: NotificationTabsType[] = [
 ];
 
 const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
+  TrackAction(NOTIFICATION.NOTIFICATIONS);
   return (
     <SafeAreaView style={styles.container}>
       <Tabs>

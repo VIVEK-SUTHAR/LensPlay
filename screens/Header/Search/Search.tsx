@@ -26,6 +26,8 @@ import {
   SearchRequestTypes,
 } from "../../../types/generated";
 import { RootStackScreenProps } from "../../../types/navigation/types";
+import TrackAction from "../../../utils/Track";
+import { SEARCH } from "../../../constants/tracking";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const { DARK_PRIMARY } = useThemeStore();
@@ -38,26 +40,26 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   );
   const debouncedValue = useDebounce<string>(keyword, 500);
   const { isGuest } = useGuestStore();
-
+  
   const [searchChannels, { data: result, error, loading }] = useLazyQuery(
     searchType === SearchRequestTypes.Profile
-      ? SearchProfilesDocument
-      : SearchPublicationsDocument
-  );
+    ? SearchProfilesDocument
+    : SearchPublicationsDocument
+    );
 
-  const onDebounce = async () => {
-    if (keyword.trim().length > 0) {
-      try {
-        if (isGuest) {
-          searchChannels({
-            variables: {
-              request: {
-                type: searchType,
-                query: keyword,
-                limit: 30,
-                sources: ["lenstube"],
+    const onDebounce = async () => {
+      if (keyword.trim().length > 0) {
+        try {
+          if (isGuest) {
+            searchChannels({
+              variables: {
+                request: {
+                  type: searchType,
+                  query: keyword,
+                  limit: 30,
+                  sources: ["lenstube"],
+                },
               },
-            },
           });
           if (result?.search?.items?.length > 0) {
             setIsfound(true);
@@ -95,12 +97,13 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
       }
     }
   };
-
+  
   useEffect(() => {
     onDebounce();
   }, [debouncedValue, searchType]);
-
+  
   React.useLayoutEffect(() => {
+    TrackAction(SEARCH.SEARCH_VIDEOS_TAB);
     navigation.setOptions({
       headerStyle: { backgroundColor: "black" },
       headerTitle: "",
@@ -109,7 +112,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
         return (
           <View
             style={[styles.headerContainer, { backgroundColor: DARK_PRIMARY }]}
-          >
+            >
             <Pressable
               onPress={(e) => {
                 e.preventDefault();
@@ -119,7 +122,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                 marginRight: 8,
                 paddingHorizontal: 4,
               }}
-            >
+              >
               <Icon name="arrowLeft" size={20} />
             </Pressable>
             <TextInput
@@ -131,7 +134,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                 onDebounce();
               }}
               style={styles.textInput}
-            />
+              />
           </View>
         );
       },

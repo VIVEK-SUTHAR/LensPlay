@@ -1,73 +1,43 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect } from "react";
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   SafeAreaView,
   StyleSheet,
   View,
 } from "react-native";
-import Icon from "../../../components/Icon";
 import ProfileCard from "../../../components/ProfileCard";
-import Heading from "../../../components/UI/Heading";
 import ProfileCardSkeleton from "../../../components/UI/ProfileCardSkeleton";
 import Tabs, { Tab } from "../../../components/UI/Tabs";
+import ErrorMessage from "../../../components/common/ErrorMesasge";
+import Skeleton from "../../../components/common/Skeleton";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
+  Follower,
+  FollowersRequest,
+  Following,
+  FollowingRequest,
   useAllFollowersQuery,
   useAllFollowingQuery,
 } from "../../../types/generated";
 import { RootStackScreenProps } from "../../../types/navigation/types";
 import getRawurl from "../../../utils/getRawUrl";
 
-const UserStats = ({
-  navigation,
-  route,
-}: RootStackScreenProps<"UserStats">) => {
-  const [headerTitle, setHeaderTitle] = useState<string>("Subscribers");
-  const theme = useThemeStore();
+const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
+  const { currentProfile } = useProfile();
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: "",
-      headerLeft: () => {
-        return (
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Icon name="arrowLeft" color={theme.PRIMARY} />
-            <Heading
-              title={`Your ${headerTitle}`}
-              style={{
-                color: theme.PRIMARY,
-                fontSize: 16,
-                fontWeight: "600",
-                marginHorizontal: 16,
-              }}
-            />
-          </View>
-        );
-      },
+      title: currentProfile?.name || currentProfile?.handle,
     });
-  });
-
+  }, [navigation, currentProfile]);
   return (
     <SafeAreaView style={styles.container}>
       <Tabs>
         <Tab.Screen
           name="Subscribers"
           component={SuscriberList}
-          listeners={{
-            focus: () => {
-              setHeaderTitle("Subscribers");
-            },
-          }}
-          initialParams={{
-            profileId: route.params.profileId,
-          }}
           options={{
             tabBarLabel: "Subscribers",
           }}
@@ -75,11 +45,6 @@ const UserStats = ({
         <Tab.Screen
           name="Subscriptions"
           component={SubscriptionsList}
-          listeners={{
-            focus: () => {
-              setHeaderTitle("Subscriptions");
-            },
-          }}
           options={{
             tabBarLabel: "Subscriptions",
           }}
@@ -89,16 +54,29 @@ const UserStats = ({
   );
 };
 
-const Suscribers = ({ navigation, route }) => {
+const ITEM_HEIGHT = 78;
+
+const getItemLayout = (_: any, index: number) => {
+  return {
+    length: ITEM_HEIGHT,
+    offset: ITEM_HEIGHT * index,
+    index,
+  };
+};
+
+const Suscribers = () => {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
+  const { PRIMARY } = useThemeStore();
 
-  const profileId = React.useMemo(() => route.params.profileId, [navigation]);
-  const { data, error, loading } = useAllFollowersQuery({
+  const request: FollowersRequest = {
+    profileId: currentProfile?.id,
+    limit: 30,
+  };
+
+  const { data, error, loading, fetchMore } = useAllFollowersQuery({
     variables: {
-      request: {
-        profileId: profileId ? profileId : currentProfile?.id,
-      },
+      request,
     },
     context: {
       headers: {
@@ -106,32 +84,90 @@ const Suscribers = ({ navigation, route }) => {
       },
     },
   });
-  if (loading) return <Loader />;
+
+  const subscribers = data?.followers?.items as Follower[];
+
+  const pageInfo = data?.followers?.pageInfo;
+
+  const keyExtractor = (item: Follower) =>
+    item?.wallet?.defaultProfile?.id || item?.wallet?.address;
+
+  const onEndCallBack = React.useCallback(() => {
+    if (!pageInfo?.next) {
+      return;
+    }
+    fetchMore({
+      variables: {
+        request: {
+          ...request,
+          cursor: pageInfo?.next,
+        },
+      },
+    }).catch((err) => {});
+  }, [pageInfo?.next]);
+
+  const _MoreLoader = () => {
+    return pageInfo?.next ? (
+      <View
+        style={{
+          height: ITEM_HEIGHT,
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator size={"small"} color={PRIMARY} />
+      </View>
+    ) : (
+      <></>
+    );
+  };
+
+  const MoreLoader = React.memo(_MoreLoader);
+
+  const renderItem = ({ item }: { item: Follower }) => {
+    return (
+      <ProfileCard
+        key={item?.wallet?.address}
+        profileIcon={getRawurl(item?.wallet?.defaultProfile?.picture)}
+        profileName={item?.wallet?.defaultProfile?.name}
+        handle={item?.wallet?.defaultProfile?.handle}
+        profileId={item?.wallet?.defaultProfile?.id}
+        owner={item?.wallet?.address}
+        isFollowed={false}
+      />
+    );
+  };
+
+  if (loading)
+    return <Skeleton children={<ProfileCardSkeleton />} number={10} />;
+
+  if (data?.followers?.items?.length === 0)
+    return (
+      <ErrorMessage
+        message="Looks like you don't have any subscribers"
+        withImage
+      />
+    );
 
   if (data) {
     return (
-      <View style={{ backgroundColor: "black", minHeight: "100%" }}>
+      <View style={{ backgroundColor: "black", minHeight: "100%", padding: 8 }}>
         <FlatList
-          data={data?.followers?.items}
-          keyExtractor={(_, index) => index.toString()}
-          style={{
-            padding: 8,
-          }}
-          renderItem={({ item }) => (
-            <ProfileCard
-              profileIcon={getRawurl(item?.wallet?.defaultProfile?.picture)}
-              profileName={item?.wallet?.defaultProfile?.name}
-              handle={item?.wallet?.defaultProfile?.handle}
-              profileId={item?.wallet?.defaultProfile?.id}
-              owner={item?.wallet?.address}
-              isFollowed={false}
-            />
-          )}
+          data={subscribers}
+          keyExtractor={keyExtractor}
+          getItemLayout={getItemLayout}
+          ListFooterComponent={<MoreLoader />}
+          onEndReached={onEndCallBack}
+          onEndReachedThreshold={0.1}
+          initialNumToRender={12}
+          removeClippedSubviews={true}
+          renderItem={renderItem}
         />
       </View>
     );
   }
-  return <></>;
+  return null;
 };
 
 const SuscriberList = React.memo(Suscribers);
@@ -139,12 +175,16 @@ const SuscriberList = React.memo(Suscribers);
 const Subscriptions = () => {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
+  const { PRIMARY } = useThemeStore();
 
-  const { data, error, loading } = useAllFollowingQuery({
+  const request: FollowingRequest = {
+    address: currentProfile?.ownedBy,
+    limit: 30,
+  };
+
+  const { data, error, loading, fetchMore } = useAllFollowingQuery({
     variables: {
-      request: {
-        address: currentProfile?.ownedBy,
-      },
+      request,
     },
     context: {
       headers: {
@@ -153,49 +193,91 @@ const Subscriptions = () => {
     },
   });
 
-  if (loading) return <Loader />;
+  const subscriptions = data?.following?.items as Following[];
+
+  const pageInfo = data?.following?.pageInfo;
+
+  const keyExtractor = (item: Following) =>
+    item?.profile?.id || item?.profile?.ownedBy;
+
+  const onEndCallBack = React.useCallback(() => {
+    if (!pageInfo?.next) {
+      return;
+    }
+    fetchMore({
+      variables: {
+        request: {
+          ...request,
+          cursor: pageInfo?.next,
+        },
+      },
+    }).catch((err) => {});
+  }, [pageInfo?.next]);
+
+  const _MoreLoader = () => {
+    return pageInfo?.next ? (
+      <View
+        style={{
+          height: ITEM_HEIGHT,
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator size={"small"} color={PRIMARY} />
+      </View>
+    ) : (
+      <></>
+    );
+  };
+
+  const MoreLoader = React.memo(_MoreLoader);
+
+  const renderItem = ({ item }: { item: Following }) => {
+    return (
+      <ProfileCard
+        key={item?.profile?.id}
+        profileIcon={getRawurl(item?.profile?.picture)}
+        profileName={item?.profile?.name}
+        handle={item?.profile?.handle}
+        profileId={item?.profile?.id}
+        owner={item?.profile?.ownedBy}
+        isFollowed={false}
+      />
+    );
+  };
+
+  if (loading)
+    return <Skeleton children={<ProfileCardSkeleton />} number={10} />;
+
+  if (data?.following?.items?.length === 0)
+    return (
+      <ErrorMessage
+        message="Looks like you don't have any subscribers"
+        withImage
+      />
+    );
+
   if (data) {
     return (
-      <View style={{ backgroundColor: "black", minHeight: "100%" }}>
+      <View style={{ backgroundColor: "black", minHeight: "100%", padding: 8 }}>
         <FlatList
-          data={data.following.items}
-          keyExtractor={(_, index) => index.toString()}
-          renderItem={({ item }) => {
-            return (
-              <ProfileCard
-                handle={item?.profile?.handle}
-                profileName={item?.profile?.name}
-                profileIcon={getRawurl(item?.profile?.picture)}
-                profileId={item?.profile?.id}
-                owner={item?.profile?.handle}
-                isFollowed={item?.profile?.isFollowedByMe}
-              />
-            );
-          }}
+          data={subscriptions}
+          keyExtractor={keyExtractor}
+          getItemLayout={getItemLayout}
+          ListFooterComponent={<MoreLoader />}
+          onEndReached={onEndCallBack}
+          onEndReachedThreshold={0.1}
+          removeClippedSubviews={true}
+          renderItem={renderItem}
         />
       </View>
     );
   }
-  return <></>;
+  return null;
 };
 
 const SubscriptionsList = React.memo(Subscriptions);
-
-const Loader = () => {
-  return (
-    <View style={{ backgroundColor: "black", flex: 1 }}>
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-      <ProfileCardSkeleton />
-    </View>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {

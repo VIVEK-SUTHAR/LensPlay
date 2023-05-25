@@ -28,6 +28,7 @@ import Button from "../UI/Button";
 import Input from "../UI/Input";
 import StyledText from "../UI/StyledText";
 import TextArea from "../UI/TextArea";
+import { LENSPLAY_SITE } from "../../constants";
 
 export default function EditDetail() {
   const [userData, setUserData] = useState({
@@ -74,7 +75,9 @@ export default function EditDetail() {
   const [
     createSetProfileMetadataViaDispatcherMutation,
   ] = useCreateSetProfileMetadataViaDispatcherMutation({
-    onCompleted: () => {
+    onCompleted: (data) => {
+      console.log(data);
+      
       toast.show("Channel updated successfully", ToastType.SUCCESS, true);
       TrackAction(SETTINGS.PROFILE.UPDATE_DETAILS);
     },
@@ -123,6 +126,7 @@ export default function EditDetail() {
       context: {
         headers: {
           "x-access-token": `Bearer ${accessToken}`,
+          origin: LENSPLAY_SITE,
         },
       },
     });
