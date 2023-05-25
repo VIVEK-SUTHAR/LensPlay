@@ -1,258 +1,117 @@
-import {
-  createMaterialTopTabNavigator,
-  MaterialTopTabBarProps,
-} from "@react-navigation/material-top-tabs";
-import React, { FC, memo, useCallback, useMemo, useRef, useState } from "react";
-import {
-  FlatList,
-  FlatListProps,
-  StyleProp,
-  StyleSheet,
-  View,
-  ViewProps,
-  ViewStyle,
-  Text,
-  useWindowDimensions,
-} from "react-native";
-import Animated, {
-  interpolate,
-  useAnimatedScrollHandler,
-  useAnimatedStyle,
-  useDerivedValue,
-  useSharedValue,
-} from "react-native-reanimated";
-import TabBar from "./TabBar";
-import useScrollSync from "../../../hooks/useScrollSync";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { FRIENDS, SUGGESTIONS } from "./connections";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { StatusBar } from "expo-status-bar";
+import * as React from "react";
+import { SafeAreaView, StyleSheet } from "react-native";
+import { getColors } from "react-native-image-colors";
+import PleaseLogin from "../../../components/PleaseLogin";
+import AllVideos from "../../../components/Profile/AllVideos";
+import CollectedVideos from "../../../components/Profile/CollectedVideos";
+import MirroredVideos from "../../../components/Profile/MirroredVideos";
+import { UnPinSheet } from "../../../components/Profile/PinnedPublication";
 import ProfileHeader from "../../../components/Profile/ProfileHeader";
-import { Connection, HeaderConfig, ScrollPair, Visibility } from "./types";
-import ConnectionList from "./ConnectionList";
-import HeaderOverlay from "./HeaderOverlay";
+import Tabs, { Tab } from "../../../components/UI/Tabs";
+import { useBgColorStore } from "../../../store/BgColorStore";
+import { useGuestStore } from "../../../store/GuestStore";
+import { useProfile } from "../../../store/Store";
+import CommonStyles from "../../../styles";
+import { RootTabScreenProps } from "../../../types/navigation/types";
+import getIPFSLink from "../../../utils/getIPFSLink";
+import getImageProxyURL from "../../../utils/getImageProxyURL";
+import getRawurl from "../../../utils/getRawUrl";
 
-const TAB_BAR_HEIGHT = 48;
-const HEADER_HEIGHT = 48;
+const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
+  const sheetRef = React.useRef<BottomSheetMethods>(null);
+  const { setAvatarColors } = useBgColorStore();
 
-const OVERLAY_VISIBILITY_OFFSET = 32;
+  const userStore = useProfile();
+  const { currentProfile } = useProfile();
+  const { isGuest } = useGuestStore();
 
-const Tab = createMaterialTopTabNavigator();
+  React.useEffect(() => {
+    const coverURL = getImageProxyURL({
+      formattedLink: getIPFSLink(getRawurl(userStore.currentProfile?.picture)),
+    });
 
-const Profile: FC = () => {
-  const { top, bottom } = useSafeAreaInsets();
+    getColors(coverURL, {
+      fallback: "#000000",
+      cache: true,
+      key: coverURL,
+      quality: "lowest",
+      pixelSpacing: 500,
+    }).then((colors) => {
+      console.log(colors);
+      switch (colors.platform) {
+        case "android":
+          setAvatarColors(colors.average);
+          break;
+        case "ios":
+          setAvatarColors(colors.primary);
+          break;
+        default:
+          setAvatarColors("black");
+      }
+    });
 
-  const { height: screenHeight } = useWindowDimensions();
+    return () => {
+      setAvatarColors(null);
+    };
+  }, []);
 
-  const friendsRef = useRef<FlatList>(null);
-  const suggestionsRef = useRef<FlatList>(null);
-
-  const [tabIndex, setTabIndex] = useState(0);
-
-  const [headerHeight, setHeaderHeight] = useState(0);
-
-  const defaultHeaderHeight = top + HEADER_HEIGHT;
-
-  const headerConfig = useMemo<HeaderConfig>(
-    () => ({
-      heightCollapsed: defaultHeaderHeight,
-      heightExpanded: headerHeight,
-    }),
-    [defaultHeaderHeight, headerHeight]
-  );
-
-  const { heightCollapsed, heightExpanded } = headerConfig;
-
-  const headerDiff = heightExpanded - heightCollapsed;
-
-  const rendered = headerHeight > 0;
-
-  const handleHeaderLayout = useCallback<NonNullable<ViewProps["onLayout"]>>(
-    (event) => setHeaderHeight(event.nativeEvent.layout.height),
-    []
-  );
-
-  const friendsScrollValue = useSharedValue(0);
-
-  const friendsScrollHandler = useAnimatedScrollHandler(
-    (event) => (friendsScrollValue.value = event.contentOffset.y)
-  );
-
-  const suggestionsScrollValue = useSharedValue(0);
-
-  const suggestionsScrollHandler = useAnimatedScrollHandler(
-    (event) => (suggestionsScrollValue.value = event.contentOffset.y)
-  );
-
-  const scrollPairs = useMemo<ScrollPair[]>(
-    () => [
-      { list: friendsRef, position: friendsScrollValue },
-      { list: suggestionsRef, position: suggestionsScrollValue },
-    ],
-    [friendsRef, friendsScrollValue, suggestionsRef, suggestionsScrollValue]
-  );
-
-  const { sync } = useScrollSync(scrollPairs, headerConfig);
-
-  const сurrentScrollValue = useDerivedValue(
-    () =>
-      tabIndex === 0 ? friendsScrollValue.value : suggestionsScrollValue.value,
-    [tabIndex, friendsScrollValue, suggestionsScrollValue]
-  );
-
-  const translateY = useDerivedValue(
-    () => -Math.min(сurrentScrollValue.value, headerDiff)
-  );
-
-  const tabBarAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }],
-  }));
-
-  const headerAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }],
-    opacity: interpolate(
-      translateY.value,
-      [-headerDiff, 0],
-      [Visibility.Hidden, Visibility.Visible]
-    ),
-  }));
-
-  const contentContainerStyle = useMemo<StyleProp<ViewStyle>>(
-    () => ({
-      paddingTop: rendered ? headerHeight + TAB_BAR_HEIGHT : 0,
-      paddingBottom: bottom,
-      minHeight: screenHeight + headerDiff,
-    }),
-    [rendered, headerHeight, bottom, screenHeight, headerDiff]
-  );
-
-  const sharedProps = useMemo<Partial<FlatListProps<Connection>>>(
-    () => ({
-      contentContainerStyle,
-      onMomentumScrollEnd: sync,
-      onScrollEndDrag: sync,
-      scrollEventThrottle: 16,
-      scrollIndicatorInsets: { top: heightExpanded },
-    }),
-    [contentContainerStyle, sync, heightExpanded]
-  );
-
-  const renderFriends = useCallback(
-    () => (
-      <ConnectionList
-        ref={friendsRef}
-        data={FRIENDS}
-        onScroll={friendsScrollHandler}
-        {...sharedProps}
-      />
-    ),
-    [friendsRef, friendsScrollHandler, sharedProps]
-  );
-
-  const renderSuggestions = useCallback(
-    () => (
-      <ConnectionList
-        ref={suggestionsRef}
-        data={SUGGESTIONS}
-        onScroll={suggestionsScrollHandler}
-        {...sharedProps}
-      />
-    ),
-    [suggestionsRef, suggestionsScrollHandler, sharedProps]
-  );
-
-  const tabBarStyle = useMemo<StyleProp<ViewStyle>>(
-    () => [
-      rendered ? styles.tabBarContainer : undefined,
-      { top: rendered ? headerHeight : undefined },
-      tabBarAnimatedStyle,
-    ],
-    [rendered, headerHeight, tabBarAnimatedStyle]
-  );
-
-  const renderTabBar = useCallback<
-    (props: MaterialTopTabBarProps) => React.ReactElement
-  >(
-    (props) => (
-      <Animated.View style={tabBarStyle}>
-        <TabBar onIndexChange={setTabIndex} {...props} />
-      </Animated.View>
-    ),
-    [tabBarStyle]
-  );
-
-  const headerContainerStyle = useMemo<StyleProp<ViewStyle>>(
-    () => [
-      rendered ? styles.headerContainer : undefined,
-      { paddingTop: top },
-      headerAnimatedStyle,
-    ],
-
-    [rendered, top, headerAnimatedStyle]
-  );
-
-  const collapsedOverlayAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(
-      translateY.value,
-      [-headerDiff, OVERLAY_VISIBILITY_OFFSET - headerDiff, 0],
-      [Visibility.Visible, Visibility.Hidden, Visibility.Hidden]
-    ),
-  }));
-
-  const collapsedOverlayStyle = useMemo<StyleProp<ViewStyle>>(
-    () => [
-      styles.collapsedOvarlay,
-      collapsedOverlayAnimatedStyle,
-      { height: heightCollapsed, paddingTop: top },
-    ],
-    [collapsedOverlayAnimatedStyle, heightCollapsed, top]
-  );
+  if (isGuest) return <PleaseLogin />;
 
   return (
-    <View style={styles.container}>
-      <Animated.View onLayout={handleHeaderLayout} style={headerContainerStyle}>
-        <ProfileHeader profileId="0x97fd" />
-      </Animated.View>
-      <Animated.View style={collapsedOverlayStyle}>
-        <HeaderOverlay name="Emily Davis" />
-      </Animated.View>
-      <Tab.Navigator tabBar={renderTabBar}>
-        <Tab.Screen name="Friends">{renderFriends}</Tab.Screen>
-        <Tab.Screen name="Suggestions">{renderSuggestions}</Tab.Screen>
-      </Tab.Navigator>
-    </View>
+    <>
+      <SafeAreaView style={CommonStyles.screenContainer}>
+        <StatusBar style={"auto"} />
+        <Tabs>
+          <Tab.Screen
+            name="Home"
+            children={() => <ProfileHeader profileId={currentProfile?.id} />}
+          />
+          <Tab.Screen name="All Videos" children={() => <AllVideos />} />
+          <Tab.Screen
+            name="Mirror Videos"
+            children={() => <MirroredVideos />}
+          />
+          <Tab.Screen
+            name="Collected Videos"
+            children={() => <CollectedVideos />}
+          />
+        </Tabs>
+      </SafeAreaView>
+      <UnPinSheet sheetRef={sheetRef} />
+    </>
   );
 };
 
+export default ProfileScreen;
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
+  ProfileContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    marginLeft: 8,
+    marginTop: "-20%",
+    zIndex: 12,
   },
-  tabBarContainer: {
+  editButtonContainer: {
+    justifyContent: "flex-end",
+    marginRight: 16,
     top: 0,
-    left: 0,
-    right: 0,
-    position: "absolute",
-    zIndex: 1,
   },
-  overlayName: {
-    fontSize: 24,
+  editButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "white",
   },
-  collapsedOvarlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "white",
-    justifyContent: "center",
-    zIndex: 2,
-  },
-  headerContainer: {
-    top: 0,
-    left: 0,
-    right: 0,
-    position: "absolute",
-    zIndex: 1,
+  verifiedContainer: {
+    backgroundColor: "transparent",
+    height: "auto",
+    width: "auto",
+    padding: 1,
+    borderRadius: 8,
+    marginTop: 8,
+    marginHorizontal: 4,
   },
 });
-
-export default memo(Profile);

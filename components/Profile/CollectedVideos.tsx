@@ -16,9 +16,9 @@ import Icon from "../Icon";
 import Ripple from "../UI/Ripple";
 import StyledText from "../UI/StyledText";
 import MyVideoCard, { SheetProps, actionListType } from "../common/MyVideoCard";
-import { AnimatedFlatList, NoVideosFound } from "./AllVideos";
+import { NoVideosFound } from "./AllVideos";
 
-const CollectedVideos = (props) => {
+const CollectedVideos = () => {
   const { accessToken } = useAuthStore();
   const { currentProfile } = useProfile();
   const { PRIMARY } = useThemeStore();
@@ -61,16 +61,15 @@ const CollectedVideos = (props) => {
     return (
       <View
         style={{
-          backgroundColor: "black",
           flex: 1,
-          paddingVertical: 16,
+          backgroundColor: "black",
+          paddingVertical: 8,
         }}
       >
-        <AnimatedFlatList
-          ref={props.cref}
+        <FlatList
           data={collectVideos as Post[]}
           keyExtractor={(item) => item.id}
-          ListEmptyComponent={<NoVideosFound />}
+          ListEmptyComponent={NoVideosFound}
           refreshControl={
             <RefreshControl
               refreshing={false}
@@ -86,7 +85,6 @@ const CollectedVideos = (props) => {
               setPubId={handlePubId}
             />
           )}
-          {...props}
         />
         <CollectedVideoSheet sheetRef={CollectedVideoSheetRef} pubId={pubId} />
       </View>

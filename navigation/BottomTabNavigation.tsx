@@ -355,7 +355,7 @@ export default function BottomTabNavigator({
           component={ProfileScreen}
           options={{
             tabBarLabel: "",
-            headerShown: false,
+            headerShown: true,
             tabBarIcon: ({ focused }) => {
               return (
                 <View

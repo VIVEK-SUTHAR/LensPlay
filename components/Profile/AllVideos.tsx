@@ -1,18 +1,16 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import React from "react";
-import { ActivityIndicator, Share, View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { Share, View } from "react-native";
+import { FlatList, RefreshControl } from "react-native-gesture-handler";
 import { v4 as uuidV4 } from "uuid";
-import { black } from "../../constants/Colors";
 import { PUBLICATION } from "../../constants/tracking";
-import usePinStore from "../../store/pinStore";
 import {
   useAuthStore,
   useProfile,
   useThemeStore,
   useToast,
 } from "../../store/Store";
-import CommonStyles from "../../styles";
+import usePinStore from "../../store/pinStore";
 import { ProfileMetaDataV1nput } from "../../types";
 import {
   Attribute,
@@ -24,28 +22,21 @@ import {
   useCreateSetProfileMetadataViaDispatcherMutation,
   useProfilePostsQuery,
 } from "../../types/generated";
-import getRawurl from "../../utils/getRawUrl";
-import Logger from "../../utils/logger";
 import TrackAction from "../../utils/Track";
+import getRawurl from "../../utils/getRawUrl";
 import uploadToArweave from "../../utils/uploadToArweave";
 import Sheet from "../Bottom";
-import ErrorMesasge from "../common/ErrorMesasge";
-import MyVideoCard, { actionListType, SheetProps } from "../common/MyVideoCard";
 import Icon from "../Icon";
 import Ripple from "../UI/Ripple";
 import StyledText from "../UI/StyledText";
 import DeleteVideo from "../VIdeo/DeleteVideo";
-import Animated from "react-native-reanimated";
+import MyVideoCard, { SheetProps, actionListType } from "../common/MyVideoCard";
+import { black } from "../../constants/Colors";
 
-
-export const AnimatedFlatList: typeof FlatList = Animated.createAnimatedComponent(
-  FlatList
-);
-
-const AllVideos = (props: any) => {
+const AllVideos = () => {
   const { accessToken } = useAuthStore();
-  const { currentProfile } = useProfile();
   const { PRIMARY } = useThemeStore();
+  const { currentProfile } = useProfile();
   const AllVideoSheetRef = React.useRef<BottomSheetMethods>(null);
 
   const QueryRequest = {
@@ -55,10 +46,9 @@ const AllVideos = (props: any) => {
       mainContentFocus: [PublicationMainFocus.Video],
     },
     sources: ["lenstube", "lensplay"],
-    limit: 10,
   };
 
-  const { data, error, loading, fetchMore } = useProfilePostsQuery({
+  const { data, error, loading } = useProfilePostsQuery({
     variables: {
       request: QueryRequest,
       reactionRequest: {
@@ -71,11 +61,8 @@ const AllVideos = (props: any) => {
       },
     },
   });
-  const AllVideos = React.useMemo(() => data?.publications?.items, [
-    data?.publications?.items,
-  ]);
 
-  const pageInfo = data?.publications?.pageInfo;
+  const AllVideos = data?.publications?.items;
 
   const [pubId, setPubId] = React.useState("");
 
@@ -83,72 +70,33 @@ const AllVideos = (props: any) => {
     setPubId(pubId);
   }, []);
 
-  const ITEM_HEIGHT = 116;
-
-  const getItemLayout = (_: any, index: number) => {
-    return {
-      length: ITEM_HEIGHT,
-      offset: ITEM_HEIGHT * index,
-      index,
-    };
-  };
-
-  const onEndCallBack = React.useCallback(() => {
-    if (!pageInfo?.next) {
-      return;
-    }
-    fetchMore({
-      variables: {
-        request: {
-          ...QueryRequest,
-          cursor: pageInfo?.next,
-        },
-      },
-    }).catch((err) => {});
-  }, [pageInfo?.next]);
-
-  const renderItem = React.useCallback(({ item }: { item: Post }) => {
-    return (
-      <MyVideoCard
-        publication={item}
-        id={item.id}
-        sheetRef={AllVideoSheetRef}
-        setPubId={handlePubId}
-      />
-    );
-  }, []);
-
-  const _MoreLoader = () => {
-    return pageInfo?.next ? (
-      <View
-        style={{
-          height: "auto",
-          width: "100%",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <ActivityIndicator size={"small"} color={PRIMARY} />
-      </View>
-    ) : null;
-  };
-
-  const MoreLoader = React.memo(_MoreLoader);
-
-
   return (
-    <View style={[CommonStyles.screenContainer]}>
-      <AnimatedFlatList
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "black",
+        paddingVertical: 8,
+      }}
+    >
+      <FlatList
         data={AllVideos as Post[]}
-        getItemLayout={getItemLayout}
         keyExtractor={(item) => item.id}
-        ListEmptyComponent={<NoVideosFound />}
-        ListFooterComponent={<MoreLoader />}
-        removeClippedSubviews={true}
-        onEndReached={onEndCallBack}
-        onEndReachedThreshold={0.9}
-        renderItem={renderItem}
-        {...props}
+        ListEmptyComponent={NoVideosFound}
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            colors={[PRIMARY]}
+            progressBackgroundColor={"black"}
+          />
+        }
+        renderItem={({ item }) => (
+          <MyVideoCard
+            publication={item}
+            id={item.id}
+            sheetRef={AllVideoSheetRef}
+            setPubId={handlePubId}
+          />
+        )}
       />
       <AllVideoSheet sheetRef={AllVideoSheetRef} pubId={pubId} />
     </View>
@@ -327,8 +275,6 @@ const _NoVideosFound = () => {
   );
 };
 
-const NoVideosFound = React.memo(_NoVideosFound);
-
-export { NoVideosFound };
+export const NoVideosFound = React.memo(_NoVideosFound);
 
 export default React.memo(AllVideos);
