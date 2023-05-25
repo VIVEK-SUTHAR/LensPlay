@@ -18,33 +18,40 @@ import {
   FollowersRequest,
   Following,
   FollowingRequest,
+  Scalars,
   useAllFollowersQuery,
   useAllFollowingQuery,
 } from "../../../types/generated";
 import { RootStackScreenProps } from "../../../types/navigation/types";
 import getRawurl from "../../../utils/getRawUrl";
 
-const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
+const UserStats = ({ navigation, route }: RootStackScreenProps<"UserStats">) => {
   const { currentProfile } = useProfile();
+  
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      title: currentProfile?.name || currentProfile?.handle,
-    });
-  }, [navigation, currentProfile]);
+
+  // useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     title: currentProfile?.name || currentProfile?.handle,
+  //   });
+  // }, [navigation, currentProfile]);
   return (
     <SafeAreaView style={styles.container}>
       <Tabs>
         <Tab.Screen
           name="Subscribers"
-          component={SuscriberList}
+          children={
+            ()=><SuscriberList profileId={route.params.profileId}/>
+          }
           options={{
             tabBarLabel: "Subscribers",
           }}
         />
         <Tab.Screen
           name="Subscriptions"
-          component={SubscriptionsList}
+          children={
+            ()=><SubscriptionsList ethAddress={route?.params?.ethAddress}/>
+          }
           options={{
             tabBarLabel: "Subscriptions",
           }}
@@ -64,15 +71,16 @@ const getItemLayout = (_: any, index: number) => {
   };
 };
 
-const Suscribers = () => {
+const Suscribers = ({profileId}: {profileId: Scalars["ProfileId"]}) => {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
-  const { PRIMARY } = useThemeStore();
+  const { PRIMARY } = useThemeStore();  
 
   const request: FollowersRequest = {
-    profileId: currentProfile?.id,
+    profileId: profileId?profileId:currentProfile?.id,
     limit: 30,
   };
+  
 
   const { data, error, loading, fetchMore } = useAllFollowersQuery({
     variables: {
@@ -172,13 +180,14 @@ const Suscribers = () => {
 
 const SuscriberList = React.memo(Suscribers);
 
-const Subscriptions = () => {
+const Subscriptions = ({ethAddress}: {ethAddress: Scalars["EthereumAddress"]}) => {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
   const { PRIMARY } = useThemeStore();
+  
 
   const request: FollowingRequest = {
-    address: currentProfile?.ownedBy,
+    address: ethAddress?ethAddress:currentProfile?.ownedBy,
     limit: 30,
   };
 

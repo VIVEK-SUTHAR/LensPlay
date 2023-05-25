@@ -16,7 +16,7 @@ async function TrackAction(event: string) {
   };
 
   fetch("https://api.mixpanel.com/track", options)
-    .then((res) => res.json()).then((res)=>Logger.Success('mix panell',res))
+    .then((res) => res.json())
     .catch((err) => console.error(err));
 }
 export default TrackAction;

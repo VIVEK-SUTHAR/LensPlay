@@ -133,6 +133,7 @@ export default function MyVideoCard({
 export type SheetProps = {
   sheetRef: React.RefObject<BottomSheetMethods>;
   pubId: Scalars["InternalPublicationId"];
+  profileId: Scalars["ProfileId"]
 };
 
 export type actionListType = {

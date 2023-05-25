@@ -78,6 +78,7 @@ export type RootStackParamList = {
   UserStats: {
     profileId?: string;
     activeTab: string;
+    ethAddress?: string;
   };
   VideoPage: undefined;
   Channel: {

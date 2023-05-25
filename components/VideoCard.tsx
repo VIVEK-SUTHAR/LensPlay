@@ -36,8 +36,7 @@ const VideoCard: React.FC<VideoCardProp> = ({
     []
   );
   const navigateToVideoPage = React.useCallback(() => {
-    navigation.navigate("VideoPage", {
-    });
+    navigation.navigate("VideoPage");
     setActivePublication(publication);
   }, []);
 

@@ -16,7 +16,7 @@ import VERIFIED_CHANNELS from "../../constants/Varified";
 import { useBgColorStore } from "../../store/BgColorStore";
 import { useProfile, useThemeStore } from "../../store/Store";
 import CommonStyles from "../../styles";
-import { MediaSet, Profile, useProfileQuery } from "../../types/generated";
+import { MediaSet, Profile, Scalars, useProfileQuery } from "../../types/generated";
 import extractURLs from "../../utils/extractURL";
 import formatHandle from "../../utils/formatHandle";
 import getImageProxyURL from "../../utils/getImageProxyURL";
@@ -36,10 +36,11 @@ import PinnedPublication from "./PinnedPublication";
 import UserStats from "./UserStats";
 
 type ProfileHeaderProps = {
-  profileId?: string;
+  profileId?: Scalars["ProfileId"];
+  ethAddress?: Scalars["EthereumAddress"]
 };
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) => {
   const [refreshing, setRefreshing] = useState(false);
   const sheetRef = React.useRef<BottomSheetMethods>(null);
   const { setAvatarColors } = useBgColorStore();
@@ -87,6 +88,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId }) => {
   const navigateToUserStats = React.useCallback(() => {
     navigation.navigate("UserStats", {
       profileId: profileId,
+      ethAddress: ethAddress,
       activeTab: "subscriber",
     });
   }, []);
@@ -279,7 +281,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId }) => {
             </Pressable>
           </View>
           <SocialLinks profile={profile as Profile} />
-          <PinnedPublication sheetRef={sheetRef} />
+          <PinnedPublication sheetRef={sheetRef} profile={profile as Profile}/>
           <UserStats profile={profile as Profile} />
         </View>
       </ScrollView>

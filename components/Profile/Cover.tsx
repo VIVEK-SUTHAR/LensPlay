@@ -64,7 +64,7 @@ const Cover = ({ url, navigation }: CoverProps) => {
           placeholderContentFit="cover"
           transition={500}
           source={{
-            uri: getIPFSLink(url),
+            uri: getImageProxyURL({formattedLink: getIPFSLink(url)}),
           }}
           style={{
             height: "100%",

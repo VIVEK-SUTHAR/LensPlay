@@ -20,6 +20,7 @@ import { ProfileMetaDataV1nput } from "../../types";
 import {
   Attribute,
   Post,
+  Profile,
   useCreateSetProfileMetadataViaDispatcherMutation,
   usePublicationDetailsLazyQuery,
 } from "../../types/generated";
@@ -35,6 +36,7 @@ import StyledText from "../UI/StyledText";
 import { SheetProps } from "../common/MyVideoCard";
 import TrackAction from "../../utils/Track";
 import { PUBLICATION } from "../../constants/tracking";
+
 
 export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
   const { currentProfile } = useProfile();
@@ -141,7 +143,8 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
 
 export default function PinnedPublication({
   sheetRef,
-}: Pick<SheetProps, "sheetRef">) {
+  profile
+}: { sheetRef: Pick<SheetProps, "sheetRef">, profile: Profile }) {
   const activeProfile = useProfile();
   const { accessToken } = useAuthStore();
   const pinStore = usePinStore();
@@ -153,7 +156,8 @@ export default function PinnedPublication({
   }, [pinStore.publicationId]);
 
   const getPinnedPublication = () => {
-    const attributes = activeProfile?.currentProfile?.attributes;
+    const attributes = profile?.attributes;
+
     const pinnedPublication = attributes?.find(
       (attr: Attribute) =>
         attr.traitType === "pinnedPublicationId" ||

@@ -73,18 +73,19 @@ const ProfileScreen = ({
 
   const channelId = React.useMemo(() => route.params.profileId, [navigation]);
   const ethAddress = React.useMemo(() => route.params.ethAddress, [navigation]);
+  
 
   if (isGuest) return <PleaseLogin />;
 
   return (
     <>
-      {!isReadyToRender && <ActivityIndicator />}
+      {/* {!isReadyToRender && <ActivityIndicator />} */}
       <SafeAreaView style={CommonStyles.screenContainer}>
         <StatusBar style={"auto"} />
         <Tabs>
           <Tab.Screen
             name="Home"
-            children={() => <ProfileHeader profileId={channelId} />}
+            children={() => <ProfileHeader profileId={channelId} ethAddress={ethAddress} />}
           />
           <Tab.Screen
             name="All Videos"

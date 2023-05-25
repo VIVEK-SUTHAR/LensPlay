@@ -88,12 +88,12 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
           />
         )}
       />
-      <MirroredVideoSheet sheetRef={MirroredVideoSheetRef} pubId={pubId} />
+      <MirroredVideoSheet sheetRef={MirroredVideoSheetRef} pubId={pubId} profileId={channelId}/>
     </View>
   );
 };
 
-export const MirroredVideoSheet = ({ sheetRef, pubId }: SheetProps) => {
+export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
   const deleteRef = React.useRef<BottomSheetMethods>(null);
 
   const actionList: actionListType[] = [
@@ -117,11 +117,24 @@ export const MirroredVideoSheet = ({ sheetRef, pubId }: SheetProps) => {
     },
   ];
 
+  const channelActionList = [
+    {
+      name: "Share",
+      icon: "share",
+      onPress: (pubid: Scalars["InternalPublicationId"]) => {
+        Share.share({
+          message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${pubid}`,
+          title: "Watch video on LensPlay",
+        });
+      },
+    },
+  ];
+
   return (
     <>
       <Sheet
         ref={sheetRef}
-        snapPoints={[150]}
+        snapPoints={[profileId?100:150]}
         enablePanDownToClose={true}
         enableOverDrag={true}
         bottomInset={32}
@@ -131,7 +144,7 @@ export const MirroredVideoSheet = ({ sheetRef, pubId }: SheetProps) => {
         detached={true}
         children={
           <FlatList
-            data={actionList}
+            data={profileId?channelActionList:actionList}
             renderItem={({ item }) => {
               return (
                 <Ripple
