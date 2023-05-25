@@ -67,6 +67,7 @@ const CollectedVideos = (props) => {
         }}
       >
         <AnimatedFlatList
+          ref={props.cref}
           data={collectVideos as Post[]}
           keyExtractor={(item) => item.id}
           ListEmptyComponent={<NoVideosFound />}

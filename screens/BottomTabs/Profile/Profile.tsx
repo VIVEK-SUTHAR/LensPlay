@@ -1,178 +1,258 @@
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import { StatusBar } from "expo-status-bar";
-import * as React from "react";
-import { Animated, SafeAreaView, StyleProp, StyleSheet, View, ViewProps, ViewStyle } from "react-native";
-import AllVideos from "../../../components/Profile/AllVideos";
-import CollectedVideos from "../../../components/Profile/CollectedVideos";
-import MirroredVideos from "../../../components/Profile/MirroredVideos";
-import { UnPinSheet } from "../../../components/Profile/PinnedPublication";
-import ProfileHeader from "../../../components/Profile/ProfileHeader";
-import Tabs, { Tab } from "../../../components/UI/Tabs";
-import { useProfile } from "../../../store/Store";
-import CommonStyles from "../../../styles";
-import { RootTabScreenProps } from "../../../types/navigation/types";
+import {
+  createMaterialTopTabNavigator,
+  MaterialTopTabBarProps,
+} from "@react-navigation/material-top-tabs";
+import React, { FC, memo, useCallback, useMemo, useRef, useState } from "react";
+import {
+  FlatList,
+  FlatListProps,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewProps,
+  ViewStyle,
+  Text,
+  useWindowDimensions,
+} from "react-native";
+import Animated, {
+  interpolate,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
+} from "react-native-reanimated";
+import TabBar from "./TabBar";
+import useScrollSync from "../../../hooks/useScrollSync";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MaterialTopTabBarProps } from "@react-navigation/material-top-tabs";
-import TabBar from "../../../components/common/TabBar";
-import { useAnimatedScrollHandler, useAnimatedStyle, useDerivedValue, useSharedValue } from "react-native-reanimated";
+import { FRIENDS, SUGGESTIONS } from "./connections";
+import ProfileHeader from "../../../components/Profile/ProfileHeader";
+import { Connection, HeaderConfig, ScrollPair, Visibility } from "./types";
+import ConnectionList from "./ConnectionList";
+import HeaderOverlay from "./HeaderOverlay";
 
-export type HeaderConfig = {
-  heightExpanded: number;
-  heightCollapsed: number;
- };
+const TAB_BAR_HEIGHT = 48;
+const HEADER_HEIGHT = 48;
 
-const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
-	const sheetRef = React.useRef<BottomSheetMethods>(null);
-	const [headerHeight, setHeaderHeight] = React.useState(0);
-  const [tabIndex, setTabIndex] = React.useState(0);
-	const rendered = headerHeight > 0;
+const OVERLAY_VISIBILITY_OFFSET = 32;
 
-	const { top, bottom } = useSafeAreaInsets();
+const Tab = createMaterialTopTabNavigator();
 
-  const defaultHeaderHeight = top + 80;
-  const headerConfig = React.useMemo<HeaderConfig>(
+const Profile: FC = () => {
+  const { top, bottom } = useSafeAreaInsets();
+
+  const { height: screenHeight } = useWindowDimensions();
+
+  const friendsRef = useRef<FlatList>(null);
+  const suggestionsRef = useRef<FlatList>(null);
+
+  const [tabIndex, setTabIndex] = useState(0);
+
+  const [headerHeight, setHeaderHeight] = useState(0);
+
+  const defaultHeaderHeight = top + HEADER_HEIGHT;
+
+  const headerConfig = useMemo<HeaderConfig>(
     () => ({
       heightCollapsed: defaultHeaderHeight,
       heightExpanded: headerHeight,
     }),
+    [defaultHeaderHeight, headerHeight]
+  );
+
+  const { heightCollapsed, heightExpanded } = headerConfig;
+
+  const headerDiff = heightExpanded - heightCollapsed;
+
+  const rendered = headerHeight > 0;
+
+  const handleHeaderLayout = useCallback<NonNullable<ViewProps["onLayout"]>>(
+    (event) => setHeaderHeight(event.nativeEvent.layout.height),
     []
   );
-  const { heightCollapsed, heightExpanded } = headerConfig;
-  const headerHeightDiff = heightExpanded - heightCollapsed;
 
   const friendsScrollValue = useSharedValue(0);
- const friendsScrollHandler = useAnimatedScrollHandler(
-   (event) => (friendsScrollValue.value = event.contentOffset.y)
- );
- const suggestionsScrollValue = useSharedValue(0);
- const suggestionsScrollHandler = useAnimatedScrollHandler(
-   (event) => (suggestionsScrollValue.value = event.contentOffset.y)
- );
 
- const сurrentScrollValue = useDerivedValue(
-  () =>
-    tabIndex === 0 ? friendsScrollValue.value : suggestionsScrollValue.value,
-  [tabIndex]
-);
-
-const translateY = useDerivedValue(
-  () => -Math.min(сurrentScrollValue.value, headerHeightDiff)
-);
-
-
-const tabBarAnimatedStyle = useAnimatedStyle(() => ({
-  transform: [{ translateY: translateY.value }],
-}));
-const headerAnimatedStyle = useAnimatedStyle(() => ({
-  transform: [{ translateY: translateY.value }],
-}));
-
-
-	const handleHeaderLayout = React.useCallback<NonNullable<ViewProps["onLayout"]>>(
-		(event) => setHeaderHeight(event.nativeEvent.layout.height),
-		[]
-	);
-  const contentContainerStyle = React.useMemo<StyleProp<ViewStyle>>(
-    () => ({
-      paddingTop: rendered ? headerHeight + 80 : 0,
-      paddingBottom: bottom,
-    }),
-    [rendered, headerHeight, bottom]
+  const friendsScrollHandler = useAnimatedScrollHandler(
+    (event) => (friendsScrollValue.value = event.contentOffset.y)
   );
 
-	const sharedProps = React.useMemo(
-		() => ({
-			contentContainerStyle,
-			scrollIndicatorInsets: { top: headerHeight },
-		}),
-		[contentContainerStyle]
-	);
+  const suggestionsScrollValue = useSharedValue(0);
 
-	const renderAllVideos = React.useCallback(() => <AllVideos {...sharedProps} />, [sharedProps]);
+  const suggestionsScrollHandler = useAnimatedScrollHandler(
+    (event) => (suggestionsScrollValue.value = event.contentOffset.y)
+  );
 
-	const renderCollectedVideos = React.useCallback(
-		() => <CollectedVideos {...sharedProps} />,
-		[sharedProps]
-	);
+  const scrollPairs = useMemo<ScrollPair[]>(
+    () => [
+      { list: friendsRef, position: friendsScrollValue },
+      { list: suggestionsRef, position: suggestionsScrollValue },
+    ],
+    [friendsRef, friendsScrollValue, suggestionsRef, suggestionsScrollValue]
+  );
 
-	const renderMirrorVideos = React.useCallback(
-		() => <MirroredVideos {...sharedProps} />,
-		[sharedProps]
-	);
+  const { sync } = useScrollSync(scrollPairs, headerConfig);
 
-  const tabBarStyle = React.useMemo<StyleProp<ViewStyle>>(
+  const сurrentScrollValue = useDerivedValue(
+    () =>
+      tabIndex === 0 ? friendsScrollValue.value : suggestionsScrollValue.value,
+    [tabIndex, friendsScrollValue, suggestionsScrollValue]
+  );
+
+  const translateY = useDerivedValue(
+    () => -Math.min(сurrentScrollValue.value, headerDiff)
+  );
+
+  const tabBarAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }));
+
+  const headerAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+    opacity: interpolate(
+      translateY.value,
+      [-headerDiff, 0],
+      [Visibility.Hidden, Visibility.Visible]
+    ),
+  }));
+
+  const contentContainerStyle = useMemo<StyleProp<ViewStyle>>(
+    () => ({
+      paddingTop: rendered ? headerHeight + TAB_BAR_HEIGHT : 0,
+      paddingBottom: bottom,
+      minHeight: screenHeight + headerDiff,
+    }),
+    [rendered, headerHeight, bottom, screenHeight, headerDiff]
+  );
+
+  const sharedProps = useMemo<Partial<FlatListProps<Connection>>>(
+    () => ({
+      contentContainerStyle,
+      onMomentumScrollEnd: sync,
+      onScrollEndDrag: sync,
+      scrollEventThrottle: 16,
+      scrollIndicatorInsets: { top: heightExpanded },
+    }),
+    [contentContainerStyle, sync, heightExpanded]
+  );
+
+  const renderFriends = useCallback(
+    () => (
+      <ConnectionList
+        ref={friendsRef}
+        data={FRIENDS}
+        onScroll={friendsScrollHandler}
+        {...sharedProps}
+      />
+    ),
+    [friendsRef, friendsScrollHandler, sharedProps]
+  );
+
+  const renderSuggestions = useCallback(
+    () => (
+      <ConnectionList
+        ref={suggestionsRef}
+        data={SUGGESTIONS}
+        onScroll={suggestionsScrollHandler}
+        {...sharedProps}
+      />
+    ),
+    [suggestionsRef, suggestionsScrollHandler, sharedProps]
+  );
+
+  const tabBarStyle = useMemo<StyleProp<ViewStyle>>(
     () => [
       rendered ? styles.tabBarContainer : undefined,
       { top: rendered ? headerHeight : undefined },
+      tabBarAnimatedStyle,
     ],
-    [rendered, headerHeight]
-  );
-  const renderTabBar = React.useCallback<
-  (props: MaterialTopTabBarProps) => React.ReactElement
->(
-  (props) => (
-    <Animated.View style={tabBarStyle}>
-      <TabBar onIndexChange={setTabIndex} {...props} />
-    </Animated.View>
-  ),
-  [tabBarStyle, headerHeight, rendered]
-);
-
-	const headerContainerStyle = React.useMemo<StyleProp<ViewStyle>>(
-    () => [rendered ? styles.headerContainer : undefined, { paddingTop: top }],
-    [rendered, headerHeight]
+    [rendered, headerHeight, tabBarAnimatedStyle]
   );
 
-	const { currentProfile } = useProfile();
-	return (
-		<>
-			<View style={[CommonStyles.screenContainer]}>
-				<StatusBar style={"auto"} />
-				<Animated.View style={headerContainerStyle} onLayout={handleHeaderLayout}>
-					<ProfileHeader profileId={currentProfile?.id} />
-				</Animated.View>
-				<Tabs tabbar={renderTabBar}>
-					<Tab.Screen name="All Videos" children={renderAllVideos} />
-					<Tab.Screen name="Mirror Videos" children={renderMirrorVideos} />
-					<Tab.Screen name="Collected Videos" children={renderCollectedVideos} />
-				</Tabs>
-				<UnPinSheet sheetRef={sheetRef} />
-			</View>
-		</>
-	);
+  const renderTabBar = useCallback<
+    (props: MaterialTopTabBarProps) => React.ReactElement
+  >(
+    (props) => (
+      <Animated.View style={tabBarStyle}>
+        <TabBar onIndexChange={setTabIndex} {...props} />
+      </Animated.View>
+    ),
+    [tabBarStyle]
+  );
+
+  const headerContainerStyle = useMemo<StyleProp<ViewStyle>>(
+    () => [
+      rendered ? styles.headerContainer : undefined,
+      { paddingTop: top },
+      headerAnimatedStyle,
+    ],
+
+    [rendered, top, headerAnimatedStyle]
+  );
+
+  const collapsedOverlayAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(
+      translateY.value,
+      [-headerDiff, OVERLAY_VISIBILITY_OFFSET - headerDiff, 0],
+      [Visibility.Visible, Visibility.Hidden, Visibility.Hidden]
+    ),
+  }));
+
+  const collapsedOverlayStyle = useMemo<StyleProp<ViewStyle>>(
+    () => [
+      styles.collapsedOvarlay,
+      collapsedOverlayAnimatedStyle,
+      { height: heightCollapsed, paddingTop: top },
+    ],
+    [collapsedOverlayAnimatedStyle, heightCollapsed, top]
+  );
+
+  return (
+    <View style={styles.container}>
+      <Animated.View onLayout={handleHeaderLayout} style={headerContainerStyle}>
+        <ProfileHeader profileId="0x97fd" />
+      </Animated.View>
+      <Animated.View style={collapsedOverlayStyle}>
+        <HeaderOverlay name="Emily Davis" />
+      </Animated.View>
+      <Tab.Navigator tabBar={renderTabBar}>
+        <Tab.Screen name="Friends">{renderFriends}</Tab.Screen>
+        <Tab.Screen name="Suggestions">{renderSuggestions}</Tab.Screen>
+      </Tab.Navigator>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "white",
-	},
-	tabBarContainer: {
-		top: 0,
-		left: 0,
-		right: 0,
-		position: "absolute",
-		zIndex: 1,
-	},
-	overlayName: {
-		fontSize: 24,
-	},
-	collapsedOvarlay: {
-		position: "absolute",
-		top: 0,
-		left: 0,
-		right: 0,
-		backgroundColor: "white",
-		justifyContent: "center",
-		zIndex: 2,
-	},
-	headerContainer: {
-		top: 0,
-		left: 0,
-		right: 0,
-		position: "absolute",
-		zIndex: 1,
-	},
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  tabBarContainer: {
+    top: 0,
+    left: 0,
+    right: 0,
+    position: "absolute",
+    zIndex: 1,
+  },
+  overlayName: {
+    fontSize: 24,
+  },
+  collapsedOvarlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "white",
+    justifyContent: "center",
+    zIndex: 2,
+  },
+  headerContainer: {
+    top: 0,
+    left: 0,
+    right: 0,
+    position: "absolute",
+    zIndex: 1,
+  },
 });
 
-export default ProfileScreen;
+export default memo(Profile);
