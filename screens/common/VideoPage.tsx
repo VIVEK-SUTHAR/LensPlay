@@ -504,7 +504,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
               />
               <View
                 style={{
-                  // height: "auto",
                   paddingVertical: 10,
                   width: "100%",
                   paddingHorizontal: 8,
@@ -513,7 +512,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
                   flexDirection: "row",
                   borderBottomColor: "gray",
                   borderBottomWidth: 1,
-                  // backgroundColor: "red",
                 }}
               >
                 <View style={styles.verticleCenter}>

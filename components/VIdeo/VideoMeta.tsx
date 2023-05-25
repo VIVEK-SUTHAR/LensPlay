@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { Maybe } from "../../types/generated";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
+import { white } from "../../constants/Colors";
 
 type VideoMetaProps = {
   title: Maybe<string> | undefined;
@@ -54,8 +55,8 @@ const VideoMeta = (props: VideoMetaProps) => {
             }}
           >
             <StyledText
-              title={"more"}
-              style={{ color: "gray", fontSize: 14 }}
+              title={" ...more"}
+              style={{ color: white[600], fontSize: 14 }}
             />
           </Pressable>
         )}
