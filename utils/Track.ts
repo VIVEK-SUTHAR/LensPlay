@@ -1,7 +1,7 @@
+import Logger from "./logger";
+
 async function TrackAction(event: string) {
-  if (__DEV__) {
-    return;
-  }
+  
   const options = {
     method: "POST",
     headers: { accept: "text/plain", "content-type": "application/json" },
@@ -16,7 +16,7 @@ async function TrackAction(event: string) {
   };
 
   fetch("https://api.mixpanel.com/track", options)
-    .then((res) => res.json())
+    .then((res) => res.json()).then((res)=>Logger.Success('mix panell',res))
     .catch((err) => console.error(err));
 }
 export default TrackAction;

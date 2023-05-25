@@ -26,6 +26,8 @@ import {
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
 import Skeleton from "../../../components/common/Skeleton";
+import TrackAction from "../../../utils/Track";
+import { EXPLORE } from "../../../constants/tracking";
 
 type Explore = Post | Mirror;
 
@@ -143,6 +145,7 @@ export default function Trending({
       index,
     };
   };
+  TrackAction(EXPLORE.SWITCH_EXPLORE_FEED_TAB)
 
   const onEndCallBack = () => {
     if (!pageInfo?.next) {
@@ -158,7 +161,7 @@ export default function Trending({
       },
     }).catch((err) => {});
   };
-
+  
   const _MoreLoader = () => {
     return (
       <>
@@ -181,13 +184,13 @@ export default function Trending({
           publication={item as Explore}
           id={item.id}
         />
-      );
-    }
-    return <></>;
-  };
-
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+        );
+      }
+      return <></>;
+    };
+    
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <ScrollView
         style={{
           height: 60,
