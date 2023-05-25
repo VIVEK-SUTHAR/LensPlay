@@ -32,20 +32,26 @@ import StyledText from "../UI/StyledText";
 import DeleteVideo from "../VIdeo/DeleteVideo";
 import MyVideoCard, { SheetProps, actionListType } from "../common/MyVideoCard";
 import { black } from "../../constants/Colors";
+import { SOURCES } from "../../constants";
 
-const AllVideos = () => {
+type AllVideosProps = {
+  profileId?: string;
+  ethAddress?: string;
+};
+
+const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
   const { accessToken } = useAuthStore();
   const { PRIMARY } = useThemeStore();
   const { currentProfile } = useProfile();
   const AllVideoSheetRef = React.useRef<BottomSheetMethods>(null);
 
   const QueryRequest = {
-    profileId: currentProfile?.id,
+    profileId: profileId ? profileId : currentProfile?.id,
     publicationTypes: [PublicationTypes.Post],
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
-    sources: ["lenstube", "lensplay"],
+    sources: SOURCES,
   };
 
   const { data, error, loading } = useProfilePostsQuery({

@@ -9,7 +9,6 @@ import Toast from "./components/Toast";
 import useCachedResources from "./hooks/useCachedResources";
 import Navigation from "./navigation";
 import "expo-dev-client";
-
 export default function App() {
   const isLoadingComplete = useCachedResources();
 

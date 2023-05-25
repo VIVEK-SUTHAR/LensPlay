@@ -13,15 +13,16 @@ import ProfileCardSkeleton from "../../../components/UI/ProfileCardSkeleton";
 import Tabs, { Tab } from "../../../components/UI/Tabs";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
-  MediaSet,
   useAllFollowersQuery,
   useAllFollowingQuery,
 } from "../../../types/generated";
 import { RootStackScreenProps } from "../../../types/navigation/types";
-import getIPFSLink from "../../../utils/getIPFSLink";
 import getRawurl from "../../../utils/getRawUrl";
 
-const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
+const UserStats = ({
+  navigation,
+  route,
+}: RootStackScreenProps<"UserStats">) => {
   const [headerTitle, setHeaderTitle] = useState<string>("Subscribers");
   const theme = useThemeStore();
 
@@ -64,6 +65,9 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
               setHeaderTitle("Subscribers");
             },
           }}
+          initialParams={{
+            profileId: route.params.profileId,
+          }}
           options={{
             tabBarLabel: "Subscribers",
           }}
@@ -85,14 +89,15 @@ const UserStats = ({ navigation }: RootStackScreenProps<"UserStats">) => {
   );
 };
 
-const Suscribers = () => {
+const Suscribers = ({ navigation, route }) => {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
 
+  const profileId = React.useMemo(() => route.params.profileId, [navigation]);
   const { data, error, loading } = useAllFollowersQuery({
     variables: {
       request: {
-        profileId: currentProfile?.id,
+        profileId: profileId ? profileId : currentProfile?.id,
       },
     },
     context: {

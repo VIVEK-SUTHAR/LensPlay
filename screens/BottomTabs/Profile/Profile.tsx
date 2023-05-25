@@ -66,7 +66,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
         <Tabs>
           <Tab.Screen
             name="Home"
-            children={() => <ProfileHeader profileId={currentProfile?.id} />}
+            children={() => <ProfileHeader />}
           />
           <Tab.Screen name="All Videos" children={() => <AllVideos />} />
           <Tab.Screen

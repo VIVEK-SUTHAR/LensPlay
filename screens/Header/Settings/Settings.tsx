@@ -5,6 +5,8 @@ import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import React, { FC, useRef } from "react";
 import {
+  ActivityIndicator,
+  InteractionManager,
   Linking,
   Pressable,
   SafeAreaView,
@@ -39,6 +41,14 @@ type SettingsItemProps = {
 };
 
 const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
+  const [isReadyToRender, setIsReadyToRender] = React.useState(false);
+
+  React.useEffect(() => {
+    InteractionManager.runAfterInteractions(() => {
+      setIsReadyToRender(true);
+    });
+  }, []);
+
   const Wallet = useWalletConnect();
   const { isGuest } = useGuestStore();
   const logoutref = useRef<BottomSheetMethods>(null);
@@ -82,6 +92,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
     });
   }, []);
 
+  if (!isReadyToRender) return <ActivityIndicator />;
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="black" style="auto" />

@@ -1,7 +1,8 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  InteractionManager,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -13,7 +14,6 @@ import { white } from "../../constants/Colors";
 import { PROFILE } from "../../constants/tracking";
 import VERIFIED_CHANNELS from "../../constants/Varified";
 import { useBgColorStore } from "../../store/BgColorStore";
-import { useGuestStore } from "../../store/GuestStore";
 import { useProfile, useThemeStore } from "../../store/Store";
 import CommonStyles from "../../styles";
 import { MediaSet, Profile, useProfileQuery } from "../../types/generated";
@@ -26,7 +26,6 @@ import TrackAction from "../../utils/Track";
 import ErrorMesasge from "../common/ErrorMesasge";
 import SocialLinks from "../common/SocialLinks";
 import Icon from "../Icon";
-import PleaseLogin from "../PleaseLogin";
 import Avatar from "../UI/Avatar";
 import Button from "../UI/Button";
 import Heading from "../UI/Heading";
@@ -37,7 +36,7 @@ import PinnedPublication from "./PinnedPublication";
 import UserStats from "./UserStats";
 
 type ProfileHeaderProps = {
-  profileId: string;
+  profileId?: string;
 };
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId }) => {
@@ -52,7 +51,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId }) => {
   const { data: Profile, loading, error, refetch } = useProfileQuery({
     variables: {
       request: {
-        profileId: profileId,
+        profileId: profileId ? profileId : currentProfile?.id,
       },
     },
   });
@@ -104,7 +103,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId }) => {
       quality: "lowest",
       pixelSpacing: 500,
     }).then((colors) => {
-      console.log(colors);
       switch (colors.platform) {
         case "android":
           setAvatarColors(colors.average);
@@ -122,6 +120,15 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId }) => {
     };
   }, []);
 
+  const isChannel = profileId ? true : false;
+
+  const handleButtonClick = React.useCallback(() => {
+    if (!isChannel) {
+      navigation.navigate("EditProfile");
+      return;
+    }
+  }, [navigation]);
+
   if (loading) return <ProfileSkeleton />;
   if (error)
     return <ErrorMesasge message="Something went wrong" withImage={true} />;
@@ -132,6 +139,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId }) => {
           flex: 1,
           backgroundColor: "black",
         }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         showsVerticalScrollIndicator={false}
       >
         <Pressable onPress={navigateToFullImageCover}>
@@ -151,7 +161,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId }) => {
           </Pressable>
           <View style={styles.editButtonContainer}>
             <Button
-              title={"Edit Channel"}
+              title={isChannel ? "Follow" : "Edit Channel"}
               width={"auto"}
               type="outline"
               borderColor={white[100]}
@@ -159,9 +169,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId }) => {
               py={8}
               bg={theme.PRIMARY}
               textStyle={styles.editButtonText}
-              onPress={() => {
-                navigation.navigate("EditProfile");
-              }}
+              onPress={handleButtonClick}
             />
           </View>
         </View>
@@ -272,7 +280,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId }) => {
           </View>
           <SocialLinks profile={profile as Profile} />
           <PinnedPublication sheetRef={sheetRef} />
-          <UserStats profile={currentProfile as Profile} />
+          <UserStats profile={profile as Profile} />
         </View>
       </ScrollView>
     );

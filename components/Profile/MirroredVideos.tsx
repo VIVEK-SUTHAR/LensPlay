@@ -16,20 +16,25 @@ import StyledText from "../UI/StyledText";
 import Icon from "../Icon";
 import DeleteVideo from "../VIdeo/DeleteVideo";
 import { NoVideosFound } from "./AllVideos";
+import { SOURCES } from "../../constants";
 
-const MirroredVideos = ({}) => {
+type MirroredVideosProps = {
+  channelId?: string;
+};
+
+const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
   const { accessToken } = useAuthStore();
   const { PRIMARY } = useThemeStore();
   const { currentProfile } = useProfile();
   const MirroredVideoSheetRef = React.useRef<BottomSheetMethods>(null);
 
   const QueryRequest = {
-    profileId: currentProfile?.id,
+    profileId: channelId ? channelId : currentProfile?.id,
     publicationTypes: [PublicationTypes.Mirror],
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
-    sources: ["lenstube"],
+    sources: SOURCES,
     limit: 10,
   };
 

@@ -17,20 +17,25 @@ import Ripple from "../UI/Ripple";
 import StyledText from "../UI/StyledText";
 import MyVideoCard, { SheetProps, actionListType } from "../common/MyVideoCard";
 import { NoVideosFound } from "./AllVideos";
+import { SOURCES } from "../../constants";
 
-const CollectedVideos = () => {
+type CollectedVideosProps = {
+  ethAddress?: string;
+};
+
+const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
   const { accessToken } = useAuthStore();
   const { currentProfile } = useProfile();
   const { PRIMARY } = useThemeStore();
   const CollectedVideoSheetRef = React.useRef<BottomSheetMethods>(null);
 
   const QueryRequest: PublicationsQueryRequest = {
-    collectedBy: currentProfile?.ownedBy,
+    collectedBy: ethAddress ? ethAddress : currentProfile?.ownedBy,
     publicationTypes: [PublicationTypes.Post, PublicationTypes.Mirror],
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
-    sources: ["lenstube"],
+    sources: SOURCES,
     limit: 10,
   };
 

@@ -77,7 +77,7 @@ export default function UserStats({ profile }: { profile: Profile }) {
       >
         {stats.map((stat) => {
           return (
-            <UserStatsCard title={stat.title} count={stat.count.toString()} />
+            <UserStatsCard title={stat.title} count={stat?.count?.toString()} />
           );
         })}
       </View>

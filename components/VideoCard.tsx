@@ -37,7 +37,6 @@ const VideoCard: React.FC<VideoCardProp> = ({
   );
   const navigateToVideoPage = React.useCallback(() => {
     navigation.navigate("VideoPage", {
-      playBackurl: playBackurl,
     });
     setActivePublication(publication);
   }, []);
@@ -49,7 +48,6 @@ const VideoCard: React.FC<VideoCardProp> = ({
       name: publication?.profile?.name || publication?.profile?.handle,
       ethAddress: publication?.profile?.ownedBy,
     });
-    setActivePublication(publication);
   }, []);
 
   const coverImage = React.useMemo(
