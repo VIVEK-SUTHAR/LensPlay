@@ -201,9 +201,9 @@ export default function PinnedPublication({
             alignItems: "center",
           }}
         >
-          <Icon name="star" size={12} color={white[200]} />
+          <Icon name="pin" size={12} color={white[200]} />
           <StyledText
-            title="pinned video"
+            title="Pinned video"
             style={{
               color: white[200],
               fontSize: 12,

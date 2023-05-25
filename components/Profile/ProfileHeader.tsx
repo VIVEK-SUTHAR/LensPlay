@@ -14,7 +14,7 @@ import { PROFILE } from "../../constants/tracking";
 import VERIFIED_CHANNELS from "../../constants/Varified";
 import { useBgColorStore } from "../../store/BgColorStore";
 import { useGuestStore } from "../../store/GuestStore";
-import { useThemeStore } from "../../store/Store";
+import { useProfile, useThemeStore } from "../../store/Store";
 import CommonStyles from "../../styles";
 import { MediaSet, Profile, useProfileQuery } from "../../types/generated";
 import extractURLs from "../../utils/extractURL";
@@ -34,6 +34,7 @@ import ProfileSkeleton from "../UI/ProfileSkeleton";
 import StyledText from "../UI/StyledText";
 import Cover from "./Cover";
 import PinnedPublication from "./PinnedPublication";
+import UserStats from "./UserStats";
 
 type ProfileHeaderProps = {
   profileId: string;
@@ -43,10 +44,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId }) => {
   const [refreshing, setRefreshing] = useState(false);
   const sheetRef = React.useRef<BottomSheetMethods>(null);
   const { setAvatarColors } = useBgColorStore();
+  const { currentProfile } = useProfile();
 
   const theme = useThemeStore();
-  const { isGuest } = useGuestStore();
-
   const navigation = useNavigation();
 
   const { data: Profile, loading, error, refetch } = useProfileQuery({
@@ -122,16 +122,17 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId }) => {
     };
   }, []);
 
-  if (isGuest) return <PleaseLogin />;
   if (loading) return <ProfileSkeleton />;
-  if (error) return <ErrorMesasge message="Something went wrong" withImage />;
+  if (error)
+    return <ErrorMesasge message="Something went wrong" withImage={true} />;
   if (profile) {
     return (
-      <View
+      <ScrollView
         style={{
           flex: 1,
           backgroundColor: "black",
         }}
+        showsVerticalScrollIndicator={false}
       >
         <Pressable onPress={navigateToFullImageCover}>
           <Cover
@@ -225,32 +226,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId }) => {
               onPress={navigateToUserStats}
             >
               <StyledText
-                title={profile?.stats?.totalFollowers}
-                style={{
-                  fontSize: 14,
-                  fontWeight: "600",
-                  color: "white",
-                }}
-              />
-              <StyledText
-                title={"subscribers"}
-                style={{
-                  fontSize: 14,
-                  fontWeight: "500",
-                  color: "gray",
-                  marginLeft: 4,
-                }}
-              />
-            </Pressable>
-            <Pressable
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginLeft: 8,
-              }}
-              onPress={navigateToUserStats}
-            >
-              <StyledText
                 title={profile?.stats?.totalFollowing}
                 style={{
                   fontSize: 14,
@@ -268,11 +243,38 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId }) => {
                 }}
               />
             </Pressable>
+            <Pressable
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginLeft: 8,
+              }}
+              onPress={navigateToUserStats}
+            >
+              <StyledText
+                title={profile?.stats?.totalFollowers}
+                style={{
+                  fontSize: 14,
+                  fontWeight: "600",
+                  color: "white",
+                }}
+              />
+              <StyledText
+                title={"subscribers"}
+                style={{
+                  fontSize: 14,
+                  fontWeight: "500",
+                  color: "gray",
+                  marginLeft: 4,
+                }}
+              />
+            </Pressable>
           </View>
           <SocialLinks profile={profile as Profile} />
           <PinnedPublication sheetRef={sheetRef} />
+          <UserStats profile={currentProfile as Profile} />
         </View>
-      </View>
+      </ScrollView>
     );
   }
   return null;

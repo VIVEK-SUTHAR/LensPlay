@@ -1,10 +1,10 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import React, { ReactNode } from "react";
-import { black, primary } from "../../constants/Colors";
+import { black } from "../../constants/Colors";
 
 export const Tab = createMaterialTopTabNavigator();
 
-export default function Tabs({ children, tabbar }: { children: ReactNode, tabbar?:any }) {
+export default function Tabs({ children }: { children: ReactNode }) {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -34,7 +34,6 @@ export default function Tabs({ children, tabbar }: { children: ReactNode, tabbar
           display: "none",
         },
       }}
-      tabBar={tabbar}
     >
       {children}
     </Tab.Navigator>
