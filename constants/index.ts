@@ -57,7 +57,9 @@ export const LENSPLAY_TERMS =
 //MISC
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-export const SOURCES = ["lensplay", "lenstube", "orb"];
+export const SOURCES = ["lensplay", "lenstube", "orb","buttrfly"];
+
+export const DEV = __DEV__;
 
 export {
   LENS_API_ENDPOINT,

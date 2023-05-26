@@ -1,8 +1,8 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import React, { useState } from "react";
 import {
-  InteractionManager,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -10,18 +10,35 @@ import {
   View,
 } from "react-native";
 import { getColors } from "react-native-image-colors";
+import { LENSPLAY_SITE } from "../../constants";
 import { white } from "../../constants/Colors";
 import { PROFILE } from "../../constants/tracking";
 import VERIFIED_CHANNELS from "../../constants/Varified";
 import { useBgColorStore } from "../../store/BgColorStore";
-import { useProfile, useThemeStore } from "../../store/Store";
+import {
+  useAuthStore,
+  useProfile,
+  useThemeStore,
+  useToast,
+} from "../../store/Store";
 import CommonStyles from "../../styles";
-import { MediaSet, Profile, Scalars, useProfileQuery } from "../../types/generated";
+import {
+  CreateUnfollowTypedDataMutationResult,
+  MediaSet,
+  Profile,
+  Scalars,
+  useBroadcastMutation,
+  useCreateUnfollowTypedDataMutation,
+  useProfileQuery,
+  useProxyActionMutation,
+} from "../../types/generated";
 import extractURLs from "../../utils/extractURL";
 import formatHandle from "../../utils/formatHandle";
 import getImageProxyURL from "../../utils/getImageProxyURL";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
+import formatUnfollowTypedData from "../../utils/lens/formatUnfollowTypedData";
+import Logger from "../../utils/logger";
 import TrackAction from "../../utils/Track";
 import ErrorMesasge from "../common/ErrorMesasge";
 import SocialLinks from "../common/SocialLinks";
@@ -37,15 +54,18 @@ import UserStats from "./UserStats";
 
 type ProfileHeaderProps = {
   profileId?: Scalars["ProfileId"];
-  ethAddress?: Scalars["EthereumAddress"]
+  ethAddress?: Scalars["EthereumAddress"];
 };
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({
+  profileId,
+  ethAddress,
+}) => {
   const [refreshing, setRefreshing] = useState(false);
   const sheetRef = React.useRef<BottomSheetMethods>(null);
   const { setAvatarColors } = useBgColorStore();
   const { currentProfile } = useProfile();
-
+  const { accessToken } = useAuthStore();
   const theme = useThemeStore();
   const navigation = useNavigation();
 
@@ -53,6 +73,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
     variables: {
       request: {
         profileId: profileId ? profileId : currentProfile?.id,
+      },
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
       },
     },
   });
@@ -124,23 +149,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 
   const isChannel = profileId ? true : false;
 
-  const handleButtonClick = React.useCallback(() => {
-    if (!isChannel) {
-      navigation.navigate("EditProfile");
-      return;
-    }
-  }, [navigation]);
-
   if (loading) return <ProfileSkeleton />;
   if (error)
     return <ErrorMesasge message="Something went wrong" withImage={true} />;
   if (profile) {
     return (
       <ScrollView
-        style={{
-          flex: 1,
-          backgroundColor: "black",
-        }}
+        style={CommonStyles.screenContainer}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
@@ -162,17 +177,14 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
             />
           </Pressable>
           <View style={styles.editButtonContainer}>
-            <Button
-              title={isChannel ? "Follow" : "Edit Channel"}
-              width={"auto"}
-              type="outline"
-              borderColor={white[100]}
-              px={24}
-              py={8}
-              bg={theme.PRIMARY}
-              textStyle={styles.editButtonText}
-              onPress={handleButtonClick}
-            />
+            {isChannel ? (
+              <SubscribeButton
+                channelId={profile?.id}
+                isFollwebByMe={profile?.isFollowedByMe}
+              />
+            ) : (
+              <EditChannelButton />
+            )}
           </View>
         </View>
         <View style={CommonStyles.mx_16}>
@@ -281,7 +293,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
             </Pressable>
           </View>
           <SocialLinks profile={profile as Profile} />
-          <PinnedPublication sheetRef={sheetRef} profile={profile as Profile}/>
+          <PinnedPublication
+            sheetRef={sheetRef as any}
+            profile={profile as Profile}
+          />
           <UserStats profile={profile as Profile} />
         </View>
       </ScrollView>
@@ -289,6 +304,170 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
   }
   return null;
 };
+
+type SubscribeButtonProps = {
+  isFollwebByMe: boolean;
+  channelId: Scalars["ProfileId"];
+};
+
+const EditChannelButton = () => {
+  const navigation = useNavigation();
+
+  const goToEditChannel = () => {
+    navigation.navigate("EditProfile");
+  };
+
+  return (
+    <Button
+      title={"Edit Channel"}
+      width={"auto"}
+      type="outline"
+      borderColor={white[100]}
+      px={24}
+      py={8}
+      bg={"transparent"}
+      textStyle={styles.editButtonText}
+      onPress={goToEditChannel}
+    />
+  );
+};
+
+const _SubscribeButton: React.FC<SubscribeButtonProps> = ({
+  channelId,
+  isFollwebByMe,
+}) => {
+  const [isFollowing, setIsFollowing] = useState(isFollwebByMe);
+
+  const toast = useToast();
+  const { accessToken } = useAuthStore();
+  const wallet = useWalletConnect();
+
+  /**
+   * Only Free Follow and Free Collect is supported via Dispatcher
+   */
+  const [freeFollowViaDispatcher] = useProxyActionMutation({
+    onCompleted: (data) => {
+      Logger.Success("Subscribed Succesfullly", data);
+      toast.success("Subscribed succesfully!");
+      setIsFollowing(true);
+    },
+    onError(error) {
+      Logger.Error("failed  to subscribe ,", error);
+      if (error?.message?.includes("only follow")) {
+        toast.error("Can not follow profile");
+      }
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+        origin: LENSPLAY_SITE,
+      },
+    },
+  });
+
+  /**
+   * Generate Typed Data to Unfollow The Channel
+   */
+  const [getTypedData] = useCreateUnfollowTypedDataMutation({
+    onError() {
+      toast.error("Something went wrong");
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+        origin: LENSPLAY_SITE,
+      },
+    },
+  });
+
+  /**
+   * Upon Succesfuuly signing the typed data from user, send the
+   * transaction to chain using broadcast
+   *
+   */
+
+  const [sendUnFollowTxn] = useBroadcastMutation({
+    onCompleted: () => {
+      toast.success("Unsubscribed succesfully!");
+      setIsFollowing(false);
+      TrackAction(PROFILE.UNFOLLOW);
+    },
+    onError: (error) => {
+      Logger.Error("Failed to Subscribe via Broadcast", error);
+      toast.error("Something went wrong");
+    },
+    context: {
+      headers: {
+        "x-access-token": `Bearer ${accessToken}`,
+        origin: LENSPLAY_SITE,
+      },
+    },
+  });
+
+  const getButtonText = React.useCallback(() => {
+    return isFollowing ? "Unsubscribe" : "Subscribe";
+  }, [isFollowing]);
+
+  const handleButtonClick = React.useCallback(() => {
+    return isFollowing ? unSubscribeToChannel() : subscribeToChannel();
+  }, [isFollowing]);
+
+  const subscribeToChannel = React.useCallback(() => {
+    freeFollowViaDispatcher({
+      variables: {
+        request: {
+          follow: {
+            freeFollow: {
+              profileId: channelId,
+            },
+          },
+        },
+      },
+    });
+  }, []);
+
+  const unSubscribeToChannel = React.useCallback(async () => {
+    const data = await getTypedData({
+      variables: {
+        request: {
+          profile: channelId,
+        },
+      },
+    });
+    const message = formatUnfollowTypedData(
+      data as CreateUnfollowTypedDataMutationResult
+    );
+    const msgParams = [wallet.accounts[0], JSON.stringify(message)];
+    const sig = await wallet.signTypedData(msgParams);
+    sendUnFollowTxn({
+      variables: {
+        request: {
+          signature: sig,
+          id: data?.data?.createUnfollowTypedData?.id,
+        },
+      },
+    });
+  }, []);
+
+  return (
+    <Button
+      title={getButtonText()}
+      width={"auto"}
+      px={24}
+      py={8}
+      type={"filled"}
+      bg={"white"}
+      textStyle={{
+        fontSize: 14,
+        fontWeight: "600",
+        color: "black",
+      }}
+      onPress={handleButtonClick}
+    />
+  );
+};
+
+const SubscribeButton = React.memo(_SubscribeButton);
 
 export default React.memo(ProfileHeader);
 

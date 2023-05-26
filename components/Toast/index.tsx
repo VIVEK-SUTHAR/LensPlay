@@ -49,6 +49,7 @@ const Toast = () => {
       style={[
         styles.conatiner,
         {
+          height:"auto",
           display: toastStore.isVisible ? "flex" : "none",
           backgroundColor:
             toastStore.type === ToastType.ERROR
@@ -101,7 +102,6 @@ export default Toast;
 const styles = StyleSheet.create({
   conatiner: {
     position: "absolute",
-    height: 40,
     flexDirection: "row",
     top: StatusBarHeight + 20,
     width: "auto",

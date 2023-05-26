@@ -52,6 +52,7 @@ export default function MyVideoCard({
           placeholder={getPlaceHolderImage()}
           contentFit="cover"
           transition={500}
+          cachePolicy="memory-disk"
           source={{
             uri: getImageProxyURL({
               formattedLink: getIPFSLink(

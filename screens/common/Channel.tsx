@@ -19,6 +19,7 @@ import { useGuestStore } from "../../store/GuestStore";
 import { useProfile } from "../../store/Store";
 import CommonStyles from "../../styles";
 import { RootStackScreenProps } from "../../types/navigation/types";
+import formatHandle from "../../utils/formatHandle";
 import getImageProxyURL from "../../utils/getImageProxyURL";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
@@ -32,6 +33,12 @@ const ProfileScreen = ({
   React.useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
       setIsReadyToRender(true);
+    });
+  }, []);
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      title: route.params.name || formatHandle(route?.params?.handle),
     });
   }, []);
 
@@ -73,19 +80,19 @@ const ProfileScreen = ({
 
   const channelId = React.useMemo(() => route.params.profileId, [navigation]);
   const ethAddress = React.useMemo(() => route.params.ethAddress, [navigation]);
-  
 
   if (isGuest) return <PleaseLogin />;
 
   return (
     <>
-      {/* {!isReadyToRender && <ActivityIndicator />} */}
       <SafeAreaView style={CommonStyles.screenContainer}>
         <StatusBar style={"auto"} />
         <Tabs>
           <Tab.Screen
             name="Home"
-            children={() => <ProfileHeader profileId={channelId} ethAddress={ethAddress} />}
+            children={() => (
+              <ProfileHeader profileId={channelId} ethAddress={ethAddress} />
+            )}
           />
           <Tab.Screen
             name="All Videos"
