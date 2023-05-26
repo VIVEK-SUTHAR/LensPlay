@@ -34,13 +34,11 @@ import MyVideoCard, { SheetProps, actionListType } from "../common/MyVideoCard";
 import { black } from "../../constants/Colors";
 import { SOURCES } from "../../constants";
 import { FlashList } from "@shopify/flash-list";
-import Logger from "../../utils/logger";
 
 type AllVideosProps = {
   profileId?: string;
   ethAddress?: string;
 };
-
 const keyExtractor = (item: Post) => item.id;
 
 const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {

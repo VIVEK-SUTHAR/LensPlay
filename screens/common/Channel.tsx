@@ -1,11 +1,7 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import {
-  ActivityIndicator,
-  InteractionManager,
-  SafeAreaView,
-} from "react-native";
+import { InteractionManager, SafeAreaView } from "react-native";
 import { getColors } from "react-native-image-colors";
 import PleaseLogin from "../../components/PleaseLogin";
 import AllVideos from "../../components/Profile/AllVideos";

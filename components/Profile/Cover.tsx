@@ -27,7 +27,6 @@ const Cover = ({ url, navigation }: CoverProps) => {
       quality: "lowest",
       pixelSpacing: 500,
     }).then((colors) => {
-      console.log(colors);
       switch (colors.platform) {
         case "android":
           setCoverColors(colors.average);
@@ -64,7 +63,7 @@ const Cover = ({ url, navigation }: CoverProps) => {
           placeholderContentFit="cover"
           transition={500}
           source={{
-            uri: getImageProxyURL({formattedLink: getIPFSLink(url)}),
+            uri: getImageProxyURL({ formattedLink: getIPFSLink(url) }),
           }}
           style={{
             height: "100%",
