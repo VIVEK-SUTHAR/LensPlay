@@ -17,6 +17,9 @@ const CommonStyles = StyleSheet.create({
   mx_16: {
     marginHorizontal: 16,
   },
+  my_24: {
+    marginVertical:24
+  },
   px_2: {
     paddingHorizontal:2
   },

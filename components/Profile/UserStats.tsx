@@ -1,38 +1,28 @@
 import React from "react";
-import { FlatList, View, useWindowDimensions } from "react-native";
-import Heading from "../UI/Heading";
+import { Dimensions, StyleSheet, View } from "react-native";
 import { black, white } from "../../constants/Colors";
-import { useProfile } from "../../store/Store";
-import StyledText from "../UI/StyledText";
+import CommonStyles from "../../styles";
 import { Profile } from "../../types/generated";
+import Heading from "../UI/Heading";
+import StyledText from "../UI/StyledText";
 
-function UserStatsCard({ title, count }: { title: string; count: string }) {
-  const { width } = useWindowDimensions();
+const { width } = Dimensions.get("screen");
 
-  return (
-    <View
-      style={{
-        height: 130,
-        width: "48%",
-        marginTop: 16,
-        position: "relative",
-        backgroundColor: black[700],
-        borderRadius: 16,
-        padding: 16,
-        justifyContent: "space-between",
-      }}
-    >
-      <Heading
-        title={title}
-        style={{ color: white[300], fontSize: width / 16, fontWeight: "600" }}
-      />
-      <StyledText
-        title={count}
-        style={{ color: white[500], fontSize: width / 15, fontWeight: "600" }}
-      />
-    </View>
-  );
-}
+type UserStatsCardProps = {
+  title: string;
+  count: string;
+};
+
+const UserStatsCard: React.FC<UserStatsCardProps> = React.memo(
+  ({ count, title }) => {
+    return (
+      <View style={styles.cardContainer}>
+        <Heading title={title} style={styles.cardTitle} />
+        <StyledText title={count} style={styles.cardSubTitle} />
+      </View>
+    );
+  }
+);
 
 export default function UserStats({ profile }: { profile: Profile }) {
   const stats = [
@@ -55,32 +45,52 @@ export default function UserStats({ profile }: { profile: Profile }) {
   ];
 
   return (
-    <View
-      style={{
-        marginVertical: 24,
-      }}
-    >
-      <Heading
-        title={"Stats"}
-        style={{
-          fontSize: 24,
-          fontWeight: "600",
-          color: white[500],
-        }}
-      />
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-        }}
-      >
-        {stats.map((stat) => {
+    <View style={CommonStyles.my_24}>
+      <Heading title={"Stats"} style={styles.statsTitle} />
+      <View style={styles.statsWrapper}>
+        {stats.map((stat, index) => {
           return (
-            <UserStatsCard title={stat.title} count={stat?.count?.toString()} />
+            <UserStatsCard
+              key={index}
+              title={stat.title}
+              count={stat?.count?.toString()}
+            />
           );
         })}
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  cardContainer: {
+    height: 130,
+    width: "48%",
+    marginTop: 16,
+    position: "relative",
+    backgroundColor: black[700],
+    borderRadius: 16,
+    padding: 16,
+    justifyContent: "space-between",
+  },
+  cardTitle: {
+    color: white[300],
+    fontSize: width / 16,
+    fontWeight: "600",
+  },
+  cardSubTitle: {
+    color: white[500],
+    fontSize: width / 15,
+    fontWeight: "600",
+  },
+  statsTitle: {
+    fontSize: 24,
+    fontWeight: "600",
+    color: white[500],
+  },
+  statsWrapper: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flexWrap: "wrap",
+  },
+});

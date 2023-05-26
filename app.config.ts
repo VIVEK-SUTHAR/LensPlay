@@ -88,7 +88,7 @@ const withPackageVisibility: ConfigPlugin = (config) => {
 
 const config: ExpoConfig = {
   name: "LensPlay",
-  slug: "lensplay",
+  slug: "test",
   version: "0.0.3",
   // orientation: "portrait",
   backgroundColor: "#000000",
@@ -120,8 +120,8 @@ const config: ExpoConfig = {
   jsEngine: "hermes",
   android: {
     package: "com.lensplayxyz.lensplay",
-    googleServicesFile: "./google-services.json",
     versionCode: 5,
+    googleServicesFile: "./google-services.json",
     adaptiveIcon: {
       foregroundImage: "./assets/images/adaptive-icon.png",
       backgroundColor: "#000000",
@@ -166,9 +166,9 @@ const config: ExpoConfig = {
     favicon: "./assets/images/favicon.png",
   },
   extra: {
-    // eas: {
-    // projectId: "e7d8274d-41e8-4289-a3f3-00e5e8cac9fc",
-    // },
+    eas: {
+      projectId: "e7d8274d-41e8-4289-a3f3-00e5e8cac9fc",
+    },
   },
   plugins: [
     [

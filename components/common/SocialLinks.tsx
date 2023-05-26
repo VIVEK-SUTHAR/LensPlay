@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Linking, Pressable, View } from "react-native";
-import Icon, { IconProps } from "../Icon";
-import { Maybe, Profile } from "../../types/generated";
 import { dark_primary } from "../../constants/Colors";
 import { useProfile } from "../../store/Store";
-import Logger from "../../utils/logger";
+import { Maybe, Profile } from "../../types/generated";
+import Icon, { IconProps } from "../Icon";
 
 type socialLinksProps = {
   instagram: Maybe<string> | undefined;
@@ -22,8 +21,6 @@ type linksData = {
 function getLink(key: string, value: Maybe<string> | undefined) {
   switch (key) {
     case "twitter":
-      console.log(value);
-
       if (value?.startsWith("@")) {
         return value ? `https://twitter.com/${value.slice(1)}` : undefined;
       }

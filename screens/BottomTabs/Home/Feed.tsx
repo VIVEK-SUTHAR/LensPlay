@@ -1,9 +1,9 @@
+import { FlashList } from "@shopify/flash-list";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
-  FlatList,
   Image,
   RefreshControl,
   SafeAreaView,
@@ -11,15 +11,18 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import ErrorMessage from "../../../components/common/ErrorMesasge";
+import Skeleton from "../../../components/common/Skeleton";
 import Icon from "../../../components/Icon";
+import { data } from "../../../components/Login/data";
 import PleaseLogin from "../../../components/PleaseLogin";
 import Button from "../../../components/UI/Button";
 import Heading from "../../../components/UI/Heading";
 import VideoCardSkeleton from "../../../components/UI/VideoCardSkeleton";
 import VideoCard from "../../../components/VideoCard";
-import ErrorMessage from "../../../components/common/ErrorMesasge";
-import Skeleton from "../../../components/common/Skeleton";
+import { SOURCES } from "../../../constants";
 import { black, white } from "../../../constants/Colors";
+import { HOME } from "../../../constants/tracking";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
@@ -31,11 +34,7 @@ import {
 } from "../../../types/generated";
 import { RootTabScreenProps } from "../../../types/navigation/types";
 import Logger from "../../../utils/logger";
-import { useBgColorStore } from "../../../store/BgColorStore";
 import TrackAction from "../../../utils/Track";
-import { HOME } from "../../../constants/tracking";
-import { data } from "../../../components/Login/data";
-import { SOURCES } from "../../../constants";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -104,14 +103,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
    * 4).See the value in Box-Model and set it accordingly
    */
   const ITEM_HEIGHT = 280;
-
-  const getItemLayout = (_: any, index: number) => {
-    return {
-      length: ITEM_HEIGHT,
-      offset: ITEM_HEIGHT * index,
-      index,
-    };
-  };
 
   const onEndCallBack = React.useCallback(() => {
     if (!pageInfo?.next) {
@@ -200,16 +191,16 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
       {loading ? (
         <Skeleton children={<VideoCardSkeleton />} number={10} />
       ) : (
-        <FlatList
+        <FlashList
           data={Feeddata?.feed.items as FeedItem[]}
           keyExtractor={keyExtractor}
-          getItemLayout={getItemLayout}
+          estimatedItemSize={280}
           removeClippedSubviews={true}
-          windowSize={20}
+          onLoad={({ elapsedTimeInMs }) => {
+            Logger.Warn(`Feed List Loading time ${elapsedTimeInMs} ms`);
+          }}
           refreshControl={_RefreshControl}
           ListFooterComponent={<MoreLoader />}
-          initialNumToRender={7}
-          maxToRenderPerBatch={8}
           onEndReachedThreshold={0.7}
           onEndReached={onEndCallBack}
           renderItem={renderItem}

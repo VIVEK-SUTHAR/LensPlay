@@ -27,6 +27,7 @@
     "@react-navigation/material-top-tabs": "^6.6.0",
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.1.0",
+    "@shopify/flash-list": "1.4.0",
     "@walletconnect/react-native-dapp": "^1.7.0",
     "base-64": "^1.0.0",
     "crypto-browserify": "^3.12.0",

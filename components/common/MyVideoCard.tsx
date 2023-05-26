@@ -1,14 +1,14 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "expo-image";
-import React from "react";
+import React, { memo } from "react";
 import { Dimensions, Pressable, TouchableOpacity, View } from "react-native";
 import { black } from "../../constants/Colors";
 import { useActivePublication } from "../../store/Store";
 import { Mirror, Post, Scalars } from "../../types/generated";
 import getDifference from "../../utils/getDifference";
-import getIPFSLink from "../../utils/getIPFSLink";
 import getImageProxyURL from "../../utils/getImageProxyURL";
+import getIPFSLink from "../../utils/getIPFSLink";
 import getPlaceHolderImage from "../../utils/getPlaceHolder";
 import getRawurl from "../../utils/getRawUrl";
 import Icon, { IconName } from "../Icon";
@@ -22,7 +22,7 @@ type MyVideoCardProps = {
   setPubId?: (pubId: Scalars["InternalPublicationId"]) => void;
 };
 
-export default function MyVideoCard({
+function MyVideoCard({
   publication,
   id,
   sheetRef,
@@ -33,7 +33,6 @@ export default function MyVideoCard({
 
   return (
     <Pressable
-      key={id}
       android_ripple={{
         color: black[400],
       }}
@@ -131,10 +130,11 @@ export default function MyVideoCard({
   );
 }
 
+export default memo(MyVideoCard);
 export type SheetProps = {
   sheetRef: React.RefObject<BottomSheetMethods>;
   pubId: Scalars["InternalPublicationId"];
-  profileId: Scalars["ProfileId"]
+  profileId: Scalars["ProfileId"];
 };
 
 export type actionListType = {

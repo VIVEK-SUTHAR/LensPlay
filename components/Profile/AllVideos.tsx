@@ -33,11 +33,15 @@ import DeleteVideo from "../VIdeo/DeleteVideo";
 import MyVideoCard, { SheetProps, actionListType } from "../common/MyVideoCard";
 import { black } from "../../constants/Colors";
 import { SOURCES } from "../../constants";
+import { FlashList } from "@shopify/flash-list";
+import Logger from "../../utils/logger";
 
 type AllVideosProps = {
   profileId?: string;
   ethAddress?: string;
 };
+
+const keyExtractor = (item: Post) => item.id;
 
 const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
   const { accessToken } = useAuthStore();
@@ -84,9 +88,9 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
         paddingVertical: 8,
       }}
     >
-      <FlatList
+      <FlashList
         data={AllVideos as Post[]}
-        keyExtractor={(item) => item.id}
+        keyExtractor={keyExtractor}
         ListEmptyComponent={NoVideosFound}
         refreshControl={
           <RefreshControl
@@ -95,6 +99,8 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
             progressBackgroundColor={"black"}
           />
         }
+        removeClippedSubviews={true}
+        estimatedItemSize={110}
         renderItem={({ item }) => (
           <MyVideoCard
             publication={item}
@@ -104,7 +110,11 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
           />
         )}
       />
-      <AllVideoSheet sheetRef={AllVideoSheetRef} pubId={pubId} profileId={profileId} />
+      <AllVideoSheet
+        sheetRef={AllVideoSheetRef}
+        pubId={pubId}
+        profileId={profileId}
+      />
     </View>
   );
 };
@@ -215,14 +225,14 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
           title: "Watch video on LensPlay",
         });
       },
-    }
+    },
   ];
 
   return (
     <>
       <Sheet
         ref={sheetRef}
-        snapPoints={[profileId?100:220]}
+        snapPoints={[profileId ? 100 : 220]}
         enablePanDownToClose={true}
         enableOverDrag={true}
         bottomInset={32}
@@ -232,7 +242,7 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
         detached={true}
         children={
           <FlatList
-            data={profileId?channelActionList:actionList}
+            data={profileId ? channelActionList : actionList}
             renderItem={({ item }) => {
               return (
                 <Ripple
