@@ -69,7 +69,11 @@ export type IconName =
   | "delete"
   | "more"
   | "pin"
-  | "unpin";
+  | "unpin"
+  | "images"
+  | "image"
+  | "camera"
+  ;
 export type IconProps = {
   name: IconName;
   size?: number;
