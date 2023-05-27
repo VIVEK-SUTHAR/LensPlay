@@ -41,7 +41,7 @@ const VideoMeta = (props: VideoMetaProps) => {
       <View style={{ marginTop: 8, flexDirection: "row" }}>
         <StyledText
           title={description}
-          style={{ color: "gray", fontSize: 14, maxWidth: "92%" }}
+          style={{ color: "gray", fontSize: 14, maxWidth: "80%" }}
           numberOfLines={1}
         />
         {description?.length > 0 && (
@@ -55,7 +55,7 @@ const VideoMeta = (props: VideoMetaProps) => {
             }}
           >
             <StyledText
-              title={" ...more"}
+              title={" more"}
               style={{ color: white[600], fontSize: 14 }}
             />
           </Pressable>

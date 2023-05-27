@@ -116,11 +116,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 4,
     justifyContent: "space-between",
-    marginTop: 16,
+    marginTop: 12,
+    textAlign: "center"
   },
   contentContainer: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
   },
   textContainer: {
     marginHorizontal: 8,

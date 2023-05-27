@@ -485,7 +485,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
                   title={"Description"}
                   style={{
                     fontSize: 20,
-                    fontWeight: "600",
+                    fontWeight: "700",
                     marginVertical: 4,
                     color: "white",
                     textAlign: "left",
