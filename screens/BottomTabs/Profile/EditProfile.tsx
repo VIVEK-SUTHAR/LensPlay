@@ -396,10 +396,6 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 					/>
 				</View>
 			</ScrollView>
-			{/* <Tabs>
-        <Tab.Screen name="Avatar" component={EditAvatar} />
-        <Tab.Screen name="Details" component={EditDetail} />
-      </Tabs> */}
 		</SafeAreaView>
 	);
 };

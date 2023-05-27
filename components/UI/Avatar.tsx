@@ -36,6 +36,7 @@ const Avatar: React.FC<AvatarProps> = ({
       placeholder={getPlaceHolderImage(true)}
       placeholderContentFit="cover"
       transition={500}
+      priority="high"
       source={{
         uri: resolvedSrc,
       }}

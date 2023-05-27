@@ -15,8 +15,6 @@ import Settings from "../screens/Header/Settings/Settings";
 import UploadShots from "../screens/Header/Upload/Shots/UploadShots";
 import AddDetails from "../screens/Header/Upload/Video/AddDetails";
 import UploadVideo from "../screens/Header/Upload/Video/UploadVideo";
-import JoinWaitlist from "../screens/ZooTools/JoinWaitlist";
-import LeaderBoard from "../screens/ZooTools/LeaderBoard";
 import AddDescription from "../screens/common/AddDescription";
 import Channel from "../screens/common/Channel";
 import FullImage from "../screens/common/FullImage";
@@ -48,25 +46,6 @@ export default function StackNavigation() {
       }}
       initialRouteName={"Loader"}
     >
-      <Stack.Group key={"ZooTools Screens"}>
-        <Stack.Screen
-          name="LeaderBoard"
-          component={LeaderBoard}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="JoinWaitlist"
-          component={JoinWaitlist}
-          options={{
-            animation: "slide_from_right",
-            headerShown: false,
-            headerStyle: { backgroundColor: "black" },
-            headerTintColor: theme.PRIMARY,
-            headerTitle: "",
-          }}
-        />
-      </Stack.Group>
-
       <Stack.Group key={"Invite Code"}>
         <Stack.Screen
           name="Invite"

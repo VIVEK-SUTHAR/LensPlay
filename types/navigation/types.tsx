@@ -63,18 +63,11 @@ export type RootStackParamList = {
   Waitlist: undefined;
   CreateProfile: undefined;
   Loader: undefined;
-  JoinWaitlist: undefined;
   ReportPublication: {
     publicationId: string;
   };
   LoginWithLens: undefined;
   EditProfile: undefined;
-  LeaderBoard: {
-    referralsCount: number;
-    rankingPoints: number;
-    rankingPosition: number;
-    refferalLink: string;
-  };
   UserStats: {
     profileId?: string;
     activeTab: string;
