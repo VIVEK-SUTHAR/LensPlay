@@ -17,6 +17,7 @@ import getIPFSLink from "../../utils/getIPFSLink";
 import getPlaceHolderImage from "../../utils/getPlaceHolder";
 import { useBgColorStore } from "../../store/BgColorStore";
 import Logger from "../../utils/logger";
+import getImageProxyURL from "../../utils/getImageProxyURL";
 const StatusBarHeight = Constants.statusBarHeight;
 
 const FullImage = ({
@@ -26,8 +27,6 @@ const FullImage = ({
   const isAvatar = route.params.source === "avatar";
   const [bgColor, setBgColor] = useState<ColorValue>("rgba(0,0,0,1)");
   const { cover, avatar } = useBgColorStore();
-
-  Logger.Success(`${avatar} from full`);
 
   const goBack = () => navigation.goBack();
 
@@ -69,7 +68,11 @@ const FullImage = ({
     <SafeAreaView
       style={[
         styles.container,
-        { backgroundColor: isAvatar ? (avatar as string) : (cover as string) },
+        {
+          backgroundColor: isAvatar
+            ? (avatar as string)
+            : (cover as string) || "black",
+        },
       ]}
     >
       <StatusBar backgroundColor="transparent" style="auto" />
@@ -83,8 +86,12 @@ const FullImage = ({
         style={[pan.getLayout(), styles.imageContainer]}
       >
         <Image
-          placeholder={getPlaceHolderImage(isAvatar)}
-          source={{ uri: getIPFSLink(route.params.url) }}
+          placeholder={getPlaceHolderImage(true)}
+          source={{
+            uri: getImageProxyURL({
+              formattedLink: getIPFSLink(route.params.url),
+            }),
+          }}
           style={isAvatar ? styles.avatarStyle : styles.imageStyle}
         />
       </Animated.View>

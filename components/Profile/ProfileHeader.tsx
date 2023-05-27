@@ -93,7 +93,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         profileId: profileId ? profileId : currentProfile?.id,
       },
     }).catch((err) => {
-      Logger.Error("Error in Refreshing error",err)
+      Logger.Error("Error in Refreshing error", err);
     });
     setRefreshing(false);
   }, []);
@@ -106,15 +106,15 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       source: "cover",
     });
     TrackAction(PROFILE.FULL_IMAGE);
-  }, []);
+  }, [profile]);
 
   const navigateToFullImageAvatar = React.useCallback(() => {
     navigation.navigate("FullImage", {
-      url: getRawurl(profile?.picture as MediaSet),
+      url: getIPFSLink(getRawurl(profile?.picture as MediaSet)),
       source: "avatar",
     });
     TrackAction(PROFILE.FULL_IMAGE);
-  }, []);
+  }, [profile]);
 
   const navigateToUserStats = React.useCallback(() => {
     navigation.navigate("UserStats", {
@@ -125,17 +125,25 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   }, []);
 
   React.useEffect(() => {
-    const coverURL = getImageProxyURL({
-      formattedLink: getIPFSLink(getRawurl(profile?.coverPicture as MediaSet)),
+    /**
+     * Fetches primary color of Image,
+     * Use Proxy for Faster Loading of Imaage
+     * Below is for  Profile Picture
+     */
+    const avatarImage = getImageProxyURL({
+      formattedLink: getIPFSLink(getRawurl(profile?.picture as MediaSet)),
     });
 
-    getColors(coverURL, {
-      fallback: "#000000",
+    getColors(avatarImage, {
+      fallback: "black",
       cache: true,
-      key: coverURL,
+      key: avatarImage,
       quality: "lowest",
       pixelSpacing: 500,
     }).then((colors) => {
+      if (!colors) {
+        setAvatarColors("black")
+      }
       switch (colors.platform) {
         case "android":
           setAvatarColors(colors.average);
@@ -147,11 +155,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           setAvatarColors("black");
       }
     });
-
     return () => {
       setAvatarColors(null);
     };
-  }, []);
+  }, [profile]);
 
   const isChannel = profileId ? true : false;
 
@@ -171,7 +178,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <ScrollView
           style={CommonStyles.screenContainer}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
               colors={[theme.PRIMARY]}
               progressBackgroundColor={black[400]}
             />
