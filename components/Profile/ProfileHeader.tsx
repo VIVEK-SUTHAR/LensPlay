@@ -51,6 +51,7 @@ import StyledText from "../UI/StyledText";
 import Cover from "./Cover";
 import PinnedPublication from "./PinnedPublication";
 import UserStats from "./UserStats";
+import formatInteraction from "../../utils/formatInteraction";
 
 type ProfileHeaderProps = {
   profileId?: Scalars["ProfileId"];
@@ -248,7 +249,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               onPress={navigateToUserStats}
             >
               <StyledText
-                title={profile?.stats?.totalFollowing}
+                title={formatInteraction(profile?.stats?.totalFollowing)}
                 style={{
                   fontSize: 14,
                   fontWeight: "600",
@@ -274,7 +275,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               onPress={navigateToUserStats}
             >
               <StyledText
-                title={profile?.stats?.totalFollowers}
+                title={formatInteraction(profile?.stats?.totalFollowers)}
                 style={{
                   fontSize: 14,
                   fontWeight: "600",
