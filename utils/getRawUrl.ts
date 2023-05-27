@@ -7,7 +7,8 @@ function getRawurl(originalMediaObject: Maybe<ProfileMedia> | undefined): any {
 	}
 
 	if (originalMediaObject?.__typename === "MediaSet") {
-		return Boolean(originalMediaObject?.optimized?.url) || originalMediaObject?.original?.url;
+		// eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+		return originalMediaObject?.optimized?.url || originalMediaObject?.original?.url;
 	}
 	if (originalMediaObject?.__typename === "NftImage") {
 		return originalMediaObject?.uri;

@@ -59,6 +59,14 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 	const theme = useThemeStore();
 	const navigation = useNavigation();
 
+	const getProfileId = (): string => {
+		if (typeof profileId !== "undefined") {
+			return profileId;
+		} else {
+			return currentProfile?.id;
+		}
+	};
+
 	const {
 		data: Profile,
 		loading,
@@ -67,7 +75,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 	} = useProfileQuery({
 		variables: {
 			request: {
-				profileId: Boolean(profileId) || currentProfile?.id,
+				profileId: getProfileId(),
 			},
 		},
 		context: {
@@ -81,7 +89,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 		setRefreshing(true);
 		refetch({
 			request: {
-				profileId: Boolean(profileId) || currentProfile?.id,
+				profileId: getProfileId(),
 			},
 		})
 			.then(() => {})
@@ -211,7 +219,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 							<View>
 								<View style={{ flexDirection: "row", alignItems: "center" }}>
 									<Heading
-										title={Boolean(profile?.name) || formatHandle(profile?.handle)}
+										// eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+										title={profile?.name ?? formatHandle(profile?.handle)}
 										style={{
 											fontSize: 16,
 											marginTop: 8,
