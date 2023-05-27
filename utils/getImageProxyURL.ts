@@ -1,4 +1,5 @@
 import { DEV } from "./../constants/index";
+import Logger from "./logger";
 /**
  *
  * @param formattedLink Publicly Avilable Image Link,can be IPFS,Arweave or Your S3 or Blob storage Link

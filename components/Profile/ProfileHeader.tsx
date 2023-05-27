@@ -63,7 +63,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   ethAddress,
 }) => {
   const [refreshing, setRefreshing] = useState(false);
+
   const sheetRef = React.useRef<BottomSheetMethods>(null);
+
   const { setAvatarColors } = useBgColorStore();
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();

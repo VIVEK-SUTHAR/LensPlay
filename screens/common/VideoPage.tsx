@@ -77,6 +77,12 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
     setCollectStats,
     setMirrorStats,
   } = useReactionStore();
+
+  Logger.Success(
+    "New Opti",
+    activePublication?.metadata?.media[0]?.optimized?.url
+  );
+
   const isDAPublication = activePublication?.isDataAvailability;
 
   function handleBackButtonClick() {
@@ -216,6 +222,14 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 
   useFocusEffect(
     React.useCallback(() => {
+      if (
+        activePublication?.metadata?.media[0]?.optimized?.url?.includes(
+          "https://lp-playback.com"
+        )
+      ) {
+        setVideoURI(activePublication?.metadata?.media[0]?.optimized?.url);
+        return;
+      }
       checkIfLivePeerAsset(LENS_MEDIA_URL).then((res) => {
         if (res) {
           // console.log(res);

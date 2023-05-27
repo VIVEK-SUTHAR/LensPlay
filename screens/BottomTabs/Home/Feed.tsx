@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
+  Dimensions,
   Image,
   RefreshControl,
   SafeAreaView,
@@ -118,7 +119,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
     }).catch((err) => {});
   }, [pageInfo?.next]);
 
-  const renderItem = ({ item }: { item: FeedItem }) => {
+  const renderItem = React.useCallback(({ item }: { item: FeedItem }) => {
     if (!item.root.hidden) {
       return (
         <VideoCard
@@ -129,7 +130,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
       );
     }
     return null;
-  };
+  }, []);
 
   if (data) {
     TrackAction(HOME.SWITCH_HOME_TAB);
@@ -141,13 +142,13 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
         {pageInfo?.next ? (
           <View
             style={{
-              height: 200,
-              width: "100%",
+              height: 100,
+              width: Dimensions.get("screen").width,
               justifyContent: "center",
               alignItems: "center",
             }}
           >
-            <ActivityIndicator size={"large"} color={theme.PRIMARY} />
+            <ActivityIndicator size={"small"} color={theme.PRIMARY} />
           </View>
         ) : (
           <ErrorMessage message="No more Videos to load" withImage={false} />

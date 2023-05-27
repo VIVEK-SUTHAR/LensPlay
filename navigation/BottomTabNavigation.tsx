@@ -186,7 +186,7 @@ export default function BottomTabNavigator({
               </Pressable>
               <Pressable
                 onPress={() => {
-                  navigation.push("Settings");
+                  navigation.navigate("Settings");
                 }}
                 style={{
                   paddingHorizontal: 8,
