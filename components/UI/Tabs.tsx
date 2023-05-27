@@ -28,7 +28,7 @@ export default function Tabs({ children }: { children: ReactNode }) {
         tabBarStyle: {
           backgroundColor: "black",
           borderBottomWidth: 1,
-          borderBottomColor: black[300],
+          borderBottomColor: black[600],
         },
         tabBarIndicatorStyle: {
           display: "none",
