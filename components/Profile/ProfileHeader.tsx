@@ -9,9 +9,10 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { getColors } from "react-native-image-colors";
 import { LENSPLAY_SITE } from "../../constants";
-import { white } from "../../constants/Colors";
+import { black, white } from "../../constants/Colors";
 import { PROFILE } from "../../constants/tracking";
 import VERIFIED_CHANNELS from "../../constants/Varified";
 import { useBgColorStore } from "../../store/BgColorStore";
@@ -34,6 +35,7 @@ import {
 } from "../../types/generated";
 import extractURLs from "../../utils/extractURL";
 import formatHandle from "../../utils/formatHandle";
+import formatInteraction from "../../utils/formatInteraction";
 import getImageProxyURL from "../../utils/getImageProxyURL";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
@@ -49,9 +51,8 @@ import Heading from "../UI/Heading";
 import ProfileSkeleton from "../UI/ProfileSkeleton";
 import StyledText from "../UI/StyledText";
 import Cover from "./Cover";
-import PinnedPublication from "./PinnedPublication";
+import PinnedPublication, { UnPinSheet } from "./PinnedPublication";
 import UserStats from "./UserStats";
-import formatInteraction from "../../utils/formatInteraction";
 
 type ProfileHeaderProps = {
   profileId?: Scalars["ProfileId"];
@@ -89,8 +90,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     setRefreshing(true);
     await refetch({
       request: {
-        profileId: profileId,
+        profileId: profileId ? profileId : currentProfile?.id,
       },
+    }).catch((err) => {
+      Logger.Error("Error in Refreshing error",err)
     });
     setRefreshing(false);
   }, []);
@@ -154,155 +157,159 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
   if (loading) return <ProfileSkeleton />;
   if (error)
-    return <ErrorMesasge message="Something went wrong" withImage={true} />;
+    return (
+      <ErrorMesasge
+        message="Something went wrong"
+        withImage={true}
+        retryMethod={onRefresh}
+        withButton={true}
+      />
+    );
   if (profile) {
     return (
-      <ScrollView
-        style={CommonStyles.screenContainer}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        showsVerticalScrollIndicator={false}
-      >
-        <Pressable onPress={navigateToFullImageCover}>
-          <Cover
-            navigation={navigation}
-            url={getIPFSLink(getRawurl(profile?.coverPicture as MediaSet))}
-          />
-        </Pressable>
-        <View style={styles.ProfileContainer}>
-          <Pressable onPress={navigateToFullImageAvatar}>
-            <Avatar
-              src={getRawurl(profile?.picture as MediaSet)}
-              height={90}
-              width={90}
-              borderRadius={100}
+      <>
+        <ScrollView
+          style={CommonStyles.screenContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}
+              colors={[theme.PRIMARY]}
+              progressBackgroundColor={black[400]}
+            />
+          }
+          showsVerticalScrollIndicator={false}
+        >
+          <Pressable onPress={navigateToFullImageCover}>
+            <Cover
+              navigation={navigation}
+              url={getIPFSLink(getRawurl(profile?.coverPicture as MediaSet))}
             />
           </Pressable>
-          <View style={styles.editButtonContainer}>
-            {isChannel ? (
-              <SubscribeButton
-                channelId={profile?.id}
-                isFollwebByMe={profile?.isFollowedByMe}
+          <View style={styles.ProfileContainer}>
+            <Pressable onPress={navigateToFullImageAvatar}>
+              <Avatar
+                src={getRawurl(profile?.picture as MediaSet)}
+                height={90}
+                width={90}
+                borderRadius={100}
               />
-            ) : (
-              <EditChannelButton />
-            )}
+            </Pressable>
+            <View style={styles.editButtonContainer}>
+              {isChannel ? (
+                <SubscribeButton
+                  channelId={profile?.id}
+                  isFollwebByMe={profile?.isFollowedByMe}
+                />
+              ) : (
+                <EditChannelButton />
+              )}
+            </View>
           </View>
-        </View>
-        <View style={CommonStyles.mx_16}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <View>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Heading
-                  title={profile?.name || formatHandle(profile?.handle)}
+          <View style={CommonStyles.mx_16}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <View>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Heading
+                    title={profile?.name || formatHandle(profile?.handle)}
+                    style={{
+                      fontSize: 16,
+                      marginTop: 8,
+                      fontWeight: "bold",
+                      color: "white",
+                    }}
+                  />
+                  {VERIFIED_CHANNELS.includes(profile?.id) && (
+                    <View style={styles.verifiedContainer}>
+                      <Icon name="verified" size={18} color={theme.PRIMARY} />
+                    </View>
+                  )}
+                </View>
+                <StyledText
+                  title={formatHandle(profile?.handle)}
                   style={{
-                    fontSize: 16,
-                    marginTop: 8,
-                    fontWeight: "bold",
+                    fontSize: 12,
+                    fontWeight: "500",
+                    color: "gray",
+                  }}
+                />
+              </View>
+            </View>
+            {profile?.bio ? (
+              <StyledText
+                title={extractURLs(profile?.bio)}
+                style={styles.bioStyle}
+              />
+            ) : null}
+            <View style={styles.subFlexContainer}>
+              <TouchableOpacity
+                activeOpacity={0.5}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+                onPress={navigateToUserStats}
+              >
+                <StyledText
+                  title={formatInteraction(profile?.stats?.totalFollowing)}
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "600",
                     color: "white",
                   }}
                 />
-                {VERIFIED_CHANNELS.includes(profile?.id) && (
-                  <View style={styles.verifiedContainer}>
-                    <Icon name="verified" size={18} color={theme.PRIMARY} />
-                  </View>
-                )}
-              </View>
-              <StyledText
-                title={formatHandle(profile?.handle)}
+                <StyledText
+                  title={"subscription"}
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "500",
+                    color: "gray",
+                    marginLeft: 4,
+                  }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.5}
                 style={{
-                  fontSize: 12,
-                  fontWeight: "500",
-                  color: "gray",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginLeft: 8,
                 }}
-              />
+                onPress={navigateToUserStats}
+              >
+                <StyledText
+                  title={formatInteraction(profile?.stats?.totalFollowers)}
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "600",
+                    color: "white",
+                  }}
+                />
+                <StyledText
+                  title={"subscribers"}
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "500",
+                    color: "gray",
+                    marginLeft: 4,
+                  }}
+                />
+              </TouchableOpacity>
             </View>
-          </View>
-          {profile?.bio ? (
-            <StyledText
-              title={extractURLs(profile?.bio)}
-              style={{
-                fontSize: 16,
-                color: "#E9E8E8",
-                textAlign: "left",
-                marginTop: 4,
-              }}
+            <SocialLinks profile={profile as Profile} />
+            <PinnedPublication
+              sheetRef={sheetRef as any}
+              profile={profile as Profile}
             />
-          ) : null}
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: 8,
-            }}
-          >
-            <Pressable
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-              onPress={navigateToUserStats}
-            >
-              <StyledText
-                title={formatInteraction(profile?.stats?.totalFollowing)}
-                style={{
-                  fontSize: 14,
-                  fontWeight: "600",
-                  color: "white",
-                }}
-              />
-              <StyledText
-                title={"subscription"}
-                style={{
-                  fontSize: 14,
-                  fontWeight: "500",
-                  color: "gray",
-                  marginLeft: 4,
-                }}
-              />
-            </Pressable>
-            <Pressable
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginLeft: 8,
-              }}
-              onPress={navigateToUserStats}
-            >
-              <StyledText
-                title={formatInteraction(profile?.stats?.totalFollowers)}
-                style={{
-                  fontSize: 14,
-                  fontWeight: "600",
-                  color: "white",
-                }}
-              />
-              <StyledText
-                title={"subscribers"}
-                style={{
-                  fontSize: 14,
-                  fontWeight: "500",
-                  color: "gray",
-                  marginLeft: 4,
-                }}
-              />
-            </Pressable>
+            <UserStats profile={profile as Profile} />
           </View>
-          <SocialLinks profile={profile as Profile} />
-          <PinnedPublication
-            sheetRef={sheetRef as any}
-            profile={profile as Profile}
-          />
-          <UserStats profile={profile as Profile} />
-        </View>
-      </ScrollView>
+        </ScrollView>
+        {!isChannel ? <UnPinSheet sheetRef={sheetRef} /> : null}
+      </>
     );
   }
   return null;
@@ -501,5 +508,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 8,
     marginHorizontal: 4,
+  },
+  subFlexContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 8,
+  },
+  bioStyle: {
+    fontSize: 16,
+    color: "#E9E8E8",
+    textAlign: "left",
+    marginTop: 4,
   },
 });

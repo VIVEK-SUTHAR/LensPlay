@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Pressable, View } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { dark_primary } from "../constants/Colors";
 import formatHandle from "../utils/formatHandle";
 import Avatar from "./UI/Avatar";
@@ -26,7 +27,8 @@ function ProfileCard({
 }: ProfileCardProps) {
   const navigation = useNavigation();
   return (
-    <Pressable
+    <TouchableOpacity
+      activeOpacity={0.6}
       onPress={() => {
         navigation.navigate("Channel", {
           profileId: profileId,
@@ -73,7 +75,7 @@ function ProfileCard({
           />
         </View>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 }
 

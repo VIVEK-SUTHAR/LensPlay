@@ -286,6 +286,7 @@ export default function PinnedPublication({
             <TouchableOpacity
               activeOpacity={0.5}
               onPress={() => {
+                //@ts-ignore Ref as it may be undefined
                 sheetRef?.current?.snapToIndex(0);
               }}
               style={{
@@ -300,5 +301,5 @@ export default function PinnedPublication({
       </View>
     );
   }
-  return <></>;
+  return null;
 }

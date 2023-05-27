@@ -24,6 +24,8 @@ import {
 } from "../../../types/generated";
 import { RootStackScreenProps } from "../../../types/navigation/types";
 import getRawurl from "../../../utils/getRawUrl";
+import { useMemo } from "react";
+import formatHandle from "../../../utils/formatHandle";
 
 const UserStats = ({
   navigation,
@@ -31,11 +33,21 @@ const UserStats = ({
 }: RootStackScreenProps<"UserStats">) => {
   const { currentProfile } = useProfile();
 
-  // useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     title: currentProfile?.name || currentProfile?.handle,
-  //   });
-  // }, [navigation, currentProfile]);
+  const isFromChannel = useMemo(() => route.params.profileId, [navigation]);
+
+  const getScreenTitle = React.useCallback(() => {
+    if (isFromChannel) {
+      return "Stats";
+    } else {
+      return currentProfile?.name || formatHandle(currentProfile?.handle);
+    }
+  }, [navigation]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: getScreenTitle(),
+    });
+  }, [navigation, currentProfile]);
   return (
     <SafeAreaView style={styles.container}>
       <Tabs>
@@ -131,7 +143,7 @@ const Suscribers = ({ profileId }: { profileId: Scalars["ProfileId"] }) => {
 
   const MoreLoader = React.memo(_MoreLoader);
 
-  const renderItem = ({ item }: { item: Follower }) => {
+  const renderItem = React.useCallback(({ item }: { item: Follower }) => {
     return (
       <ProfileCard
         key={item?.wallet?.address}
@@ -143,7 +155,7 @@ const Suscribers = ({ profileId }: { profileId: Scalars["ProfileId"] }) => {
         isFollowed={false}
       />
     );
-  };
+  }, []);
 
   if (loading)
     return <Skeleton children={<ProfileCardSkeleton />} number={10} />;
@@ -263,7 +275,7 @@ const Subscriptions = ({
   if (data?.following?.items?.length === 0)
     return (
       <ErrorMessage
-        message="Looks like you don't have any subscribers"
+        message="Looks like you don't have subscribed to any channels"
         withImage
       />
     );
