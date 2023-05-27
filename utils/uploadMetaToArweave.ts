@@ -5,32 +5,35 @@
  * @returns id Arweave txn id
  */
 
-async function uploadMetaDataToArweave(commentText: string, handle: string | undefined) {
+async function uploadMetaDataToArweave(
+	commentText: string,
+	handle: string | undefined
+): Promise<string | undefined> {
 	try {
 		const headersList = {
 			"Accept": "*/*",
 			"Content-Type": "application/json",
-			Authorization:"Bearer ENGINEERCANTAKEOVERWORLD"
+			"Authorization": "Bearer ENGINEERCANTAKEOVERWORLD",
 		};
 
 		const bodyContent = JSON.stringify({
-			commentText: commentText,
-			handle: handle,
+			commentText,
+			handle,
 		});
 
-		const response = await fetch(`https://lensplay-api.vercel.app/api/upload/metadata`, {
+		const response = await fetch("https://lensplay-api.vercel.app/api/upload/metadata", {
 			method: "POST",
 			body: bodyContent,
 			headers: headersList,
 		});
 		if (response.ok) {
 			const jsondata = await response.json();
-			const content_uri = `https://arweave.net/${jsondata.id}`;
-			return content_uri;
+			const contentUri = `https://arweave.net/${jsondata.id as string}`;
+			return contentUri;
 		}
 	} catch (err) {
 		if (err instanceof Error) {
-			throw new Error("Something went wromg", { cause: err });
+			// throw new Error("Something went wromg", { cause: err });
 		}
 	}
 }

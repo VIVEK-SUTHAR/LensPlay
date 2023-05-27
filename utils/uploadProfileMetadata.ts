@@ -7,43 +7,44 @@
  * @returns id Arweave txn id
  */
 
-export type UserData = {
-    name: string,
-    bio: string
+import { type Profile } from "../types/generated";
+
+export interface UserData {
+	name: string;
+	bio: string;
 }
 
-export type SocialLinks = {
-    twitter: string,
-    instagram: string,
-    youtube: string,
-    website: string
+export interface SocialLinks {
+	twitter: string;
+	instagram: string;
+	youtube: string;
+	website: string;
 }
 
-import { Profile } from "../types/generated";
-
-async function uploadProfileMetadata(oldProfileData: Profile | undefined, newProfileData: UserData, socialLinks: SocialLinks, coverUri: string) {
+async function uploadProfileMetadata(
+	oldProfileData: Profile | undefined,
+	newProfileData: UserData,
+	socialLinks: SocialLinks,
+	coverUri: string
+): Promise<void> {
 	try {
 		const headersList = {
-            "Content-Type": "application/json",
-            Authorization: "Bearer ENGINEERCANTAKEOVERWORLD",
-          };
+			"Content-Type": "application/json",
+			"Authorization": "Bearer ENGINEERCANTAKEOVERWORLD",
+		};
 
-          const bodyContent = JSON.stringify({
-            oldProfileData: oldProfileData,
-            newProfileData: newProfileData,
-            socialLinks: socialLinks,
-            coverImage: coverUri,
-          });
-      
+		const bodyContent = JSON.stringify({
+			oldProfileData,
+			newProfileData,
+			socialLinks,
+			coverImage: coverUri,
+		});
 
-          const response = await fetch(
-            "https://lensplay-api.vercel.app/api/upload/profileMetadata",
-            {
-              method: "POST",
-              body: bodyContent,
-              headers: headersList,
-            }
-          );
+		const response = await fetch("https://lensplay-api.vercel.app/api/upload/profileMetadata", {
+			method: "POST",
+			body: bodyContent,
+			headers: headersList,
+		});
 
 		if (response.ok) {
 			const jsondata = await response.json();

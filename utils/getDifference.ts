@@ -5,47 +5,48 @@
  *
  */
 
-function getDifference(timestamp: Date | string) {
-  const date = new Date(timestamp);
+function getDifference(timestamp: Date | string): string {
+	const date = new Date(timestamp);
 
-  const seconds = Math.floor((new Date() - date) / 1000);
+	const seconds = Math.floor((new Date() - date) / 1000);
 
-  let interval = Math.floor(seconds / 31536000);
-  if (interval > 1) {
-    return "• " + interval + " years ago";
-  } else if (interval == 1) {
-    return "• " + interval + " year ago";
-  }
+	let interval = Math.floor(seconds / 31536000);
 
-  interval = Math.floor(seconds / 2592000);
-  if (interval > 1) {
-    return "• " + interval + " months ago";
-  } else if (interval == 1) {
-    return "• " + interval + " month ago";
-  }
+	if (interval > 1) {
+		return "• " + interval.toString() + " years ago";
+	} else if (interval === 1) {
+		return "• " + interval.toString() + " year ago";
+	}
 
-  interval = Math.floor(seconds / 86400);
-  if (interval > 1) {
-    return "• " + interval + " days ago";
-  } else if (interval == 1) {
-    return "• " + interval + " day ago";
-  }
+	interval = Math.floor(seconds / 2592000);
+	if (interval > 1) {
+		return "• " + interval.toString() + " months ago";
+	} else if (interval === 1) {
+		return "• " + interval.toString() + " month ago";
+	}
 
-  interval = Math.floor(seconds / 3600);
-  if (interval > 1) {
-    return "• " + interval + " hours ago";
-  } else if (interval == 1) {
-    return "• " + interval + " hour ago";
-  }
+	interval = Math.floor(seconds / 86400);
+	if (interval > 1) {
+		return "• " + interval.toString() + " days ago";
+	} else if (interval === 1) {
+		return "• " + interval.toString() + " day ago";
+	}
 
-  interval = Math.floor(seconds / 60);
-  if (interval >= 1) {
-    return "• " + interval + " min ago";
-  }
+	interval = Math.floor(seconds / 3600);
+	if (interval > 1) {
+		return "• " + interval.toString() + " hours ago";
+	} else if (interval === 1) {
+		return "• " + interval.toString() + " hour ago";
+	}
 
-  if (seconds < 10) return "just now";
+	interval = Math.floor(seconds / 60);
+	if (interval >= 1) {
+		return "• " + interval.toString() + " min ago";
+	}
 
-  return Math.floor(seconds) + " seconds ago";
+	if (seconds < 10) return "just now";
+
+	return Math.floor(seconds).toString() + " seconds ago";
 }
 
 export default getDifference;
