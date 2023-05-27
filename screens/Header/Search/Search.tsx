@@ -14,9 +14,6 @@ import {
 import Icon from "../../../components/Icon";
 import ProfileCard from "../../../components/ProfileCard";
 import Recommended from "../../../components/Search/Recommended";
-import Tabs, { Tab } from "../../../components/UI/Tabs";
-import VideoCard from "../../../components/VideoCard";
-import NotFound from "../../../components/common/NotFound";
 import useDebounce from "../../../hooks/useDebounce";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useThemeStore } from "../../../store/Store";
@@ -50,6 +47,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
     const onDebounce = async () => {
       if (keyword.trim().length > 0) {
         try {
+          setIsSearching(true);
           if (isGuest) {
             searchChannels({
               variables: {
@@ -93,7 +91,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
           setIsSearching(false);
         }
       } finally {
-        setIsSearching(false);
+        // setIsSearching(false);
       }
     }
   };
@@ -144,21 +142,13 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="transparent" style="auto" />
-      <Tabs>
-        <Tab.Screen
-          name="Profile"
-          listeners={{
-            focus: () => {
-              setSearchType(SearchRequestTypes.Profile);
-            },
-          }}
-          children={() => (
-            <FlatList
+      {!isSearching?<Recommended />:null}
+      <FlatList
               style={{
                 backgroundColor: "black",
                 height: "100%",
               }}
-              ListEmptyComponent={!isfound ? <Recommended /> : null}
+              // ListEmptyComponent={!isfound ? <Recommended /> : null}
               data={
                 searchType === SearchRequestTypes.Profile
                   ? result?.search?.items
@@ -176,9 +166,17 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
                 />
               )}
             />
-          )}
-        />
+      {/* <Tabs>
         <Tab.Screen
+          name="Profile"
+          listeners={{
+            focus: () => {
+              setSearchType(SearchRequestTypes.Profile);
+            },
+          }}
+          children={() => (
+             */}
+        {/* <Tab.Screen
           name="Videos"
           listeners={{
             focus: () => {
@@ -210,8 +208,8 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
               )}
             />
           )}
-        />
-      </Tabs>
+        /> */}
+      {/* </Tabs> */}
     </SafeAreaView>
   );
 };
@@ -223,6 +221,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "black",
     paddingBottom: 16,
+    paddingHorizontal: 16
   },
   headerContainer: {
     flexDirection: "row",

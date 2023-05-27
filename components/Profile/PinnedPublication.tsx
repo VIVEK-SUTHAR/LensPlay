@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import { v4 as uuidV4 } from "uuid";
-import { white } from "../../constants/Colors";
+import { black, white } from "../../constants/Colors";
 import {
   useActivePublication,
   useAuthStore,
@@ -107,7 +107,10 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
         marginHorizontal: 8,
       }}
       detached={true}
-      children={
+      backgroundStyle={{
+        backgroundColor: black[600]
+      }}
+      >
         <Ripple
           onTap={() => {
             RemovepinPublication();
@@ -135,8 +138,7 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
             />
           </View>
         </Ripple>
-      }
-    />
+      </Sheet>
   );
 }
 

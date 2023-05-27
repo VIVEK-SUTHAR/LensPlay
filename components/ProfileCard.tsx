@@ -43,9 +43,6 @@ function ProfileCard({
           flexDirection: "row",
           alignItems: "center",
           padding: 8,
-          marginVertical: 4,
-          borderBottomWidth: 1,
-          borderBottomColor: dark_primary,
           height: 70,
         }}
       >

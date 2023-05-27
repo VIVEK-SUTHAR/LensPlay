@@ -20,6 +20,7 @@ import MyVideoCard, { SheetProps, actionListType } from "../common/MyVideoCard";
 import { NoVideosFound } from "./AllVideos";
 import { SOURCES } from "../../constants";
 import { FlashList } from "@shopify/flash-list";
+import { black } from "../../constants/Colors";
 
 type CollectedVideosProps = {
   ethAddress?: string;
@@ -198,7 +199,10 @@ export const CollectedVideoSheet = ({
         marginHorizontal: 8,
       }}
       detached={true}
-      children={
+      backgroundStyle={{
+        backgroundColor: black[600]
+      }}
+      >
         <FlatList
           data={actionList}
           renderItem={({ item }) => {
@@ -233,8 +237,7 @@ export const CollectedVideoSheet = ({
             );
           }}
         />
-      }
-    />
+      </Sheet>
   );
 };
 

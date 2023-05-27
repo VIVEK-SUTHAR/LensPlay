@@ -25,6 +25,7 @@ import DeleteVideo from "../VIdeo/DeleteVideo";
 import MyVideoCard, { SheetProps, actionListType } from "../common/MyVideoCard";
 import { NoVideosFound } from "./AllVideos";
 import { FlashList } from "@shopify/flash-list";
+import { black } from "../../constants/Colors";
 
 type MirroredVideosProps = {
   channelId?: string;
@@ -222,8 +223,11 @@ export const MirroredVideoSheet = ({
         style={{
           marginHorizontal: 8,
         }}
+        backgroundStyle={{
+          backgroundColor: black[600]
+        }}
         detached={true}
-        children={
+        >
           <FlatList
             data={profileId ? channelActionList : actionList}
             renderItem={({ item }) => {
@@ -258,8 +262,7 @@ export const MirroredVideoSheet = ({
               );
             }}
           />
-        }
-      />
+        </Sheet>
       <DeleteVideo sheetRef={deleteRef} pubId={pubId} />
     </>
   );
