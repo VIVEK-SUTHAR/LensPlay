@@ -3,15 +3,15 @@ import { Pressable, TextInput, View } from "react-native";
 import { LENSPLAY_SITE } from "../../constants";
 import { useGuestStore } from "../../store/GuestStore";
 import {
-  useActivePublication,
-  useAuthStore,
-  useProfile,
-  useThemeStore,
-  useToast,
+	useActivePublication,
+	useAuthStore,
+	useProfile,
+	useThemeStore,
+	useToast,
 } from "../../store/Store";
 import {
-  useCreateCommentViaDispatcherMutation,
-  useCreateDataAvailabilityCommentViaDispatcherMutation,
+	useCreateCommentViaDispatcherMutation,
+	useCreateDataAvailabilityCommentViaDispatcherMutation,
 } from "../../types/generated";
 import { ToastType } from "../../types/Store";
 import getIPFSLink from "../../utils/getIPFSLink";
@@ -21,179 +21,166 @@ import uploadMetaDataToArweave from "../../utils/uploadMetaToArweave";
 import Icon from "../Icon";
 import Avatar from "../UI/Avatar";
 
-type CommentInputProps = {
-  publicationId: string;
-};
+interface CommentInputProps {
+	publicationId: string;
+}
 
-const CommentInput = ({ publicationId }: CommentInputProps) => {
-  const [commentText, setCommentText] = useState<string>("");
-  const [isFocused, setIsFocused] = useState<boolean>(false);
+const CommentInput: React.FC<CommentInputProps> = ({ publicationId }) => {
+	const [commentText, setCommentText] = useState<string>("");
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [isFocused, setIsFocused] = useState<boolean>(false);
 
-  const toast = useToast();
-  const { currentProfile } = useProfile();
-  const { accessToken } = useAuthStore();
-  const { PRIMARY } = useThemeStore();
-  const { isGuest } = useGuestStore();
-  const { activePublication } = useActivePublication();
+	const toast = useToast();
+	const { currentProfile } = useProfile();
+	const { accessToken } = useAuthStore();
+	const { PRIMARY } = useThemeStore();
+	const { isGuest } = useGuestStore();
+	const { activePublication } = useActivePublication();
 
-  const [createComment] = useCreateCommentViaDispatcherMutation({
-    onCompleted: (data) => {
-      Logger.Success("Done", data);
-    },
-    onError: (errr) => {
-      Logger.Error("Error in commentiing", errr);
-      toast.error("Something went wrong");
-    },
-  });
+	const [createComment] = useCreateCommentViaDispatcherMutation({
+		onCompleted: (data) => {
+			Logger.Success("Done", data);
+		},
+		onError: (errr) => {
+			Logger.Error("Error in commentiing", errr);
+			toast.error("Something went wrong");
+		},
+	});
 
-  const [
-    createDataAvaibalityComment,
-  ] = useCreateDataAvailabilityCommentViaDispatcherMutation({
-    onCompleted: (data) => {
-      Logger.Success("DA Comment published", data);
-      toast.success("Comment submitted!");
-    },
-    onError: (err, cliOpt) => {
-      Logger.Error("Error in DA Comment", err, "\nClient Option", cliOpt);
-    },
-  });
+	const [createDataAvaibalityComment] = useCreateDataAvailabilityCommentViaDispatcherMutation({
+		onCompleted: (data) => {
+			Logger.Success("DA Comment published", data);
+			toast.success("Comment submitted!");
+		},
+		onError: (err, cliOpt) => {
+			Logger.Error("Error in DA Comment", err, "\nClient Option", cliOpt);
+		},
+	});
 
-  async function publishComment() {
-    if (isGuest) {
-      toast.show("Please Login", ToastType.ERROR, true);
-      return;
-    }
-    if (commentText.length === 0) {
-      toast.show("Please type something", ToastType.ERROR, true);
-      return;
-    }
+	async function publishComment(): Promise<void> {
+		if (isGuest) {
+			toast.show("Please Login", ToastType.ERROR, true);
+			return;
+		}
+		if (commentText.length === 0) {
+			toast.show("Please type something", ToastType.ERROR, true);
+			return;
+		}
 
-    const isDAPublication = activePublication?.isDataAvailability;
+		const isDAPublication = activePublication?.isDataAvailability;
 
-    if (isDAPublication) {
-      const contenturi = await uploadMetaDataToArweave(
-        commentText,
-        currentProfile?.handle
-      );
-      createDataAvaibalityComment({
-        variables: {
-          request: {
-            commentOn: publicationId,
-            contentURI: contenturi,
-            from: currentProfile?.id,
-          },
-        },
-        context: {
-          headers: {
-            "x-access-token": `Bearer ${accessToken}`,
-            origin: LENSPLAY_SITE,
-          },
-        },
-      });
-      return;
-    }
-    try {
-      toast.success("Comment submitted!");
-      setCommentText("");
-      setIsFocused(false);
-      const contenturi = await uploadMetaDataToArweave(
-        commentText,
-        currentProfile?.handle
-      );
-      await createComment({
-        variables: {
-          request: {
-            profileId: currentProfile?.id,
-            publicationId: publicationId,
-            contentURI: contenturi,
-            collectModule: {
-              revertCollectModule: true,
-            },
-          },
-        },
-        context: {
-          headers: {
-            "x-access-token": `Bearer ${accessToken}`,
-            origin: LENSPLAY_SITE,
-          },
-        },
-      });
-    } catch (error) {
-      setCommentText("");
-      toast.show("Something Went wrong", ToastType.ERROR, true);
-    }
-  }
+		if (isDAPublication === true) {
+			const contenturi = await uploadMetaDataToArweave(commentText, currentProfile?.handle);
+			void createDataAvaibalityComment({
+				variables: {
+					request: {
+						commentOn: publicationId,
+						contentURI: contenturi,
+						from: currentProfile?.id,
+					},
+				},
+				context: {
+					headers: {
+						"x-access-token": `Bearer ${accessToken}`,
+						"origin": LENSPLAY_SITE,
+					},
+				},
+			});
+			return;
+		}
+		try {
+			toast.success("Comment submitted!");
+			setCommentText("");
+			setIsFocused(false);
+			const contenturi = await uploadMetaDataToArweave(commentText, currentProfile?.handle);
+			await createComment({
+				variables: {
+					request: {
+						profileId: currentProfile?.id,
+						publicationId,
+						contentURI: contenturi,
+						collectModule: {
+							revertCollectModule: true,
+						},
+					},
+				},
+				context: {
+					headers: {
+						"x-access-token": `Bearer ${accessToken}`,
+						"origin": LENSPLAY_SITE,
+					},
+				},
+			});
+		} catch (error) {
+			setCommentText("");
+			toast.show("Something Went wrong", ToastType.ERROR, true);
+		}
+	}
 
-  return (
-    <View
-      style={{
-        backgroundColor: "#1A1A1A",
-        width: "100%",
-        height: 60,
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <View
-        style={{
-          flex: 0.2,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Avatar
-          src={getIPFSLink(getRawurl(currentProfile?.picture))}
-          height={28}
-          width={28}
-        />
-      </View>
-      <TextInput
-        placeholder="What's in your mind"
-        style={{ flex: 1, color: "white" }}
-        selectionColor={PRIMARY}
-        value={commentText}
-        onFocus={() => {
-          setIsFocused((state) => !state);
-        }}
-        onSubmitEditing={() => {
-          setIsFocused((state) => !state);
-        }}
-        onPressIn={() => {
-          setIsFocused((state) => !state);
-        }}
-        onPressOut={() => {
-          setIsFocused((state) => !state);
-        }}
-        onBlur={() => {
-          setIsFocused((state) => !state);
-        }}
-        onChange={(e) => {
-          setCommentText(e.nativeEvent.text);
-        }}
-        placeholderTextColor={"white"}
-      />
-      <Pressable
-        android_ripple={{
-          color: commentText.length === 0 ? "gray" : PRIMARY,
-          radius: 20,
-        }}
-        style={{
-          height: 60,
-          justifyContent: "center",
-          alignItems: "center",
-          paddingHorizontal: 12,
-        }}
-        onPressIn={publishComment}
-      >
-        <Icon
-          name="send"
-          color={commentText.length === 0 ? "gray" : PRIMARY}
-          size={24}
-        />
-      </Pressable>
-    </View>
-  );
+	return (
+		<View
+			style={{
+				backgroundColor: "#1A1A1A",
+				width: "100%",
+				height: 60,
+				flexDirection: "row",
+				justifyContent: "center",
+				alignItems: "center",
+			}}
+		>
+			<View
+				style={{
+					flex: 0.2,
+					justifyContent: "center",
+					alignItems: "center",
+				}}
+			>
+				<Avatar src={getIPFSLink(getRawurl(currentProfile?.picture))} height={28} width={28} />
+			</View>
+			<TextInput
+				placeholder="What's in your mind"
+				style={{ flex: 1, color: "white" }}
+				selectionColor={PRIMARY}
+				value={commentText}
+				onFocus={() => {
+					setIsFocused((state) => !state);
+				}}
+				onSubmitEditing={() => {
+					setIsFocused((state) => !state);
+				}}
+				onPressIn={() => {
+					setIsFocused((state) => !state);
+				}}
+				onPressOut={() => {
+					setIsFocused((state) => !state);
+				}}
+				onBlur={() => {
+					setIsFocused((state) => !state);
+				}}
+				onChange={(e) => {
+					setCommentText(e.nativeEvent.text);
+				}}
+				placeholderTextColor={"white"}
+			/>
+			<Pressable
+				android_ripple={{
+					color: commentText.length === 0 ? "gray" : PRIMARY,
+					radius: 20,
+				}}
+				style={{
+					height: 60,
+					justifyContent: "center",
+					alignItems: "center",
+					paddingHorizontal: 12,
+				}}
+				onPressIn={() => {
+					void publishComment();
+				}}
+			>
+				<Icon name="send" color={commentText.length === 0 ? "gray" : PRIMARY} size={24} />
+			</Pressable>
+		</View>
+	);
 };
 
 export default React.memo(CommentInput);
