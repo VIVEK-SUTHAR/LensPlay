@@ -10,11 +10,23 @@ const cache = new InMemoryCache({
           "request",
           ["sortCriteria", "noRandomize", "profileId", "metadata"],
         ]),
+        publications: cursorBasedPagination([
+          "request",
+          [
+            "profileId",
+            "commentsOf",
+            "publicationTypes",
+            "sources",
+            "commentsRankingFilter",
+            "commentsOfOrdering",
+          ],
+        ]),
         notifications: cursorBasedPagination([
           "request",
           ["profileId", "notificationTypes", "highSignalFilter"],
         ]),
         followers: cursorBasedPagination(["request", ["profileId"]]),
+        following: cursorBasedPagination(["request", ["address"]]),
       },
     },
   },

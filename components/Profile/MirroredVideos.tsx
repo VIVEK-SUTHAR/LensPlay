@@ -1,22 +1,30 @@
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import React from "react";
-import { FlatList, RefreshControl, Share, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  Share,
+  View,
+} from "react-native";
+import { SOURCES } from "../../constants";
 import { useAuthStore, useProfile, useThemeStore } from "../../store/Store";
 import {
   Mirror,
   PublicationMainFocus,
   PublicationTypes,
+  PublicationsQueryRequest,
   Scalars,
   useProfileMirrorsQuery,
 } from "../../types/generated";
-import MyVideoCard, { SheetProps, actionListType } from "../common/MyVideoCard";
 import Sheet from "../Bottom";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Icon from "../Icon";
 import Ripple from "../UI/Ripple";
 import StyledText from "../UI/StyledText";
-import Icon from "../Icon";
 import DeleteVideo from "../VIdeo/DeleteVideo";
+import MyVideoCard, { SheetProps, actionListType } from "../common/MyVideoCard";
 import { NoVideosFound } from "./AllVideos";
-import { SOURCES } from "../../constants";
+import { FlashList } from "@shopify/flash-list";
 
 type MirroredVideosProps = {
   channelId?: string;
@@ -27,8 +35,14 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
   const { PRIMARY } = useThemeStore();
   const { currentProfile } = useProfile();
   const MirroredVideoSheetRef = React.useRef<BottomSheetMethods>(null);
+  const [pubId, setPubId] = React.useState("");
+  const [refreshing, setRefreshing] = React.useState<boolean>(false);
 
-  const QueryRequest = {
+  const handlePubId = React.useCallback((pubId: string) => {
+    setPubId(pubId);
+  }, []);
+
+  const QueryRequest: PublicationsQueryRequest = {
     profileId: channelId ? channelId : currentProfile?.id,
     publicationTypes: [PublicationTypes.Mirror],
     metadata: {
@@ -38,7 +52,7 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
     limit: 10,
   };
 
-  const { data, error, loading } = useProfileMirrorsQuery({
+  const { data, error, loading, refetch, fetchMore } = useProfileMirrorsQuery({
     variables: {
       request: QueryRequest,
       reactionRequest: {
@@ -53,12 +67,71 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
   });
 
   const AllMirrorVideos = data?.publications?.items;
+  const pageInfo = data?.publications?.pageInfo;
 
-  const [pubId, setPubId] = React.useState("");
+  const keyExtractor = (item: Mirror) => item.id;
 
-  const handlePubId = React.useCallback((pubId: string) => {
-    setPubId(pubId);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    try {
+      refetch({
+        request: QueryRequest,
+      })
+        .then(() => {
+          setRefreshing(false);
+        })
+        .catch((err) => {});
+    } catch (error) {
+    } finally {
+      setRefreshing(false);
+    }
   }, []);
+
+  const _MoreLoader = () => {
+    return (
+      <>
+        {pageInfo?.next ? (
+          <View
+            style={{
+              height: 200,
+              width: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator size={"large"} color={PRIMARY} />
+          </View>
+        ) : (
+          <></>
+        )}
+      </>
+    );
+  };
+
+  const MoreLoader = React.memo(_MoreLoader);
+
+  const _RefreshControl = (
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      colors={[PRIMARY]}
+      progressBackgroundColor={"black"}
+    />
+  );
+
+  const onEndCallBack = React.useCallback(() => {
+    if (!pageInfo?.next) {
+      return;
+    }
+    fetchMore({
+      variables: {
+        request: {
+          ...QueryRequest,
+          cursor: pageInfo?.next,
+        },
+      },
+    }).catch((err) => {});
+  }, [pageInfo?.next]);
 
   return (
     <View
@@ -68,17 +141,17 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
         paddingVertical: 8,
       }}
     >
-      <FlatList
+      <FlashList
         data={AllMirrorVideos as Mirror[]}
-        keyExtractor={(item) => item.id}
+        keyExtractor={keyExtractor}
         ListEmptyComponent={NoVideosFound}
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            colors={[PRIMARY]}
-            progressBackgroundColor={"black"}
-          />
-        }
+        removeClippedSubviews={true}
+        estimatedItemSize={110}
+        refreshControl={_RefreshControl}
+        ListFooterComponent={<MoreLoader />}
+        onEndReachedThreshold={0.7}
+        onEndReached={onEndCallBack}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <MyVideoCard
             publication={item}
@@ -88,12 +161,20 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
           />
         )}
       />
-      <MirroredVideoSheet sheetRef={MirroredVideoSheetRef} pubId={pubId} profileId={channelId}/>
+      <MirroredVideoSheet
+        sheetRef={MirroredVideoSheetRef}
+        pubId={pubId}
+        profileId={channelId}
+      />
     </View>
   );
 };
 
-export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
+export const MirroredVideoSheet = ({
+  sheetRef,
+  pubId,
+  profileId,
+}: SheetProps) => {
   const deleteRef = React.useRef<BottomSheetMethods>(null);
 
   const actionList: actionListType[] = [
@@ -117,7 +198,7 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
     },
   ];
 
-  const channelActionList = [
+  const channelActionList: actionListType[] = [
     {
       name: "Share",
       icon: "share",
@@ -134,7 +215,7 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
     <>
       <Sheet
         ref={sheetRef}
-        snapPoints={[profileId?100:150]}
+        snapPoints={[profileId ? 100 : 150]}
         enablePanDownToClose={true}
         enableOverDrag={true}
         bottomInset={32}
@@ -144,7 +225,7 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
         detached={true}
         children={
           <FlatList
-            data={profileId?channelActionList:actionList}
+            data={profileId ? channelActionList : actionList}
             renderItem={({ item }) => {
               return (
                 <Ripple

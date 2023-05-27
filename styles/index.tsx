@@ -18,16 +18,16 @@ const CommonStyles = StyleSheet.create({
     marginHorizontal: 16,
   },
   my_24: {
-    marginVertical:24
+    marginVertical: 24,
   },
   px_2: {
-    paddingHorizontal:2
+    paddingHorizontal: 2,
   },
   px_4: {
-    paddingHorizontal:4
+    paddingHorizontal: 4,
   },
   px_8: {
-    paddingHorizontal:8
-  }
+    paddingHorizontal: 8,
+  },
 });
 export default CommonStyles;

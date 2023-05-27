@@ -1,9 +1,10 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import React from "react";
-import { FlatList, Share, View } from "react-native";
+import { ActivityIndicator, FlatList, Share, View } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import { useAuthStore, useProfile, useThemeStore } from "../../store/Store";
 import {
+  Mirror,
   Post,
   PublicationMainFocus,
   PublicationTypes,
@@ -18,6 +19,7 @@ import StyledText from "../UI/StyledText";
 import MyVideoCard, { SheetProps, actionListType } from "../common/MyVideoCard";
 import { NoVideosFound } from "./AllVideos";
 import { SOURCES } from "../../constants";
+import { FlashList } from "@shopify/flash-list";
 
 type CollectedVideosProps = {
   ethAddress?: string;
@@ -28,6 +30,12 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
   const { currentProfile } = useProfile();
   const { PRIMARY } = useThemeStore();
   const CollectedVideoSheetRef = React.useRef<BottomSheetMethods>(null);
+  const [pubId, setPubId] = React.useState("");
+  const [refreshing, setRefreshing] = React.useState<boolean>(false);
+
+  const handlePubId = React.useCallback((pubId: string) => {
+    setPubId(pubId);
+  }, []);
 
   const QueryRequest: PublicationsQueryRequest = {
     collectedBy: ethAddress ? ethAddress : currentProfile?.ownedBy,
@@ -39,7 +47,7 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
     limit: 10,
   };
 
-  const { data, error, loading } = useProfileCollectsQuery({
+  const { data, error, loading, refetch, fetchMore } = useProfileCollectsQuery({
     variables: {
       request: QueryRequest,
       reactionRequest: {
@@ -53,35 +61,97 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
     },
   });
 
-  const [pubId, setPubId] = React.useState("");
+  const collectVideos = data?.publications?.items;
+  const pageInfo = data?.publications?.pageInfo;
 
-  const handlePubId = React.useCallback((pubId: string) => {
-    setPubId(pubId);
+  const keyExtractor = (item: Post | Mirror) => item.id;
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    try {
+      refetch({
+        request: QueryRequest,
+      })
+        .then(() => {
+          setRefreshing(false);
+        })
+        .catch((err) => {});
+    } catch (error) {
+    } finally {
+      setRefreshing(false);
+    }
   }, []);
 
-  if (error) return <></>;
-  if (loading) return <></>;
-  if (data) {
-    const collectVideos = data?.publications?.items;
+  const _MoreLoader = () => {
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "black",
-          paddingVertical: 8,
-        }}
-      >
-        <FlatList
-          data={collectVideos as Post[]}
-          keyExtractor={(item) => item.id}
+      <>
+        {pageInfo?.next ? (
+          <View
+            style={{
+              height: 200,
+              width: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator size={"large"} color={PRIMARY} />
+          </View>
+        ) : (
+          <></>
+        )}
+      </>
+    );
+  };
+
+  const MoreLoader = React.memo(_MoreLoader);
+
+  const _RefreshControl = (
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      colors={[PRIMARY]}
+      progressBackgroundColor={"black"}
+    />
+  );
+
+  const onEndCallBack = React.useCallback(() => {
+    if (!pageInfo?.next) {
+      return;
+    }
+    fetchMore({
+      variables: {
+        request: {
+          ...QueryRequest,
+          cursor: pageInfo?.next,
+        },
+      },
+    }).catch((err) => {});
+  }, [pageInfo?.next]);
+
+  if (error) return <></>;
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "black",
+        paddingVertical: 8,
+      }}
+    >
+      {loading ? (
+        <></>
+      ) : (
+        <FlashList
+          data={collectVideos as Post[] | Mirror[]}
+          keyExtractor={keyExtractor}
           ListEmptyComponent={NoVideosFound}
-          refreshControl={
-            <RefreshControl
-              refreshing={false}
-              colors={[PRIMARY]}
-              progressBackgroundColor={"black"}
-            />
-          }
+          removeClippedSubviews={true}
+          estimatedItemSize={110}
+          refreshControl={_RefreshControl}
+          ListFooterComponent={<MoreLoader />}
+          onEndReachedThreshold={0.7}
+          onEndReached={onEndCallBack}
+          showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <MyVideoCard
               publication={item}
@@ -91,14 +161,19 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
             />
           )}
         />
-        <CollectedVideoSheet sheetRef={CollectedVideoSheetRef} pubId={pubId} />
-      </View>
-    );
-  }
-  return <></>;
+      )}
+      <CollectedVideoSheet sheetRef={CollectedVideoSheetRef} pubId={pubId} />
+    </View>
+  );
 };
 
-export const CollectedVideoSheet = ({ sheetRef, pubId }: SheetProps) => {
+export const CollectedVideoSheet = ({
+  sheetRef,
+  pubId,
+}: {
+  sheetRef: React.RefObject<BottomSheetMethods>;
+  pubId: Scalars["InternalPublicationId"];
+}) => {
   const actionList: actionListType[] = [
     {
       name: "Share",

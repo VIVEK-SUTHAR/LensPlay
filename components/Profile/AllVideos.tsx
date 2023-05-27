@@ -1,8 +1,11 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { FlashList } from "@shopify/flash-list";
 import React from "react";
-import { Share, View } from "react-native";
+import { ActivityIndicator, Share, View } from "react-native";
 import { FlatList, RefreshControl } from "react-native-gesture-handler";
 import { v4 as uuidV4 } from "uuid";
+import { SOURCES } from "../../constants";
+import { black } from "../../constants/Colors";
 import { PUBLICATION } from "../../constants/tracking";
 import {
   useAuthStore,
@@ -18,6 +21,7 @@ import {
   PublicationMainFocus,
   PublicationMetadataDisplayTypes,
   PublicationTypes,
+  PublicationsQueryRequest,
   Scalars,
   useCreateSetProfileMetadataViaDispatcherMutation,
   useProfilePostsQuery,
@@ -31,32 +35,35 @@ import Ripple from "../UI/Ripple";
 import StyledText from "../UI/StyledText";
 import DeleteVideo from "../VIdeo/DeleteVideo";
 import MyVideoCard, { SheetProps, actionListType } from "../common/MyVideoCard";
-import { black } from "../../constants/Colors";
-import { SOURCES } from "../../constants";
-import { FlashList } from "@shopify/flash-list";
 
 type AllVideosProps = {
   profileId?: string;
   ethAddress?: string;
 };
-const keyExtractor = (item: Post) => item.id;
 
 const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
   const { accessToken } = useAuthStore();
   const { PRIMARY } = useThemeStore();
   const { currentProfile } = useProfile();
   const AllVideoSheetRef = React.useRef<BottomSheetMethods>(null);
+  const [pubId, setPubId] = React.useState("");
+  const [refreshing, setRefreshing] = React.useState<boolean>(false);
 
-  const QueryRequest = {
+  const handlePubId = React.useCallback((pubId: string) => {
+    setPubId(pubId);
+  }, []);
+
+  const QueryRequest: PublicationsQueryRequest = {
     profileId: profileId ? profileId : currentProfile?.id,
     publicationTypes: [PublicationTypes.Post],
     metadata: {
       mainContentFocus: [PublicationMainFocus.Video],
     },
     sources: SOURCES,
+    limit: 10,
   };
 
-  const { data, error, loading } = useProfilePostsQuery({
+  const { data, error, loading, refetch, fetchMore } = useProfilePostsQuery({
     variables: {
       request: QueryRequest,
       reactionRequest: {
@@ -72,11 +79,71 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 
   const AllVideos = data?.publications?.items;
 
-  const [pubId, setPubId] = React.useState("");
+  const pageInfo = data?.publications?.pageInfo;
 
-  const handlePubId = React.useCallback((pubId: string) => {
-    setPubId(pubId);
+  const keyExtractor = (item: Post) => item.id;
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    try {
+      refetch({
+        request: QueryRequest,
+      })
+        .then(() => {
+          setRefreshing(false);
+        })
+        .catch((err) => {});
+    } catch (error) {
+    } finally {
+      setRefreshing(false);
+    }
   }, []);
+
+  const _MoreLoader = () => {
+    return (
+      <>
+        {pageInfo?.next ? (
+          <View
+            style={{
+              height: 200,
+              width: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator size={"large"} color={PRIMARY} />
+          </View>
+        ) : (
+          <></>
+        )}
+      </>
+    );
+  };
+
+  const MoreLoader = React.memo(_MoreLoader);
+
+  const _RefreshControl = (
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      colors={[PRIMARY]}
+      progressBackgroundColor={"black"}
+    />
+  );
+
+  const onEndCallBack = React.useCallback(() => {
+    if (!pageInfo?.next) {
+      return;
+    }
+    fetchMore({
+      variables: {
+        request: {
+          ...QueryRequest,
+          cursor: pageInfo?.next,
+        },
+      },
+    }).catch((err) => {});
+  }, [pageInfo?.next]);
 
   return (
     <View
@@ -86,28 +153,30 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
         paddingVertical: 8,
       }}
     >
-      <FlashList
-        data={AllVideos as Post[]}
-        keyExtractor={keyExtractor}
-        ListEmptyComponent={NoVideosFound}
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            colors={[PRIMARY]}
-            progressBackgroundColor={"black"}
-          />
-        }
-        removeClippedSubviews={true}
-        estimatedItemSize={110}
-        renderItem={({ item }) => (
-          <MyVideoCard
-            publication={item}
-            id={item.id}
-            sheetRef={AllVideoSheetRef}
-            setPubId={handlePubId}
-          />
-        )}
-      />
+      {loading ? (
+        <></>
+      ) : (
+        <FlashList
+          data={AllVideos as Post[]}
+          keyExtractor={keyExtractor}
+          ListEmptyComponent={NoVideosFound}
+          removeClippedSubviews={true}
+          estimatedItemSize={110}
+          refreshControl={_RefreshControl}
+          ListFooterComponent={<MoreLoader />}
+          onEndReachedThreshold={0.7}
+          onEndReached={onEndCallBack}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <MyVideoCard
+              publication={item}
+              id={item.id}
+              sheetRef={AllVideoSheetRef}
+              setPubId={handlePubId}
+            />
+          )}
+        />
+      )}
       <AllVideoSheet
         sheetRef={AllVideoSheetRef}
         pubId={pubId}
@@ -213,7 +282,7 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
     },
   ];
 
-  const channelActionList = [
+  const channelActionList: actionListType[] = [
     {
       name: "Share",
       icon: "share",

@@ -25,10 +25,11 @@ import {
 import { RootStackScreenProps } from "../../../types/navigation/types";
 import getRawurl from "../../../utils/getRawUrl";
 
-const UserStats = ({ navigation, route }: RootStackScreenProps<"UserStats">) => {
+const UserStats = ({
+  navigation,
+  route,
+}: RootStackScreenProps<"UserStats">) => {
   const { currentProfile } = useProfile();
-  
-
 
   // useLayoutEffect(() => {
   //   navigation.setOptions({
@@ -40,18 +41,16 @@ const UserStats = ({ navigation, route }: RootStackScreenProps<"UserStats">) => 
       <Tabs>
         <Tab.Screen
           name="Subscribers"
-          children={
-            ()=><SuscriberList profileId={route.params.profileId}/>
-          }
+          children={() => <SuscriberList profileId={route.params.profileId} />}
           options={{
             tabBarLabel: "Subscribers",
           }}
         />
         <Tab.Screen
           name="Subscriptions"
-          children={
-            ()=><SubscriptionsList ethAddress={route?.params?.ethAddress}/>
-          }
+          children={() => (
+            <SubscriptionsList ethAddress={route?.params?.ethAddress} />
+          )}
           options={{
             tabBarLabel: "Subscriptions",
           }}
@@ -71,16 +70,15 @@ const getItemLayout = (_: any, index: number) => {
   };
 };
 
-const Suscribers = ({profileId}: {profileId: Scalars["ProfileId"]}) => {
+const Suscribers = ({ profileId }: { profileId: Scalars["ProfileId"] }) => {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
-  const { PRIMARY } = useThemeStore();  
+  const { PRIMARY } = useThemeStore();
 
   const request: FollowersRequest = {
-    profileId: profileId?profileId:currentProfile?.id,
+    profileId: profileId ? profileId : currentProfile?.id,
     limit: 30,
   };
-  
 
   const { data, error, loading, fetchMore } = useAllFollowersQuery({
     variables: {
@@ -180,14 +178,17 @@ const Suscribers = ({profileId}: {profileId: Scalars["ProfileId"]}) => {
 
 const SuscriberList = React.memo(Suscribers);
 
-const Subscriptions = ({ethAddress}: {ethAddress: Scalars["EthereumAddress"]}) => {
+const Subscriptions = ({
+  ethAddress,
+}: {
+  ethAddress: Scalars["EthereumAddress"];
+}) => {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
   const { PRIMARY } = useThemeStore();
-  
 
   const request: FollowingRequest = {
-    address: ethAddress?ethAddress:currentProfile?.ownedBy,
+    address: ethAddress ? ethAddress : currentProfile?.ownedBy,
     limit: 30,
   };
 

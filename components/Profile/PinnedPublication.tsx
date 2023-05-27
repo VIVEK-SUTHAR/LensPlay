@@ -37,7 +37,6 @@ import { SheetProps } from "../common/MyVideoCard";
 import TrackAction from "../../utils/Track";
 import { PUBLICATION } from "../../constants/tracking";
 
-
 export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
   const { currentProfile } = useProfile();
   const { accessToken } = useAuthStore();
@@ -143,8 +142,11 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
 
 export default function PinnedPublication({
   sheetRef,
-  profile
-}: { sheetRef: Pick<SheetProps, "sheetRef">, profile: Profile }) {
+  profile,
+}: {
+  sheetRef: Pick<SheetProps, "sheetRef">;
+  profile: Profile;
+}) {
   const activeProfile = useProfile();
   const { accessToken } = useAuthStore();
   const pinStore = usePinStore();
@@ -195,8 +197,7 @@ export default function PinnedPublication({
     return (
       <View
         style={{
-          marginTop: 16,
-          marginBottom: 32,
+          marginTop: 24,
         }}
       >
         <View

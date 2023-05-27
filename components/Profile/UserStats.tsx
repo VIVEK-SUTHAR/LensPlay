@@ -5,6 +5,7 @@ import CommonStyles from "../../styles";
 import { Profile } from "../../types/generated";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
+import Icon from "../Icon";
 
 const { width } = Dimensions.get("screen");
 
@@ -17,8 +18,11 @@ const UserStatsCard: React.FC<UserStatsCardProps> = React.memo(
   ({ count, title }) => {
     return (
       <View style={styles.cardContainer}>
-        <Heading title={title} style={styles.cardTitle} />
-        <StyledText title={count} style={styles.cardSubTitle} />
+        <Icon name="bug" />
+        <View>
+          <StyledText title={count} style={styles.cardSubTitle} />
+          <Heading title={title} style={styles.cardTitle} />
+        </View>
       </View>
     );
   }
@@ -28,19 +32,19 @@ export default function UserStats({ profile }: { profile: Profile }) {
   const stats = [
     {
       title: "TotalPosts",
-      count: profile?.stats?.totalPosts,
+      count: profile?.stats?.totalPosts || 0,
     },
     {
       title: "TotalCollects",
-      count: profile?.stats?.totalCollects,
+      count: profile?.stats?.totalCollects || 0,
     },
     {
       title: "TotalMirrors",
-      count: profile?.stats?.totalMirrors,
+      count: profile?.stats?.totalMirrors || 0,
     },
     {
       title: "TotalPublications",
-      count: profile?.stats?.totalPublications,
+      count: profile?.stats?.totalPublications || 0,
     },
   ];
 
@@ -75,12 +79,12 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: white[300],
-    fontSize: width / 16,
-    fontWeight: "600",
+    fontSize: width / 20,
+    fontWeight: "500",
   },
   cardSubTitle: {
     color: white[500],
-    fontSize: width / 15,
+    fontSize: width / 12,
     fontWeight: "600",
   },
   statsTitle: {

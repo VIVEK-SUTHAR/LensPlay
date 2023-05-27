@@ -7,8 +7,8 @@ import { black } from "../../constants/Colors";
 import { useActivePublication } from "../../store/Store";
 import { Mirror, Post, Scalars } from "../../types/generated";
 import getDifference from "../../utils/getDifference";
-import getImageProxyURL from "../../utils/getImageProxyURL";
 import getIPFSLink from "../../utils/getIPFSLink";
+import getImageProxyURL from "../../utils/getImageProxyURL";
 import getPlaceHolderImage from "../../utils/getPlaceHolder";
 import getRawurl from "../../utils/getRawUrl";
 import Icon, { IconName } from "../Icon";
@@ -43,7 +43,7 @@ function MyVideoCard({
       }}
       onPress={() => {
         setActivePublication(publication);
-        // navigation.navigate("VideoPage");
+        navigation.navigate("VideoPage");
       }}
     >
       <View>
@@ -131,6 +131,7 @@ function MyVideoCard({
 }
 
 export default memo(MyVideoCard);
+
 export type SheetProps = {
   sheetRef: React.RefObject<BottomSheetMethods>;
   pubId: Scalars["InternalPublicationId"];
