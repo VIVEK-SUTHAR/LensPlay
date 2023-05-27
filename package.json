@@ -17,6 +17,11 @@
       "npx eslint --fix"
     ]
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "jest": {
     "preset": "jest-expo"
   },
