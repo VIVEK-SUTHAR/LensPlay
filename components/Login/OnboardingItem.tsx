@@ -7,6 +7,7 @@ import {
 import React from "react";
 import StyledText from "../UI/StyledText";
 import { Image } from "expo-image";
+
 type Props = {
   image: ImageSourcePropType;
   title: string;
@@ -32,7 +33,8 @@ const OnboardingItem = ({ image, title, desc }: Props) => {
       >
         <Image
           source={image}
-          style={{ resizeMode: "contain", width: "70%", height: "70%" }}
+          style={{ width: "70%", height: "70%" }}
+          contentFit="contain"
         />
       </View>
       <View
