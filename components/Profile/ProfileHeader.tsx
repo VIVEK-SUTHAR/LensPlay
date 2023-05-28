@@ -302,6 +302,17 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 								/>
 							</TouchableOpacity>
 						</View>
+						<Button
+							title={"Go to watch later"}
+							width="auto"
+							bg={"transparent"}
+							textStyle={{
+								color: "white",
+							}}
+							onPress={() => {
+								// navigation.navigate("WatchLater");
+							}}
+						/>
 						<SocialLinks profile={profile as Profile} />
 						<PinnedPublication sheetRef={sheetRef as any} profile={profile as Profile} />
 						<UserStats profile={profile as Profile} />
