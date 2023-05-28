@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, StyleProp, TextStyle } from "react-native";
+import { StyleProp, TextStyle } from "react-native";
 import { useFonts } from "expo-font";
 import { createIconSetFromIcoMoon } from "@expo/vector-icons";
 

@@ -3,11 +3,11 @@ import {
   LENSPLAY_DISCORD,
   LENSPLAY_SITE,
   LENSPLAY_TWITTER,
-} from "../../constants";
+} from "constants/index";
 import Icon from "../Icon";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
-import StyledText from "../UI/StyledText";
-import { dark_primary } from "../../constants/Colors";
+import StyledText from "components/UI/StyledText";
+import { dark_primary } from "constants/Colors";
 
 type SocialMediaBadgeProps = {
   icon: JSX.Element;

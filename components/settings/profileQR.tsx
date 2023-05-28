@@ -2,15 +2,15 @@ import * as Clipboard from "expo-clipboard";
 import React from "react";
 import { Dimensions, Vibration, View, useWindowDimensions } from "react-native";
 import QRCodeStyled from "react-native-qrcode-styled";
-import { white } from "../../constants/Colors";
-import { useProfile, useToast } from "../../store/Store";
-import { ToastType } from "../../types/Store";
-import formatHandle from "../../utils/formatHandle";
-import getRawurl from "../../utils/getRawUrl";
-import Avatar from "../UI/Avatar";
-import Button from "../UI/Button";
-import Heading from "../UI/Heading";
-import StyledText from "../UI/StyledText";
+import { white } from "constants/Colors";
+import { useProfile, useToast } from "store/Store";
+import { ToastType } from "customTypes/Store";
+import formatHandle from "utils/formatHandle";
+import getRawurl from "utils/getRawUrl";
+import Avatar from "components/UI/Avatar";
+import Button from "components/UI/Button";
+import Heading from "components/UI/Heading";
+import StyledText from "components/UI/StyledText";
 
 function ProfileQR({ QRCodeRef }: { QRCodeRef: any }) {
   const { currentProfile } = useProfile();

@@ -5,7 +5,7 @@ import {
   View,
 } from "react-native";
 import React from "react";
-import StyledText from "../UI/StyledText";
+import StyledText from "components/UI/StyledText";
 import { Image } from "expo-image";
 
 type Props = {

@@ -1,6 +1,6 @@
 import { Animated, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useRef } from "react";
-import useNetworkStore from "../store/NetworkStore";
+import useNetworkStore from "store/NetworkStore";
 
 import Constants from "expo-constants";
 import StyledText from "./UI/StyledText";

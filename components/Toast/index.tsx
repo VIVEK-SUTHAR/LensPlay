@@ -1,9 +1,9 @@
 import Constants from "expo-constants";
 import React, { useEffect, useRef } from "react";
 import { Animated, StyleSheet, Text } from "react-native";
-import { useToast } from "../../store/Store";
-import { ToastType } from "../../types/Store";
-import Icon from "../Icon";
+import { useToast } from "store/Store";
+import { ToastType } from "customTypes/Store";
+import Icon from "components/Icon";
 
 const StatusBarHeight = Constants.statusBarHeight;
 

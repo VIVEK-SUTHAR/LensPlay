@@ -1,10 +1,10 @@
 import * as Clipboard from "expo-clipboard";
 import React from "react";
 import { Share, Vibration, View, useWindowDimensions } from "react-native";
-import { black, white } from "../../constants/Colors";
-import { useToast } from "../../store/Store";
-import Button from "../UI/Button";
-import Heading from "../UI/Heading";
+import { black, white } from "constants/Colors";
+import { useToast } from "store/Store";
+import Button from "components/UI/Button";
+import Heading from "components/UI/Heading";
 
 export type InviteCardOptions = {
   inviteCode: string;

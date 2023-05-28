@@ -15,13 +15,13 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { black, white } from "../../constants/Colors";
-import Icon from "../Icon";
-import Button from "../UI/Button";
-import Heading from "../UI/Heading";
-import { data } from "./data";
-import OnboardingItem from "./OnboardingItem";
-import Paginator from "./Paginator";
+import { black, white } from "constants/Colors";
+import Icon from "components/Icon";
+import Button from "components/UI/Button";
+import Heading from "components/UI/Heading";
+import { data } from "components/Login/data";
+import OnboardingItem from "components/Login/OnboardingItem";
+import Paginator from "components/Login/Paginator";
 const Onboarding = ({
   loginRef,
   isloading,

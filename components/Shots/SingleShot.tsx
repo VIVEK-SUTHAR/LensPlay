@@ -4,17 +4,17 @@ import { ResizeMode, Video } from "expo-av";
 import VideoPlayer from "expo-video-player";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Pressable, View, useWindowDimensions } from "react-native";
-import { ShotsPublication } from "../../types";
-import getIPFSLink from "../../utils/getIPFSLink";
-import getRawurl from "../../utils/getRawUrl";
-import createLivePeerAsset from "../../utils/video/createLivePeerAsset";
-import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
-import Icon from "../Icon";
-import ShotData, { DiscriptionSheet } from "./ShotData";
-import ShotReaction from "./ShotReaction";
-import Sheet from "../Bottom";
+import { ShotsPublication } from "customTypes/index";
+import getIPFSLink from "utils/getIPFSLink";
+import getRawurl from "utils/getRawUrl";
+import createLivePeerAsset from "utils/video/createLivePeerAsset";
+import checkIfLivePeerAsset from "utils/video/isInLivePeer";
+import Icon from "components/Icon";
+import ShotData, { DiscriptionSheet } from "components/Shots/ShotData";
+import ShotReaction from "components/Shots/ShotReaction";
+import Sheet from "components/Bottom";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import { black } from "../../constants/Colors";
+import { black } from "constants/Colors";
 
 interface SingleByteProps {
   item: ShotsPublication;

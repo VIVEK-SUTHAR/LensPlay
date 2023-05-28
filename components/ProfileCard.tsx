@@ -1,12 +1,11 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { dark_primary } from "../constants/Colors";
-import formatHandle from "../utils/formatHandle";
-import Avatar from "./UI/Avatar";
-import Heading from "./UI/Heading";
-import StyledText from "./UI/StyledText";
+import formatHandle from "utils/formatHandle";
+import Avatar from "components/UI/Avatar";
+import Heading from "components/UI/Heading";
+import StyledText from "components/UI/StyledText";
 
 type ProfileCardProps = {
   profileIcon: string;

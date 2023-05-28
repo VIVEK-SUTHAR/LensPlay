@@ -1,9 +1,9 @@
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import { IBottomSheet } from "../types";
+import { IBottomSheet } from "customTypes/index";
 import React, { useCallback } from "react";
 import { BottomSheetDefaultBackdropProps } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types";
-import { black } from "../constants/Colors";
+import { black } from "constants/Colors";
 
 const Sheet = React.forwardRef<BottomSheetMethods, IBottomSheet>(
   (props, ref) => {

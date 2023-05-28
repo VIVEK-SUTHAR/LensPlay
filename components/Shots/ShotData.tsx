@@ -1,12 +1,11 @@
-import { default as React, useCallback, useRef } from "react";
+import { default as React, useCallback } from "react";
 import { Dimensions, Pressable, ScrollView, View } from "react-native";
-import getRawurl from "../../utils/getRawUrl";
-import Avatar from "../UI/Avatar";
-import Heading from "../UI/Heading";
-import StyledText from "../UI/StyledText";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import { white } from "../../constants/Colors";
-import { ShotsPublication } from "../../types";
+import getRawurl from "utils/getRawUrl";
+import Avatar from "components/UI/Avatar";
+import Heading from "components/UI/Heading";
+import StyledText from "components/UI/StyledText";
+import { white } from "constants/Colors";
+import { ShotsPublication } from "customTypes/index";
 
 function ShotData({
   item,
