@@ -16,11 +16,12 @@ module.exports = function (api) {
 						screens: './screens',
 						store: './store',
 						styles: './styles',
-						types: './types',
+						customTypes: './types',
 						utils: './utils',
 					},
 				},
 			],
+			'react-native-reanimated/plugin',
 		],
 	};
 };
