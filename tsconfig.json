@@ -16,7 +16,7 @@
 			"screens/*": ["./screens/*"],
 			"store/*": ["./store/*"],
 			"styles/*": ["./styles/*"],
-			"cusomTypes/*": ["./types/*"],
+			"customTypes/*": ["./types/*"],
 			"utils/*": ["./utils/*"]
 		}
 	},

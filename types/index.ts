@@ -3,7 +3,8 @@ import React from "react";
 import { Attribute, InputMaybe, Mirror, Post, Scalars } from "./generated";
 
 export type IconProps = { width: number; height: number; filled?: boolean };
-
+import * as generated from "./generated"
+export { generated }
 export interface QRdata {
   bounds: Bounds;
   cornerPoints: Origin[];

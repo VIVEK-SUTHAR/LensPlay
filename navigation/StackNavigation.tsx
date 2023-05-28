@@ -1,4 +1,3 @@
-import { type RootStackParamList } from "cusomTypes/navigation";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CreateProfile from "screens/Auth/CreateProfile";
 import Login from "screens/Auth/Login";
@@ -30,6 +29,7 @@ import { useThemeStore } from "store/Store";
 import useVideoURLStore from "store/videoURL";
 import React from "react";
 import BottomTabNavigator from "./BottomTabNavigation";
+import { RootStackParamList } from "customTypes/navigation";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
