@@ -1,14 +1,14 @@
+import Icon from "components/Icon";
+import StyledText from "components/UI/StyledText";
+import { primary } from "constants/Colors";
 import { ResizeMode, Video } from "expo-av";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
 import VideoPlayer from "expo-video-player";
 import React, { MutableRefObject, useRef } from "react";
 import { Dimensions, View } from "react-native";
-import { primary } from "../../constants/Colors";
-import { useThemeStore } from "../../store/Store";
-import getIPFSLink from "../../utils/getIPFSLink";
-import Icon from "../Icon";
-import StyledText from "../UI/StyledText";
+import { useThemeStore } from "store/Store";
+import getIPFSLink from "utils/getIPFSLink";
 
 interface VideoPlayerProps {
   url: string;

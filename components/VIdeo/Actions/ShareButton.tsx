@@ -1,10 +1,10 @@
+import Icon from "components/Icon";
+import Button from "components/UI/Button";
+import { dark_primary } from "constants/Colors";
+import { PUBLICATION } from "constants/tracking";
 import React from "react";
 import { Share } from "react-native";
-import { dark_primary } from "../../../constants/Colors";
-import { PUBLICATION } from "../../../constants/tracking";
-import TrackAction from "../../../utils/Track";
-import Icon from "../../Icon";
-import Button from "../../UI/Button";
+import TrackAction from "utils/Track";
 
 type ShareButtonProps = {
   title: string;
@@ -14,11 +14,11 @@ type ShareButtonProps = {
 const ShareButton = ({ title, publicationId }: ShareButtonProps) => {
   const shareVideo = React.useCallback(async () => {
     try {
-      const result = await Share.share({
+       await Share.share({
         message: `Let's watch ${title} on LensPlay,here's link, https://lensplay.xyz/watch/${publicationId}
         `,
       });
-      TrackAction(PUBLICATION.SHARE);
+      void TrackAction(PUBLICATION.SHARE);
     } catch (error) {}
   }, []);
   return (

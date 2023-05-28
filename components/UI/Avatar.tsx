@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import React from "react";
-import getIPFSLink from "../../utils/getIPFSLink";
-import getPlaceHolderImage from "../../utils/getPlaceHolder";
+import getIPFSLink from "utils/getIPFSLink";
+import getPlaceHolderImage from "utils/getPlaceHolder";
 
 type AvatarProps = {
   src: string;

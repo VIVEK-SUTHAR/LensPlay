@@ -1,8 +1,8 @@
 import React from "react";
-import { ColorValue, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import { ColorValue, StyleProp, View, ViewStyle } from "react-native";
 import {
   TapGestureHandler,
-  TapGestureHandlerGestureEvent,
+  TapGestureHandlerGestureEvent
 } from "react-native-gesture-handler";
 import Animated, {
   measure,
@@ -11,7 +11,7 @@ import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
+  withTiming
 } from "react-native-reanimated";
 
 interface RippleProps {

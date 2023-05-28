@@ -1,7 +1,7 @@
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 import React, { FC, useCallback } from "react";
 import { StyleProp, Text, TextStyle } from "react-native";
-import * as SplashScreen from "expo-splash-screen";
-import { useFonts } from "expo-font";
 
 interface HeadingProps {
   title: string | React.ReactNode;

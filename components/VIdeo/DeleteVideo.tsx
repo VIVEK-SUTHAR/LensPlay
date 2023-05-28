@@ -1,16 +1,16 @@
+import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Sheet from "components/Bottom";
+import Button from "components/UI/Button";
+import Heading from "components/UI/Heading";
+import StyledText from "components/UI/StyledText";
+import { black } from "constants/Colors";
+import { SETTINGS } from "constants/tracking";
+import { Scalars, useHidePublicationMutation } from "customTypes/generated";
 import React from "react";
-import Button from "../UI/Button";
-import Heading from "../UI/Heading";
-import StyledText from "../UI/StyledText";
 import { View } from "react-native";
-import Sheet from "../Bottom";
-import { SheetProps } from "../common/MyVideoCard";
-import { Scalars, useHidePublicationMutation } from "../../types/generated";
-import TrackAction from "../../utils/Track";
-import { SETTINGS } from "../../constants/tracking";
-import { useAuthStore, useToast } from "../../store/Store";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import { black } from "../../constants/Colors";
+import { useAuthStore, useToast } from "store/Store";
+import Logger from "utils/logger";
+import TrackAction from "utils/Track";
 
 export type DeleteVideoProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
@@ -24,10 +24,11 @@ export default function DeleteVideo({ sheetRef, pubId }: DeleteVideoProps) {
 	const [deleteVideo, { data, error, loading }] = useHidePublicationMutation({
 		onCompleted: (data) => {
 			toast.success("video deleted successfully");
-			TrackAction(SETTINGS.PROFILE.UPDATE_DETAILS);
+			void TrackAction(SETTINGS.PROFILE.UPDATE_DETAILS);
 		},
 		onError: () => {
 			toast.error("some error occured please try again");
+			Logger.Error("Failed to Delete Video", error);
 		},
 	});
 

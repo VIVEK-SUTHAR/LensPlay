@@ -1,7 +1,6 @@
+import { dark_primary } from "constants/Colors";
 import React from "react";
 import { View } from "react-native";
-import { dark_primary } from "../../constants/Colors";
-import Avatar from "./Avatar";
 
 const ProfileCardSkeleton = () => {
   return (

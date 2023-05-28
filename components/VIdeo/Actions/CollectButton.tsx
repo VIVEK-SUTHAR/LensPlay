@@ -1,13 +1,10 @@
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Icon from "components/Icon";
+import Button from "components/UI/Button";
+import { ToastType } from "customTypes/Store";
 import React, { useCallback } from "react";
-import { useGuestStore } from "../../../store/GuestStore";
-import {
-  useActivePublication, useThemeStore,
-  useToast
-} from "../../../store/Store";
-import { ToastType } from "../../../types/Store";
-import Icon from "../../Icon";
-import Button from "../../UI/Button";
+import { useGuestStore } from "store/GuestStore";
+import { useActivePublication, useThemeStore, useToast } from "store/Store";
 
 type CollectVideoPrpos = {
   totalCollects: number;

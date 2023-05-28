@@ -1,10 +1,10 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import React, { useCallback, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
-import { Maybe } from "../../types/generated";
-import Heading from "../UI/Heading";
-import StyledText from "../UI/StyledText";
-import { white } from "../../constants/Colors";
+import Heading from "components/UI/Heading";
+import StyledText from "components/UI/StyledText";
+import { white } from "constants/Colors";
+import type { Maybe } from "customTypes/generated";
+import React, { memo, useCallback } from "react";
+import { Pressable, View } from "react-native";
 
 type VideoMetaProps = {
   title: Maybe<string> | undefined;
@@ -12,7 +12,7 @@ type VideoMetaProps = {
   descRef: React.RefObject<BottomSheetMethods>;
 };
 
-const VideoMeta = (props: VideoMetaProps) => {
+const VideoMeta:React.FC<VideoMetaProps> = (props) => {
   const { title, description, descRef } = props;
 
   const onPress = useCallback(() => {
@@ -65,6 +65,5 @@ const VideoMeta = (props: VideoMetaProps) => {
   );
 };
 
-export default VideoMeta;
+export default memo(VideoMeta);
 
-const styles = StyleSheet.create({});

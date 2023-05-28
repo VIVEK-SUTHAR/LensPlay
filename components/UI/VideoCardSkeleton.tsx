@@ -1,5 +1,5 @@
-import React, { FC } from "react";
-import { StyleProp, Text, TextStyle, View } from "react-native";
+import React from "react";
+import { View } from "react-native";
 
 type videoCardProps = {
   width?: number | string;

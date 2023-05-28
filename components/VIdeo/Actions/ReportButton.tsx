@@ -1,16 +1,21 @@
 import { useNavigation } from "@react-navigation/native";
+import Icon from "components/Icon";
+import Button from "components/UI/Button";
+import { dark_primary } from "constants/Colors";
 import React from "react";
-import { dark_primary } from "../../../constants/Colors";
-import Icon from "../../Icon";
-import Button from "../../UI/Button";
 
 type ReportButtonProps = {
   publicationId: string;
 };
 
-const ReportButton = ({ publicationId }: ReportButtonProps) => {
+const ReportButton:React.FC<ReportButtonProps> = ({ publicationId }: ReportButtonProps) => {
   const navigation = useNavigation();
 
+  const handleReportPress = () => {
+		navigation.navigate("ReportPublication", {
+			publicationId: publicationId,
+		});
+	};
   return (
     <Button
       title={"Report"}
@@ -22,11 +27,7 @@ const ReportButton = ({ publicationId }: ReportButtonProps) => {
       borderRadius={8}
       icon={<Icon name="report" size={20} />}
       textStyle={{ color: "white", marginHorizontal: 4 }}
-      onPress={() => {
-        navigation.navigate("ReportPublication", {
-          publicationId: publicationId,
-        });
-      }}
+      onPress={handleReportPress}
     />
   );
 };
