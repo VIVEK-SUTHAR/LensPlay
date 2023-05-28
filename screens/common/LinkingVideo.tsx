@@ -31,7 +31,7 @@ import {
 import DisLikeButton from "../../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../../components/VIdeo/Actions/MirrorButton";
 import Player from "../../components/VideoPlayer";
-import { primary } from "../../constants/Colors";
+import { black, primary } from "../../constants/Colors";
 import {
   useAuthStore,
   useProfile,
@@ -506,10 +506,10 @@ const LinkingVideo = ({
         index={-1}
         enablePanDownToClose={true}
         backgroundStyle={{
-          backgroundColor: "#1d1d1d",
+          backgroundColor: black[600],
         }}
         snapPoints={[390]}
-        children={
+        >
           <View
             style={{
               maxWidth: "100%",
@@ -550,8 +550,7 @@ const LinkingVideo = ({
               }}
             />
           </View>
-        }
-      />
+        </Sheet>
       <Sheet
         ref={mirrorRef}
         index={-1}

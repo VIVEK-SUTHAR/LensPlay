@@ -14,6 +14,7 @@ import ShotData, { DiscriptionSheet } from "./ShotData";
 import ShotReaction from "./ShotReaction";
 import Sheet from "../Bottom";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { black } from "../../constants/Colors";
 
 interface SingleByteProps {
   item: ShotsPublication;
@@ -113,11 +114,12 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
         index={-1}
         enablePanDownToClose={true}
         backgroundStyle={{
-          backgroundColor: "#1d1d1d",
+          backgroundColor: black[600],
         }}
         snapPoints={[390]}
-        children={<DiscriptionSheet item={item} />}
-      />
+        >
+          <DiscriptionSheet item={item} />
+        </Sheet>
     </>
   );
 }

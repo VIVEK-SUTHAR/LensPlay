@@ -306,44 +306,44 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
         style={{
           marginHorizontal: 8,
         }}
+        backgroundStyle={{
+          backgroundColor: black[600]
+        }}
         detached={true}
-        children={
-          <FlatList
-            data={profileId ? channelActionList : actionList}
-            renderItem={({ item }) => {
-              return (
-                <Ripple
-                  onTap={() => {
-                    item.onPress(pubId);
-                    sheetRef?.current?.close();
+        ><FlatList
+        data={profileId ? channelActionList : actionList}
+        renderItem={({ item }) => {
+          return (
+            <Ripple
+              onTap={() => {
+                item.onPress(pubId);
+                sheetRef?.current?.close();
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  paddingVertical: 16,
+                  paddingHorizontal: 16,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Icon name={item.icon} color={"white"} />
+                <StyledText
+                  title={item.name}
+                  style={{
+                    fontSize: 16,
+                    marginHorizontal: 8,
+                    color: "white",
                   }}
-                >
-                  <View
-                    style={{
-                      width: "100%",
-                      height: "auto",
-                      paddingVertical: 16,
-                      paddingHorizontal: 16,
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Icon name={item.icon} color={"white"} />
-                    <StyledText
-                      title={item.name}
-                      style={{
-                        fontSize: 16,
-                        marginHorizontal: 8,
-                        color: "white",
-                      }}
-                    />
-                  </View>
-                </Ripple>
-              );
-            }}
-          />
-        }
-      />
+                />
+              </View>
+            </Ripple>
+          );
+        }}
+      /></Sheet>
       <DeleteVideo sheetRef={deleteRef} pubId={pubId} />
     </>
   );

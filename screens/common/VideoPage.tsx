@@ -32,7 +32,7 @@ import DisLikeButton from "../../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../../components/VIdeo/Actions/MirrorButton";
 import Player from "../../components/VideoPlayer";
 import { LENSPLAY_SITE, STATIC_ASSET } from "../../constants";
-import { dark_primary, primary } from "../../constants/Colors";
+import { black, dark_primary, primary } from "../../constants/Colors";
 import { PUBLICATION } from "../../constants/tracking";
 import { useReaction } from "../../hooks/useLensQuery";
 import {
@@ -375,10 +375,10 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
         index={-1}
         enablePanDownToClose={true}
         backgroundStyle={{
-          backgroundColor: "#1d1d1d",
+          backgroundColor: black[600],
         }}
         snapPoints={[390]}
-        children={
+        >
           <View
             style={{
               maxWidth: "100%",
@@ -421,17 +421,16 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
               }}
             />
           </View>
-        }
-      />
+        </Sheet>
       <Sheet
         ref={mirrorRef}
         index={-1}
         enablePanDownToClose={true}
         backgroundStyle={{
-          backgroundColor: "#1d1d1d",
+          backgroundColor: black[600],
         }}
         snapPoints={[390]}
-        children={
+        >
           <View
             style={{
               maxWidth: "100%",
@@ -472,22 +471,20 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
               bg={mirrorStats?.isMirrored ? "#c0c0c0" : primary}
             />
           </View>
-        }
-      />
+        </Sheet>
       <Sheet
         ref={descRef}
         index={-1}
         enablePanDownToClose={true}
         backgroundStyle={{
-          backgroundColor: "#1d1d1d",
+          backgroundColor: black[600],
         }}
         handleStyle={{
           padding: 16,
-          // borderBottomWidth: 1,
         }}
         snapPoints={[550, 740]}
-        children={
-          <BottomSheetScrollView>
+       >
+           <BottomSheetScrollView>
             <View style={{ paddingHorizontal: 16 }}>
               <View
                 style={{
@@ -605,8 +602,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
               />
             </View>
           </BottomSheetScrollView>
-        }
-      />
+       </Sheet>
     </>
   );
 };

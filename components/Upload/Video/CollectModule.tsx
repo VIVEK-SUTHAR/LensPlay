@@ -2,6 +2,7 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import React, { useCallback, useEffect, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import {
+  black,
   dark_primary,
   dark_secondary,
   primary,
@@ -136,8 +137,11 @@ function CollectModuleSheet({ collectModuleRef }: CollectModuleSheetProp) {
         height: "auto",
       }}
       enablePanDownToClose={true}
-      children={
-        <ScrollView
+      backgroundStyle={{
+        backgroundColor: black[600]
+      }}
+    >
+      <ScrollView
           contentContainerStyle={{
             justifyContent: "space-between",
             flex: 1,
@@ -387,8 +391,7 @@ function CollectModuleSheet({ collectModuleRef }: CollectModuleSheetProp) {
             />
           </View>
         </ScrollView>
-      }
-    />
+    </Sheet>
   );
 }
 

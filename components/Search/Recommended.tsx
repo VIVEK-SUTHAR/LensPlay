@@ -19,17 +19,7 @@ const Recommended = () => {
   if (data) {
     return (
       <>
-        <StyledText
-          title={"No channel found"}
-          style={{
-            color: "gray",
-            fontSize: 12,
-            fontWeight: "600",
-            marginTop: 24,
-            textAlign: "center",
-          }}
-        />
-        <View style={{ paddingVertical: 24 }}>
+        <View style={{ paddingVertical: 2 }}>
           <Heading
             title={"Recommended Channels"}
             style={{
