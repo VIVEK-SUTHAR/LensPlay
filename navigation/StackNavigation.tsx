@@ -29,7 +29,7 @@ import { useThemeStore } from "store/Store";
 import useVideoURLStore from "store/videoURL";
 import React from "react";
 import BottomTabNavigator from "./BottomTabNavigation";
-import { RootStackParamList } from "customTypes/navigation";
+import { type RootStackParamList } from "customTypes/navigation";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
