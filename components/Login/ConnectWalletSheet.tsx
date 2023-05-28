@@ -4,17 +4,17 @@ import { useNavigation } from "@react-navigation/native";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import React from "react";
 import { Pressable, View } from "react-native";
-import { black, white } from "../../constants/Colors";
-import { AUTH, GUEST_MODE } from "../../constants/tracking";
-import { useGuestStore } from "../../store/GuestStore";
-import { useProfile, useToast } from "../../store/Store";
-import { Scalars } from "../../types/generated";
-import TrackAction from "../../utils/Track";
-import getProfiles from "../../utils/lens/getProfiles";
-import Icon from "../Icon";
-import Button from "../UI/Button";
-import StyledText from "../UI/StyledText";
-import handleUser from "../../utils/invites/handleUser";
+import { black, white } from "constants/Colors";
+import { AUTH, GUEST_MODE } from "constants/tracking";
+import { useGuestStore } from "store/GuestStore";
+import { useProfile, useToast } from "store/Store";
+import TrackAction from "utils/Track";
+import getProfiles from "utils/lens/getProfiles";
+import Icon from "components/Icon";
+import Button from "components/UI/Button";
+import StyledText from "components/UI/StyledText";
+import handleUser from "utils/invites/handleUser";
+import { Scalars } from "customTypes/generated";
 
 type ConnectWalletSheetProps = {
   loginRef: React.RefObject<BottomSheetMethods>;

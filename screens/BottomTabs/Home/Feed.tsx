@@ -13,29 +13,24 @@ import {
   View,
 } from "react-native";
 import ErrorMessage from "../../../components/common/ErrorMesasge";
-import Skeleton from "../../../components/common/Skeleton";
-import Icon from "../../../components/Icon";
-import { data } from "../../../components/Login/data";
-import PleaseLogin from "../../../components/PleaseLogin";
-import Button from "../../../components/UI/Button";
-import Heading from "../../../components/UI/Heading";
-import VideoCardSkeleton from "../../../components/UI/VideoCardSkeleton";
-import VideoCard from "../../../components/VideoCard";
-import { SOURCES } from "../../../constants";
-import { black, white } from "../../../constants/Colors";
-import { HOME } from "../../../constants/tracking";
-import { useGuestStore } from "../../../store/GuestStore";
-import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
-import {
-  FeedEventItemType,
-  FeedItem,
-  FeedItemRoot,
-  PublicationMainFocus,
-  useFeedQuery,
-} from "../../../types/generated";
-import { RootTabScreenProps } from "../../../types/navigation/types";
-import Logger from "../../../utils/logger";
-import TrackAction from "../../../utils/Track";
+
+import Skeleton from "components/common/Skeleton";
+import VideoCardSkeleton from "components/UI/VideoCardSkeleton";
+import Icon from "components/Icon";
+import { data } from "components/Login/data";
+import PleaseLogin from "components/PleaseLogin";
+import Button from "components/UI/Button";
+import Heading from "components/UI/Heading";
+import VideoCard from "components/VideoCard";
+import { SOURCES } from "constants/index";
+import { black, white } from "constants/Colors";
+import { useAuthStore, useProfile, useThemeStore } from "store/Store";
+import { useGuestStore } from "store/GuestStore";
+import { HOME } from "constants/tracking";
+import { FeedEventItemType, FeedItem, FeedItemRoot, PublicationMainFocus, useFeedQuery } from "customTypes/generated";
+import { RootTabScreenProps } from "customTypes/navigation";
+import Logger from "utils/logger";
+import TrackAction from "utils/Track";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);

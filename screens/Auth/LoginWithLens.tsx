@@ -12,26 +12,24 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import Icon from "../../components/Icon";
-import Avatar from "../../components/UI/Avatar";
-import Button from "../../components/UI/Button";
-import Heading from "../../components/UI/Heading";
-import StyledText from "../../components/UI/StyledText";
-import { LENSPLAY_SITE } from "../../constants";
-import { white } from "../../constants/Colors";
-import { AUTH } from "../../constants/tracking";
-import { useAuthStore, useProfile, useToast } from "../../store/Store";
-import {
-  useAuthenticateMutation,
-  useChallengeLazyQuery,
-} from "../../types/generated";
-import { RootStackScreenProps } from "../../types/navigation/types";
-import { ToastType } from "../../types/Store";
-import formatHandle from "../../utils/formatHandle";
-import getRawurl from "../../utils/getRawUrl";
-import Logger from "../../utils/logger";
-import storeTokens from "../../utils/storeTokens";
-import TrackAction from "../../utils/Track";
+
+import Icon from "components/Icon";
+import Avatar from "components/UI/Avatar";
+import Button from "components/UI/Button";
+import Heading from "components/UI/Heading";
+import StyledText from "components/UI/StyledText";
+import { LENSPLAY_SITE } from "constants/index";
+import { white } from "constants/Colors";
+import { AUTH } from "constants/tracking";
+import { useAuthStore, useProfile, useToast } from "store/Store";
+import { RootStackScreenProps } from "customTypes/navigation";
+import { ToastType } from "customTypes/Store";
+import { useAuthenticateMutation, useChallengeLazyQuery } from "customTypes/generated";
+import formatHandle from "utils/formatHandle";
+import getRawurl from "utils/getRawUrl";
+import Logger from "utils/logger";
+import storeTokens from "utils/storeTokens";
+import TrackAction from "utils/Track";
 
 const windowWidth = Dimensions.get("window").width;
 

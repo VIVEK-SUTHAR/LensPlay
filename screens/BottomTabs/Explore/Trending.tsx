@@ -8,26 +8,20 @@ import {
   SafeAreaView,
   ScrollView,
 } from "react-native";
-import NotFound from "../../../components/Profile/NotFound";
-import StyledText from "../../../components/UI/StyledText";
-import VideoCardSkeleton from "../../../components/UI/VideoCardSkeleton";
-import VideoCard from "../../../components/VideoCard";
+// import NotFound from "../../../components/Profile/NotFound";
 import ErrorMessage from "../../../components/common/ErrorMesasge";
-import { dark_primary } from "../../../constants/Colors";
-import { useGuestStore } from "../../../store/GuestStore";
-import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
-import {
-  Mirror,
-  Post,
-  PublicationMainFocus,
-  PublicationSortCriteria,
-  PublicationTypes,
-  useExploreQuery,
-} from "../../../types/generated";
-import { RootTabScreenProps } from "../../../types/navigation/types";
-import Skeleton from "../../../components/common/Skeleton";
-import TrackAction from "../../../utils/Track";
-import { EXPLORE } from "../../../constants/tracking";
+
+import StyledText from "components/UI/StyledText";
+import VideoCard from "components/VideoCard";
+import { dark_primary } from "constants/Colors";
+import { useAuthStore, useProfile, useThemeStore } from "store/Store";
+import { useGuestStore } from "store/GuestStore";
+import { Mirror, Post, PublicationMainFocus, PublicationSortCriteria, PublicationTypes, useExploreQuery } from "customTypes/generated";
+import { RootTabScreenProps } from "customTypes/navigation";
+import Skeleton from "components/common/Skeleton";
+import VideoCardSkeleton from "components/UI/VideoCardSkeleton";
+import TrackAction from "utils/Track";
+import { EXPLORE } from "constants/tracking";
 
 type Explore = Post | Mirror;
 

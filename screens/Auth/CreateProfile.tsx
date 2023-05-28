@@ -12,25 +12,21 @@ import {
   TextInput,
   View,
 } from "react-native";
-import Button from "../../components/UI/Button";
-import StyledText from "../../components/UI/StyledText";
-import { dark_primary, primary } from "../../constants/Colors";
-import {
-  useAuthStore,
-  useProfile,
-  useThemeStore,
-  useToast,
-} from "../../store/Store";
-import { ToastType } from "../../types/Store";
+
+import Button from "components/UI/Button";
+import StyledText from "components/UI/StyledText";
+import { dark_primary, primary } from "constants/Colors";
+import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
+import { ToastType } from "customTypes/Store";
 import {
   Scalars,
   useBroadcastMutation,
   useCreateProfileMutation,
   useCreateSetDispatcherTypedDataMutation,
-} from "../../types/generated";
-import { RootStackScreenProps } from "../../types/navigation/types";
-import createSetDispatcherTypedData from "../../utils/createSetDispatcherTypedData";
-import getProfiles from "../../utils/lens/getProfiles";
+} from "customTypes/generated";
+import { RootStackScreenProps } from "customTypes/navigation";
+import createSetDispatcherTypedData from "utils/createSetDispatcherTypedData";
+import getProfiles from "utils/lens/getProfiles";
 
 const CreateProfile = ({
   navigation,

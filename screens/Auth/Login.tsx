@@ -2,15 +2,15 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import * as React from "react";
 import { Linking, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Sheet from "../../components/Bottom";
-import ConnectWalletSheet from "../../components/Login/ConnectWalletSheet";
-import Onboarding from "../../components/Login/Onboarding";
-import StyledText from "../../components/UI/StyledText";
-import { LENSPLAY_SITE } from "../../constants";
-import { RootStackScreenProps } from "../../types/navigation/types";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
-import { black } from "../../constants/Colors";
+import Sheet from "components/Bottom";
+import ConnectWalletSheet from "components/Login/ConnectWalletSheet";
+import Onboarding from "components/Login/Onboarding";
+import StyledText from "components/UI/StyledText";
+import { LENSPLAY_SITE } from "constants/index";
+import { black } from "constants/Colors";
+import { RootStackScreenProps } from "customTypes/navigation";
 
 const Login = ({ navigation }: RootStackScreenProps<"Login">) => {
 	const loginRef = React.useRef<BottomSheetMethods>(null);
