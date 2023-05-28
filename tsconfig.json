@@ -5,10 +5,23 @@
     "jsx": "react",
     "target": "ES6",
     "lib": [ "es5", "dom" ],
-    "strict": true
+    "strict": true,
+    "paths": {
+      "@apollo/*": ["./apollo/*"],
+      "@assets/*": ["./assets/*"],
+      "@components/*": ["./components/*"],
+      "@constants/*": ["./constants/*"],
+      "@hooks/*": ["./hooks/*"],
+      "@navigation/*": ["./navigation/*"],
+      "@screens/*": ["./screens/*"],
+      "@store/*": ["./store/*"],
+      "@styles/*": ["./styles/*"],
+      "@types/*": ["./types/*"],
+      "@utils/*": ["./utils/*"]
+    }
   },
   "typeRoots": [
   "./types",
   "./node_modules/@types/"
-]
+  ]
 }
