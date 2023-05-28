@@ -1,4 +1,4 @@
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { FlashList } from "@shopify/flash-list";
 import Sheet from "components/Bottom";
 import MyVideoCard, { actionListType, SheetProps } from "components/common/MyVideoCard";
@@ -10,17 +10,17 @@ import { black } from "constants/Colors";
 import { SOURCES } from "constants/index";
 import { PUBLICATION } from "constants/tracking";
 import {
-  Attribute,
-  Post,
-  PublicationMainFocus,
-  PublicationMetadataDisplayTypes,
-  PublicationsQueryRequest,
-  PublicationTypes,
-  Scalars,
-  useCreateSetProfileMetadataViaDispatcherMutation,
-  useProfilePostsQuery
+	Attribute,
+	Post,
+	PublicationMainFocus,
+	PublicationMetadataDisplayTypes,
+	PublicationsQueryRequest,
+	PublicationTypes,
+	Scalars,
+	useCreateSetProfileMetadataViaDispatcherMutation,
+	useProfilePostsQuery,
 } from "customTypes/generated";
-import { ProfileMetaDataV1nput } from "customTypes/index";
+import type { ProfileMetaDataV1nput } from "customTypes/index";
 import React from "react";
 import { ActivityIndicator, Share, View } from "react-native";
 import { FlatList, RefreshControl } from "react-native-gesture-handler";
