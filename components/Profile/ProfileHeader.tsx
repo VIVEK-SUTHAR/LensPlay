@@ -1,4 +1,4 @@
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { type BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import ErrorMesasge from "components/common/ErrorMesasge";
@@ -14,14 +14,14 @@ import { LENSPLAY_SITE } from "constants/index";
 import { PROFILE } from "constants/tracking";
 import VERIFIED_CHANNELS from "constants/Varified";
 import {
-  CreateUnfollowTypedDataMutationResult,
-  MediaSet,
-  Profile,
-  Scalars,
-  useBroadcastMutation,
-  useCreateUnfollowTypedDataMutation,
-  useProfileQuery,
-  useProxyActionMutation
+	useBroadcastMutation,
+	useCreateUnfollowTypedDataMutation,
+	useProfileQuery,
+	useProxyActionMutation,
+	type CreateUnfollowTypedDataMutationResult,
+	type MediaSet,
+	type Profile,
+	type Scalars,
 } from "customTypes/generated";
 import React, { useState } from "react";
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
@@ -89,7 +89,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 		setRefreshing(false);
 	}, []);
 
-	const profile = Profile?.profile;
+	const profile =Profile?.profile
 
 	const navigateToFullImageCover = React.useCallback(() => {
 		navigation.navigate("FullImage", {
@@ -411,7 +411,7 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 	}, [isFollowing]);
 
 	const subscribeToChannel = React.useCallback(() => {
-		freeFollowViaDispatcher({
+		void freeFollowViaDispatcher({
 			variables: {
 				request: {
 					follow: {
@@ -435,7 +435,7 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 		const message = formatUnfollowTypedData(data as CreateUnfollowTypedDataMutationResult);
 		const msgParams = [wallet.accounts[0], JSON.stringify(message)];
 		const sig = await wallet.signTypedData(msgParams);
-		sendUnFollowTxn({
+		void sendUnFollowTxn({
 			variables: {
 				request: {
 					signature: sig,
