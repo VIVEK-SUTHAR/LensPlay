@@ -64,40 +64,40 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const { accessToken } = useAuthStore();
 	const userStore = useProfile();
 
-	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
-	const [isMute, setIsMute] = useState<boolean>(false);
-	const {
-		reaction,
-		comment,
-		setReaction,
-		setComments,
-		videopageStats,
-		collectStats,
-		mirrorStats,
-		setVideoPageStats,
-		clearStats,
-		setCollectStats,
-		setMirrorStats,
-	} = useReactionStore();
+  const [inFullscreen, setInFullsreen] = useState<boolean>(false);
+  const [isMute, setIsMute] = useState<boolean>(false);
+  const {
+    reaction,
+    setReaction,
+    videopageStats,
+    collectStats,
+    mirrorStats,
+    setVideoPageStats,
+    clearStats,
+    setCollectStats,
+    setMirrorStats,
+  } = useReactionStore();
 
-	Logger.Success("New Opti", activePublication?.metadata?.media[0]?.optimized?.url);
+  // Logger.Success(
+  //   "New Opti",
+  //   activePublication?.metadata?.media[0]?.optimized?.url
+  // );
 
 	const isDAPublication = activePublication?.isDataAvailability;
 
-	function handleBackButtonClick() {
-		setStatusBarHidden(false, "fade");
-		setInFullsreen(!inFullscreen);
-		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
-		if (!inFullscreen) {
-			navigation.goBack();
-			setReaction(false);
-			setComments(false);
-			clearStats();
-			setCollectStats(false, 0);
-			setMirrorStats(false, 0);
-		}
-		return true;
-	}
+  function handleBackButtonClick() {
+    setStatusBarHidden(false, "fade");
+    setInFullsreen(!inFullscreen);
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+    if (!inFullscreen) {
+      navigation.goBack();
+      setReaction(false);
+      clearStats();
+      setCollectStats(false, 0);
+      setMirrorStats(false, 0);
+    }
+    return true;
+  }
 
 	useEffect(() => {
 		BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
@@ -293,7 +293,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							horizontal={true}
 							showsHorizontalScrollIndicator={false}
 						>
-							{loading || !reaction || !comment ? (
+							{loading || !reaction ? (
 								<Skeleton
 									children={
 										<Button

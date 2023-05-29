@@ -178,12 +178,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 					}
 					showsVerticalScrollIndicator={false}
 				>
-					<Pressable onPress={navigateToFullImageCover}>
 						<Cover
 							navigation={navigation}
 							url={getIPFSLink(getRawurl(profile?.coverPicture as MediaSet))}
 						/>
-					</Pressable>
+					
 					<View style={styles.ProfileContainer}>
 						<Pressable onPress={navigateToFullImageAvatar}>
 							<Avatar

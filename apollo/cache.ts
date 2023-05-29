@@ -12,7 +12,7 @@ const cache = new InMemoryCache({
         ]),
         publications: cursorBasedPagination([
           "request",
-          ["profileId", "publicationTypes", "sources", "collectedBy"],
+          ["profileId", "publicationTypes", "sources", "collectedBy", "commentsOf"],
         ]),
         notifications: cursorBasedPagination([
           "request",

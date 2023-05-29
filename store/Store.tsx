@@ -3,6 +3,7 @@ import {
 	DisLikeObject,
 	IActivePublication,
 	IAuthStore,
+	ICommentStore,
 	IReactionStore,
 	IThemeStore,
 	OptimisticStore,
@@ -65,7 +66,6 @@ export const useToast = create<ToastProps>((set) => ({
 
 export const useReactionStore = create<IReactionStore>((set) => ({
 	reaction: false,
-	comment: false,
 	videopageStats: {
 		isLiked: false,
 		isDisliked: false,
@@ -83,11 +83,6 @@ export const useReactionStore = create<IReactionStore>((set) => ({
 	setReaction: (reaction) => {
 		set({
 			reaction: reaction,
-		});
-	},
-	setComments: (comment) => {
-		set({
-			comment: comment,
 		});
 	},
 	setVideoPageStats: (isLiked, isDisliked, likeCount) => {
@@ -130,6 +125,15 @@ export const useReactionStore = create<IReactionStore>((set) => ({
 		}));
 	},
 }));
+export const useCommentStore = create<ICommentStore>((set) => ({
+	comment: false,
+	setComments: (comment) => {
+		set({
+			comment: comment,
+		});
+	},
+
+}))
 
 export const useOptimisticStore = create<OptimisticStore>((set) => ({
 	optimitisticComment: {

@@ -49,7 +49,6 @@ const Toast = () => {
 			style={[
 				styles.conatiner,
 				{
-					height: "auto",
 					display: toastStore.isVisible ? "flex" : "none",
 					backgroundColor:
 						toastStore.type === ToastType.ERROR
