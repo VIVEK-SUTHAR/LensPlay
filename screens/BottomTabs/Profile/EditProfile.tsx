@@ -1,32 +1,29 @@
 import React, { useCallback, useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { RootStackScreenProps } from "../../../types/navigation/types";
 import { Dimensions, Image, Pressable, SafeAreaView, StyleSheet, View } from "react-native";
-import Button from "../../../components/UI/Button";
-import Input from "../../../components/UI/Input";
-import StyledText from "../../../components/UI/StyledText";
-import TextArea from "../../../components/UI/TextArea";
-import Icon from "../../../components/Icon";
 import { ScrollView } from "react-native";
-import getIPFSLink from "../../../utils/getIPFSLink";
-import getRawurl from "../../../utils/getRawUrl";
-import { useAuthStore, useProfile, useToast } from "../../../store/Store";
-import formatHandle from "../../../utils/formatHandle";
-import { dark_primary } from "../../../constants/Colors";
-import Avatar from "../../../components/UI/Avatar";
-import { ToastType } from "../../../types/Store";
-import getImageBlobFromUri from "../../../utils/getImageBlobFromUri";
-import {
-	Profile,
-	useCreateSetProfileImageUriViaDispatcherMutation,
-  useCreateSetProfileMetadataViaDispatcherMutation,
-} from "../../../types/generated";
-import uploadImageToIPFS from "../../../utils/uploadImageToIPFS";
-import { LENSPLAY_SITE } from "../../../constants";
-import TrackAction from "../../../utils/Track";
-import { SETTINGS } from "../../../constants/tracking";
-import Logger from "../../../utils/logger";
-import uploadProfileMetadata from "../../../utils/uploadProfileMetadata";
+
+import { RootStackScreenProps } from "customTypes/navigation";
+import Button from "components/UI/Button";
+import Input from "components/UI/Input";
+import StyledText from "components/UI/StyledText";
+import TextArea from "components/UI/TextArea";
+import Icon from "components/Icon";
+import getRawurl from "utils/getRawUrl";
+import getIPFSLink from "utils/getIPFSLink";
+import { useAuthStore, useProfile, useToast } from "store/Store";
+import formatHandle from "utils/formatHandle";
+import { ToastType } from "customTypes/Store";
+import Avatar from "components/UI/Avatar";
+import { dark_primary } from "constants/Colors";
+import getImageBlobFromUri from "utils/getImageBlobFromUri";
+import { Profile, useCreateSetProfileImageUriViaDispatcherMutation, useCreateSetProfileMetadataViaDispatcherMutation } from "customTypes/generated";
+import uploadImageToIPFS from "utils/uploadImageToIPFS";
+import { LENSPLAY_SITE } from "constants/index";
+import TrackAction from "utils/Track";
+import { SETTINGS } from "constants/tracking";
+import Logger from "utils/logger";
+import uploadProfileMetadata from "utils/uploadProfileMetadata";
 
 const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 	const { currentProfile } = useProfile();
@@ -46,7 +43,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 	//state for name, bio
 	const [userData, setUserData] = useState({
 		name: "",
-		bio: "",
+		bio: ""	,
 	});
 
 	//states for social links

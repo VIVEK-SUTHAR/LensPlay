@@ -1,9 +1,14 @@
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useFocusEffect } from "@react-navigation/native";
+import { LENSPLAY_SITE, STATIC_ASSET } from "constants/index";
+import { ToastType } from "customTypes/Store";
+import { useCreateDataAvailabilityMirrorViaDispatcherMutation } from "customTypes/generated";
+import { RootStackScreenProps } from "customTypes/navigation";
 import { Image } from "expo-image";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
+import { useReaction } from "hooks/useLensQuery";
 import React, { useEffect, useRef, useState } from "react";
 import {
   BackHandler,
@@ -13,48 +18,30 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { useActivePublication, useAuthStore, useProfile, useReactionStore, useToast } from "store/Store";
+import Logger from "utils/logger";
 import { freeCollectPublication, freeMirror } from "../../api";
-import Sheet from "../../components/Bottom";
-import Comment from "../../components/Comments";
-import CommentInput from "../../components/Comments/CommentInput";
-import Skeleton from "../../components/common/Skeleton";
-import Button from "../../components/UI/Button";
-import StyledText from "../../components/UI/StyledText";
-import {
-  CollectButton,
-  LikeButton,
-  ReportButton,
-  ShareButton,
-  VideoCreator,
-  VideoMeta,
-} from "../../components/VIdeo";
-import DisLikeButton from "../../components/VIdeo/Actions/DisLikeButton";
-import MirrorButton from "../../components/VIdeo/Actions/MirrorButton";
-import Player from "../../components/VideoPlayer";
-import { LENSPLAY_SITE, STATIC_ASSET } from "../../constants";
-import { black, dark_primary, primary } from "../../constants/Colors";
-import { PUBLICATION } from "../../constants/tracking";
-import { useReaction } from "../../hooks/useLensQuery";
-import {
-  useActivePublication,
-  useAuthStore,
-  useProfile,
-  useReactionStore,
-  useToast,
-} from "../../store/Store";
-import useVideoURLStore from "../../store/videoURL";
-import { RootStackScreenProps } from "../../types/navigation/types";
-import { ToastType } from "../../types/Store";
-import extractURLs from "../../utils/extractURL";
-import getImageProxyURL from "../../utils/getImageProxyURL";
-import getIPFSLink from "../../utils/getIPFSLink";
-import getPlaceHolderImage from "../../utils/getPlaceHolder";
-import getRawurl from "../../utils/getRawUrl";
-import Logger from "../../utils/logger";
-import TrackAction from "../../utils/Track";
-import createLivePeerAsset from "../../utils/video/createLivePeerAsset";
-import checkIfLivePeerAsset from "../../utils/video/isInLivePeer";
-import { useCreateDataAvailabilityMirrorViaDispatcherMutation } from "../../types/generated";
+import TrackAction from "utils/Track";
+import { PUBLICATION } from "constants/tracking";
+import useVideoURLStore from "store/videoURL";
+import checkIfLivePeerAsset from "utils/video/isInLivePeer";
+import getIPFSLink from "utils/getIPFSLink";
+import createLivePeerAsset from "utils/video/createLivePeerAsset";
+import getRawurl from "utils/getRawUrl";
+import VideoPlayer from "components/VideoPlayer";
+import getPlaceHolderImage from "utils/getPlaceHolder";
+import getImageProxyURL from "utils/getImageProxyURL";
+import { CollectButton, LikeButton, ReportButton, ShareButton, VideoCreator, VideoMeta } from "components/VIdeo";
+import Skeleton from "components/common/Skeleton";
+import Button from "components/UI/Button";
+import { black, dark_primary, primary } from "constants/Colors";
+import DisLikeButton from "components/VIdeo/Actions/DisLikeButton";
+import MirrorButton from "components/VIdeo/Actions/MirrorButton";
+import StyledText from "components/UI/StyledText";
+import Comment from "components/Comments";
+import CommentInput from "components/Comments/CommentInput";
+import Sheet from "components/Bottom";
+import extractURLs from "utils/extractURL";
 
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
   const { activePublication } = useActivePublication();
@@ -250,7 +237,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
         {uri.length > 0 ? (
-          <Player
+          <VideoPlayer
             poster={getRawurl(activePublication?.metadata?.cover)}
             title={activePublication?.metadata?.name || ""}
             url={uri}

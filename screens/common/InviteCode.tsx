@@ -1,3 +1,7 @@
+import Button from "components/UI/Button";
+import Heading from "components/UI/Heading";
+import { black, white } from "constants/Colors";
+import { RootStackScreenProps } from "customTypes/navigation";
 import { Image } from "expo-image";
 import React, { useState } from "react";
 import {
@@ -8,12 +12,8 @@ import {
   TextInputChangeEventData,
   View,
 } from "react-native";
-import Button from "../../components/UI/Button";
-import Heading from "../../components/UI/Heading";
-import { black, white } from "../../constants/Colors";
-import { useProfile, useThemeStore, useToast } from "../../store/Store";
-import { RootStackScreenProps } from "../../types/navigation/types";
-import createUser from "../../utils/invites/createUser";
+import { useProfile, useThemeStore, useToast } from "store/Store";
+import createUser from "utils/invites/createUser";
 
 export default function InviteCode({
   navigation,

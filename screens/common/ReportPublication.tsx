@@ -1,4 +1,14 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Sheet from "components/Bottom";
+import Icon from "components/Icon";
+import Button from "components/UI/Button";
+import StyledText from "components/UI/StyledText";
+import TextArea from "components/UI/TextArea";
+import { black, dark_primary } from "constants/Colors";
+import { PUBLICATION } from "constants/tracking";
+import { ToastType } from "customTypes/Store";
+import { PublicationReportingReason, useReportPublicationMutation } from "customTypes/generated";
+import { RootStackScreenProps } from "customTypes/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import {
 	BackHandler,
@@ -11,20 +21,9 @@ import {
 	TextInput,
 	View,
 } from "react-native";
-import Sheet from "../../components/Bottom";
-import Icon from "../../components/Icon";
-import Button from "../../components/UI/Button";
-import Heading from "../../components/UI/Heading";
-import StyledText from "../../components/UI/StyledText";
-import { black, dark_primary } from "../../constants/Colors";
-import { PUBLICATION } from "../../constants/tracking";
-import { useGuestStore } from "../../store/GuestStore";
-import { useAuthStore, useThemeStore, useToast } from "../../store/Store";
-import { ToastType } from "../../types/Store";
-import { PublicationReportingReason, useReportPublicationMutation } from "../../types/generated";
-import { RootStackScreenProps } from "../../types/navigation/types";
-import TrackAction from "../../utils/Track";
-import TextArea from "../../components/UI/TextArea";
+import { useGuestStore } from "store/GuestStore";
+import { useAuthStore, useThemeStore, useToast } from "store/Store";
+import TrackAction from "utils/Track";
 
 type subreason = {
 	reason: string;

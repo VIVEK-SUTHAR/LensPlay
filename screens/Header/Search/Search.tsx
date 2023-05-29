@@ -1,5 +1,12 @@
 import { useLazyQuery } from "@apollo/client";
+import Icon from "components/Icon";
+import ProfileCard from "components/ProfileCard";
+import Recommended from "components/Search/Recommended";
+import { SEARCH } from "constants/tracking";
+import { SearchProfilesDocument, SearchPublicationsDocument, SearchRequestTypes } from "customTypes/generated";
+import { RootStackScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
+import useDebounce from "hooks/useDebounce";
 import React, { useEffect, useState } from "react";
 import {
   Dimensions,
@@ -11,20 +18,9 @@ import {
   TextInput,
   View,
 } from "react-native";
-import Icon from "../../../components/Icon";
-import ProfileCard from "../../../components/ProfileCard";
-import Recommended from "../../../components/Search/Recommended";
-import useDebounce from "../../../hooks/useDebounce";
-import { useGuestStore } from "../../../store/GuestStore";
-import { useAuthStore, useThemeStore } from "../../../store/Store";
-import {
-  SearchProfilesDocument,
-  SearchPublicationsDocument,
-  SearchRequestTypes,
-} from "../../../types/generated";
-import { RootStackScreenProps } from "../../../types/navigation/types";
-import TrackAction from "../../../utils/Track";
-import { SEARCH } from "../../../constants/tracking";
+import { useGuestStore } from "store/GuestStore";
+import { useAuthStore, useThemeStore } from "store/Store";
+import TrackAction from "utils/Track";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
   const { DARK_PRIMARY } = useThemeStore();
