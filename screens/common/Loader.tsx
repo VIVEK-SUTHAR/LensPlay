@@ -91,7 +91,9 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 			}
 
 			if (address) {
-				await HandleDefaultProfile(accounts[0] || address);
+				await HandleDefaultProfile(address);
+			} else {
+				await HandleDefaultProfile(accounts[0]);
 			}
 
 			if (!userData) {
