@@ -12,8 +12,7 @@ import {
 	StyleSheet,
 	View,
 } from "react-native";
-import ErrorMessage from "../../../components/common/ErrorMesasge";
-
+import ErrorMessage from "components/common/ErrorMesasge";
 import Skeleton from "components/common/Skeleton";
 import Icon from "components/Icon";
 import { data } from "components/Login/data";
@@ -28,10 +27,11 @@ import { HOME } from "constants/tracking";
 import {
 	FeedEventItemType,
 	type FeedItem,
-	type FeedItemRoot, PublicationMainFocus,
+	type FeedItemRoot,
+	PublicationMainFocus,
 	useFeedQuery,
 } from "customTypes/generated";
-import { RootTabScreenProps } from "customTypes/navigation";
+import type { RootTabScreenProps } from "customTypes/navigation";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import Logger from "utils/logger";

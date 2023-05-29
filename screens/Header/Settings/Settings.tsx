@@ -4,31 +4,22 @@ import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import React, { FC, useRef } from "react";
-import {
-	ActivityIndicator,
-	InteractionManager,
-	Linking,
-	Pressable,
-	SafeAreaView,
-	ScrollView,
-	StyleSheet,
-	View,
-} from "react-native";
+import { Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import Sheet from "../../../components/Bottom";
 import Icon from "../../../components/Icon";
+import ProfileQR, { ProfileSheet } from "../../../components/settings/profileQR";
+import Socials from "../../../components/settings/Socials";
 import Button from "../../../components/UI/Button";
 import Heading from "../../../components/UI/Heading";
 import StyledText from "../../../components/UI/StyledText";
-import Socials from "../../../components/settings/Socials";
-import ProfileQR, { ProfileSheet } from "../../../components/settings/profileQR";
 import { LENSPLAY_PRIVACY, OFFICIAL_EMAIL } from "../../../constants";
 import { black, dark_primary, white } from "../../../constants/Colors";
 import { AUTH } from "../../../constants/tracking";
 import { useGuestStore } from "../../../store/GuestStore";
+import { useInviteStore } from "../../../store/InviteStore";
 import { RootStackScreenProps } from "../../../types/navigation/types";
 import UPADTES from "../../../update.json";
 import TrackAction from "../../../utils/Track";
-import { useInviteStore } from "../../../store/InviteStore";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
@@ -42,9 +33,10 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState(false);
 
 	React.useEffect(() => {
-		InteractionManager.runAfterInteractions(() => {
+		const delay = setTimeout(() => {
 			setIsReadyToRender(true);
-		});
+		}, 0);
+		return () => clearTimeout(delay);
 	}, []);
 
 	const Wallet = useWalletConnect();
@@ -90,7 +82,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 		});
 	}, []);
 
-	if (!isReadyToRender) return <ActivityIndicator />;
+	if (!isReadyToRender) return <SafeAreaView style={styles.container} />;
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="black" style="auto" />
