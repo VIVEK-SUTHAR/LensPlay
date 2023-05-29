@@ -1,8 +1,8 @@
 import React from "react";
 import { Image, SafeAreaView, StyleSheet, View } from "react-native";
-import Heading from "../UI/Heading";
-import { white } from "../../constants/Colors";
-import Button from "../UI/Button";
+import Heading from "components/UI/Heading";
+import { white } from "constants/Colors";
+import Button from "components/UI/Button";
 
 type ErrorMessageProps = {
   message: string;

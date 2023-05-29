@@ -9,7 +9,7 @@ import {
 	View,
 } from "react-native";
 import { useThemeStore } from "store/Store";
-import StyledText from "./StyledText";
+import StyledText from "components/UI/StyledText";
 
 interface InputProps {
 	label: string;

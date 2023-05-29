@@ -12,7 +12,7 @@ import { SafeAreaView, ScrollView, View } from "react-native";
 import { useAuthStore, useProfile, useReactionStore } from "store/Store";
 import formatHandle from "utils/formatHandle";
 import getRawurl from "utils/getRawUrl";
-import CommentCard from "./CommentCard";
+import CommentCard from "components/Comments/CommentCard";
 
 interface CommentProps {
 	publicationId: string;

@@ -4,7 +4,7 @@ import {
   LENSPLAY_SITE,
   LENSPLAY_TWITTER,
 } from "constants/index";
-import Icon from "../Icon";
+import Icon from "components/Icon";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
 import StyledText from "components/UI/StyledText";
 import { dark_primary } from "constants/Colors";

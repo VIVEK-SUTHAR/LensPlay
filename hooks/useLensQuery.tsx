@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
-import fetchReaction from "../apollo/Queries/fetchReaction";
-import { useAuthStore, useProfile } from "../store/Store";
-import { useGuestStore } from "../store/GuestStore";
+import fetchReaction from "apollo/Queries/fetchReaction";
+import { useAuthStore, useProfile } from "store/Store";
+import { useGuestStore } from "store/GuestStore";
 
 const useReaction = (pubId: string) => {
   const { currentProfile } = useProfile();

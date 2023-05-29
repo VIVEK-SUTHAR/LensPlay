@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Linking, Pressable, View } from "react-native";
-import { dark_primary } from "../../constants/Colors";
-import { useProfile } from "../../store/Store";
-import { Maybe, Profile } from "../../types/generated";
-import Icon, { IconProps } from "../Icon";
+import { dark_primary } from "constants/Colors";
+import { useProfile } from "store/Store";
+import { Maybe, Profile } from "customTypes/generated";
+import Icon, { IconProps } from "components/Icon";
 
 type socialLinksProps = {
   instagram: Maybe<string> | undefined;

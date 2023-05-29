@@ -1,7 +1,7 @@
 import React from "react";
 import { Image, SafeAreaView, StyleSheet, View } from "react-native";
-import Heading from "../UI/Heading";
-import { white } from "../../constants/Colors";
+import Heading from "components/UI/Heading";
+import { white } from "constants/Colors";
 
 export default function NotFound({ message }: { message: string }) {
   return (
