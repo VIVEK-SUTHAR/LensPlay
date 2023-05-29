@@ -132,6 +132,9 @@ export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">)
 		if (isValidData) {
 			const signature = JSON.parse(data.data).signature;
 			const address = JSON.parse(data.data).address;
+
+			await AsyncStorage.setItem("@userAddress", address);
+
 			try {
 				setHasData(true);
 				const userData = await AsyncStorage.getItem("@user_data");
