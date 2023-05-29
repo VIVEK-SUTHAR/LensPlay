@@ -10,16 +10,11 @@ import { RootTabScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { SafeAreaView } from "react-native";
-import { useBgColorStore } from "store/BgColorStore";
 import { useGuestStore } from "store/GuestStore";
-import { useProfile } from "store/Store";
 import CommonStyles from "styles/index";
 
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	const sheetRef = React.useRef<BottomSheetMethods>(null);
-	const { setAvatarColors } = useBgColorStore();
-
-	const userStore = useProfile();
 	const { isGuest } = useGuestStore();
 
 	if (isGuest) return <PleaseLogin />;

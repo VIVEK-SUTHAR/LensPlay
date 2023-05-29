@@ -1,3 +1,5 @@
+import Icon from "components/Icon";
+import { RootStackScreenProps } from "customTypes/navigation";
 import Constants from "expo-constants";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
@@ -9,15 +11,12 @@ import {
 	Pressable,
 	SafeAreaView,
 	StyleSheet,
-	View,
+	View
 } from "react-native";
-import Logger from "../../utils/logger";
-import { RootStackScreenProps } from "customTypes/navigation";
 import { useBgColorStore } from "store/BgColorStore";
-import Icon from "components/Icon";
-import getPlaceHolderImage from "utils/getPlaceHolder";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getIPFSLink from "utils/getIPFSLink";
+import getPlaceHolderImage from "utils/getPlaceHolder";
 const StatusBarHeight = Constants.statusBarHeight;
 
 const FullImage = ({ navigation, route }: RootStackScreenProps<"FullImage">) => {

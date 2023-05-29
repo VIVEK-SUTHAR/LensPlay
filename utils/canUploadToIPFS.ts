@@ -1,4 +1,4 @@
-import { IPFS_FREE_UPLOAD_LIMIT } from "../constants";
+import { IPFS_FREE_UPLOAD_LIMIT } from "constants/index";
 
 const canUploadedToIpfs = (bytes: number | undefined) => {
   const megaBytes = bytes ? bytes / 1024 ** 2 : 0;

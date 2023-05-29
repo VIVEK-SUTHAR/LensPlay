@@ -1,4 +1,4 @@
-import { ADDRESS_REGEX } from "../constants";
+import { ADDRESS_REGEX } from "constants/index";
 /**
  *
  * @param address Ethereum Address

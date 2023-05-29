@@ -1,4 +1,4 @@
-import { ReferenceModuleType } from "../types/Store";
+import { ReferenceModuleType } from "customTypes/Store";
 
 function getReferenceModule(
   userSelectedReferenceModule: ReferenceModuleType | null

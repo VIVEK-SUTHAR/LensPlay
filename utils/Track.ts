@@ -1,4 +1,3 @@
-import Logger from "./logger";
 
 async function TrackAction(event: string) {
   

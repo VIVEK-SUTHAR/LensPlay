@@ -1,13 +1,13 @@
-import { Maybe, MetadataOutput } from "../types/generated";
+import type { Maybe, MetadataOutput } from "customTypes/generated";
 
 function getVideoDuration(metadata: MetadataOutput) {
-  let duration: Maybe<string> | undefined = undefined;
+	let duration: Maybe<string> | undefined = undefined;
 
-  metadata.attributes.filter((attribute) => {
-    if (attribute.traitType === "durationInSeconds") {
-      duration = attribute.value;
-    }
-  });
-  return duration || "00:00";
+	metadata.attributes.filter((attribute) => {
+		if (attribute.traitType === "durationInSeconds") {
+			duration = attribute.value;
+		}
+	});
+	return duration || "00:00";
 }
 export default getVideoDuration;
