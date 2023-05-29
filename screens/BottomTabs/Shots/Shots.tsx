@@ -1,19 +1,13 @@
+import SingleShot from "components/Shots/SingleShot";
+import { ExplorePublicationRequest, PublicationMainFocus, PublicationSortCriteria, PublicationTypes, useExploreQuery } from "customTypes/generated";
+import { ShotsPublication } from "customTypes/index";
+import { RootTabScreenProps } from "customTypes/navigation";
 import * as ScreenOrientation from "expo-screen-orientation";
 import React, { useState } from "react";
 import { Platform, View, useWindowDimensions } from "react-native";
 import SwiperFlatList from "react-native-swiper-flatlist";
-import SingleShot from "../../../components/Shots/SingleShot";
-import { useGuestStore } from "../../../store/GuestStore";
-import { useAuthStore, useProfile } from "../../../store/Store";
-import { ShotsPublication } from "../../../types";
-import {
-  ExplorePublicationRequest,
-  PublicationMainFocus,
-  PublicationSortCriteria,
-  PublicationTypes,
-  useExploreQuery,
-} from "../../../types/generated";
-import { RootTabScreenProps } from "../../../types/navigation/types";
+import { useGuestStore } from "store/GuestStore";
+import { useAuthStore, useProfile } from "store/Store";
 
 const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);

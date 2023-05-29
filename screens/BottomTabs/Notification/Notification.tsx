@@ -1,14 +1,14 @@
 import React from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
-import AllNotifications from "../../../components/Notifications/Tabs/AllNotifications";
-import CollectNotifications from "../../../components/Notifications/Tabs/CollectNotifications";
-import CommentNotifications from "../../../components/Notifications/Tabs/CommentNotifications";
-import FollowNotifications from "../../../components/Notifications/Tabs/FollowNotifications";
-import MentionNotifications from "../../../components/Notifications/Tabs/MentionNotifications";
-import Tabs, { Tab } from "../../../components/UI/Tabs";
-import { RootTabScreenProps } from "../../../types/navigation/types";
-import TrackAction from "../../../utils/Track";
-import { NOTIFICATION } from "../../../constants/tracking";
+import AllNotifications from "components/Notifications/Tabs/AllNotifications";
+import CollectNotifications from "components/Notifications/Tabs/CollectNotifications";
+import CommentNotifications from "components/Notifications/Tabs/CommentNotifications";
+import FollowNotifications from "components/Notifications/Tabs/FollowNotifications";
+import MentionNotifications from "components/Notifications/Tabs/MentionNotifications";
+import Tabs, { Tab } from "components/UI/Tabs";
+import { RootTabScreenProps } from "customTypes/navigation";
+import TrackAction from "utils/Track";
+import { NOTIFICATION } from "constants/tracking";
 
 type NotificationTabsType = {
   name: string;

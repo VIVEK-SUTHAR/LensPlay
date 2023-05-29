@@ -12,18 +12,19 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ErrorMessage from "../../components/common/ErrorMesasge";
-import Icon from "../../components/Icon";
-import InviteCard from "../../components/invite/InviteCard";
-import Avatar from "../../components/UI/Avatar";
-import Heading from "../../components/UI/Heading";
-import StyledText from "../../components/UI/StyledText";
-import { black, white } from "../../constants/Colors";
-import useInviteCodes, { GetInviteResponse } from "../../hooks/useInviteCodes";
-import { useProfile, useThemeStore } from "../../store/Store";
-import CommonStyles from "../../styles";
-import { RootStackScreenProps } from "../../types/navigation/types";
-import formatHandle from "../../utils/formatHandle";
-import getRawurl from "../../utils/getRawUrl";
+import { RootStackScreenProps } from "customTypes/navigation";
+import { useProfile, useThemeStore } from "store/Store";
+import useInviteCodes from "hooks/useInviteCodes";
+import { GetInviteResponse } from "customTypes/Store";
+import CommonStyles from "styles/index";
+import Icon from "components/Icon";
+import Avatar from "components/UI/Avatar";
+import getRawurl from "utils/getRawUrl";
+import Heading from "components/UI/Heading";
+import formatHandle from "utils/formatHandle";
+import { black, white } from "constants/Colors";
+import StyledText from "components/UI/StyledText";
+import InviteCard from "components/invite/InviteCard";
 
 const StatusBarHeight = Constants.statusBarHeight;
 

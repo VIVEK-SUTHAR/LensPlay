@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from "react";
+import React, { useLayoutEffect, useMemo } from "react";
 import {
   ActivityIndicator,
   Dimensions,
@@ -7,25 +7,17 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import ProfileCard from "../../../components/ProfileCard";
-import ProfileCardSkeleton from "../../../components/UI/ProfileCardSkeleton";
-import Tabs, { Tab } from "../../../components/UI/Tabs";
+
 import ErrorMessage from "../../../components/common/ErrorMesasge";
-import Skeleton from "../../../components/common/Skeleton";
-import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
-import {
-  Follower,
-  FollowersRequest,
-  Following,
-  FollowingRequest,
-  Scalars,
-  useAllFollowersQuery,
-  useAllFollowingQuery,
-} from "../../../types/generated";
-import { RootStackScreenProps } from "../../../types/navigation/types";
-import getRawurl from "../../../utils/getRawUrl";
-import { useMemo } from "react";
-import formatHandle from "../../../utils/formatHandle";
+import { RootStackScreenProps } from "customTypes/navigation";
+import { useAuthStore, useProfile, useThemeStore } from "store/Store";
+import formatHandle from "utils/formatHandle";
+import Tabs, { Tab } from "components/UI/Tabs";
+import { Follower, FollowersRequest, Following, FollowingRequest, Scalars, useAllFollowersQuery, useAllFollowingQuery } from "customTypes/generated";
+import ProfileCard from "components/ProfileCard";
+import getRawurl from "utils/getRawUrl";
+import Skeleton from "components/common/Skeleton";
+import ProfileCardSkeleton from "components/UI/ProfileCardSkeleton";
 
 const UserStats = ({
   navigation,

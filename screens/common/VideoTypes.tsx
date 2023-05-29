@@ -1,3 +1,10 @@
+import Button from "components/UI/Button";
+import Heading from "components/UI/Heading";
+import StyledText from "components/UI/StyledText";
+import { black } from "constants/Colors";
+import { APP_ID, LENSPLAY_SITE } from "constants/index";
+import { MetadataAttributeInput, Post, PublicationMainFocus, PublicationMetadataDisplayTypes, PublicationMetadataMediaInput, PublicationMetadataV2Input, PublicationTypes, useCreatePostViaDispatcherMutation, useProfilePostsQuery } from "customTypes/generated";
+import { RootStackScreenProps } from "customTypes/navigation";
 import React, { useState } from "react";
 import {
   Platform,
@@ -6,37 +13,17 @@ import {
   ScrollView,
   View,
 } from "react-native";
+import { useAuthStore, useProfile, useToast } from "store/Store";
+import { useUploadStore } from "store/UploadStore";
+import getCollectModule from "utils/getCollectModule";
+import getImageBlobFromUri from "utils/getImageBlobFromUri";
+import getReferenceModule from "utils/getReferenceModule";
+import uploadImageToIPFS from "utils/uploadImageToIPFS";
+import uploadToArweave from "utils/uploadToArweave";
+import getFileMimeType from "utils/video/getFileType";
+import getUploadURLForLivePeer from "utils/video/getUploadURLForLivepeer";
+import uploadToTus, { TusUploadRequestOptions } from "utils/video/uploadToTUS";
 import { v4 as uuidV4 } from "uuid";
-import Button from "../../components/UI/Button";
-import Heading from "../../components/UI/Heading";
-import StyledText from "../../components/UI/StyledText";
-import { dark_primary } from "../../constants/Colors";
-import { APP_ID, LENSPLAY_SITE } from "../../constants";
-import { black } from "../../constants/Colors";
-import { useAuthStore, useProfile, useToast } from "../../store/Store";
-import { useUploadStore } from "../../store/UploadStore";
-import {
-  MetadataAttributeInput,
-  Post,
-  PublicationMainFocus,
-  PublicationMetadataDisplayTypes,
-  PublicationMetadataMediaInput,
-  PublicationMetadataV2Input,
-  PublicationTypes,
-  useCreatePostViaDispatcherMutation,
-  useProfilePostsQuery,
-} from "../../types/generated";
-import { RootStackScreenProps } from "../../types/navigation/types";
-import getCollectModule from "../../utils/getCollectModule";
-import getImageBlobFromUri from "../../utils/getImageBlobFromUri";
-import getReferenceModule from "../../utils/getReferenceModule";
-import uploadImageToIPFS from "../../utils/uploadImageToIPFS";
-import uploadToArweave from "../../utils/uploadToArweave";
-import getFileMimeType from "../../utils/video/getFileType";
-import getUploadURLForLivePeer from "../../utils/video/getUploadURLForLivepeer";
-import uploadToTus, {
-  TusUploadRequestOptions,
-} from "../../utils/video/uploadToTUS";
 
 const Types: string[] = [
   "Arts & Entertainment",

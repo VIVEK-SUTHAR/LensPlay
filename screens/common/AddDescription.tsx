@@ -1,3 +1,6 @@
+import Button from "components/UI/Button";
+import StyledText from "components/UI/StyledText";
+import { RootStackScreenProps } from "customTypes/navigation";
 import React, { useCallback } from "react";
 import {
   KeyboardAvoidingView,
@@ -5,11 +8,8 @@ import {
   TextInput,
   View,
 } from "react-native";
-import Button from "../../components/UI/Button";
-import StyledText from "../../components/UI/StyledText";
-import { useThemeStore, useToast } from "../../store/Store";
-import { useUploadStore } from "../../store/UploadStore";
-import { RootStackScreenProps } from "../../types/navigation/types";
+import { useThemeStore, useToast } from "store/Store";
+import { useUploadStore } from "store/UploadStore";
 
 export default function AddDescription({
   navigation,

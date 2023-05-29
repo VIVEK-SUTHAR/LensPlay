@@ -1,5 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import Heading from "components/UI/Heading";
+import { APP_OPEN } from "constants/tracking";
+import { useRefreshTokensMutation, useVerifyTokensLazyQuery } from "customTypes/generated";
+import { RootStackScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import { Dimensions, Image, View } from "react-native";
@@ -10,20 +14,13 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import Heading from "../../components/UI/Heading";
-import { APP_OPEN } from "../../constants/tracking";
-import { useAuthStore, useProfile } from "../../store/Store";
-import {
-  useRefreshTokensMutation,
-  useVerifyTokensLazyQuery,
-} from "../../types/generated";
-import { RootStackScreenProps } from "../../types/navigation/types";
-import TrackAction from "../../utils/Track";
-import getDateDifference from "../../utils/getDateDifference";
-import createInviteCode from "../../utils/invites/createInviteCodes";
-import handleUser from "../../utils/invites/handleUser";
-import getDefaultProfile from "../../utils/lens/getDefaultProfile";
-import storeTokens from "../../utils/storeTokens";
+import { useAuthStore, useProfile } from "store/Store";
+import TrackAction from "utils/Track";
+import getDateDifference from "utils/generateDateDifference";
+import createInviteCode from "utils/invites/createInviteCodes";
+import handleUser from "utils/invites/handleUser";
+import getDefaultProfile from "utils/lens/getDefaultProfile";
+import storeTokens from "utils/storeTokens";
 
 export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
   const { setCurrentProfile, currentProfile, setHasHandle } = useProfile();
