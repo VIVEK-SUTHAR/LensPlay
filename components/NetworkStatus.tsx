@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 import useNetworkStore from "store/NetworkStore";
 
 import Constants from "expo-constants";
-import StyledText from "./UI/StyledText";
+import StyledText from "components/UI/StyledText";
 
 const NetworkStatus = () => {
   const { isOffline } = useNetworkStore();

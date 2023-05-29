@@ -1,9 +1,9 @@
 import Icon from "components/Icon";
 import React from "react";
 import { Dimensions, Pressable, ScrollView, View } from "react-native";
-import Heading from "./Heading";
-import StyledText from "./StyledText";
-import VideoCardSkeleton from "./VideoCardSkeleton";
+import Heading from "components/UI/Heading";
+import StyledText from "components/UI/StyledText";
+import VideoCardSkeleton from "components/UI/VideoCardSkeleton";
 
 const ProfileSkeleton = () => {
 	return (

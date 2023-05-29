@@ -6,12 +6,11 @@ import {
   Pressable,
   View,
 } from "react-native";
-import StyledText from "../UI/StyledText";
-import Heading from "../UI/Heading";
-import Icon from "../Icon";
-import { useUploadStore } from "../../store/UploadStore";
-import { STATIC_ASSET } from "../../constants";
-import { black } from "../../constants/Colors";
+import StyledText from "components/UI/StyledText";
+import Heading from "components/UI/Heading";
+import { useUploadStore } from "store/UploadStore";
+import { STATIC_ASSET } from "constants/index";
+import { black } from "constants/Colors";
 
 export default function UploadCard() {
   const { title, coverURL, uploadProgress, uploadingStatus } = useUploadStore();

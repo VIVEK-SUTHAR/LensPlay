@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { LENSPLAY_API } from "../constants";
-import { useInviteStore } from "../store/InviteStore";
-import Logger from "../utils/logger";
+import { LENSPLAY_API } from "constants/index";
+import { useInviteStore } from "store/InviteStore";
+import Logger from "utils/logger";
 
 export enum GetInviteResponse {
   ZERO_INVITES = "ZERO INVITES",

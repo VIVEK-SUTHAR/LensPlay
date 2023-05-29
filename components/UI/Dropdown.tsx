@@ -7,9 +7,9 @@ import {
   Modal,
   View,
 } from "react-native";
-import { dark_primary } from "../../constants/Colors";
-import Icon from "../Icon";
-import StyledText from "./StyledText";
+import { dark_primary } from "constants/Colors";
+import Icon from "components/Icon";
+import StyledText from "components/UI/StyledText";
 
 interface Props {
   label: string;

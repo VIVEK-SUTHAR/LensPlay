@@ -3,17 +3,17 @@ import { useNavigation } from "@react-navigation/native";
 import { Image } from "expo-image";
 import React, { memo } from "react";
 import { Dimensions, Pressable, TouchableOpacity, View } from "react-native";
-import { black } from "../../constants/Colors";
-import { useActivePublication } from "../../store/Store";
-import { Mirror, Post, Scalars } from "../../types/generated";
-import getDifference from "../../utils/getDifference";
-import getIPFSLink from "../../utils/getIPFSLink";
-import getImageProxyURL from "../../utils/getImageProxyURL";
-import getPlaceHolderImage from "../../utils/getPlaceHolder";
-import getRawurl from "../../utils/getRawUrl";
-import Icon, { IconName } from "../Icon";
-import Heading from "../UI/Heading";
-import StyledText from "../UI/StyledText";
+import { black } from "constants/Colors";
+import { useActivePublication } from "store/Store";
+import { Mirror, Post, Scalars } from "customTypes/generated";
+import getDifference from "utils/getDifference";
+import getIPFSLink from "utils/getIPFSLink";
+import getImageProxyURL from "utils/getImageProxyURL";
+import getPlaceHolderImage from "utils/getPlaceHolder";
+import getRawurl from "utils/getRawUrl";
+import Icon, { IconName } from "components/Icon";
+import Heading from "components/UI/Heading";
+import StyledText from "components/UI/StyledText";
 
 type MyVideoCardProps = {
   publication: Mirror | Post;

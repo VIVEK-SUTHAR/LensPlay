@@ -1,7 +1,7 @@
 import { RefObject } from "react";
 import { FlatList, FlatListProps } from "react-native";
 import Animated from "react-native-reanimated";
-import { HeaderConfig } from "../screens/BottomTabs/Profile/Profile";
+import { HeaderConfig } from "screens/BottomTabs/Profile/Profile";
 export type ScrollPair = {
   list: RefObject<FlatList>;
   position: Animated.SharedValue<number>;

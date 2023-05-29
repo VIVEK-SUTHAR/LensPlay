@@ -1,12 +1,12 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import React, { useEffect } from "react";
 import { FlatList, Pressable, View } from "react-native";
-import { black, dark_primary } from "../../../constants/Colors";
-import { useThemeStore } from "../../../store/Store";
-import { useUploadStore } from "../../../store/UploadStore";
-import Sheet from "../../Bottom";
-import Icon from "../../Icon";
-import StyledText from "../../UI/StyledText";
+import { black, dark_primary } from "constants/Colors";
+import { useThemeStore } from "store/Store";
+import { useUploadStore } from "store/UploadStore";
+import Sheet from "components/Bottom";
+import Icon from "components/Icon";
+import StyledText from "components/UI/StyledText";
 
 type CommentModuleSheetProps = {
 	referenceModuleRef: React.RefObject<BottomSheetMethods>;

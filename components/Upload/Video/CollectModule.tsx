@@ -6,14 +6,14 @@ import {
   dark_primary,
   dark_secondary,
   primary,
-} from "../../../constants/Colors";
-import { useUploadStore } from "../../../store/UploadStore";
-import Sheet from "../../Bottom";
-import Icon from "../../Icon";
-import Button from "../../UI/Button";
-import Heading from "../../UI/Heading";
-import StyledText from "../../UI/StyledText";
-import Switch from "../../UI/Switch";
+} from "constants/Colors";
+import { useUploadStore } from "store/UploadStore";
+import Sheet from "components/Bottom";
+import Icon from "components/Icon";
+import Button from "components/UI/Button";
+import Heading from "components/UI/Heading";
+import StyledText from "components/UI/StyledText";
+import Switch from "components/UI/Switch";
 
 type CollectModuleSheetProp = {
   collectModuleRef: React.RefObject<BottomSheetMethods>;
