@@ -1,4 +1,4 @@
-import type { INetWorkStore } from "./../types/Store/index";
+import { INetWorkStore } from "customTypes/Store";
 import create from "zustand";
 
 const useNetworkStore = create<INetWorkStore>((set) => ({

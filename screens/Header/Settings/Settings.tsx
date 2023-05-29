@@ -1,25 +1,24 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import Sheet from "components/Bottom";
+import Icon from "components/Icon";
+import Button from "components/UI/Button";
+import Heading from "components/UI/Heading";
+import StyledText from "components/UI/StyledText";
+import Socials from "components/settings/Socials";
+import ProfileQR, { ProfileSheet } from "components/settings/profileQR";
+import { black, dark_primary, white } from "constants/Colors";
+import { LENSPLAY_PRIVACY } from "constants/index";
+import { AUTH } from "constants/tracking";
+import { RootStackScreenProps } from "customTypes/navigation";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import React, { FC, useRef } from "react";
 import { Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
-import Sheet from "../../../components/Bottom";
-import Icon from "../../../components/Icon";
-import ProfileQR, { ProfileSheet } from "../../../components/settings/profileQR";
-import Socials from "../../../components/settings/Socials";
-import Button from "../../../components/UI/Button";
-import Heading from "../../../components/UI/Heading";
-import StyledText from "../../../components/UI/StyledText";
-import { LENSPLAY_PRIVACY, OFFICIAL_EMAIL } from "../../../constants";
-import { black, dark_primary, white } from "../../../constants/Colors";
-import { AUTH } from "../../../constants/tracking";
-import { useGuestStore } from "../../../store/GuestStore";
-import { useInviteStore } from "../../../store/InviteStore";
-import { RootStackScreenProps } from "../../../types/navigation/types";
-import UPADTES from "../../../update.json";
-import TrackAction from "../../../utils/Track";
+import { useGuestStore } from "store/GuestStore";
+import { useInviteStore } from "store/InviteStore";
+import TrackAction from "utils/Track";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
@@ -65,7 +64,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 			icon: <Icon name="mail" size={24} />,
 			label: "Contact Us",
 			onPress: () => {
-				Linking.openURL(`mailto:${OFFICIAL_EMAIL}`);
+				Linking.openURL(`<mailto:1>OFFICIAL_EMAIL</mailto:1>`);
 			},
 		},
 	];
@@ -167,10 +166,10 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 				</View>
 				<Socials />
 				<View style={styles.appVersionContainer}>
-					<StyledText
+					{/* <StyledText
 						title={`OTA Build:${UPADTES.OTA_BUILD}`}
 						style={{ color: "gray", fontSize: 10 }}
-					/>
+					/> */}
 					<StyledText
 						title={`${Constants.expoConfig?.name} v${Constants.expoConfig?.version}`}
 						style={{ color: "gray", fontSize: 10 }}
