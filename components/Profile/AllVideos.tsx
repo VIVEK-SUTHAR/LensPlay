@@ -2,6 +2,8 @@ import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/typ
 import { FlashList } from "@shopify/flash-list";
 import Sheet from "components/Bottom";
 import MyVideoCard, { actionListType, SheetProps } from "components/common/MyVideoCard";
+import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
+import Skeleton from "components/common/Skeleton";
 import Icon from "components/Icon";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
@@ -149,7 +151,11 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 			}}
 		>
 			{loading ? (
-				<></>
+				<View style={{paddingHorizontal:8,backgroundColor:"black"}} >
+					<Skeleton number={10}>
+						<ProfileVideoCardSkeleton />
+					</Skeleton>
+				</View>
 			) : (
 				<FlashList
 					data={AllVideos as Post[]}

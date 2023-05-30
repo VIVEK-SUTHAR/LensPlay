@@ -22,6 +22,8 @@ import { RefreshControl } from "react-native-gesture-handler";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import CommonStyles from "styles/index";
 import { NoVideosFound } from "./AllVideos";
+import Skeleton from "components/common/Skeleton";
+import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
 
 type CollectedVideosProps = {
 	ethAddress?: string;
@@ -143,7 +145,11 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 			}}
 		>
 			{loading ? (
-				<></>
+				<View style={{ paddingHorizontal: 8, backgroundColor: "black" }}>
+					<Skeleton number={10}>
+						<ProfileVideoCardSkeleton />
+					</Skeleton>
+				</View>
 			) : (
 				<FlashList
 					data={collectVideos as CollectedPublication[]}

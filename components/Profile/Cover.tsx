@@ -14,12 +14,14 @@ type CoverProps = {
 
 const Cover = ({ url, navigation }: CoverProps) => {
 	const { setCoverColors } = useBgColorStore();
-
+	const coverURL = React.useMemo(
+		() =>
+			getImageProxyURL({
+				formattedLink: getIPFSLink(url),
+			}),
+		[url, navigation]
+	);
 	React.useEffect(() => {
-		const coverURL = getImageProxyURL({
-			formattedLink: getIPFSLink(url),
-		});
-
 		getColors(coverURL, {
 			fallback: "#000000",
 			cache: true,

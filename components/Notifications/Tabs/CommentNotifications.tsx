@@ -92,12 +92,18 @@ function CommentNotifications() {
       <>
         {pageInfo?.next ? (
           <View
-            style={{
-              height: 200,
-            }}
-          >
-            <ActivityIndicator size={"large"} color={theme.PRIMARY} />
-          </View>
+          style={{
+            height: 80,
+            alignItems:"center",
+            justifyContent:"center"
+          }}
+        >
+          {pageInfo?.next ? (
+            <ActivityIndicator size={"small"} color={theme.PRIMARY} />
+          ) : (
+            null
+          )}
+        </View>
         ) : (
           <></>
         )}

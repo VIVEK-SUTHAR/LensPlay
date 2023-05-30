@@ -1,3 +1,5 @@
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import ShotSkeleton from "components/Shots/ShotSkeleton";
 import SingleShot from "components/Shots/SingleShot";
 import {
 	ExplorePublicationRequest,
@@ -10,7 +12,7 @@ import { ShotsPublication } from "customTypes/index";
 import { RootTabScreenProps } from "customTypes/navigation";
 import * as ScreenOrientation from "expo-screen-orientation";
 import React, { useState } from "react";
-import { Platform, View, useWindowDimensions } from "react-native";
+import { Dimensions, Platform, StyleSheet, View, useWindowDimensions } from "react-native";
 import SwiperFlatList from "react-native-swiper-flatlist";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useProfile } from "store/Store";
@@ -91,51 +93,45 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
 			},
 		}).catch((err) => {});
 	};
+	const BottomTabHeight = useBottomTabBarHeight();
 
+	const ITEM_HEIGHT = height - BottomTabHeight;
+	const getItemLayout = (_: any, index: number) => {
+		return {
+			length: ITEM_HEIGHT,
+			offset: ITEM_HEIGHT * index,
+			index,
+		};
+	};
+	if (loading) return <ShotSkeleton />;
 	return (
-		<>
-			{isAndroid ? (
-				<View
-					style={{
-						backgroundColor: "black",
-						height: height,
-						width: width,
-					}}
-				>
-					<SwiperFlatList
-						vertical={true}
-						keyExtractor={keyExtractor}
-						onChangeIndex={handleChangeIndexValue}
-						data={data}
-						renderItem={renderItem}
-						initialNumToRender={3}
-						maxToRenderPerBatch={5}
-						onEndReachedThreshold={1}
-						onEndReached={onEndCallBack}
-					/>
-				</View>
-			) : (
-				<View
-					style={{
-						backgroundColor: "black",
-						flex: 1,
-					}}
-				>
-					<SwiperFlatList
-						vertical={true}
-						keyExtractor={keyExtractor}
-						onChangeIndex={handleChangeIndexValue}
-						data={data}
-						renderItem={renderItem}
-						initialNumToRender={3}
-						maxToRenderPerBatch={5}
-						onEndReachedThreshold={1}
-						onEndReached={onEndCallBack}
-					/>
-				</View>
-			)}
-		</>
+		<View style={styles.container}>
+			<SwiperFlatList
+				vertical={true}
+				keyExtractor={keyExtractor}
+				onChangeIndex={handleChangeIndexValue}
+				data={data}
+				renderItem={renderItem}
+				initialNumToRender={3}
+				maxToRenderPerBatch={5}
+				onEndReachedThreshold={1}
+				onEndReached={onEndCallBack}
+				getItemLayout={getItemLayout}
+				removeClippedSubviews={true}
+			/>
+		</View>
 	);
 };
-
 export default Shots;
+
+const styles = StyleSheet.create({
+	container: {
+		backgroundColor: "black",
+		...Platform.select({
+			ios: {
+				flex: 1,
+			},
+			android: { height: Dimensions.get("window").height, width: Dimensions.get("window").width },
+		}),
+	},
+});

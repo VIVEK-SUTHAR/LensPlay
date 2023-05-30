@@ -4,15 +4,17 @@ import { Dimensions, Pressable, ScrollView, View } from "react-native";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import VideoCardSkeleton from "components/UI/VideoCardSkeleton";
+import { white } from "constants/Colors";
 
 const ProfileSkeleton = () => {
 	return (
 		<ScrollView
 			style={{
-				paddingHorizontal: 8,
+				// paddingHorizontal: 8,
 				backgroundColor: "#111111",
 				height: Dimensions.get("screen").height,
 			}}
+			showsVerticalScrollIndicator={false}
 		>
 			<View
 				style={{
@@ -45,7 +47,7 @@ const ProfileSkeleton = () => {
 						position: "relative",
 						height: 36,
 						width: 108,
-						marginTop: 44,
+						marginTop: 56,
 						marginRight: 16,
 						borderRadius: 50,
 						backgroundColor: "#1d1d1d",
@@ -107,8 +109,8 @@ const ProfileSkeleton = () => {
 			<View style={{ flexDirection: "row" }}>
 				<View
 					style={{
-						width: 36,
-						height: 36,
+						width: 32,
+						height: 32,
 						borderRadius: 50,
 						backgroundColor: "#1d1d1d",
 						marginLeft: 12,
@@ -117,8 +119,8 @@ const ProfileSkeleton = () => {
 				/>
 				<View
 					style={{
-						width: 36,
-						height: 36,
+						width: 32,
+						height: 32,
 						borderRadius: 50,
 						backgroundColor: "#1d1d1d",
 						marginLeft: 8,
@@ -127,8 +129,8 @@ const ProfileSkeleton = () => {
 				/>
 				<View
 					style={{
-						width: 36,
-						height: 36,
+						width: 32,
+						height: 32,
 						borderRadius: 50,
 						backgroundColor: "#1d1d1d",
 						marginLeft: 8,
@@ -136,66 +138,116 @@ const ProfileSkeleton = () => {
 					}}
 				/>
 			</View>
-			<View style={{ marginTop: 24 }}>
-				<View>
-					<Pressable
-						style={{
-							flexDirection: "row",
-							justifyContent: "space-between",
-							alignItems: "center",
-						}}
-					>
-						<StyledText
-							title={"Videos"}
-							style={{
-								fontSize: 16,
-								color: "white",
-								fontWeight: "600",
-								marginLeft: 16,
-							}}
-						/>
-						<Icon name="arrowForward" size={20} />
-					</Pressable>
-					<ScrollView
-						horizontal={true}
-						style={{ marginTop: 8 }}
-						showsHorizontalScrollIndicator={false}
-					>
-						<VideoCardSkeleton width={300} />
-						<VideoCardSkeleton width={300} />
-						<VideoCardSkeleton width={300} />
-						<VideoCardSkeleton width={300} />
-					</ScrollView>
-				</View>
-				<View style={{ marginTop: 16 }}>
+			<View style={{ marginTop: 24, paddingHorizontal: 12 }}>
+				<View
+					style={{
+						marginTop: 16,
+						marginBottom: 32,
+					}}
+				>
 					<View
 						style={{
 							flexDirection: "row",
-							justifyContent: "space-between",
 							alignItems: "center",
+							marginTop: 4,
 						}}
 					>
-						<Heading
-							title={"Mirrored Videos"}
+						<Icon name="pin" size={12} color={white[200]} />
+						<StyledText
+							title="Pinned video"
 							style={{
-								fontSize: 16,
-								color: "white",
-								fontWeight: "600",
-								marginLeft: 16,
+								color: white[200],
+								fontSize: 12,
+								marginLeft: 8,
 							}}
 						/>
-						<Icon name="arrowForward" size={20} />
 					</View>
-					<ScrollView
-						horizontal={true}
-						style={{ marginTop: 8 }}
-						showsHorizontalScrollIndicator={false}
+					<Pressable
+						style={{
+							flexDirection: "row",
+							maxWidth: Dimensions.get("window").width,
+							marginTop: 16,
+						}}
 					>
-						<VideoCardSkeleton width={300} />
-						<VideoCardSkeleton width={300} />
-						<VideoCardSkeleton width={300} />
-						<VideoCardSkeleton width={300} />
-					</ScrollView>
+						<View>
+							<View
+								style={{
+									width: 160,
+									height: 100,
+									borderRadius: 8,
+									backgroundColor: "#1d1d1d",
+								}}
+							/>
+						</View>
+						<View>
+							<View
+								style={{
+									width: Dimensions.get("screen").width * 0.36,
+									height: 16,
+									backgroundColor: "#1d1d1d",
+									marginHorizontal: 8,
+									marginVertical: 8,
+								}}
+							/>
+							<View
+								style={{
+									width: Dimensions.get("screen").width * 0.3,
+									height: 12,
+									backgroundColor: "#1d1d1d",
+									marginHorizontal: 8,
+									marginVertical: 4,
+								}}
+							/>
+							<View
+								style={{
+									width: Dimensions.get("screen").width * 0.2,
+									height: 12,
+									backgroundColor: "#1d1d1d",
+									marginHorizontal: 8,
+									marginVertical: 4,
+								}}
+							/>
+						</View>
+					</Pressable>
+
+					<View>
+						<View
+							style={{
+								marginVertical: 24,
+							}}
+						>
+							<Heading
+								title={"Stats"}
+								style={{
+									fontSize: 24,
+									fontWeight: "600",
+									color: white[500],
+								}}
+							/>
+							<View
+								style={{
+									flexDirection: "row",
+									justifyContent: "space-between",
+									flexWrap: "wrap",
+								}}
+							>
+								{[...Array(4)].map(() => (
+									<View
+										style={{
+											height: 130,
+											width: "48%",
+											marginTop: 16,
+											position: "relative",
+											backgroundColor: "#1d1d1d",
+											borderRadius: 16,
+											padding: 16,
+											justifyContent: "space-between",
+										}}
+									/>
+								))}
+							</View>
+						</View>
+					</View>
 				</View>
 			</View>
 		</ScrollView>

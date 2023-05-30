@@ -13,6 +13,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import useNetworkStore from "store/NetworkStore";
 import Logger from "utils/logger";
 import Navigation from "./navigation";
+import { AppState } from "react-native";
 
 export default function App() {
 	const isLoadingComplete = useCachedResources();
@@ -35,6 +36,10 @@ export default function App() {
 				setIsOffline(false);
 			}
 		});
+		AppState.addEventListener("memoryWarning", (state) => {
+			Logger.Error("Memory Warning ", state);
+		});
+
 		return () => {
 			unsubscribe();
 		};

@@ -90,13 +90,15 @@ function AllNotifications() {
     return (
       <View
         style={{
-          height: 200,
+          height: 80,
+          alignItems:"center",
+          justifyContent:"center"
         }}
       >
         {pageInfo?.next ? (
-          <ActivityIndicator size={"large"} color={theme.PRIMARY} />
+          <ActivityIndicator size={"small"} color={theme.PRIMARY} />
         ) : (
-          <></>
+          null
         )}
       </View>
     );

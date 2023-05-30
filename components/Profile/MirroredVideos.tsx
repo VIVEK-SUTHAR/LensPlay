@@ -12,18 +12,19 @@ import DeleteVideo from "components/VIdeo/DeleteVideo";
 import { black } from "constants/Colors";
 import { SOURCES } from "constants/index";
 import {
-  Mirror,
-  PublicationMainFocus,
-  PublicationsQueryRequest,
-  PublicationTypes,
-  Scalars,
-  useProfileMirrorsQuery
+	Mirror,
+	PublicationMainFocus,
+	PublicationsQueryRequest,
+	PublicationTypes,
+	Scalars,
+	useProfileMirrorsQuery,
 } from "customTypes/generated";
 import React from "react";
 import { ActivityIndicator, FlatList, RefreshControl, Share, View } from "react-native";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import CommonStyles from "styles/index";
 import { NoVideosFound } from "./AllVideos";
+import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
 
 type MirroredVideosProps = {
 	channelId?: string;
@@ -130,11 +131,13 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 		}).catch((err) => {});
 	}, [pageInfo?.next]);
 
-	if (loading)
+	if (!loading)
 		return (
-			<Skeleton number={10}>
-				<VideoCardSkeleton />
-			</Skeleton>
+			<View style={{ paddingHorizontal: 8,backgroundColor:"black" }}>
+				<Skeleton number={10}>
+					<ProfileVideoCardSkeleton />
+				</Skeleton>
+			</View>
 		);
 	if (error) {
 		return (
