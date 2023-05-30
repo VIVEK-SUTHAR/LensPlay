@@ -48,6 +48,7 @@ import TrackAction from "utils/Track";
 import createLivePeerAsset from "utils/video/createLivePeerAsset";
 import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 import { freeCollectPublication, freeMirror } from "../../api";
+import VideoPageSkeleton from "components/VIdeo/VideoPageSkeleton";
 
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState(false);
@@ -234,12 +235,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 
 	if (!isReadyToRender)
 		return (
-			<SafeAreaView
-				style={{
-					flex: 1,
-					backgroundColor: "black",
-				}}
-			/>
+			<VideoPageSkeleton/>
 		);
 
 	return (
