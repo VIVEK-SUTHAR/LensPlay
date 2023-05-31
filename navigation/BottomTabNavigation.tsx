@@ -92,15 +92,19 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 			if (minute < 25) {
 				return;
 			} else {
-				getAccessFromRefresh({
+				const data = await getAccessFromRefresh({
 					variables: {
 						request: {
 							refreshToken: tokens.refreshToken,
 						},
 					},
 				});
-				setAccessToken(newTokens?.refresh.accessToken);
-				setRefreshToken(newTokens?.refresh.refreshToken);
+
+				const accessToken = data?.data?.refresh?.accessToken;
+				const refreshToken = data?.data?.refresh?.refreshToken;
+
+				setAccessToken(accessToken);
+				setRefreshToken(refreshToken);
 				if (tokens.viaDesktop) {
 					await storeTokens(newTokens?.refresh.accessToken, newTokens?.refresh.refreshToken, true);
 					return;

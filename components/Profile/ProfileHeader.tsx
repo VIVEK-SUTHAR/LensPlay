@@ -89,9 +89,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 		setRefreshing(false);
 	}, []);
 
-	const profile =Profile?.profile
-
-	
+	const profile = Profile?.profile;
 
 	const navigateToFullImageAvatar = React.useCallback(() => {
 		navigation.navigate("FullImage", {
@@ -125,21 +123,25 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 			key: avatarImage,
 			quality: "lowest",
 			pixelSpacing: 500,
-		}).then((colors) => {
-			if (!colors) {
-				setAvatarColors("black");
-			}
-			switch (colors.platform) {
-				case "android":
-					setAvatarColors(colors.average);
-					break;
-				case "ios":
-					setAvatarColors(colors.primary);
-					break;
-				default:
+		})
+			.then((colors) => {
+				if (!colors) {
 					setAvatarColors("black");
-			}
-		});
+				}
+				switch (colors.platform) {
+					case "android":
+						setAvatarColors(colors.average);
+						break;
+					case "ios":
+						setAvatarColors(colors.primary);
+						break;
+					default:
+						setAvatarColors("black");
+				}
+			})
+			.catch((error) => {
+				Logger.Error("Failed to load avatar Image for gettinng image color", error);
+			});
 		return () => {
 			setAvatarColors(null);
 		};
@@ -172,11 +174,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 					}
 					showsVerticalScrollIndicator={false}
 				>
-						<Cover
-							navigation={navigation}
-							url={getIPFSLink(getRawurl(profile?.coverPicture as MediaSet))}
-						/>
-					
+					<Cover
+						navigation={navigation}
+						url={getIPFSLink(getRawurl(profile?.coverPicture as MediaSet))}
+					/>
+
 					<View style={styles.ProfileContainer}>
 						<Pressable onPress={navigateToFullImageAvatar}>
 							<Avatar

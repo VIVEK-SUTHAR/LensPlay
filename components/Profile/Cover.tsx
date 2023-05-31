@@ -5,6 +5,7 @@ import { getColors } from "react-native-image-colors";
 import { useBgColorStore } from "store/BgColorStore";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getIPFSLink from "utils/getIPFSLink";
+import Logger from "utils/logger";
 
 type CoverProps = {
 	url: string;
@@ -27,18 +28,22 @@ const Cover = ({ url, navigation }: CoverProps) => {
 			key: coverURL,
 			quality: "lowest",
 			pixelSpacing: 500,
-		}).then((colors) => {
-			switch (colors.platform) {
-				case "android":
-					setCoverColors(colors.average);
-					break;
-				case "ios":
-					setCoverColors(colors.primary);
-					break;
-				default:
-					setCoverColors("black");
-			}
-		});
+		})
+			.then((colors) => {
+				switch (colors.platform) {
+					case "android":
+						setCoverColors(colors.average);
+						break;
+					case "ios":
+						setCoverColors(colors.primary);
+						break;
+					default:
+						setCoverColors("black");
+				}
+			})
+			.catch((error) => {
+				Logger.Error("Failed to fetch image for geting dominient color", error);
+			});
 
 		return () => {
 			setCoverColors(null);
@@ -58,6 +63,13 @@ const Cover = ({ url, navigation }: CoverProps) => {
 				priority={"high"}
 				source={{
 					uri: getImageProxyURL({ formattedLink: getIPFSLink(url) }),
+				}}
+				cachePolicy="memory-disk"
+				onLoad={(e) => {
+					Logger.Success("Image Loading from", e.cacheType, "With URL", e.source.url);
+				}}
+				onError={(e) => {
+					Logger.Error("Failed to Load Cover Image ", e.error);
 				}}
 				style={styles.imageStyle}
 				contentFit="cover"

@@ -8,15 +8,16 @@ import Skeleton from "components/common/Skeleton";
 import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
 import {
-  CollectButton,
-  LikeButton,
-  ReportButton,
-  ShareButton,
-  VideoCreator,
-  VideoMeta
+	CollectButton,
+	LikeButton,
+	ReportButton,
+	ShareButton,
+	VideoCreator,
+	VideoMeta
 } from "components/VIdeo";
 import DisLikeButton from "components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "components/VIdeo/Actions/MirrorButton";
+import VideoPageSkeleton from "components/VIdeo/VideoPageSkeleton";
 import VideoPlayer from "components/VideoPlayer";
 import { black, dark_primary, primary } from "constants/Colors";
 import { LENSPLAY_SITE, STATIC_ASSET } from "constants/index";
@@ -31,11 +32,11 @@ import { useReaction } from "hooks/useLensQuery";
 import React, { useEffect, useRef, useState } from "react";
 import { BackHandler, Dimensions, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import {
-  useActivePublication,
-  useAuthStore,
-  useProfile,
-  useReactionStore,
-  useToast
+	useActivePublication,
+	useAuthStore,
+	useProfile,
+	useReactionStore,
+	useToast
 } from "store/Store";
 import useVideoURLStore from "store/videoURL";
 import extractURLs from "utils/extractURL";
@@ -48,12 +49,12 @@ import TrackAction from "utils/Track";
 import createLivePeerAsset from "utils/video/createLivePeerAsset";
 import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 import { freeCollectPublication, freeMirror } from "../../api";
-import VideoPageSkeleton from "components/VIdeo/VideoPageSkeleton";
 
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState(false);
 
 	React.useEffect(() => {
+		Logger.Count("Landed in VideoPage");
 		const delay = setTimeout(() => {
 			setIsReadyToRender(true);
 		}, 0);
@@ -65,40 +66,40 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const { accessToken } = useAuthStore();
 	const userStore = useProfile();
 
-  const [inFullscreen, setInFullsreen] = useState<boolean>(false);
-  const [isMute, setIsMute] = useState<boolean>(false);
-  const {
-    reaction,
-    setReaction,
-    videopageStats,
-    collectStats,
-    mirrorStats,
-    setVideoPageStats,
-    clearStats,
-    setCollectStats,
-    setMirrorStats,
-  } = useReactionStore();
+	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
+	const [isMute, setIsMute] = useState<boolean>(false);
+	const {
+		reaction,
+		setReaction,
+		videopageStats,
+		collectStats,
+		mirrorStats,
+		setVideoPageStats,
+		clearStats,
+		setCollectStats,
+		setMirrorStats,
+	} = useReactionStore();
 
-  // Logger.Success(
-  //   "New Opti",
-  //   activePublication?.metadata?.media[0]?.optimized?.url
-  // );
+	// Logger.Success(
+	//   "New Opti",
+	//   activePublication?.metadata?.media[0]?.optimized?.url
+	// );
 
 	const isDAPublication = activePublication?.isDataAvailability;
 
-  function handleBackButtonClick() {
-    setStatusBarHidden(false, "fade");
-    setInFullsreen(!inFullscreen);
-    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
-    if (!inFullscreen) {
-      navigation.goBack();
-      setReaction(false);
-      clearStats();
-      setCollectStats(false, 0);
-      setMirrorStats(false, 0);
-    }
-    return true;
-  }
+	function handleBackButtonClick() {
+		setStatusBarHidden(false, "fade");
+		setInFullsreen(!inFullscreen);
+		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+		if (!inFullscreen) {
+			navigation.goBack();
+			setReaction(false);
+			clearStats();
+			setCollectStats(false, 0);
+			setMirrorStats(false, 0);
+		}
+		return true;
+	}
 
 	useEffect(() => {
 		BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
@@ -219,8 +220,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 			}
 			checkIfLivePeerAsset(LENS_MEDIA_URL).then((res) => {
 				if (res) {
-					// console.log(res);
-					Logger.Success(res);
+					Logger.Success("Transcoded LivePeer URL", res);
 					setVideoURI(res);
 				} else {
 					setVideoURI(getIPFSLink(LENS_MEDIA_URL));
@@ -233,10 +233,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		}, [])
 	);
 
-	if (!isReadyToRender)
-		return (
-			<VideoPageSkeleton/>
-		);
+	if (!isReadyToRender) return <VideoPageSkeleton />;
 
 	return (
 		<>

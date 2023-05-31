@@ -38,13 +38,14 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 	const [getAccessFromRefresh, { data: newTokens, error, loading }] = useRefreshTokensMutation();
 
 	async function HandleDefaultProfile(adress: string) {
-		Logger.Log("hadnle default profile me hai apn log");
-		Logger.Log("getdefault profile me call jayega next me");
+		Logger.Warn("We are in Handle ");
+		Logger.Warn("We are in Handle efault profile");
+		Logger.Warn("Calling get default profile");
 		const userDefaultProfile = await getDefaultProfile(adress);
 		if (userDefaultProfile) {
 			setHasHandle(true);
 			setCurrentProfile(userDefaultProfile);
-			Logger.Log("Vapas handke default me aagaye apn,iski bar y data hai", userDefaultProfile);
+			Logger.Warn("Back to handle default profile with data", userDefaultProfile);
 		} else {
 			setHasHandle(false);
 		}
@@ -52,7 +53,6 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 
 	async function handleInviteCode(created_at: string) {
 		const dateDiff = getDateDifference(created_at);
-
 		if (dateDiff > 5) {
 			try {
 				const apiResponse = await fetch("https://lensplay-api.vercel.app/api/invites/checkInvite", {
@@ -85,27 +85,27 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 	const getLocalStorage = async () => {
 		try {
 			TrackAction(APP_OPEN);
-			Logger.Log("in app loader");
+			Logger.Log("In App Loader");
 			const userTokens = await AsyncStorage.getItem("@user_tokens");
 			const userData = await AsyncStorage.getItem("@user_data");
 			const address = await AsyncStorage.getItem("@userAddress");
 
 			if (!userTokens && !address) {
-				Logger.Log("no data nd address");
+				Logger.Error("No Data and no address found,Goin to Login");
 				navigation.replace("Login");
 				return;
 			}
 
 			if (address) {
-				Logger.Log("address hai");
+				Logger.Success("Got address");
 				await HandleDefaultProfile(address);
 			} else {
-				Logger.Log("address via wallet");
+				Logger.Success("Got address via wallet");
 				await HandleDefaultProfile(accounts[0]);
 			}
 
 			if (!userData) {
-				Logger.Log("user data nai hai");
+				Logger.Error("user data nai hai");
 				const isUser = await handleUser(currentProfile?.id);
 				if (!isUser) {
 					Logger.Log("user data hai lekin invited nai hai");
@@ -115,16 +115,19 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 			}
 
 			if (userTokens && userData) {
-				Logger.Log("tookens nd data hai");
+				Logger.Warn("UserTokens from Local Storage", JSON.stringify(userTokens));
+				Logger.Warn("UserData from Local Stoarage", JSON.stringify(userData));
+				Logger.Success("Got Tokens and Data ");
 				const accessToken = JSON.parse(userTokens).accessToken;
 				const refreshToken = JSON.parse(userTokens).refreshToken;
 				const created_at = JSON.parse(userData).createdAt;
 				const hasInviteCodes = JSON.parse(userData).hasInviteCodes;
 				if (!accessToken || !refreshToken) {
+					Logger.Error("No access and refresh,goin to Login");
 					navigation.replace("Login");
 					return;
 				}
-				await verifyTokens({
+				const isValidAccesToken = await verifyTokens({
 					variables: {
 						request: {
 							accessToken: accessToken,
@@ -132,7 +135,8 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 					},
 				});
 
-				if (isvalidTokens?.verify) {
+				if (isValidAccesToken?.data?.verify) {
+					Logger.Success("Access token is valid,going to feed");
 					setAccessToken(accessToken);
 					setRefreshToken(refreshToken);
 					if (!hasInviteCodes) {
@@ -140,6 +144,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 					}
 					navigation.replace("Root");
 				} else {
+					Logger.Error("Invalid Tokens,Gnerating new tokens");
 					const newData = await getAccessFromRefresh({
 						variables: {
 							request: {
@@ -150,19 +155,20 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 					if (!hasInviteCodes) {
 						await handleInviteCode(created_at);
 					}
+					Logger.Error("Generated new tokens");
 					setAccessToken(newData?.data?.refresh?.accessToken);
 					setRefreshToken(newData?.data?.refresh?.refreshToken);
 					await storeTokens(
 						newData?.data?.refresh?.accessToken,
 						newData?.data?.refresh?.refreshToken
 					);
+					Logger.Error("Goint to Feed");
 					navigation.replace("Root");
 				}
 			}
 		} catch (error) {
 			if (error instanceof Error) {
 				console.log(error);
-				// console.log("[Error]:Error in accessing local storage");
 				throw new Error("[Error]:Error in accessing local storage");
 			}
 		}
