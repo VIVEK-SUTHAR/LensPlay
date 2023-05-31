@@ -1,11 +1,10 @@
 import { Image } from "expo-image";
 import React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import { getColors } from "react-native-image-colors";
 import { useBgColorStore } from "store/BgColorStore";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getIPFSLink from "utils/getIPFSLink";
-import getPlaceHolderImage from "utils/getPlaceHolder";
 
 type CoverProps = {
 	url: string;
@@ -55,8 +54,6 @@ const Cover = ({ url, navigation }: CoverProps) => {
 	return (
 		<Pressable onPress={navigateToFullImage} style={styles.coverContainer}>
 			<Image
-				placeholder={getPlaceHolderImage(true)}
-				placeholderContentFit="cover"
 				transition={500}
 				priority={"high"}
 				source={{

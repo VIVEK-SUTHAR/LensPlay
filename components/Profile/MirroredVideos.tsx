@@ -3,11 +3,11 @@ import { FlashList } from "@shopify/flash-list";
 import Sheet from "components/Bottom";
 import ErrorMesasge from "components/common/ErrorMesasge";
 import MyVideoCard, { actionListType, SheetProps } from "components/common/MyVideoCard";
+import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
 import Skeleton from "components/common/Skeleton";
 import Icon from "components/Icon";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
-import VideoCardSkeleton from "components/UI/VideoCardSkeleton";
 import DeleteVideo from "components/VIdeo/DeleteVideo";
 import { black } from "constants/Colors";
 import { SOURCES } from "constants/index";
@@ -17,14 +17,13 @@ import {
 	PublicationsQueryRequest,
 	PublicationTypes,
 	Scalars,
-	useProfileMirrorsQuery,
+	useProfileMirrorsQuery
 } from "customTypes/generated";
 import React from "react";
 import { ActivityIndicator, FlatList, RefreshControl, Share, View } from "react-native";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import CommonStyles from "styles/index";
 import { NoVideosFound } from "./AllVideos";
-import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
 
 type MirroredVideosProps = {
 	channelId?: string;
@@ -131,7 +130,7 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 		}).catch((err) => {});
 	}, [pageInfo?.next]);
 
-	if (!loading)
+	if (loading)
 		return (
 			<View style={{ paddingHorizontal: 8,backgroundColor:"black" }}>
 				<Skeleton number={10}>

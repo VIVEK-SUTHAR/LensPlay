@@ -12,15 +12,16 @@ import Animated, {
 	useSharedValue,
 	withDelay,
 	withSpring,
-	withTiming,
+	withTiming
 } from "react-native-reanimated";
 import { useAuthStore, useProfile } from "store/Store";
-import TrackAction from "utils/Track";
 import getDateDifference from "utils/generateDateDifference";
 import createInviteCode from "utils/invites/createInviteCodes";
 import handleUser from "utils/invites/handleUser";
 import getDefaultProfile from "utils/lens/getDefaultProfile";
+import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
+import TrackAction from "utils/Track";
 
 export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 	const { setCurrentProfile, currentProfile, setHasHandle } = useProfile();
@@ -37,10 +38,13 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 	const [getAccessFromRefresh, { data: newTokens, error, loading }] = useRefreshTokensMutation();
 
 	async function HandleDefaultProfile(adress: string) {
+		Logger.Log("hadnle default profile me hai apn log");
+		Logger.Log("getdefault profile me call jayega next me");
 		const userDefaultProfile = await getDefaultProfile(adress);
 		if (userDefaultProfile) {
 			setHasHandle(true);
 			setCurrentProfile(userDefaultProfile);
+			Logger.Log("Vapas handke default me aagaye apn,iski bar y data hai", userDefaultProfile);
 		} else {
 			setHasHandle(false);
 		}
@@ -81,40 +85,45 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 	const getLocalStorage = async () => {
 		try {
 			TrackAction(APP_OPEN);
+			Logger.Log("in app loader");
 			const userTokens = await AsyncStorage.getItem("@user_tokens");
 			const userData = await AsyncStorage.getItem("@user_data");
 			const address = await AsyncStorage.getItem("@userAddress");
 
 			if (!userTokens && !address) {
+				Logger.Log("no data nd address");
 				navigation.replace("Login");
 				return;
 			}
 
 			if (address) {
+				Logger.Log("address hai");
 				await HandleDefaultProfile(address);
 			} else {
+				Logger.Log("address via wallet");
 				await HandleDefaultProfile(accounts[0]);
 			}
 
 			if (!userData) {
+				Logger.Log("user data nai hai");
 				const isUser = await handleUser(currentProfile?.id);
 				if (!isUser) {
+					Logger.Log("user data hai lekin invited nai hai");
 					navigation.replace("InviteCode");
 					return;
 				}
 			}
 
 			if (userTokens && userData) {
+				Logger.Log("tookens nd data hai");
 				const accessToken = JSON.parse(userTokens).accessToken;
 				const refreshToken = JSON.parse(userTokens).refreshToken;
 				const created_at = JSON.parse(userData).createdAt;
 				const hasInviteCodes = JSON.parse(userData).hasInviteCodes;
-
 				if (!accessToken || !refreshToken) {
 					navigation.replace("Login");
 					return;
 				}
-
 				await verifyTokens({
 					variables: {
 						request: {

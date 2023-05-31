@@ -2,19 +2,19 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import React from "react";
-import { Pressable, View } from "react-native";
-import { black, white } from "constants/Colors";
-import { AUTH, GUEST_MODE } from "constants/tracking";
-import { useGuestStore } from "store/GuestStore";
-import { useProfile, useToast } from "store/Store";
-import TrackAction from "utils/Track";
-import getProfiles from "utils/lens/getProfiles";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
-import handleUser from "utils/invites/handleUser";
+import { black, white } from "constants/Colors";
+import { AUTH, GUEST_MODE } from "constants/tracking";
 import { Scalars } from "customTypes/generated";
+import React from "react";
+import { Pressable, View } from "react-native";
+import { useGuestStore } from "store/GuestStore";
+import { useProfile, useToast } from "store/Store";
+import handleUser from "utils/invites/handleUser";
+import getProfiles from "utils/lens/getProfiles";
+import TrackAction from "utils/Track";
 
 type ConnectWalletSheetProps = {
 	loginRef: React.RefObject<BottomSheetMethods>;
@@ -53,7 +53,7 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 			if (walletData) {
 				setIsloading(true);
 				loginRef?.current?.close();
-				TrackAction(AUTH.WALLET_LOGIN);
+				void TrackAction(AUTH.WALLET_LOGIN);
 				handleGuest(false);
 				await HandleDefaultProfile(walletData.accounts[0]);
 				if (!userData) {
