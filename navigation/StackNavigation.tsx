@@ -1,4 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import type { RootStackParamList } from "customTypes/navigation";
+import React from "react";
 import CreateProfile from "screens/Auth/CreateProfile";
 import Login from "screens/Auth/Login";
 import LoginWithLens from "screens/Auth/LoginWithLens";
@@ -15,7 +17,6 @@ import InviteCode from "screens/common/InviteCode";
 import LinkingVideo from "screens/common/LinkingVideo";
 import Loader from "screens/common/Loader";
 import ReportPublication from "screens/common/ReportPublication";
-import UserVideos from "screens/common/UserVideos";
 import VideoPage from "screens/common/VideoPage";
 import VideoTypes from "screens/common/VideoTypes";
 import Search from "screens/Header/Search/Search";
@@ -27,9 +28,7 @@ import AddDetails from "screens/Header/Upload/Video/AddDetails";
 import UploadVideo from "screens/Header/Upload/Video/UploadVideo";
 import { useThemeStore } from "store/Store";
 import useVideoURLStore from "store/videoURL";
-import React from "react";
 import BottomTabNavigator from "./BottomTabNavigation";
-import { type RootStackParamList } from "customTypes/navigation";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
@@ -161,16 +160,6 @@ export default function StackNavigation() {
 					animation: "default",
 					headerShown: true,
 					headerTintColor: theme.PRIMARY.toString(),
-				}}
-			/>
-			<Stack.Screen
-				name="YourVideos"
-				component={UserVideos}
-				options={{
-					animation: "slide_from_right",
-					headerShown: true,
-					headerTintColor: theme.PRIMARY.toString(),
-					headerTitle: "Your videos",
 				}}
 			/>
 			<Stack.Screen

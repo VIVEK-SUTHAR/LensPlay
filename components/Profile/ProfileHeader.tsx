@@ -21,7 +21,7 @@ import {
 	type CreateUnfollowTypedDataMutationResult,
 	type MediaSet,
 	type Profile,
-	type Scalars,
+	type Scalars
 } from "customTypes/generated";
 import React, { useState } from "react";
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
@@ -91,13 +91,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 
 	const profile =Profile?.profile
 
-	const navigateToFullImageCover = React.useCallback(() => {
-		navigation.navigate("FullImage", {
-			url: getRawurl(profile?.coverPicture as MediaSet),
-			source: "cover",
-		});
-		TrackAction(PROFILE.FULL_IMAGE);
-	}, [profile]);
+	
 
 	const navigateToFullImageAvatar = React.useCallback(() => {
 		navigation.navigate("FullImage", {

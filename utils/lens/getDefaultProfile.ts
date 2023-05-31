@@ -1,24 +1,24 @@
-import getProfile from "apollo/Queries/getProfile";
 import { client } from "apollo/client";
+import getProfile from "apollo/Queries/getProfile";
 import { Profile, Scalars } from "customTypes/generated";
+import Logger from "utils/logger";
 
 const getDefaultProfile = async (
 	ethAddress: Scalars["EthereumAddress"]
 ): Promise<Profile | undefined> => {
 	try {
+		Logger.Log("get default me call aagay ab lens me jayega ");
 		const result = await client.query({
 			query: getProfile,
 			variables: {
 				ethAddress: ethAddress,
 			},
 		});
+		Logger.Log("lens ma se mila ye", result);
 
 		return result?.data?.defaultProfile;
 	} catch (error) {
-		// console.log("[Error]:Error in getting default profile");
-		// throw new Error("[Error]:Error in getting default profile", {
-		//   cause: error,
-		// });
+		Logger.Log("[Error in Get default profile]");
 	}
 };
 

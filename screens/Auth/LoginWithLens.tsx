@@ -1,22 +1,21 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import { LinearGradient } from "expo-linear-gradient";
-import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useRef, useState } from "react";
-import { Animated, Dimensions, Image, Linking, SafeAreaView, StyleSheet, View } from "react-native";
-
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import { LENSPLAY_SITE } from "constants/index";
 import { white } from "constants/Colors";
+import { LENSPLAY_SITE, LENS_CLAIM_SITE } from "constants/index";
 import { AUTH } from "constants/tracking";
-import { useAuthStore, useProfile, useToast } from "store/Store";
-import { RootStackScreenProps } from "customTypes/navigation";
-import { ToastType } from "customTypes/Store";
 import { useAuthenticateMutation, useChallengeLazyQuery } from "customTypes/generated";
+import type { RootStackScreenProps } from "customTypes/navigation";
+import { ToastType } from "customTypes/Store";
+import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useRef, useState } from "react";
+import { Animated, Dimensions, Image, Linking, SafeAreaView, StyleSheet, View } from "react-native";
+import { useAuthStore, useProfile, useToast } from "store/Store";
 import formatHandle from "utils/formatHandle";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
@@ -29,27 +28,28 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 	const [isloading, setIsloading] = useState<boolean>(false);
 	const [isDesktop, setIsDesktop] = useState<boolean>(false);
 
-	const { hasHandle } = useProfile();
 	const connector = useWalletConnect();
 	const toast = useToast();
-	const { currentProfile } = useProfile();
+
+	const { hasHandle, currentProfile } = useProfile();
 	const { setAccessToken, setRefreshToken } = useAuthStore();
+
+	const [getChallenge] = useChallengeLazyQuery();
+	const [getTokens] = useAuthenticateMutation();
 
 	const scaleAnimation = useRef(new Animated.Value(0)).current;
 	const fadeInAnimation = useRef(new Animated.Value(0)).current;
 
-	const [getChallenge, { data: challangeText, error: challangeError, loading: challengeLoading }] =
-		useChallengeLazyQuery();
-
-	const [getTokens, { data: tokens, error: tokensError, loading: tokenLoading }] =
-		useAuthenticateMutation();
-
 	const shortenAddress = (address: string): string => {
-		if (!address) return "0X...000";
+		if (!address) return "0x...000";
 		return "0x.." + address.slice(address.length - 4, address.length);
 	};
 
 	const handleLoginWithLens = async () => {
+		if (!hasHandle) {
+			void Linking.openURL(LENS_CLAIM_SITE);
+			return;
+		}
 		try {
 			setIsloading(true);
 			const address = connector.accounts[0];
@@ -91,10 +91,8 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 				);
 				if (hasHandle) {
 					navigation.reset({ index: 0, routes: [{ name: "Root" }] });
-				} else {
-					navigation.replace("CreateProfile");
 				}
-				TrackAction(AUTH.SIWL);
+				void TrackAction(AUTH.SIWL);
 			} else {
 				toast.show("Something went wrong", ToastType.ERROR, true);
 			}
@@ -177,7 +175,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 						title={
 							hasHandle
 								? "Hurry up, Your Lens frens are waiting!"
-								: "Oops! You don't have a test handle"
+								: "Oops! You don't have a lens profile"
 						}
 						style={{
 							color: "white",
@@ -223,9 +221,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 													fontSize: 12,
 												}}
 											/>
-										) : (
-											<></>
-										)}
+										) : null}
 									</View>
 								</View>
 								<Button
@@ -256,7 +252,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 							}}
 						>
 							<Button
-								title={hasHandle ? "Login with Lens" : "Claim test handle"}
+								title={hasHandle ? "Login with Lens" : "Claim your .lens handle"}
 								isLoading={isloading}
 								textStyle={{ fontSize: 16, fontWeight: "600" }}
 								bg={white[800]}
@@ -265,7 +261,8 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 								iconPosition="right"
 								onPress={async () => {
 									if (isDesktop) {
-										Linking.openURL("https://lens-create-profile.vercel.app/");
+										Logger.Log("LENS CLIAM VIA DESKTOP");
+										void Linking.openURL(LENS_CLAIM_SITE);
 									} else {
 										await handleLoginWithLens();
 									}
