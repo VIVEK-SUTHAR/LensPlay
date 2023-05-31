@@ -149,6 +149,7 @@ export default function StackNavigation() {
 				component={Search}
 				options={{
 					headerShown: true,
+					headerShadowVisible:false,
 					presentation: "card",
 					animation: "default",
 				}}
@@ -159,6 +160,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "default",
 					headerShown: true,
+					headerShadowVisible:false,
 					headerTintColor: theme.PRIMARY.toString(),
 				}}
 			/>
@@ -176,6 +178,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "default",
 					headerShown: true,
+					headerShadowVisible:false,
 					headerTintColor: theme.PRIMARY,
 				}}
 			/>
@@ -185,6 +188,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "slide_from_right",
 					headerShown: true,
+					headerShadowVisible:false,
 					headerTitle: "Edit Your Channel",
 					headerTintColor: theme.PRIMARY,
 					headerTitleStyle: {
@@ -199,6 +203,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "slide_from_right",
 					headerShown: true,
+					headerShadowVisible:false,
 					headerTintColor: theme.PRIMARY,
 					headerTitle: "Report Video",
 					headerTitleStyle: {
@@ -213,6 +218,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "default",
 					headerShown: true,
+					headerShadowVisible:false,
 					headerTintColor: theme.PRIMARY,
 					headerTitle: "Settings",
 					headerTitleStyle: {
@@ -227,6 +233,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "fade_from_bottom",
 					headerShown: true,
+					headerShadowVisible:false,
 					headerTitle: "Report a Bug",
 					headerTintColor: theme.PRIMARY,
 					headerTitleStyle: {
@@ -253,6 +260,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "slide_from_right",
 					headerShown: true,
+					headerShadowVisible:false,
 					headerTitleStyle: {
 						fontSize: 16,
 						fontWeight: "600",
@@ -275,6 +283,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "slide_from_right",
 					headerShown: true,
+					headerShadowVisible:false,
 					headerTitleStyle: {
 						fontSize: 16,
 						fontWeight: "600",
@@ -297,6 +306,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "slide_from_right",
 					headerShown: true,
+					headerShadowVisible:false,
 					headerTitleStyle: {
 						fontSize: 16,
 						fontWeight: "600",
@@ -311,6 +321,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "slide_from_right",
 					headerShown: true,
+					headerShadowVisible:false,
 					headerTitleStyle: {
 						fontSize: 16,
 						fontWeight: "600",
@@ -325,6 +336,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "slide_from_right",
 					headerShown: true,
+					headerShadowVisible:false,
 					headerTitleStyle: {
 						fontSize: 16,
 						fontWeight: "600",

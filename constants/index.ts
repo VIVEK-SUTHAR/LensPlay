@@ -51,7 +51,7 @@ export const LENSPLAY_TWITTER = "https://twitter.com/lensplayxyz";
 export const LENSPLAY_DISCORD = "https://discord.gg/tgrzS4Actz";
 export const LENSPLAY_SITE = "https://lensplay.xyz";
 export const LENSPLAY_PRIVACY =
-	"https://island-hat-05d.notion.site/LensPlay-Privacy-Policy-bc6f36fa5434481bb3b57bf79f1e552d";
+  "https://lensplay.notion.site/LensPlay-Privacy-Policy-22ec19b6e61344c6bd0254dd9ff2d05e";
 export const LENSPLAY_TERMS =
 	"https://lensplay.notion.site/LensPlay-T-C-9bfb64c235d9421fa397230c3594afe0";
 

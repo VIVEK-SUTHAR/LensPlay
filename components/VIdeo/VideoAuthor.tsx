@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
@@ -5,9 +6,10 @@ import StyledText from "components/UI/StyledText";
 import { LENSPLAY_SITE } from "constants/index";
 import { useProxyActionMutation } from "customTypes/generated";
 import React, { useCallback, useState } from "react";
+import { TouchableOpacity } from "react-native";
 import { StyleSheet, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
-import { useAuthStore, useToast } from "store/Store";
+import { useActivePublication, useAuthStore, useToast } from "store/Store";
 import Logger from "utils/logger";
 
 type VideoCreatorProps = {
@@ -42,6 +44,17 @@ const VideoCreator: React.FC<VideoCreatorProps> = React.memo((props) => {
 			Logger.Error("Failed to follow via videoauthor", error);
 		},
 	});
+	const navigation = useNavigation();
+	const { activePublication } = useActivePublication();
+	const goToChannel = React.useCallback(() => {
+		navigation.navigate("Channel", {
+			profileId: activePublication?.profile.id,
+			ethAddress: activePublication?.profile?.ownedBy,
+			handle: activePublication?.profile?.handle,
+			isFollowdByMe: activePublication?.profile?.isFollowedByMe,
+			name: activePublication?.profile?.name || activePublication?.profile?.handle,
+		});
+	}, []);
 
 	const followCreator = useCallback(() => {
 		if (isGuest) {
@@ -85,7 +98,9 @@ const VideoCreator: React.FC<VideoCreatorProps> = React.memo((props) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.contentContainer}>
-				<Avatar src={avatarLink} width={40} height={40} />
+				<TouchableOpacity onPress={goToChannel} activeOpacity={0.5} >
+					<Avatar src={avatarLink} width={40} height={40} />
+				</TouchableOpacity>
 				<View style={styles.textContainer}>
 					<Heading title={uploadedBy} style={styles.heading} />
 					<StyledText

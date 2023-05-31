@@ -50,7 +50,6 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 			label: "Terms and Conditions",
 			onPress: () => {
 				Linking.openURL(LENSPLAY_TERMS);
-				// navigation.navigate("Invite");
 			},
 		},
 		{

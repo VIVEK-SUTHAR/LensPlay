@@ -41,8 +41,9 @@ function ProfileCard({
         style={{
           flexDirection: "row",
           alignItems: "center",
-          padding: 8,
-          height: 70,
+          paddingHorizontal: 8,
+          paddingVertical:14,
+          // height: 70,
         }}
       >
         <Avatar src={profileIcon} height={40} width={40} />
