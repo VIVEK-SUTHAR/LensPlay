@@ -12,7 +12,7 @@ import Animated, {
 	useSharedValue,
 	withDelay,
 	withSpring,
-	withTiming
+	withTiming,
 } from "react-native-reanimated";
 import { useAuthStore, useProfile } from "store/Store";
 import getDateDifference from "utils/generateDateDifference";

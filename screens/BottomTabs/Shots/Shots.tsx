@@ -93,6 +93,7 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
 			},
 		}).catch((err) => {});
 	};
+
 	const BottomTabHeight = useBottomTabBarHeight();
 
 	const ITEM_HEIGHT = height - BottomTabHeight;
@@ -113,7 +114,8 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
 				data={data}
 				renderItem={renderItem}
 				initialNumToRender={3}
-				maxToRenderPerBatch={5}
+				maxToRenderPerBatch={3}
+				windowSize={2}
 				onEndReachedThreshold={1}
 				onEndReached={onEndCallBack}
 				getItemLayout={getItemLayout}

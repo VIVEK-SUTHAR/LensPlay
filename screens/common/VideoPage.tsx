@@ -13,7 +13,7 @@ import {
 	ReportButton,
 	ShareButton,
 	VideoCreator,
-	VideoMeta
+	VideoMeta,
 } from "components/VIdeo";
 import DisLikeButton from "components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "components/VIdeo/Actions/MirrorButton";
@@ -36,7 +36,7 @@ import {
 	useAuthStore,
 	useProfile,
 	useReactionStore,
-	useToast
+	useToast,
 } from "store/Store";
 import useVideoURLStore from "store/videoURL";
 import extractURLs from "utils/extractURL";
@@ -262,7 +262,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							width: inFullscreen
 								? Dimensions.get("screen").height
 								: Dimensions.get("screen").width,
-							height: inFullscreen ? Dimensions.get("screen").width * 0.95 : 280,
+							height: inFullscreen ? Dimensions.get("screen").width : 250,
 						}}
 					/>
 				)}

@@ -1,15 +1,13 @@
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import React from "react";
 import {
 	Dimensions,
 	SafeAreaView,
 	StatusBar,
 	StyleSheet,
-	Text,
 	View,
 	useWindowDimensions,
 } from "react-native";
-import React from "react";
-import Heading from "components/UI/Heading";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 type Props = {};
 
@@ -19,16 +17,6 @@ const ShotSkeleton = (props: Props) => {
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "#111111", justifyContent: "space-between" }}>
 			<StatusBar backgroundColor={"#111111"} barStyle={"light-content"} />
-			<Heading
-				title={"Shots"}
-				style={{
-					fontSize: 32,
-					color: "#fff",
-					fontWeight: "600",
-					marginTop: "10%",
-					marginLeft: 8,
-				}}
-			/>
 			<View
 				style={{
 					width: width,
@@ -64,7 +52,11 @@ const ShotSkeleton = (props: Props) => {
 						}}
 					/>
 					<View
-						style={{ flexDirection: "row", alignItems: "center", marginBottom: bottomTabBarHeight-8 }}
+						style={{
+							flexDirection: "row",
+							alignItems: "center",
+							marginBottom: bottomTabBarHeight - 8,
+						}}
 					>
 						<View
 							style={{
@@ -77,11 +69,24 @@ const ShotSkeleton = (props: Props) => {
 						<View
 							style={{
 								marginLeft: 8,
-								height: 12,
-								width: width * 0.4,
-								backgroundColor: "#1d1d1d",
 							}}
-						/>
+						>
+							<View
+								style={{
+									height: 10,
+									width: width * 0.3,
+									backgroundColor: "#1d1d1d",
+								}}
+							/>
+							<View
+								style={{
+									marginTop: 4,
+									height: 10,
+									width: width * 0.2,
+									backgroundColor: "#1d1d1d",
+								}}
+							/>
+						</View>
 					</View>
 				</View>
 			</View>
