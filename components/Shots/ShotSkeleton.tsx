@@ -20,7 +20,7 @@ const ShotSkeleton = (props: Props) => {
 			<View
 				style={{
 					width: width,
-					height: height - bottomTabBarHeight,
+					height: height,
 					position: "relative",
 					justifyContent: "center",
 					alignItems: "center",
@@ -55,7 +55,7 @@ const ShotSkeleton = (props: Props) => {
 						style={{
 							flexDirection: "row",
 							alignItems: "center",
-							marginBottom: bottomTabBarHeight - 8,
+							marginBottom: 16,
 						}}
 					>
 						<View

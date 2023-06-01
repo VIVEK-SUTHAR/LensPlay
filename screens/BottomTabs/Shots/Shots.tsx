@@ -96,7 +96,7 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
 
 	const BottomTabHeight = useBottomTabBarHeight();
 
-	const ITEM_HEIGHT = height - BottomTabHeight;
+	const ITEM_HEIGHT = height;
 	const getItemLayout = (_: any, index: number) => {
 		return {
 			length: ITEM_HEIGHT,

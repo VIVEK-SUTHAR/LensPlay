@@ -6,7 +6,7 @@ import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
 import VideoPlayer from "expo-video-player";
 import React, { MutableRefObject, useRef } from "react";
-import { Dimensions, View } from "react-native";
+import { Dimensions, Platform, View } from "react-native";
 import { useThemeStore } from "store/Store";
 import getIPFSLink from "utils/getIPFSLink";
 
@@ -36,11 +36,13 @@ function Player({
 	const videoRef = useRef<Video>();
 	const { PRIMARY } = useThemeStore();
 
+	const isAndroid = Platform.OS === "android";
+
 	return (
 		<VideoPlayer
 			style={{
 				width: inFullscreen ? Dimensions.get("screen").height : Dimensions.get("screen").width,
-				height: inFullscreen ? Dimensions.get("screen").width : 250,
+				height: inFullscreen ? Dimensions.get("screen").width*0.96 : 250,
 				videoBackgroundColor: "transparent",
 				controlsBackgroundColor: "transparent",
 			}}
@@ -114,7 +116,7 @@ function Player({
 				exitFullscreen: async () => {
 					setStatusBarHidden(false, "fade");
 					setInFullscreen ? setInFullscreen(!inFullscreen) : null;
-					await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+					await ScreenOrientation.lockAsync(isAndroid?(ScreenOrientation.OrientationLock.PORTRAIT):(ScreenOrientation.OrientationLock.PORTRAIT_UP));
 				},
 			}}
 			mute={{
