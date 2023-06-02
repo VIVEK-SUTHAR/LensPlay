@@ -1,9 +1,11 @@
 import { useLazyQuery } from "@apollo/client";
+import { FlashList } from "@shopify/flash-list";
 import Icon from "components/Icon";
 import ProfileCard from "components/ProfileCard";
 import Recommended from "components/Search/Recommended";
 import { SEARCH } from "constants/tracking";
 import {
+	Profile,
 	SearchProfilesDocument,
 	SearchPublicationsDocument,
 	SearchRequestTypes
@@ -14,7 +16,6 @@ import useDebounce from "hooks/useDebounce";
 import React, { useEffect, useState } from "react";
 import {
 	Dimensions,
-	FlatList,
 	Platform,
 	Pressable,
 	SafeAreaView,
@@ -24,6 +25,7 @@ import {
 } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useThemeStore } from "store/Store";
+import getRawurl from "utils/getRawUrl";
 import TrackAction from "utils/Track";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
@@ -63,7 +65,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 						setIsfound(false);
 					}
 				} else {
-					searchChannels({
+					await searchChannels({
 						variables: {
 							request: {
 								type: searchType,
@@ -151,28 +153,26 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="transparent" style="auto" />
 			{!isSearching ? <Recommended /> : null}
-			<FlatList
-				style={{
-					backgroundColor: "black",
-					height: "100%",
-				}}
-				removeClippedSubviews={true}
-				getItemLayout={getItemLayout}
-				initialNumToRender={12}
-				// ListEmptyComponent={!isfound ? <Recommended /> : null}
-				data={searchType === SearchRequestTypes.Profile ? result?.search?.items : null}
-				keyExtractor={(_, index) => index.toString()}
-				renderItem={({ item }) => (
-					<ProfileCard
-						profileIcon={item?.picture?.original?.url}
-						profileName={item?.name || item?.id}
-						profileId={item?.id}
-						isFollowed={item?.isFollowedByMe || false}
-						handle={item?.handle}
-						owner={item?.ownedBy}
-					/>
-				)}
-			/>
+			{isSearching ? (
+				<FlashList
+					removeClippedSubviews={true}
+					// ListEmptyComponent={!isfound ? <Recommended /> : null}
+					data={searchType === SearchRequestTypes.Profile ? result?.search?.items : null}
+					keyExtractor={(_, index) => index.toString()}
+					estimatedItemSize={100}
+					renderItem={({ item }: { item: Profile }) => (
+						<ProfileCard
+							profileIcon={getRawurl(item?.picture)}
+							profileName={item?.name || item?.id}
+							profileId={item?.id}
+							isFollowed={item?.isFollowedByMe || false}
+							handle={item?.handle}
+							owner={item?.ownedBy}
+						/>
+					)}
+				/>
+			) : null}
+
 			{/* <Tabs>
         <Tab.Screen
           name="Profile"
