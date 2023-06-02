@@ -40,9 +40,5 @@ const VERIFIED_CHANNELS = [
 	"0x03", // aavegrants.lens
 	"0x01", // lensprotocol
 	"0x2d", // sasicodes.lens,
-	"0x5c5c",
-	"0x5c5b",
-	"0x5c59",
-	"0x5cf0",
 ];
 export default VERIFIED_CHANNELS;
