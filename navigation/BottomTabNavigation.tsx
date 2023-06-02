@@ -106,11 +106,11 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 				setAccessToken(accessToken);
 				setRefreshToken(refreshToken);
 				if (tokens.viaDesktop) {
-					await storeTokens(newTokens?.refresh.accessToken, newTokens?.refresh.refreshToken, true);
+					await storeTokens(accessToken, refreshToken, true);
 					return;
 				}
 				if (!tokens.viaDesktop) {
-					storeTokens(newTokens?.refresh.accessToken, newTokens?.refresh.refreshToken);
+					storeTokens(accessToken, refreshToken);
 					return;
 				}
 			}
