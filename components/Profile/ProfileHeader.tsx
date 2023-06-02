@@ -137,15 +137,16 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 						break;
 					default:
 						setAvatarColors("black");
-				}
-			})
-			.catch((error) => {
-				Logger.Error("Failed to load avatar Image for gettinng image color", error);
+					}
+				})
+				.catch((error) => {
+					Logger.Error("Failed to load avatar Image for gettinng image color", error);
+					setAvatarColors("black")
 			});
 		return () => {
 			setAvatarColors(null);
 		};
-	}, [profile]);
+	}, [profile]);	
 
 	const isChannel = profileId ? true : false;
 

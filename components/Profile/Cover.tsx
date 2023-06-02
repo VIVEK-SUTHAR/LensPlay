@@ -43,6 +43,7 @@ const Cover = ({ url, navigation }: CoverProps) => {
 			})
 			.catch((error) => {
 				Logger.Error("Failed to fetch image for geting dominient color", error);
+				setCoverColors("black");
 			});
 
 		return () => {

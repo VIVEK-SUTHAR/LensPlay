@@ -62,7 +62,7 @@ const FullImage = ({ navigation, route }: RootStackScreenProps<"FullImage">) => 
 			style={[
 				styles.container,
 				{
-					backgroundColor: isAvatar ? (avatar as string) : (cover as string) || "black",
+					backgroundColor: isAvatar ? (avatar as string) || "black" : (cover as string) || "black",
 				},
 			]}
 		>
