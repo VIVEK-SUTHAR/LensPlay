@@ -107,6 +107,7 @@ export type RootStackParamList = {
 	ProfileScanner: undefined;
 	Invite: undefined;
 	InviteCode: undefined;
+	WatchLater: undefined;
 };
 
 /**
