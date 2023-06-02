@@ -2,14 +2,8 @@ import { useLazyQuery } from "@apollo/client";
 import { FlashList } from "@shopify/flash-list";
 import Icon from "components/Icon";
 import ProfileCard from "components/ProfileCard";
-import Recommended from "components/Search/Recommended";
 import { SEARCH } from "constants/tracking";
-import {
-	Profile,
-	SearchProfilesDocument,
-	SearchPublicationsDocument,
-	SearchRequestTypes
-} from "customTypes/generated";
+import { Profile, SearchProfilesDocument, SearchRequestTypes } from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import useDebounce from "hooks/useDebounce";
@@ -21,7 +15,7 @@ import {
 	SafeAreaView,
 	StyleSheet,
 	TextInput,
-	View
+	View,
 } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useThemeStore } from "store/Store";
@@ -32,73 +26,39 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 	const { DARK_PRIMARY } = useThemeStore();
 	const authStore = useAuthStore();
 	const [keyword, setKeyword] = useState<string>("");
-	const [isSearching, setIsSearching] = useState<boolean>(false);
-	const [isfound, setIsfound] = useState<boolean>(true);
-	const [searchType, setSearchType] = useState<SearchRequestTypes>(SearchRequestTypes.Profile);
-
 	const inputRef = React.useRef<TextInput>(null);
 	const debouncedValue = useDebounce<string>(keyword, 500);
 	const { isGuest } = useGuestStore();
 
-	const [searchChannels, { data: result, error, loading }] = useLazyQuery(
-		searchType === SearchRequestTypes.Profile ? SearchProfilesDocument : SearchPublicationsDocument
-	);
+	const [searchChannels, { data: result, error, loading }] = useLazyQuery(SearchProfilesDocument);
 
 	const onDebounce = async () => {
 		if (keyword.trim().length > 0) {
 			try {
-				setIsSearching(true);
-				if (isGuest) {
-					searchChannels({
-						variables: {
-							request: {
-								type: searchType,
-								query: keyword,
-								limit: 30,
-								sources: ["lenstube"],
-							},
+				await searchChannels({
+					variables: {
+						request: {
+							type: SearchRequestTypes.Profile,
+							query: keyword,
+							limit: 30,
+							sources: ["lenstube"],
 						},
-					});
-					if (result?.search?.items?.length > 0) {
-						setIsfound(true);
-					} else {
-						setIsfound(false);
-					}
-				} else {
-					await searchChannels({
-						variables: {
-							request: {
-								type: searchType,
-								query: keyword,
-								limit: 30,
-								sources: ["lenstube"],
-							},
+					},
+					context: {
+						headers: {
+							"x-access-token": `${!isGuest ? `Bearer ${authStore.accessToken}` : ""}`,
 						},
-						context: {
-							headers: {
-								"x-access-token": `Bearer ${authStore.accessToken}`,
-							},
-						},
-					});
-					if (result?.items?.length > 0) {
-						setIsfound(true);
-					} else {
-						setIsfound(false);
-					}
-				}
+					},
+				});
 			} catch (error) {
-				if (error instanceof Error) {
-					setIsSearching(false);
-				}
 			} finally {
-				// setIsSearching(false);
 			}
 		}
 	};
 
 	useEffect(() => {
 		onDebounce();
-	}, [debouncedValue, searchType]);
+	}, [debouncedValue]);
 
 	React.useLayoutEffect(() => {
 		TrackAction(SEARCH.SEARCH_VIDEOS_TAB);
@@ -152,71 +112,23 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="transparent" style="auto" />
-			{!isSearching ? <Recommended /> : null}
-			{isSearching ? (
-				<FlashList
-					removeClippedSubviews={true}
-					// ListEmptyComponent={!isfound ? <Recommended /> : null}
-					data={searchType === SearchRequestTypes.Profile ? result?.search?.items : null}
-					keyExtractor={(_, index) => index.toString()}
-					estimatedItemSize={100}
-					renderItem={({ item }: { item: Profile }) => (
-						<ProfileCard
-							profileIcon={getRawurl(item?.picture)}
-							profileName={item?.name || item?.id}
-							profileId={item?.id}
-							isFollowed={item?.isFollowedByMe || false}
-							handle={item?.handle}
-							owner={item?.ownedBy}
-						/>
-					)}
-				/>
-			) : null}
-
-			{/* <Tabs>
-        <Tab.Screen
-          name="Profile"
-          listeners={{
-            focus: () => {
-              setSearchType(SearchRequestTypes.Profile);
-            },
-          }}
-          children={() => (
-             */}
-			{/* <Tab.Screen
-          name="Videos"
-          listeners={{
-            focus: () => {
-              setSearchType(SearchRequestTypes.Publication);
-            },
-          }}
-          children={() => (
-            <FlatList
-              style={{
-                backgroundColor: "black",
-                height: "100%",
-              }}
-              ListEmptyComponent={<NotFound message="Result not found" />}
-              data={
-                searchType === SearchRequestTypes.Publication
-                  ? result?.search?.items
-                  : null
-              }
-              keyExtractor={(_, index) => index.toString()}
-              renderItem={({ item, index }) => (
-                <View
-                  style={{
-                    backgroundColor: "black",
-                    paddingVertical: 8,
-                  }}
-                >
-                  <VideoCard publication={item} id={index.toString()} />
-                </View>
-              )}
-            />
-          )}
-        /> */}
-			{/* </Tabs> */}
+			<FlashList
+				removeClippedSubviews={true}
+				// ListEmptyComponent={!isfound ? <Recommended /> : null}
+				data={result?.search?.items}
+				keyExtractor={(_, index) => index.toString()}
+				estimatedItemSize={100}
+				renderItem={({ item }: { item: Profile }) => (
+					<ProfileCard
+						profileIcon={getRawurl(item?.picture)}
+						profileName={item?.name || item?.id}
+						profileId={item?.id}
+						isFollowed={item?.isFollowedByMe || false}
+						handle={item?.handle}
+						owner={item?.ownedBy}
+					/>
+				)}
+			/>
 		</SafeAreaView>
 	);
 };

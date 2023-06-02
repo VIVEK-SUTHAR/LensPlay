@@ -96,7 +96,8 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
 
 	const BottomTabHeight = useBottomTabBarHeight();
 
-	const ITEM_HEIGHT = height;
+	const ITEM_HEIGHT = isAndroid ? height : height - BottomTabHeight;
+
 	const getItemLayout = (_: any, index: number) => {
 		return {
 			length: ITEM_HEIGHT,
@@ -104,7 +105,9 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
 			index,
 		};
 	};
+
 	if (loading) return <ShotSkeleton />;
+
 	return (
 		<View style={styles.container}>
 			<SwiperFlatList
