@@ -3,7 +3,6 @@ import { useNavigation } from "@react-navigation/native";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import ErrorMesasge from "components/common/ErrorMesasge";
 import SocialLinks from "components/common/SocialLinks";
-import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
@@ -12,7 +11,6 @@ import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
 import { LENSPLAY_SITE } from "constants/index";
 import { PROFILE } from "constants/tracking";
-import VERIFIED_CHANNELS from "constants/Varified";
 import {
 	useBroadcastMutation,
 	useCreateUnfollowTypedDataMutation,
@@ -42,6 +40,7 @@ import TrackAction from "utils/Track";
 import Cover from "./Cover";
 import PinnedPublication, { UnPinSheet } from "./PinnedPublication";
 import UserStats from "./UserStats";
+import VerifiedBadge from "./VerifiedBadge";
 
 type ProfileHeaderProps = {
 	profileId?: Scalars["ProfileId"];
@@ -137,16 +136,16 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 						break;
 					default:
 						setAvatarColors("black");
-					}
-				})
-				.catch((error) => {
-					Logger.Error("Failed to load avatar Image for gettinng image color", error);
-					setAvatarColors("black")
+				}
+			})
+			.catch((error) => {
+				Logger.Error("Failed to load avatar Image for gettinng image color", error);
+				setAvatarColors("black");
 			});
 		return () => {
 			setAvatarColors(null);
 		};
-	}, [profile]);	
+	}, [profile]);
 
 	const isChannel = profileId ? true : false;
 
@@ -216,11 +215,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 											color: "white",
 										}}
 									/>
-									{VERIFIED_CHANNELS.includes(profile?.id) && (
-										<View style={styles.verifiedContainer}>
-											<Icon name="verified" size={18} color={theme.PRIMARY} />
-										</View>
-									)}
+									<VerifiedBadge profileId={profile?.id} />
 								</View>
 								<StyledText
 									title={formatHandle(profile?.handle)}
