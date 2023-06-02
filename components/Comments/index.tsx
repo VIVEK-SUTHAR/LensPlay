@@ -137,7 +137,7 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 	if (commentData) {
 		const allComments = commentData?.publications?.items as IComment[];
 		return (
-			<View style={{flex:1, width: Dimensions.get("screen").width }}>
+			<View style={{flex:1 }}>
 				<FlashList
 					data={allComments as IComment[]}
 					keyExtractor={keyExtractor}

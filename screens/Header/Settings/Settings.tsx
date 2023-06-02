@@ -223,6 +223,8 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 						onPress={async () => {
 							const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
 							await AsyncStorage.removeItem("@user_tokens");
+							await AsyncStorage.removeItem("@user_data");
+							await AsyncStorage.removeItem("@invite_data");
 							if (isDeskTopLogin) {
 								await AsyncStorage.removeItem("@viaDeskTop");
 								clearInvites();

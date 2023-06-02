@@ -15,30 +15,32 @@ export default async function handleUser(profileId: string) {
 		});
 		const isUser = await isUserRes.json();
 
-		//hasInvitecodes or not
+		// //hasInvitecodes or not
 
-		const hasInviteRes = await fetch("https://lensplay-api.vercel.app/api/invites/checkInvite", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				profileId: profileId,
-			}),
-		});
-		const hasInvite = await hasInviteRes.json();
+		// const hasInviteRes = await fetch("https://lensplay-api.vercel.app/api/invites/checkInvite", {
+		// 	method: "POST",
+		// 	headers: {
+		// 		"Content-Type": "application/json",
+		// 	},
+		// 	body: JSON.stringify({
+		// 		profileId: profileId,
+		// 	}),
+		// });
+		// const hasInvite = await hasInviteRes.json();
 
-		if (isUserRes.status === 200 && hasInviteRes.status === 200) {
+		
+		
+
+		if ( isUserRes.status === 200 ) {
 			await AsyncStorage.setItem(
 				"@user_data",
 				JSON.stringify({
 					createdAt: isUser?.message?.created_at,
-					hasInviteCodes: hasInvite.found,
 				})
 			);
 			return true;
 		}
-		if (!isUser?.message?.id) {
+		else {
 			return false;
 		}
 	} catch (error) {

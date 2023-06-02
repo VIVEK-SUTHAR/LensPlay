@@ -14,6 +14,7 @@ import { useGuestStore } from "store/GuestStore";
 import { useProfile, useToast } from "store/Store";
 import handleUser from "utils/invites/handleUser";
 import getProfiles from "utils/lens/getProfiles";
+import Logger from "utils/logger";
 import TrackAction from "utils/Track";
 
 type ConnectWalletSheetProps = {
@@ -29,6 +30,8 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 	const { setCurrentProfile, setHasHandle, currentProfile } = useProfile();
 
 	async function HandleDefaultProfile(adress: Scalars["EthereumAddress"]) {
+		const userData = await AsyncStorage.getItem("@user_data");
+		
 		const userDefaultProfile = await getProfiles({
 			ownedBy: adress,
 		});
@@ -36,6 +39,13 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 		if (userDefaultProfile) {
 			setHasHandle(true);
 			setCurrentProfile(userDefaultProfile);
+			if (!userData) {
+				const isUser = await handleUser(userDefaultProfile?.id);
+				if (!isUser) {
+					navigation.navigate("InviteCode");
+					return;
+				}
+			}
 		} else {
 			setHasHandle(false);
 			setCurrentProfile(undefined);
@@ -43,7 +53,6 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 	}
 
 	const handleConnectWallet = React.useCallback(async () => {
-		const userData = await AsyncStorage.getItem("@user_data");
 
 		const walletData = await connector.connect({
 			chainId: 80001,
@@ -56,12 +65,9 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 				void TrackAction(AUTH.WALLET_LOGIN);
 				handleGuest(false);
 				await HandleDefaultProfile(walletData.accounts[0]);
-				if (!userData) {
-					const isUser = await handleUser(currentProfile?.id);
-					if (!isUser) {
-						navigation.navigate("InviteCode");
-						return;
-					}
+				const userData = await AsyncStorage.getItem("@user_data");
+				if (!userData){
+					return
 				}
 				const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
 				if (isDeskTopLogin) {

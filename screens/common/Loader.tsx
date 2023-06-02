@@ -49,35 +49,63 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 		} else {
 			setHasHandle(false);
 		}
+		return userDefaultProfile?.id;
 	}
 
-	async function handleInviteCode(created_at: string) {
+	async function checkInvite(profileId: string) {
+		try {
+			const apiResponse = await fetch("https://lensplay-api.vercel.app/api/invites/checkInvite", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					profileId: profileId,
+				}),
+			});
+			
+			const jsonRes = await apiResponse.json();
+			
+			if (jsonRes?.found) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (error) {
+			console.log(error);
+		}		
+	}
+
+	async function handleInviteCode(created_at: string, profileId: string) {
+		//get the invite data from async storage
+		const inviteData = await AsyncStorage.getItem("@invite_data");
 		const dateDiff = getDateDifference(created_at);
+		Logger.Count('yeh hai diference', dateDiff);
+		console.log(inviteData);
+
+		//check if it's been five days since the user creation
 		if (dateDiff > 5) {
-			try {
-				const apiResponse = await fetch("https://lensplay-api.vercel.app/api/invites/checkInvite", {
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						profileId: currentProfile?.id,
-					}),
-				});
-				const jsonRes = await apiResponse.json();
-				if (jsonRes?.found) {
+			Logger.Warn('difference hai isliye kaam chaalu');
+			if (!inviteData) {
+				const hasInviteCodes = await checkInvite(profileId);
+				if (hasInviteCodes) {
 					await AsyncStorage.setItem(
-						"@user_data",
+					"@invite_data",
+					JSON.stringify({
+						hasInviteCodes: true,
+					})
+				);
+				}
+				else {
+					await createInviteCode(profileId);
+					await AsyncStorage.setItem(
+						"@invite_data",
 						JSON.stringify({
-							createdAt: created_at,
 							hasInviteCodes: true,
 						})
 					);
-				} else {
-					await createInviteCode(currentProfile?.id);
+					
 				}
-			} catch (error) {
-				console.log(error);
 			}
 		}
 	}
@@ -89,6 +117,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 			const userTokens = await AsyncStorage.getItem("@user_tokens");
 			const userData = await AsyncStorage.getItem("@user_data");
 			const address = await AsyncStorage.getItem("@userAddress");
+			let profileId;
 
 			if (!userTokens && !address) {
 				Logger.Error("No Data and no address found,Goin to Login");
@@ -98,18 +127,18 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 
 			if (address) {
 				Logger.Success("Got address");
-				await HandleDefaultProfile(address);
+				profileId = await HandleDefaultProfile(address);
 			} else {
 				Logger.Success("Got address via wallet");
-				await HandleDefaultProfile(accounts[0]);
+				profileId = await HandleDefaultProfile(accounts[0]);
 			}
 
 			if (!userData) {
 				Logger.Error("user data nai hai");
-				const isUser = await handleUser(currentProfile?.id);
+				const isUser = await handleUser(profileId);
 				if (!isUser) {
 					Logger.Log("user data hai lekin invited nai hai");
-					navigation.replace("InviteCode");
+					navigation.replace("Login");
 					return;
 				}
 			}
@@ -120,8 +149,9 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 				Logger.Success("Got Tokens and Data ");
 				const accessToken = JSON.parse(userTokens).accessToken;
 				const refreshToken = JSON.parse(userTokens).refreshToken;
+				
 				const created_at = JSON.parse(userData).createdAt;
-				const hasInviteCodes = JSON.parse(userData).hasInviteCodes;
+				
 				if (!accessToken || !refreshToken) {
 					Logger.Error("No access and refresh,goin to Login");
 					navigation.replace("Login");
@@ -139,9 +169,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 					Logger.Success("Access token is valid,going to feed");
 					setAccessToken(accessToken);
 					setRefreshToken(refreshToken);
-					if (!hasInviteCodes) {
-						await handleInviteCode(created_at);
-					}
+					await handleInviteCode(created_at, profileId);
 					navigation.replace("Root");
 				} else {
 					Logger.Error("Invalid Tokens,Gnerating new tokens");
@@ -152,9 +180,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 							},
 						},
 					});
-					if (!hasInviteCodes) {
-						await handleInviteCode(created_at);
-					}
+					await handleInviteCode(created_at, profileId);
 					Logger.Error("Generated new tokens");
 					setAccessToken(newData?.data?.refresh?.accessToken);
 					setRefreshToken(newData?.data?.refresh?.refreshToken);
