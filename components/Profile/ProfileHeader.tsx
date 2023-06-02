@@ -3,10 +3,12 @@ import { useNavigation } from "@react-navigation/native";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import ErrorMesasge from "components/common/ErrorMesasge";
 import SocialLinks from "components/common/SocialLinks";
+import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import ProfileSkeleton from "components/UI/ProfileSkeleton";
+import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
 import { LENSPLAY_SITE } from "constants/index";
@@ -19,7 +21,7 @@ import {
 	type CreateUnfollowTypedDataMutationResult,
 	type MediaSet,
 	type Profile,
-	type Scalars
+	type Scalars,
 } from "customTypes/generated";
 import React, { useState } from "react";
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
@@ -95,7 +97,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 			url: getIPFSLink(getRawurl(profile?.picture as MediaSet)),
 			source: "avatar",
 		});
-		TrackAction(PROFILE.FULL_IMAGE);
+		void TrackAction(PROFILE.FULL_IMAGE);
 	}, [profile]);
 
 	const navigateToUserStats = React.useCallback(() => {
@@ -146,6 +148,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 			setAvatarColors(null);
 		};
 	}, [profile]);
+
+	const goToWatchLaters = () => {
+		navigation.navigate("WatchLater");
+	};
 
 	const isChannel = profileId ? true : false;
 
@@ -287,6 +293,30 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 						</View>
 						<SocialLinks profile={profile as Profile} />
 						<PinnedPublication sheetRef={sheetRef as any} profile={profile as Profile} />
+						{!isChannel ? (
+							<Ripple
+								style={{
+									flexDirection: "row",
+									justifyContent: "flex-start",
+									alignItems: "center",
+									paddingVertical: 12,
+									marginVertical: 8,
+								}}
+								onTap={goToWatchLaters}
+							>
+								<Icon name="images" />
+								<Heading
+									title="Your Watch later's"
+									style={{
+										color: "white",
+										marginHorizontal: 8,
+										fontSize: 18,
+										fontWeight: "500",
+									}}
+								/>
+							</Ripple>
+						) : null}
+
 						<UserStats profile={profile as Profile} />
 					</View>
 				</ScrollView>

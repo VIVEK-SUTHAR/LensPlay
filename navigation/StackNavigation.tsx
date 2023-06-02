@@ -8,6 +8,7 @@ import QRLogin from "screens/Auth/QRLogin";
 import Scanner from "screens/Auth/Scanner";
 import EditProfile from "screens/BottomTabs/Profile/EditProfile";
 import UserStats from "screens/BottomTabs/Profile/UserStats";
+import WatchLater from "screens/BottomTabs/Profile/WatchLater";
 import ShotsComment from "screens/BottomTabs/Shots/ShotsComment";
 import AddDescription from "screens/common/AddDescription";
 import Channel from "screens/common/Channel";
@@ -149,7 +150,7 @@ export default function StackNavigation() {
 				component={Search}
 				options={{
 					headerShown: true,
-					headerShadowVisible:false,
+					headerShadowVisible: false,
 					presentation: "card",
 					animation: "default",
 				}}
@@ -160,7 +161,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "default",
 					headerShown: true,
-					headerShadowVisible:false,
+					headerShadowVisible: false,
 					headerTintColor: theme.PRIMARY.toString(),
 				}}
 			/>
@@ -178,7 +179,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "default",
 					headerShown: true,
-					headerShadowVisible:false,
+					headerShadowVisible: false,
 					headerTintColor: theme.PRIMARY,
 				}}
 			/>
@@ -188,7 +189,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "slide_from_right",
 					headerShown: true,
-					headerShadowVisible:false,
+					headerShadowVisible: false,
 					headerTitle: "Edit Your Channel",
 					headerTintColor: theme.PRIMARY,
 					headerTitleStyle: {
@@ -203,7 +204,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "slide_from_right",
 					headerShown: true,
-					headerShadowVisible:false,
+					headerShadowVisible: false,
 					headerTintColor: theme.PRIMARY,
 					headerTitle: "Report Video",
 					headerTitleStyle: {
@@ -218,7 +219,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "default",
 					headerShown: true,
-					headerShadowVisible:false,
+					headerShadowVisible: false,
 					headerTintColor: theme.PRIMARY,
 					headerTitle: "Settings",
 					headerTitleStyle: {
@@ -233,7 +234,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "fade_from_bottom",
 					headerShown: true,
-					headerShadowVisible:false,
+					headerShadowVisible: false,
 					headerTitle: "Report a Bug",
 					headerTintColor: theme.PRIMARY,
 					headerTitleStyle: {
@@ -260,7 +261,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "slide_from_right",
 					headerShown: true,
-					headerShadowVisible:false,
+					headerShadowVisible: false,
 					headerTitleStyle: {
 						fontSize: 16,
 						fontWeight: "600",
@@ -283,7 +284,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "slide_from_right",
 					headerShown: true,
-					headerShadowVisible:false,
+					headerShadowVisible: false,
 					headerTitleStyle: {
 						fontSize: 16,
 						fontWeight: "600",
@@ -306,7 +307,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "slide_from_right",
 					headerShown: true,
-					headerShadowVisible:false,
+					headerShadowVisible: false,
 					headerTitleStyle: {
 						fontSize: 16,
 						fontWeight: "600",
@@ -321,7 +322,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "slide_from_right",
 					headerShown: true,
-					headerShadowVisible:false,
+					headerShadowVisible: false,
 					headerTitleStyle: {
 						fontSize: 16,
 						fontWeight: "600",
@@ -336,7 +337,7 @@ export default function StackNavigation() {
 				options={{
 					animation: "slide_from_right",
 					headerShown: true,
-					headerShadowVisible:false,
+					headerShadowVisible: false,
 					headerTitleStyle: {
 						fontSize: 16,
 						fontWeight: "600",
@@ -350,6 +351,20 @@ export default function StackNavigation() {
 				component={ProfileScanner}
 				options={{
 					animation: "slide_from_right",
+					headerShown: false,
+					headerTitleStyle: {
+						fontSize: 16,
+						fontWeight: "600",
+					},
+					headerTintColor: "white",
+					headerTitle: "",
+				}}
+			/>
+			<Stack.Screen
+				name="WatchLater"
+				component={WatchLater}
+				options={{
+					animation: "default",
 					headerShown: false,
 					headerTitleStyle: {
 						fontSize: 16,
