@@ -65,7 +65,10 @@ const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publ
 							uri: coverImage,
 						}}
 						onError={(e) => {
-							Logger.Error(`Failed to Load Video Cover of ${publication?.profile?.handle}`,e.error);
+							Logger.Error(
+								`Failed to Load Video Cover of ${publication?.profile?.handle}`,
+								e.error
+							);
 						}}
 						style={styles.coverImage}
 					/>
@@ -130,9 +133,9 @@ const styles = StyleSheet.create({
 		paddingVertical: 10,
 		flexDirection: "row",
 		justifyContent: "space-between",
-		alignItems: "center",
+		// alignItems: "center",
 	},
 	videoTitle: {
-		flex: 0.95,
+		flex: 0.97,
 	},
 });
