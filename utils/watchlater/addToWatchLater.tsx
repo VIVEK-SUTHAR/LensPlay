@@ -2,15 +2,14 @@ import { LENSPLAY_API } from "constants/index";
 import { useProfile } from "store/Store";
 import Logger from "utils/logger";
 
-export default async function addToWatchLater(pubId: string) {
-	const { currentProfile } = useProfile();
+export default async function addToWatchLater(profileId:string,pubId: string) {
 	try {
 		const headers = {
 			"Content-Type": "application/json",
 		};
 		const rawBody = JSON.stringify({
 			pubId: pubId,
-			profileId: currentProfile?.id,
+			profileId:profileId,
 		});
 
 		const apiResponse = await fetch(`${LENSPLAY_API}watchlater/add`, {

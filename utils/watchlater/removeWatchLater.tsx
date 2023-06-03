@@ -1,26 +1,27 @@
 import { LENSPLAY_API } from "constants/index";
-import { useProfile } from "store/Store";
 import Logger from "utils/logger";
 
-export default async function getWatchLaters(profileId:string) {
+export default async function removeWatchLater(profileId: string, pubId: string) {
 	try {
 		const headers = {
 			"Content-Type": "application/json",
 		};
 		const rawBody = JSON.stringify({
-			profileId:profileId,
+			pubId: pubId,
+			profileId: profileId,
 		});
 
-		const apiResponse = await fetch(`${LENSPLAY_API}watchlater/get`, {
+		const apiResponse = await fetch(`${LENSPLAY_API}watchlater/remove`, {
 			method: "POST",
 			headers,
 			body: rawBody,
 		});
 		if (apiResponse.ok) {
 			const jsonRes = await apiResponse.json();
-			return jsonRes.items;
+			return jsonRes;
 		}
 	} catch (error) {
-		Logger.Log("Failed to add watch later", error);
+		Logger.Log("Failed to delete watch later", error);
+		throw new Error("Failed to delete watch later");
 	}
 }

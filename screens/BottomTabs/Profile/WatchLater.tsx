@@ -9,9 +9,27 @@ import React from "react";
 import { SafeAreaView, View } from "react-native";
 import { useProfile } from "store/Store";
 import formatHandle from "utils/formatHandle";
+import Logger from "utils/logger";
+import addToWatchLater from "utils/watchlater/addToWatchLater";
+import getWatchLaters from "utils/watchlater/getWatchLaters";
 
 const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }): JSX.Element => {
 	const { currentProfile } = useProfile();
+
+
+	React.useEffect(() => {
+		
+
+		//Get
+		getWatchLaters(currentProfile?.id).then((res) => {
+			Logger.Success("Watch Laters",res)
+		})
+
+		// Add
+		// addToWatchLater(currentProfile?.id,"0x34-0x34").then(res => {
+		// 	Logger.Success("WTs",res)
+		// })
+	},[])
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "black", padding: 16 }}>
