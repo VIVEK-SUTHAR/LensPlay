@@ -13,6 +13,7 @@ import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Pressable, useWindowDimensions, View } from "react-native";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
+import Logger from "utils/logger";
 import createLivePeerAsset from "utils/video/createLivePeerAsset";
 import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 
@@ -37,6 +38,11 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
 	const descriptionRef = useRef<BottomSheetMethods>(null);
 
 	useEffect(() => {
+		if (item?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")) {
+			Logger.Success("Got opti", item?.metadata?.media[0]?.optimized?.url);
+			setVideoURL(item?.metadata?.media[0]?.optimized?.url);
+			return;
+		}
 		checkIfLivePeerAsset(videoURL).then((res) => {
 			if (res) {
 				setVideoURL(res);

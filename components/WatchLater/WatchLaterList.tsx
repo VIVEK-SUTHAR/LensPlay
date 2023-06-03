@@ -9,26 +9,27 @@ import { NoVideosFound } from "components/Profile/AllVideos";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
 import { black } from "constants/Colors";
-import { type Mirror, type Post, type Scalars } from "customTypes/generated";
+import {
+	PublicationsQueryRequest,
+	useAllPublicationsLazyQuery,
+	type Mirror,
+	type Post,
+	type Scalars,
+} from "customTypes/generated";
 import React from "react";
 import { FlatList, Share, View } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
-import { useAuthStore, useProfile, useThemeStore } from "store/Store";
+import { useProfile, useThemeStore } from "store/Store";
 import CommonStyles from "styles/index";
 import getWatchLaters from "utils/watchlater/getWatchLaters";
-
-type CollectedPublication = Post | Mirror;
-
-const keyExtractor = (item: CollectedPublication) => item.id;
 
 const WatchLaterList = () => {
 	const [pubId, setPubId] = React.useState("");
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
-	const [data, setData] = React.useState<string[] | null>(null);
+	const [data, setData] = React.useState(null);
 
 	const WatchLaterSheetRef = React.useRef<BottomSheetMethods>(null);
 
-	const { accessToken } = useAuthStore();
 	const { currentProfile } = useProfile();
 	const { PRIMARY } = useThemeStore();
 
@@ -36,9 +37,28 @@ const WatchLaterList = () => {
 		setPubId(pubId);
 	}, []);
 
+	const [getAllPublications, loading] = useAllPublicationsLazyQuery({
+		onCompleted: (data) => {
+			setData(data?.publications?.items);
+		},
+	});
+
 	async function getWatchLaterData() {
-		const data = await getWatchLaters(currentProfile?.id);
-		setData(data);
+		const watchLaterData = await getWatchLaters(currentProfile?.id);
+		if (watchLaterData.length > 0) {
+			getAllPublications({
+				variables: {
+					request: {
+						publicationIds: watchLaterData,
+					},
+					reactionRequest: {
+						profileId: currentProfile?.id,
+					},
+				},
+			});
+		} else {
+			setData(watchLaterData);
+		}
 	}
 
 	React.useEffect(() => {
@@ -69,7 +89,6 @@ const WatchLaterList = () => {
 			style={{
 				flex: 1,
 				backgroundColor: "black",
-				paddingVertical: 8,
 			}}
 		>
 			{!data ? (
@@ -87,12 +106,12 @@ const WatchLaterList = () => {
 					refreshControl={_RefreshControl}
 					onEndReachedThreshold={0.7}
 					showsVerticalScrollIndicator={false}
-					renderItem={({ item }) => (
+					renderItem={({ item }: { item: Post | Mirror }) => (
 						<MyVideoCard
-						// publication={item}
-						// id={item.id}
-						// sheetRef={WatchLaterSheetRef}
-						// setPubId={handlePubId}
+							publication={item}
+							id={item.id}
+							sheetRef={WatchLaterSheetRef}
+							setPubId={handlePubId}
 						/>
 					)}
 				/>
