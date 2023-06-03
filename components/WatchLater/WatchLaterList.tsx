@@ -2,28 +2,20 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { FlashList } from "@shopify/flash-list";
 import Sheet from "components/Bottom";
 import MyVideoCard, { type actionListType } from "components/common/MyVideoCard";
+import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
+import Skeleton from "components/common/Skeleton";
 import Icon from "components/Icon";
+import { NoVideosFound } from "components/Profile/AllVideos";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
 import { black } from "constants/Colors";
-import { SOURCES } from "constants/index";
-import {
-	type Mirror,
-	type Post,
-	PublicationMainFocus,
-	type PublicationsQueryRequest,
-	PublicationTypes,
-	type Scalars,
-	useProfileCollectsQuery,
-} from "customTypes/generated";
+import { type Mirror, type Post, type Scalars } from "customTypes/generated";
 import React from "react";
-import { ActivityIndicator, FlatList, Share, View } from "react-native";
+import { FlatList, Share, View } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import CommonStyles from "styles/index";
-import Skeleton from "components/common/Skeleton";
-import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
-import { NoVideosFound } from "components/Profile/AllVideos";
+import getWatchLaters from "utils/watchlater/getWatchLaters";
 
 type CollectedPublication = Post | Mirror;
 
@@ -32,6 +24,7 @@ const keyExtractor = (item: CollectedPublication) => item.id;
 const WatchLaterList = () => {
 	const [pubId, setPubId] = React.useState("");
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
+	const [data, setData] = React.useState<string[] | null>(null);
 
 	const WatchLaterSheetRef = React.useRef<BottomSheetMethods>(null);
 
@@ -43,69 +36,24 @@ const WatchLaterList = () => {
 		setPubId(pubId);
 	}, []);
 
-	const QueryRequest: PublicationsQueryRequest = {
-		collectedBy: currentProfile?.ownedBy,
-		publicationTypes: [PublicationTypes.Post, PublicationTypes.Mirror],
-		metadata: {
-			mainContentFocus: [PublicationMainFocus.Video],
-		},
-		sources: SOURCES,
-		limit: 10,
-	};
+	async function getWatchLaterData() {
+		const data = await getWatchLaters(currentProfile?.id);
+		setData(data);
+	}
 
-	const { data, error, loading, refetch, fetchMore } = useProfileCollectsQuery({
-		variables: {
-			request: QueryRequest,
-			reactionRequest: {
-				profileId: currentProfile?.id,
-			},
-		},
-		context: {
-			headers: {
-				"x-access-token": `Bearer ${accessToken}`,
-			},
-		},
-	});
-
-	const collectVideos = data?.publications?.items;
-	const pageInfo = data?.publications?.pageInfo;
+	React.useEffect(() => {
+		getWatchLaterData();
+	}, []);
 
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
 		try {
-			refetch({
-				request: QueryRequest,
-			})
-				.then(() => {
-					setRefreshing(false);
-				})
-				.catch(() => {});
+			getWatchLaterData();
 		} catch (error) {
 		} finally {
 			setRefreshing(false);
 		}
 	}, []);
-
-	const _MoreLoader = () => {
-		return (
-			<>
-				{pageInfo?.next ? (
-					<View
-						style={{
-							height: 200,
-							width: "100%",
-							justifyContent: "center",
-							alignItems: "center",
-						}}
-					>
-						<ActivityIndicator size={"large"} color={PRIMARY} />
-					</View>
-				) : null}
-			</>
-		);
-	};
-
-	const MoreLoader = React.memo(_MoreLoader);
 
 	const _RefreshControl = (
 		<RefreshControl
@@ -116,22 +64,6 @@ const WatchLaterList = () => {
 		/>
 	);
 
-	const onEndCallBack = React.useCallback(() => {
-		if (!pageInfo?.next) {
-			return;
-		}
-		fetchMore({
-			variables: {
-				request: {
-					...QueryRequest,
-					cursor: pageInfo?.next,
-				},
-			},
-		}).catch(() => {});
-	}, [pageInfo?.next]);
-
-	if (error) return <></>;
-
 	return (
 		<View
 			style={{
@@ -140,7 +72,7 @@ const WatchLaterList = () => {
 				paddingVertical: 8,
 			}}
 		>
-			{loading ? (
+			{!data ? (
 				<View style={{ paddingHorizontal: 8, backgroundColor: "black" }}>
 					<Skeleton number={10}>
 						<ProfileVideoCardSkeleton />
@@ -148,22 +80,19 @@ const WatchLaterList = () => {
 				</View>
 			) : (
 				<FlashList
-					data={collectVideos as CollectedPublication[]}
-					keyExtractor={keyExtractor}
+					data={data}
 					ListEmptyComponent={NoVideosFound}
 					removeClippedSubviews={true}
 					estimatedItemSize={110}
 					refreshControl={_RefreshControl}
-					ListFooterComponent={<MoreLoader />}
 					onEndReachedThreshold={0.7}
-					onEndReached={onEndCallBack}
 					showsVerticalScrollIndicator={false}
 					renderItem={({ item }) => (
 						<MyVideoCard
-							publication={item}
-							id={item.id}
-							sheetRef={WatchLaterSheetRef}
-							setPubId={handlePubId}
+						// publication={item}
+						// id={item.id}
+						// sheetRef={WatchLaterSheetRef}
+						// setPubId={handlePubId}
 						/>
 					)}
 				/>

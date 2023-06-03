@@ -16,21 +16,6 @@ import getWatchLaters from "utils/watchlater/getWatchLaters";
 const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }): JSX.Element => {
 	const { currentProfile } = useProfile();
 
-
-	React.useEffect(() => {
-		
-
-		//Get
-		getWatchLaters(currentProfile?.id).then((res) => {
-			Logger.Success("Watch Laters",res)
-		})
-
-		// Add
-		// addToWatchLater(currentProfile?.id,"0x34-0x34").then(res => {
-		// 	Logger.Success("WTs",res)
-		// })
-	},[])
-
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "black", padding: 16 }}>
 			<LinearGradient
@@ -48,8 +33,8 @@ const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }
 						height: 200,
 						width: "100%",
 						borderRadius: 8,
-						resizeMode: "cover",
 					}}
+					contentFit="cover"
 				/>
 				<View
 					style={{

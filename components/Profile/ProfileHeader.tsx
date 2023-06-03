@@ -43,6 +43,7 @@ import Cover from "./Cover";
 import PinnedPublication, { UnPinSheet } from "./PinnedPublication";
 import UserStats from "./UserStats";
 import VerifiedBadge from "./VerifiedBadge";
+import ProfileLists from "./ProfileLists";
 
 type ProfileHeaderProps = {
 	profileId?: Scalars["ProfileId"];
@@ -293,31 +294,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 						</View>
 						<SocialLinks profile={profile as Profile} />
 						<PinnedPublication sheetRef={sheetRef as any} profile={profile as Profile} />
-						{!isChannel ? (
-							<Ripple
-								style={{
-									flexDirection: "row",
-									justifyContent: "flex-start",
-									alignItems: "center",
-									paddingVertical: 12,
-									marginVertical: 8,
-								}}
-								onTap={goToWatchLaters}
-							>
-								<Icon name="images" />
-								<Heading
-									title="Your Watch later's"
-									style={{
-										color: "white",
-										marginHorizontal: 8,
-										fontSize: 18,
-										fontWeight: "500",
-									}}
-								/>
-							</Ripple>
-						) : null}
-
 						<UserStats profile={profile as Profile} />
+						{!isChannel ? <ProfileLists /> : null}
 					</View>
 				</ScrollView>
 				{!isChannel ? <UnPinSheet sheetRef={sheetRef} /> : null}

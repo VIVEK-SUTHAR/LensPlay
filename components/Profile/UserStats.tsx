@@ -68,7 +68,7 @@ const UserStats: React.FC<UsetStatsProps> = ({ profile }) => {
 	];
 
 	return (
-		<View style={CommonStyles.my_24}>
+		<View style={CommonStyles.mt_24}>
 			<Heading title={"Stats"} style={styles.statsTitle} />
 			<View style={styles.statsWrapper}>
 				{stats.map((stat, index) => {
