@@ -1,10 +1,12 @@
-import MyVideoCard from "components/common/MyVideoCard";
+import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
+import WatchLaterList from "components/WatchLater/WatchLaterList";
+import { white } from "constants/Colors";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { ScrollView } from "react-native-gesture-handler";
+import { SafeAreaView, View } from "react-native";
 import { useProfile } from "store/Store";
 import formatHandle from "utils/formatHandle";
 
@@ -12,14 +14,11 @@ const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }
 	const { currentProfile } = useProfile();
 
 	return (
-		<ScrollView style={{ flex: 1, backgroundColor: "black" }}>
+		<SafeAreaView style={{ flex: 1, backgroundColor: "black", padding: 16 }}>
 			<LinearGradient
 				style={{
-					height: "30%",
-					justifyContent: "flex-start",
 					alignItems: "center",
-					paddingTop: 36,
-					paddingHorizontal: 12,
+					padding: 16,
 				}}
 				colors={["#2d201a", "black"]}
 			>
@@ -28,44 +27,45 @@ const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }
 						uri: "https://cdn.hashnode.com/res/hashnode/image/upload/v1683447015650/23f2a101-69a3-437f-a26b-0498f35e783b.jpeg?w=1600&h=840&fit=crop&crop=entropy&auto=compress,format&format=webp",
 					}}
 					style={{
-						height: "60%",
+						height: 200,
 						width: "100%",
 						borderRadius: 8,
 						resizeMode: "cover",
 					}}
 				/>
-				<StyledText
-					title="Watch Later"
+				<View
 					style={{
-						color: "white",
-						fontWeight: "600",
-						alignSelf: "flex-start",
-						fontSize: 20,
-						marginVertical: 12,
+						marginVertical: 24,
+						width: "100%",
 					}}
-				/>
-				<StyledText
-					title={currentProfile?.name || formatHandle(currentProfile?.handle)}
-					style={{
-						color: "white",
-						fontWeight: "600",
-						alignSelf: "flex-start",
-						fontSize: 16,
-						marginVertical: 4,
-					}}
-				/>
+				>
+					<Heading
+						title="Watch Later"
+						style={{
+							color: white[800],
+							fontWeight: "600",
+							fontSize: 24,
+						}}
+					/>
+					<StyledText
+						title={currentProfile?.name || formatHandle(currentProfile?.handle)}
+						style={{
+							color: white[200],
+							fontWeight: "600",
+							fontSize: 16,
+							marginTop: 2,
+						}}
+					/>
+				</View>
 			</LinearGradient>
-			<MyVideoCard />
-			<MyVideoCard />
-			<MyVideoCard />
-			<MyVideoCard />
-			<MyVideoCard />
-			<MyVideoCard />
-			<MyVideoCard />
-			<MyVideoCard />
-			<MyVideoCard />
-			<MyVideoCard />
-		</ScrollView>
+			<View
+				style={{
+					flex: 1,
+				}}
+			>
+				<WatchLaterList />
+			</View>
+		</SafeAreaView>
 	);
 };
 

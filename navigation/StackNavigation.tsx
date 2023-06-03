@@ -365,13 +365,10 @@ export default function StackNavigation() {
 				component={WatchLater}
 				options={{
 					animation: "default",
-					headerShown: false,
-					headerTitleStyle: {
-						fontSize: 16,
-						fontWeight: "600",
-					},
+					headerShown: true,
 					headerTintColor: "white",
 					headerTitle: "",
+					headerShadowVisible: false,
 				}}
 			/>
 		</Stack.Navigator>
