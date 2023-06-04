@@ -131,7 +131,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 					headerTitle: "",
 					headerRight: () => (
 						<View style={{ flexDirection: "row", alignItems: "center" }}>
-							{/* <Pressable
+							<Pressable
                 onPress={() => uploadRef.current?.snapToIndex(0)}
                 style={{
                   paddingHorizontal: 8,
@@ -140,8 +140,8 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
                   justifyContent: "center",
                 }}
               >
-                <Icon name="upload" size={24} />
-              </Pressable> */}
+                <Icon name="upload-file" size={24} />
+              </Pressable>
 							<Pressable
 								onPress={() => navigation.push("Invite")}
 								style={{

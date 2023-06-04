@@ -18,6 +18,7 @@ import { useUploadStore } from "store/UploadStore";
 import getCollectModule from "utils/getCollectModule";
 import getImageBlobFromUri from "utils/getImageBlobFromUri";
 import getReferenceModule from "utils/getReferenceModule";
+import Logger from "utils/logger";
 import uploadImageToIPFS from "utils/uploadImageToIPFS";
 import uploadToArweave from "utils/uploadToArweave";
 import getFileMimeType from "utils/video/getFileType";
@@ -232,6 +233,8 @@ export default function VideoTypes({
       // console.log(error);
     }
   };
+
+  Logger.Warn("Collect MOdule is ",getCollectModule(uploadStore.collectModule))
 
   return (
     <SafeAreaView

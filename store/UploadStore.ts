@@ -12,6 +12,8 @@ export const useUploadStore = create<IUploadStore>((set) => ({
 		followerOnlyCollect: false,
 		isFreeCollect: false,
 		isRevertCollect: true,
+		isFreeTimedCollect: false,
+		freeCollectLimit: "10",
 	},
 	referenceModule: {
 		isFollowerOnly: false,

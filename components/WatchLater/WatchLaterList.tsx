@@ -52,11 +52,9 @@ const WatchLaterList = () => {
 
 	async function handleCoverGradient(watchLaterData: string[]) {
 		const coverURL = getImageProxyURL({
-			formattedLink: getIPFSLink(
-				getRawurl(data[0]?.metadata?.cover)
-			),
+			formattedLink: getIPFSLink(getRawurl(data[0]?.metadata?.cover)),
 		});
-		Logger.Error("COVER IM",coverURL)
+		Logger.Error("COVER IM", coverURL);
 		getColors(coverURL, {
 			fallback: "#000000",
 			cache: true,
@@ -145,7 +143,7 @@ const WatchLaterList = () => {
 						},
 					},
 				});
-				await  handleCoverGradient(publicationIds)
+				await handleCoverGradient(publicationIds);
 			} else {
 				setData(publicationIds);
 			}
@@ -248,6 +246,10 @@ export const WatchLaterSheet = ({
 			detached={true}
 			backgroundStyle={{
 				backgroundColor: black[600],
+			}}
+			animationConfigs={{
+				 damping:15
+
 			}}
 		>
 			<FlatList
