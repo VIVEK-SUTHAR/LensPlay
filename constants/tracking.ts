@@ -22,6 +22,7 @@ export const PUBLICATION = {
   SHARE: "Share Video",
   REPORT: "Report publication",
   PIN_PUBLICATION: "Publication Pinned",
+  COLLECT_VIDEO:"Video Collected",
   ATTACHMENT: {
     IMAGE: {
       OPEN: "Open full image",
