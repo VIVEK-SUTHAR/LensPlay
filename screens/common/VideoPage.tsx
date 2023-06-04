@@ -22,7 +22,11 @@ import VideoPlayer from "components/VideoPlayer";
 import { black, dark_primary, primary } from "constants/Colors";
 import { LENSPLAY_SITE, STATIC_ASSET } from "constants/index";
 import { PUBLICATION } from "constants/tracking";
-import { useCreateDataAvailabilityMirrorViaDispatcherMutation } from "customTypes/generated";
+import {
+	useCreateDataAvailabilityMirrorViaDispatcherMutation,
+	useCreateMirrorViaDispatcherMutation,
+	useProxyActionMutation,
+} from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { ToastType } from "customTypes/Store";
 import { Image } from "expo-image";
@@ -80,12 +84,9 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		setMirrorStats,
 	} = useReactionStore();
 
-	// Logger.Success(
-	//   "New Opti",
-	//   activePublication?.metadata?.media[0]?.optimized?.url
-	// );
-
 	const isDAPublication = activePublication?.isDataAvailability;
+
+	const [createOnChainMirror] = useCreateMirrorViaDispatcherMutation();
 
 	function handleBackButtonClick() {
 		setStatusBarHidden(false, "fade");
@@ -166,16 +167,23 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 			return;
 		}
 		try {
-			const data = await freeMirror(
-				accessToken,
-				userStore.currentProfile?.id,
-				activePublication?.id
-			);
-			if (data) {
-				toast.show("Mirror submitted", ToastType.SUCCESS, true);
-				setMirrorStats(true, mirrorStats.mirrorCount + 1);
-				mirrorRef.current?.close();
-			}
+			toast.success("Mirror submitted!");
+			setMirrorStats(true, mirrorStats.mirrorCount + 1);
+			mirrorRef.current?.close();
+			await createOnChainMirror({
+				variables: {
+					request: {
+						profileId: userStore?.currentProfile?.id,
+						publicationId: activePublication?.id,
+					},
+				},
+				context: {
+					headers: {
+						"x-access-token": `Bearer ${accessToken}`,
+						"origin": LENSPLAY_SITE,
+					},
+				},
+			});
 			TrackAction(PUBLICATION.MIRROR);
 		} catch (error) {
 			if (error instanceof Error) {
@@ -197,7 +205,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 				setCollectStats(true, collectStats?.collectCount + 1);
 				collectRef?.current?.close();
 			}
-			TrackAction(PUBLICATION.MIRROR);
+			TrackAction(PUBLICATION.COLLECT_VIDEO);
 		} catch (error) {
 			if (error instanceof Error) {
 				toast.show(error.message, ToastType.ERROR, true);
