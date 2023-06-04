@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import WatchLaterList from "components/WatchLater/WatchLaterList";
@@ -6,7 +7,7 @@ import { white } from "constants/Colors";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { SafeAreaView, View } from "react-native";
 import { useProfile } from "store/Store";
 import formatHandle from "utils/formatHandle";
@@ -17,6 +18,19 @@ const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }
 		color: "black",
 		cover: "",
 	});
+
+	useFocusEffect(() => {
+		AsyncStorage.getItem("@watchLater").then((res) => {
+			
+			if (res) {
+				const colorCode = JSON.parse(res).color;
+				const coverURL = JSON.parse(res).cover;
+				navigation.setOptions({
+					headerStyle:{backgroundColor:colorCode}
+				})
+			}
+		})
+	})
 
 	async function handleColor() {
 		const watchLater = await AsyncStorage.getItem("@watchLater");

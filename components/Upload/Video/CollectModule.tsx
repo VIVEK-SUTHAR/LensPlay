@@ -149,18 +149,18 @@ function CollectModuleSheet({ collectModuleRef }: CollectModuleSheetProp) {
 		}
 	}, [isCollectEnabled]);
 
-	useEffect(() => {
-		if (freeTimeCollect.isEnabled) {
-			uploadStore.setCollectModule({
-				type: "simpleCollectModule",
-				followerOnlyCollect: isFollowersOnlyCollect,
-				isFreeCollect: isCollectEnabled,
-				freeCollectLimit: freeTimeCollect.collectLimit,
-				isFreeTimedCollect: freeTimeCollect.isEnabled,
-				isRevertCollect: false,
-			});
-		}
-	}, [freeTimeCollect]);
+	// useEffect(() => {
+	// 	if (freeTimeCollect.isEnabled) {
+	// 		uploadStore.setCollectModule({
+	// 			type: "simpleCollectModule",
+	// 			followerOnlyCollect: isFollowersOnlyCollect,
+	// 			isFreeCollect: isCollectEnabled,
+	// 			freeCollectLimit: freeTimeCollect.collectLimit,
+	// 			isFreeTimedCollect: freeTimeCollect.isEnabled,
+	// 			isRevertCollect: false,
+	// 		});
+	// 	}
+	// }, [freeTimeCollect]);
 
 	return (
 		<Sheet
