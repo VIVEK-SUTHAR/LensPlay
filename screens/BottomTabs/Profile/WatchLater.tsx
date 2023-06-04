@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import WatchLaterList from "components/WatchLater/WatchLaterList";
@@ -9,25 +10,43 @@ import React from "react";
 import { SafeAreaView, View } from "react-native";
 import { useProfile } from "store/Store";
 import formatHandle from "utils/formatHandle";
-import Logger from "utils/logger";
-import addToWatchLater from "utils/watchlater/addToWatchLater";
-import getWatchLaters from "utils/watchlater/getWatchLaters";
 
 const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }): JSX.Element => {
 	const { currentProfile } = useProfile();
+	const [coverData, setCoverData] = React.useState({
+		color: "black",
+		cover: "",
+	});
+
+	async function handleColor() {
+		const watchLater = await AsyncStorage.getItem("@watchLater");
+		if (watchLater) {
+			const colorCode = JSON.parse(watchLater).color;
+			const coverURL = JSON.parse(watchLater).cover;
+
+			setCoverData({
+				color: colorCode,
+				cover: coverURL,
+			});
+		}
+	}
+
+	React.useEffect(() => {
+		handleColor();
+	}, []);
 
 	return (
-		<SafeAreaView style={{ flex: 1, backgroundColor: "black", padding: 16 }}>
+		<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
 			<LinearGradient
 				style={{
 					alignItems: "center",
 					padding: 16,
 				}}
-				colors={["#2d201a", "black"]}
+				colors={[coverData.color, "black"]}
 			>
 				<Image
 					source={{
-						uri: "https://cdn.hashnode.com/res/hashnode/image/upload/v1683447015650/23f2a101-69a3-437f-a26b-0498f35e783b.jpeg?w=1600&h=840&fit=crop&crop=entropy&auto=compress,format&format=webp",
+						uri: coverData.cover,
 					}}
 					style={{
 						height: 200,

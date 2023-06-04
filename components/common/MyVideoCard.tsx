@@ -62,7 +62,7 @@ function MyVideoCard({ publication, id, sheetRef, setPubId }: MyVideoCardProps) 
 			<View
 				style={{
 					height: "100%",
-					width: "55%",
+					width: "50%",
 					marginLeft: 16,
 					flexDirection: "row",
 					justifyContent: "space-between",

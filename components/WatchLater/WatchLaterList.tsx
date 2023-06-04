@@ -1,4 +1,5 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FlashList } from "@shopify/flash-list";
 import Sheet from "components/Bottom";
 import MyVideoCard, { type actionListType } from "components/common/MyVideoCard";
@@ -10,17 +11,23 @@ import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
 import { black } from "constants/Colors";
 import {
-	PublicationsQueryRequest,
 	useAllPublicationsLazyQuery,
 	type Mirror,
 	type Post,
 	type Scalars,
+	PublicationTypes,
+	PublicationMainFocus,
 } from "customTypes/generated";
 import React from "react";
 import { FlatList, Share, View } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
+import { getColors } from "react-native-image-colors";
 import { useProfile, useThemeStore } from "store/Store";
 import CommonStyles from "styles/index";
+import getImageProxyURL from "utils/getImageProxyURL";
+import getIPFSLink from "utils/getIPFSLink";
+import getRawurl from "utils/getRawUrl";
+import Logger from "utils/logger";
 import getWatchLaters from "utils/watchlater/getWatchLaters";
 
 const WatchLaterList = () => {
@@ -43,21 +50,102 @@ const WatchLaterList = () => {
 		},
 	});
 
-	async function getWatchLaterData() {
-		const watchLaterData = await getWatchLaters(currentProfile?.id);
-		if (watchLaterData.length > 0) {
-			getAllPublications({
-				variables: {
-					request: {
-						publicationIds: watchLaterData,
-					},
-					reactionRequest: {
-						profileId: currentProfile?.id,
-					},
-				},
+	async function handleCoverGradient(watchLaterData: string[]) {
+		const coverURL = getImageProxyURL({
+			formattedLink: getIPFSLink(
+				getRawurl(data?.publications?.items[0]?.metadata.cover.onChain.url)
+			),
+		});
+
+		getColors(coverURL, {
+			fallback: "#000000",
+			cache: true,
+			key: coverURL,
+			quality: "lowest",
+			pixelSpacing: 500,
+		})
+			.then((colors) => {
+				switch (colors.platform) {
+					case "android":
+						AsyncStorage.setItem(
+							"@watchLater",
+							JSON.stringify({
+								watchLater: watchLaterData,
+								pubId: watchLaterData[0],
+								color: colors.average,
+								cover: coverURL,
+							})
+						);
+						break;
+					case "ios":
+						AsyncStorage.setItem(
+							"@watchLater",
+							JSON.stringify({
+								watchLater: watchLaterData,
+								pubId: watchLaterData[0],
+								color: colors.background,
+								cover: coverURL,
+							})
+						);
+						break;
+					default:
+						AsyncStorage.setItem(
+							"@watchLater",
+							JSON.stringify({
+								watchLater: watchLaterData,
+								pubId: watchLaterData[0],
+								color: "black",
+								cover: coverURL,
+							})
+						);
+				}
+			})
+			.catch((error) => {
+				Logger.Error("Failed to fetch image for geting dominient color", error);
 			});
+	}
+
+	async function getWatchLaterData() {
+		const watchLater = await AsyncStorage.getItem("@watchLater");
+		if (!watchLater) {
+			const watchLaterData = await getWatchLaters(currentProfile?.id);
+			if (watchLaterData.length > 0) {
+				await getAllPublications({
+					variables: {
+						request: {
+							publicationIds: watchLaterData,
+							metadata: {
+								mainContentFocus: [PublicationMainFocus.Video],
+							},
+						},
+						reactionRequest: {
+							profileId: currentProfile?.id,
+						},
+					},
+				});
+				await handleCoverGradient(watchLaterData);
+			} else {
+				setData(watchLaterData);
+			}
 		} else {
-			setData(watchLaterData);
+			const publicationIds = JSON.parse(watchLater).watchLater;
+			if (publicationIds.length > 0) {
+				getAllPublications({
+					variables: {
+						request: {
+							publicationIds: publicationIds,
+							metadata: {
+								mainContentFocus: [PublicationMainFocus.Video],
+							},
+						},
+						reactionRequest: {
+							profileId: currentProfile?.id,
+						},
+					},
+				});
+			} else {
+				setData(publicationIds);
+			}
 		}
 	}
 
