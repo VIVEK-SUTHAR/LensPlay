@@ -53,10 +53,10 @@ const WatchLaterList = () => {
 	async function handleCoverGradient(watchLaterData: string[]) {
 		const coverURL = getImageProxyURL({
 			formattedLink: getIPFSLink(
-				getRawurl(data?.publications?.items[0]?.metadata.cover.onChain.url)
+				getRawurl(data[0]?.metadata?.cover)
 			),
 		});
-
+		Logger.Error("COVER IM",coverURL)
 		getColors(coverURL, {
 			fallback: "#000000",
 			cache: true,
@@ -106,6 +106,8 @@ const WatchLaterList = () => {
 	}
 
 	async function getWatchLaterData() {
+		// await AsyncStorage.removeItem("@watchLater");
+		// return
 		const watchLater = await AsyncStorage.getItem("@watchLater");
 		if (!watchLater) {
 			const watchLaterData = await getWatchLaters(currentProfile?.id);
@@ -130,7 +132,7 @@ const WatchLaterList = () => {
 		} else {
 			const publicationIds = JSON.parse(watchLater).watchLater;
 			if (publicationIds.length > 0) {
-				getAllPublications({
+				await getAllPublications({
 					variables: {
 						request: {
 							publicationIds: publicationIds,
@@ -143,6 +145,7 @@ const WatchLaterList = () => {
 						},
 					},
 				});
+				await  handleCoverGradient(publicationIds)
 			} else {
 				setData(publicationIds);
 			}
