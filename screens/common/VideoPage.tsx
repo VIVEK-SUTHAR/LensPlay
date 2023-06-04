@@ -88,6 +88,25 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 
 	const [createOnChainMirror] = useCreateMirrorViaDispatcherMutation();
 
+	const [createProcyAction] = useProxyActionMutation({
+		onCompleted: (data) => {
+			toast.show("Collect Submitted", ToastType.SUCCESS, true);
+				setCollectStats(true, collectStats?.collectCount + 1);
+				collectRef?.current?.close();
+				TrackAction(PUBLICATION.COLLECT_VIDEO);
+		},
+		onError: (error) => {
+			if (error.message == "Can only collect if the publication has a `FreeCollectModule` set"){
+				toast.show('You can\'t collect this video', ToastType.ERROR, true);
+			}
+			else {
+				toast.show("Something went wrong", ToastType.ERROR, true);
+			}
+			
+				collectRef?.current?.close();
+		}
+	});
+
 	function handleBackButtonClick() {
 		setStatusBarHidden(false, "fade");
 		setInFullsreen(!inFullscreen);
@@ -199,17 +218,26 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 				toast.show("You have already collected the video", ToastType.ERROR, true);
 				return;
 			}
-			const data = await freeCollectPublication(activePublication?.id, accessToken);
-			if (data) {
-				toast.show("Collect Submitted", ToastType.SUCCESS, true);
-				setCollectStats(true, collectStats?.collectCount + 1);
-				collectRef?.current?.close();
-			}
-			TrackAction(PUBLICATION.COLLECT_VIDEO);
+			await createProcyAction({
+				variables: {
+					request: {
+						collect: {
+							freeCollect: {
+								publicationId: activePublication?.id
+							}
+						}
+					}
+				},
+				context: {
+					headers: {
+						"x-access-token": `Bearer ${accessToken}`,
+						"origin": LENSPLAY_SITE,
+					}
+				}
+			})
 		} catch (error) {
 			if (error instanceof Error) {
-				toast.show(error.message, ToastType.ERROR, true);
-				collectRef?.current?.close();
+				Logger.Error(error+'');
 			}
 		} finally {
 			collectRef?.current?.close();

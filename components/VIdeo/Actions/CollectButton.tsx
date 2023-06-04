@@ -2,7 +2,7 @@ import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/typ
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { ToastType } from "customTypes/Store";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useGuestStore } from "store/GuestStore";
 import { useActivePublication, useThemeStore, useToast } from "store/Store";
 
@@ -32,9 +32,16 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
   const isPaidCollet =
     activePublication?.activePublication?.collectModule?.__typename ===
     "FeeCollectModuleSettings";
+    
   const isRevertCollect =
     activePublication?.activePublication?.collectModule.__typename ===
     "RevertCollectModuleSettings";
+
+  const isLimitedCollect = activePublication?.activePublication?.collectModule.__typename ===
+  "LimitedFeeCollectModuleSettings";
+
+   
+    
   return (
     <>
       <Button
@@ -56,6 +63,10 @@ const CollectButton = (CollectVideoProps: CollectVideoPrpos) => {
           }
           if (isPaidCollet) {
             toast.error("Paid collects are coming soon!");
+            return;
+          }
+          if (isLimitedCollect) {
+            toast.error("Collects are Limited");
             return;
           }
           onPress();
