@@ -27,7 +27,6 @@ const WatchLaterList = () => {
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
 	const [data, setData] = React.useState(null);
 	const { allWatchLaters } = useWatchLater();
-
 	const WatchLaterSheetRef = React.useRef<BottomSheetMethods>(null);
 
 	const { currentProfile } = useProfile();

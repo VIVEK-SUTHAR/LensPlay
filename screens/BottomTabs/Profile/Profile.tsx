@@ -36,13 +36,13 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 			Logger.Log("Not watch later");
 			const watchLaterData = await getWatchLaters(currentProfile?.id);
 			if (watchLaterData.length > 0) {
-				Logger.Success('Got',watchLaterData)
+				Logger.Success("Got", watchLaterData);
 				await AsyncStorage.setItem("@watchLaters", JSON.stringify(watchLaterData));
-				fetchAndStoreWatchLaters(watchLaterData)
+				fetchAndStoreWatchLaters(watchLaterData);
 			}
 		} else {
-			Logger.Log('From Local Storage')
-			const localPubIds = JSON.parse(watchLater).watchLater;
+			Logger.Success("From Local Storage");
+			const localPubIds = JSON.parse(watchLater);
 			fetchAndStoreWatchLaters(localPubIds);
 		}
 	}
@@ -61,6 +61,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 			},
 		});
 		setAllWatchLaters(pubs?.data?.publications?.items as WatchLater[]);
+		Logger.Log("Added to Store ");
 	};
 
 	React.useEffect(() => {
