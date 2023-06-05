@@ -2,38 +2,31 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FlashList } from "@shopify/flash-list";
 import Sheet from "components/Bottom";
+import ErrorMesasge from "components/common/ErrorMesasge";
 import MyVideoCard, { type actionListType } from "components/common/MyVideoCard";
-import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
-import Skeleton from "components/common/Skeleton";
 import Icon from "components/Icon";
 import { NoVideosFound } from "components/Profile/AllVideos";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
 import { black } from "constants/Colors";
-import {
-	useAllPublicationsLazyQuery,
-	type Mirror,
-	type Post,
-	type Scalars,
-	PublicationTypes,
-	PublicationMainFocus,
-} from "customTypes/generated";
+import { type Mirror, type Post, type Scalars } from "customTypes/generated";
 import React from "react";
 import { FlatList, Share, View } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import { getColors } from "react-native-image-colors";
 import { useProfile, useThemeStore } from "store/Store";
+import useWatchLater from "store/WatchLaterStore";
 import CommonStyles from "styles/index";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
-import getWatchLaters from "utils/watchlater/getWatchLaters";
 
 const WatchLaterList = () => {
 	const [pubId, setPubId] = React.useState("");
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
 	const [data, setData] = React.useState(null);
+	const { allWatchLaters } = useWatchLater();
 
 	const WatchLaterSheetRef = React.useRef<BottomSheetMethods>(null);
 
@@ -43,12 +36,6 @@ const WatchLaterList = () => {
 	const handlePubId = React.useCallback((pubId: string) => {
 		setPubId(pubId);
 	}, []);
-
-	const [getAllPublications, loading] = useAllPublicationsLazyQuery({
-		onCompleted: (data) => {
-			setData(data?.publications?.items);
-		},
-	});
 
 	async function handleCoverGradient(watchLaterData: string[]) {
 		const coverURL = getImageProxyURL({
@@ -103,61 +90,9 @@ const WatchLaterList = () => {
 			});
 	}
 
-	async function getWatchLaterData() {
-		// await AsyncStorage.removeItem("@watchLater");
-		// return
-		const watchLater = await AsyncStorage.getItem("@watchLater");
-		if (!watchLater) {
-			const watchLaterData = await getWatchLaters(currentProfile?.id);
-			if (watchLaterData.length > 0) {
-				await getAllPublications({
-					variables: {
-						request: {
-							publicationIds: watchLaterData,
-							metadata: {
-								mainContentFocus: [PublicationMainFocus.Video],
-							},
-						},
-						reactionRequest: {
-							profileId: currentProfile?.id,
-						},
-					},
-				});
-				await handleCoverGradient(watchLaterData);
-			} else {
-				setData(watchLaterData);
-			}
-		} else {
-			const publicationIds = JSON.parse(watchLater).watchLater;
-			if (publicationIds.length > 0) {
-				await getAllPublications({
-					variables: {
-						request: {
-							publicationIds: publicationIds,
-							metadata: {
-								mainContentFocus: [PublicationMainFocus.Video],
-							},
-						},
-						reactionRequest: {
-							profileId: currentProfile?.id,
-						},
-					},
-				});
-				await handleCoverGradient(publicationIds);
-			} else {
-				setData(publicationIds);
-			}
-		}
-	}
-
-	React.useEffect(() => {
-		getWatchLaterData();
-	}, []);
-
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
 		try {
-			getWatchLaterData();
 		} catch (error) {
 		} finally {
 			setRefreshing(false);
@@ -180,15 +115,9 @@ const WatchLaterList = () => {
 				backgroundColor: "black",
 			}}
 		>
-			{!data ? (
-				<View style={{ paddingHorizontal: 8, backgroundColor: "black" }}>
-					<Skeleton number={10}>
-						<ProfileVideoCardSkeleton />
-					</Skeleton>
-				</View>
-			) : (
+			{allWatchLaters?.length > 0 ? (
 				<FlashList
-					data={data}
+					data={allWatchLaters}
 					ListEmptyComponent={NoVideosFound}
 					removeClippedSubviews={true}
 					estimatedItemSize={110}
@@ -204,7 +133,10 @@ const WatchLaterList = () => {
 						/>
 					)}
 				/>
+			) : (
+				<ErrorMesasge message="Look's like you dont have any watch laters yet" withImage={false} />
 			)}
+
 			<WatchLaterSheet sheetRef={WatchLaterSheetRef} pubId={pubId} />
 		</View>
 	);
@@ -248,8 +180,7 @@ export const WatchLaterSheet = ({
 				backgroundColor: black[600],
 			}}
 			animationConfigs={{
-				 damping:15
-
+				damping: 15,
 			}}
 		>
 			<FlatList
