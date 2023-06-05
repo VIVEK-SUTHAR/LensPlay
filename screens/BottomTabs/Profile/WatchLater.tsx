@@ -18,7 +18,7 @@ const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }
 
 	useFocusEffect(() => {
 		navigation.setOptions({
-			headerStyle: { backgroundColor: color ? color : "black" },
+			headerStyle: { backgroundColor: color ? color : "#7A52B5" },
 		});
 	});
 
@@ -29,13 +29,13 @@ const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }
 					alignItems: "center",
 					padding: 8,
 				}}
-				colors={[color ? color : "black", "black"]}
+				colors={[color ? color : "#7A52B5", "black"]}
 			>
 				<Image
 					source={{
 						uri: cover
 							? cover
-							: "https://images.unsplash.com/photo-1504805572947-34fad45aed93?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+							: "https://ik.imagekit.io/4uh8nmwsx/fotor-ai-2023060417146.jpg?f-webp",
 					}}
 					style={{
 						height: 200,

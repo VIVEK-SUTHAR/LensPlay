@@ -22,6 +22,7 @@ import getImageProxyURL from "utils/getImageProxyURL";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
 import getWatchLaters from "utils/watchlater/getWatchLaters";
+import { useFocusEffect } from "@react-navigation/native";
 
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	const sheetRef = React.useRef<BottomSheetMethods>(null);
@@ -30,9 +31,29 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	const { setAllWatchLaters, setCover, setColor } = useWatchLater();
 	if (isGuest) return <PleaseLogin />;
 
-	const [getAllPublications] = useAllPublicationsLazyQuery();
+	const [getAllPublications] = useAllPublicationsLazyQuery({
+		onError(error) {
+			Logger.Error("Error in fetching pubs", error);
+		},
+	});
 
 	async function handleCover(coverURL: string) {
+		getColors("https://ik.imagekit.io/4uh8nmwsx/fotor-ai-2023060417146.jpg?f-webp", {
+			quality: "highest",
+		}).then((colors) => {
+			switch (colors.platform) {
+				case "android":
+					Logger.Success("Got ik coclor", colors.average);
+
+					// setColor(colors?.average);
+					break;
+				case "ios":
+					setColor(colors?.detail);
+					break;
+				default:
+					setColor("black");
+			}
+		});
 		setCover(coverURL);
 		getColors(coverURL, {
 			fallback: "#000000",
@@ -50,10 +71,11 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 						setColor(colors?.detail);
 						break;
 					default:
-						setColor("black");
+						setColor("#7A52B5");
 				}
 			})
 			.catch((error) => {
+				setColor("#7A52B5");
 				Logger.Error("Failed to fetch image for geting dominient color", error);
 			});
 	}
@@ -73,11 +95,13 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 		} else {
 			Logger.Success("From Local Storage");
 			const localPubIds = JSON.parse(watchLater);
+			Logger.Log("Local Pubs", localPubIds);
 			fetchAndStoreWatchLaters(localPubIds);
 		}
 	}
 
 	const fetchAndStoreWatchLaters = async (pubIds: string[]) => {
+		Logger.Log("Local Pubs for fetcging", pubIds);
 		const pubs = await getAllPublications({
 			variables: {
 				request: {
@@ -103,7 +127,12 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 
 	React.useEffect(() => {
 		getWatchLaterData();
-	}, []);
+	}, [navigation]);
+
+	// useFocusEffect(
+	// 	React.useCallback(() => {
+	// 	}, [navigation])
+	// );
 
 	return (
 		<>
