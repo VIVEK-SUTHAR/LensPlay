@@ -34,7 +34,15 @@ import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
 import { useReaction } from "hooks/useLensQuery";
 import React, { useEffect, useRef, useState } from "react";
-import { BackHandler, Dimensions, SafeAreaView, ScrollView, StyleSheet, View, Pressable } from "react-native";
+import {
+	BackHandler,
+	Dimensions,
+	SafeAreaView,
+	ScrollView,
+	StyleSheet,
+	View,
+	Pressable,
+} from "react-native";
 import {
 	useActivePublication,
 	useAuthStore,
@@ -94,20 +102,19 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [createProcyAction] = useProxyActionMutation({
 		onCompleted: (data) => {
 			toast.show("Collect Submitted", ToastType.SUCCESS, true);
-				setCollectStats(true, collectStats?.collectCount + 1);
-				collectRef?.current?.close();
-				TrackAction(PUBLICATION.COLLECT_VIDEO);
+			setCollectStats(true, collectStats?.collectCount + 1);
+			collectRef?.current?.close();
+			TrackAction(PUBLICATION.COLLECT_VIDEO);
 		},
 		onError: (error) => {
-			if (error.message == "Can only collect if the publication has a `FreeCollectModule` set"){
-				toast.show('You can\'t collect this video', ToastType.ERROR, true);
-			}
-			else {
+			if (error.message == "Can only collect if the publication has a `FreeCollectModule` set") {
+				toast.show("You can't collect this video", ToastType.ERROR, true);
+			} else {
 				toast.show("Something went wrong", ToastType.ERROR, true);
 			}
-			
-				collectRef?.current?.close();
-		}
+
+			collectRef?.current?.close();
+		},
 	});
 
 	function handleBackButtonClick() {
@@ -226,21 +233,21 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 					request: {
 						collect: {
 							freeCollect: {
-								publicationId: activePublication?.id
-							}
-						}
-					}
+								publicationId: activePublication?.id,
+							},
+						},
+					},
 				},
 				context: {
 					headers: {
 						"x-access-token": `Bearer ${accessToken}`,
 						"origin": LENSPLAY_SITE,
-					}
-				}
-			})
+					},
+				},
+			});
 		} catch (error) {
 			if (error instanceof Error) {
-				Logger.Error(error+'');
+				Logger.Error(error + "");
 			}
 		} finally {
 			collectRef?.current?.close();
@@ -396,144 +403,273 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 				snapPoints={[580]}
 			>
 				<View
-                  style={{
-                    flex: 1,
-                  }}
-                >
-                  <View style={{
-					flexDirection: "row",
-					justifyContent: "space-between",
-					alignItems: "center",
-					paddingHorizontal: 16,
-					// backgroundColor: "red"
-				  }}>
-				  <Heading
-                    title={"Collect video"}
-                    style={{
-                      fontSize: 20,
-                      color: white[800],
-                      fontWeight: "600",
-                    }}
-                  />
-				  <Pressable onPress={()=>{
-					collectRef?.current?.close();
-				  }}>
-				  <Icon name="close" size={16}/>
-				  </Pressable>
-				  </View>
-				  <View style={{
-					borderBottomColor: black[300],
-					borderBottomWidth: 1.5,
-					marginTop: 8
-				  }} />
-                  <ScrollView
-                    style={{
-                      flex: 1,
-					  paddingHorizontal: 16,
-                    }}
-                  >
-                    <View
-                      style={{
-                        marginTop: 20,
-                      }}
-                    >
-                      <Image
-                        source={{
-                          uri: getIPFSLink(
-                            getRawurl(activePublication?.metadata?.cover)
-                          ),
-                        }}
-                        placeholder={getPlaceHolderImage()}
-                        transition={500}
-                        placeholderContentFit="contain"
-                        style={{
-                          height: 200,
-                          borderRadius: 8,
-                          width: "100%",
-                        }}
-                        contentFit="cover"
-                      />
-                      <StyledText
-                        title={activePublication?.metadata?.name}
-                        style={{
-                          fontSize: 20,
-                          color: white[800],
-                          fontWeight: "600",
-                          marginTop: 16,
-                        }}
-                      />
-                    </View>
-                    <View
-                      style={{
-                        marginTop: 8,
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Icon name="info" color={black[100]} size={16} />
-                      <StyledText
-                        title={"This video is free to collect"}
-                        style={{
-                          fontSize: 16,
-                          color: black[100],
-                          fontWeight: "600",
-                          marginLeft: 4,
-                        }}
-                      />
-                    </View>
-                    <View
-                      style={{
-                        marginTop: 16,
-                      }}
-                    >
-                      <Heading
-                        title={"Posted by"}
-                        style={{
-                          fontSize: 16,
-                          color: white[100],
-                          fontWeight: "600",
-                        }}
-                      />
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          marginTop: 8,
-                        }}
-                      >
-                        <Avatar
-                          src={getRawurl(activePublication?.profile?.picture)}
-                          height={40}
-                          width={40}
-                        />
-                      </View>
-                    </View>
-                  </ScrollView>
-                  <View
-                    style={{
-                      position: "absolute",
-                      bottom: 24,
-                      width: "100%",
-                      alignSelf: "center",
-					  paddingHorizontal: 16
-                    }}
-                  >
-                    <Button
-                      title={collectStats?.isCollected ? "Video already collected" : `Collect Video`}
-                      py={12}
-                      textStyle={{
-                        fontSize: 20,
-                        fontWeight: "600",
-                        textAlign: "center",
-                      }}
-                      bg={collectStats?.isCollected ? "#c0c0c0" : primary}
-                      onPress={() => {
-                        collectPublication();
-                      }}
-                    />
-                  </View>
-                </View>
-
+					style={{
+						flex: 1,
+					}}
+				>
+					<View
+						style={{
+							flexDirection: "row",
+							justifyContent: "space-between",
+							alignItems: "center",
+							paddingHorizontal: 16,
+						}}
+					>
+						<Heading
+							title={"Collect video"}
+							style={{
+								fontSize: 20,
+								color: white[800],
+								fontWeight: "600",
+							}}
+						/>
+						<Pressable
+							onPress={() => {
+								collectRef?.current?.close();
+							}}
+						>
+							<Icon name="close" size={16} />
+						</Pressable>
+					</View>
+					<View
+						style={{
+							borderBottomColor: black[300],
+							borderBottomWidth: 1.5,
+							marginTop: 8,
+						}}
+					/>
+					<BottomSheetScrollView
+						style={{
+							flex: 1,
+							paddingHorizontal: 16,
+						}}
+					>
+						<View
+							style={{
+								marginTop: 20,
+							}}
+						>
+							<Image
+								source={{
+									uri: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
+								}}
+								placeholder={getPlaceHolderImage()}
+								transition={500}
+								placeholderContentFit="contain"
+								style={{
+									height: 200,
+									borderRadius: 8,
+									width: "100%",
+								}}
+								contentFit="cover"
+							/>
+							<StyledText
+								title={activePublication?.metadata?.name}
+								style={{
+									fontSize: 20,
+									color: white[800],
+									fontWeight: "600",
+									marginTop: 16,
+								}}
+								numberOfLines={2}
+							/>
+						</View>
+						<View
+							style={{
+								marginTop: 8,
+								flexDirection: "row",
+								alignItems: "center",
+							}}
+						>
+							<Icon name="info" color={black[100]} size={16} />
+							<StyledText
+								title={"This video is free to collect"}
+								style={{
+									fontSize: 16,
+									color: black[100],
+									fontWeight: "600",
+									marginLeft: 4,
+								}}
+							/>
+						</View>
+						<View
+							style={{
+								marginTop: 16,
+							}}
+						>
+							<Heading
+								title={"Posted by"}
+								style={{
+									fontSize: 16,
+									color: white[100],
+									fontWeight: "600",
+								}}
+							/>
+							<View
+								style={{
+									flexDirection: "row",
+									marginTop: 8,
+								}}
+							>
+								<Avatar
+									src={getRawurl(activePublication?.profile?.picture)}
+									height={40}
+									width={40}
+								/>
+							</View>
+						</View>
+						<View
+							style={{
+								marginVertical: 24,
+							}}
+						>
+							<Button
+								title={collectStats?.isCollected ? "Video already collected" : `Collect Video`}
+								py={12}
+								textStyle={{
+									fontSize: 20,
+									fontWeight: "600",
+									textAlign: "center",
+								}}
+								bg={collectStats?.isCollected ? "#c0c0c0" : primary}
+								onPress={() => {
+									collectPublication();
+								}}
+							/>
+						</View>
+					</BottomSheetScrollView>
+				</View>
 			</Sheet>
+			<Sheet
+				ref={mirrorRef}
+				index={-1}
+				enablePanDownToClose={true}
+				backgroundStyle={{
+					backgroundColor: black[600],
+				}}
+				snapPoints={[550]}
+			>
+				<View
+					style={{
+						flex: 1,
+					}}
+				>
+					<View
+						style={{
+							flexDirection: "row",
+							justifyContent: "space-between",
+							alignItems: "center",
+							paddingHorizontal: 16,
+						}}
+					>
+						<Heading
+							title={"Mirror video"}
+							style={{
+								fontSize: 20,
+								color: white[800],
+								fontWeight: "600",
+							}}
+						/>
+						<Pressable
+							onPress={() => {
+								mirrorRef?.current?.close();
+							}}
+						>
+							<Icon name="close" size={16} />
+						</Pressable>
+					</View>
+					<View
+						style={{
+							borderBottomColor: black[300],
+							borderBottomWidth: 1.5,
+							marginTop: 8,
+						}}
+					/>
+					<BottomSheetScrollView
+						style={{
+							flex: 1,
+							paddingHorizontal: 16,
+						}}
+					>
+						<View
+							style={{
+								marginTop: 20,
+							}}
+						>
+							<Image
+								source={{
+									uri: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
+								}}
+								placeholder={getPlaceHolderImage()}
+								transition={500}
+								placeholderContentFit="contain"
+								style={{
+									height: 200,
+									borderRadius: 8,
+									width: "100%",
+								}}
+								contentFit="cover"
+							/>
+							<StyledText
+								title={activePublication?.metadata?.name}
+								style={{
+									fontSize: 20,
+									color: white[800],
+									fontWeight: "600",
+									marginTop: 16,
+								}}
+								numberOfLines={2}
+							/>
+						</View>
+						<View
+							style={{
+								marginTop: 16,
+							}}
+						>
+							<Heading
+								title={"Posted by"}
+								style={{
+									fontSize: 16,
+									color: white[100],
+									fontWeight: "600",
+								}}
+							/>
+							<View
+								style={{
+									flexDirection: "row",
+									marginTop: 8,
+								}}
+							>
+								<Avatar
+									src={getRawurl(activePublication?.profile?.picture)}
+									height={40}
+									width={40}
+								/>
+							</View>
+						</View>
+						<View
+							style={{
+								marginVertical: 20,
+							}}
+						>
+							<Button
+								title={mirrorStats?.isMirrored ? "Video already mirrored" : `Mirror Video`}
+								py={12}
+								textStyle={{
+									fontSize: 20,
+									fontWeight: "600",
+									textAlign: "center",
+								}}
+								bg={mirrorStats?.isMirrored ? "#c0c0c0" : primary}
+								onPress={() => {
+									onMirror();
+								}}
+							/>
+						</View>
+					</BottomSheetScrollView>
+				</View>
+			</Sheet>
+
 			<Sheet
 				ref={descRef}
 				index={-1}
@@ -546,115 +682,135 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 				}}
 				snapPoints={[550, 740]}
 			>
-				<BottomSheetScrollView>
-					<View style={{ paddingHorizontal: 16 }}>
-						<View
+				<View
+					style={{
+						flex: 1,
+					}}
+				>
+					<View
+						style={{
+							flexDirection: "row",
+							justifyContent: "space-between",
+							alignItems: "center",
+							paddingHorizontal: 16,
+						}}
+					>
+						<Heading
+							title={"Description"}
 							style={{
-								marginTop: 8,
-								justifyContent: "space-between",
+								fontSize: 20,
+								color: white[800],
+								fontWeight: "600",
+							}}
+						/>
+						<Pressable
+							onPress={() => {
+								mirrorRef?.current?.close();
 							}}
 						>
+							<Icon name="close" size={16} />
+						</Pressable>
+					</View>
+					<View
+						style={{
+							borderBottomColor: black[300],
+							borderBottomWidth: 1.5,
+							marginTop: 8,
+						}}
+					/>
+					<BottomSheetScrollView>
+						<View style={{ paddingHorizontal: 16 }}>
 							<StyledText
-								title={"Description"}
+								title={activePublication?.metadata?.name}
 								style={{
-									fontSize: 20,
-									fontWeight: "700",
-									marginVertical: 4,
+									fontSize: 18,
+									fontWeight: "600",
+									marginVertical: 8,
 									color: "white",
 									textAlign: "left",
 								}}
 							/>
-						</View>
-						<StyledText
-							title={activePublication?.metadata?.name}
-							style={{
-								fontSize: 20,
-								fontWeight: "600",
-								marginVertical: 4,
-								color: "white",
-								textAlign: "left",
-							}}
-						/>
-						<View
-							style={{
-								paddingVertical: 10,
-								width: "100%",
-								paddingHorizontal: 8,
-								alignSelf: "center",
-								justifyContent: "space-between",
-								flexDirection: "row",
-								borderBottomColor: "gray",
-								borderBottomWidth: 1,
-							}}
-						>
-							<View style={styles.verticleCenter}>
-								<StyledText
-									title={activePublication?.stats?.totalUpvotes || 0}
-									style={styles.statsLabel}
-								/>
-								<StyledText title="Likes" style={{ color: "white" }} />
+							<View
+								style={{
+									paddingVertical: 10,
+									width: "100%",
+									paddingHorizontal: 8,
+									alignSelf: "center",
+									justifyContent: "space-between",
+									flexDirection: "row",
+									borderBottomColor: "gray",
+									borderBottomWidth: 1,
+								}}
+							>
+								<View style={styles.verticleCenter}>
+									<StyledText
+										title={activePublication?.stats?.totalUpvotes || 0}
+										style={styles.statsLabel}
+									/>
+									<StyledText title="Likes" style={{ color: "white" }} />
+								</View>
+								<View style={styles.verticleCenter}>
+									<StyledText
+										title={activePublication?.stats?.totalAmountOfCollects || 0}
+										style={styles.statsLabel}
+									/>
+									<StyledText title="Collects" style={{ color: "white" }} />
+								</View>
+								<View style={styles.verticleCenter}>
+									<StyledText
+										title={activePublication?.stats?.totalAmountOfMirrors || 0}
+										style={styles.statsLabel}
+									/>
+									<StyledText title="Mirrors" style={{ color: "white" }} />
+								</View>
 							</View>
-							<View style={styles.verticleCenter}>
-								<StyledText
-									title={activePublication?.stats?.totalAmountOfCollects || 0}
-									style={styles.statsLabel}
-								/>
-								<StyledText title="Collects" style={{ color: "white" }} />
-							</View>
-							<View style={styles.verticleCenter}>
-								<StyledText
-									title={activePublication?.stats?.totalAmountOfMirrors || 0}
-									style={styles.statsLabel}
-								/>
-								<StyledText title="Mirrors" style={{ color: "white" }} />
-							</View>
-						</View>
-						<StyledText
-							title={
-								extractURLs(activePublication?.metadata?.description) ||
-								"No description provided by crator"
-							}
-							style={{
-								textAlign: "justify",
-								color: "white",
-								marginTop: 16,
-								fontSize: 14,
-								fontWeight: "500",
-							}}
-						/>
-						<StyledText
-							title={`Posted via ${
-								activePublication?.appId?.charAt(0)?.toUpperCase() +
-									activePublication?.appId?.slice(1) || "LensPlay"
-							}`}
-							style={{
-								color: "white",
-								marginTop: 16,
-								fontSize: 14,
-								fontWeight: "500",
-							}}
-						/>
-						<StyledText
-							title={"Uploaded By"}
-							style={{
-								color: "white",
-								marginTop: 16,
-								fontSize: 14,
-								fontWeight: "500",
-							}}
-						/>
+							<StyledText
+								title={
+									extractURLs(activePublication?.metadata?.description) ||
+									"No description provided by crator"
+								}
+								style={{
+									textAlign: "justify",
+									color: "white",
+									marginTop: 16,
+									fontSize: 14,
+									fontWeight: "500",
+								}}
+							/>
+							<StyledText
+								title={`Posted via ${
+									activePublication?.appId?.charAt(0)?.toUpperCase() +
+										activePublication?.appId?.slice(1) || "LensPlay"
+								}`}
+								style={{
+									color: "white",
+									marginTop: 16,
+									fontSize: 14,
+									fontWeight: "500",
+								}}
+							/>
+							<StyledText
+								title={"Uploaded By"}
+								style={{
+									color: "white",
+									marginTop: 16,
+									fontSize: 14,
+									fontWeight: "500",
+								}}
+							/>
 
-						<VideoCreator
-							alreadyFollowing={activePublication?.profile?.isFollowedByMe || false}
-							avatarLink={getRawurl(activePublication?.profile?.picture) || STATIC_ASSET}
-							profileId={activePublication?.profile?.id}
-							uploadedBy={activePublication?.profile?.name || activePublication?.profile?.handle}
-							showSubscribeButton={false}
-							showSubscribers={true}
-							subscribersCount={activePublication?.profile?.stats?.totalFollowers}
-						/>
-					</View>
-				</BottomSheetScrollView>
+							<VideoCreator
+								alreadyFollowing={activePublication?.profile?.isFollowedByMe || false}
+								avatarLink={getRawurl(activePublication?.profile?.picture) || STATIC_ASSET}
+								profileId={activePublication?.profile?.id}
+								uploadedBy={activePublication?.profile?.name || activePublication?.profile?.handle}
+								showSubscribeButton={false}
+								showSubscribers={true}
+								subscribersCount={activePublication?.profile?.stats?.totalFollowers}
+							/>
+						</View>
+					</BottomSheetScrollView>
+				</View>
 			</Sheet>
 		</>
 	);
