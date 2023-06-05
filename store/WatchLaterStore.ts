@@ -7,6 +7,7 @@ interface WatchLaterStore {
 	cover: null | string;
 	color: null | string;
 	setAllWatchLaters: (watchLaters: WatchLater[]) => void;
+	addOneWatchLater: (watchLater: WatchLater) => void;
 	setCover: (cover: string) => void;
 	setColor: (color: string) => void;
 }
@@ -19,6 +20,10 @@ const useWatchLater = create<WatchLaterStore>((set) => ({
 		set({
 			allWatchLaters: newWatchLaters,
 		}),
+	addOneWatchLater: (publication) =>
+		set((state) => ({
+			allWatchLaters: [...state.allWatchLaters, publication],
+		})),
 	setCover: (cover) =>
 		set({
 			cover: cover,

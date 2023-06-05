@@ -32,6 +32,7 @@ export const PUBLICATION = {
       PAUSE: "Pause video",
     },
   },
+  ADD_WATCH_LATER:"Added to Watch Later"
 };
 
 export const NOTIFICATION = {

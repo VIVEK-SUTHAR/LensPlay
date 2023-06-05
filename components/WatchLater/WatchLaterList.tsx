@@ -9,20 +9,20 @@ import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
 import { black } from "constants/Colors";
 import { type Mirror, type Post, type Scalars } from "customTypes/generated";
-import React from "react";
+import React, { useEffect } from "react";
 import { FlatList, Share, View } from "react-native";
 import useWatchLater from "store/WatchLaterStore";
 import CommonStyles from "styles/index";
+import Logger from "utils/logger";
 
 const WatchLaterList = () => {
 	const [pubId, setPubId] = React.useState("");
 	const { allWatchLaters } = useWatchLater();
 	const WatchLaterSheetRef = React.useRef<BottomSheetMethods>(null);
-
+	Logger.Log("All pubs",allWatchLaters.length)
 	const handlePubId = React.useCallback((pubId: string) => {
 		setPubId(pubId);
 	}, []);
-
 	return (
 		<View
 			style={{
@@ -134,4 +134,4 @@ export const WatchLaterSheet = ({
 	);
 };
 
-export default React.memo(WatchLaterList);
+export default WatchLaterList
