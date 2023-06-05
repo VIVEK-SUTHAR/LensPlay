@@ -19,7 +19,7 @@ import DisLikeButton from "components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "components/VIdeo/Actions/MirrorButton";
 import VideoPageSkeleton from "components/VIdeo/VideoPageSkeleton";
 import VideoPlayer from "components/VideoPlayer";
-import { black, dark_primary, primary } from "constants/Colors";
+import { black, dark_primary, primary, white } from "constants/Colors";
 import { LENSPLAY_SITE, STATIC_ASSET } from "constants/index";
 import { PUBLICATION } from "constants/tracking";
 import {
@@ -34,7 +34,7 @@ import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
 import { useReaction } from "hooks/useLensQuery";
 import React, { useEffect, useRef, useState } from "react";
-import { BackHandler, Dimensions, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { BackHandler, Dimensions, SafeAreaView, ScrollView, StyleSheet, View, Pressable } from "react-native";
 import {
 	useActivePublication,
 	useAuthStore,
@@ -53,6 +53,9 @@ import TrackAction from "utils/Track";
 import createLivePeerAsset from "utils/video/createLivePeerAsset";
 import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 import { freeCollectPublication, freeMirror } from "../../api";
+import Avatar from "components/UI/Avatar";
+import Heading from "components/UI/Heading";
+import Icon from "components/Icon";
 
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState(false);
@@ -390,92 +393,146 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 				backgroundStyle={{
 					backgroundColor: black[600],
 				}}
-				snapPoints={[390]}
+				snapPoints={[580]}
 			>
 				<View
-					style={{
-						maxWidth: "100%",
-						alignItems: "center",
-						justifyContent: "space-evenly",
-						height: "100%",
-					}}
-				>
-					<Image
-						source={{
-							uri: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
-						}}
-						placeholder={getPlaceHolderImage()}
-						transition={500}
-						placeholderContentFit="contain"
-						style={{
-							height: Dimensions.get("screen").height / 4,
-							borderRadius: 8,
-							width: Dimensions.get("screen").width - 48,
-							resizeMode: "cover",
-						}}
-					/>
-					<Button
-						title={collectStats?.isCollected ? "Already collected the video" : `Collect the video`}
-						width={"90%"}
-						py={12}
-						textStyle={{
-							fontSize: 20,
-							fontWeight: "700",
-							textAlign: "center",
-						}}
-						bg={collectStats?.isCollected ? "#c0c0c0" : primary}
-						// onPress={collectPublication}
-						onPress={() => {
-							collectPublication();
-						}}
-					/>
-				</View>
-			</Sheet>
-			<Sheet
-				ref={mirrorRef}
-				index={-1}
-				enablePanDownToClose={true}
-				backgroundStyle={{
-					backgroundColor: black[600],
-				}}
-				snapPoints={[390]}
-			>
-				<View
-					style={{
-						maxWidth: "100%",
-						alignItems: "center",
-						justifyContent: "space-evenly",
-						height: "100%",
-					}}
-				>
-					<Image
-						source={{
-							uri: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
-						}}
-						placeholder={getPlaceHolderImage()}
-						transition={500}
-						placeholderContentFit="contain"
-						style={{
-							height: Dimensions.get("screen").height / 4,
-							borderRadius: 8,
-							width: Dimensions.get("screen").width - 48,
-							resizeMode: "cover",
-						}}
-					/>
-					<Button
-						title={mirrorStats?.isMirrored ? "Already mirrored these video" : "Mirror the video"}
-						width={"90%"}
-						py={12}
-						my={4}
-						textStyle={{
-							fontSize: 20,
-							fontWeight: "700",
-							textAlign: "center",
-						}}
-						onPress={onMirror}
-						bg={mirrorStats?.isMirrored ? "#c0c0c0" : primary}
-					/>
-				</View>
+                  style={{
+                    flex: 1,
+                  }}
+                >
+                  <View style={{
+					flexDirection: "row",
+					justifyContent: "space-between",
+					alignItems: "center",
+					paddingHorizontal: 16,
+					// backgroundColor: "red"
+				  }}>
+				  <Heading
+                    title={"Collect video"}
+                    style={{
+                      fontSize: 20,
+                      color: white[800],
+                      fontWeight: "600",
+                    }}
+                  />
+				  <Pressable onPress={()=>{
+					collectRef?.current?.close();
+				  }}>
+				  <Icon name="close" size={16}/>
+				  </Pressable>
+				  </View>
+				  <View style={{
+					borderBottomColor: black[300],
+					borderBottomWidth: 1.5,
+					marginTop: 8
+				  }} />
+                  <ScrollView
+                    style={{
+                      flex: 1,
+					  paddingHorizontal: 16,
+                    }}
+                  >
+                    <View
+                      style={{
+                        marginTop: 20,
+                      }}
+                    >
+                      <Image
+                        source={{
+                          uri: getIPFSLink(
+                            getRawurl(activePublication?.metadata?.cover)
+                          ),
+                        }}
+                        placeholder={getPlaceHolderImage()}
+                        transition={500}
+                        placeholderContentFit="contain"
+                        style={{
+                          height: 200,
+                          borderRadius: 8,
+                          width: "100%",
+                        }}
+                        contentFit="cover"
+                      />
+                      <StyledText
+                        title={activePublication?.metadata?.name}
+                        style={{
+                          fontSize: 20,
+                          color: white[800],
+                          fontWeight: "600",
+                          marginTop: 16,
+                        }}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        marginTop: 8,
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Icon name="info" color={black[100]} size={16} />
+                      <StyledText
+                        title={"This video is free to collect"}
+                        style={{
+                          fontSize: 16,
+                          color: black[100],
+                          fontWeight: "600",
+                          marginLeft: 4,
+                        }}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        marginTop: 16,
+                      }}
+                    >
+                      <Heading
+                        title={"Posted by"}
+                        style={{
+                          fontSize: 16,
+                          color: white[100],
+                          fontWeight: "600",
+                        }}
+                      />
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          marginTop: 8,
+                        }}
+                      >
+                        <Avatar
+                          src={getRawurl(activePublication?.profile?.picture)}
+                          height={40}
+                          width={40}
+                        />
+                      </View>
+                    </View>
+                  </ScrollView>
+                  <View
+                    style={{
+                      position: "absolute",
+                      bottom: 24,
+                      width: "100%",
+                      alignSelf: "center",
+					  paddingHorizontal: 16
+                    }}
+                  >
+                    <Button
+                      title={collectStats?.isCollected ? "Video already collected" : `Collect Video`}
+                      py={12}
+                      textStyle={{
+                        fontSize: 20,
+                        fontWeight: "600",
+                        textAlign: "center",
+                      }}
+                      bg={collectStats?.isCollected ? "#c0c0c0" : primary}
+                      onPress={() => {
+                        collectPublication();
+                      }}
+                    />
+                  </View>
+                </View>
+
 			</Sheet>
 			<Sheet
 				ref={descRef}
