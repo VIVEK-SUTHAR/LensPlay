@@ -24,6 +24,7 @@ import TrackAction from "utils/Track";
 import decryptData from "utils/decryptData";
 import handleUser from "utils/invites/handleUser";
 import getDefaultProfile from "utils/lens/getDefaultProfile";
+import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
 
 export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">) {
@@ -94,10 +95,18 @@ export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">)
 
 	async function HandleDefaultProfile(adress: string): Promise<boolean> {
 		const userDefaultProfile = await getDefaultProfile(adress);
+		const userData = await AsyncStorage.getItem("@user_data");
+		
 
 		if (userDefaultProfile) {
 			setCurrentProfile(userDefaultProfile);
-
+			if (!userData) {
+				const isUser = await handleUser(userDefaultProfile?.id);
+				
+				if (!isUser) {
+					navigation.navigate("InviteCode");
+				}
+			}
 			return true;
 		} else {
 			setHasHandle(false);
@@ -137,19 +146,15 @@ export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">)
 
 			try {
 				setHasData(true);
-				const userData = await AsyncStorage.getItem("@user_data");
 				const decryptedSignature = await decryptData(signature);
 
 				const result = await HandleDefaultProfile(address);
 
-				if (!userData) {
-					const isUser = await handleUser(currentProfile?.id);
-					if (!isUser) {
-						navigation.navigate("InviteCode");
-						return;
-					}
+				
+				const userData = await AsyncStorage.getItem("@user_data");
+				if (!userData){
+					return
 				}
-
 				if (!result) {
 					navigation.replace("LoginWithLens");
 					return;
