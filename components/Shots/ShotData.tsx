@@ -1,11 +1,16 @@
 import { default as React, useCallback } from "react";
-import { Dimensions, Pressable, ScrollView, View } from "react-native";
+import { Dimensions, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import getRawurl from "utils/getRawUrl";
 import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import { white } from "constants/Colors";
+import { black, white } from "constants/Colors";
 import { ShotsPublication } from "customTypes/index";
+import { VideoCreator } from "components/VIdeo";
+import extractURLs from "utils/extractURL";
+import { STATIC_ASSET } from "constants/index";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import Icon from "components/Icon";
 
 function ShotData({
   item,
@@ -86,29 +91,151 @@ export default React.memo(ShotData);
 
 function DiscriptionSheet({ item }: { item: ShotsPublication }) {
   return (
-    <View style={{ paddingHorizontal: 8 }}>
-      <ScrollView style={{ padding: 8 }}>
-        <Heading
-          title={item?.metadata?.name}
-          style={{
-            fontSize: 18,
-            fontWeight: "600",
-            color: "white",
-          }}
-        />
-        <StyledText
-          title={
-            item?.metadata?.description ||
-            item?.metadata?.content ||
-            "No description provided by creator"
-          }
-          style={{
-            color: "white",
-          }}
-        />
-      </ScrollView>
-    </View>
+    <View
+					style={{
+						flex: 1,
+					}}
+				>
+					<View
+						style={{
+							flexDirection: "row",
+							justifyContent: "space-between",
+							alignItems: "center",
+							paddingHorizontal: 16,
+						}}
+					>
+						<Heading
+							title={"Description"}
+							style={{
+								fontSize: 20,
+								color: white[800],
+								fontWeight: "600",
+							}}
+						/>
+						<Pressable
+							onPress={() => {
+								// ref?.current?.close();
+							}}
+						>
+							<Icon name="close" size={16} />
+						</Pressable>
+					</View>
+					<View
+						style={{
+							borderBottomColor: black[300],
+							borderBottomWidth: 1.5,
+							marginTop: 8,
+						}}
+					/>
+					<BottomSheetScrollView>
+						<View style={{ paddingHorizontal: 16 }}>
+							<StyledText
+								title={item?.metadata?.name}
+								style={{
+									fontSize: 18,
+									fontWeight: "600",
+									marginVertical: 8,
+									color: "white",
+									textAlign: "left",
+								}}
+							/>
+							<View
+								style={{
+									paddingVertical: 10,
+									width: "100%",
+									paddingHorizontal: 8,
+									alignSelf: "center",
+									justifyContent: "space-between",
+									flexDirection: "row",
+									borderBottomColor: "gray",
+									borderBottomWidth: 1,
+								}}
+							>
+								<View style={styles.verticleCenter}>
+									<StyledText
+										title={item?.stats?.totalUpvotes || 0}
+										style={styles.statsLabel}
+									/>
+									<StyledText title="Likes" style={{ color: "white" }} />
+								</View>
+								<View style={styles.verticleCenter}>
+									<StyledText
+										title={item?.stats?.totalAmountOfCollects || 0}
+										style={styles.statsLabel}
+									/>
+									<StyledText title="Collects" style={{ color: "white" }} />
+								</View>
+								<View style={styles.verticleCenter}>
+									<StyledText
+										title={item?.stats?.totalAmountOfMirrors || 0}
+										style={styles.statsLabel}
+									/>
+									<StyledText title="Mirrors" style={{ color: "white" }} />
+								</View>
+							</View>
+							<StyledText
+								title={
+									extractURLs(item?.metadata?.description) ||
+									"No description provided by crator"
+								}
+								style={{
+									textAlign: "justify",
+									color: "white",
+									marginTop: 16,
+									fontSize: 14,
+									fontWeight: "500",
+								}}
+							/>
+							<StyledText
+								title={`Posted via ${
+									item?.appId?.charAt(0)?.toUpperCase() +
+										item?.appId?.slice(1) || "LensPlay"
+								}`}
+								style={{
+									color: "white",
+									marginTop: 16,
+									fontSize: 14,
+									fontWeight: "500",
+								}}
+							/>
+							<StyledText
+								title={"Uploaded By"}
+								style={{
+									color: "white",
+									marginTop: 16,
+									fontSize: 14,
+									fontWeight: "500",
+								}}
+							/>
+
+							<View style={{
+                marginBottom: 24
+              }}>
+              <VideoCreator
+								alreadyFollowing={item?.profile?.isFollowedByMe || false}
+								avatarLink={getRawurl(item?.profile?.picture) || STATIC_ASSET}
+								profileId={item?.profile?.id}
+								uploadedBy={item?.profile?.name || item?.profile?.handle}
+								showSubscribeButton={false}
+								showSubscribers={true}
+								subscribersCount={item?.profile?.stats?.totalFollowers}
+							/>
+              </View>
+						</View>
+					</BottomSheetScrollView>
+				</View>
   );
 }
 
 export { DiscriptionSheet };
+
+const styles = StyleSheet.create({
+	statsLabel: {
+		color: "white",
+		fontSize: 18,
+		fontWeight: "700",
+	},
+	verticleCenter: {
+		alignItems: "center",
+	},
+});

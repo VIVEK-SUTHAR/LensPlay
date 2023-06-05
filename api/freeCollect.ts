@@ -48,6 +48,8 @@ async function freeCollectPublication(
       ) {
         throw new Error("You have already collected this post");
       } else {
+        console.log(data?.errors);
+        
         throw new Error("Something wen't wrong");
       }
     }

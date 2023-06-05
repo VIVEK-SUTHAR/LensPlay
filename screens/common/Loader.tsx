@@ -126,7 +126,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 			}
 
 			if (address) {
-				Logger.Success("Got address");
+				Logger.Success("Got address", address);
 				profileId = await HandleDefaultProfile(address);
 			} else {
 				Logger.Success("Got address via wallet");

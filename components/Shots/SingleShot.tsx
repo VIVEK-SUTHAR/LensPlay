@@ -120,7 +120,7 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
 				backgroundStyle={{
 					backgroundColor: black[600],
 				}}
-				snapPoints={[390]}
+				snapPoints={[440, 550]}
 			>
 				<DiscriptionSheet item={item} />
 			</Sheet>

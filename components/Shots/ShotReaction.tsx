@@ -2,7 +2,7 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import React, { useRef, useState } from "react";
-import { Dimensions, Share, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, Pressable, Share, Text, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { freeCollectPublication } from "../../api";
 import { PUBLICATION, SHOT } from "constants/tracking";
@@ -20,7 +20,14 @@ import { ShotsPublication } from "customTypes/index";
 import { Image } from "expo-image";
 import getPlaceHolderImage from "utils/getPlaceHolder";
 import getImageProxyURL from "utils/getImageProxyURL";
-import { black } from "constants/Colors";
+import { black, primary, white } from "constants/Colors";
+import Heading from "components/UI/Heading";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import StyledText from "components/UI/StyledText";
+import Avatar from "components/UI/Avatar";
+import { LENSPLAY_SITE } from "constants/index";
+import { useProxyActionMutation } from "customTypes/generated";
+import Logger from "utils/logger";
 
 function ShotReaction({ item }: { item: ShotsPublication }) {
 	const [totalCollects, setTotalCollects] = useState<number>(item?.stats?.totalAmountOfCollects);
@@ -33,22 +40,56 @@ function ShotReaction({ item }: { item: ShotsPublication }) {
 	const toast = useToast();
 	const { isGuest } = useGuestStore();
 
+
+	const [createProxyAction] = useProxyActionMutation({
+		onCompleted: (data) => {
+			toast.show("Collect Submitted", ToastType.SUCCESS, true);
+				setCollected(true);
+				setTotalCollects((prev) => prev + 1);
+				TrackAction(SHOT.SHOTS_COLLECT);
+		},
+		onError: (error) => {
+			if (error.message == "Can only collect if the publication has a `FreeCollectModule` set") {
+				toast.show("You can't collect this video", ToastType.ERROR, true);
+			} else {
+				Logger.Log(error.message);
+				toast.show("Something went wrong", ToastType.ERROR, true);
+			}
+
+			collectSheetRef?.current?.close();
+		},
+	});
+
 	const collectPublication = React.useCallback(async () => {
 		try {
 			if (isGuest) {
 				toast.show("Please Login", ToastType.ERROR, true);
 				return;
 			}
-			const data = await freeCollectPublication(item?.id, accessToken);
-			if (data) {
-				toast.show("Collect Submitted", ToastType.SUCCESS, true);
-				setCollected(true);
-				setTotalCollects((prev) => prev + 1);
-				TrackAction(SHOT.SHOTS_COLLECT);
+			if (item?.hasCollectedByMe) {
+				toast.show("You have already collected the video", ToastType.ERROR, true);
+				return;
 			}
+			await createProxyAction({
+				variables: {
+					request: {
+						collect: {
+							freeCollect: {
+								publicationId: item?.id,
+							},
+						},
+					},
+				},
+				context: {
+					headers: {
+						"x-access-token": `Bearer ${accessToken}`,
+						"origin": LENSPLAY_SITE,
+					},
+				},
+			});
 		} catch (error) {
 			if (error instanceof Error) {
-				toast.show(error.message, ToastType.ERROR, true);
+				Logger.Log(error.message);
 			}
 		} finally {
 			collectSheetRef?.current?.close();
@@ -136,50 +177,142 @@ function ShotReaction({ item }: { item: ShotsPublication }) {
 				backgroundStyle={{
 					backgroundColor: black[600],
 				}}
-				snapPoints={[390]}
+				snapPoints={[580]}
 			>
-				<View style={{ paddingHorizontal: 8 }}>
-					<ScrollView
+				<View
+					style={{
+						flex: 1,
+					}}
+				>
+					<View
 						style={{
-							padding: 8,
-							zIndex: 1,
+							flexDirection: "row",
+							justifyContent: "space-between",
+							alignItems: "center",
+							paddingHorizontal: 16,
+						}}
+					>
+						<Heading
+							title={"Collect video"}
+							style={{
+								fontSize: 20,
+								color: white[800],
+								fontWeight: "600",
+							}}
+						/>
+						<Pressable
+							onPress={() => {
+								collectSheetRef?.current?.close();
+							}}
+						>
+							<Icon name="close" size={16} />
+						</Pressable>
+					</View>
+					<View
+						style={{
+							borderBottomColor: black[300],
+							borderBottomWidth: 1.5,
+							marginTop: 8,
+						}}
+					/>
+					<BottomSheetScrollView
+						style={{
+							flex: 1,
+							paddingHorizontal: 16,
 						}}
 					>
 						<View
 							style={{
-								flex: 1,
-								justifyContent: "space-between",
-								height: Dimensions.get("screen").height / 3,
+								marginTop: 20,
 							}}
 						>
 							<Image
-								placeholder={getPlaceHolderImage()}
-								contentFit="cover"
-								transition={500}
 								source={{
-									uri: getImageProxyURL({
-										formattedLink: getIPFSLink(getRawurl(item?.metadata?.cover)),
-									}),
+									uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
 								}}
+								placeholder={getPlaceHolderImage()}
+								transition={500}
+								placeholderContentFit="contain"
 								style={{
-									height: 180,
+									height: 200,
 									borderRadius: 8,
-									resizeMode: "cover",
+									width: "100%",
+								}}
+								contentFit="cover"
+							/>
+							<StyledText
+								title={item?.metadata?.name}
+								style={{
+									fontSize: 20,
+									color: white[800],
+									fontWeight: "600",
+									marginTop: 16,
+								}}
+								numberOfLines={2}
+							/>
+						</View>
+						<View
+							style={{
+								marginTop: 8,
+								flexDirection: "row",
+								alignItems: "center",
+							}}
+						>
+							<Icon name="info" color={black[100]} size={16} />
+							<StyledText
+								title={"This video is free to collect"}
+								style={{
+									fontSize: 16,
+									color: black[100],
+									fontWeight: "600",
+									marginLeft: 4,
 								}}
 							/>
+						</View>
+						<View
+							style={{
+								marginTop: 12,
+							}}
+						>
+							<Heading
+								title={"Posted by"}
+								style={{
+									fontSize: 16,
+									color: white[100],
+									fontWeight: "600",
+								}}
+							/>
+							<View
+								style={{
+									flexDirection: "row",
+									marginTop: 8,
+								}}
+							>
+								<Avatar
+									src={getRawurl(item?.profile?.picture)}
+									height={40}
+									width={40}
+								/>
+							</View>
+						</View>
+						<View
+							style={{
+								marginVertical: 18,
+							}}
+						>
 							<Button
-								title={`Collect the Shot for free`}
-								mx={12}
-								py={16}
+								title={'Collect the shots for free'}
+								py={12}
 								textStyle={{
 									fontSize: 20,
 									fontWeight: "600",
 									textAlign: "center",
 								}}
+								bg={ primary }
 								onPress={collectPublication}
 							/>
 						</View>
-					</ScrollView>
+					</BottomSheetScrollView>
 				</View>
 			</Sheet>
 		</>
