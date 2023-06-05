@@ -18,7 +18,7 @@ const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }
 
 	useFocusEffect(() => {
 		navigation.setOptions({
-			headerStyle: { backgroundColor: color ? color : "black" },
+			headerStyle: { backgroundColor: color ? color : "#7A52B5" },
 		});
 	});
 

@@ -43,7 +43,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 		}).then((colors) => {
 			switch (colors.platform) {
 				case "android":
-					Logger.Success("Got ik coclor",colors.average)
+					Logger.Success("Got ik coclor", colors.average);
 
 					// setColor(colors?.average);
 					break;
@@ -71,10 +71,11 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 						setColor(colors?.detail);
 						break;
 					default:
-						setColor("black");
+						setColor("#7A52B5");
 				}
 			})
 			.catch((error) => {
+				setColor("#7A52B5");
 				Logger.Error("Failed to fetch image for geting dominient color", error);
 			});
 	}
@@ -126,10 +127,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 
 	React.useEffect(() => {
 		getWatchLaterData();
-
-	 }, [
-		navigation
-	])
+	}, [navigation]);
 
 	// useFocusEffect(
 	// 	React.useCallback(() => {

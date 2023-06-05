@@ -193,7 +193,8 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
 	const toast = useToast();
 	const [getOnePub] = useAllPublicationsLazyQuery();
-	const { addOneWatchLater } = useWatchLater();
+	const { addOneWatchLater, setAllWatchLaters } = useWatchLater();
+	const { currentProfile } = useProfile();
 	const actionList: actionListType[] = [
 		{
 			name: "Share",
@@ -237,7 +238,7 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
 					Logger.Warn("Added to Local", parsed);
 					await AsyncStorage.setItem("@watchLaters", JSON.stringify(parsed));
 					toast.success("Added to watch later !");
-					addToWatchLater(profileId, pubId).catch(() => {
+					addToWatchLater(currentProfile?.id, pubId).catch(() => {
 						//Retry again here
 					});
 					const pub = await getOnePub({
@@ -248,6 +249,22 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
 						},
 					});
 					addOneWatchLater(pub?.data?.publications?.items[0] as WatchLater);
+					TrackAction(PUBLICATION.ADD_WATCH_LATER);
+				} else {
+					const pubIds = [pubId];
+					await AsyncStorage.setItem("@watchLaters", JSON.stringify(pubIds));
+					toast.success("Added to watch later !");
+					addToWatchLater(currentProfile?.id, pubId).catch(() => {
+						//Retry again here
+					});
+					const pub = await getOnePub({
+						variables: {
+							request: {
+								publicationIds: [pubid],
+							},
+						},
+					});
+					setAllWatchLaters(pub?.data?.publications?.items as WatchLater[]);
 					TrackAction(PUBLICATION.ADD_WATCH_LATER);
 				}
 			},
