@@ -12,10 +12,14 @@ import { RootTabScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { SafeAreaView } from "react-native";
+import { getColors } from "react-native-image-colors";
 import { useGuestStore } from "store/GuestStore";
 import { useProfile } from "store/Store";
 import useWatchLater, { type WatchLater } from "store/WatchLaterStore";
 import CommonStyles from "styles/index";
+import getIPFSLink from "utils/getIPFSLink";
+import getImageProxyURL from "utils/getImageProxyURL";
+import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
 import getWatchLaters from "utils/watchlater/getWatchLaters";
 
@@ -23,10 +27,36 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	const sheetRef = React.useRef<BottomSheetMethods>(null);
 	const { isGuest } = useGuestStore();
 	const { currentProfile } = useProfile();
-	const { setAllWatchLaters } = useWatchLater();
+	const { setAllWatchLaters, setCover, setColor } = useWatchLater();
 	if (isGuest) return <PleaseLogin />;
 
 	const [getAllPublications] = useAllPublicationsLazyQuery();
+
+	async function handleCover(coverURL: string) {
+		setCover(coverURL);
+		getColors(coverURL, {
+			fallback: "#000000",
+			cache: true,
+			key: coverURL,
+			quality: "lowest",
+			pixelSpacing: 500,
+		})
+			.then((colors) => {
+				switch (colors.platform) {
+					case "android":
+						setColor(colors?.average);
+						break;
+					case "ios":
+						setColor(colors?.detail);
+						break;
+					default:
+						setColor("black");
+				}
+			})
+			.catch((error) => {
+				Logger.Error("Failed to fetch image for geting dominient color", error);
+			});
+	}
 
 	async function getWatchLaterData() {
 		// await AsyncStorage.removeItem("@watchLater");
@@ -46,6 +76,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 			fetchAndStoreWatchLaters(localPubIds);
 		}
 	}
+
 	const fetchAndStoreWatchLaters = async (pubIds: string[]) => {
 		const pubs = await getAllPublications({
 			variables: {
@@ -61,7 +92,13 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 			},
 		});
 		setAllWatchLaters(pubs?.data?.publications?.items as WatchLater[]);
-		Logger.Log("Added to Store ");
+		const coverURL = getImageProxyURL({
+			formattedLink: getIPFSLink(getRawurl(pubs?.data?.publications?.items[0]?.metadata?.cover)),
+		});
+		if (coverURL) {
+			handleCover(coverURL);
+		}
+		Logger.Log("Added to Store");
 	};
 
 	React.useEffect(() => {

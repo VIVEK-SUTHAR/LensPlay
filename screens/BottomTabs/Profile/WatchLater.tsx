@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
@@ -7,65 +6,41 @@ import { white } from "constants/Colors";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useLayoutEffect } from "react";
+import React from "react";
 import { SafeAreaView, View } from "react-native";
 import { useProfile } from "store/Store";
+import useWatchLater from "store/WatchLaterStore";
 import formatHandle from "utils/formatHandle";
 
 const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }): JSX.Element => {
 	const { currentProfile } = useProfile();
-	const [coverData, setCoverData] = React.useState({
-		color: "black",
-		cover: "",
-	});
+	const { cover, color } = useWatchLater();
 
 	useFocusEffect(() => {
-		AsyncStorage.getItem("@watchLater").then((res) => {
-			
-			if (res) {
-				const colorCode = JSON.parse(res).color;
-				const coverURL = JSON.parse(res).cover;
-				navigation.setOptions({
-					headerStyle:{backgroundColor:colorCode}
-				})
-			}
-		})
-	})
-
-	async function handleColor() {
-		const watchLater = await AsyncStorage.getItem("@watchLater");
-		if (watchLater) {
-			const colorCode = JSON.parse(watchLater).color;
-			const coverURL = JSON.parse(watchLater).cover;
-
-			setCoverData({
-				color: colorCode,
-				cover: coverURL,
-			});
-		}
-	}
-
-	React.useEffect(() => {
-		handleColor();
-	}, []);
+		navigation.setOptions({
+			headerStyle: { backgroundColor: color ? color : "black" },
+		});
+	});
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
 			<LinearGradient
 				style={{
 					alignItems: "center",
-					padding: 16,
+					padding: 8,
 				}}
-				colors={[coverData.color, "black"]}
+				colors={[color ? color : "black", "black"]}
 			>
 				<Image
 					source={{
-						uri: coverData.cover,
+						uri: cover
+							? cover
+							: "https://images.unsplash.com/photo-1504805572947-34fad45aed93?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
 					}}
 					style={{
 						height: 200,
 						width: "100%",
-						borderRadius: 8,
+						borderRadius: 16,
 					}}
 					contentFit="cover"
 				/>

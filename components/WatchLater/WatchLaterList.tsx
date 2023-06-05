@@ -1,5 +1,4 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FlashList } from "@shopify/flash-list";
 import Sheet from "components/Bottom";
 import ErrorMesasge from "components/common/ErrorMesasge";
@@ -12,100 +11,17 @@ import { black } from "constants/Colors";
 import { type Mirror, type Post, type Scalars } from "customTypes/generated";
 import React from "react";
 import { FlatList, Share, View } from "react-native";
-import { RefreshControl } from "react-native-gesture-handler";
-import { getColors } from "react-native-image-colors";
-import { useProfile, useThemeStore } from "store/Store";
 import useWatchLater from "store/WatchLaterStore";
 import CommonStyles from "styles/index";
-import getImageProxyURL from "utils/getImageProxyURL";
-import getIPFSLink from "utils/getIPFSLink";
-import getRawurl from "utils/getRawUrl";
-import Logger from "utils/logger";
 
 const WatchLaterList = () => {
 	const [pubId, setPubId] = React.useState("");
-	const [refreshing, setRefreshing] = React.useState<boolean>(false);
-	const [data, setData] = React.useState(null);
 	const { allWatchLaters } = useWatchLater();
 	const WatchLaterSheetRef = React.useRef<BottomSheetMethods>(null);
-
-	const { currentProfile } = useProfile();
-	const { PRIMARY } = useThemeStore();
 
 	const handlePubId = React.useCallback((pubId: string) => {
 		setPubId(pubId);
 	}, []);
-
-	async function handleCoverGradient(watchLaterData: string[]) {
-		const coverURL = getImageProxyURL({
-			formattedLink: getIPFSLink(getRawurl(data[0]?.metadata?.cover)),
-		});
-		Logger.Error("COVER IM", coverURL);
-		getColors(coverURL, {
-			fallback: "#000000",
-			cache: true,
-			key: coverURL,
-			quality: "lowest",
-			pixelSpacing: 500,
-		})
-			.then((colors) => {
-				switch (colors.platform) {
-					case "android":
-						AsyncStorage.setItem(
-							"@watchLater",
-							JSON.stringify({
-								watchLater: watchLaterData,
-								pubId: watchLaterData[0],
-								color: colors.average,
-								cover: coverURL,
-							})
-						);
-						break;
-					case "ios":
-						AsyncStorage.setItem(
-							"@watchLater",
-							JSON.stringify({
-								watchLater: watchLaterData,
-								pubId: watchLaterData[0],
-								color: colors.background,
-								cover: coverURL,
-							})
-						);
-						break;
-					default:
-						AsyncStorage.setItem(
-							"@watchLater",
-							JSON.stringify({
-								watchLater: watchLaterData,
-								pubId: watchLaterData[0],
-								color: "black",
-								cover: coverURL,
-							})
-						);
-				}
-			})
-			.catch((error) => {
-				Logger.Error("Failed to fetch image for geting dominient color", error);
-			});
-	}
-
-	const onRefresh = React.useCallback(() => {
-		setRefreshing(true);
-		try {
-		} catch (error) {
-		} finally {
-			setRefreshing(false);
-		}
-	}, []);
-
-	const _RefreshControl = (
-		<RefreshControl
-			refreshing={refreshing}
-			onRefresh={onRefresh}
-			colors={[PRIMARY]}
-			progressBackgroundColor={"black"}
-		/>
-	);
 
 	return (
 		<View
@@ -120,7 +36,6 @@ const WatchLaterList = () => {
 					ListEmptyComponent={NoVideosFound}
 					removeClippedSubviews={true}
 					estimatedItemSize={110}
-					refreshControl={_RefreshControl}
 					onEndReachedThreshold={0.7}
 					showsVerticalScrollIndicator={false}
 					renderItem={({ item }: { item: Post | Mirror }) => (
@@ -135,7 +50,6 @@ const WatchLaterList = () => {
 			) : (
 				<ErrorMesasge message="Look's like you dont have any watch laters yet" withImage={false} />
 			)}
-
 			<WatchLaterSheet sheetRef={WatchLaterSheetRef} pubId={pubId} />
 		</View>
 	);
