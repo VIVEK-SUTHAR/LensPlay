@@ -74,7 +74,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 			Logger.Success("From Local Storage");
 			const localPubIds = JSON.parse(watchLater);
 			Logger.Log("Local Pubs", localPubIds);
-			fetchAndStoreWatchLaters(localPubIds);
+			fetchAndStoreWatchLaters(localPubIds.reverse());
 		}
 	}
 
@@ -91,7 +91,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 
 	React.useEffect(() => {
 		getWatchLaterData();
-	}, [setAllWatchLaters]);
+	}, [allWatchLaters]);
 
 	return (
 		<>

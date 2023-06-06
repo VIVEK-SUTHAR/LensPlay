@@ -242,7 +242,7 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
 					addToWatchLater(currentProfile?.id, pubId).catch(() => {
 						//Retry again here
 					});
-					setAllWatchLaters(parsed);
+					setAllWatchLaters(parsed.reverse());
 					TrackAction(PUBLICATION.ADD_WATCH_LATER);
 				} else {
 					const pubIds = [pubId];
