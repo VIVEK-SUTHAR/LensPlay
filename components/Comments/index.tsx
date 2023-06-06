@@ -105,6 +105,7 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 				isAlreadyLiked={item?.reaction === "UPVOTE"}
 				isMirrored={item?.mirrors?.length > 0}
 				isDA = {item?.isDataAvailability}
+				address={item?.profile?.ownedBy}
 			/>
 		);
 	};

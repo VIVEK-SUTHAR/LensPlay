@@ -40,6 +40,7 @@ type CommentCardProps = {
 	isAlreadyLiked: boolean;
 	isMirrored: boolean;
 	isDA: boolean;
+	address: string;
 };
 
 const CommentCard: React.FC<CommentCardProps> = ({
@@ -55,7 +56,8 @@ const CommentCard: React.FC<CommentCardProps> = ({
 	isIndexing,
 	isAlreadyLiked,
 	isMirrored,
-	isDA
+	isDA,
+	address
 }) => {
 	const [Liked, setLiked] = useState<boolean>(isAlreadyLiked);
 	const [likes, setLikes] = useState<number>(stats?.totalUpvotes);
@@ -206,6 +208,9 @@ const CommentCard: React.FC<CommentCardProps> = ({
 					navigation.navigate("Channel", {
 						profileId: id,
 						isFollowdByMe: isFollowdByMe,
+						name: name,
+						ethAddress: address,
+						handle: username
 					});
 				}}
 				style={{
