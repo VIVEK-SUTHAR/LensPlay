@@ -462,7 +462,10 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 
 const SubscribeButton = React.memo(_SubscribeButton);
 
+
 export default React.memo(ProfileHeader);
+
+export {SubscribeButton};
 
 const styles = StyleSheet.create({
 	ProfileContainer: {

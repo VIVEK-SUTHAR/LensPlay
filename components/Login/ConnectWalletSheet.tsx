@@ -39,7 +39,8 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 		if (userDefaultProfile) {
 			setHasHandle(true);
 			setCurrentProfile(userDefaultProfile);
-			if (!userData) {
+			
+			if (!userData) {			
 				const isUser = await handleUser(userDefaultProfile?.id);
 				if (!isUser) {
 					navigation.navigate("InviteCode");
@@ -49,6 +50,7 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 		} else {
 			setHasHandle(false);
 			setCurrentProfile(undefined);
+			navigation.navigate("LoginWithLens");
 		}
 	}
 

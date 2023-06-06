@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
+import { SubscribeButton } from "components/Profile/ProfileHeader";
 import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
@@ -55,46 +56,6 @@ const VideoCreator: React.FC<VideoCreatorProps> = React.memo((props) => {
 			name: activePublication?.profile?.name || activePublication?.profile?.handle,
 		});
 	}, []);
-
-	const followCreator = useCallback(() => {
-		if (isGuest) {
-			toast.error("Please Login to follow");
-			return;
-		}
-		if (following) {
-			toast.error("Currently not supported");
-			return;
-		}
-		try {
-			toast.success("Followed");
-			setFollowing(true);
-			void freeFollow({
-				variables: {
-					request: {
-						follow: {
-							freeFollow: {
-								profileId: profileId,
-							},
-						},
-					},
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-						"origin": LENSPLAY_SITE,
-					},
-				},
-			});
-		} catch (error) {
-			if (error instanceof Error) {
-				toast.error("Failed to follow...");
-				setFollowing(false);
-				// Handle errors like follow module set
-				// Any one take
-			}
-		}
-	}, []);
-
 	return (
 		<View style={styles.container}>
 			<View style={styles.contentContainer}>
@@ -109,18 +70,7 @@ const VideoCreator: React.FC<VideoCreatorProps> = React.memo((props) => {
 					/>
 				</View>
 			</View>
-			{Boolean(showSubscribeButton) && (
-				<Button
-					title={following ? "Unsubscribe" : "Subscribe"}
-					width={"auto"}
-					px={24}
-					py={8}
-					type={"filled"}
-					bg={"white"}
-					textStyle={styles.buttonText}
-					onPress={followCreator}
-				/>
-			)}
+			{showSubscribeButton?<SubscribeButton channelId={profileId} isFollwebByMe={following} />:null}
 		</View>
 	);
 });

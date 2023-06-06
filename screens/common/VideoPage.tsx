@@ -159,9 +159,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [createDataAvaibalityMirror] = useCreateDataAvailabilityMirrorViaDispatcherMutation({
 		onCompleted: (data) => {
 			Logger.Success("DA Mirrored", data);
-			toast.success("Mirror submitted");
-			setMirrorStats(true, mirrorStats.mirrorCount + 1);
-			mirrorRef.current?.close();
 		},
 		onError: (err, cliOpt) => {
 			Logger.Error("Error in DA Mirror", err, "\nClient Option", cliOpt);
@@ -178,7 +175,15 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 			mirrorRef.current?.close();
 			return;
 		}
+		if(!activePublication?.profile?.dispatcher?.canUseRelay){
+			toast.show("Dispatcher is disabled", ToastType.ERROR, true);
+			mirrorRef.current?.close();
+			return;
+		}
 		if (isDAPublication) {
+			toast.success("Mirror submitted");
+			setMirrorStats(true, mirrorStats.mirrorCount + 1);
+			mirrorRef.current?.close();
 			createDataAvaibalityMirror({
 				variables: {
 					request: {
@@ -226,6 +231,10 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		try {
 			if (collectStats?.isCollected) {
 				toast.show("You have already collected the video", ToastType.ERROR, true);
+				return;
+			}
+			if(!activePublication?.profile?.dispatcher?.canUseRelay){
+				toast.show("Dispatcher is disabled", ToastType.ERROR, true);
 				return;
 			}
 			await createProcyAction({
