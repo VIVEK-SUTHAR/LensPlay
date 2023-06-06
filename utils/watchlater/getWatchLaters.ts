@@ -20,7 +20,7 @@ export default async function getWatchLaters(profileId: string) {
 			const callTime = endTime - startTime;
 			const jsonRes = await apiResponse.json();
 			Logger.Count("LP API Response in", callTime / 1000, "second");
-			return jsonRes.items;
+			return jsonRes.items.reverse();
 		}
 	} catch (error) {
 		Logger.Log("Failed to add watch later", error);
