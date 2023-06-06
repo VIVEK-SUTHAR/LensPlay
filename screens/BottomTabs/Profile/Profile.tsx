@@ -7,6 +7,7 @@ import MirroredVideos from "components/Profile/MirroredVideos";
 import { UnPinSheet } from "components/Profile/PinnedPublication";
 import ProfileHeader from "components/Profile/ProfileHeader";
 import Tabs, { Tab } from "components/UI/Tabs";
+import StorageKeys from "constants/Storage";
 import { RootTabScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
@@ -25,7 +26,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	const sheetRef = React.useRef<BottomSheetMethods>(null);
 	const { isGuest } = useGuestStore();
 	const { currentProfile } = useProfile();
-	const { allWatchLaters, setAllWatchLaters, setCover, setColor, cover } = useWatchLater();
+	const { allWatchLaters, setAllWatchLaters, setCover, setColor } = useWatchLater();
 	if (isGuest) return <PleaseLogin />;
 
 	async function handleCover(coverURL: string) {
@@ -61,13 +62,12 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 		// }
 		// await AsyncStorage.removeItem("@watchLater");
 		// return;
-		const watchLater = await AsyncStorage.getItem("@watchLaters");
+		const watchLater = await AsyncStorage.getItem(StorageKeys.WatchLaters);
 		if (!watchLater) {
-			Logger.Log("Not watch later");
+			Logger.Log("No watch laters in local storage");
 			const watchLaterData = await getWatchLaters(currentProfile?.id);
 			if (watchLaterData.length > 0) {
-				Logger.Success("Got", watchLaterData);
-				await AsyncStorage.setItem("@watchLaters", JSON.stringify(watchLaterData));
+				await AsyncStorage.setItem(StorageKeys.WatchLaters, JSON.stringify(watchLaterData));
 				fetchAndStoreWatchLaters(watchLaterData);
 			}
 		} else {

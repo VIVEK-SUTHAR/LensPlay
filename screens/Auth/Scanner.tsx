@@ -26,6 +26,7 @@ import handleUser from "utils/invites/handleUser";
 import getDefaultProfile from "utils/lens/getDefaultProfile";
 import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
+import StorageKeys from "constants/Storage";
 
 export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">) {
 	const [permission, requestPermission] = Camera.useCameraPermissions();
@@ -142,7 +143,7 @@ export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">)
 			const signature = JSON.parse(data.data).signature;
 			const address = JSON.parse(data.data).address;
 
-			await AsyncStorage.setItem("@userAddress", address);
+			await AsyncStorage.setItem(StorageKeys.UserAddress, address);
 
 			try {
 				setHasData(true);

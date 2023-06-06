@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Heading from "components/UI/Heading";
+import StorageKeys from "constants/Storage";
 import { APP_OPEN } from "constants/tracking";
 import { useRefreshTokensMutation, useVerifyTokensLazyQuery } from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
@@ -63,9 +64,9 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 					profileId: profileId,
 				}),
 			});
-			
+
 			const jsonRes = await apiResponse.json();
-			
+
 			if (jsonRes?.found) {
 				return true;
 			} else {
@@ -73,30 +74,29 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 			}
 		} catch (error) {
 			console.log(error);
-		}		
+		}
 	}
 
 	async function handleInviteCode(created_at: string, profileId: string) {
 		//get the invite data from async storage
 		const inviteData = await AsyncStorage.getItem("@invite_data");
 		const dateDiff = getDateDifference(created_at);
-		Logger.Count('yeh hai diference', dateDiff);
+		Logger.Count("yeh hai diference", dateDiff);
 		console.log(inviteData);
 
 		//check if it's been five days since the user creation
 		if (dateDiff > 5) {
-			Logger.Warn('difference hai isliye kaam chaalu');
+			Logger.Warn("difference hai isliye kaam chaalu");
 			if (!inviteData) {
 				const hasInviteCodes = await checkInvite(profileId);
 				if (hasInviteCodes) {
 					await AsyncStorage.setItem(
-					"@invite_data",
-					JSON.stringify({
-						hasInviteCodes: true,
-					})
-				);
-				}
-				else {
+						"@invite_data",
+						JSON.stringify({
+							hasInviteCodes: true,
+						})
+					);
+				} else {
 					await createInviteCode(profileId);
 					await AsyncStorage.setItem(
 						"@invite_data",
@@ -104,7 +104,6 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 							hasInviteCodes: true,
 						})
 					);
-					
 				}
 			}
 		}
@@ -116,7 +115,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 			Logger.Log("In App Loader");
 			const userTokens = await AsyncStorage.getItem("@user_tokens");
 			const userData = await AsyncStorage.getItem("@user_data");
-			const address = await AsyncStorage.getItem("@userAddress");
+			const address = await AsyncStorage.getItem(StorageKeys.UserAddress);
 			let profileId;
 
 			if (!userTokens && !address) {
@@ -149,9 +148,9 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 				Logger.Success("Got Tokens and Data ");
 				const accessToken = JSON.parse(userTokens).accessToken;
 				const refreshToken = JSON.parse(userTokens).refreshToken;
-				
+
 				const created_at = JSON.parse(userData).createdAt;
-				
+
 				if (!accessToken || !refreshToken) {
 					Logger.Error("No access and refresh,goin to Login");
 					navigation.replace("Login");

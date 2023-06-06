@@ -12,6 +12,7 @@ import StyledText from "components/UI/StyledText";
 import DeleteVideo from "components/VIdeo/DeleteVideo";
 import { black } from "constants/Colors";
 import { SOURCES } from "constants/index";
+import StorageKeys from "constants/Storage";
 import { PUBLICATION } from "constants/tracking";
 import {
 	Mirror,
@@ -231,12 +232,12 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
 			name: "Add To Watch Later",
 			icon: "images",
 			onPress: async (pubid: Scalars["InternalPublicationId"]) => {
-				const watchLater = await AsyncStorage.getItem("@watchLaters");
+				const watchLater = await AsyncStorage.getItem(StorageKeys.WatchLaters);
 				if (watchLater) {
 					let parsed = JSON.parse(watchLater);
 					parsed.push(pubid);
 					Logger.Warn("Added to Local", parsed);
-					await AsyncStorage.setItem("@watchLaters", JSON.stringify(parsed));
+					await AsyncStorage.setItem(StorageKeys.WatchLaters, JSON.stringify(parsed));
 					toast.success("Added to watch later !");
 					addToWatchLater(currentProfile?.id, pubId).catch(() => {
 						//Retry again here
@@ -245,7 +246,7 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
 					TrackAction(PUBLICATION.ADD_WATCH_LATER);
 				} else {
 					const pubIds = [pubId];
-					await AsyncStorage.setItem("@watchLaters", JSON.stringify(pubIds));
+					await AsyncStorage.setItem(StorageKeys.WatchLaters, JSON.stringify(pubIds));
 					toast.success("Added to watch later !");
 					setAllWatchLaters(pubIds);
 					addToWatchLater(currentProfile?.id, pubId).catch(() => {
