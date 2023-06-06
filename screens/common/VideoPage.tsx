@@ -705,7 +705,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 						/>
 						<Pressable
 							onPress={() => {
-								mirrorRef?.current?.close();
+								descRef?.current?.close();
 							}}
 						>
 							<Icon name="close" size={16} />

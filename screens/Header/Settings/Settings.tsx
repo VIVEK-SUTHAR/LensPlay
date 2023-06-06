@@ -225,6 +225,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 							await AsyncStorage.removeItem("@user_tokens");
 							await AsyncStorage.removeItem("@user_data");
 							await AsyncStorage.removeItem("@invite_data");
+							await AsyncStorage.removeItem("@userAddress");
 							if (isDeskTopLogin) {
 								await AsyncStorage.removeItem("@viaDeskTop");
 								clearInvites();
