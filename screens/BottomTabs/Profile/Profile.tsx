@@ -7,7 +7,6 @@ import MirroredVideos from "components/Profile/MirroredVideos";
 import { UnPinSheet } from "components/Profile/PinnedPublication";
 import ProfileHeader from "components/Profile/ProfileHeader";
 import Tabs, { Tab } from "components/UI/Tabs";
-import { PublicationMainFocus, useAllPublicationsLazyQuery } from "customTypes/generated";
 import { RootTabScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
@@ -15,45 +14,21 @@ import { SafeAreaView } from "react-native";
 import { getColors } from "react-native-image-colors";
 import { useGuestStore } from "store/GuestStore";
 import { useProfile } from "store/Store";
-import useWatchLater, { type WatchLater } from "store/WatchLaterStore";
+import useWatchLater from "store/WatchLaterStore";
 import CommonStyles from "styles/index";
 import getIPFSLink from "utils/getIPFSLink";
-import getImageProxyURL from "utils/getImageProxyURL";
-import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
+import getPubCoverImage from "utils/watchlater/getPubCoverImage";
 import getWatchLaters from "utils/watchlater/getWatchLaters";
-import { useFocusEffect } from "@react-navigation/native";
 
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	const sheetRef = React.useRef<BottomSheetMethods>(null);
 	const { isGuest } = useGuestStore();
 	const { currentProfile } = useProfile();
-	const { setAllWatchLaters, setCover, setColor } = useWatchLater();
+	const { allWatchLaters, setAllWatchLaters, setCover, setColor, cover } = useWatchLater();
 	if (isGuest) return <PleaseLogin />;
 
-	const [getAllPublications] = useAllPublicationsLazyQuery({
-		onError(error) {
-			Logger.Error("Error in fetching pubs", error);
-		},
-	});
-
 	async function handleCover(coverURL: string) {
-		getColors("https://ik.imagekit.io/4uh8nmwsx/fotor-ai-2023060417146.jpg?f-webp", {
-			quality: "highest",
-		}).then((colors) => {
-			switch (colors.platform) {
-				case "android":
-					Logger.Success("Got ik coclor", colors.average);
-
-					// setColor(colors?.average);
-					break;
-				case "ios":
-					setColor(colors?.detail);
-					break;
-				default:
-					setColor("black");
-			}
-		});
 		setCover(coverURL);
 		getColors(coverURL, {
 			fallback: "#000000",
@@ -81,6 +56,9 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	}
 
 	async function getWatchLaterData() {
+		// if (!allWatchLaters) {
+		// 	Logger.Warn("Not null returning")
+		// }
 		// await AsyncStorage.removeItem("@watchLater");
 		// return;
 		const watchLater = await AsyncStorage.getItem("@watchLaters");
@@ -101,38 +79,20 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	}
 
 	const fetchAndStoreWatchLaters = async (pubIds: string[]) => {
-		Logger.Log("Local Pubs for fetcging", pubIds);
-		const pubs = await getAllPublications({
-			variables: {
-				request: {
-					publicationIds: pubIds,
-					metadata: {
-						mainContentFocus: [PublicationMainFocus.Video],
-					},
-				},
-				reactionRequest: {
-					profileId: currentProfile?.id,
-				},
-			},
-		});
-		setAllWatchLaters(pubs?.data?.publications?.items as WatchLater[]);
-		const coverURL = getImageProxyURL({
-			formattedLink: getIPFSLink(getRawurl(pubs?.data?.publications?.items[0]?.metadata?.cover)),
-		});
-		if (coverURL) {
-			handleCover(coverURL);
+		if (!allWatchLaters) {
+			setAllWatchLaters(pubIds);
 		}
 		Logger.Log("Added to Store");
+		if (cover) return;
+		const coverURL = await getPubCoverImage(pubIds[0]);
+		if (coverURL) {
+			handleCover(getIPFSLink(coverURL));
+		}
 	};
 
 	React.useEffect(() => {
 		getWatchLaterData();
-	}, [navigation]);
-
-	// useFocusEffect(
-	// 	React.useCallback(() => {
-	// 	}, [navigation])
-	// );
+	}, [setAllWatchLaters]);
 
 	return (
 		<>

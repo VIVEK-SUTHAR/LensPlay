@@ -25,7 +25,7 @@ import {
 import React from "react";
 import { ActivityIndicator, FlatList, RefreshControl, Share, View } from "react-native";
 import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
-import useWatchLater, { WatchLater } from "store/WatchLaterStore";
+import useWatchLater from "store/WatchLaterStore";
 import CommonStyles from "styles/index";
 import Logger from "utils/logger";
 import TrackAction from "utils/Track";
@@ -193,7 +193,7 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
 	const toast = useToast();
 	const [getOnePub] = useAllPublicationsLazyQuery();
-	const { addOneWatchLater, setAllWatchLaters } = useWatchLater();
+	const { setAllWatchLaters } = useWatchLater();
 	const { currentProfile } = useProfile();
 	const actionList: actionListType[] = [
 		{
@@ -241,30 +241,16 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
 					addToWatchLater(currentProfile?.id, pubId).catch(() => {
 						//Retry again here
 					});
-					const pub = await getOnePub({
-						variables: {
-							request: {
-								publicationIds: [pubid],
-							},
-						},
-					});
-					addOneWatchLater(pub?.data?.publications?.items[0] as WatchLater);
+					setAllWatchLaters(parsed);
 					TrackAction(PUBLICATION.ADD_WATCH_LATER);
 				} else {
 					const pubIds = [pubId];
 					await AsyncStorage.setItem("@watchLaters", JSON.stringify(pubIds));
 					toast.success("Added to watch later !");
+					setAllWatchLaters(pubIds);
 					addToWatchLater(currentProfile?.id, pubId).catch(() => {
 						//Retry again here
 					});
-					const pub = await getOnePub({
-						variables: {
-							request: {
-								publicationIds: [pubid],
-							},
-						},
-					});
-					setAllWatchLaters(pub?.data?.publications?.items as WatchLater[]);
 					TrackAction(PUBLICATION.ADD_WATCH_LATER);
 				}
 			},

@@ -1,29 +1,32 @@
 import type { Mirror, Post } from "customTypes/generated";
 import create from "zustand";
 
-export type WatchLater = Post | Mirror;
 interface WatchLaterStore {
-	allWatchLaters: WatchLater[];
+	allWatchLaters: null | string[];
 	cover: null | string;
 	color: null | string;
-	setAllWatchLaters: (watchLaters: WatchLater[]) => void;
-	addOneWatchLater: (watchLater: WatchLater) => void;
+	setAllWatchLaters: (watchLaters: string[]) => void;
 	setCover: (cover: string) => void;
 	setColor: (color: string) => void;
 }
 
 const useWatchLater = create<WatchLaterStore>((set) => ({
-	allWatchLaters: [],
+	allWatchLaters: null,
 	color: null,
 	cover: null,
-	setAllWatchLaters: (newWatchLaters) =>
-		set({
-			allWatchLaters: newWatchLaters,
-		}),
-	addOneWatchLater: (publication) =>
-		set((state) => ({
-			allWatchLaters: [...state.allWatchLaters, publication],
-		})),
+	setAllWatchLaters: (newWatchLaters) => {
+		set((state) => {
+			if (state.allWatchLaters === null) {
+				return {
+					allWatchLaters: newWatchLaters,
+				};
+			} else {
+				return {
+					allWatchLaters: [...state.allWatchLaters, ...newWatchLaters],
+				};
+			}
+		});
+	},
 	setCover: (cover) =>
 		set({
 			cover: cover,

@@ -11,6 +11,7 @@ import { SafeAreaView, View } from "react-native";
 import { useProfile } from "store/Store";
 import useWatchLater from "store/WatchLaterStore";
 import formatHandle from "utils/formatHandle";
+import Logger from "utils/logger";
 
 const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }): JSX.Element => {
 	const { currentProfile } = useProfile();
@@ -21,7 +22,7 @@ const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }
 			headerStyle: { backgroundColor: color ? color : "#7A52B5" },
 		});
 	});
-
+	Logger.Log("Cover nd color",cover,color)
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
 			<LinearGradient
