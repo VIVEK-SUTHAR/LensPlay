@@ -95,6 +95,8 @@ export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">)
 	}
 
 	async function HandleDefaultProfile(adress: string): Promise<boolean> {
+		console.log('address from qr in default profile');
+		
 		const userDefaultProfile = await getDefaultProfile(adress);
 		const userData = await AsyncStorage.getItem("@user_data");
 		
@@ -105,6 +107,8 @@ export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">)
 				const isUser = await handleUser(userDefaultProfile?.id);
 				
 				if (!isUser) {
+					console.log('navigate');
+					
 					navigation.navigate("InviteCode");
 				}
 			}
@@ -142,6 +146,8 @@ export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">)
 		if (isValidData) {
 			const signature = JSON.parse(data.data).signature;
 			const address = JSON.parse(data.data).address;
+			console.log(address, 'address from qr');
+			
 
 			await AsyncStorage.setItem(StorageKeys.UserAddress, address);
 
@@ -151,14 +157,17 @@ export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">)
 
 				const result = await HandleDefaultProfile(address);
 
+				if (!result) {
+					console.log('result nhi hai');
+					
+					navigation.replace("LoginWithLens");
+					return;
+				}
+				console.log('here');
 				
 				const userData = await AsyncStorage.getItem("@user_data");
 				if (!userData){
 					return
-				}
-				if (!result) {
-					navigation.replace("LoginWithLens");
-					return;
 				}
 
 				await AsyncStorage.setItem("@viaDeskTop", "true");

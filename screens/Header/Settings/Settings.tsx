@@ -10,6 +10,7 @@ import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black, dark_primary, white } from "constants/Colors";
 import { LENSPLAY_PRIVACY, LENSPLAY_TERMS } from "constants/index";
+import StorageKeys from "constants/Storage";
 import { AUTH } from "constants/tracking";
 import type { RootStackScreenProps } from "customTypes/navigation";
 import Constants from "expo-constants";
@@ -225,7 +226,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 							await AsyncStorage.removeItem("@user_tokens");
 							await AsyncStorage.removeItem("@user_data");
 							await AsyncStorage.removeItem("@invite_data");
-							await AsyncStorage.removeItem("@userAddress");
+							await AsyncStorage.removeItem(StorageKeys.UserAddress);
 							if (isDeskTopLogin) {
 								await AsyncStorage.removeItem("@viaDeskTop");
 								clearInvites();
