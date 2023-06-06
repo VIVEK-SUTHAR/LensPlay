@@ -83,7 +83,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 			setAllWatchLaters(pubIds);
 		}
 		Logger.Log("Added to Store");
-		if (cover) return;
 		const coverURL = await getPubCoverImage(pubIds[0]);
 		if (coverURL) {
 			handleCover(getIPFSLink(coverURL));

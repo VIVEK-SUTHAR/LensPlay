@@ -69,14 +69,14 @@ const WatchLaterList = () => {
 				backgroundColor: "black",
 			}}
 		>
-			{/* <Button
+			<Button
 				title="Delete local"
 				onPress={() => {
 					AsyncStorage.removeItem("@watchLaters").then(() => {
 						Logger.Success("Local deleted");
 					});
 				}}
-			/> */}
+			/>
 			{watchLaterList ? (
 				<FlashList
 					data={watchLaterList}
