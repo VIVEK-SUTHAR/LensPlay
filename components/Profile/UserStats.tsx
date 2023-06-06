@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
 	},
 	cardTitle: {
 		color: white[300],
-		fontSize: width / 20,
+		fontSize: width / 24,
 		fontWeight: "500",
 	},
 	cardSubTitle: {

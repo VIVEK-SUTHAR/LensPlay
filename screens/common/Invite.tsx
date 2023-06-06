@@ -117,7 +117,7 @@ const Invite = ({ navigation }: RootStackScreenProps<"Invite">) => {
 								title={`${leftInvites}/5 Invites Left`}
 								style={{
 									color: white[100],
-									fontSize: 24,
+									fontSize: 20,
 									fontWeight: "500",
 									marginTop: 4,
 								}}
@@ -156,7 +156,7 @@ const Invite = ({ navigation }: RootStackScreenProps<"Invite">) => {
 								title={"Bring your friend to LensPlay 😉"}
 								style={{
 									color: white[500],
-									fontSize: width / 16,
+									fontSize: width / 18,
 									fontWeight: "600",
 								}}
 							/>

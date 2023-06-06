@@ -119,7 +119,7 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
 				initialNumToRender={3}
 				maxToRenderPerBatch={3}
 				windowSize={2}
-				onEndReachedThreshold={1}
+				onEndReachedThreshold={0}
 				onEndReached={onEndCallBack}
 				getItemLayout={getItemLayout}
 				removeClippedSubviews={true}
