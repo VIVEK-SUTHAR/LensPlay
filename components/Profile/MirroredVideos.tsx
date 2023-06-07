@@ -31,6 +31,7 @@ import CommonStyles from "styles/index";
 import Logger from "utils/logger";
 import TrackAction from "utils/Track";
 import addToWatchLater from "utils/watchlater/addToWatchLater";
+import addWatchLater from "utils/watchlater/addWatchLater";
 import { NoVideosFound } from "./AllVideos";
 
 type MirroredVideosProps = {
@@ -232,28 +233,7 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
 			name: "Add To Watch Later",
 			icon: "images",
 			onPress: async (pubid: Scalars["InternalPublicationId"]) => {
-				const watchLater = await AsyncStorage.getItem(StorageKeys.WatchLaters);
-				if (watchLater) {
-					let parsed = JSON.parse(watchLater);
-					parsed.push(pubid);
-					Logger.Warn("Added to Local", parsed);
-					await AsyncStorage.setItem(StorageKeys.WatchLaters, JSON.stringify(parsed));
-					toast.success("Added to watch later !");
-					addToWatchLater(currentProfile?.id, pubId).catch(() => {
-						//Retry again here
-					});
-					setAllWatchLaters(parsed.reverse());
-					TrackAction(PUBLICATION.ADD_WATCH_LATER);
-				} else {
-					const pubIds = [pubId];
-					await AsyncStorage.setItem(StorageKeys.WatchLaters, JSON.stringify(pubIds));
-					toast.success("Added to watch later !");
-					setAllWatchLaters(pubIds);
-					addToWatchLater(currentProfile?.id, pubId).catch(() => {
-						//Retry again here
-					});
-					TrackAction(PUBLICATION.ADD_WATCH_LATER);
-				}
+				addWatchLater(pubid);
 			},
 		},
 	];
