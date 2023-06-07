@@ -1,5 +1,4 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FlashList } from "@shopify/flash-list";
 import Sheet from "components/Bottom";
 import ErrorMesasge from "components/common/ErrorMesasge";
@@ -12,26 +11,19 @@ import StyledText from "components/UI/StyledText";
 import DeleteVideo from "components/VIdeo/DeleteVideo";
 import { black } from "constants/Colors";
 import { SOURCES } from "constants/index";
-import StorageKeys from "constants/Storage";
-import { PUBLICATION } from "constants/tracking";
 import {
 	Mirror,
 	PublicationMainFocus,
 	PublicationsQueryRequest,
 	PublicationTypes,
 	Scalars,
-	useAllPublicationsLazyQuery,
 	useProfileMirrorsQuery,
 } from "customTypes/generated";
+import useAddWatchLater from "hooks/useAddToWatchLater";
 import React from "react";
 import { ActivityIndicator, FlatList, RefreshControl, Share, View } from "react-native";
-import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
-import useWatchLater from "store/WatchLaterStore";
+import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import CommonStyles from "styles/index";
-import Logger from "utils/logger";
-import TrackAction from "utils/Track";
-import addToWatchLater from "utils/watchlater/addToWatchLater";
-import addWatchLater from "utils/watchlater/addWatchLater";
 import { NoVideosFound } from "./AllVideos";
 
 type MirroredVideosProps = {
@@ -193,10 +185,7 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 
 export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
-	const toast = useToast();
-	const [getOnePub] = useAllPublicationsLazyQuery();
-	const { setAllWatchLaters } = useWatchLater();
-	const { currentProfile } = useProfile();
+	const add = useAddWatchLater();
 	const actionList: actionListType[] = [
 		{
 			name: "Share",
@@ -233,7 +222,7 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
 			name: "Add To Watch Later",
 			icon: "images",
 			onPress: async (pubid: Scalars["InternalPublicationId"]) => {
-				addWatchLater(pubid);
+				add(pubid);
 			},
 		},
 	];
