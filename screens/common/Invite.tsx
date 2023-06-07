@@ -195,7 +195,7 @@ const _InviteSkleton = () => {
 					/>
 					<View
 						style={{
-							marginTop: 16,
+							marginTop: 30,
 						}}
 					>
 						<View
@@ -444,7 +444,7 @@ const _InviteSkleton = () => {
 							title={"Bring your friend to LensPlay 😉"}
 							style={{
 								color: white[500],
-								fontSize: 24,
+								fontSize: 20,
 								fontWeight: "600",
 							}}
 						/>
