@@ -23,6 +23,7 @@ import {
 	useProfilePostsQuery,
 } from "customTypes/generated";
 import type { ProfileMetaDataV1nput } from "customTypes/index";
+import useAddWatchLater from "hooks/useAddToWatchLater";
 import React from "react";
 import { ActivityIndicator, Share, View } from "react-native";
 import { FlatList, RefreshControl } from "react-native-gesture-handler";
@@ -187,6 +188,9 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 	const toast = useToast();
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
+	const add = useAddWatchLater();
+
+
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
 
 	const pinStore = usePinStore();
@@ -287,13 +291,20 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 				});
 			},
 		},
+		{
+			name: "Add to watch later",
+			icon: "images",
+			onPress:(pubId)=> {
+				add(pubId)
+			},
+		}
 	];
 
 	return (
 		<>
 			<Sheet
 				ref={sheetRef}
-				snapPoints={[profileId ? 100 : 220]}
+				snapPoints={[profileId ? 150 : 220]}
 				enablePanDownToClose={true}
 				enableOverDrag={true}
 				bottomInset={32}

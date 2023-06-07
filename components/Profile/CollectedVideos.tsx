@@ -24,6 +24,7 @@ import CommonStyles from "styles/index";
 import { NoVideosFound } from "./AllVideos";
 import Skeleton from "components/common/Skeleton";
 import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
+import useAddWatchLater from "hooks/useAddToWatchLater";
 
 type CollectedVideosProps = {
 	ethAddress?: string;
@@ -184,6 +185,8 @@ export const CollectedVideoSheet = ({
 	sheetRef: React.RefObject<BottomSheetMethods>;
 	pubId: Scalars["InternalPublicationId"];
 }) => {
+	const add = useAddWatchLater();
+
 	const actionList: actionListType[] = [
 		{
 			name: "Share",
@@ -193,6 +196,13 @@ export const CollectedVideoSheet = ({
 					message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${pubid}`,
 					title: "Watch video on LensPlay",
 				});
+			},
+		},
+		{
+			name: "Add to watch later",
+			icon: "images",
+			onPress: (pubId) => {
+				add(pubId);
 			},
 		},
 	];
