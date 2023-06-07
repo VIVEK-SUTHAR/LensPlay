@@ -1,13 +1,11 @@
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
-import { black, dark_primary, dark_secondary, primary, white } from "constants/Colors";
+import { black, white } from "constants/Colors";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { Image } from "expo-image";
-import linking from "navigation/LinkingConfiguration";
 import React, { useState } from "react";
 import {
 	Dimensions,
-	Linking,
 	NativeSyntheticEvent,
 	SafeAreaView,
 	TextInput,
@@ -28,17 +26,6 @@ export default function InviteCode({ navigation }: RootStackScreenProps<"InviteC
 		setInviteCode(e.nativeEvent.text);
 	};
 
-	const shareOnTwitter = () => {
-		Linking.openURL(
-			`https://twitter.com/intent/tweet?original_referer=yoururl.com&source=tweetbutton&url=GM frens 👋,%0a%0aI'm trying @lensplayxyz 🚀,need my invite to access LensPlay 🔥`
-		);
-	};
-
-	const shareOnLens = () => {
-		Linking.openURL(
-			"https://lenster.xyz/?text= GM frens 👋,I'm trying @lensplayxyz 🚀,need my invite to access LensPlay 🔥"
-		);
-	};
 	const checkIsValidInviteCode = () => {
 		if (!inviteCode.includes("lensplay-")) {
 			toast.error("Invaild invite code");
@@ -101,13 +88,12 @@ export default function InviteCode({ navigation }: RootStackScreenProps<"InviteC
 			style={{
 				flex: 1,
 				backgroundColor: "black",
-				justifyContent: "space-evenly",
 			}}
 		>
 			<View
 				style={{
 					flex: 0.5,
-					padding: 12,
+					padding: 16,
 				}}
 			>
 				<Image
@@ -121,7 +107,7 @@ export default function InviteCode({ navigation }: RootStackScreenProps<"InviteC
 			<View
 				style={{
 					alignItems: "flex-start",
-					padding: 12,
+					padding: 16,
 				}}
 			>
 				<Heading
@@ -141,68 +127,41 @@ export default function InviteCode({ navigation }: RootStackScreenProps<"InviteC
 						paddingVertical: 12,
 						paddingHorizontal: 12,
 						fontSize: 20,
-						marginVertical: 20,
+						marginVertical: 24,
 						width: "100%",
 						backgroundColor: black[400],
 						borderRadius: 8,
 						color: "white",
 					}}
 				/>
-				<View
-					style={{
-						position: "relative",
-						bottom: 16,
-						paddingVertical: 12,
-						width: "100%",
-            marginTop:12
-					}}
-				>
-					<Button
-						title={"Let's Get In"}
-						py={12}
-						disabled={!inviteCode}
-						textStyle={{
-							textAlign: "center",
-							fontSize: 20,
-							fontWeight: "600",
-						}}
-						isLoading={isChecking}
-						onPress={checkIsValidInviteCode}
+				<View style={{ paddingHorizontal: 12,flexDirection:"row"}}>
+					<Heading title="Don't have invite an code?" style={{ fontSize: 16, color: "white" }} />
+					<Heading
+						title=" Share "
+						style={{ fontSize: 16, color: "grey", }}
 					/>
 				</View>
 			</View>
-
-			<View style={{ padding: 16 }}>
-				<Heading title="Don't have invite an code?" style={{ fontSize: 24, color: "white" }} />
-				<Heading
-					title="Get one by tagging lensplay in any of our socials"
-					style={{ fontSize: 20, color: "grey", paddingVertical: 8 }}
+			<View
+				style={{
+					position: "absolute",
+					bottom: 16,
+					paddingHorizontal: 16,
+					width: "100%",
+				}}
+			>
+				<Button
+					title={"Let's Get In"}
+					py={16}
+					disabled={!inviteCode}
+					textStyle={{
+						textAlign: "center",
+						fontSize: 20,
+						fontWeight: "600",
+					}}
+					isLoading={isChecking}
+					onPress={checkIsValidInviteCode}
 				/>
-				<View
-					style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 16 }}
-				>
-					<Button
-						title={"Twitter"}
-						type="filled"
-						bg={"#c0c0c0"}
-						borderColor={"white"}
-						width={"40%"}
-						// borderRadius={20}
-						// px={36}
-						textStyle={{ color: "black", fontSize: 18 }}
-						onPress={shareOnTwitter}
-					/>
-					<Button
-						title={"Lens"}
-						type="filled"
-						borderColor={"white"}
-						width={"40%"}
-						// px={36}
-						bg={"#c0c0c0"}
-						textStyle={{ color: "black", fontSize: 18 }}
-						onPress={shareOnLens}
-					/>
-				</View>
 			</View>
 		</SafeAreaView>
 	);
