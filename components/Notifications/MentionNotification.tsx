@@ -49,11 +49,10 @@ const MentionNotification = ({ notification }: MentionNotificationProps) => {
 					height: 35,
 					width: 35,
 					marginHorizontal: 4,
-					justifyContent: "center",
 					alignItems: "center",
 				}}
 			>
-				<Icon name="mention" color="#CC5DE8" size={24} />
+				<Icon name="mention" color="#79E0EE" size={24} />
 			</View>
 			<View style={{ flex: 1 }} key={React.useId()}>
 				<Pressable

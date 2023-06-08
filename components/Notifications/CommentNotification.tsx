@@ -45,11 +45,10 @@ const CommentNotification: React.FC<CommentNotificationProps> = ({ notification 
 					height: 35,
 					width: 35,
 					marginHorizontal: 4,
-					justifyContent: "center",
 					alignItems: "center",
 				}}
 			>
-				<Icon name="comment" color="cyan" />
+				<Icon name="comment" color="#8696FE" />
 			</View>
 			<View style={{ flex: 1 }}>
 				<Pressable

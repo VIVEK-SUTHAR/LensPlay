@@ -16,8 +16,8 @@ type CollectNotificationProps = {
 };
 
 const CollectNotification: React.FC<CollectNotificationProps> = ({ notification }) => {
-  const navigation = useNavigation();
-  
+	const navigation = useNavigation();
+
 	return (
 		<Pressable
 			android_ripple={{
@@ -36,11 +36,10 @@ const CollectNotification: React.FC<CollectNotificationProps> = ({ notification 
 					height: 35,
 					width: 35,
 					marginHorizontal: 4,
-					justifyContent: "center",
 					alignItems: "center",
 				}}
 			>
-				<Icon name="collect" color="coral" size={24} />
+				<Icon name="collect" color="#E57C23" size={24} />
 			</View>
 			<View style={{ flex: 1 }}>
 				<Pressable

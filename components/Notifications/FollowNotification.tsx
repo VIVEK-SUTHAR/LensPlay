@@ -46,11 +46,10 @@ const FollowNotification: React.FC<FollowNotificationProps> = ({ notification })
 					height: 35,
 					width: 35,
 					marginHorizontal: 4,
-					justifyContent: "center",
 					alignItems: "center",
 				}}
 			>
-				<Icon name="follow" size={30} color="#5C7CFA" />
+				<Icon name="follow" size={30} color="#EA8FEA" />
 			</View>
 			<View style={{ flex: 1 }}>
 				<Pressable

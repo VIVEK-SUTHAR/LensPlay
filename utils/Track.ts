@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DEV } from "constants/index";
 
 async function TrackAction(event: string) {
-	if (DEV) return;
+	// if (DEV) return;
 	const profileId = await AsyncStorage.getItem(StorageKeys.ProfileId);
 	const options = {
 		method: "POST",
