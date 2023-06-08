@@ -14,7 +14,7 @@ export const data = [
   {
     id: 3,
     imgUrl: require("../../assets/images/3D-3.webp"),
-    title: "Create,Share & Shine on LensPlay",
+    title: "Create, Share & Shine on LensPlay",
     desc: "",
   },
   {

@@ -198,19 +198,19 @@ export const CollectedVideoSheet = ({
 				});
 			},
 		},
-		{
-			name: "Add to watch later",
-			icon: "images",
-			onPress: (pubId) => {
-				add(pubId);
-			},
-		},
+		// {
+		// 	name: "Add to watch later",
+		// 	icon: "images",
+		// 	onPress: (pubId) => {
+		// 		add(pubId);
+		// 	},
+		// },
 	];
 
 	return (
 		<Sheet
 			ref={sheetRef}
-			snapPoints={[150]}
+			snapPoints={[90]}
 			enablePanDownToClose={true}
 			enableOverDrag={true}
 			bottomInset={32}
