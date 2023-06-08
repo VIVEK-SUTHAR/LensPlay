@@ -1,3 +1,5 @@
+import StorageKeys from "constants/Storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { client } from "apollo/client";
 import getProfile from "apollo/Queries/getProfile";
 import { Profile, Scalars } from "customTypes/generated";
@@ -15,7 +17,7 @@ const getDefaultProfile = async (
 			},
 		});
 		Logger.Log("lens ma se mila ye", result);
-
+		await AsyncStorage.setItem(StorageKeys.ProfileId, result?.data?.defaultProfile?.id);
 		return result?.data?.defaultProfile;
 	} catch (error) {
 		Logger.Log("[Error in Get default profile]");
