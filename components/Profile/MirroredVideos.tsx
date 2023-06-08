@@ -218,20 +218,20 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
 				});
 			},
 		},
-		{
-			name: "Add To Watch Later",
-			icon: "images",
-			onPress: async (pubid: Scalars["InternalPublicationId"]) => {
-				add(pubid);
-			},
-		},
+		// {
+		// 	name: "Add To Watch Later",
+		// 	icon: "images",
+		// 	onPress: async (pubid: Scalars["InternalPublicationId"]) => {
+		// 		add(pubid);
+		// 	},
+		// },
 	];
 
 	return (
 		<>
 			<Sheet
 				ref={sheetRef}
-				snapPoints={[profileId ? 150 : 150]}
+				snapPoints={[profileId ? 90 : 150]}
 				enablePanDownToClose={true}
 				enableOverDrag={true}
 				bottomInset={32}

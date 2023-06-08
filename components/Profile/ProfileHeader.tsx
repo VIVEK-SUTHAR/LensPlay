@@ -293,7 +293,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 						<SocialLinks profile={profile as Profile} />
 						<PinnedPublication sheetRef={sheetRef as any} profile={profile as Profile} />
 						<UserStats profile={profile as Profile} />
-						{!isChannel ? <ProfileLists /> : null}
+						{/* {!isChannel ? <ProfileLists /> : null} */}
 					</View>
 				</ScrollView>
 				{!isChannel ? <UnPinSheet sheetRef={sheetRef} /> : null}
