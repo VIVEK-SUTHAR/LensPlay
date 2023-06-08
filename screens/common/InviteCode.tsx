@@ -8,8 +8,11 @@ import {
 	Dimensions,
 	NativeSyntheticEvent,
 	SafeAreaView,
+	Share,
+	StatusBar,
 	TextInput,
 	TextInputChangeEventData,
+	TouchableOpacity,
 	View,
 } from "react-native";
 import { useProfile, useThemeStore, useToast } from "store/Store";
@@ -90,24 +93,46 @@ export default function InviteCode({ navigation }: RootStackScreenProps<"InviteC
 				backgroundColor: "black",
 			}}
 		>
+			<StatusBar backgroundColor={"#111111"} barStyle={"light-content"} />
 			<View
-				style={{
-					flex: 0.5,
-					padding: 16,
-				}}
-			>
-				<Image
-					source={require("../../assets/images/home.png")}
-					style={{
-						flex: 1,
-					}}
-					contentFit="contain"
-				/>
-			</View>
+              style={{
+                position: "relative",
+                marginTop: -50,
+				alignItems: "center"
+              }}
+            >
+              <Image
+                source={require("../../assets/images/circle.webp")}
+                style={{
+                  height: 360,
+                  width: 360,
+                }}
+              />
+              <View
+                style={{
+                  position: "absolute",
+                  height: 360,
+                  width: 360,
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  source={require("../../assets/images/icon.png")}
+                  style={{
+                    height: 50,
+                    width: 50,
+                    // backgroundColor: "red"
+                  }}
+                />
+              </View>
+            </View>
 			<View
 				style={{
 					alignItems: "flex-start",
-					padding: 16,
+					paddingHorizontal: 16,
+					marginTop: 40
 				}}
 			>
 				<Heading
@@ -127,20 +152,16 @@ export default function InviteCode({ navigation }: RootStackScreenProps<"InviteC
 						paddingVertical: 12,
 						paddingHorizontal: 12,
 						fontSize: 20,
-						marginVertical: 24,
+						marginTop: 16,
 						width: "100%",
 						backgroundColor: black[400],
 						borderRadius: 8,
 						color: "white",
 					}}
 				/>
-				<View style={{ paddingHorizontal: 12,flexDirection:"row"}}>
-					<Heading title="Don't have invite an code?" style={{ fontSize: 16, color: "white" }} />
-					<Heading
-						title=" Share "
-						style={{ fontSize: 16, color: "grey", }}
-					/>
-				</View>
+				<TouchableOpacity style={{ flexDirection:"row", marginTop: 8, marginHorizontal: 4}} onPress={async()=>{await Share.share({ message: 'GM frens 👋,\nI\'m trying @lensplayxyz 🚀,need my invite to access the app🔥' })}}>
+					<Heading title="Don't have an invite code? share your word on socials" style={{ fontSize: 16, color: "grey" }} />
+				</TouchableOpacity>
 			</View>
 			<View
 				style={{
