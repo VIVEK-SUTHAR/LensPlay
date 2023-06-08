@@ -43,7 +43,7 @@ export default function StackNavigation() {
 					backgroundColor: "black",
 				},
 			}}
-			initialRouteName={"InviteCode"}
+			initialRouteName={"Loader"}
 		>
 			<Stack.Group key={"Invite Code"}>
 				<Stack.Screen
