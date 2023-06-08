@@ -16,7 +16,15 @@ import type { RootStackScreenProps } from "customTypes/navigation";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import React, { FC, useRef } from "react";
-import { Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import {
+	Linking,
+	Pressable,
+	SafeAreaView,
+	ScrollView,
+	StyleSheet,
+	useWindowDimensions,
+	View,
+} from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useInviteStore } from "store/InviteStore";
 import TrackAction from "utils/Track";
@@ -39,6 +47,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 		return () => clearTimeout(delay);
 	}, []);
 
+	const { width } = useWindowDimensions();
 	const Wallet = useWalletConnect();
 	const { isGuest } = useGuestStore();
 	const logoutref = useRef<BottomSheetMethods>(null);
@@ -204,7 +213,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 							title="Are you sure?"
 							style={{
 								color: "white",
-								fontSize: 20,
+								fontSize: width / 16,
 								marginVertical: 4,
 								textAlign: "left",
 								fontWeight: "600",
@@ -214,7 +223,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 							title="By doing this,next time when you open LensPlay, you need to connect your wallet again."
 							style={{
 								color: "gray",
-								fontSize: 14,
+								fontSize: width / 20,
 								marginVertical: 4,
 								fontWeight: "500",
 							}}

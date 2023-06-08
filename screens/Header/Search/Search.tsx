@@ -27,7 +27,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 	const authStore = useAuthStore();
 	const [keyword, setKeyword] = useState<string>("");
 	const inputRef = React.useRef<TextInput>(null);
-	const debouncedValue = useDebounce<string>(keyword, 500);
+	const debouncedValue = useDebounce<string>(keyword, 300);
 	const { isGuest } = useGuestStore();
 
 	const [searchChannels, { data: result, error, loading }] = useLazyQuery(SearchProfilesDocument);
@@ -128,6 +128,9 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 						owner={item?.ownedBy}
 					/>
 				)}
+				contentContainerStyle={{
+					paddingHorizontal: 8,
+				}}
 			/>
 		</SafeAreaView>
 	);

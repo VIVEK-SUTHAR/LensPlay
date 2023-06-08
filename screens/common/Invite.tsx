@@ -53,6 +53,7 @@ const Invite = ({ navigation }: RootStackScreenProps<"Invite">) => {
 			progressBackgroundColor={"black"}
 		/>
 	);
+
 	if (isLoading) return <InviteSkleton />;
 
 	if (inviteError === GetInviteResponse.ZERO_INVITES) {
@@ -153,7 +154,7 @@ const Invite = ({ navigation }: RootStackScreenProps<"Invite">) => {
 							}}
 						>
 							<Heading
-								title={"Bring your friend to LensPlay 😉"}
+								title={"Bring your friends to LensPlay 😉"}
 								style={{
 									color: white[500],
 									fontSize: width / 18,
@@ -195,24 +196,24 @@ const _InviteSkleton = () => {
 					/>
 					<View
 						style={{
-							marginTop: 30,
+							marginTop: 16,
 						}}
 					>
+						<View
+							style={{
+								height: 22,
+								width: Dimensions.get("screen").width / 2,
+								backgroundColor: "#1d1d1d",
+								borderRadius: 4,
+							}}
+						/>
 						<View
 							style={{
 								height: 22,
 								width: Dimensions.get("screen").width / 2.5,
 								backgroundColor: "#1d1d1d",
 								borderRadius: 4,
-							}}
-						/>
-						<StyledText
-							title={`Invites Left`}
-							style={{
-								color: white[100],
-								fontSize: 24,
-								fontWeight: "500",
-								marginTop: 4,
+								marginTop: 8,
 							}}
 						/>
 					</View>
@@ -224,231 +225,49 @@ const _InviteSkleton = () => {
 						flexWrap: "wrap",
 					}}
 				>
-					<View
-						style={{
-							height: 150,
-							width: "48%",
-							marginTop: 16,
-							position: "relative",
-							backgroundColor: "#111111",
-							borderRadius: 16,
-							padding: 16,
-							justifyContent: "space-between",
-						}}
-					>
-						<View style={{ marginVertical: 2 }}>
+					{[...Array(6)].map((_, index) => (
+						<View
+							key={index}
+							style={{
+								height: 150,
+								width: "48%",
+								marginTop: 16,
+								position: "relative",
+								backgroundColor: "#111111",
+								borderRadius: 16,
+								padding: 16,
+								justifyContent: "space-between",
+							}}
+						>
+							<View style={{ marginVertical: 2 }}>
+								<View
+									style={{
+										height: 12,
+										width: "80%",
+										backgroundColor: "#1d1d1d",
+										marginVertical: 4,
+									}}
+								/>
+								<View
+									style={{
+										height: 12,
+										width: "60%",
+										backgroundColor: "#1d1d1d",
+										marginVertical: 4,
+									}}
+								/>
+							</View>
 							<View
 								style={{
-									height: 12,
-									width: "80%",
+									height: 32,
+									borderRadius: 50,
+									width: "90%",
+									alignSelf: "center",
 									backgroundColor: "#1d1d1d",
-									marginVertical: 4,
-								}}
-							/>
-							<View
-								style={{
-									height: 12,
-									width: "60%",
-									backgroundColor: "#1d1d1d",
-									marginVertical: 4,
 								}}
 							/>
 						</View>
-						<View
-							style={{
-								height: 32,
-								borderRadius: 50,
-								width: "90%",
-								alignSelf: "center",
-								backgroundColor: "#1d1d1d",
-							}}
-						/>
-					</View>
-					<View
-						style={{
-							height: 150,
-							width: "48%",
-							marginTop: 16,
-							position: "relative",
-							backgroundColor: "#111111",
-							borderRadius: 16,
-							padding: 16,
-							justifyContent: "space-between",
-						}}
-					>
-						<View style={{ marginVertical: 2 }}>
-							<View
-								style={{
-									height: 12,
-									width: "80%",
-									backgroundColor: "#1d1d1d",
-									marginVertical: 4,
-								}}
-							/>
-							<View
-								style={{
-									height: 12,
-									width: "60%",
-									backgroundColor: "#1d1d1d",
-									marginVertical: 4,
-								}}
-							/>
-						</View>
-						<View
-							style={{
-								height: 32,
-								borderRadius: 50,
-								width: "90%",
-								alignSelf: "center",
-								backgroundColor: "#1d1d1d",
-							}}
-						/>
-					</View>
-
-					<View
-						style={{
-							height: 150,
-							width: "48%",
-							marginTop: 16,
-							position: "relative",
-							backgroundColor: "#111111",
-							borderRadius: 16,
-							padding: 16,
-							justifyContent: "space-between",
-						}}
-					>
-						<View style={{ marginVertical: 2 }}>
-							<View
-								style={{
-									height: 12,
-									width: "80%",
-									backgroundColor: "#1d1d1d",
-									marginVertical: 4,
-								}}
-							/>
-							<View
-								style={{
-									height: 12,
-									width: "60%",
-									backgroundColor: "#1d1d1d",
-									marginVertical: 4,
-								}}
-							/>
-						</View>
-						<View
-							style={{
-								height: 32,
-								borderRadius: 50,
-								width: "90%",
-								alignSelf: "center",
-								backgroundColor: "#1d1d1d",
-							}}
-						/>
-					</View>
-
-					<View
-						style={{
-							height: 150,
-							width: "48%",
-							marginTop: 16,
-							position: "relative",
-							backgroundColor: "#111111",
-							borderRadius: 16,
-							padding: 16,
-							justifyContent: "space-between",
-						}}
-					>
-						<View style={{ marginVertical: 2 }}>
-							<View
-								style={{
-									height: 12,
-									width: "80%",
-									backgroundColor: "#1d1d1d",
-									marginVertical: 4,
-								}}
-							/>
-							<View
-								style={{
-									height: 12,
-									width: "60%",
-									backgroundColor: "#1d1d1d",
-									marginVertical: 4,
-								}}
-							/>
-						</View>
-						<View
-							style={{
-								height: 32,
-								borderRadius: 50,
-								width: "90%",
-								alignSelf: "center",
-								backgroundColor: "#1d1d1d",
-							}}
-						/>
-					</View>
-
-					<View
-						style={{
-							height: 150,
-							width: "48%",
-							marginTop: 16,
-							position: "relative",
-							backgroundColor: "#111111",
-							borderRadius: 16,
-							padding: 16,
-							justifyContent: "space-between",
-						}}
-					>
-						<View style={{ marginVertical: 2 }}>
-							<View
-								style={{
-									height: 12,
-									width: "80%",
-									backgroundColor: "#1d1d1d",
-									marginVertical: 4,
-								}}
-							/>
-							<View
-								style={{
-									height: 12,
-									width: "60%",
-									backgroundColor: "#1d1d1d",
-									marginVertical: 4,
-								}}
-							/>
-						</View>
-						<View
-							style={{
-								height: 32,
-								borderRadius: 50,
-								width: "90%",
-								alignSelf: "center",
-								backgroundColor: "#1d1d1d",
-							}}
-						/>
-					</View>
-
-					<View
-						style={{
-							height: 150,
-							width: "48%",
-							marginTop: 16,
-							position: "relative",
-							backgroundColor: "#111111",
-							borderRadius: 8,
-							padding: 16,
-							justifyContent: "space-between",
-						}}
-					>
-						<Heading
-							title={"Bring your friend to LensPlay 😉"}
-							style={{
-								color: white[500],
-								fontSize: 20,
-								fontWeight: "600",
-							}}
-						/>
-					</View>
+					))}
 				</View>
 			</ScrollView>
 		</SafeAreaView>
