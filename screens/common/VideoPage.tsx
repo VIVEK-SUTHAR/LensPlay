@@ -175,7 +175,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 			mirrorRef.current?.close();
 			return;
 		}
-		if(!activePublication?.profile?.dispatcher?.canUseRelay){
+		if (!activePublication?.profile?.dispatcher?.canUseRelay) {
 			toast.show("Dispatcher is disabled", ToastType.ERROR, true);
 			mirrorRef.current?.close();
 			return;
@@ -233,7 +233,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 				toast.show("You have already collected the video", ToastType.ERROR, true);
 				return;
 			}
-			if(!activePublication?.profile?.dispatcher?.canUseRelay){
+			if (!activePublication?.profile?.dispatcher?.canUseRelay) {
 				toast.show("Dispatcher is disabled", ToastType.ERROR, true);
 				return;
 			}
@@ -422,6 +422,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							justifyContent: "space-between",
 							alignItems: "center",
 							paddingHorizontal: 16,
+							paddingVertical: 8,
 						}}
 					>
 						<Heading
@@ -429,7 +430,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							style={{
 								fontSize: 20,
 								color: white[800],
-								fontWeight: "600",
+								fontWeight: "500",
 							}}
 						/>
 						<Pressable
@@ -483,7 +484,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 								numberOfLines={2}
 							/>
 						</View>
-						<View
+						{/* <View
 							style={{
 								marginTop: 8,
 								flexDirection: "row",
@@ -500,7 +501,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 									marginLeft: 4,
 								}}
 							/>
-						</View>
+						</View> */}
 						<View
 							style={{
 								marginTop: 16,
@@ -517,6 +518,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							<View
 								style={{
 									flexDirection: "row",
+									alignItems: "center",
 									marginTop: 8,
 								}}
 							>
@@ -525,6 +527,29 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 									height={40}
 									width={40}
 								/>
+								<View
+									style={{
+										marginHorizontal: 8,
+										maxWidth: "100%",
+									}}
+								>
+									<Heading
+										title={activePublication?.profile?.name}
+										style={{
+											color: "white",
+											fontSize: 16,
+											fontWeight: "500",
+										}}
+									/>
+									<StyledText
+										title={activePublication?.profile?.handle}
+										style={{
+											color: "gray",
+											fontSize: 12,
+											fontWeight: "500",
+										}}
+									/>
+								</View>
 							</View>
 						</View>
 						<View
@@ -569,6 +594,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							justifyContent: "space-between",
 							alignItems: "center",
 							paddingHorizontal: 16,
+							paddingVertical: 8,
 						}}
 					>
 						<Heading
@@ -576,7 +602,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							style={{
 								fontSize: 20,
 								color: white[800],
-								fontWeight: "600",
+								fontWeight: "500",
 							}}
 						/>
 						<Pressable
@@ -646,6 +672,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							<View
 								style={{
 									flexDirection: "row",
+									alignItems: "center",
 									marginTop: 8,
 								}}
 							>
@@ -654,6 +681,29 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 									height={40}
 									width={40}
 								/>
+								<View
+									style={{
+										marginHorizontal: 8,
+										maxWidth: "100%",
+									}}
+								>
+									<Heading
+										title={activePublication?.profile?.name}
+										style={{
+											color: "white",
+											fontSize: 16,
+											fontWeight: "500",
+										}}
+									/>
+									<StyledText
+										title={activePublication?.profile?.handle}
+										style={{
+											color: "gray",
+											fontSize: 12,
+											fontWeight: "500",
+										}}
+									/>
+								</View>
 							</View>
 						</View>
 						<View
@@ -678,7 +728,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 					</BottomSheetScrollView>
 				</View>
 			</Sheet>
-
 			<Sheet
 				ref={descRef}
 				index={-1}
@@ -702,6 +751,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							justifyContent: "space-between",
 							alignItems: "center",
 							paddingHorizontal: 16,
+							paddingVertical: 8,
 						}}
 					>
 						<Heading
@@ -709,7 +759,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							style={{
 								fontSize: 20,
 								color: white[800],
-								fontWeight: "600",
+								fontWeight: "500",
 							}}
 						/>
 						<Pressable
@@ -807,7 +857,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 									fontWeight: "500",
 								}}
 							/>
-
 							<VideoCreator
 								alreadyFollowing={activePublication?.profile?.isFollowedByMe || false}
 								avatarLink={getRawurl(activePublication?.profile?.picture) || STATIC_ASSET}

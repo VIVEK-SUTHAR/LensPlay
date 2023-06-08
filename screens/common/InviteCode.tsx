@@ -4,6 +4,8 @@ import { black, white } from "constants/Colors";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { Image } from "expo-image";
 import React, { useState } from "react";
+import { ScrollView } from "react-native";
+import { Platform } from "react-native";
 import {
 	Dimensions,
 	NativeSyntheticEvent,
@@ -94,85 +96,96 @@ export default function InviteCode({ navigation }: RootStackScreenProps<"InviteC
 			}}
 		>
 			<StatusBar backgroundColor={"#111111"} barStyle={"light-content"} />
-			<View
-              style={{
-                position: "relative",
-                marginTop: -50,
-				alignItems: "center"
-              }}
-            >
-              <Image
-                source={require("../../assets/images/circle.webp")}
-                style={{
-                  height: 360,
-                  width: 360,
-                }}
-              />
-              <View
-                style={{
-                  position: "absolute",
-                  height: 360,
-                  width: 360,
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Image
-                  source={require("../../assets/images/icon.png")}
-                  style={{
-                    height: 50,
-                    width: 50,
-                    // backgroundColor: "red"
-                  }}
-                />
-              </View>
-            </View>
-			<View
-				style={{
-					alignItems: "flex-start",
-					paddingHorizontal: 16,
-					marginTop: 40
-				}}
-			>
-				<Heading
-					title={"Have an invite code?"}
+			<ScrollView>
+				<View
 					style={{
-						color: white[800],
-						fontWeight: "600",
-						fontSize: Dimensions.get("window").width / 12,
+						position: "relative",
+						marginTop: -100,
+						alignItems: "center",
 					}}
-				/>
-				<TextInput
-					placeholder="Enter a code"
-					placeholderTextColor={"white"}
-					selectionColor={PRIMARY}
-					onChange={handleInput}
+				>
+					<Image
+						source={require("../../assets/images/circle.webp")}
+						style={{
+							height: 360,
+							width: 360,
+						}}
+					/>
+					<View
+						style={{
+							position: "absolute",
+							height: 360,
+							width: 360,
+							flex: 1,
+							justifyContent: "center",
+							alignItems: "center",
+						}}
+					>
+						<Image
+							source={require("../../assets/images/icon.png")}
+							style={{
+								height: 50,
+								width: 50,
+							}}
+						/>
+					</View>
+				</View>
+				<View
 					style={{
-						paddingVertical: 12,
-						paddingHorizontal: 12,
-						fontSize: 20,
-						marginTop: 16,
-						width: "100%",
-						backgroundColor: black[400],
-						borderRadius: 8,
-						color: "white",
+						alignItems: "center",
+						paddingHorizontal: 16,
+						marginTop: 48,
 					}}
-				/>
-				<TouchableOpacity style={{ flexDirection:"row", marginTop: 8, marginHorizontal: 4}} onPress={async()=>{await Share.share({ message: 'GM frens 👋,\nI\'m trying @lensplayxyz 🚀,need my invite to access the app🔥' })}}>
-					<Heading title="Don't have an invite code? share your word on socials" style={{ fontSize: 16, color: "grey" }} />
-				</TouchableOpacity>
-			</View>
+				>
+					<Heading
+						title={"Have an invite code?"}
+						style={{
+							color: white[800],
+							fontWeight: "600",
+							fontSize: Dimensions.get("window").width / 16,
+						}}
+					/>
+					<TextInput
+						placeholder="Enter a code"
+						placeholderTextColor={"white"}
+						selectionColor={PRIMARY}
+						onChange={handleInput}
+						style={{
+							padding: 16,
+							fontSize: 20,
+							marginTop: 16,
+							width: "100%",
+							backgroundColor: black[400],
+							borderRadius: 8,
+							color: "white",
+						}}
+					/>
+					{/* <TouchableOpacity
+					style={{ flexDirection: "row", marginTop: 8, marginHorizontal: 4 }}
+					onPress={async () => {
+						await Share.share({
+							message:
+								"GM frens 👋,\nI'm trying @lensplayxyz 🚀,need my invite to access the app🔥",
+						});
+					}}
+				>
+					<Heading
+						title="Don't have an invite code? share your word on socials"
+						style={{ fontSize: 16, color: "grey" }}
+					/>
+				</TouchableOpacity> */}
+				</View>
+			</ScrollView>
 			<View
 				style={{
 					position: "absolute",
-					bottom: 16,
+					bottom: Platform.OS === "android" ? 32 : 48,
 					paddingHorizontal: 16,
 					width: "100%",
 				}}
 			>
 				<Button
-					title={"Let's Get In"}
+					title={"Submit"}
 					py={16}
 					disabled={!inviteCode}
 					textStyle={{
