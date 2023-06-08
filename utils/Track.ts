@@ -1,3 +1,4 @@
+import Logger from "utils/logger";
 import StorageKeys from "constants/Storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DEV } from "constants/index";
@@ -12,7 +13,7 @@ async function TrackAction(event: string) {
 			{
 				properties: {
 					token: "33a7ed7c61c940384d30edaf7d54d663",
-					profileId: profileId ?? "",
+					profileId: profileId ? profileId : "",
 				},
 				event: event,
 			},
@@ -20,7 +21,7 @@ async function TrackAction(event: string) {
 	};
 
 	fetch("https://api.mixpanel.com/track", options)
-		.then((res) => res.json())
-		.catch((err) => console.error(err));
+		.then((res) => Logger.Log("Event Tracked"))
+		.catch((err) => Logger.Error("Failed to track", event));
 }
 export default TrackAction;
