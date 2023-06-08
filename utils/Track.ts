@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DEV } from "constants/index";
 
 async function TrackAction(event: string) {
-	// if (DEV) return;
+	if (DEV) return;
 	const profileId = await AsyncStorage.getItem(StorageKeys.ProfileId);
 	const options = {
 		method: "POST",
@@ -12,7 +12,7 @@ async function TrackAction(event: string) {
 		body: JSON.stringify([
 			{
 				properties: {
-					token: "33a7ed7c61c940384d30edaf7d54d663",
+					token: "f8ec6bd7117b1fa0deb1e2de90680036",
 					profileId: profileId ? profileId : "",
 				},
 				event: event,

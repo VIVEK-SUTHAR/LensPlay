@@ -291,7 +291,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 							</TouchableOpacity>
 						</View>
 						<SocialLinks profile={profile as Profile} />
-						<PinnedPublication sheetRef={sheetRef as any} profile={profile as Profile} />
+						<PinnedPublication sheetRef={sheetRef as any} profile={profile as Profile}
+						isChannel={isChannel}
+						/>
 						<UserStats profile={profile as Profile} />
 						{/* {!isChannel ? <ProfileLists /> : null} */}
 					</View>

@@ -535,6 +535,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 								>
 									<Heading
 										title={activePublication?.profile?.name}
+										numberOfLines={1}
 										style={{
 											color: "white",
 											fontSize: 16,
@@ -689,6 +690,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 								>
 									<Heading
 										title={activePublication?.profile?.name}
+										numberOfLines={1}
 										style={{
 											color: "white",
 											fontSize: 16,

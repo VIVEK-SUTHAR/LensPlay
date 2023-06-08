@@ -7,7 +7,7 @@ import StyledText from "components/UI/StyledText";
 import { LENSPLAY_SITE } from "constants/index";
 import { useProxyActionMutation } from "customTypes/generated";
 import React, { useCallback, useState } from "react";
-import { TouchableOpacity } from "react-native";
+import { Dimensions, TouchableOpacity } from "react-native";
 import { StyleSheet, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useActivePublication, useAuthStore, useToast } from "store/Store";
@@ -59,18 +59,21 @@ const VideoCreator: React.FC<VideoCreatorProps> = React.memo((props) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.contentContainer}>
-				<TouchableOpacity onPress={goToChannel} activeOpacity={0.5} >
+				<TouchableOpacity onPress={goToChannel} activeOpacity={0.5}>
 					<Avatar src={avatarLink} width={40} height={40} />
 				</TouchableOpacity>
 				<View style={styles.textContainer}>
-					<Heading title={uploadedBy} style={styles.heading} />
+					<Heading title={uploadedBy} style={styles.heading} numberOfLines={1} />
 					<StyledText
+						numberOfLines={1}
 						title={showSubscribers ? `${subscribersCount} Subscribers` : `@${uploadedBy}`}
 						style={styles.subtext}
 					/>
 				</View>
 			</View>
-			{showSubscribeButton?<SubscribeButton channelId={profileId} isFollwebByMe={following} />:null}
+			{showSubscribeButton ? (
+				<SubscribeButton channelId={profileId} isFollwebByMe={following} />
+			) : null}
 		</View>
 	);
 });
@@ -91,7 +94,7 @@ const styles = StyleSheet.create({
 	},
 	textContainer: {
 		marginHorizontal: 8,
-		maxWidth: 185,
+		maxWidth: Dimensions.get("window").width/2.5,
 	},
 	heading: {
 		color: "white",

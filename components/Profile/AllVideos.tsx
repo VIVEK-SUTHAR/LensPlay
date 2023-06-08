@@ -9,7 +9,7 @@ import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
 import DeleteVideo from "components/VIdeo/DeleteVideo";
 import { black } from "constants/Colors";
-import { SOURCES } from "constants/index";
+import { LENSPLAY_SITE, SOURCES } from "constants/index";
 import { PUBLICATION } from "constants/tracking";
 import {
 	Attribute,
@@ -152,7 +152,7 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 			}}
 		>
 			{loading ? (
-				<View style={{paddingHorizontal:8,backgroundColor:"black"}} >
+				<View style={{ paddingHorizontal: 8, backgroundColor: "black" }}>
 					<Skeleton number={10}>
 						<ProfileVideoCardSkeleton />
 					</Skeleton>
@@ -189,7 +189,6 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
 	const add = useAddWatchLater();
-
 
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
 
@@ -233,7 +232,6 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 			cover_picture: getRawurl(currentProfile?.coverPicture),
 			attributes: isAlreadyPinned ? attr : (attrs as Attribute[]),
 		};
-		toast.success("Video pin submitted");
 		pinStore.setHasPinned(true);
 		pinStore.setPinnedPubId(pubId);
 		const hash = await uploadToArweave(newMetaData);
@@ -247,6 +245,7 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 			context: {
 				headers: {
 					"x-access-token": `Bearer ${accessToken}`,
+					"origin": LENSPLAY_SITE,
 				},
 			},
 		});
@@ -304,7 +303,7 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 		<>
 			<Sheet
 				ref={sheetRef}
-				snapPoints={[profileId ? 90 : 220]}
+				snapPoints={[profileId ? 90 : 200]}
 				enablePanDownToClose={true}
 				enableOverDrag={true}
 				bottomInset={32}

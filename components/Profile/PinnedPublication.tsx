@@ -5,6 +5,7 @@ import Icon from "components/Icon";
 import Heading from "components/UI/Heading";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
+import { LENSPLAY_SITE } from "constants/index";
 import { black, white } from "constants/Colors";
 import { PUBLICATION } from "constants/tracking";
 import {
@@ -37,7 +38,7 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
 		useCreateSetProfileMetadataViaDispatcherMutation({
 			onCompleted: () => {
 				setHasPinned(false);
-				toast.success("video unpined successfully");
+				toast.success("Video pinned successfully");
 				void TrackAction(PUBLICATION.PIN_PUBLICATION);
 			},
 			onError: () => {
@@ -78,6 +79,7 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
 			context: {
 				headers: {
 					"x-access-token": `Bearer ${accessToken}`,
+					"origin": LENSPLAY_SITE,
 				},
 			},
 		});
@@ -130,9 +132,11 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
 export default function PinnedPublication({
 	sheetRef,
 	profile,
+	isChannel,
 }: {
 	sheetRef: Pick<SheetProps, "sheetRef">;
 	profile: Profile;
+	isChannel: boolean;
 }) {
 	const activeProfile = useProfile();
 	const { accessToken } = useAuthStore();
@@ -239,7 +243,7 @@ export default function PinnedPublication({
 							<Heading
 								title={data?.publication?.metadata?.name}
 								style={{ color: "white", fontSize: 16, fontWeight: "500" }}
-								numberOfLines={3}
+								numberOfLines={2}
 							/>
 							<View
 								style={{
@@ -265,19 +269,21 @@ export default function PinnedPublication({
 								/>
 							</View>
 						</View>
-						<TouchableOpacity
-							activeOpacity={0.5}
-							onPress={() => {
-								//@ts-ignore Ref as it may be undefined
-								sheetRef?.current?.snapToIndex(0);
-							}}
-							style={{
-								padding: 4,
-								height: "30%",
-							}}
-						>
-							<Icon name="more" size={16} />
-						</TouchableOpacity>
+						{!isChannel ? (
+							<TouchableOpacity
+								activeOpacity={0.5}
+								onPress={() => {
+									//@ts-ignore Ref as it may be undefined
+									sheetRef?.current?.snapToIndex(0);
+								}}
+								style={{
+									padding: 4,
+									height: "30%",
+								}}
+							>
+								<Icon name="more" size={16} />
+							</TouchableOpacity>
+						) : null}
 					</View>
 				</Pressable>
 			</View>
