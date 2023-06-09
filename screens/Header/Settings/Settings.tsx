@@ -242,12 +242,12 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 							if (isDeskTopLogin) {
 								await AsyncStorage.removeItem("@viaDeskTop");
 								clearInvites();
-								navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+								navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] });
 								return;
 							} else {
 								await Wallet.killSession();
 								clearInvites();
-								navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+								navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] });
 							}
 							TrackAction(AUTH.LOGOUT);
 						}}

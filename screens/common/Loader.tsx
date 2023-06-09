@@ -120,7 +120,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 
 			if (!userTokens && !address) {
 				Logger.Error("No Data and no address found,Goin to Login");
-				navigation.replace("Login");
+				navigation.replace("LetsGetIn");
 				return;
 			}
 
@@ -137,7 +137,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 				const isUser = await handleUser(profileId);
 				if (!isUser) {
 					Logger.Log("user data hai lekin invited nai hai");
-					navigation.replace("Login");
+					navigation.replace("LetsGetIn");
 					return;
 				}
 			}
@@ -153,7 +153,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 
 				if (!accessToken || !refreshToken) {
 					Logger.Error("No access and refresh,goin to Login");
-					navigation.replace("Login");
+					navigation.replace("LetsGetIn");
 					return;
 				}
 				const isValidAccesToken = await verifyTokens({

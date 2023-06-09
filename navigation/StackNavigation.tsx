@@ -30,6 +30,8 @@ import UploadVideo from "screens/Header/Upload/Video/UploadVideo";
 import { useReactionStore, useThemeStore } from "store/Store";
 import useVideoURLStore from "store/videoURL";
 import BottomTabNavigator from "./BottomTabNavigation";
+import LetsGetIn from "screens/Auth/LetsGetIn";
+import ConnectWallet from "screens/Auth/ConnectWallet";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
@@ -68,6 +70,22 @@ export default function StackNavigation() {
 				<Stack.Screen
 					name="Login"
 					component={Login}
+					options={{
+						animation: "default",
+						headerShown: false,
+					}}
+				/>
+				<Stack.Screen
+					name="LetsGetIn"
+					component={LetsGetIn}
+					options={{
+						animation: "default",
+						headerShown: false,
+					}}
+				/>
+				<Stack.Screen
+					name="ConnectWallet"
+					component={ConnectWallet}
 					options={{
 						animation: "default",
 						headerShown: false,

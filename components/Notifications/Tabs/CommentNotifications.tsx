@@ -116,9 +116,7 @@ function CommentNotifications() {
   const onRefresh = () => {
     setRefreshing(true);
     refetch({
-      request: {
-        profileId: currentProfile?.id,
-      },
+      request: QueryRequest,
     }).then(() => setRefreshing(false));
   };
 
