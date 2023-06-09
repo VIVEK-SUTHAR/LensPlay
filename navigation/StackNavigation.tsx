@@ -27,7 +27,7 @@ import Settings from "screens/Header/Settings/Settings";
 import UploadShots from "screens/Header/Upload/Shots/UploadShots";
 import AddDetails from "screens/Header/Upload/Video/AddDetails";
 import UploadVideo from "screens/Header/Upload/Video/UploadVideo";
-import { useThemeStore } from "store/Store";
+import { useReactionStore, useThemeStore } from "store/Store";
 import useVideoURLStore from "store/videoURL";
 import BottomTabNavigator from "./BottomTabNavigation";
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -35,7 +35,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function StackNavigation() {
 	const theme = useThemeStore();
 	const { setVideoURI } = useVideoURLStore();
-
+	const { setReaction, clearStats, setCollectStats, setMirrorStats } = useReactionStore();
 	return (
 		<Stack.Navigator
 			screenOptions={{
@@ -135,8 +135,11 @@ export default function StackNavigation() {
 				listeners={{
 					blur: () => {
 						// console.log("going back");
-
 						setVideoURI("");
+						setReaction(false);
+						clearStats();
+						setCollectStats(false, 0);
+						setMirrorStats(false, 0);
 					},
 				}}
 				options={{
