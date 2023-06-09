@@ -27,6 +27,7 @@ import {
 } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useInviteStore } from "store/InviteStore";
+import { useProfile } from "store/Store";
 import TrackAction from "utils/Track";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
@@ -52,6 +53,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 	const { isGuest } = useGuestStore();
 	const logoutref = useRef<BottomSheetMethods>(null);
 	const QRCodeRef = useRef<BottomSheetMethods>(null);
+	const {currentProfile,setCurrentProfile}=useProfile()
 	const { clearInvites } = useInviteStore();
 
 	const SettingItemsList: SettingsItemProps[] = [
@@ -236,6 +238,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 							await AsyncStorage.removeItem("@user_data");
 							await AsyncStorage.removeItem("@invite_data");
 							await AsyncStorage.removeItem(StorageKeys.UserAddress);
+							setCurrentProfile(undefined)
 							if (isDeskTopLogin) {
 								await AsyncStorage.removeItem("@viaDeskTop");
 								clearInvites();

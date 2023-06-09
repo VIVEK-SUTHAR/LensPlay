@@ -18,6 +18,7 @@ import Feed from "screens/BottomTabs/Home/Feed";
 import Notifications from "screens/BottomTabs/Notification/Notification";
 import ProfileScreen from "screens/BottomTabs/Profile/Profile";
 import Shots from "screens/BottomTabs/Shots/Shots";
+import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
 import canUploadedToIpfs from "utils/canUploadToIPFS";
@@ -28,6 +29,7 @@ import getFileSize from "utils/video/getFileSize";
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 export default function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
+	const { isGuest } = useGuestStore();
 	const theme = useThemeStore();
 	const user = useProfile();
 	const { setAccessToken, setRefreshToken } = useAuthStore();
@@ -142,17 +144,20 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
               >
                 <Icon name="upload-file" size={24} />
               </Pressable> */}
-							<Pressable
-								onPress={() => navigation.push("Invite")}
-								style={{
-									paddingHorizontal: 8,
-									height: "100%",
-									alignItems: "center",
-									justifyContent: "center",
-								}}
-							>
-								<Icon name="invite" size={20} />
-							</Pressable>
+							{!isGuest ? (
+								<Pressable
+									onPress={() => navigation.push("Invite")}
+									style={{
+										paddingHorizontal: 8,
+										height: "100%",
+										alignItems: "center",
+										justifyContent: "center",
+									}}
+								>
+									<Icon name="invite" size={20} />
+								</Pressable>
+							) : null}
+
 							<Pressable
 								onPress={() => {
 									navigation.push("Search");
