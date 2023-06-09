@@ -170,7 +170,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 						}}
 						onPress={() => {
 							isGuest
-								? navigation.reset({ index: 0, routes: [{ name: "Login" }] })
+								? navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] })
 								: logoutref.current?.snapToIndex(0);
 						}}
 					/>
@@ -225,7 +225,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 							title="By doing this,next time when you open LensPlay, you need to connect your wallet again."
 							style={{
 								color: "gray",
-								fontSize: width / 20,
+								fontSize: width / 24,
 								marginVertical: 4,
 								fontWeight: "500",
 							}}

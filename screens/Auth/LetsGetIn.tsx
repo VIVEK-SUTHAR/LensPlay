@@ -11,7 +11,7 @@ import { RootStackScreenProps } from "customTypes/navigation";
 import Button from "components/UI/Button";
 import { Image } from "expo-image";
 
-const LetsGetIn = ({ navigation }: RootStackScreenProps<"Login">) => {
+const LetsGetIn = ({ navigation }: RootStackScreenProps<"LetsGetIn">) => {
 	const loginRef = React.useRef<BottomSheetMethods>(null);
 	const [isloading, setIsloading] = React.useState<boolean>(false);
 	const width = Dimensions.get("window").width;

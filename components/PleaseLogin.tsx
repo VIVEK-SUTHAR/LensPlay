@@ -31,7 +31,7 @@ export default function PleaseLogin() {
           py={8}
           textStyle={styles.buttonText}
           onPress={() => {
-            navigation.navigate("Login");
+            navigation.navigate("LetsGetIn");
           }}
         />
       </View>

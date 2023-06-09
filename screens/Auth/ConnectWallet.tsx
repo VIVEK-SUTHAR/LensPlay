@@ -13,14 +13,14 @@ import { RootStackScreenProps } from "customTypes/navigation";
 import Button from "components/UI/Button";
 import { Image } from "expo-image";
 
-const ConnectWallet = ({ navigation }: RootStackScreenProps<"Login">) => {
+const ConnectWallet = ({ navigation }: RootStackScreenProps<"ConnectWallet">) => {
 	const loginRef = React.useRef<BottomSheetMethods>(null);
 	const [isloading, setIsloading] = React.useState<boolean>(false);
 	const width = Dimensions.get("window").width;
 
     const openSheet = React.useCallback(() => {
 		loginRef?.current?.snapToIndex(0);
-	}, []);``
+	}, []);
 
 	return (
 		<SafeAreaView style={styles.container}>
