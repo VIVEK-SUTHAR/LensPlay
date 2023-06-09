@@ -113,7 +113,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 			if (connector?.accounts[0]) {
 				await connector.killSession();
 			}
-			navigation.replace("Login");
+			navigation.replace("LetsGetIn");
 		} catch (error) {
 			if (error instanceof Error) {
 				Logger.Error("Error in disconnect", error);
