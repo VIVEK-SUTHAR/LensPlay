@@ -150,16 +150,6 @@ export default function StackNavigation() {
 			<Stack.Screen
 				name="VideoPage"
 				component={VideoPage}
-				listeners={{
-					blur: () => {
-						// console.log("going back");
-						setVideoURI("");
-						setReaction(false);
-						clearStats();
-						setCollectStats(false, 0);
-						setMirrorStats(false, 0);
-					},
-				}}
 				options={{
 					headerShown: false,
 					presentation: "card",

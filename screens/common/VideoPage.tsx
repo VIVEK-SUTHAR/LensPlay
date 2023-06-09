@@ -131,6 +131,14 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		return true;
 	}
 
+	navigation.addListener("blur", () => {
+		setReaction(false);
+		setVideoURI("");
+		clearStats();
+		setCollectStats(false, 0);
+		setMirrorStats(false, 0);
+	});
+
 	useEffect(() => {
 		BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
 	}, []);
@@ -138,7 +146,9 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const { data: ReactionData, error, loading } = useReaction(activePublication?.id);
 
 	if (ReactionData) {
+		console.log(ReactionData);
 		if (!reaction) {
+			console.log("here");
 			setReaction(true);
 			setVideoPageStats(
 				ReactionData?.publication?.reaction === "UPVOTE",
