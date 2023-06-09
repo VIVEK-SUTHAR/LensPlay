@@ -203,7 +203,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 								}}
 							>
 								<StyledText
-									title="ALPHA"
+									title="Beta"
 									style={{ color: "black", fontSize: 8, fontWeight: "600" }}
 								/>
 							</View>
