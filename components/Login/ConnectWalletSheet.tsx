@@ -70,7 +70,6 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 	const { open, isConnected, address, provider, isOpen } = useWeb3Modal();
 
 	const handleConnectWallet = async () => {
-		await open();
 		if (isConnected && address) {
 			Logger.Log("Address", address);
 			loginRef?.current?.close();
@@ -89,6 +88,10 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 			navigation.reset({ index: 0, routes: [{ name: "LoginWithLens" }] });
 		}
 	};
+
+	React.useEffect(() => {
+		handleConnectWallet();
+	}, [isConnected]);
 
 	// const handleConnectWallet = React.useCallback(async () => {
 
@@ -158,7 +161,7 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 					}}
 				>
 					<Button
-						onPress={handleConnectWallet}
+						onPress={open}
 						title="Connect wallet"
 						bg={white[600]}
 						textStyle={{
