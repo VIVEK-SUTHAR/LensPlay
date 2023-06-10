@@ -16,6 +16,20 @@ import handleUser from "utils/invites/handleUser";
 import getProfiles from "utils/lens/getProfiles";
 import Logger from "utils/logger";
 import TrackAction from "utils/Track";
+import { Web3Button, Web3Modal, useWeb3Modal } from "@web3modal/react-native";
+
+const projectId = "6097f40a8f4f91e37e66cf3a5ca1fba2";
+
+const providerMetadata = {
+	name: "LesnPlay",
+	description: "LensPlay:The Native mobile first video sharing app",
+	url: "https://lensplay.xyz/",
+	icons: ["https://lensplay.xyz/logo.png"],
+	redirect: {
+		native: "YOUR_APP_SCHEME://",
+		universal: "YOUR_APP_UNIVERSAL_LINK.com",
+	},
+};
 
 type ConnectWalletSheetProps = {
 	loginRef: React.RefObject<BottomSheetMethods>;
@@ -29,30 +43,52 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 	const { handleGuest } = useGuestStore();
 	const { setCurrentProfile, setHasHandle, currentProfile } = useProfile();
 
-	// async function HandleDefaultProfile(adress: Scalars["EthereumAddress"]) {
-	// 	const userData = await AsyncStorage.getItem("@user_data");
+	async function HandleDefaultProfile(adress: Scalars["EthereumAddress"]) {
+		const userData = await AsyncStorage.getItem("@user_data");
 
-	// 	const userDefaultProfile = await getProfiles({
-	// 		ownedBy: adress,
-	// 	});
+		const userDefaultProfile = await getProfiles({
+			ownedBy: adress,
+		});
 
-	// 	if (userDefaultProfile) {
-	// 		setHasHandle(true);
-	// 		setCurrentProfile(userDefaultProfile);
+		if (userDefaultProfile) {
+			setHasHandle(true);
+			setCurrentProfile(userDefaultProfile);
 
-	// 		if (!userData) {
-	// 			const isUser = await handleUser(userDefaultProfile?.id);
-	// 			if (!isUser) {
-	// 				navigation.navigate("InviteCode");
-	// 				return;
-	// 			}
-	// 		}
-	// 	} else {
-	// 		setHasHandle(false);
-	// 		setCurrentProfile(undefined);
-	// 		navigation.navigate("LoginWithLens");
-	// 	}
-	// }
+			if (!userData) {
+				const isUser = await handleUser(userDefaultProfile?.id);
+				if (!isUser) {
+					navigation.navigate("InviteCode");
+					return;
+				}
+			}
+		} else {
+			setHasHandle(false);
+			setCurrentProfile(undefined);
+			navigation.navigate("LoginWithLens");
+		}
+	}
+	const { open, isConnected, address, provider, isOpen } = useWeb3Modal();
+
+	const handleConnectWallet = async () => {
+		await open();
+		if (isConnected && address) {
+			Logger.Log("Address", address);
+			loginRef?.current?.close();
+			void TrackAction(AUTH.WALLET_LOGIN);
+			handleGuest(false);
+
+			await HandleDefaultProfile(address);
+			const userData = await AsyncStorage.getItem("@user_data");
+			if (!userData) {
+				return;
+			}
+			const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
+			if (isDeskTopLogin) {
+				await AsyncStorage.removeItem("@viaDeskTop");
+			}
+			navigation.reset({ index: 0, routes: [{ name: "LoginWithLens" }] });
+		}
+	};
 
 	// const handleConnectWallet = React.useCallback(async () => {
 
@@ -103,101 +139,118 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 	}, []);
 
 	return (
-		<View
-			style={{
-				paddingHorizontal: 16,
-				paddingTop: 8,
-				paddingBottom: 16,
-				width: "100%",
-				height: "100%",
-				justifyContent: "flex-start",
-			}}
-		>
+		<>
 			<View
 				style={{
-					justifyContent: "center",
-					alignItems: "center",
-					marginTop: 32,
+					paddingHorizontal: 16,
+					paddingTop: 8,
+					paddingBottom: 16,
+					width: "100%",
+					height: "100%",
+					justifyContent: "flex-start",
 				}}
 			>
-				<Button
-					// onPress={handleConnectWallet}
-					title="Connect wallet"
-					bg={white[600]}
-					textStyle={{
-						fontWeight: "600",
-						fontSize: 16,
-						color: black[700],
-					}}
-					py={16}
-					icon={<Icon name="wallet" color={black[700]} size={20} />}
-				/>
 				<View
 					style={{
-						flexDirection: "row",
+						justifyContent: "center",
 						alignItems: "center",
-						marginVertical: 16,
-						paddingHorizontal: 64,
+						marginTop: 32,
 					}}
 				>
+					<Button
+						onPress={handleConnectWallet}
+						title="Connect wallet"
+						bg={white[600]}
+						textStyle={{
+							fontWeight: "600",
+							fontSize: 16,
+							color: black[700],
+						}}
+						py={16}
+						icon={<Icon name="wallet" color={black[700]} size={20} />}
+					/>
+					{/* <Web3Button /> */}
 					<View
 						style={{
-							flex: 1,
-							height: 2,
-							backgroundColor: "gray",
-							borderRadius: 20,
+							flexDirection: "row",
+							alignItems: "center",
+							marginVertical: 16,
+							paddingHorizontal: 64,
 						}}
-					/>
-					<View>
-						<StyledText
-							title={"OR"}
+					>
+						<View
 							style={{
-								width: 45,
-								textAlign: "center",
-								color: "gray",
-								fontSize: 16,
-								fontWeight: "600",
+								flex: 1,
+								height: 2,
+								backgroundColor: "gray",
+								borderRadius: 20,
+							}}
+						/>
+						<View>
+							<StyledText
+								title={"OR"}
+								style={{
+									width: 45,
+									textAlign: "center",
+									color: "gray",
+									fontSize: 16,
+									fontWeight: "600",
+								}}
+							/>
+						</View>
+						<View
+							style={{
+								flex: 1,
+								height: 2,
+								backgroundColor: "gray",
+								borderRadius: 20,
 							}}
 						/>
 					</View>
-					<View
-						style={{
-							flex: 1,
-							height: 2,
-							backgroundColor: "gray",
-							borderRadius: 20,
-						}}
-					/>
-				</View>
-				<Button
-					onPress={handleDesktopLogin}
-					title="Connect desktop wallet"
-					bg={black[300]}
-					textStyle={{
-						fontWeight: "600",
-						fontSize: 16,
-						marginLeft: 8,
-						color: white[600],
-					}}
-					py={16}
-					icon={<Icon name="desktop" color={white[600]} size={20} />}
-				/>
-				<Pressable
-					style={{
-						marginTop: 32,
-					}}
-					onPress={handleGuestLogin}
-				>
-					<StyledText
-						title="Continue as guest"
-						style={{
-							color: white[200],
+					<Button
+						onPress={handleDesktopLogin}
+						title="Connect desktop wallet"
+						bg={black[300]}
+						textStyle={{
+							fontWeight: "600",
 							fontSize: 16,
-							textDecorationLine: "underline",
+							marginLeft: 8,
+							color: white[600],
 						}}
+						py={16}
+						icon={<Icon name="desktop" color={white[600]} size={20} />}
 					/>
-				</Pressable>
+					<Pressable
+						style={{
+							marginTop: 32,
+						}}
+						onPress={handleGuestLogin}
+					>
+						<StyledText
+							title="Continue as guest"
+							style={{
+								color: white[200],
+								fontSize: 16,
+								textDecorationLine: "underline",
+							}}
+						/>
+					</Pressable>
+				</View>
 			</View>
-		</View>
+			<Web3Modal
+				projectId={projectId}
+				providerMetadata={providerMetadata}
+				sessionParams={{
+					namespaces: {
+						eip155: {
+							methods: ["eth_sendTransaction", "personal_sign"],
+							chains: ["eip155:137"],
+							events: ["chainChanged", "accountsChanged"],
+							rpcMap: {},
+						},
+					},
+				}}
+			/>
+		</>
 	);
 }

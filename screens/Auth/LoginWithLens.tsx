@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useWeb3Modal } from "@web3modal/react-native";
 // import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
@@ -44,82 +45,82 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 		if (!address) return "0x...000";
 		return "0x.." + address.slice(address.length - 4, address.length);
 	};
+	const { address, provider, isConnected } = useWeb3Modal();
 
-	// const handleLoginWithLens = async () => {
-	// 	if (!hasHandle) {
-	// 		void Linking.openURL(LENS_CLAIM_SITE);
-	// 		return;
-	// 	}
-	// 	try {
-	// 		setIsloading(true);
-	// 		const address = connector.accounts[0];
-	// 		const data = await getChallenge({
-	// 			variables: {
-	// 				request: {
-	// 					address: address,
-	// 				},
-	// 			},
-	// 			context: {
-	// 				headers: {
-	// 					origin: LENSPLAY_SITE,
-	// 				},
-	// 			},
-	// 			fetchPolicy: "network-only",
-	// 		});
+	const handleLoginWithLens = async () => {
+		if (!hasHandle) {
+			void Linking.openURL(LENS_CLAIM_SITE);
+			return;
+		}
+		try {
+			setIsloading(true);
+			const data = await getChallenge({
+				variables: {
+					request: {
+						address: address,
+					},
+				},
+				context: {
+					headers: {
+						origin: LENSPLAY_SITE,
+					},
+				},
+				fetchPolicy: "network-only",
+			});
 
-	// 		// const signature = await connector.sendCustomRequest({
-	// 		// 	method: "personal_sign",
-	// 		// 	params: [address, data?.data?.challenge?.text],
-	// 		// });
+			const signature = await provider?.request({
+				method: "personal_sign",
+				params: [address, data?.data?.challenge?.text],
+			});
 
-	// 		if (signature) {
-	// 			const response = await getTokens({
-	// 				variables: {
-	// 					request: {
-	// 						address: address,
-	// 						signature: signature,
-	// 					},
-	// 				},
-	// 			});
+			if (signature) {
+				const response = await getTokens({
+					variables: {
+						request: {
+							address: address,
+							signature: signature,
+						},
+					},
+				});
 
-	// 			setAccessToken(response?.data?.authenticate?.accessToken);
-	// 			setRefreshToken(response?.data?.authenticate?.refreshToken);
-	// 			await storeTokens(
-	// 				response?.data?.authenticate?.accessToken,
-	// 				response?.data?.authenticate?.refreshToken,
-	// 				false
-	// 			);
-	// 			if (hasHandle) {
-	// 				navigation.reset({ index: 0, routes: [{ name: "Root" }] });
-	// 			}
-	// 			void TrackAction(AUTH.SIWL);
-	// 		} else {
-	// 			toast.show("Something went wrong", ToastType.ERROR, true);
-	// 		}
-	// 	} catch (error) {
-	// 		if (error instanceof Error) {
-	// 			Logger.Error("Error in Login with lens", error);
-	// 			if (error.message.includes("Rejected")) {
-	// 				toast.error("User rejected signature");
-	// 			}
-	// 		}
-	// 	} finally {
-	// 		setIsloading(false);
-	// 	}
-	// };
+				setAccessToken(response?.data?.authenticate?.accessToken);
+				setRefreshToken(response?.data?.authenticate?.refreshToken);
+				await storeTokens(
+					response?.data?.authenticate?.accessToken,
+					response?.data?.authenticate?.refreshToken,
+					false
+				);
+				if (hasHandle) {
+					navigation.reset({ index: 0, routes: [{ name: "Root" }] });
+				}
+				void TrackAction(AUTH.SIWL);
+			} else {
+				toast.show("Something went wrong", ToastType.ERROR, true);
+			}
+		} catch (error) {
+			if (error instanceof Error) {
+				Logger.Error("Error in Login with lens", error);
+				if (error.message.includes("Rejected")) {
+					toast.error("User rejected signature");
+				}
+			}
+		} finally {
+			setIsloading(false);
+		}
+	};
 
-	// const handleDisconnect = async () => {
-	// 	try {
-	// 		if (connector?.accounts[0]) {
-	// 			await connector.killSession();
-	// 		}
-	// 		navigation.replace("LetsGetIn");
-	// 	} catch (error) {
-	// 		if (error instanceof Error) {
-	// 			Logger.Error("Error in disconnect", error);
-	// 		}
-	// 	}
-	// };
+	const handleDisconnect = async () => {
+		try {
+			if (address) {
+				await provider?.disconnect();
+			}
+			navigation.replace("LetsGetIn");
+		} catch (error) {
+			if (error instanceof Error) {
+				Logger.Error("Error in disconnect", error);
+			}
+		}
+	};
 
 	const handleDesktop = async () => {
 		const isDesktop = await AsyncStorage.getItem("@viaDeskTop");
@@ -235,7 +236,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 										fontWeight: "600",
 										color: "white",
 									}}
-									// onPress={handleDisconnect}
+									onPress={handleDisconnect}
 								/>
 							</Animated.View>
 						) : (
@@ -264,7 +265,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 										Logger.Log("LENS CLIAM VIA DESKTOP");
 										void Linking.openURL(LENS_CLAIM_SITE);
 									} else {
-										// await handleLoginWithLens();
+										await handleLoginWithLens();
 									}
 								}}
 							/>
