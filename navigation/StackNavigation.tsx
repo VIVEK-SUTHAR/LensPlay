@@ -44,7 +44,7 @@ export default function StackNavigation() {
 					backgroundColor: "black",
 				},
 			}}
-			initialRouteName={"ConnectWallet"}
+			initialRouteName={"LetsGetIn"}
 		>
 			<Stack.Group key={"Invite Code"}>
 				<Stack.Screen

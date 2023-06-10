@@ -243,6 +243,7 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 			<Web3Modal
 				projectId={projectId}
 				providerMetadata={providerMetadata}
+				themeMode="dark"
 				sessionParams={{
 					namespaces: {
 						eip155: {
