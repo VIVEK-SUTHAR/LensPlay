@@ -14,6 +14,7 @@ import useNetworkStore from "store/NetworkStore";
 import Logger from "utils/logger";
 import Navigation from "./navigation";
 import { AppState } from "react-native";
+import "./expo-crypto-shim.ts";
 
 export default function App() {
 	const isLoadingComplete = useCachedResources();

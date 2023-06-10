@@ -53,12 +53,11 @@ declare global {
 
 export type RootStackParamList = {
 	Root: NavigatorScreenParams<RootTabParamList> | undefined;
-	ConnectWallet:  undefined;
+	ConnectWallet: undefined;
 	Modal: undefined;
 	NotFound: undefined;
 	Login: undefined;
 	Waitlist: undefined;
-	CreateProfile: undefined;
 	Loader: undefined;
 	ReportPublication: {
 		publicationId: string;

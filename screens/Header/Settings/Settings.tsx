@@ -1,6 +1,6 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
+// import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
 import ProfileQR, { ProfileSheet } from "components/settings/profileQR";
@@ -49,11 +49,11 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 	}, []);
 
 	const { width } = useWindowDimensions();
-	const Wallet = useWalletConnect();
+	// const Wallet = useWalletConnect();
 	const { isGuest } = useGuestStore();
 	const logoutref = useRef<BottomSheetMethods>(null);
 	const QRCodeRef = useRef<BottomSheetMethods>(null);
-	const {currentProfile,setCurrentProfile}=useProfile()
+	const { currentProfile, setCurrentProfile } = useProfile();
 	const { clearInvites } = useInviteStore();
 
 	const SettingItemsList: SettingsItemProps[] = [
@@ -238,14 +238,14 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 							await AsyncStorage.removeItem("@user_data");
 							await AsyncStorage.removeItem("@invite_data");
 							await AsyncStorage.removeItem(StorageKeys.UserAddress);
-							setCurrentProfile(undefined)
+							setCurrentProfile(undefined);
 							if (isDeskTopLogin) {
 								await AsyncStorage.removeItem("@viaDeskTop");
 								clearInvites();
 								navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] });
 								return;
 							} else {
-								await Wallet.killSession();
+								// await Wallet.killSession();
 								clearInvites();
 								navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] });
 							}

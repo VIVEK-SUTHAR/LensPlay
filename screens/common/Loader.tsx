@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
+// import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Heading from "components/UI/Heading";
 import StorageKeys from "constants/Storage";
 import { APP_OPEN } from "constants/tracking";
@@ -31,7 +31,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 	const blackBox = useSharedValue(1);
 	const image = useSharedValue(0);
 	const textOpacity = useSharedValue(0);
-	const { accounts } = useWalletConnect();
+	// const { accounts } = useWalletConnect();
 
 	const [verifyTokens, { data: isvalidTokens, error: verifyError, loading: verifyLoading }] =
 		useVerifyTokensLazyQuery();
@@ -129,7 +129,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 				profileId = await HandleDefaultProfile(address);
 			} else {
 				Logger.Success("Got address via wallet");
-				profileId = await HandleDefaultProfile(accounts[0]);
+				// profileId = await HandleDefaultProfile(accounts[0]);
 			}
 
 			if (!userData) {

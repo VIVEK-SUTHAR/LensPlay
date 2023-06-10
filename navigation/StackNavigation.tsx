@@ -1,7 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "customTypes/navigation";
 import React from "react";
-import CreateProfile from "screens/Auth/CreateProfile";
 import Login from "screens/Auth/Login";
 import LoginWithLens from "screens/Auth/LoginWithLens";
 import QRLogin from "screens/Auth/QRLogin";
@@ -45,7 +44,7 @@ export default function StackNavigation() {
 					backgroundColor: "black",
 				},
 			}}
-			initialRouteName={"Loader"}
+			initialRouteName={"ConnectWallet"}
 		>
 			<Stack.Group key={"Invite Code"}>
 				<Stack.Screen
@@ -96,14 +95,6 @@ export default function StackNavigation() {
 					component={LoginWithLens}
 					options={{
 						animation: "default",
-						headerShown: false,
-					}}
-				/>
-				<Stack.Screen
-					name="CreateProfile"
-					component={CreateProfile}
-					options={{
-						animation: "slide_from_bottom",
 						headerShown: false,
 					}}
 				/>
