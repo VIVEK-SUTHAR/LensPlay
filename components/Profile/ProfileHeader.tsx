@@ -42,6 +42,7 @@ import PinnedPublication, { UnPinSheet } from "./PinnedPublication";
 import ProfileLists from "./ProfileLists";
 import UserStats from "./UserStats";
 import VerifiedBadge from "./VerifiedBadge";
+import { useWeb3Modal } from "@web3modal/react-native";
 
 type ProfileHeaderProps = {
 	profileId?: Scalars["ProfileId"];
@@ -340,6 +341,7 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 	const toast = useToast();
 	const { accessToken } = useAuthStore();
 	// const wallet = useWalletConnect();
+	const { address, provider, isConnected } = useWeb3Modal();
 
 	/**
 	 * Only Free Follow and Free Collect is supported via Dispatcher
@@ -408,7 +410,7 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 	}, [isFollowing]);
 
 	const handleButtonClick = React.useCallback(() => {
-		// return isFollowing ? unSubscribeToChannel() : subscribeToChannel();
+		return isFollowing ? unSubscribeToChannel() : subscribeToChannel();
 	}, [isFollowing]);
 
 	const subscribeToChannel = React.useCallback(() => {
@@ -425,26 +427,29 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 		});
 	}, []);
 
-	// const unSubscribeToChannel = React.useCallback(async () => {
-	// 	const data = await getTypedData({
-	// 		variables: {
-	// 			request: {
-	// 				profile: channelId,
-	// 			},
-	// 		},
-	// 	});
-	// 	const message = formatUnfollowTypedData(data as CreateUnfollowTypedDataMutationResult);
-	// 	const msgParams = [wallet.accounts[0], JSON.stringify(message)];
-	// 	const sig = await wallet.signTypedData(msgParams);
-	// 	void sendUnFollowTxn({
-	// 		variables: {
-	// 			request: {
-	// 				signature: sig,
-	// 				id: data?.data?.createUnfollowTypedData?.id,
-	// 			},
-	// 		},
-	// 	});
-	// }, []);
+	const unSubscribeToChannel = React.useCallback(async () => {
+		const data = await getTypedData({
+			variables: {
+				request: {
+					profile: channelId,
+				},
+			},
+		});
+		const message = formatUnfollowTypedData(data as CreateUnfollowTypedDataMutationResult);
+		const msgParams = [address, JSON.stringify(message)];
+		const sig = await provider?.request({
+			method: "eth_signTypedData",
+			params: msgParams
+		})
+		void sendUnFollowTxn({
+			variables: {
+				request: {
+					signature: sig,
+					id: data?.data?.createUnfollowTypedData?.id,
+				},
+			},
+		});
+	}, []);
 
 	return (
 		<Button
