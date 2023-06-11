@@ -27,8 +27,6 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
 
 	const isAndroid = Platform.OS === "android";
 
-	ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
-
 	const QueryRequest: ExplorePublicationRequest = {
 		sortCriteria: PublicationSortCriteria.Latest,
 		publicationTypes: [PublicationTypes.Post],

@@ -120,6 +120,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	function handleBackButtonClick() {
 		setStatusBarHidden(false, "fade");
 		setInFullsreen(!inFullscreen);
+		console.log(inFullscreen)
 		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
 		if (!inFullscreen) {
 			navigation.goBack();
@@ -139,8 +140,17 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		setMirrorStats(false, 0);
 	});
 
+
+	navigation.addListener("focus", () => {
+		setInFullsreen(false)
+	})
+	
 	useEffect(() => {
-		BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+		const handler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+		return () => {
+			Logger.Log("returning ffrom videopage");
+			handler.remove();
+		};
 	}, []);
 
 	const { data: ReactionData, error, loading } = useReaction(activePublication?.id);
