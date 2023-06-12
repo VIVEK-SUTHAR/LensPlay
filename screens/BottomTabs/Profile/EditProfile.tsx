@@ -17,7 +17,11 @@ import { ToastType } from "customTypes/Store";
 import Avatar from "components/UI/Avatar";
 import { dark_primary } from "constants/Colors";
 import getImageBlobFromUri from "utils/getImageBlobFromUri";
-import { Profile, useCreateSetProfileImageUriViaDispatcherMutation, useCreateSetProfileMetadataViaDispatcherMutation } from "customTypes/generated";
+import {
+	Profile,
+	useCreateSetProfileImageUriViaDispatcherMutation,
+	useCreateSetProfileMetadataViaDispatcherMutation,
+} from "customTypes/generated";
 import uploadImageToIPFS from "utils/uploadImageToIPFS";
 import { LENSPLAY_SITE } from "constants/index";
 import TrackAction from "utils/Track";
@@ -43,7 +47,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 	//state for name, bio
 	const [userData, setUserData] = useState({
 		name: "",
-		bio: ""	,
+		bio: "",
 	});
 
 	//states for social links
@@ -139,25 +143,78 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 	const [createSetProfileImageUriViaDispatcherMutation] =
 		useCreateSetProfileImageUriViaDispatcherMutation({
 			onCompleted: (data) => {
-				Logger.Success("updated", data);
+				Logger.Success("avatar updated", data);
 			},
 			onError: (error) => {
 				Logger.Error("Error while updating ProfilePic", error);
 			},
 		});
 
-    const [
-      createSetProfileMetadataViaDispatcherMutation,
-    ] = useCreateSetProfileMetadataViaDispatcherMutation({
-      onCompleted: (data) => {
-        console.log(data);
-        
-        TrackAction(SETTINGS.PROFILE.UPDATE_DETAILS);
-      },
-      onError: (error) => {
-			Logger.Error("Error while updating metadata", error);
-      },
-    });
+	const [createSetProfileMetadataViaDispatcherMutation] =
+		useCreateSetProfileMetadataViaDispatcherMutation({
+			onCompleted: (data) => {
+				Logger.Success("metadata updated", data);
+				TrackAction(SETTINGS.PROFILE.UPDATE_DETAILS);
+			},
+			onError: (error) => {
+				Logger.Error("Error while updating metadata", error);
+			},
+		});
+
+	const updateProfileAvatar = async () => {
+		const imageCID = await uploadImageToIPFS(avatarBlob);
+					await createSetProfileImageUriViaDispatcherMutation({
+						variables: {
+							request: {
+								profileId: currentProfile?.id,
+								url: `ipfs://${imageCID}`,
+							},
+						},
+						context: {
+							headers: {
+								"x-access-token": `Bearer ${accessToken}`,
+								"origin": LENSPLAY_SITE,
+							},
+						},
+					});
+
+					TrackAction(SETTINGS.PROFILE.UPDATE_AVATAR);
+	}
+
+	const updateProfileMetadata = async () => {
+		//get the current cover and populate the local variable
+		let coverURI = getRawurl(currentProfile?.coverPicture);
+
+		//if the cover has been updated then upload it to ipfs and update the local variable
+		if (coverBlob) {
+			coverURI = await uploadImageToIPFS(coverBlob);
+			coverURI = coverURI;
+			Logger.Success('updated cover');
+		}
+
+		//upload the metadata to arweave and get it's txn id
+		const metadata = await uploadProfileMetadata(
+			currentProfile,
+			userData,
+			socialLinks,
+			coverBlob ? `ipfs://${coverURI}` : coverURI
+		);
+
+		await createSetProfileMetadataViaDispatcherMutation({
+			variables: {
+				request: {
+					metadata: `https://arweave.net/${metadata.id}`,
+					profileId: currentProfile?.id,
+				},
+			},
+			context: {
+				headers: {
+					"x-access-token": `Bearer ${accessToken}`,
+					"origin": LENSPLAY_SITE,
+				},
+			},
+		});
+	}
 
 	const handleUpdate = async () => {
 		try {
@@ -175,60 +232,23 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 			) {
 				toast.show("Please select data", ToastType.ERROR, true);
 			} else {
-				//check if avatar has been changed and then update it first
-				if (avatarBlob) {
-
-					const imageCID = await uploadImageToIPFS(avatarBlob);
-					await createSetProfileImageUriViaDispatcherMutation({
-						variables: {
-							request: {
-								profileId: currentProfile?.id,
-								url: `ipfs://${imageCID}`,
-							},
-						},
-						context: {
-							headers: {
-								"x-access-token": `Bearer ${accessToken}`,
-								"origin": LENSPLAY_SITE,
-							},
-						},
-					});
-          
-					TrackAction(SETTINGS.PROFILE.UPDATE_AVATAR);
+				//update avatar as well as metadata
+				if (avatarBlob && canUpload()) {
+					Logger.Warn('need to update both');
+					const [avatarResult, metadataResult] = await Promise.all([updateProfileAvatar(), updateProfileMetadata()]);		
+				}
+				//update avatar
+				else if(avatarBlob) {
+					Logger.Warn('need to update avatar');
+					await updateProfileAvatar();
+				}
+				//update metadata
+				else {
+					Logger.Warn('need to update metadata');
+					await updateProfileMetadata();
 				}
 
-				//update channel details
-				if (canUpload()) {
-          //get the current cover and populate the local variable
-					let coverURI = getRawurl(currentProfile?.coverPicture);
-
-          //if the cover has been updated then upload it to ipfs and update the local variable
-					if (coverBlob) {          
-						coverURI = await uploadImageToIPFS(coverBlob);
-						coverURI = coverURI;
-					}
-
-          
-          //upload the metadata to arweave and get it's txn id
-          const metadata = await uploadProfileMetadata(currentProfile, userData, socialLinks, coverBlob ? `ipfs://${coverURI}` : coverURI );
-
-          
-          await createSetProfileMetadataViaDispatcherMutation({
-            variables: {
-              request: {
-                metadata: `https://arweave.net/${metadata.id}`,
-                profileId: currentProfile?.id,
-              },
-            },
-            context: {
-              headers: {
-                "x-access-token": `Bearer ${accessToken}`,
-                origin: LENSPLAY_SITE,
-              },
-            },
-          });
-				}
-        toast.show("Channel updated successfully", ToastType.SUCCESS, true);
+				toast.show("Channel updated successfully", ToastType.SUCCESS, true);
 			}
 		} catch (error) {
 			Logger.Error("Error in Edit Channel", error);
