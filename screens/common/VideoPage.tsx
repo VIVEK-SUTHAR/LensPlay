@@ -64,6 +64,7 @@ import { freeCollectPublication, freeMirror } from "../../api";
 import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
 import Icon from "components/Icon";
+import getPublicationCollectModule from "utils/lens/getPublicationCollectModule";
 
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState(false);
@@ -120,7 +121,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	function handleBackButtonClick() {
 		setStatusBarHidden(false, "fade");
 		setInFullsreen(!inFullscreen);
-		console.log(inFullscreen)
+		console.log(inFullscreen);
 		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
 		if (!inFullscreen) {
 			navigation.goBack();
@@ -140,11 +141,10 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		setMirrorStats(false, 0);
 	});
 
-
 	navigation.addListener("focus", () => {
-		setInFullsreen(false)
-	})
-	
+		setInFullsreen(false);
+	});
+
 	useEffect(() => {
 		const handler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
 		return () => {
@@ -185,6 +185,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 			toast.show(err.message, ToastType.ERROR, true);
 		},
 	});
+
+	Logger.Warn("Collect module", getPublicationCollectModule(activePublication?.collectModule))
 
 	const collectRef = useRef<BottomSheetMethods>(null);
 	const mirrorRef = useRef<BottomSheetMethods>(null);
