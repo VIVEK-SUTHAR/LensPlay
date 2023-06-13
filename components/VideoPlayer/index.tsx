@@ -1,10 +1,10 @@
+import VideoPlayer from "components/CustomVideoPlayer";
 import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
 import { primary } from "constants/Colors";
 import { ResizeMode, Video } from "expo-av";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
-import VideoPlayer from "expo-video-player";
 import React, { MutableRefObject, useRef } from "react";
 import { Dimensions, Platform, View } from "react-native";
 import { useThemeStore } from "store/Store";
@@ -43,14 +43,14 @@ function Player({
 }: VideoPlayerProps) {
 	const videoRef = useRef<Video>();
 	const { PRIMARY } = useThemeStore();
-	Logger.Log("IN FULLSCREEN",inFullscreen)
+	Logger.Log("IN FULLSCREEN", inFullscreen);
 	const isAndroid = Platform.OS === "android";
 
 	return (
 		<VideoPlayer
 			style={{
 				width: inFullscreen ? Dimensions.get("screen").height : Dimensions.get("screen").width,
-				height: inFullscreen ? Dimensions.get("screen").width * 0.96 : 250,
+				height: inFullscreen ? Dimensions.get("screen").width : 250,
 				videoBackgroundColor: "transparent",
 				controlsBackgroundColor: "transparent",
 			}}
@@ -67,6 +67,9 @@ function Player({
 				thumbTintColor: "white",
 				maximumTrackTintColor: "white",
 				minimumTrackTintColor: primary,
+				style: {
+					height: 10,
+				},
 			}}
 			icon={{
 				size: 48,

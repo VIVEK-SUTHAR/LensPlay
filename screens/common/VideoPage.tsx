@@ -186,7 +186,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		},
 	});
 
-	Logger.Warn("Collect module", getPublicationCollectModule(activePublication?.collectModule))
+	Logger.Warn("Collect module", getPublicationCollectModule(activePublication?.collectModule));
 
 	const collectRef = useRef<BottomSheetMethods>(null);
 	const mirrorRef = useRef<BottomSheetMethods>(null);
