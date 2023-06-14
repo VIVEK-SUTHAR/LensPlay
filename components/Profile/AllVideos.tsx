@@ -290,20 +290,20 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 				});
 			},
 		},
-		// {
-		// 	name: "Add to watch later",
-		// 	icon: "images",
-		// 	onPress:(pubId)=> {
-		// 		add(pubId)
-		// 	},
-		// }
+		{
+			name: "Add to watch later",
+			icon: "images",
+			onPress:(pubId)=> {
+				add(pubId)
+			},
+		}
 	];
 
 	return (
 		<>
 			<Sheet
 				ref={sheetRef}
-				snapPoints={[profileId ? 90 : 200]}
+				snapPoints={[profileId ? 150 : 200]}
 				enablePanDownToClose={true}
 				enableOverDrag={true}
 				bottomInset={32}
