@@ -2,6 +2,7 @@ import { AVPlaybackStatus, Audio, Video } from "expo-av";
 import {
 	ActivityIndicator,
 	Animated,
+	Dimensions,
 	StyleSheet,
 	Text,
 	TouchableWithoutFeedback,
@@ -15,11 +16,13 @@ import {
 	getMinutesSecondsFromMilliseconds,
 	styles,
 } from "./utils";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { Props, defaultProps } from "./props";
 import { useEffect, useRef, useState } from "react";
 import React from "react";
 import Slider from "@react-native-community/slider";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { runOnJS } from "react-native-reanimated";
 
 const VideoPlayer = (tempProps: Props) => {
 	const props = deepMerge(defaultProps, tempProps) as Props;
@@ -221,6 +224,73 @@ const VideoPlayer = (tempProps: Props) => {
 		);
 	}
 
+	const fastForward = async () => {
+		if (playbackInstance !== null) {
+			if (playbackInstanceInfo.state === PlaybackStates.Ended) {
+				await playbackInstance.setStatusAsync({
+					positionMillis: 0,
+					shouldPlay: true,
+				});
+				setPlaybackInstanceInfo({
+					...playbackInstanceInfo,
+					position: 0,
+				});
+			}
+			const c_position = playbackInstanceInfo.position;
+			if (playbackInstance) {
+				await playbackInstance.setStatusAsync({
+					positionMillis: c_position + 5000,
+					shouldPlay: true,
+				});
+			}
+			const position = c_position + 5000;
+			setPlaybackInstanceInfo({
+				...playbackInstanceInfo,
+				position,
+			});
+		}
+	};
+
+	const fastBackward = async () => {
+		if (playbackInstance !== null) {
+			if (playbackInstanceInfo.state === PlaybackStates.Ended) {
+				await playbackInstance.setStatusAsync({
+					positionMillis: 0,
+					shouldPlay: true,
+				});
+				setPlaybackInstanceInfo({
+					...playbackInstanceInfo,
+					position: 0,
+				});
+			}
+			const currentPosition = playbackInstanceInfo.position;
+			if (playbackInstance) {
+				await playbackInstance.setStatusAsync({
+					positionMillis: currentPosition - 5000,
+					shouldPlay: true,
+				});
+			}
+			const position = currentPosition - 5000;
+			setPlaybackInstanceInfo({
+				...playbackInstanceInfo,
+				position,
+			});
+		}
+	};
+
+	const doubleTapOnForWard = Gesture.Tap()
+		.maxDuration(250)
+		.runOnJS(true)
+		.onStart(() => {
+			runOnJS(fastForward)();
+		});
+	const doubleTapOnBackWord = Gesture.Tap()
+		.maxDuration(250)
+		.runOnJS(true)
+		.onStart(() => {
+			runOnJS(fastBackward)();
+		});
+
 	return (
 		<View
 			style={{
@@ -271,7 +341,36 @@ const VideoPlayer = (tempProps: Props) => {
 						}}
 					/>
 					<View pointerEvents={controlsState === ControlStates.Visible ? "auto" : "none"}>
-						<View style={styles.iconWrapper}>
+						<View
+							style={[
+								styles.iconWrapper,
+								{
+									width: Dimensions.get("screen").width,
+									height: Dimensions.get("screen").height,
+									flexDirection: "row",
+									justifyContent: "space-around",
+									alignItems: "center",
+								},
+							]}
+						>
+							<GestureDetector gesture={doubleTapOnBackWord}>
+								<TouchableButton>
+									<View
+										style={{
+											height: props.style.height || 280,
+											alignItems: "center",
+											justifyContent: "center",
+										}}
+									>
+										<AntDesign
+											name="stepbackward"
+											color={props.icon.color}
+											style={props.icon.style}
+											size={34}
+										/>
+									</View>
+								</TouchableButton>
+							</GestureDetector>
 							<TouchableButton onPress={togglePlay}>
 								<View>
 									{playbackInstanceInfo.state === PlaybackStates.Buffering &&
@@ -298,6 +397,24 @@ const VideoPlayer = (tempProps: Props) => {
 									)}
 								</View>
 							</TouchableButton>
+							<GestureDetector gesture={doubleTapOnForWard}>
+								<TouchableButton onPress={() => {}}>
+									<View
+										style={{
+											height: props.style.height || 280,
+											alignItems: "center",
+											justifyContent: "center",
+										}}
+									>
+										<AntDesign
+											name="stepforward"
+											style={props.icon.style}
+											color={props.icon.color}
+											size={36}
+										/>
+									</View>
+								</TouchableButton>
+							</GestureDetector>
 						</View>
 					</View>
 				</Animated.View>
