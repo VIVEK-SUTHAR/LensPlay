@@ -1,6 +1,6 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import * as React from "react";
-import { Dimensions, Linking, Pressable, StyleSheet, View } from "react-native";
+import { Animated, Dimensions, FlatList, Linking, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
@@ -10,33 +10,83 @@ import { black, white } from "constants/Colors";
 import { RootStackScreenProps } from "customTypes/navigation";
 import Button from "components/UI/Button";
 import { Image } from "expo-image";
+import { WINDOW_WIDTH } from "@gorhom/bottom-sheet";
+import Paginator from "components/Login/Paginator";
+import NewPaginator from "./NewPaginator";
 
 const LetsGetIn = ({ navigation }: RootStackScreenProps<"LetsGetIn">) => {
 	const loginRef = React.useRef<BottomSheetMethods>(null);
 	const [isloading, setIsloading] = React.useState<boolean>(false);
 	const width = Dimensions.get("window").width;
 
-    const NavigateToConnectWallet = () => {
-        navigation.navigate('ConnectWallet');
-    }
+	const NavigateToConnectWallet = () => {
+		navigation.navigate("ConnectWallet");
+	};
 
+	const data = [
+		// "https://images.pexels.com/photos/14579361/pexels-photo-14579361.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+		require("../../assets/images/3D-3.webp"),
+		require("../../assets/images/3D-4.webp"),
+		require("../../assets/images/3D-5.webp"),
+	];
+	const [currentIndex, setCurrentIndex] = React.useState(0);
+	const scrollX = React.useRef(new Animated.Value(0)).current;
+	const slidesRef = React.useRef(null);
+	const viewableItemsChanged = React.useRef(({ viewableItems }) => {
+		setCurrentIndex(viewableItems[0].index);
+	}).current;
+	const viewConfig = React.useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="transparent" style="light" />
-			<LinearGradient colors={["#2D3436", "#000000", "#000000"]} style={{ flex: 1, justifyContent: "space-between" }}>
+			<LinearGradient
+				colors={["#2D3436", "#000000", "#000000"]}
+				style={{ flex: 1, justifyContent: "space-between" }}
+			>
 				<View
 					style={{
-						width: width,
-						height: "65%",
+						// width:"35%",
+						// height: "35%",
 						justifyContent: "center",
 						alignItems: "center",
+						zIndex: 2,
 					}}
 				>
-					<Image
+					<FlatList
+						data={data}
+						keyExtractor={(index) => index.toString()}
+						horizontal
+						pagingEnabled
+						bounces={false}
+						renderItem={({ item }) => {
+							return (
+								<View
+									style={{ width: WINDOW_WIDTH, justifyContent: "center", alignItems: "center" }}
+								>
+									<Image
+										source={item}
+										style={{ width: WINDOW_WIDTH * 0.7, height: WINDOW_WIDTH * 1.4 }}
+										contentFit="contain"
+									/>
+								</View>
+							);
+						}}
+						onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
+							useNativeDriver: false,
+						})}
+						onViewableItemsChanged={viewableItemsChanged}
+						viewabilityConfig={viewConfig}
+						ref={slidesRef}
+						scrollEventThrottle={32}
+					/>
+					{/* <Image
 						source={require("../../assets/images/3D-1.webp")}
 						style={{ width: "70%", height: "70%" }}
 						contentFit="contain"
-					/>
+					/> */}
+				</View>
+				<View style={{justifyContent:"center",alignItems:"center"}} >
+					<NewPaginator data={data} scrollX={scrollX} />
 				</View>
 				<View
 					style={{
@@ -60,7 +110,7 @@ const LetsGetIn = ({ navigation }: RootStackScreenProps<"LetsGetIn">) => {
 						width: "100%",
 					}}
 				>
-                    <Button
+					<Button
 						title={"Get Started"}
 						width={"100%"}
 						isLoading={isloading}
