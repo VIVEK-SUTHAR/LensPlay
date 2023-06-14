@@ -70,10 +70,14 @@ function Player({
 				thumbTintColor: "white",
 				maximumTrackTintColor: "white",
 				minimumTrackTintColor: primary,
-				style: {
-					height: 10,
-				},
 				tapToSeek: true,
+				style: {
+					...Platform.select({
+						ios: {
+							height: 10,
+						},
+					}),
+				},
 			}}
 			icon={{
 				size: 48,

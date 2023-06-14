@@ -3,6 +3,7 @@ import {
 	ActivityIndicator,
 	Animated,
 	Dimensions,
+	Platform,
 	StyleSheet,
 	Text,
 	TouchableWithoutFeedback,
@@ -453,14 +454,22 @@ const VideoPlayer = (tempProps: Props) => {
 				>
 					<View
 						style={{
-							marginBottom: props.fullscreen.inFullscreen ? -8 : -20,
-							marginVertical: -12,
+							...Platform.select({
+								ios: {
+									marginBottom: props.fullscreen.inFullscreen ? -8 : -20,
+									marginVertical: -12,
+								},
+								android: {
+									marginBottom: props.fullscreen.inFullscreen ? -8 : -10,
+								},
+							}),
 						}}
 					>
 						{props.slider.visible && (
 							<Slider
 								{...sliderProps}
 								style={[styles.slider, props.slider.style]}
+								// tapToSeek={true}
 								thumbImage={require("../../assets/images/thumb.png")}
 								value={
 									playbackInstanceInfo.duration

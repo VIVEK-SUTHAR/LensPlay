@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 //Lens Protocol
 const LENS_API_ENDPOINT = "https://api-mumbai.lens.dev/";
 export const LENS_CLAIM_SITE = "https://claim.lens.xyz/";
@@ -61,6 +62,8 @@ export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 export const SOURCES = ["lensplay", "lenstube", "orb", "buttrfly"];
 
 export const DEV = __DEV__;
+
+
 
 export {
 	LENS_API_ENDPOINT,
