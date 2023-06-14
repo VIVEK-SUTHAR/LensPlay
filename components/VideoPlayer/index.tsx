@@ -58,6 +58,9 @@ function Player({
 				fontSize: 14,
 				fontWeight: "600",
 			}}
+			animation={{
+				fadeOutDuration: 5000,
+			}}
 			activityIndicator={{
 				size: "large",
 				color: primary,
@@ -70,6 +73,7 @@ function Player({
 				style: {
 					height: 10,
 				},
+				tapToSeek: true,
 			}}
 			icon={{
 				size: 48,
