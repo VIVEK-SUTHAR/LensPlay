@@ -279,12 +279,14 @@ const VideoPlayer = (tempProps: Props) => {
 	};
 
 	const doubleTapOnForWard = Gesture.Tap()
+		.numberOfTaps(2)
 		.maxDuration(250)
 		.runOnJS(true)
 		.onStart(() => {
 			runOnJS(fastForward)();
 		});
 	const doubleTapOnBackWord = Gesture.Tap()
+		.numberOfTaps(2)
 		.maxDuration(250)
 		.runOnJS(true)
 		.onStart(() => {
@@ -354,7 +356,14 @@ const VideoPlayer = (tempProps: Props) => {
 							]}
 						>
 							<GestureDetector gesture={doubleTapOnBackWord}>
-								<TouchableButton>
+								<TouchableButton
+									hitSlop={{
+										bottom: 40,
+										left: 20,
+										top: 40,
+										right: 20,
+									}}
+								>
 									<View
 										style={{
 											height: props.style.height || 280,
@@ -398,7 +407,14 @@ const VideoPlayer = (tempProps: Props) => {
 								</View>
 							</TouchableButton>
 							<GestureDetector gesture={doubleTapOnForWard}>
-								<TouchableButton onPress={() => {}}>
+								<TouchableButton
+									hitSlop={{
+										bottom: 40,
+										left: 20,
+										top: 40,
+										right: 20,
+									}}
+								>
 									<View
 										style={{
 											height: props.style.height || 280,
