@@ -2,6 +2,7 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 // import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import { useWeb3Modal } from "@web3modal/react-native";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
@@ -16,20 +17,7 @@ import handleUser from "utils/invites/handleUser";
 import getProfiles from "utils/lens/getProfiles";
 import Logger from "utils/logger";
 import TrackAction from "utils/Track";
-import { Web3Button, Web3Modal, useWeb3Modal } from "@web3modal/react-native";
 
-const projectId = "6097f40a8f4f91e37e66cf3a5ca1fba2";
-
-const providerMetadata = {
-	name: "LesnPlay",
-	description: "LensPlay:The Native mobile first video sharing app",
-	url: "https://lensplay.xyz/",
-	icons: ["https://lensplay.xyz/logo.png"],
-	redirect: {
-		native: "YOUR_APP_SCHEME://",
-		universal: "YOUR_APP_UNIVERSAL_LINK.com",
-	},
-};
 
 type ConnectWalletSheetProps = {
 	loginRef: React.RefObject<BottomSheetMethods>;
@@ -240,21 +228,7 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 					</Pressable>
 				</View>
 			</View>
-			<Web3Modal
-				projectId={projectId}
-				providerMetadata={providerMetadata}
-				themeMode="dark"
-				sessionParams={{
-					namespaces: {
-						eip155: {
-							methods: ["eth_sendTransaction", "personal_sign"],
-							chains: ["eip155:137"],
-							events: ["chainChanged", "accountsChanged"],
-							rpcMap: {},
-						},
-					},
-				}}
-			/>
+			
 		</>
 	);
 }

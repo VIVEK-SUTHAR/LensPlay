@@ -122,7 +122,7 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
 				}}
 				snapPoints={[440, 550]}
 			>
-				<DiscriptionSheet item={item} />
+				<DiscriptionSheet item={item} descriptionRef={descriptionRef} />
 			</Sheet>
 		</>
 	);

@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useWeb3Modal } from "@web3modal/react-native";
 // import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Heading from "components/UI/Heading";
 import StorageKeys from "constants/Storage";
@@ -31,6 +32,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 	const blackBox = useSharedValue(1);
 	const image = useSharedValue(0);
 	const textOpacity = useSharedValue(0);
+	const { address: WalletAddres } = useWeb3Modal();
 	// const { accounts } = useWalletConnect();
 
 	const [verifyTokens, { data: isvalidTokens, error: verifyError, loading: verifyLoading }] =
@@ -39,7 +41,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 	const [getAccessFromRefresh, { data: newTokens, error, loading }] = useRefreshTokensMutation();
 
 	async function HandleDefaultProfile(adress: string) {
-		Logger.Warn("We are in Handle ");
+		Logger.Warn("We are in Handle");
 		Logger.Warn("We are in Handle efault profile");
 		Logger.Warn("Calling get default profile");
 		const userDefaultProfile = await getDefaultProfile(adress);
@@ -129,7 +131,8 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 				profileId = await HandleDefaultProfile(address);
 			} else {
 				Logger.Success("Got address via wallet");
-				// profileId = await HandleDefaultProfile(accounts[0]);
+				Logger.Log("a", WalletAddres);
+				profileId = await HandleDefaultProfile(WalletAddres);
 			}
 
 			if (!userData) {
