@@ -25,23 +25,24 @@ const LetsGetIn = ({ navigation }: RootStackScreenProps<"LetsGetIn">) => {
 
 	const data = [
 		// "https://images.pexels.com/photos/14579361/pexels-photo-14579361.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-		require("../../assets/images/3D-3.webp"),
-		require("../../assets/images/3D-4.webp"),
-		require("../../assets/images/3D-5.webp"),
+		require("../../assets/images/light.png"),
+		require("../../assets/images/light.png"),
+		require("../../assets/images/light.png"),
 	];
 	const [currentIndex, setCurrentIndex] = React.useState(0);
 	const scrollX = React.useRef(new Animated.Value(0)).current;
 	const slidesRef = React.useRef(null);
-	const viewableItemsChanged = React.useRef(({ viewableItems }) => {
-		setCurrentIndex(viewableItems[0].index);
-	}).current;
+	// const viewableItemsChanged = React.useRef(({ viewableItems }) => {
+	// 	setCurrentIndex(viewableItems[0].index);
+	// }).current;
 	const viewConfig = React.useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="transparent" style="light" />
 			<LinearGradient
-				colors={["#2D3436", "#000000", "#000000"]}
+				colors={["#434343","#000000"]}
 				style={{ flex: 1, justifyContent: "space-between" }}
+				locations={[0.1,0.7]}
 			>
 				<View
 					style={{
@@ -52,7 +53,7 @@ const LetsGetIn = ({ navigation }: RootStackScreenProps<"LetsGetIn">) => {
 						zIndex: 2,
 					}}
 				>
-					<FlatList
+					<Animated.FlatList
 						data={data}
 						keyExtractor={(index) => index.toString()}
 						horizontal
@@ -74,7 +75,7 @@ const LetsGetIn = ({ navigation }: RootStackScreenProps<"LetsGetIn">) => {
 						onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
 							useNativeDriver: false,
 						})}
-						onViewableItemsChanged={viewableItemsChanged}
+						// onViewableItemsChanged={viewableItemsChanged}
 						viewabilityConfig={viewConfig}
 						ref={slidesRef}
 						scrollEventThrottle={32}
@@ -85,9 +86,7 @@ const LetsGetIn = ({ navigation }: RootStackScreenProps<"LetsGetIn">) => {
 						contentFit="contain"
 					/> */}
 				</View>
-				<View style={{justifyContent:"center",alignItems:"center"}} >
-					<NewPaginator data={data} scrollX={scrollX} />
-				</View>
+
 				<View
 					style={{
 						width: width,
@@ -103,6 +102,9 @@ const LetsGetIn = ({ navigation }: RootStackScreenProps<"LetsGetIn">) => {
 							fontWeight: "600",
 						}}
 					/>
+				</View>
+				<View style={{justifyContent:"center",alignItems:"center"}} >
+					<NewPaginator data={data} scrollX={scrollX} />
 				</View>
 				<View
 					style={{
