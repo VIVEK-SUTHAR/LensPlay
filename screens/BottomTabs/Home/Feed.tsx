@@ -36,6 +36,7 @@ import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import Logger from "utils/logger";
 import TrackAction from "utils/Track";
+import getAndSaveNotificationToken from "utils/getAndSaveNotificationToken";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -44,6 +45,10 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	const { accessToken } = useAuthStore();
 	const { isGuest } = useGuestStore();
 	const { currentProfile } = useProfile();
+
+	React.useEffect(() => {
+		getAndSaveNotificationToken(currentProfile?.id);
+	}, []);
 
 	ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
 
@@ -97,19 +102,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	const pageInfo = Feeddata?.feed.pageInfo;
 
 	const keyExtractor = (item: FeedItem) => item?.root?.id?.toString();
-
-	/**
-	 * This ITEM_HEIGHT refers to The height of rendering Component.
-	 * By specifying the height upfront, we are eliminating
-	 * the runtime calculation of item heights which is done By FlatList at runtime,
-	 * The more this value is accurate, the more optimizations
-	 * To Get Correct value,
-	 * 1).Open Dev-Tools
-	 * 2).Click on toggle Element Inspector
-	 * 3).Select the FlatList renderItem components
-	 * 4).See the value in Box-Model and set it accordingly
-	 */
-	const ITEM_HEIGHT = 280;
 
 	const onEndCallBack = React.useCallback(() => {
 		if (!pageInfo?.next) {

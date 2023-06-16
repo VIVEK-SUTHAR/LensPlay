@@ -17,7 +17,6 @@ import { AppState } from "react-native";
 import "./expo-crypto-shim.ts";
 import { Web3Modal } from "@web3modal/react-native";
 
-import messaging from "@react-native-firebase/messaging"
 const projectId = "6097f40a8f4f91e37e66cf3a5ca1fba2";
 
 const providerMetadata = {
@@ -36,14 +35,8 @@ export default function App() {
 
 	const { setIsOffline } = useNetworkStore();
 
-	const getFCMToken =async () => {
-		const register = await messaging().registerDeviceForRemoteMessages();
-		const token = await messaging().getToken();
-		console.log(token)
-	}
-
+	
 	React.useEffect(() => {
-		getFCMToken()
 		NetInfo.fetch().then((data) => {
 			if (data.isConnected) {
 				setIsOffline(true);
