@@ -23,6 +23,7 @@ import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
 import canUploadedToIpfs from "utils/canUploadToIPFS";
 import getIPFSLink from "utils/getIPFSLink";
+import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
 import getFileSize from "utils/video/getFileSize";
 
@@ -489,9 +490,10 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 								if (!camera.canceled) {
 									const size = await getFileSize(camera.assets[0].uri);
 									if (!canUploadedToIpfs(size)) {
-										toast.error("Select video less than 100MB");
+										toast.error("Selected video is greater than 5GB");
 										return;
 									}
+									uploadStore.setDuration(camera.assets[0].duration!);
 									navigation.push("UploadVideo", {
 										localUrl: camera.assets[0].uri,
 										duration: camera.assets[0].duration,
@@ -541,7 +543,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 							if (!result.canceled) {
 								const size = await getFileSize(result.assets[0].uri);
 								if (!canUploadedToIpfs(size)) {
-									toast.error("Select video less than 100MB");
+									toast.error("Select video is greater than 5GB");
 									return;
 								}
 								uploadStore.setDuration(result.assets[0].duration!);

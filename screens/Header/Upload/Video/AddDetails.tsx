@@ -26,19 +26,15 @@ const windowHeight = Dimensions.get("window").height;
 const ReferenceModuleList: ReferenceModuleListItem[] = [
 	{
 		name: "Everyone",
-		isSelected: true,
 	},
 	{
 		name: "My followers",
-		isSelected: false,
 	},
 	{
 		name: "My following",
-		isSelected: false,
 	},
 	{
 		name: "Friends of friend",
-		isSelected: false,
 	},
 ];
 

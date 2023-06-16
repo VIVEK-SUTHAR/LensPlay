@@ -207,9 +207,7 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 										>
 											<Icon name="done" />
 										</View>
-									) : (
-										<></>
-									)}
+									) : null}
 								</>
 							</>
 						) : (
