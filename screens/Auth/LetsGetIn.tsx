@@ -10,7 +10,7 @@ import { black, white } from "constants/Colors";
 import { RootStackScreenProps } from "customTypes/navigation";
 import Button from "components/UI/Button";
 import { Image } from "expo-image";
-import { WINDOW_WIDTH } from "@gorhom/bottom-sheet";
+import { SCREEN_HEIGHT, SCREEN_WIDTH, WINDOW_WIDTH } from "@gorhom/bottom-sheet";
 import Paginator from "components/Login/Paginator";
 import NewPaginator from "./NewPaginator";
 
@@ -40,72 +40,130 @@ const LetsGetIn = ({ navigation }: RootStackScreenProps<"LetsGetIn">) => {
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="transparent" style="light" />
 			<LinearGradient
-				colors={["#434343","#000000"]}
+				colors={["#1d1d1d", "#000000"]}
 				style={{ flex: 1, justifyContent: "space-between" }}
-				locations={[0.1,0.7]}
+				locations={[0.3, 0.7]}
 			>
-				<View
-					style={{
-						// width:"35%",
-						// height: "35%",
-						justifyContent: "center",
-						alignItems: "center",
-						zIndex: 2,
-					}}
-				>
-					<Animated.FlatList
-						data={data}
-						keyExtractor={(index) => index.toString()}
-						horizontal
-						pagingEnabled
-						bounces={false}
-						renderItem={({ item }) => {
-							return (
-								<View
-									style={{ width: WINDOW_WIDTH, justifyContent: "center", alignItems: "center" }}
-								>
-									<Image
-										source={item}
-										style={{ width: WINDOW_WIDTH * 0.7, height: WINDOW_WIDTH * 1.4 }}
-										contentFit="contain"
-									/>
-								</View>
-							);
+				<View style={{ position: "relative" }}>
+					<View
+						style={{
+							width: WINDOW_WIDTH,
+							justifyContent: "center",
+							alignItems: "center",
+							position: "relative",
+							paddingTop: "10%",
 						}}
-						onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
-							useNativeDriver: false,
-						})}
-						// onViewableItemsChanged={viewableItemsChanged}
-						viewabilityConfig={viewConfig}
-						ref={slidesRef}
-						scrollEventThrottle={32}
-					/>
-					{/* <Image
+					>
+						<Image
+							source={require("../../assets/images/light.png")}
+							style={{ width: WINDOW_WIDTH * 0.7, height: WINDOW_WIDTH * 1.4 }}
+							contentFit="contain"
+						/>
+						<Image
+							source={require("../../assets/images/video2.svg")}
+							style={{
+								position: "absolute",
+								resizeMode: "contain",
+								height: "65%",
+								width: "50%",
+								left: "-5%",
+								top: "10%",
+								// zIndex:3
+							}}
+						/>
+						<Image
+							source={require("../../assets/images/upload.png")}
+							style={{
+								position: "absolute",
+								resizeMode: "contain",
+								height: "45%",
+								width: "45%",
+								left: "32%",
+								top: "22%",
+							}}
+						/>
+						<Image
+							source={require("../../assets/images/hashtag.svg")}
+							style={{
+								position: "absolute",
+								resizeMode: "contain",
+								height: "65%",
+								width: "65%",
+								right: "0%",
+								bottom: "0%",
+								zIndex:2
+							}}
+						/>
+						<Image
+							source={require("../../assets/images/upload.png")}
+							style={{
+								position: "absolute",
+								resizeMode: "contain",
+								height: "45%",
+								width: "45%",
+								right: "32%",
+								// top: "22%",
+								bottom:30
+							}}
+						/>
+					</View>
+					<View
+						style={{
+							// width:"35%",
+							// height: "35%",
+							justifyContent: "center",
+							alignItems: "center",
+							// zIndex: 2,
+						}}
+					>
+						<Animated.FlatList
+							data={data}
+							keyExtractor={(index) => index.toString()}
+							horizontal
+							pagingEnabled
+							bounces={false}
+							renderItem={({ item }) => {
+								return (
+									<View>
+										<View
+											style={{
+												width: width,
+												paddingHorizontal: 16,
+												justifyContent: "center",
+											}}
+										>
+											<StyledText
+												title={"Create"}
+												style={{
+													color: "white",
+													fontSize: 36,
+													fontWeight: "600",
+													textAlign: "center",
+												}}
+											/>
+										</View>
+										<View style={{ justifyContent: "center", alignItems: "center", marginTop: 24 }}>
+											<NewPaginator data={data} scrollX={scrollX} />
+										</View>
+									</View>
+								);
+							}}
+							onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
+								useNativeDriver: false,
+							})}
+							// onViewableItemsChanged={viewableItemsChanged}
+							viewabilityConfig={viewConfig}
+							ref={slidesRef}
+							scrollEventThrottle={32}
+						/>
+						{/* <Image
 						source={require("../../assets/images/3D-1.webp")}
 						style={{ width: "70%", height: "70%" }}
 						contentFit="contain"
 					/> */}
+					</View>
 				</View>
 
-				<View
-					style={{
-						width: width,
-						paddingHorizontal: 16,
-						justifyContent: "flex-end",
-					}}
-				>
-					<StyledText
-						title={"Share, Earn & Shine on LensPlay"}
-						style={{
-							color: "white",
-							fontSize: 32,
-							fontWeight: "600",
-						}}
-					/>
-				</View>
-				<View style={{justifyContent:"center",alignItems:"center"}} >
-					<NewPaginator data={data} scrollX={scrollX} />
-				</View>
 				<View
 					style={{
 						paddingHorizontal: 16,
