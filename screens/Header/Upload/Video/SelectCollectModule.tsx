@@ -2,19 +2,22 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import Dai from "assets/Icons/Dai";
 import Eth from "assets/Icons/Eth";
 import Matic from "assets/Icons/Matic";
-import Percent from "assets/Icons/Percent";
 import Usdc from "assets/Icons/Usdc";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
-import Input from "components/UI/Input";
 import StyledText from "components/UI/StyledText";
 import { CollectToggle } from "components/Upload/Video/CollectModule";
+import FollowerOnlyCollect from "components/Upload/Video/CollectModules/FollowerOnlyCollect";
+import TimedFeeCollect from "components/Upload/Video/CollectModules/TimedFeeCollect";
+import RefferalReward from "components/Upload/Video/CollectModules/RefferalReward";
 import { black, dark_primary, primary } from "constants/Colors";
 import React from "react";
-import { FlatList, Platform, ScrollView } from "react-native";
-import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import { FlatList, ScrollView } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { useThemeStore } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
+import LimitedFeeCollect from "components/Upload/Video/CollectModules/LimitedFeeCollect";
+import PaidCollect from "components/Upload/Video/CollectModules/PaidCollect";
 
 const TokenList: TokenListItem[] = [
 	{
@@ -78,352 +81,15 @@ export default function SelectCollectModule() {
 							}
 						}}
 					/>
-					{!collectModule?.isRevertCollect ? (
-						<CollectToggle
-							title={"Followers only"}
-							subTitle={"By enabling this, Only your followers will be able to collect this video"}
-							switchValue={collectModule.followerOnlyCollect!}
-							onPress={() => {
-								if (!collectModule.followerOnlyCollect) {
-									setCollectModule({
-										...collectModule,
-										followerOnlyCollect: true,
-									});
-								} else {
-									setCollectModule({
-										...collectModule,
-										followerOnlyCollect: false,
-									});
-								}
-							}}
-						/>
-					) : null}
-					{!collectModule?.isRevertCollect ? (
-						<CollectToggle
-							title={"Paid Collect"}
-							subTitle={"By enabling this, You will get paid when someone collect's your post"}
-							switchValue={collectModule.isPaidCollect!}
-							onPress={() => {
-								if (!collectModule.isPaidCollect) {
-									if (collectModule.isTimedCollect && collectModule.isLimitedCollect) {
-										setCollectModule({
-											...collectModule,
-											type: "limitedTimedFeeCollectModule",
-											isPaidCollect: true,
-										});
-									} else if (collectModule.isTimedCollect) {
-										setCollectModule({
-											...collectModule,
-											type: "timedFeeCollectModule",
-											isPaidCollect: true,
-										});
-									} else if (collectModule.isLimitedCollect) {
-										setCollectModule({
-											...collectModule,
-											type: "limitedFeeCollectModule",
-											isPaidCollect: true,
-										});
-									} else {
-										setCollectModule({
-											...collectModule,
-											type: "feeCollectModule",
-											isPaidCollect: true,
-										});
-									}
-								} else {
-									setCollectModule({
-										...collectModule,
-										type: "freCollectModule",
-										isPaidCollect: false,
-									});
-								}
-							}}
-						/>
-					) : null}
-
-					{collectModule?.isPaidCollect ? (
-						<View
-							style={{
-								justifyContent: "space-between",
-							}}
-						>
-							<StyledText
-								title={"Collect Fee"}
-								style={{
-									color: "white",
-									fontWeight: "700",
-									marginBottom: 8,
-									fontSize: 16,
-								}}
-							/>
-							<View
-								style={{
-									flexDirection: "row",
-									marginBottom: 10,
-								}}
-							>
-								<TextInput
-									placeholder="Collect Fee"
-									value={collectModule?.feeCollectDetails?.amount!}
-									placeholderTextColor="gray"
-									selectionColor={primary}
-									style={{
-										backgroundColor: dark_primary,
-										color: "white",
-										paddingHorizontal: 16,
-										paddingVertical: Platform.OS === "ios" ? 16 : 8,
-										borderTopLeftRadius: 8,
-										borderBottomLeftRadius: 8,
-										flex: 0.7,
-										// width: "90%",
-									}}
-									keyboardType="number-pad"
-									onChange={(e) => {
-										e.preventDefault();
-										setCollectModule({
-											...collectModule,
-											feeCollectDetails: {
-												...collectModule.feeCollectDetails!,
-												amount: e.nativeEvent.text,
-											},
-										});
-									}}
-								/>
-								<View
-									style={{
-										flex: 0.008,
-										backgroundColor: black[800],
-									}}
-								/>
-								<Pressable
-									style={{
-										flex: 0.292,
-										backgroundColor: dark_primary,
-										flexDirection: "row",
-										alignItems: "center",
-										justifyContent: "center",
-										borderTopRightRadius: 8,
-										borderBottomRightRadius: 8,
-									}}
-									onPress={() => {
-										tokemSheetRef?.current?.snapToIndex(0);
-									}}
-								>
-									<StyledText
-										title={collectModule?.feeCollectDetails?.name}
-										style={{
-											color: primary,
-											fontSize: 12,
-											fontWeight: "600",
-										}}
-									/>
-									<Icon
-										name="arrowDown"
-										color={primary}
-										size={14}
-										style={{
-											marginLeft: 4,
-										}}
-									/>
-								</Pressable>
-							</View>
-							<CollectToggle
-								title={"Limited for 24 hours"}
-								subTitle={"By enabling this, You will limit collects for first 24h only"}
-								switchValue={collectModule.isTimedCollect!}
-								onPress={() => {
-									if (!collectModule.isTimedCollect && collectModule.isLimitedCollect) {
-										setCollectModule({
-											...collectModule,
-											type: "limitedTimedFeeCollectModule",
-											isTimedCollect: true,
-										});
-									} else if (!collectModule.isTimedCollect && !collectModule.isLimitedCollect) {
-										setCollectModule({
-											...collectModule,
-											type: "timedFeeCollectModule",
-											isTimedCollect: true,
-										});
-									} else if (collectModule.isTimedCollect && collectModule.isLimitedCollect) {
-										setCollectModule({
-											...collectModule,
-											type: "limitedFeeCollectModule",
-											isTimedCollect: false,
-										});
-									} else {
-										setCollectModule({
-											...collectModule,
-											type: "feeCollectModule",
-											isTimedCollect: false,
-										});
-									}
-								}}
-							/>
-							<CollectToggle
-								title={"Limit Collect Count"}
-								subTitle={"By enabling this, You will limit the number of collects for your Video"}
-								switchValue={collectModule.isLimitedCollect!}
-								onPress={() => {
-									if (!collectModule.isLimitedCollect && collectModule.isTimedCollect) {
-										setCollectModule({
-											...collectModule,
-											type: "limitedTimedFeeCollectModule",
-											isLimitedCollect: true,
-										});
-									} else if (!collectModule.isLimitedCollect && !collectModule.isTimedCollect) {
-										setCollectModule({
-											...collectModule,
-											type: "limitedFeeCollectModule",
-											isLimitedCollect: true,
-										});
-									} else if (collectModule.isLimitedCollect && collectModule.isTimedCollect) {
-										setCollectModule({
-											...collectModule,
-											type: "timedFeeCollectModule",
-											isLimitedCollect: false,
-										});
-									} else {
-										setCollectModule({
-											...collectModule,
-											type: "feeCollectModule",
-											isLimitedCollect: false,
-										});
-									}
-								}}
-							/>
-							{collectModule?.isLimitedCollect ? (
-								<View>
-									<StyledText
-										title={"Collect Limit"}
-										style={{
-											color: "white",
-											fontWeight: "700",
-											marginBottom: 8,
-											fontSize: 16,
-										}}
-									/>
-									<TextInput
-										placeholder="number of collects"
-										value={collectModule?.limitedCollectCount!}
-										placeholderTextColor="gray"
-										selectionColor={primary}
-										style={{
-											backgroundColor: dark_primary,
-											color: "white",
-											paddingHorizontal: 16,
-											paddingVertical: Platform.OS === "ios" ? 16 : 8,
-											borderRadius: 8,
-											flex: 1,
-											marginBottom: 8,
-											// // width: "90%",
-										}}
-										keyboardType="number-pad"
-										onChange={(e) => {
-											e.preventDefault();
-											setCollectModule({
-												...collectModule,
-												limitedCollectCount: e.nativeEvent.text,
-											});
-										}}
-									/>
-								</View>
-							) : null}
-							<CollectToggle
-								title={"Referral reward on mirror"}
-								subTitle={"Share your rewards with someone who support your work"}
-								switchValue={collectModule.isRefferalEnabled!}
-								onPress={() => {
-									if (!collectModule.isRefferalEnabled) {
-										setCollectModule({
-											...collectModule,
-											isRefferalEnabled: true,
-										});
-									} else {
-										setCollectModule({
-											...collectModule,
-											isRefferalEnabled: false,
-										});
-									}
-								}}
-							/>
-							{collectModule?.isRefferalEnabled ? (
-								<View>
-									<StyledText
-										title={"Referral Percentage"}
-										style={{
-											color: "white",
-											fontWeight: "700",
-											marginBottom: 8,
-											fontSize: 16,
-										}}
-									/>
-									<View
-										style={{
-											flexDirection: "row",
-										}}
-									>
-										<TextInput
-											placeholder="Reward"
-											value={collectModule?.referralPercent!}
-											placeholderTextColor="gray"
-											selectionColor={primary}
-											style={{
-												backgroundColor: dark_primary,
-												color: "white",
-												paddingHorizontal: 16,
-												paddingVertical: Platform.OS === "ios" ? 16 : 8,
-												borderTopLeftRadius: 8,
-												borderBottomLeftRadius: 8,
-												flex: 0.8,
-											}}
-											keyboardType="number-pad"
-											onChange={(e) => {
-												e.preventDefault();
-
-												if (parseInt(e.nativeEvent.text) > 100) {
-													console.log("huu");
-
-													setCollectModule({
-														...collectModule,
-														referralPercent: "100",
-													});
-												} else if (e.nativeEvent.text.split(".")[1]) {
-													console.log("sahil");
-													console.log(e.nativeEvent.text.split("."));
-
-													if (e.nativeEvent.text.split(".")[1].length <= 2) {
-														setCollectModule({
-															...collectModule,
-															referralPercent: e.nativeEvent.text,
-														});
-													}
-												}
-											}}
-										/>
-										<View
-											style={{
-												flex: 0.008,
-												backgroundColor: black[800],
-											}}
-										/>
-										<Pressable
-											style={{
-												flex: 0.192,
-												backgroundColor: dark_primary,
-												flexDirection: "row",
-												alignItems: "center",
-												justifyContent: "center",
-												borderTopRightRadius: 8,
-												borderBottomRightRadius: 8,
-											}}
-										>
-											<Percent height={16} width={16} />
-										</Pressable>
-									</View>
-								</View>
-							) : null}
+					{!collectModule?.isRevertCollect && <FollowerOnlyCollect />}
+					{!collectModule?.isRevertCollect && <PaidCollect tokenSheetRef={tokemSheetRef} />}
+					{collectModule?.isPaidCollect && (
+						<View>
+							<TimedFeeCollect />
+							<LimitedFeeCollect />
+							<RefferalReward />
 						</View>
-					) : null}
+					)}
 				</View>
 			</ScrollView>
 			<TokenSheet
