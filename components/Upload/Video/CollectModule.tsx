@@ -7,7 +7,7 @@ import StyledText from "components/UI/StyledText";
 import Switch from "components/UI/Switch";
 import { black, dark_primary, dark_secondary, primary } from "constants/Colors";
 import React, { useCallback, useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { useUploadStore } from "store/UploadStore";
 import Logger from "utils/logger";
 import FollowerOnlyCollect from "./CollectModules/FollowerOnlyCollect";
@@ -16,6 +16,13 @@ import { useNavigation } from "@react-navigation/native";
 type CollectModuleSheetProp = {
 	collectModuleRef: React.RefObject<BottomSheetMethods>;
 };
+
+export type CollectToggleType = {
+	title: string,
+	subTitle: String,
+	switchValue: boolean,
+	onPress:()=>void
+}
 
 export default function CollectModule({ collectModuleRef }: CollectModuleSheetProp) {
 	const navigation = useNavigation();
@@ -79,6 +86,35 @@ export default function CollectModule({ collectModuleRef }: CollectModuleSheetPr
 				<Icon name="arrowForward" size={16} />
 			</View>
 		</Pressable>
+	);
+}
+
+function _collectToggle({ title, subTitle, switchValue, onPress }: CollectToggleType){
+	return (
+		<View style={styles.itemContainer}>
+							<View
+								style={{
+									width: "83%",
+								}}
+							>
+								<StyledText title={title} style={styles.itemText} />
+								<StyledText
+									title={subTitle}
+									style={{
+										color: "gray",
+										fontSize: 14,
+										fontWeight: "500",
+									}}
+								/>
+							</View>
+							<Switch
+								value={switchValue}
+								handleOnPress={onPress}
+								activeTrackColor={primary}
+								inActiveTrackColor="rgba(255,255,255,0.2)"
+								thumbColor="white"
+							/>
+						</View>
 	);
 }
 
@@ -212,5 +248,26 @@ function _CollectModuleSheet({ collectModuleRef }: CollectModuleSheetProp) {
 		</Sheet>
 	);
 }
-const CollectModuleSheet=React.memo(_CollectModuleSheet)
-export { CollectModuleSheet };
+const CollectModuleSheet=React.memo(_CollectModuleSheet);
+const CollectToggle = React.memo(_collectToggle);
+export { CollectModuleSheet, CollectToggle };
+
+
+const styles = StyleSheet.create({
+	itemContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+		paddingHorizontal: 16,
+		borderBottomWidth: 1,
+		borderBottomColor: "rgba(0,0,0,0.2)",
+		borderRadius: 12,
+		backgroundColor: dark_primary,
+		paddingVertical: 18,
+		marginVertical: 8,
+	},
+	itemText: {
+		color: "white",
+		fontSize: 16,
+	},
+})
