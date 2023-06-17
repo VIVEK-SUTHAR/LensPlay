@@ -13,6 +13,8 @@ import { Image } from "expo-image";
 import { SCREEN_HEIGHT, SCREEN_WIDTH, WINDOW_WIDTH } from "@gorhom/bottom-sheet";
 import Paginator from "components/Login/Paginator";
 import NewPaginator from "./NewPaginator";
+import Icon from "components/Icon";
+import Heading from "components/UI/Heading";
 
 const LetsGetIn = ({ navigation }: RootStackScreenProps<"LetsGetIn">) => {
 	const loginRef = React.useRef<BottomSheetMethods>(null);
@@ -25,8 +27,8 @@ const LetsGetIn = ({ navigation }: RootStackScreenProps<"LetsGetIn">) => {
 
 	const data = [
 		// "https://images.pexels.com/photos/14579361/pexels-photo-14579361.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-		require("../../assets/images/light.png"),
-		require("../../assets/images/light.png"),
+		require("../../assets/images/create.png"),
+		require("../../assets/images/earn.png"),
 		require("../../assets/images/light.png"),
 	];
 	const [currentIndex, setCurrentIndex] = React.useState(0);
@@ -44,124 +46,72 @@ const LetsGetIn = ({ navigation }: RootStackScreenProps<"LetsGetIn">) => {
 				style={{ flex: 1, justifyContent: "space-between" }}
 				locations={[0.3, 0.7]}
 			>
-				<View style={{ position: "relative" }}>
-					<View
-						style={{
-							width: WINDOW_WIDTH,
-							justifyContent: "center",
-							alignItems: "center",
-							position: "relative",
-							paddingTop: "10%",
-						}}
-					>
-						<Image
-							source={require("../../assets/images/light.png")}
-							style={{ width: WINDOW_WIDTH * 0.7, height: WINDOW_WIDTH * 1.4 }}
-							contentFit="contain"
-						/>
-						<Image
-							source={require("../../assets/images/video2.svg")}
-							style={{
-								position: "absolute",
-								resizeMode: "contain",
-								height: "65%",
-								width: "50%",
-								left: "-5%",
-								top: "10%",
-								// zIndex:3
-							}}
-						/>
-						<Image
-							source={require("../../assets/images/upload.png")}
-							style={{
-								position: "absolute",
-								resizeMode: "contain",
-								height: "45%",
-								width: "45%",
-								left: "32%",
-								top: "22%",
-							}}
-						/>
-						<Image
-							source={require("../../assets/images/hashtag.svg")}
-							style={{
-								position: "absolute",
-								resizeMode: "contain",
-								height: "65%",
-								width: "65%",
-								right: "0%",
-								bottom: "0%",
-								zIndex:2
-							}}
-						/>
-						<Image
-							source={require("../../assets/images/upload.png")}
-							style={{
-								position: "absolute",
-								resizeMode: "contain",
-								height: "45%",
-								width: "45%",
-								right: "32%",
-								// top: "22%",
-								bottom:30
-							}}
-						/>
-					</View>
-					<View
-						style={{
-							// width:"35%",
-							// height: "35%",
-							justifyContent: "center",
-							alignItems: "center",
-							// zIndex: 2,
-						}}
-					>
-						<Animated.FlatList
-							data={data}
-							keyExtractor={(index) => index.toString()}
-							horizontal
-							pagingEnabled
-							bounces={false}
-							renderItem={({ item }) => {
-								return (
-									<View>
+				<View style={{ justifyContent: "center", alignItems: "center", marginTop: 44 }}>
+					<NewPaginator data={data} scrollX={scrollX} />
+				</View>
+				<View
+					style={{
+						// width:"35%",
+						// height: "35%",
+						justifyContent: "center",
+						alignItems: "center",
+						// zIndex: 2,
+					}}
+				>
+					<Animated.FlatList
+						data={data}
+						keyExtractor={(index) => index.toString()}
+						horizontal
+						pagingEnabled
+						bounces={false}
+						renderItem={({ item }) => {
+							return (
+								<View>
+									<View
+										style={{
+											width: width,
+											paddingHorizontal: 16,
+											justifyContent: "center",
+										}}
+									>
+										<StyledText
+											title={"Create"}
+											style={{
+												color: "white",
+												fontSize: 44,
+												fontWeight: "600",
+												textAlign: "center",
+											}}
+										/>
+									</View>
+
+									<View style={{ position: "relative", alignSelf: "center" }}>
 										<View
 											style={{
-												width: width,
-												paddingHorizontal: 16,
+												width: SCREEN_WIDTH,
+												height: SCREEN_HEIGHT * 0.6,
 												justifyContent: "center",
+												alignItems: "center",
 											}}
 										>
-											<StyledText
-												title={"Create"}
-												style={{
-													color: "white",
-													fontSize: 36,
-													fontWeight: "600",
-													textAlign: "center",
-												}}
+											<Image
+												source={item}
+												style={{ width: "100%", height: "100%" }}
+												contentFit="contain"
 											/>
 										</View>
-										<View style={{ justifyContent: "center", alignItems: "center", marginTop: 24 }}>
-											<NewPaginator data={data} scrollX={scrollX} />
-										</View>
 									</View>
-								);
-							}}
-							onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
-								useNativeDriver: false,
-							})}
-							// onViewableItemsChanged={viewableItemsChanged}
-							viewabilityConfig={viewConfig}
-							ref={slidesRef}
-							scrollEventThrottle={32}
-						/>
-						{/* <Image
-						source={require("../../assets/images/3D-1.webp")}
-						style={{ width: "70%", height: "70%" }}
-						contentFit="contain"
-					/> */}
-					</View>
+								</View>
+							);
+						}}
+						onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
+							useNativeDriver: false,
+						})}
+						// onViewableItemsChanged={viewableItemsChanged}
+						viewabilityConfig={viewConfig}
+						ref={slidesRef}
+						scrollEventThrottle={32}
+					/>
 				</View>
 
 				<View

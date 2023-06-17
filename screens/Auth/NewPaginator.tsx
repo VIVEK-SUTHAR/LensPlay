@@ -11,7 +11,7 @@ const NewPaginator = ({data,scrollX}) => {
         const inputRange=[(i-1)*width,i*width,(i+1)*width];
         const dotWidth=scrollX.interpolate({
           inputRange,
-          outputRange:[6,6,6],
+          outputRange:[48,48,48],
           extrapolate:'clamp',
         })
         const opacity=scrollX.interpolate({
@@ -28,9 +28,9 @@ export default NewPaginator;
 
 const styles = StyleSheet.create({
 	dot: {
-		height: 6,
+		height: 3,
 		borderRadius: 10,
 		backgroundColor: "#fff",
-		marginHorizontal: 4,
+		marginHorizontal: 5,
 	},
 });
