@@ -26,17 +26,18 @@ import Settings from "screens/Header/Settings/Settings";
 import UploadShots from "screens/Header/Upload/Shots/UploadShots";
 import AddDetails from "screens/Header/Upload/Video/AddDetails";
 import UploadVideo from "screens/Header/Upload/Video/UploadVideo";
-import { useReactionStore, useThemeStore } from "store/Store";
-import useVideoURLStore from "store/videoURL";
+import { useThemeStore } from "store/Store";
 import BottomTabNavigator from "./BottomTabNavigation";
 import LetsGetIn from "screens/Auth/LetsGetIn";
 import ConnectWallet from "screens/Auth/ConnectWallet";
+import SelectCollectModule  from "screens/Header/Upload/Video/SelectCollectModule";
+import { View } from "react-native";
+import Button from "components/UI/Button";
+import StyledText from "components/UI/StyledText";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
 	const theme = useThemeStore();
-	const { setVideoURI } = useVideoURLStore();
-	const { setReaction, clearStats, setCollectStats, setMirrorStats } = useReactionStore();
 	return (
 		<Stack.Navigator
 			screenOptions={{
@@ -44,7 +45,7 @@ export default function StackNavigation() {
 					backgroundColor: "black",
 				},
 			}}
-			initialRouteName={"Loader"}
+			initialRouteName={"SelectCollectModule"}
 		>
 			<Stack.Group key={"Invite Code"}>
 				<Stack.Screen
@@ -331,6 +332,36 @@ export default function StackNavigation() {
 					},
 					headerTintColor: "white",
 					headerTitle: "Add Description",
+				}}
+			/>
+			<Stack.Screen
+				name="SelectCollectModule"
+				component={SelectCollectModule}
+				options={{
+					animation: "slide_from_right",
+					headerShown: true,
+					headerShadowVisible: true,
+					headerTitleStyle: {
+						fontSize: 16,
+						fontWeight: "600",
+					},
+					headerTintColor: "white",
+					headerTitle: "Collect Settings",
+					headerRight: () => (
+						
+					<Button
+						title={"Save"}
+						width={80}
+						bg={"white"}
+						borderRadius={8}
+						textStyle={{
+							textAlign: "center",
+							fontWeight: "600",
+						}}
+						onPress={()=>{console.log('adshi');
+						}}
+					/>
+					)
 				}}
 			/>
 			<Stack.Screen

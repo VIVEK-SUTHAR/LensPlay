@@ -174,6 +174,7 @@ export interface IUploadStore {
   setUploadingStatus: (status: null | "UPLOADING" | "PROCCESSING") => void;
   setUploadProgress: (progress: number) => void;
   setClearStore: () => void;
+  setDisableCollect: () => void;
 }
 
 export interface INetWorkStore {

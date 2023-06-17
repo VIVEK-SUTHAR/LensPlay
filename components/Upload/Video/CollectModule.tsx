@@ -11,12 +11,14 @@ import { Pressable, ScrollView, View } from "react-native";
 import { useUploadStore } from "store/UploadStore";
 import Logger from "utils/logger";
 import FollowerOnlyCollect from "./CollectModules/FollowerOnlyCollect";
+import { useNavigation } from "@react-navigation/native";
 
 type CollectModuleSheetProp = {
 	collectModuleRef: React.RefObject<BottomSheetMethods>;
 };
 
 export default function CollectModule({ collectModuleRef }: CollectModuleSheetProp) {
+	const navigation = useNavigation();
 	return (
 		<Pressable
 			style={{
@@ -29,7 +31,7 @@ export default function CollectModule({ collectModuleRef }: CollectModuleSheetPr
 				marginBottom: 8,
 			}}
 			onPress={(e) => {
-				collectModuleRef?.current?.snapToIndex(0);
+				navigation.navigate("SelectCollectModule");
 			}}
 		>
 			<View

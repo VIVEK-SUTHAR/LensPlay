@@ -105,6 +105,7 @@ export type RootStackParamList = {
 	AddDetails: undefined;
 	AddDescription: undefined;
 	VideoTypes: undefined;
+	SelectCollectModule: undefined;
 	ProfileScanner: undefined;
 	Invite: undefined;
 	InviteCode: undefined;

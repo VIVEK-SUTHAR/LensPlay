@@ -5,7 +5,20 @@ export type CollectModuleType = {
 	followerOnlyCollect?: boolean;
 	isFreeTimedCollect?: boolean;
 	freeCollectLimit?: string;
+	isPaidCollect?: boolean;
+	isTimedCollect?: boolean;
+	isLimitedCollect?: boolean;
+	isRefferalEnabled?: boolean;
+	referralPercent?: string; 
+	limitedCollectCount?: string;
+	feeCollectDetails?: feeCollectDetailsType;
 };
+type feeCollectDetailsType = {
+	token: string | null;
+	amount: string | null;
+	name: string | null;
+};
+
 function getCollectModule(userSelectedCollectModule: CollectModuleType) {
 	if (userSelectedCollectModule.isRevertCollect) {
 		return {

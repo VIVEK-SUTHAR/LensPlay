@@ -10,10 +10,21 @@ export const useUploadStore = create<IUploadStore>((set) => ({
 	collectModule: {
 		type: "revertCollectModule",
 		followerOnlyCollect: false,
-		isFreeCollect: false,
+		isPaidCollect: false,
+		isTimedCollect: false,
+		isLimitedCollect: false,
+		limitedCollectCount: "100",
+		feeCollectDetails: {
+			token: "0xD40282e050723Ae26Aeb0F77022dB14470f4e011",
+			amount: "0.01",
+			name: "WMATIC"
+		},
+		// isFreeCollect: false,
 		isRevertCollect: true,
-		isFreeTimedCollect: false,
-		freeCollectLimit: "10",
+		isRefferalEnabled: false,
+		referralPercent: "0",
+		// isFreeTimedCollect: false,
+		// freeCollectLimit: "10",
 	},
 	referenceModule: {
 		isFollowerOnly: false,
@@ -37,6 +48,22 @@ export const useUploadStore = create<IUploadStore>((set) => ({
 	setTitle: (title) => set({ title: title }),
 	setDescription: (description) => set({ description: description }),
 	setCollectModule: (newCollectModule) => set({ collectModule: newCollectModule }),
+	setDisableCollect:() => set({ collectModule: {
+		type: "revertCollectModule",
+		followerOnlyCollect: false,
+		isPaidCollect: false,
+		isTimedCollect: false,
+		isLimitedCollect: false,
+		limitedCollectCount: "100",
+		feeCollectDetails: {
+			token: "0xD40282e050723Ae26Aeb0F77022dB14470f4e011",
+			amount: "0.01",
+			name: "WMATIC"
+		},
+		isRevertCollect: true,
+		isRefferalEnabled: false,
+		referralPercent: "0"
+	} }),
 	setIsFollowesOnlyCollect: (newValue) => set({ isFollowersOnlyCollect: newValue }),
 	setDuration: (duration) => set({ duration: duration }),
 	setUploadingStatus: (status) => set({ uploadingStatus: status }),
@@ -54,6 +81,11 @@ export const useUploadStore = create<IUploadStore>((set) => ({
 				followerOnlyCollect: false,
 				isFreeCollect: false,
 				isRevertCollect: true,
+				feeCollectDetails: {
+					token: null,
+			amount: null,
+			name: null
+				}
 			},
 			referenceModule: {
 				isFollowerOnly: false,
