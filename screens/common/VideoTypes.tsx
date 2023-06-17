@@ -222,7 +222,7 @@ export default function VideoTypes({
       createPost({
         variables: {
           request: {
-            collectModule: getCollectModule(uploadStore.collectModule),
+            collectModule: getCollectModule(),
             contentURI: `ar://${metadataUri}`,
             profileId: currentProfile?.id,
             referenceModule: getReferenceModule(uploadStore.referenceModule),

@@ -1,3 +1,6 @@
+import { useProfile } from "store/Store";
+import { useUploadStore } from "store/UploadStore";
+
 export type CollectModuleType = {
 	type: string;
 	isFreeCollect?: boolean;
@@ -9,7 +12,7 @@ export type CollectModuleType = {
 	isTimedCollect?: boolean;
 	isLimitedCollect?: boolean;
 	isRefferalEnabled?: boolean;
-	referralPercent?: string; 
+	referralPercent?: string;
 	limitedCollectCount?: string;
 	feeCollectDetails?: feeCollectDetailsType;
 };
@@ -19,24 +22,78 @@ type feeCollectDetailsType = {
 	name: string | null;
 };
 
-function getCollectModule(userSelectedCollectModule: CollectModuleType) {
-	if (userSelectedCollectModule.isRevertCollect) {
-		return {
-			revertCollectModule: true,
-		};
+function getCollectModule() {
+	const { collectModule } = useUploadStore();
+	const { currentProfile } = useProfile();
+	let module;
+	switch (collectModule.type) {
+		case "freeCollectModule":
+			module = {
+				freeCollectModule: {
+					followerOnly: collectModule?.followerOnlyCollect,
+				},
+			};
+			break;
+		case "revertCollectModule":
+			module = {
+				revertCollectModule: true,
+			};
+			break;
+		case "feeCollectModule":
+			module = {
+				feeCollectModule: {
+					amount: {
+						currency: collectModule?.feeCollectDetails?.token,
+						value: collectModule?.feeCollectDetails?.amount,
+					},
+					recipient: currentProfile?.ownedBy,
+					referralFee: collectModule?.isRefferalEnabled ? collectModule?.referralPercent : 0,
+					followerOnly: collectModule?.followerOnlyCollect,
+				},
+			};
+			break;
+		case "limitedTimedFeeCollectModule":
+			module = {
+				limitedTimedFeeCollectModule: {
+					collectLimit: collectModule?.limitedCollectCount,
+					amount: {
+						currency: collectModule?.feeCollectDetails?.token,
+						value: collectModule?.feeCollectDetails?.amount,
+					},
+					recipient: currentProfile?.ownedBy,
+					referralFee: collectModule?.isRefferalEnabled ? collectModule?.referralPercent : 0,
+					followerOnly: collectModule?.followerOnlyCollect,
+				},
+			};
+			break;
+		case "limitedFeeCollectModule":
+			module = {
+				limitedFeeCollectModule: {
+					collectLimit: collectModule?.limitedCollectCount,
+					amount: {
+						currency: collectModule?.feeCollectDetails?.token,
+						value: collectModule?.feeCollectDetails?.amount,
+					},
+					recipient: currentProfile?.ownedBy,
+					referralFee: collectModule?.isRefferalEnabled ? collectModule?.referralPercent : 0,
+					followerOnly: collectModule?.followerOnlyCollect,
+				},
+			};
+			break;
+		case "timedFeeCollectModule":
+			module = {
+				timedFeeCollectModule: {
+					amount: {
+						currency: collectModule?.feeCollectDetails?.token,
+						value: collectModule?.feeCollectDetails?.amount,
+					},
+					recipient: currentProfile?.ownedBy,
+					referralFee: collectModule?.isRefferalEnabled ? collectModule?.referralPercent : 0,
+					followerOnly: collectModule?.followerOnlyCollect,
+				},
+			};
+			break;
 	}
-	if (userSelectedCollectModule.isFreeTimedCollect) {
-		return {
-			simpleCollectModule: {
-				collectLimit: userSelectedCollectModule.freeCollectLimit,
-				followerOnly: userSelectedCollectModule.followerOnlyCollect as boolean,
-			},
-		};
-	}
-	return {
-		freeCollectModule: {
-			followerOnly: userSelectedCollectModule.followerOnlyCollect as boolean,
-		},
-	};
+	return module;
 }
 export default getCollectModule;

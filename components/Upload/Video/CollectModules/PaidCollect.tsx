@@ -46,7 +46,7 @@ const PaidCollect = ({ tokenSheetRef }: { tokenSheetRef: React.RefObject<BottomS
 					} else {
 						setCollectModule({
 							...collectModule,
-							type: "freCollectModule",
+							type: "freeCollectModule",
 							isPaidCollect: false,
 						});
 					}

@@ -11,13 +11,14 @@ import FollowerOnlyCollect from "components/Upload/Video/CollectModules/Follower
 import TimedFeeCollect from "components/Upload/Video/CollectModules/TimedFeeCollect";
 import RefferalReward from "components/Upload/Video/CollectModules/RefferalReward";
 import { black, dark_primary, primary } from "constants/Colors";
-import React from "react";
+import React, { useEffect } from "react";
 import { FlatList, ScrollView } from "react-native";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useThemeStore } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
 import LimitedFeeCollect from "components/Upload/Video/CollectModules/LimitedFeeCollect";
 import PaidCollect from "components/Upload/Video/CollectModules/PaidCollect";
+import getCollectModule from "utils/getCollectModule";
 
 const TokenList: TokenListItem[] = [
 	{
@@ -56,9 +57,8 @@ export type TokenListItem = {
 
 export default function SelectCollectModule() {
 	const { collectModule, setCollectModule, setDisableCollect } = useUploadStore();
-	const theme = useThemeStore();
 	const tokemSheetRef = React.useRef<BottomSheetMethods>(null);
-	console.log(collectModule);
+	console.log(getCollectModule());
 
 	return (
 		<>
@@ -202,6 +202,6 @@ const styles = StyleSheet.create({
 	},
 	itemsContainer: {
 		paddingHorizontal: 16,
-		marginVertical: 16,
+		marginVertical: 8,
 	},
 });
