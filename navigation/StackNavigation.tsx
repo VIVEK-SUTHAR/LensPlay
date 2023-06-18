@@ -26,7 +26,7 @@ import Settings from "screens/Header/Settings/Settings";
 import UploadShots from "screens/Header/Upload/Shots/UploadShots";
 import AddDetails from "screens/Header/Upload/Video/AddDetails";
 import UploadVideo from "screens/Header/Upload/Video/UploadVideo";
-import { useThemeStore } from "store/Store";
+import { useThemeStore, useToast } from "store/Store";
 import BottomTabNavigator from "./BottomTabNavigation";
 import LetsGetIn from "screens/Auth/LetsGetIn";
 import ConnectWallet from "screens/Auth/ConnectWallet";
@@ -34,10 +34,15 @@ import SelectCollectModule  from "screens/Header/Upload/Video/SelectCollectModul
 import { View } from "react-native";
 import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
+import { useUploadStore } from "store/UploadStore";
+import { useNavigation } from "@react-navigation/native";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
 	const theme = useThemeStore();
+	const { collectModule } = useUploadStore();
+	const toast = useToast();
+	const navigation = useNavigation();
 	return (
 		<Stack.Navigator
 			screenOptions={{
@@ -45,7 +50,7 @@ export default function StackNavigation() {
 					backgroundColor: "black",
 				},
 			}}
-			initialRouteName={"SelectCollectModule"}
+			initialRouteName={"Loader"}
 		>
 			<Stack.Group key={"Invite Code"}>
 				<Stack.Screen
@@ -358,7 +363,20 @@ export default function StackNavigation() {
 							textAlign: "center",
 							fontWeight: "600",
 						}}
-						onPress={()=>{console.log('adshi');
+						onPress={()=>{
+							if(collectModule?.isPaidCollect && collectModule?.feeCollectDetails?.amount == ""){
+								toast.error('Please enter a collect fee');
+								return
+							}
+							else if (collectModule?.isLimitedCollect && collectModule?.limitedCollectCount == "") {
+								toast.error('Please enter a collect limit');
+								return;
+							}
+							else if (collectModule?.isRefferalEnabled && collectModule?.referralPercent == "") {
+								toast.error('Please enter a refferal percentage');
+								return;
+							}
+							navigation.navigate('AddDetails');
 						}}
 					/>
 					)

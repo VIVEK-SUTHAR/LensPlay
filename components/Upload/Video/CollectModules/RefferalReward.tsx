@@ -73,22 +73,22 @@ function RefferalInput() {
 						e.preventDefault();
 
 						if (parseInt(e.nativeEvent.text) > 100) {
-							console.log("huu");
-
 							setCollectModule({
 								...collectModule,
 								referralPercent: "100",
 							});
 						} else if (e.nativeEvent.text.split(".")[1]) {
-							console.log("sahil");
-							console.log(e.nativeEvent.text.split("."));
-
 							if (e.nativeEvent.text.split(".")[1].length <= 2) {
 								setCollectModule({
 									...collectModule,
 									referralPercent: e.nativeEvent.text,
 								});
 							}
+						} else {
+							setCollectModule({
+								...collectModule,
+								referralPercent: e.nativeEvent.text,
+							});
 						}
 					}}
 				/>

@@ -80,7 +80,7 @@ function CollectLimit() {
 					e.preventDefault();
 					setCollectModule({
 						...collectModule,
-						limitedCollectCount: e.nativeEvent.text,
+						limitedCollectCount: e.nativeEvent.text.replace(/[^0-9]/g, ""),
 					});
 				}}
 			/>

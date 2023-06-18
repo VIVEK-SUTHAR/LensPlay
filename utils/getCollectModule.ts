@@ -47,7 +47,7 @@ function getCollectModule() {
 						value: collectModule?.feeCollectDetails?.amount,
 					},
 					recipient: currentProfile?.ownedBy,
-					referralFee: collectModule?.isRefferalEnabled ? collectModule?.referralPercent : 0,
+					referralFee: collectModule?.isRefferalEnabled ? parseFloat(collectModule?.referralPercent!) : 0,
 					followerOnly: collectModule?.followerOnlyCollect,
 				},
 			};
@@ -61,7 +61,7 @@ function getCollectModule() {
 						value: collectModule?.feeCollectDetails?.amount,
 					},
 					recipient: currentProfile?.ownedBy,
-					referralFee: collectModule?.isRefferalEnabled ? collectModule?.referralPercent : 0,
+					referralFee: collectModule?.isRefferalEnabled ? parseFloat(collectModule?.referralPercent!) : 0,
 					followerOnly: collectModule?.followerOnlyCollect,
 				},
 			};
@@ -75,7 +75,7 @@ function getCollectModule() {
 						value: collectModule?.feeCollectDetails?.amount,
 					},
 					recipient: currentProfile?.ownedBy,
-					referralFee: collectModule?.isRefferalEnabled ? collectModule?.referralPercent : 0,
+					referralFee: collectModule?.isRefferalEnabled ? parseFloat(collectModule?.referralPercent!) : 0,
 					followerOnly: collectModule?.followerOnlyCollect,
 				},
 			};
@@ -88,7 +88,7 @@ function getCollectModule() {
 						value: collectModule?.feeCollectDetails?.amount,
 					},
 					recipient: currentProfile?.ownedBy,
-					referralFee: collectModule?.isRefferalEnabled ? collectModule?.referralPercent : 0,
+					referralFee: collectModule?.isRefferalEnabled ? parseFloat(collectModule?.referralPercent!) : 0,
 					followerOnly: collectModule?.followerOnlyCollect,
 				},
 			};

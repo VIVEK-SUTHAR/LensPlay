@@ -2,7 +2,7 @@ import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/typ
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
-import CollectModule, { CollectModuleSheet } from "components/Upload/Video/CollectModule";
+import CollectModule from "components/Upload/Video/CollectModule";
 import CommentModule, {
   CommentModuleSheet,
   ReferenceModuleListItem
@@ -116,7 +116,6 @@ export default function AddDetails({ navigation }: RootStackScreenProps<"AddDeta
 					/>
 				</View>
 			</SafeAreaView>
-			<CollectModuleSheet collectModuleRef={collectModuleRef} />
 			<CommentModuleSheet
 				ReferenceModuleList={ReferenceModuleList}
 				activeModule={activeModule}
