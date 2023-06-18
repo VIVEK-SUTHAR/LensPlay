@@ -56,7 +56,6 @@ export type RootStackParamList = {
 	ConnectWallet: undefined;
 	Modal: undefined;
 	NotFound: undefined;
-	Login: undefined;
 	Waitlist: undefined;
 	Loader: undefined;
 	ReportPublication: {
