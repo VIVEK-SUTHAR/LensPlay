@@ -44,11 +44,20 @@ const PaidCollect = ({ tokenSheetRef }: { tokenSheetRef: React.RefObject<BottomS
 							});
 						}
 					} else {
-						setCollectModule({
-							...collectModule,
-							type: "freeCollectModule",
-							isPaidCollect: false,
-						});
+						if( collectModule?.isLimitedCollect ){
+							setCollectModule({
+								...collectModule,
+								type: "simpleCollectModule",
+								isPaidCollect: false,
+							});
+						}
+						else {
+							setCollectModule({
+								...collectModule,
+								type: "freeCollectModule",
+								isPaidCollect: false,
+							});
+						}
 					}
 				}}
 			/>

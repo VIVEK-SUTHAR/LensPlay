@@ -81,15 +81,19 @@ export default function SelectCollectModule() {
 							}
 						}}
 					/>
-					{!collectModule?.isRevertCollect && <FollowerOnlyCollect />}
-					{!collectModule?.isRevertCollect && <PaidCollect tokenSheetRef={tokemSheetRef} />}
+					{!collectModule?.isRevertCollect && (
+						<View>
+							<FollowerOnlyCollect />
+							<PaidCollect tokenSheetRef={tokemSheetRef} />
+						</View>
+					)}
 					{collectModule?.isPaidCollect && (
 						<View>
 							<TimedFeeCollect />
-							<LimitedFeeCollect />
 							<RefferalReward />
 						</View>
 					)}
+					{!collectModule?.isRevertCollect && <LimitedFeeCollect />}
 				</View>
 			</ScrollView>
 			<TokenSheet
