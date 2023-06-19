@@ -1,4 +1,23 @@
 import { FlashList } from "@shopify/flash-list";
+import Icon from "components/Icon";
+import PleaseLogin from "components/PleaseLogin";
+import Button from "components/UI/Button";
+import Heading from "components/UI/Heading";
+import VideoCardSkeleton from "components/UI/VideoCardSkeleton";
+import VideoCard from "components/VideoCard";
+import ErrorMessage from "components/common/ErrorMesasge";
+import Skeleton from "components/common/Skeleton";
+import { black, white } from "constants/Colors";
+import { SOURCES } from "constants/index";
+import { HOME } from "constants/tracking";
+import {
+	FeedEventItemType,
+	PublicationMainFocus,
+	useFeedQuery,
+	type FeedItem,
+	type FeedItemRoot,
+} from "customTypes/generated";
+import type { RootTabScreenProps } from "customTypes/navigation";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
@@ -12,30 +31,10 @@ import {
 	StyleSheet,
 	View,
 } from "react-native";
-import ErrorMessage from "components/common/ErrorMesasge";
-import Skeleton from "components/common/Skeleton";
-import Icon from "components/Icon";
-import { data } from "components/Login/data";
-import PleaseLogin from "components/PleaseLogin";
-import Button from "components/UI/Button";
-import Heading from "components/UI/Heading";
-import VideoCardSkeleton from "components/UI/VideoCardSkeleton";
-import VideoCard from "components/VideoCard";
-import { black, white } from "constants/Colors";
-import { SOURCES } from "constants/index";
-import { HOME } from "constants/tracking";
-import {
-	FeedEventItemType,
-	type FeedItem,
-	type FeedItemRoot,
-	PublicationMainFocus,
-	useFeedQuery,
-} from "customTypes/generated";
-import type { RootTabScreenProps } from "customTypes/navigation";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
-import Logger from "utils/logger";
 import TrackAction from "utils/Track";
+import Logger from "utils/logger";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -138,7 +137,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 		return null;
 	}, []);
 
-	if (data) {
+	if (Feeddata) {
 		TrackAction(HOME.SWITCH_HOME_TAB);
 	}
 

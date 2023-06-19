@@ -1,7 +1,7 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
+import { useWeb3Modal } from "@web3modal/react-native";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
@@ -11,11 +11,11 @@ import { Scalars } from "customTypes/generated";
 import React from "react";
 import { Pressable, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
-import { useProfile, useToast } from "store/Store";
+import { useProfile } from "store/Store";
+import TrackAction from "utils/Track";
 import handleUser from "utils/invites/handleUser";
 import getProfiles from "utils/lens/getProfiles";
 import Logger from "utils/logger";
-import TrackAction from "utils/Track";
 
 type ConnectWalletSheetProps = {
 	loginRef: React.RefObject<BottomSheetMethods>;
@@ -23,15 +23,13 @@ type ConnectWalletSheetProps = {
 };
 
 export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWalletSheetProps) {
-	const connector = useWalletConnect();
-	const toast = useToast();
 	const navigation = useNavigation();
 	const { handleGuest } = useGuestStore();
-	const { setCurrentProfile, setHasHandle, currentProfile } = useProfile();
+	const { setCurrentProfile, setHasHandle } = useProfile();
 
 	async function HandleDefaultProfile(adress: Scalars["EthereumAddress"]) {
 		const userData = await AsyncStorage.getItem("@user_data");
-		
+
 		const userDefaultProfile = await getProfiles({
 			ownedBy: adress,
 		});
@@ -39,8 +37,8 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 		if (userDefaultProfile) {
 			setHasHandle(true);
 			setCurrentProfile(userDefaultProfile);
-			
-			if (!userData) {			
+
+			if (!userData) {
 				const isUser = await handleUser(userDefaultProfile?.id);
 				if (!isUser) {
 					navigation.navigate("InviteCode");
@@ -54,40 +52,37 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 		}
 	}
 
-	const handleConnectWallet = React.useCallback(async () => {
+	const { open, isConnected, address, isOpen, close } = useWeb3Modal();
 
-		const walletData = await connector.connect({
-			chainId: 80001,
-		});
+	const handleConnectWallet = async () => {
+		if (isConnected && address) {
+			if (isOpen) {
+				close();
+			}
 
-		try {
-			if (walletData) {
-				setIsloading(true);
-				loginRef?.current?.close();
-				void TrackAction(AUTH.WALLET_LOGIN);
-				handleGuest(false);
-				await HandleDefaultProfile(walletData.accounts[0]);
-				const userData = await AsyncStorage.getItem("@user_data");
-				if (!userData){
-					return
-				}
-				const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
-				if (isDeskTopLogin) {
-					await AsyncStorage.removeItem("@viaDeskTop");
-				}
-				navigation.reset({ index: 0, routes: [{ name: "LoginWithLens" }] });
-			} else {
-				toast.error("Something went wrong");
+			setIsloading(true);
+			Logger.Log("Address", address);
+			loginRef?.current?.close();
+			void TrackAction(AUTH.WALLET_LOGIN);
+			handleGuest(false);
+
+			await HandleDefaultProfile(address);
+			const userData = await AsyncStorage.getItem("@user_data");
+			if (!userData) {
+				return;
 			}
-		} catch (error) {
-			if (error instanceof Error) {
-				toast.error("Something went wrong");
-				// console.log("[Error]:Error in connect wallet");
+			const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
+			if (isDeskTopLogin) {
+				await AsyncStorage.removeItem("@viaDeskTop");
 			}
-		} finally {
 			setIsloading(false);
+			navigation.reset({ index: 0, routes: [{ name: "LoginWithLens" }] });
 		}
-	}, [connector]);
+	};
+
+	React.useEffect(() => {
+		handleConnectWallet();
+	}, [isConnected]);
 
 	const handleDesktopLogin = React.useCallback(async () => {
 		loginRef?.current?.close();
@@ -121,7 +116,7 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 				}}
 			>
 				<Button
-					onPress={handleConnectWallet}
+					onPress={open}
 					title="Connect wallet"
 					bg={white[600]}
 					textStyle={{
@@ -132,6 +127,7 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 					py={16}
 					icon={<Icon name="wallet" color={black[700]} size={20} />}
 				/>
+				{/* <Web3Button /> */}
 				<View
 					style={{
 						flexDirection: "row",

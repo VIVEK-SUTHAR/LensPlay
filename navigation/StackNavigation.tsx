@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "customTypes/navigation";
 import React from "react";
-import CreateProfile from "screens/Auth/CreateProfile";
-import Login from "screens/Auth/Login";
+import ConnectWallet from "screens/Auth/ConnectWallet";
+import LetsGetIn from "screens/Auth/LetsGetIn";
 import LoginWithLens from "screens/Auth/LoginWithLens";
 import QRLogin from "screens/Auth/QRLogin";
 import Scanner from "screens/Auth/Scanner";
@@ -10,6 +10,13 @@ import EditProfile from "screens/BottomTabs/Profile/EditProfile";
 import UserStats from "screens/BottomTabs/Profile/UserStats";
 import WatchLater from "screens/BottomTabs/Profile/WatchLater";
 import ShotsComment from "screens/BottomTabs/Shots/ShotsComment";
+import Search from "screens/Header/Search/Search";
+import BugReport from "screens/Header/Settings/BugReport";
+import ProfileScanner from "screens/Header/Settings/ProfileScanner";
+import Settings from "screens/Header/Settings/Settings";
+import UploadShots from "screens/Header/Upload/Shots/UploadShots";
+import AddDetails from "screens/Header/Upload/Video/AddDetails";
+import UploadVideo from "screens/Header/Upload/Video/UploadVideo";
 import AddDescription from "screens/common/AddDescription";
 import Channel from "screens/common/Channel";
 import FullImage from "screens/common/FullImage";
@@ -20,18 +27,9 @@ import Loader from "screens/common/Loader";
 import ReportPublication from "screens/common/ReportPublication";
 import VideoPage from "screens/common/VideoPage";
 import VideoTypes from "screens/common/VideoTypes";
-import Search from "screens/Header/Search/Search";
-import BugReport from "screens/Header/Settings/BugReport";
-import ProfileScanner from "screens/Header/Settings/ProfileScanner";
-import Settings from "screens/Header/Settings/Settings";
-import UploadShots from "screens/Header/Upload/Shots/UploadShots";
-import AddDetails from "screens/Header/Upload/Video/AddDetails";
-import UploadVideo from "screens/Header/Upload/Video/UploadVideo";
 import { useReactionStore, useThemeStore } from "store/Store";
 import useVideoURLStore from "store/videoURL";
 import BottomTabNavigator from "./BottomTabNavigation";
-import LetsGetIn from "screens/Auth/LetsGetIn";
-import ConnectWallet from "screens/Auth/ConnectWallet";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
@@ -45,7 +43,7 @@ export default function StackNavigation() {
 					backgroundColor: "black",
 				},
 			}}
-			initialRouteName={"Loader"}
+			initialRouteName={"LetsGetIn"}
 		>
 			<Stack.Group key={"Invite Code"}>
 				<Stack.Screen
@@ -68,14 +66,6 @@ export default function StackNavigation() {
 
 			<Stack.Group key={"Auth Screens"}>
 				<Stack.Screen
-					name="Login"
-					component={Login}
-					options={{
-						animation: "default",
-						headerShown: false,
-					}}
-				/>
-				<Stack.Screen
 					name="LetsGetIn"
 					component={LetsGetIn}
 					options={{
@@ -96,14 +86,6 @@ export default function StackNavigation() {
 					component={LoginWithLens}
 					options={{
 						animation: "default",
-						headerShown: false,
-					}}
-				/>
-				<Stack.Screen
-					name="CreateProfile"
-					component={CreateProfile}
-					options={{
-						animation: "slide_from_bottom",
 						headerShown: false,
 					}}
 				/>
