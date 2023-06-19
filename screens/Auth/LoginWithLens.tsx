@@ -6,7 +6,7 @@ import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import { white } from "constants/Colors";
+import { black, white } from "constants/Colors";
 import { LENSPLAY_SITE, LENS_CLAIM_SITE } from "constants/index";
 import { AUTH } from "constants/tracking";
 import { ToastType } from "customTypes/Store";
@@ -15,7 +15,16 @@ import type { RootStackScreenProps } from "customTypes/navigation";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, Dimensions, Image, Linking, SafeAreaView, StyleSheet, View } from "react-native";
+import {
+	Animated,
+	Dimensions,
+	Image,
+	Linking,
+	SafeAreaView,
+	StyleSheet,
+	View,
+	useWindowDimensions,
+} from "react-native";
 import { useAuthStore, useProfile, useToast } from "store/Store";
 import TrackAction from "utils/Track";
 import formatHandle from "utils/formatHandle";
@@ -28,6 +37,7 @@ const windowWidth = Dimensions.get("window").width;
 function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 	const [isloading, setIsloading] = useState<boolean>(false);
 	const [isDesktop, setIsDesktop] = useState<boolean>(false);
+	const { width } = useWindowDimensions();
 
 	const toast = useToast();
 
@@ -151,8 +161,29 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 			<StatusBar backgroundColor="transparent" style="light" />
 			<View
 				style={{
+					width: width,
+					paddingHorizontal: 16,
+					justifyContent: "center",
+					marginVertical: 32,
+				}}
+			>
+				<StyledText
+					title={
+						hasHandle
+							? "Hurry up, Your Lens frens are waiting!"
+							: "Oops! You don't have a lens profile"
+					}
+					style={{
+						color: "white",
+						fontSize: 32,
+						fontWeight: "600",
+					}}
+				/>
+			</View>
+			<View
+				style={{
 					width: windowWidth,
-					height: "70%",
+					height: "50%",
 					justifyContent: "center",
 					alignItems: "center",
 				}}
@@ -164,21 +195,8 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 					paddingHorizontal: 16,
 					paddingBottom: 16,
 					justifyContent: "space-between",
-					flex: 1,
 				}}
 			>
-				<StyledText
-					title={
-						hasHandle
-							? "Hurry up, Your Lens frens are waiting!"
-							: "Oops! You don't have a lens profile"
-					}
-					style={{
-						color: "white",
-						fontSize: 24,
-						fontWeight: "600",
-					}}
-				/>
 				<View>
 					{!isDesktop ? (
 						<Animated.View
@@ -250,10 +268,10 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 						<Button
 							title={hasHandle ? "Login with Lens" : "Claim your .lens handle"}
 							isLoading={isloading}
-							textStyle={{ fontSize: 16, fontWeight: "600" }}
-							bg={white[800]}
+							textStyle={{ fontSize: 20, fontWeight: "600", color: black[800] }}
+							bg={white[700]}
 							py={16}
-							icon={<Icon name="arrowForward" color="black" size={16} />}
+							icon={<Icon name="arrowForward" color={black[700]} size={16} />}
 							iconPosition="right"
 							onPress={async () => {
 								if (isDesktop) {

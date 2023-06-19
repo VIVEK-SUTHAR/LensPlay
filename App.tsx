@@ -15,11 +15,25 @@ import Logger from "utils/logger";
 import Navigation from "./navigation";
 import { AppState } from "react-native";
 import "./expo-crypto-shim.ts";
+import { Web3Modal } from "@web3modal/react-native";
 
 export default function App() {
 	const isLoadingComplete = useCachedResources();
 
 	const { setIsOffline } = useNetworkStore();
+
+	const projectId = "6097f40a8f4f91e37e66cf3a5ca1fba2";
+
+	const providerMetadata = {
+		name: "LesnPlay",
+		description: "LensPlay: The Native mobile first video sharing app",
+		url: "https://lensplay.xyz/",
+		icons: ["https://lensplay.xyz/logo.png"],
+		redirect: {
+			native: "YOUR_APP_SCHEME://",
+			universal: "YOUR_APP_UNIVERSAL_LINK.com",
+		},
+	};
 
 	React.useEffect(() => {
 		NetInfo.fetch().then((data) => {
@@ -58,6 +72,21 @@ export default function App() {
 						<StatusBar style="dark" />
 						<Navigation />
 					</ApolloProvider>
+					<Web3Modal
+						projectId={projectId}
+						providerMetadata={providerMetadata}
+						themeMode="dark"
+						sessionParams={{
+							namespaces: {
+								eip155: {
+									methods: ["eth_sendTransaction", "personal_sign"],
+									chains: ["eip155:137"],
+									events: ["chainChanged", "accountsChanged"],
+									rpcMap: {},
+								},
+							},
+						}}
+					/>
 				</SafeAreaProvider>
 			</GestureHandlerRootView>
 		);

@@ -61,11 +61,11 @@ const ConnectWallet = ({ navigation }: RootStackScreenProps<"ConnectWallet">) =>
 					title={"Connect Wallet"}
 					width={"100%"}
 					isLoading={isloading}
-					bg={white[400]}
+					bg={white[700]}
 					textStyle={{
 						fontWeight: "600",
 						fontSize: 20,
-						color: black[400],
+						color: black[700],
 					}}
 					py={16}
 					onPress={openSheet}

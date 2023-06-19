@@ -99,11 +99,11 @@ const LetsGetIn = ({ navigation }: RootStackScreenProps<"LetsGetIn">) => {
 			>
 				<Button
 					title={"Get Started"}
-					bg={white[400]}
+					bg={white[700]}
 					textStyle={{
 						fontWeight: "600",
 						fontSize: 20,
-						color: black[400],
+						color: black[700],
 					}}
 					py={16}
 					onPress={NavigateToConnectWallet}
