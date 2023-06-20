@@ -120,7 +120,6 @@ export { CollectToggle };
 const styles = StyleSheet.create({
 	itemContainer: {
 		flexDirection: "row",
-		alignItems: "center",
 		justifyContent: "space-between",
 		paddingHorizontal: 16,
 		borderBottomWidth: 1,

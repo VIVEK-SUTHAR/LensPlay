@@ -37,9 +37,6 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
 	const theme = useThemeStore();
-	const { collectModule } = useUploadStore();
-	const toast = useToast();
-	const navigation = useNavigation();
 	return (
 		<Stack.Navigator
 			screenOptions={{
@@ -341,38 +338,6 @@ export default function StackNavigation() {
 					},
 					headerTintColor: "white",
 					headerTitle: "Collect Settings",
-					headerRight: () => (
-						
-					<Button
-						title={"Save"}
-						width={80}
-						bg={"white"}
-						borderRadius={8}
-						textStyle={{
-							textAlign: "center",
-							fontWeight: "600",
-						}}
-						onPress={()=>{
-							if(collectModule?.isPaidCollect && collectModule?.feeCollectDetails?.amount == ""){
-								toast.error('Please enter a collect fee');
-								return
-							}
-							else if (collectModule?.isLimitedCollect && collectModule?.limitedCollectCount == "") {
-								toast.error('Please enter a collect limit');
-								return;
-							}
-							else if (collectModule?.isRefferalEnabled && collectModule?.referralPercent == "") {
-								toast.error('Please enter a refferal percentage');
-								return;
-							}
-							else if (collectModule?.isTimedCollect && collectModule?.timeLimit == undefined) {
-								toast.error('Please select a date');
-								return;
-							}
-							navigation.navigate('AddDetails');
-						}}
-					/>
-					)
 				}}
 			/>
 			<Stack.Screen
