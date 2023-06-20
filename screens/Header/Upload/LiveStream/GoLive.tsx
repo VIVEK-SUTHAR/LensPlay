@@ -6,15 +6,31 @@ import BroadcastCameraView, { CameraView } from "components/LiveStream/Broadcast
 import { RootStackScreenProps } from "customTypes/navigation";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { Pressable, View } from "react-native";
+import { PermissionsAndroid, Pressable, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import useLiveStreamStore from "store/LiveStreamStore";
 
 export default function GoLive({ navigation }: RootStackScreenProps<"GoLive">) {
 	const cameraView = React.useRef<CameraView>(null);
 	const { streamKey, isMute, setIsMute, isFrontCamera, setIsFrontCamera } = useLiveStreamStore();
+	const requestCameraPermission = async () => {
+		try {
+			const granted = await PermissionsAndroid.requestMultiple([
+				PermissionsAndroid.PERMISSIONS.CAMERA,
+				PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+			]);
+			if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+				console.log("You can use the camera");
+			} else {
+				console.log("Camera permission denied");
+			}
+		} catch (err) {
+			console.warn(err);
+		}
+	};
 
 	React.useEffect(() => {
+		requestCameraPermission();
 		cameraView.current?.start();
 	}, []);
 
