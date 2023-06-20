@@ -108,6 +108,8 @@ export type RootStackParamList = {
 	Invite: undefined;
 	InviteCode: undefined;
 	WatchLater: undefined;
+	LiveStreamSettings: undefined;
+	GoLive: undefined;
 };
 
 /**

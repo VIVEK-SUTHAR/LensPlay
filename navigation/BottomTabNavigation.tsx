@@ -1,6 +1,7 @@
 import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Live from "assets/Icons/Live";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
@@ -23,6 +24,7 @@ import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
 import canUploadedToIpfs from "utils/canUploadToIPFS";
 import getIPFSLink from "utils/getIPFSLink";
+import getRawurl from "utils/getRawUrl";
 import storeTokens from "utils/storeTokens";
 import getFileSize from "utils/video/getFileSize";
 
@@ -31,18 +33,10 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 export default function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
 	const { isGuest } = useGuestStore();
 	const theme = useThemeStore();
-	const user = useProfile();
+	const { currentProfile } = useProfile();
 	const { setAccessToken, setRefreshToken } = useAuthStore();
 	const [status, requestPermission] = ImagePicker.useCameraPermissions();
 	const windowHeight = Dimensions.get("window").height;
-
-	let PROFILE_PIC_URI = "";
-	if (user?.currentProfile?.picture?.__typename === "MediaSet") {
-		PROFILE_PIC_URI = user?.currentProfile?.picture?.original?.url;
-	}
-	if (user?.currentProfile?.picture?.__typename === "NftImage") {
-		PROFILE_PIC_URI = user?.currentProfile?.picture?.uri;
-	}
 
 	const [getAccessFromRefresh, { data: newTokens, error, loading }] = useRefreshTokensMutation();
 
@@ -133,17 +127,17 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 					headerTitle: "",
 					headerRight: () => (
 						<View style={{ flexDirection: "row", alignItems: "center" }}>
-							{/* <Pressable
-                onPress={() => uploadRef.current?.snapToIndex(0)}
-                style={{
-                  paddingHorizontal: 8,
-                  height: "100%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Icon name="upload-file" size={24} />
-              </Pressable> */}
+							<Pressable
+								onPress={() => uploadRef.current?.snapToIndex(0)}
+								style={{
+									paddingHorizontal: 8,
+									height: "100%",
+									alignItems: "center",
+									justifyContent: "center",
+								}}
+							>
+								<Icon name="upload-file" size={24} />
+							</Pressable>
 							{!isGuest ? (
 								<Pressable
 									onPress={() => navigation.push("Invite")}
@@ -351,7 +345,11 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 										borderWidth: focused ? 1 : 0,
 									}}
 								>
-									<Avatar src={getIPFSLink(PROFILE_PIC_URI)} height={28} width={28} />
+									<Avatar
+										src={getIPFSLink(getRawurl(currentProfile?.picture))}
+										height={28}
+										width={28}
+									/>
 								</View>
 							);
 						},
@@ -365,7 +363,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 				backgroundStyle={{
 					backgroundColor: black[600],
 				}}
-				snapPoints={[190]}
+				snapPoints={[280]}
 			>
 				<View
 					style={{
@@ -440,6 +438,38 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 						</View>
 						<StyledText
 							title={"Create a shots"}
+							style={{
+								color: "white",
+								fontSize: 20,
+								marginHorizontal: 16,
+							}}
+						/>
+					</Pressable>
+					<Pressable
+						android_ripple={{
+							color: "rgba(0,0,0,0.2)",
+						}}
+						style={{
+							flexDirection: "row",
+							alignItems: "center",
+							paddingHorizontal: 16,
+							paddingVertical: 8,
+						}}
+						onPress={() => {
+							navigation.push("LiveStreamSettings");
+						}}
+					>
+						<View
+							style={{
+								padding: 16,
+								backgroundColor: black[700],
+								borderRadius: 50,
+							}}
+						>
+							<Live width={24} height={24} />
+						</View>
+						<StyledText
+							title={"Go Live"}
 							style={{
 								color: "white",
 								fontSize: 20,

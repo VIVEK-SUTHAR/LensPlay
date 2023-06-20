@@ -10628,6 +10628,11 @@ react-native-modal@^13.0.1:
     prop-types "^15.6.2"
     react-native-animatable "1.3.3"
 
+react-native-nodemediaclient@^0.2.21:
+  version "0.2.21"
+  resolved "https://registry.yarnpkg.com/react-native-nodemediaclient/-/react-native-nodemediaclient-0.2.21.tgz#b04f1e446c770b53975242a26ff98868ee86496a"
+  integrity sha512-bs1hhUfOedRi8tiMNUmJKQD2gloIQ2lWNp5Hd/cWyINjv3iOrqoGHpX/RKNEQmrPh+2zQhjpE+8l9cdsBx1jfA==
+
 react-native-pager-view@6.1.2:
   version "6.1.2"
   resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-6.1.2.tgz#3522079b9a9d6634ca5e8d153bc0b4d660254552"

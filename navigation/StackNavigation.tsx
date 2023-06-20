@@ -14,6 +14,7 @@ import Search from "screens/Header/Search/Search";
 import BugReport from "screens/Header/Settings/BugReport";
 import ProfileScanner from "screens/Header/Settings/ProfileScanner";
 import Settings from "screens/Header/Settings/Settings";
+import LiveStreamSettings from "screens/Header/Upload/LiveStream/LiveStreamSettings";
 import UploadShots from "screens/Header/Upload/Shots/UploadShots";
 import AddDetails from "screens/Header/Upload/Video/AddDetails";
 import UploadVideo from "screens/Header/Upload/Video/UploadVideo";
@@ -27,15 +28,14 @@ import Loader from "screens/common/Loader";
 import ReportPublication from "screens/common/ReportPublication";
 import VideoPage from "screens/common/VideoPage";
 import VideoTypes from "screens/common/VideoTypes";
-import { useReactionStore, useThemeStore } from "store/Store";
-import useVideoURLStore from "store/videoURL";
+import { useThemeStore } from "store/Store";
 import BottomTabNavigator from "./BottomTabNavigation";
+import GoLive from "screens/Header/Upload/LiveStream/GoLive";
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
 	const theme = useThemeStore();
-	const { setVideoURI } = useVideoURLStore();
-	const { setReaction, clearStats, setCollectStats, setMirrorStats } = useReactionStore();
 	return (
 		<Stack.Navigator
 			screenOptions={{
@@ -43,7 +43,7 @@ export default function StackNavigation() {
 					backgroundColor: "black",
 				},
 			}}
-			initialRouteName={"LetsGetIn"}
+			initialRouteName={"Loader"}
 		>
 			<Stack.Group key={"Invite Code"}>
 				<Stack.Screen
@@ -362,6 +362,25 @@ export default function StackNavigation() {
 					headerTintColor: "white",
 					headerTitle: "",
 					headerShadowVisible: false,
+				}}
+			/>
+			<Stack.Screen
+				name="LiveStreamSettings"
+				component={LiveStreamSettings}
+				options={{
+					animation: "default",
+					headerShown: true,
+					headerTintColor: "white",
+					headerTitle: "Livestream settings",
+					headerShadowVisible: true,
+				}}
+			/>
+			<Stack.Screen
+				name="GoLive"
+				component={GoLive}
+				options={{
+					animation: "default",
+					headerShown: false,
 				}}
 			/>
 		</Stack.Navigator>
