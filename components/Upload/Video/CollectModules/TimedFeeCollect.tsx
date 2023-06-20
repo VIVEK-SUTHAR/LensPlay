@@ -14,7 +14,7 @@ const TimedFeeCollect = () => {
 	return (
 		<View>
 			<CollectToggle
-				title={"Limit collect time"}
+				title={"Limit Collect Time"}
 				subTitle={"By enabling this, You will limit collects till a specified date"}
 				switchValue={collectModule.isTimedCollect!}
 				onPress={() => {

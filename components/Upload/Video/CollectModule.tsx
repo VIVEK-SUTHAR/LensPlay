@@ -6,6 +6,7 @@ import { dark_primary, primary } from "constants/Colors";
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useUploadStore } from "store/UploadStore";
 
 type CollectModuleSheetProp = {
 	collectModuleRef: React.RefObject<BottomSheetMethods>;
@@ -20,6 +21,7 @@ export type CollectToggleType = {
 
 export default function CollectModule({ collectModuleRef }: CollectModuleSheetProp) {
 	const navigation = useNavigation();
+	const {collectModule} = useUploadStore();
 	return (
 		<Pressable
 			style={{
@@ -52,7 +54,7 @@ export default function CollectModule({ collectModuleRef }: CollectModuleSheetPr
 					}}
 				/>
 				<StyledText
-					title={"Free"}
+					title={collectModule?.isPaidCollect?'Paid':'Free'}
 					style={{
 						color: "gray",
 						fontSize: 12,
