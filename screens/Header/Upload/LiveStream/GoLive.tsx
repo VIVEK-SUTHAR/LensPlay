@@ -25,6 +25,7 @@ export default function GoLive({ navigation }: RootStackScreenProps<"GoLive">) {
 
 	const handleSwitchCamera = () => {
 		setIsFrontCamera(!isFrontCamera);
+		cameraView.current?.switchCamera();
 	};
 
 	const handleMute = () => {
