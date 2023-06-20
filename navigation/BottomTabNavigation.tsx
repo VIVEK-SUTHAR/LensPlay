@@ -215,7 +215,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 						</View>
 					),
 					tabBarStyle: {
-						backgroundColor: black[800],
+						backgroundColor: black[600],
 						alignItems: "center",
 						justifyContent: "space-between",
 						borderTopColor: "transparent",
