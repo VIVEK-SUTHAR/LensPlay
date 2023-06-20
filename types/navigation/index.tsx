@@ -109,6 +109,7 @@ export type RootStackParamList = {
 	Invite: undefined;
 	InviteCode: undefined;
 	WatchLater: undefined;
+	UploadIndicator: undefined;
 };
 
 /**

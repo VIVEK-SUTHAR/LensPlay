@@ -12,12 +12,13 @@ import type { RootStackScreenProps, RootTabParamList } from "customTypes/navigat
 import * as ImagePicker from "expo-image-picker";
 import * as Linking from "expo-linking";
 import React, { useRef } from "react";
-import { AppState, Dimensions, Pressable, View } from "react-native";
+import { AppState, Dimensions, Pressable, TouchableOpacity, View } from "react-native";
 import Trending from "screens/BottomTabs/Explore/Trending";
 import Feed from "screens/BottomTabs/Home/Feed";
 import Notifications from "screens/BottomTabs/Notification/Notification";
 import ProfileScreen from "screens/BottomTabs/Profile/Profile";
 import Shots from "screens/BottomTabs/Shots/Shots";
+import { CircularIndicator } from "screens/Header/Upload/UploadIndicator";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
@@ -134,6 +135,12 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 					headerTitle: "",
 					headerRight: () => (
 						<View style={{ flexDirection: "row", alignItems: "center" }}>
+							<TouchableOpacity>
+								{uploadStore.uploadingStatus === "PROCCESSING" ||
+								uploadStore.uploadingStatus === "UPLOADING" ? (
+									<CircularIndicator radius={20} strokeWidth={4} progress={10} />
+								) : null}
+							</TouchableOpacity>
 							<Pressable
 								onPress={() => uploadRef.current?.snapToIndex(0)}
 								style={{

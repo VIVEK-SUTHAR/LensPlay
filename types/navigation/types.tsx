@@ -111,6 +111,7 @@ export type RootStackParamList = {
   ProfileScanner: undefined;
   Invite: undefined;
   InviteCode: undefined;
+  UploadIndicator: undefined;
 };
 
 /**
