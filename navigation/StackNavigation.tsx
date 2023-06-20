@@ -27,15 +27,30 @@ import Loader from "screens/common/Loader";
 import ReportPublication from "screens/common/ReportPublication";
 import VideoPage from "screens/common/VideoPage";
 import VideoTypes from "screens/common/VideoTypes";
-import { useReactionStore, useThemeStore } from "store/Store";
-import useVideoURLStore from "store/videoURL";
+import Search from "screens/Header/Search/Search";
+import BugReport from "screens/Header/Settings/BugReport";
+import ProfileScanner from "screens/Header/Settings/ProfileScanner";
+import Settings from "screens/Header/Settings/Settings";
+import UploadShots from "screens/Header/Upload/Shots/UploadShots";
+import AddDetails from "screens/Header/Upload/Video/AddDetails";
+import UploadVideo from "screens/Header/Upload/Video/UploadVideo";
+import { useThemeStore, useToast } from "store/Store";
 import BottomTabNavigator from "./BottomTabNavigation";
+import LetsGetIn from "screens/Auth/LetsGetIn";
+import ConnectWallet from "screens/Auth/ConnectWallet";
+import SelectCollectModule  from "screens/Header/Upload/Video/SelectCollectModule";
+import { View } from "react-native";
+import Button from "components/UI/Button";
+import StyledText from "components/UI/StyledText";
+import { useUploadStore } from "store/UploadStore";
+import { useNavigation } from "@react-navigation/native";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
 	const theme = useThemeStore();
-	const { setVideoURI } = useVideoURLStore();
-	const { setReaction, clearStats, setCollectStats, setMirrorStats } = useReactionStore();
+	const { collectModule } = useUploadStore();
+	const toast = useToast();
+	const navigation = useNavigation();
 	return (
 		<Stack.Navigator
 			screenOptions={{
@@ -322,6 +337,53 @@ export default function StackNavigation() {
 					},
 					headerTintColor: "white",
 					headerTitle: "Add Description",
+				}}
+			/>
+			<Stack.Screen
+				name="SelectCollectModule"
+				component={SelectCollectModule}
+				options={{
+					animation: "slide_from_right",
+					headerShown: true,
+					headerShadowVisible: true,
+					headerTitleStyle: {
+						fontSize: 16,
+						fontWeight: "600",
+					},
+					headerTintColor: "white",
+					headerTitle: "Collect Settings",
+					headerRight: () => (
+						
+					<Button
+						title={"Save"}
+						width={80}
+						bg={"white"}
+						borderRadius={8}
+						textStyle={{
+							textAlign: "center",
+							fontWeight: "600",
+						}}
+						onPress={()=>{
+							if(collectModule?.isPaidCollect && collectModule?.feeCollectDetails?.amount == ""){
+								toast.error('Please enter a collect fee');
+								return
+							}
+							else if (collectModule?.isLimitedCollect && collectModule?.limitedCollectCount == "") {
+								toast.error('Please enter a collect limit');
+								return;
+							}
+							else if (collectModule?.isRefferalEnabled && collectModule?.referralPercent == "") {
+								toast.error('Please enter a refferal percentage');
+								return;
+							}
+							else if (collectModule?.isTimedCollect && collectModule?.timeLimit == undefined) {
+								toast.error('Please select a date');
+								return;
+							}
+							navigation.navigate('AddDetails');
+						}}
+					/>
+					)
 				}}
 			/>
 			<Stack.Screen

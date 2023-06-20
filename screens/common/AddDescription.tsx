@@ -21,7 +21,7 @@ export default function AddDescription({
   const handleDescription = () => {
     if (!description?.trim()) return toast.error("Please enter description");
     if (description.trim().length > 1000)
-      return toast.info("Description length exceed");
+      return toast.info("Description length exceeded");
     navigation.replace("AddDetails");
   };
 
