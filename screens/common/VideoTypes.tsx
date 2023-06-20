@@ -122,13 +122,14 @@ export default function VideoTypes({
   });
 
   const uploadViaTus = async () => {
+    toast.success("Upload started")
     if (selectedTags.length === 0)
       return toast.error("Please select atleast tag");
     try {
-      navigation.replace("YourVideos", {
-        title: "Your Videos",
-        videos: AllVideosData?.publications?.items as Post[],
-      });
+      // navigation.replace("YourVideos", {
+      //   title: "Your Videos",
+      //   videos: AllVideosData?.publications?.items as Post[],
+      // });
       setUploadingStatus("UPLOADING");
       const { tusEndpoint, assetId } = await getUploadURLForLivePeer();
 
@@ -162,9 +163,13 @@ export default function VideoTypes({
       const imageBlob = await getImageBlobFromUri(uploadStore.coverURL!);
 
       const coverImageURI = await uploadImageToIPFS(imageBlob);
+      console.log('coverrrr ',coverImageURI);
+      
 
       const videoBlob = await getImageBlobFromUri(uploadStore.videoURL!);
       const ipfsVideoUrl = await uploadImageToIPFS(videoBlob);
+      console.log('videourl ipfs ',ipfsVideoUrl);
+      
 
       const attributes: MetadataAttributeInput[] = [
         {
@@ -177,15 +182,15 @@ export default function VideoTypes({
           traitType: "app",
           value: APP_ID,
         },
-        {
-          displayType: PublicationMetadataDisplayTypes.String,
-          traitType: "assetId",
-          value: assetId,
-        },
+        // {
+        //   displayType: PublicationMetadataDisplayTypes.String,
+        //   traitType: "assetId",
+        //   value: assetId,
+        // },
         {
           displayType: PublicationMetadataDisplayTypes.String,
           traitType: "durationInSeconds",
-          value: uploadStore.duration?.toString()!,
+          value: Math.floor((uploadStore.duration!/1000))?.toString()!,
         },
       ];
       const media: Array<PublicationMetadataMediaInput> = [
@@ -226,11 +231,13 @@ export default function VideoTypes({
         context: {
           headers: {
             "x-access-token": `Bearer ${accessToken}`,
+            "origin":LENSPLAY_SITE,
           },
         },
       });
+      Logger.Log("metadata he bhai: ",metadataUri)
     } catch (error) {
-      // console.log(error);
+      console.log(error);
     }
   };
 

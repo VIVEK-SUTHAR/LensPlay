@@ -8,6 +8,7 @@ import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
 import { LENSPLAY_SITE, LENS_CLAIM_SITE } from "constants/index";
+import StorageKeys from "constants/Storage";
 import { AUTH } from "constants/tracking";
 import { ToastType } from "customTypes/Store";
 import { useAuthenticateMutation, useChallengeLazyQuery } from "customTypes/generated";
@@ -100,6 +101,9 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 					false
 				);
 				if (hasHandle) {
+					if (address) {
+						AsyncStorage.setItem(StorageKeys.UserAddress, address);
+					}
 					navigation.reset({ index: 0, routes: [{ name: "Root" }] });
 				}
 				void TrackAction(AUTH.SIWL);

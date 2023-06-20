@@ -9,6 +9,7 @@ import React, { MutableRefObject, useRef } from "react";
 import { Dimensions, Platform, View } from "react-native";
 import { useThemeStore } from "store/Store";
 import getIPFSLink from "utils/getIPFSLink";
+import Logger from "utils/logger";
 
 interface VideoPlayerProps {
 	url: string;
@@ -21,6 +22,13 @@ interface VideoPlayerProps {
 	setInFullscreen?: React.Dispatch<React.SetStateAction<boolean>>;
 	setIsMute: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+Dimensions.addEventListener("change", (data) => {
+	console.log("Screen Height", data.screen.height);
+	console.log("Screen Width", data.screen.width);
+	console.log("Window Width", data.window.height);
+	console.log("Height Width", data.window.width);
+});
 
 function Player({
 	inFullscreen,
@@ -35,14 +43,14 @@ function Player({
 }: VideoPlayerProps) {
 	const videoRef = useRef<Video>();
 	const { PRIMARY } = useThemeStore();
-
+	Logger.Log("IN FULLSCREEN",inFullscreen)
 	const isAndroid = Platform.OS === "android";
 
 	return (
 		<VideoPlayer
 			style={{
 				width: inFullscreen ? Dimensions.get("screen").height : Dimensions.get("screen").width,
-				height: inFullscreen ? Dimensions.get("screen").width*0.96 : 250,
+				height: inFullscreen ? Dimensions.get("screen").width * 0.96 : 250,
 				videoBackgroundColor: "transparent",
 				controlsBackgroundColor: "transparent",
 			}}
@@ -116,7 +124,11 @@ function Player({
 				exitFullscreen: async () => {
 					setStatusBarHidden(false, "fade");
 					setInFullscreen ? setInFullscreen(!inFullscreen) : null;
-					await ScreenOrientation.lockAsync(isAndroid?(ScreenOrientation.OrientationLock.PORTRAIT):(ScreenOrientation.OrientationLock.PORTRAIT_UP));
+					await ScreenOrientation.lockAsync(
+						isAndroid
+							? ScreenOrientation.OrientationLock.PORTRAIT
+							: ScreenOrientation.OrientationLock.PORTRAIT_UP
+					);
 				},
 			}}
 			mute={{

@@ -133,17 +133,17 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 					headerTitle: "",
 					headerRight: () => (
 						<View style={{ flexDirection: "row", alignItems: "center" }}>
-							{/* <Pressable
-                onPress={() => uploadRef.current?.snapToIndex(0)}
-                style={{
-                  paddingHorizontal: 8,
-                  height: "100%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Icon name="upload-file" size={24} />
-              </Pressable> */}
+							<Pressable
+								onPress={() => uploadRef.current?.snapToIndex(0)}
+								style={{
+									paddingHorizontal: 8,
+									height: "100%",
+									alignItems: "center",
+									justifyContent: "center",
+								}}
+							>
+								<Icon name="upload-file" size={24} />
+							</Pressable>
 							{!isGuest ? (
 								<Pressable
 									onPress={() => navigation.push("Invite")}

@@ -58,6 +58,21 @@ export default function App() {
 						}}
 					/>
 				</SafeAreaProvider>
+				<Web3Modal
+					projectId={projectId}
+					providerMetadata={providerMetadata}
+					themeMode="dark"
+					sessionParams={{
+						namespaces: {
+							eip155: {
+								methods: ["eth_sendTransaction", "personal_sign", "eth_signTypedData"],
+								chains: ["eip155:137"],
+								events: ["chainChanged", "accountsChanged"],
+								rpcMap: {},
+							},
+						},
+					}}
+				/>
 			</GestureHandlerRootView>
 		);
 	}
