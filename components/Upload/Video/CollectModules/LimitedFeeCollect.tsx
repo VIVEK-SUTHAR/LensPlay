@@ -16,47 +16,33 @@ const LimitedFeeCollect = () => {
 				subTitle={"By enabling this, You will limit the number of collects for your Video"}
 				switchValue={collectModule.isLimitedCollect!}
 				onPress={() => {
-					if( collectModule?.isPaidCollect ) {
-						if (!collectModule.isLimitedCollect && collectModule.isTimedCollect) {
-							setCollectModule({
-								...collectModule,
-								type: "limitedTimedFeeCollectModule",
-								isLimitedCollect: true,
-							});
-						} else if (!collectModule.isLimitedCollect && !collectModule.isTimedCollect) {
-							setCollectModule({
-								...collectModule,
-								type: "limitedFeeCollectModule",
-								isLimitedCollect: true,
-							});
-						} else if (collectModule.isLimitedCollect && collectModule.isTimedCollect) {
-							setCollectModule({
-								...collectModule,
-								type: "timedFeeCollectModule",
-								isLimitedCollect: false,
-							});
+					if (!collectModule.isLimitedCollect) {
+						setCollectModule({
+							...collectModule,
+							type: "simpleCollectModule",
+							isLimitedCollect: true,
+						});
+					} else {
+						if (!collectModule.isPaidCollect) {
+							if (collectModule.isTimedCollect) {
+								setCollectModule({
+									...collectModule,
+									type: "simpleCollectModule",
+									isLimitedCollect: false,
+								});
+							} else {
+								setCollectModule({
+									...collectModule,
+									type: "freeCollectModule",
+									isLimitedCollect: false,
+								});
+							}
 						} else {
 							setCollectModule({
 								...collectModule,
 								type: "feeCollectModule",
 								isLimitedCollect: false,
 							});
-						}
-					}
-					else {
-						if (!collectModule.isLimitedCollect){
-							setCollectModule({
-								...collectModule,
-								type: "simpleCollectModule",
-								isLimitedCollect: true,
-							})
-						}
-						else{
-							setCollectModule({
-								...collectModule,
-								type: "freeCollectModule",
-								isLimitedCollect: false,
-							})
 						}
 					}
 				}}

@@ -52,6 +52,7 @@ function RefferalInput() {
 			<View
 				style={{
 					flexDirection: "row",
+					marginBottom: 8
 				}}
 			>
 				<TextInput
@@ -66,7 +67,7 @@ function RefferalInput() {
 						paddingVertical: Platform.OS === "ios" ? 16 : 8,
 						borderTopLeftRadius: 8,
 						borderBottomLeftRadius: 8,
-						flex: 0.8,
+						flex: 0.92,
 					}}
 					keyboardType="number-pad"
 					onChange={(e) => {
@@ -109,7 +110,7 @@ function RefferalInput() {
 						borderBottomRightRadius: 8,
 					}}
 				>
-					<Percent height={16} width={16} />
+					<Percent height={20} width={20} />
 				</Pressable>
 			</View>
 		</View>

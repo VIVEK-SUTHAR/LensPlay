@@ -50,7 +50,7 @@ export default function StackNavigation() {
 					backgroundColor: "black",
 				},
 			}}
-			initialRouteName={"Loader"}
+			initialRouteName={"SelectCollectModule"}
 		>
 			<Stack.Group key={"Invite Code"}>
 				<Stack.Screen
@@ -374,6 +374,10 @@ export default function StackNavigation() {
 							}
 							else if (collectModule?.isRefferalEnabled && collectModule?.referralPercent == "") {
 								toast.error('Please enter a refferal percentage');
+								return;
+							}
+							else if (collectModule?.isTimedCollect && collectModule?.timeLimit == undefined) {
+								toast.error('Please select a date');
 								return;
 							}
 							navigation.navigate('AddDetails');

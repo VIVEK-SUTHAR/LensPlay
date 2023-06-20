@@ -22,6 +22,7 @@ export const useUploadStore = create<IUploadStore>((set) => ({
 		isRevertCollect: true,
 		isRefferalEnabled: false,
 		referralPercent: "0",
+		timeLimit: undefined
 	},
 	referenceModule: {
 		isFollowerOnly: false,
@@ -62,6 +63,7 @@ export const useUploadStore = create<IUploadStore>((set) => ({
 				isRevertCollect: true,
 				isRefferalEnabled: false,
 				referralPercent: "0",
+				timeLimit: undefined
 			},
 		}),
 	setIsFollowesOnlyCollect: (newValue) => set({ isFollowersOnlyCollect: newValue }),

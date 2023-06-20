@@ -15,6 +15,7 @@ export type CollectModuleType = {
 	referralPercent?: string;
 	limitedCollectCount?: string;
 	feeCollectDetails?: feeCollectDetailsType;
+	timeLimit?: Date;
 };
 type feeCollectDetailsType = {
 	token: string | null;
@@ -39,14 +40,6 @@ function getCollectModule() {
 				revertCollectModule: true,
 			};
 			break;
-		case "simpleCollectModule":
-			module = {
-				simpleCollectModule: {
-					collectLimit: collectModule?.limitedCollectCount,
-					followerOnly: collectModule?.followerOnlyCollect,
-				},
-			};
-			break;
 		case "feeCollectModule":
 			module = {
 				feeCollectModule: {
@@ -62,52 +55,88 @@ function getCollectModule() {
 				},
 			};
 			break;
-		case "limitedTimedFeeCollectModule":
-			module = {
-				limitedTimedFeeCollectModule: {
-					collectLimit: collectModule?.limitedCollectCount,
-					amount: {
-						currency: collectModule?.feeCollectDetails?.token,
-						value: collectModule?.feeCollectDetails?.amount,
-					},
-					recipient: currentProfile?.ownedBy,
-					referralFee: collectModule?.isRefferalEnabled
-						? parseFloat(collectModule?.referralPercent!)
-						: 0,
-					followerOnly: collectModule?.followerOnlyCollect,
-				},
-			};
-			break;
-		case "limitedFeeCollectModule":
-			module = {
-				limitedFeeCollectModule: {
-					collectLimit: collectModule?.limitedCollectCount,
-					amount: {
-						currency: collectModule?.feeCollectDetails?.token,
-						value: collectModule?.feeCollectDetails?.amount,
-					},
-					recipient: currentProfile?.ownedBy,
-					referralFee: collectModule?.isRefferalEnabled
-						? parseFloat(collectModule?.referralPercent!)
-						: 0,
-					followerOnly: collectModule?.followerOnlyCollect,
-				},
-			};
-			break;
-		case "timedFeeCollectModule":
-			module = {
-				timedFeeCollectModule: {
-					amount: {
-						currency: collectModule?.feeCollectDetails?.token,
-						value: collectModule?.feeCollectDetails?.amount,
-					},
-					recipient: currentProfile?.ownedBy,
-					referralFee: collectModule?.isRefferalEnabled
-						? parseFloat(collectModule?.referralPercent!)
-						: 0,
-					followerOnly: collectModule?.followerOnlyCollect,
-				},
-			};
+		case "simpleCollectModule":
+			if (collectModule?.isPaidCollect) {
+				if (collectModule?.isLimitedCollect && collectModule?.isTimedCollect) {
+					module = {
+						simpleCollectModule: {
+							fee: {
+								amount: {
+									currency: collectModule?.feeCollectDetails?.token,
+									value: collectModule?.feeCollectDetails?.amount,
+								},
+								referralFee: collectModule?.isRefferalEnabled
+									? parseFloat(collectModule?.referralPercent!)
+									: 0,
+								recipient: currentProfile?.ownedBy,
+							},
+							collectLimit: collectModule?.limitedCollectCount,
+							endTimestamp: collectModule?.timeLimit?.toISOString(),
+							followerOnly: collectModule?.followerOnlyCollect,
+						},
+					};
+				}
+				else if (collectModule?.isLimitedCollect){
+					module = {
+						simpleCollectModule: {
+							fee: {
+								amount: {
+									currency: collectModule?.feeCollectDetails?.token,
+									value: collectModule?.feeCollectDetails?.amount,
+								},
+								referralFee: collectModule?.isRefferalEnabled
+									? parseFloat(collectModule?.referralPercent!)
+									: 0,
+								recipient: currentProfile?.ownedBy,
+							},
+							collectLimit: collectModule?.limitedCollectCount,
+							followerOnly: collectModule?.followerOnlyCollect,
+						},
+					};
+				}
+				else {
+					module = {
+						simpleCollectModule: {
+							fee: {
+								amount: {
+									currency: collectModule?.feeCollectDetails?.token,
+									value: collectModule?.feeCollectDetails?.amount,
+								},
+								referralFee: collectModule?.isRefferalEnabled
+									? parseFloat(collectModule?.referralPercent!)
+									: 0,
+								recipient: currentProfile?.ownedBy,
+							},
+							endTimestamp: collectModule?.timeLimit?.toISOString(),
+							followerOnly: collectModule?.followerOnlyCollect,
+						},
+					};
+				}
+			} else {
+				if (collectModule?.isLimitedCollect && collectModule?.isTimedCollect) {
+					module = {
+						simpleCollectModule: {
+							collectLimit: collectModule?.limitedCollectCount,
+							followerOnly: collectModule?.followerOnlyCollect,
+							endTimestamp: collectModule?.timeLimit?.toISOString(),
+						},
+					};
+				} else if (collectModule?.isLimitedCollect) {
+					module = {
+						simpleCollectModule: {
+							collectLimit: collectModule?.limitedCollectCount,
+							followerOnly: collectModule?.followerOnlyCollect,
+						},
+					};
+				} else {
+					module = {
+						simpleCollectModule: {
+							followerOnly: collectModule?.followerOnlyCollect,
+							endTimestamp: collectModule?.timeLimit?.toISOString(),
+						},
+					};
+				}
+			}
 			break;
 	}
 	return module;

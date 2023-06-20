@@ -18,22 +18,10 @@ const PaidCollect = ({ tokenSheetRef }: { tokenSheetRef: React.RefObject<BottomS
 				switchValue={collectModule.isPaidCollect!}
 				onPress={() => {
 					if (!collectModule.isPaidCollect) {
-						if (collectModule.isTimedCollect && collectModule.isLimitedCollect) {
+						if (collectModule?.isLimitedCollect || collectModule?.isTimedCollect) {
 							setCollectModule({
 								...collectModule,
-								type: "limitedTimedFeeCollectModule",
-								isPaidCollect: true,
-							});
-						} else if (collectModule.isTimedCollect) {
-							setCollectModule({
-								...collectModule,
-								type: "timedFeeCollectModule",
-								isPaidCollect: true,
-							});
-						} else if (collectModule.isLimitedCollect) {
-							setCollectModule({
-								...collectModule,
-								type: "limitedFeeCollectModule",
+								type: "simpleCollectModule",
 								isPaidCollect: true,
 							});
 						} else {
@@ -44,14 +32,13 @@ const PaidCollect = ({ tokenSheetRef }: { tokenSheetRef: React.RefObject<BottomS
 							});
 						}
 					} else {
-						if( collectModule?.isLimitedCollect ){
+						if (collectModule?.isLimitedCollect || collectModule?.isTimedCollect) {
 							setCollectModule({
 								...collectModule,
 								type: "simpleCollectModule",
 								isPaidCollect: false,
 							});
-						}
-						else {
+						} else {
 							setCollectModule({
 								...collectModule,
 								type: "freeCollectModule",

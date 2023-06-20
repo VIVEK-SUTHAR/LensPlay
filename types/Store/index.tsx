@@ -25,6 +25,8 @@ export interface IActivePublication {
 export interface UserStore {
   currentProfile: Profile | undefined;
   hasHandle: boolean | null;
+  profiles: Profile[] | [];
+  setProfiles: (profiles: Profile[]) => void;
   setCurrentProfile: (currentProfile: Profile | undefined) => void;
   setHasHandle: (hasHandle: boolean) => void;
 }

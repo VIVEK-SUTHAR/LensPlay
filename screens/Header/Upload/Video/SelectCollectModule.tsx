@@ -87,13 +87,13 @@ export default function SelectCollectModule() {
 							<PaidCollect tokenSheetRef={tokemSheetRef} />
 						</View>
 					)}
-					{collectModule?.isPaidCollect && (
+					{collectModule?.isPaidCollect && <RefferalReward />}
+					{!collectModule?.isRevertCollect && (
 						<View>
+							<LimitedFeeCollect />
 							<TimedFeeCollect />
-							<RefferalReward />
 						</View>
 					)}
-					{!collectModule?.isRevertCollect && <LimitedFeeCollect />}
 				</View>
 			</ScrollView>
 			<TokenSheet
