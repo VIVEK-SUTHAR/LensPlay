@@ -5,7 +5,6 @@ const useLiveStreamStore = create<ILiveStreamStore>((set) => ({
 	streamTitle: "",
 	recordStream: false,
 	streamQuality: "Medium",
-	isMute: false,
 	isFrontCamera: false,
 	streamKey: null,
 	setStreamTitle: (streamTitle) =>
@@ -19,10 +18,6 @@ const useLiveStreamStore = create<ILiveStreamStore>((set) => ({
 	setStreamQuality: (streamQuality) =>
 		set({
 			streamQuality: streamQuality,
-		}),
-	setIsMute: (isMute) =>
-		set({
-			isMute: isMute,
 		}),
 	setIsFrontCamera: (isFrontCamera) =>
 		set({

@@ -183,13 +183,11 @@ export type ILiveStreamStore = {
 	streamTitle: string;
 	recordStream: boolean;
 	streamQuality: LiveStreamQuality;
-	isMute: boolean;
 	isFrontCamera: boolean;
 	streamKey: null | string;
 	setStreamTitle: (streamTitle: string) => void;
 	setRecordStream: (recordStream: boolean) => void;
 	setStreamQuality: (streamQuality: LiveStreamQuality) => void;
-	setIsMute: (isMute: boolean) => void;
 	setIsFrontCamera: (isFrontCamera: boolean) => void;
 	setStreamKey: (streamKey: string) => void;
 };

@@ -9,7 +9,14 @@ import { LiveStreamQuality } from "customTypes/Store";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { Pressable, SafeAreaView, StyleSheet, View } from "react-native";
+import {
+	PermissionsAndroid,
+	Platform,
+	Pressable,
+	SafeAreaView,
+	StyleSheet,
+	View,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import useLiveStreamStore from "store/LiveStreamStore";
 import { useProfile, useThemeStore, useToast } from "store/Store";
@@ -26,12 +33,10 @@ export default function LiveStreamSettings({
 }: RootStackScreenProps<"LiveStreamSettings">) {
 	const {
 		recordStream,
-		isMute,
 		isFrontCamera,
 		streamTitle,
 		streamQuality,
 		setIsFrontCamera,
-		setIsMute,
 		setRecordStream,
 		setStreamQuality,
 		setStreamTitle,
@@ -50,13 +55,6 @@ export default function LiveStreamSettings({
 			},
 		},
 		{
-			title: "Want to set mic on?",
-			value: isMute,
-			onPress: () => {
-				setIsMute(!isMute);
-			},
-		},
-		{
 			title: "Want to stream through front camera?",
 			value: isFrontCamera,
 			onPress: () => {
@@ -71,18 +69,41 @@ export default function LiveStreamSettings({
 		setStreamTitle(e.nativeEvent.text);
 	}, []);
 
+	const requestCameraPermissionForAndorid = async () => {
+		try {
+			const granted = await PermissionsAndroid.requestMultiple([
+				PermissionsAndroid.PERMISSIONS.CAMERA,
+				PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+			]);
+			if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (err) {
+			console.warn(err);
+		}
+	};
+
 	const handleSubmit = async () => {
 		if (streamTitle.trim().length === 0) {
 			toast.error("Please enter title");
 			return;
 		}
-		const data = await createStream(streamTitle, currentProfile?.ownedBy);
-		if (data) {
-			console.log(data.streamKey);
-			setStreamKey(data.streamKey);
-			navigation.replace("GoLive");
-		} else {
-			toast.error("something went wrong");
+
+		if (Platform.OS === "android") {
+			const hasPermission = await requestCameraPermissionForAndorid();
+			if (hasPermission) {
+				const data = await createStream(streamTitle, currentProfile?.ownedBy, recordStream);
+				if (data) {
+					setStreamKey(data.streamKey);
+					navigation.replace("GoLive");
+				} else {
+					toast.error("something went wrong");
+				}
+			} else {
+				toast.error("permission denied");
+			}
 		}
 	};
 

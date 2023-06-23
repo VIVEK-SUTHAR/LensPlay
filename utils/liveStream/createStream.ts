@@ -1,6 +1,6 @@
 import { LIVEPEER_API_TOKEN, LIVEPEER_API_URL } from "constants/index";
 
-async function createStream(title: string, address: string) {
+async function createStream(title: string, address: string, recordStream: boolean) {
 	try {
 		const livepeerResponse = await fetch(`${LIVEPEER_API_URL}/stream`, {
 			method: "POST",
@@ -11,6 +11,7 @@ async function createStream(title: string, address: string) {
 			body: JSON.stringify({
 				name: title,
 				creatorId: address,
+				record: recordStream,
 			}),
 		});
 		if (livepeerResponse.ok) {

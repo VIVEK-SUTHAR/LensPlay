@@ -8,7 +8,7 @@ interface Props {
 
 export interface CameraView {
 	switchCamera(): void;
-	flashEnable(): void;
+	flashEnable(isEnabled: boolean): void;
 	startPreview(): void;
 	stopPreview(): void;
 	start(): void;
@@ -16,15 +16,15 @@ export interface CameraView {
 }
 
 const BroadcastCameraView = forwardRef<CameraView, Props>((props, ref) => {
-	const { isMute, isFrontCamera } = useLiveStreamStore();
+	const { isFrontCamera } = useLiveStreamStore();
 
 	return (
 		<NodeCameraView
-			style={{ flex: 1, width: "100%", height: "100%", backgroundColor: "gray" }}
+			style={{ flex: 1, width: "100%", height: "100%" }}
 			ref={ref}
 			outputUrl={props.ingestURL}
 			camera={{ cameraId: isFrontCamera ? 1 : 0, cameraFrontMirror: true }}
-			audio={{ bitrate: 32000, profile: isMute ? 1 : 0, samplerate: 44100 }}
+			audio={{ bitrate: 32000, profile: 1, samplerate: 44100 }}
 			video={{
 				preset: 12,
 				bitrate: 400000,
