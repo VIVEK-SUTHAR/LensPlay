@@ -1,13 +1,11 @@
-import Heading from "components/UI/Heading";
+import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
+import Lottie from "lottie-react-native";
 import React, { useEffect } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useThemeStore } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
-import ConfettiCannon from "react-native-confetti-cannon";
-import Icon from "components/Icon";
-import Button from "components/UI/Button";
-import Lottie from "lottie-react-native";
+
 const UploadIndicator = () => {
 	const { uploadingStatus, setUploadingStatus } = useUploadStore();
 	const theme = useThemeStore();
@@ -23,59 +21,63 @@ const UploadIndicator = () => {
 	return (
 		<View style={styles.container}>
 			{uploadingStatus === "UPLOADINGCOVER" ? (
-				<Lottie source={require("../../../assets/upload.json")} autoPlay loop />
+				<>
+					<Lottie source={require("../../../assets/uploadCover.json")} autoPlay loop />
+					<View
+						style={{
+							position: "absolute",
+							bottom: 32,
+						}}
+					>
+						<StyledText
+							title={"Uploading cover"}
+							style={{
+								color: white[700],
+								fontSize: 24,
+								fontWeight: "600",
+							}}
+						/>
+					</View>
+				</>
 			) : null}
 			{uploadingStatus === "UPLOADINGVIDEO" ? (
-				<View style={{ flexDirection: "row", justifyContent: "space-around", width: "90%" }}>
-					<ActivityIndicator color={theme.PRIMARY} size="large" />
-					<Heading
+				<>
+					<Lottie source={require("../../../assets/uploadVideo.json")} autoPlay loop />
+					<View
 						style={{
-							fontSize: 24,
-							fontWeight: "bold",
-							color: white[800],
+							position: "absolute",
+							bottom: 32,
 						}}
-						title="Uploading Video..."
-					/>
-				</View>
+					>
+						<StyledText
+							title={"Uploading video"}
+							style={{
+								color: white[700],
+								fontSize: 24,
+								fontWeight: "600",
+							}}
+						/>
+					</View>
+				</>
 			) : null}
 			{uploadingStatus === "DONE" ? (
 				<>
-					<View style={{ flexDirection: "row", justifyContent: "space-around", width: "90%" }}>
-						<View
+					<Lottie source={require("../../../assets/uploadDone.json")} autoPlay loop />
+					<View
+						style={{
+							position: "absolute",
+							bottom: 32,
+						}}
+					>
+						<StyledText
+							title={"Uploading video"}
 							style={{
-								width: 30,
-								height: 30,
-								backgroundColor: theme.PRIMARY,
-								justifyContent: "center",
-								alignItems: "center",
-								borderRadius: 25,
-							}}
-						>
-							<Icon name={"done"} color={"black"} size={18} />
-						</View>
-						<Heading
-							style={{
+								color: white[700],
 								fontSize: 24,
-								fontWeight: "bold",
-								color: white[800],
-							}}
-							title="Video Uploaded...."
-						/>
-					</View>
-					<View>
-						<Button
-							title={"Go to Feed"}
-							type="outline"
-							width={"auto"}
-							mt={16}
-							textStyle={{
-								fontWeight: "bold",
-								color: white[800],
-								paddingHorizontal: 16,
+								fontWeight: "600",
 							}}
 						/>
 					</View>
-					<ConfettiCannon count={200} fadeOut={true} autoStart={true} origin={{ x: -10, y: 0 }} />
 				</>
 			) : null}
 		</View>
