@@ -2,6 +2,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import WatchLaterList from "components/WatchLater/WatchLaterList";
+import ErrorMesasge from "components/common/ErrorMesasge";
 import { white } from "constants/Colors";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { Image } from "expo-image";
@@ -16,67 +17,76 @@ import Logger from "utils/logger";
 const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }): JSX.Element => {
 	const { currentProfile } = useProfile();
 	const { cover, color } = useWatchLater();
+	const { allWatchLaters } = useWatchLater();
 
 	useFocusEffect(() => {
-		navigation.setOptions({
-			headerStyle: { backgroundColor: color ? color : "#7A52B5" },
-		});
+		if (allWatchLaters!.length > 0) {
+			navigation.setOptions({
+				headerStyle: { backgroundColor: color ? color : "#7A52B5" },
+			});
+		}
 	});
-	Logger.Log("Cover nd color",cover,color)
+	Logger.Log("Cover nd color", cover, color);
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-			<LinearGradient
-				style={{
-					alignItems: "center",
-					padding: 8,
-				}}
-				colors={[color ? color : "#7A52B5", "black"]}
-			>
-				<Image
-					source={{
-						uri: cover
-							? cover
-							: "https://ik.imagekit.io/4uh8nmwsx/fotor-ai-2023060417146.jpg?f-webp",
-					}}
-					style={{
-						height: 200,
-						width: "100%",
-						borderRadius: 16,
-					}}
-					contentFit="cover"
-				/>
-				<View
-					style={{
-						marginVertical: 24,
-						width: "100%",
-					}}
-				>
-					<Heading
-						title="Watch Later"
+			{allWatchLaters!.length > 0 ? (
+				<>
+					<LinearGradient
 						style={{
-							color: white[800],
-							fontWeight: "600",
-							fontSize: 24,
+							alignItems: "center",
+							padding: 8,
 						}}
-					/>
-					<StyledText
-						title={currentProfile?.name || formatHandle(currentProfile?.handle)}
+						colors={[color ? color : "#7A52B5", "black"]}
+					>
+						<Image
+							source={{
+								uri: cover
+									? cover
+									: "https://ik.imagekit.io/4uh8nmwsx/fotor-ai-2023060417146.jpg?f-webp",
+							}}
+							style={{
+								height: 200,
+								width: "100%",
+								borderRadius: 16,
+							}}
+							contentFit="cover"
+						/>
+						<View
+							style={{
+								marginVertical: 24,
+								width: "100%",
+							}}
+						>
+							<Heading
+								title="Watch Later"
+								style={{
+									color: white[800],
+									fontWeight: "600",
+									fontSize: 24,
+								}}
+							/>
+							<StyledText
+								title={currentProfile?.name || formatHandle(currentProfile?.handle)}
+								style={{
+									color: white[200],
+									fontWeight: "600",
+									fontSize: 16,
+									marginTop: 2,
+								}}
+							/>
+						</View>
+					</LinearGradient>
+					<View
 						style={{
-							color: white[200],
-							fontWeight: "600",
-							fontSize: 16,
-							marginTop: 2,
+							flex: 1,
 						}}
-					/>
-				</View>
-			</LinearGradient>
-			<View
-				style={{
-					flex: 1,
-				}}
-			>
-				<WatchLaterList />
-			</View>
+					>
+						<WatchLaterList />
+					</View>
+				</>
+			) : (
+				<ErrorMesasge message="Look's like you dont have any watch laters yet" withImage={false} />
+			)}
 		</SafeAreaView>
 	);
 };

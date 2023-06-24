@@ -22,7 +22,7 @@ const useWatchLater = create<WatchLaterStore>((set) => ({
 				};
 			} else {
 				return {
-					allWatchLaters: [...state.allWatchLaters, ...newWatchLaters],
+					allWatchLaters: newWatchLaters,
 				};
 			}
 		});

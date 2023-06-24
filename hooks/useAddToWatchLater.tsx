@@ -6,6 +6,8 @@ import useWatchLater from "store/WatchLaterStore";
 import Logger from "utils/logger";
 import TrackAction from "utils/Track";
 import addToWatchLater from "utils/watchlater/addToWatchLater";
+import getWatchLaters from "utils/watchlater/getWatchLaters";
+import removeWatchLater from "utils/watchlater/removeWatchLater";
 
 const useAddWatchLater = () => {
 	const toast = useToast();
@@ -35,6 +37,39 @@ const useAddWatchLater = () => {
 			TrackAction(PUBLICATION.ADD_WATCH_LATER);
 		}
 	};
-	return add;
+
+	const remove = async (publicationId: string) => {
+		const watchLater = await AsyncStorage.getItem(StorageKeys.WatchLaters);
+		if (!!watchLater && !!JSON.parse(watchLater)) {
+			let watchLaterArray = JSON.parse(watchLater);
+			const result = watchLaterArray.filter((item: string, index: number, arr: string[]) => {
+				if (item == publicationId) {
+					arr.splice(index, 1);
+				}
+			});
+			await AsyncStorage.setItem(StorageKeys.WatchLaters, JSON.stringify(watchLaterArray));
+			setAllWatchLaters(watchLaterArray.reverse());
+			toast.success("Removed from watch later!");
+			removeWatchLater(currentProfile?.id, publicationId)
+				.then()
+				.catch(() => {});
+			TrackAction(PUBLICATION.REMOVE_WATCH_LATER);
+		} else {
+			const watchLaterArray = await getWatchLaters(currentProfile?.id);
+			const result = watchLaterArray.filter((item: string, index: number, arr: string[]) => {
+				if (item == publicationId) {
+					arr.splice(index, 1);
+				}
+			});
+			await AsyncStorage.setItem(StorageKeys.WatchLaters, JSON.stringify(watchLaterArray));
+			setAllWatchLaters(watchLaterArray.reverse());
+			toast.success("Removed from watch later!");
+			removeWatchLater(currentProfile?.id, publicationId)
+				.then()
+				.catch(() => {});
+			TrackAction(PUBLICATION.REMOVE_WATCH_LATER);
+		}
+	};
+	return { add, remove };
 };
 export default useAddWatchLater;

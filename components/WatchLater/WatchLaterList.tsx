@@ -17,6 +17,7 @@ import {
 	type Post,
 	type Scalars,
 } from "customTypes/generated";
+import useAddWatchLater from "hooks/useAddToWatchLater";
 import React from "react";
 import { Button, FlatList, Share, View } from "react-native";
 import { useProfile } from "store/Store";
@@ -77,26 +78,22 @@ const WatchLaterList = () => {
 					});
 				}}
 			/> */}
-			{watchLaterList ? (
-				<FlashList
-					data={watchLaterList}
-					ListEmptyComponent={NoVideosFound}
-					removeClippedSubviews={true}
-					estimatedItemSize={110}
-					onEndReachedThreshold={0.7}
-					showsVerticalScrollIndicator={false}
-					renderItem={({ item }: { item: Post | Mirror }) => (
-						<MyVideoCard
-							publication={item}
-							id={item.id}
-							sheetRef={WatchLaterSheetRef}
-							setPubId={handlePubId}
-						/>
-					)}
-				/>
-			) : (
-				<ErrorMesasge message="Look's like you dont have any watch laters yet" withImage={false} />
-			)}
+			<FlashList
+				data={watchLaterList}
+				ListEmptyComponent={NoVideosFound}
+				removeClippedSubviews={true}
+				estimatedItemSize={110}
+				onEndReachedThreshold={0.7}
+				showsVerticalScrollIndicator={false}
+				renderItem={({ item }: { item: Post | Mirror }) => (
+					<MyVideoCard
+						publication={item}
+						id={item.id}
+						sheetRef={WatchLaterSheetRef}
+						setPubId={handlePubId}
+					/>
+				)}
+			/>
 			<WatchLaterSheet sheetRef={WatchLaterSheetRef} pubId={pubId} />
 		</View>
 	);
@@ -109,11 +106,14 @@ export const WatchLaterSheet = ({
 	sheetRef: React.RefObject<BottomSheetMethods>;
 	pubId: Scalars["InternalPublicationId"];
 }) => {
+	const { remove } = useAddWatchLater();
 	const actionList: actionListType[] = [
 		{
 			name: "Remove",
 			icon: "delete",
-			onPress: (pubid: Scalars["InternalPublicationId"]) => {},
+			onPress: (pubid: Scalars["InternalPublicationId"]) => {
+				remove(pubId);
+			},
 		},
 		{
 			name: "Share",

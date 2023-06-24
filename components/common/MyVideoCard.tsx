@@ -4,7 +4,7 @@ import { Image } from "expo-image";
 import React, { memo } from "react";
 import { Dimensions, Pressable, TouchableOpacity, View } from "react-native";
 import { black } from "constants/Colors";
-import { useActivePublication } from "store/Store";
+import { useActivePublication, useProfile } from "store/Store";
 import { Mirror, Post, Scalars } from "customTypes/generated";
 import getDifference from "utils/getDifference";
 import getIPFSLink from "utils/getIPFSLink";
@@ -14,17 +14,70 @@ import getRawurl from "utils/getRawUrl";
 import Icon, { IconName } from "components/Icon";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import StorageKeys from "constants/Storage";
+import Logger from "utils/logger";
+import getWatchLaters from "utils/watchlater/getWatchLaters";
 
 type MyVideoCardProps = {
 	publication: Mirror | Post;
 	id: string;
 	sheetRef?: React.RefObject<BottomSheetMethods>;
 	setPubId?: (pubId: Scalars["InternalPublicationId"]) => void;
+	setInWatchLater: (inWatchLater: boolean) => void;
 };
 
-function MyVideoCard({ publication, id, sheetRef, setPubId }: MyVideoCardProps) {
+function MyVideoCard({ publication, id, sheetRef, setPubId, setInWatchLater }: MyVideoCardProps) {
 	const navigation = useNavigation();
 	const { setActivePublication } = useActivePublication();
+	const { currentProfile } = useProfile();
+
+	const checkInWatchLater = async () => {
+		// allWatchLaters?.find()
+		const watchLaters = await AsyncStorage.getItem(StorageKeys.WatchLaters);
+		console.log(watchLaters, "idhar hu");
+
+		try {
+			//first check pubId in async storage
+			if (watchLaters) {
+				const watchLaterArray = JSON.parse(watchLaters);
+				const result = watchLaterArray.filter((item: string) => {
+					if (item == publication?.id) {
+						return true;
+					} else {
+						return false;
+					}
+				});
+				if (result.length != 0) {
+					setInWatchLater(true);
+				} else {
+					setInWatchLater(false);
+				}
+			}
+			//if async storage is not yet set than check in db
+			else {
+				const watchLaterArray = await getWatchLaters(currentProfile?.id);
+				const result = watchLaterArray.filter((item: string) => {
+					if (item == publication?.id) {
+						return true;
+					} else {
+						return false;
+					}
+				});
+				if (result.length != 0) {
+					setInWatchLater(true);
+				} else {
+					setInWatchLater(false);
+				}
+			}
+		} catch (error) {
+			if (error instanceof Error) {
+				Logger.Error(error.message);
+			}
+		} finally {
+			sheetRef?.current?.snapToIndex(0);
+		}
+	};
 
 	return (
 		<Pressable
@@ -104,9 +157,9 @@ function MyVideoCard({ publication, id, sheetRef, setPubId }: MyVideoCardProps) 
 					activeOpacity={0.5}
 					onPress={() => {
 						if (setPubId) {
+							checkInWatchLater();
 							setPubId(publication.id);
 						}
-						sheetRef?.current?.snapToIndex(0);
 					}}
 					style={{
 						padding: 4,
@@ -126,6 +179,7 @@ export type SheetProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
 	pubId: Scalars["InternalPublicationId"];
 	profileId: Scalars["ProfileId"];
+	inWatchLater: boolean;
 };
 
 export type actionListType = {
