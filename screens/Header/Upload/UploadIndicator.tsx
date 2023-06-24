@@ -7,33 +7,23 @@ import { useUploadStore } from "store/UploadStore";
 import ConfettiCannon from "react-native-confetti-cannon";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
-
+import Lottie from "lottie-react-native";
 const UploadIndicator = () => {
 	const { uploadingStatus, setUploadingStatus } = useUploadStore();
 	const theme = useThemeStore();
 	useEffect(() => {
 		setUploadingStatus("UPLOADINGCOVER");
 		setTimeout(() => {
-		setUploadingStatus("UPLOADINGVIDEO");
+			setUploadingStatus("UPLOADINGVIDEO");
 		}, 5000);
 		setTimeout(() => {
-		setUploadingStatus("DONE");
+			setUploadingStatus("DONE");
 		}, 6000);
 	}, []);
 	return (
 		<View style={styles.container}>
 			{uploadingStatus === "UPLOADINGCOVER" ? (
-				<View style={{ flexDirection: "row", justifyContent: "space-around", width: "90%" }}>
-					<ActivityIndicator color={theme.PRIMARY} size="large" />
-					<Heading
-						style={{
-							fontSize: 24,
-							fontWeight: "bold",
-							color: white[800],
-						}}
-						title="Uploading Cover..."
-					/>
-				</View>
+				<Lottie source={require("../../../assets/upload.json")} autoPlay loop />
 			) : null}
 			{uploadingStatus === "UPLOADINGVIDEO" ? (
 				<View style={{ flexDirection: "row", justifyContent: "space-around", width: "90%" }}>
