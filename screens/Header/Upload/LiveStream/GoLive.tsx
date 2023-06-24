@@ -1,9 +1,9 @@
 import CameraSwitch from "assets/Icons/CameraSwitch";
-import Mute from "assets/Icons/Mute";
+import FlashOFF from "assets/Icons/FlashOFF";
+import FlashON from "assets/Icons/FlashON";
 import Record from "assets/Icons/Record";
 import BroadcastCameraView, { CameraView } from "components/LiveStream/BroadcastCameraView";
 import { RootStackScreenProps } from "customTypes/navigation";
-import { Camera } from "expo-camera";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { View } from "react-native";
@@ -12,7 +12,8 @@ import useLiveStreamStore from "store/LiveStreamStore";
 
 export default function GoLive({ navigation }: RootStackScreenProps<"GoLive">) {
 	const cameraView = React.useRef<CameraView>(null);
-	const { streamKey, isFrontCamera, setIsFrontCamera } = useLiveStreamStore();
+	const { streamKey, isFrontCamera, setIsFrontCamera, isFlashON, setIsFlashON } =
+		useLiveStreamStore();
 
 	React.useEffect(() => {
 		if (streamKey) {
@@ -31,7 +32,8 @@ export default function GoLive({ navigation }: RootStackScreenProps<"GoLive">) {
 	};
 
 	const handleFlash = () => {
-		cameraView.current?.flashEnable(false);
+		setIsFlashON(!isFlashON);
+		cameraView.current?.flashEnable(!isFlashON);
 	};
 
 	return (
@@ -66,7 +68,7 @@ export default function GoLive({ navigation }: RootStackScreenProps<"GoLive">) {
 					onPress={handleFlash}
 					activeOpacity={0.5}
 				>
-					<Mute height={24} width={24} />
+					{isFlashON ? <FlashOFF height={24} width={24} /> : <FlashON height={24} width={24} />}
 				</TouchableOpacity>
 				<TouchableOpacity onPress={stopStreaming} activeOpacity={0.5}>
 					<Record height={80} width={80} />

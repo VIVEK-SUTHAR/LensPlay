@@ -6,6 +6,7 @@ const useLiveStreamStore = create<ILiveStreamStore>((set) => ({
 	recordStream: false,
 	streamQuality: "Medium",
 	isFrontCamera: false,
+	isFlashON: false,
 	streamKey: null,
 	setStreamTitle: (streamTitle) =>
 		set({
@@ -26,6 +27,10 @@ const useLiveStreamStore = create<ILiveStreamStore>((set) => ({
 	setStreamKey: (streamKey) =>
 		set({
 			streamKey: streamKey,
+		}),
+	setIsFlashON: (isFlashON) =>
+		set({
+			isFlashON: isFlashON,
 		}),
 }));
 

@@ -104,6 +104,8 @@ export default function LiveStreamSettings({
 			} else {
 				toast.error("permission denied");
 			}
+		} else {
+			navigation.replace("GoLive");
 		}
 	};
 
