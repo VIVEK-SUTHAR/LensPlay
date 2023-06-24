@@ -4,15 +4,13 @@ import StyledText from "components/UI/StyledText";
 import { black } from "constants/Colors";
 import { APP_ID, LENSPLAY_SITE } from "constants/index";
 import {
+	CollectModuleParams,
 	MetadataAttributeInput,
-	Post,
 	PublicationMainFocus,
 	PublicationMetadataDisplayTypes,
 	PublicationMetadataMediaInput,
 	PublicationMetadataV2Input,
-	PublicationTypes,
-	useCreatePostViaDispatcherMutation,
-	useProfilePostsQuery,
+	useCreatePostViaDispatcherMutation
 } from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
 import React, { useState } from "react";
@@ -26,8 +24,6 @@ import Logger from "utils/logger";
 import uploadImageToIPFS from "utils/uploadImageToIPFS";
 import uploadToArweave from "utils/uploadToArweave";
 import getFileMimeType from "utils/video/getFileType";
-import getUploadURLForLivePeer from "utils/video/getUploadURLForLivepeer";
-import uploadToTus, { TusUploadRequestOptions } from "utils/video/uploadToTUS";
 import { v4 as uuidV4 } from "uuid";
 
 const Types: string[] = [
@@ -79,35 +75,7 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 		);
 	}
 
-	const QueryRequest = {
-		profileId: currentProfile?.id,
-		publicationTypes: [PublicationTypes.Post],
-		metadata: {
-			mainContentFocus: [PublicationMainFocus.Video],
-		},
-		sources: ["lenstube"],
-		limit: 50,
-	};
-
-	const {
-		data: AllVideosData,
-		error: AllVideoError,
-		loading: AllVideosLoading,
-	} = useProfilePostsQuery({
-		variables: {
-			request: QueryRequest,
-			reactionRequest: {
-				profileId: currentProfile?.id,
-			},
-		},
-		context: {
-			headers: {
-				"x-access-token": `Bearer ${accessToken}`,
-			},
-		},
-	});
-
-	const [createPost, { data, error }] = useCreatePostViaDispatcherMutation({
+	const [createPost] = useCreatePostViaDispatcherMutation({
 		onCompleted: () => {
 			toast.success("Video uploaded successfully");
 			setClearStore();
@@ -117,55 +85,26 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 		},
 	});
 
-	const uploadViaTus = async () => {
+	function uploadVideo() {
 		navigation.navigate("UploadIndicator");
 		return;
-
-		toast.success("Upload started");
 		if (selectedTags.length === 0) return toast.error("Please select atleast tag");
+		handleUpload();
+	}
+
+	const handleUpload = async () => {
+		return
 		try {
-			// navigation.replace("YourVideos", {
-			//   title: "Your Videos",
-			//   videos: AllVideosData?.publications?.items as Post[],
-			// });
-			setUploadingStatus("UPLOADING");
-			const { tusEndpoint, assetId } = await getUploadURLForLivePeer();
-
-			const localVideoBlob = await getImageBlobFromUri(uploadStore.videoURL!);
-
-			const uploadRequest: TusUploadRequestOptions = {
-				videoBlob: localVideoBlob!,
-				tusEndPoint: tusEndpoint,
-				onSucessCallBack: () => {
-					handleUpload(assetId);
-				},
-				onError: function (): void {
-					toast.error("Something went wrong");
-				},
-				onProgress: function (_sentBytes, _totalBytes): void {
-					const percentage = ((_sentBytes / _totalBytes) * 100).toFixed(2);
-					setUploadProgress(parseFloat(percentage));
-				},
-			};
-			uploadToTus(uploadRequest);
-		} catch (error) {
-			if (error instanceof Error) {
-				// console.log(error);
-			}
-		}
-	};
-
-	const handleUpload = async (assetId: string) => {
-		try {
-			setUploadingStatus("PROCCESSING");
+			setUploadingStatus("UPLOADINGCOVER");
 			const imageBlob = await getImageBlobFromUri(uploadStore.coverURL!);
-
 			const coverImageURI = await uploadImageToIPFS(imageBlob);
-			console.log("coverrrr ", coverImageURI);
+			Logger.Success("Uploaded Cover", coverImageURI);
 
 			const videoBlob = await getImageBlobFromUri(uploadStore.videoURL!);
+			setUploadingStatus("UPLOADINGVIDEO");
 			const ipfsVideoUrl = await uploadImageToIPFS(videoBlob);
-			console.log("videourl ipfs ", ipfsVideoUrl);
+
+			Logger.Success("Uploaded Video", ipfsVideoUrl);
 
 			const attributes: MetadataAttributeInput[] = [
 				{
@@ -178,11 +117,6 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 					traitType: "app",
 					value: APP_ID,
 				},
-				// {
-				//   displayType: PublicationMetadataDisplayTypes.String,
-				//   traitType: "assetId",
-				//   value: assetId,
-				// },
 				{
 					displayType: PublicationMetadataDisplayTypes.String,
 					traitType: "durationInSeconds",
@@ -215,10 +149,12 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 				appId: APP_ID,
 			};
 			const metadataUri = await uploadToArweave(metadata);
+			Logger.Success("Metadata Uploaded", `https://arweave.net/${metadataUri}`);
+			setUploadingStatus(null);
 			createPost({
 				variables: {
 					request: {
-						collectModule: getCollectModule(),
+						collectModule: getCollectModule() as CollectModuleParams,
 						contentURI: `ar://${metadataUri}`,
 						profileId: currentProfile?.id,
 						referenceModule: getReferenceModule(uploadStore.referenceModule),
@@ -231,13 +167,12 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 					},
 				},
 			});
-			Logger.Log("metadata he bhai: ", metadataUri);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	Logger.Warn("Collect MOdule is ", getCollectModule(uploadStore.collectModule));
+	Logger.Warn("Collect MOdule is ", getCollectModule());
 
 	return (
 		<SafeAreaView
@@ -339,7 +274,7 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 						fontSize: 16,
 						fontWeight: "600",
 					}}
-					onPress={uploadViaTus}
+					onPress={uploadVideo}
 				/>
 			</View>
 		</SafeAreaView>
