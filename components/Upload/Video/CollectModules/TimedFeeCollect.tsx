@@ -59,7 +59,7 @@ function SelectTime() {
 	const { collectModule, setCollectModule } = useUploadStore();
 	const [calendarClick, setCalendarClick] = React.useState(false);
 
-	const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+	const onChange = (_event: DateTimePickerEvent, selectedDate?: Date) => {
 		setCalendarClick(false);
 
 		setCollectModule({

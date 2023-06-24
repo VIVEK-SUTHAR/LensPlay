@@ -1,6 +1,8 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "customTypes/navigation";
 import React from "react";
+import ConnectWallet from "screens/Auth/ConnectWallet";
+import LetsGetIn from "screens/Auth/LetsGetIn";
 import LoginWithLens from "screens/Auth/LoginWithLens";
 import QRLogin from "screens/Auth/QRLogin";
 import Scanner from "screens/Auth/Scanner";
@@ -23,16 +25,12 @@ import BugReport from "screens/Header/Settings/BugReport";
 import ProfileScanner from "screens/Header/Settings/ProfileScanner";
 import Settings from "screens/Header/Settings/Settings";
 import UploadShots from "screens/Header/Upload/Shots/UploadShots";
+import UploadIndicator from "screens/Header/Upload/UploadIndicator";
 import AddDetails from "screens/Header/Upload/Video/AddDetails";
+import SelectCollectModule from "screens/Header/Upload/Video/SelectCollectModule";
 import UploadVideo from "screens/Header/Upload/Video/UploadVideo";
-import { useThemeStore, useToast } from "store/Store";
+import { useThemeStore } from "store/Store";
 import BottomTabNavigator from "./BottomTabNavigation";
-import LetsGetIn from "screens/Auth/LetsGetIn";
-import ConnectWallet from "screens/Auth/ConnectWallet";
-import SelectCollectModule  from "screens/Header/Upload/Video/SelectCollectModule";
-import Button from "components/UI/Button";
-import { useUploadStore } from "store/UploadStore";
-import { useNavigation } from "@react-navigation/native";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
@@ -378,6 +376,16 @@ export default function StackNavigation() {
 					headerTintColor: "white",
 					headerTitle: "",
 					headerShadowVisible: false,
+				}}
+			/>
+			<Stack.Screen
+				name="UploadIndicator"
+				component={UploadIndicator}
+				options={{
+					headerBackVisible:false,
+					animation: "default",
+					headerShown: true,
+					headerTintColor: theme.PRIMARY,
 				}}
 			/>
 		</Stack.Navigator>
