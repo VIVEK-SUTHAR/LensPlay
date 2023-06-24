@@ -25,7 +25,7 @@ const UploadIndicator: React.FC<RootStackScreenProps<"UploadIndicator">> = ({ na
 				navigation.reset({ index: 0, routes: [{ name: "Root" }], key: undefined });
 				setClearStore();
 				setUploadingStatus(null);
-			}, 600);
+			}, 5000);
 			Logger.Success("Upload ho gaya nikal idherse");
 		}
 	}, [uploadingStatus]);

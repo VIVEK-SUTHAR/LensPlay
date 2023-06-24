@@ -1,3 +1,4 @@
+import { Profile } from "./../types/Lens/index";
 import { useProfile } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
 
@@ -23,9 +24,7 @@ type feeCollectDetailsType = {
 	name: string | null;
 };
 
-function getCollectModule() {
-	const { collectModule } = useUploadStore();
-	const { currentProfile } = useProfile();
+function getCollectModule(collectModule: CollectModuleType, currentProfile: Profile) {
 	let module;
 	switch (collectModule.type) {
 		case "freeCollectModule":
@@ -75,8 +74,7 @@ function getCollectModule() {
 							followerOnly: collectModule?.followerOnlyCollect,
 						},
 					};
-				}
-				else if (collectModule?.isLimitedCollect){
+				} else if (collectModule?.isLimitedCollect) {
 					module = {
 						simpleCollectModule: {
 							fee: {
@@ -93,8 +91,7 @@ function getCollectModule() {
 							followerOnly: collectModule?.followerOnlyCollect,
 						},
 					};
-				}
-				else {
+				} else {
 					module = {
 						simpleCollectModule: {
 							fee: {

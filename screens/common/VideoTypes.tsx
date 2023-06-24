@@ -6,10 +6,12 @@ import { APP_ID, LENSPLAY_SITE } from "constants/index";
 import {
 	CollectModuleParams,
 	MetadataAttributeInput,
+	Profile,
 	PublicationMainFocus,
 	PublicationMetadataDisplayTypes,
 	PublicationMetadataMediaInput,
 	PublicationMetadataV2Input,
+	useCreateDataAvailabilityPostViaDispatcherMutation,
 	useCreatePostViaDispatcherMutation,
 } from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
@@ -45,7 +47,7 @@ const Types: string[] = [
 
 export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTypes">) {
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
-	const { setUploadingStatus, setUploadProgress, setClearStore } = useUploadStore();
+	const { setUploadingStatus, setUploadProgress, setClearStore, collectModule } = useUploadStore();
 	const toast = useToast();
 	const uploadStore = useUploadStore();
 	const { currentProfile } = useProfile();
@@ -75,12 +77,23 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 		);
 	}
 
-	const [createPost] = useCreatePostViaDispatcherMutation({
+	const [createOnChainPost] = useCreatePostViaDispatcherMutation({
 		onCompleted: () => {
 			toast.success("Video uploaded successfully");
+			setUploadingStatus("DONE")
 		},
 		onError(error, clientOptions?) {
 			toast.error("Something went wrong !");
+		},
+	});
+	const [createMomokaPost] = useCreateDataAvailabilityPostViaDispatcherMutation({
+		onCompleted: () => {
+			toast.success("Video uploaded successfully");
+			setUploadingStatus("DONE")
+		},
+		onError(error, clientOptions?) {
+			toast.error("Something went wrong !");
+			Logger.Error("post error", error);
 		},
 	});
 
@@ -146,31 +159,52 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 			};
 			const metadataUri = await uploadToArweave(metadata);
 			Logger.Success("Metadata Uploaded", `https://arweave.net/${metadataUri}`);
-			setTimeout(() => {
-				setUploadingStatus("DONE");
-			}, 2000);
-			// createPost({
-			// 	variables: {
-			// 		request: {
-			// 			collectModule: getCollectModule() as CollectModuleParams,
-			// 			contentURI: `ar://${metadataUri}`,
-			// 			profileId: currentProfile?.id,
-			// 			referenceModule: getReferenceModule(uploadStore.referenceModule),
-			// 		},
-			// 	},
-			// 	context: {
-			// 		headers: {
-			// 			"x-access-token": `Bearer ${accessToken}`,
-			// 			"origin": LENSPLAY_SITE,
-			// 		},
-			// 	},
-			// });
+
+			const userSelectedCollectModule = getCollectModule(collectModule, currentProfile as any);
+			if (userSelectedCollectModule?.revertCollectModule) {
+				Logger.Log("Momoka Post");
+				createMomokaPost({
+					variables: {
+						request: {
+							contentURI: `ar://ZhoHMEqMtz0q45sx_yEymXRSRzYmxYGEUI8PtV1xkEg`,
+							from: currentProfile?.id,
+						},
+					},
+					context: {
+						headers: {
+							"x-access-token": `Bearer ${accessToken}`,
+							"origin": LENSPLAY_SITE,
+						},
+					},
+				});
+				return;
+			}
+			Logger.Log("On-Chain post");
+			createOnChainPost({
+				variables: {
+					request: {
+						collectModule: getCollectModule(
+							collectModule,
+							currentProfile as any
+						) as CollectModuleParams,
+						contentURI: `ar://${metadataUri}`,
+						profileId: currentProfile?.id,
+						referenceModule: getReferenceModule(uploadStore.referenceModule),
+					},
+				},
+				context: {
+					headers: {
+						"x-access-token": `Bearer ${accessToken}`,
+						"origin": LENSPLAY_SITE,
+					},
+				},
+			});
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	Logger.Warn("Collect MOdule is ", getCollectModule());
+	Logger.Warn("Collect MOdule is ", getCollectModule(collectModule, currentProfile as any));
 
 	return (
 		<SafeAreaView

@@ -18,7 +18,6 @@ import { useThemeStore } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
 import LimitedFeeCollect from "components/Upload/Video/CollectModules/LimitedFeeCollect";
 import PaidCollect from "components/Upload/Video/CollectModules/PaidCollect";
-import getCollectModule from "utils/getCollectModule";
 
 const TokenList: TokenListItem[] = [
 	{
@@ -58,7 +57,7 @@ export type TokenListItem = {
 export default function SelectCollectModule() {
 	const { collectModule, setCollectModule, setDisableCollect } = useUploadStore();
 	const tokemSheetRef = React.useRef<BottomSheetMethods>(null);
-	console.log(getCollectModule());
+	// console.log(getCollectModule());
 
 	return (
 		<>
