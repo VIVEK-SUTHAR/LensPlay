@@ -43,9 +43,15 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 	const { accessToken } = useAuthStore();
 	const { currentProfile } = useProfile();
 	const { PRIMARY } = useThemeStore();
+	const [inWatchLater, setInWatchLater] = React.useState(false);
+
 
 	const handlePubId = React.useCallback((pubId: string) => {
 		setPubId(pubId);
+	}, []);
+
+	const handleInWatchLater = React.useCallback((value: boolean) => {
+		setInWatchLater(value);
 	}, []);
 
 	const QueryRequest: PublicationsQueryRequest = {
@@ -169,11 +175,12 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 							id={item.id}
 							sheetRef={CollectedVideoSheetRef}
 							setPubId={handlePubId}
+							setInWatchLater={handleInWatchLater}
 						/>
 					)}
 				/>
 			)}
-			<CollectedVideoSheet sheetRef={CollectedVideoSheetRef} pubId={pubId} />
+			<CollectedVideoSheet sheetRef={CollectedVideoSheetRef} pubId={pubId} inWatchLater={inWatchLater}/>
 		</View>
 	);
 };
@@ -181,11 +188,13 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 export const CollectedVideoSheet = ({
 	sheetRef,
 	pubId,
+	inWatchLater
 }: {
 	sheetRef: React.RefObject<BottomSheetMethods>;
 	pubId: Scalars["InternalPublicationId"];
+	inWatchLater: boolean
 }) => {
-	const add = useAddWatchLater();
+	const {add, remove} = useAddWatchLater();
 
 	const actionList: actionListType[] = [
 		{
@@ -198,19 +207,23 @@ export const CollectedVideoSheet = ({
 				});
 			},
 		},
-		// {
-		// 	name: "Add to watch later",
-		// 	icon: "images",
-		// 	onPress: (pubId) => {
-		// 		add(pubId);
-		// 	},
-		// },
+		{
+			name: inWatchLater ? "Remove from watch later" : "Add to watch later",
+			icon: inWatchLater ? "delete" : "images",
+			onPress: (pubId) => {
+				if (inWatchLater) {
+					remove(pubId);
+				} else {
+					add(pubId);
+				}
+			},
+		},
 	];
 
 	return (
 		<Sheet
 			ref={sheetRef}
-			snapPoints={[90]}
+			snapPoints={[150]}
 			enablePanDownToClose={true}
 			enableOverDrag={true}
 			bottomInset={32}

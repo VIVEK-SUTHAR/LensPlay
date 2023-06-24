@@ -39,9 +39,15 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 	const MirroredVideoSheetRef = React.useRef<BottomSheetMethods>(null);
 	const [pubId, setPubId] = React.useState("");
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
+	const [inWatchLater, setInWatchLater] = React.useState(false);
+
 
 	const handlePubId = React.useCallback((pubId: string) => {
 		setPubId(pubId);
+	}, []);
+
+	const handleInWatchLater = React.useCallback((value: boolean) => {
+		setInWatchLater(value);
 	}, []);
 
 	const QueryRequest: PublicationsQueryRequest = {
@@ -175,17 +181,18 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 						id={item.id}
 						sheetRef={MirroredVideoSheetRef}
 						setPubId={handlePubId}
+						setInWatchLater={handleInWatchLater}
 					/>
 				)}
 			/>
-			<MirroredVideoSheet sheetRef={MirroredVideoSheetRef} pubId={pubId} profileId={channelId} />
+			<MirroredVideoSheet sheetRef={MirroredVideoSheetRef} pubId={pubId} profileId={channelId} inWatchLater={inWatchLater} />
 		</View>
 	);
 };
 
-export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
+export const MirroredVideoSheet = ({ sheetRef, pubId, profileId, inWatchLater }: SheetProps) => {
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
-	const add = useAddWatchLater();
+	const {add, remove} = useAddWatchLater();
 	const actionList: actionListType[] = [
 		{
 			name: "Share",
@@ -218,20 +225,24 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
 				});
 			},
 		},
-		// {
-		// 	name: "Add To Watch Later",
-		// 	icon: "images",
-		// 	onPress: async (pubid: Scalars["InternalPublicationId"]) => {
-		// 		add(pubid);
-		// 	},
-		// },
+		{
+			name: inWatchLater ? "Remove from watch later" : "Add to watch later",
+			icon: inWatchLater ? "delete" : "images",
+			onPress: (pubId) => {
+				if (inWatchLater) {
+					remove(pubId);
+				} else {
+					add(pubId);
+				}
+			},
+		},
 	];
 
 	return (
 		<>
 			<Sheet
 				ref={sheetRef}
-				snapPoints={[profileId ? 90 : 150]}
+				snapPoints={[150]}
 				enablePanDownToClose={true}
 				enableOverDrag={true}
 				bottomInset={32}
