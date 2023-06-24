@@ -382,6 +382,7 @@ export default function StackNavigation() {
 				name="UploadIndicator"
 				component={UploadIndicator}
 				options={{
+					headerBackVisible:false,
 					animation: "default",
 					headerShown: true,
 					headerTintColor: theme.PRIMARY,

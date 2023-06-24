@@ -10,7 +10,7 @@ import {
 	PublicationMetadataDisplayTypes,
 	PublicationMetadataMediaInput,
 	PublicationMetadataV2Input,
-	useCreatePostViaDispatcherMutation
+	useCreatePostViaDispatcherMutation,
 } from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
 import React, { useState } from "react";
@@ -78,7 +78,6 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 	const [createPost] = useCreatePostViaDispatcherMutation({
 		onCompleted: () => {
 			toast.success("Video uploaded successfully");
-			setClearStore();
 		},
 		onError(error, clientOptions?) {
 			toast.error("Something went wrong !");
@@ -86,20 +85,17 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 	});
 
 	function uploadVideo() {
-		navigation.navigate("UploadIndicator");
-		return;
 		if (selectedTags.length === 0) return toast.error("Please select atleast tag");
+		navigation.navigate("UploadIndicator");
 		handleUpload();
 	}
 
 	const handleUpload = async () => {
-		return
 		try {
 			setUploadingStatus("UPLOADINGCOVER");
 			const imageBlob = await getImageBlobFromUri(uploadStore.coverURL!);
 			const coverImageURI = await uploadImageToIPFS(imageBlob);
 			Logger.Success("Uploaded Cover", coverImageURI);
-
 			const videoBlob = await getImageBlobFromUri(uploadStore.videoURL!);
 			setUploadingStatus("UPLOADINGVIDEO");
 			const ipfsVideoUrl = await uploadImageToIPFS(videoBlob);
@@ -150,23 +146,25 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 			};
 			const metadataUri = await uploadToArweave(metadata);
 			Logger.Success("Metadata Uploaded", `https://arweave.net/${metadataUri}`);
-			setUploadingStatus(null);
-			createPost({
-				variables: {
-					request: {
-						collectModule: getCollectModule() as CollectModuleParams,
-						contentURI: `ar://${metadataUri}`,
-						profileId: currentProfile?.id,
-						referenceModule: getReferenceModule(uploadStore.referenceModule),
-					},
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-						"origin": LENSPLAY_SITE,
-					},
-				},
-			});
+			setTimeout(() => {
+				setUploadingStatus("DONE");
+			}, 2000);
+			// createPost({
+			// 	variables: {
+			// 		request: {
+			// 			collectModule: getCollectModule() as CollectModuleParams,
+			// 			contentURI: `ar://${metadataUri}`,
+			// 			profileId: currentProfile?.id,
+			// 			referenceModule: getReferenceModule(uploadStore.referenceModule),
+			// 		},
+			// 	},
+			// 	context: {
+			// 		headers: {
+			// 			"x-access-token": `Bearer ${accessToken}`,
+			// 			"origin": LENSPLAY_SITE,
+			// 		},
+			// 	},
+			// });
 		} catch (error) {
 			console.log(error);
 		}

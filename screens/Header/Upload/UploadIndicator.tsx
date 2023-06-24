@@ -1,23 +1,34 @@
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
+import { RootStackScreenProps } from "customTypes/navigation";
 import Lottie from "lottie-react-native";
 import React, { useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { BackHandler, StyleSheet, View } from "react-native";
 import { useThemeStore } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
+import Logger from "utils/logger";
 
-const UploadIndicator = () => {
-	const { uploadingStatus, setUploadingStatus } = useUploadStore();
+const UploadIndicator: React.FC<RootStackScreenProps<"UploadIndicator">> = ({ navigation }) => {
+	const { uploadingStatus, setUploadingStatus, setClearStore } = useUploadStore();
 	const theme = useThemeStore();
 	useEffect(() => {
-		setUploadingStatus("UPLOADINGCOVER");
-		setTimeout(() => {
-			setUploadingStatus("UPLOADINGVIDEO");
-		}, 5000);
-		setTimeout(() => {
-			setUploadingStatus("DONE");
-		}, 6000);
+		const handler = BackHandler.addEventListener("hardwareBackPress", () => {
+			return true;
+		});
+		return () => {
+			handler.remove();
+		};
 	}, []);
+	useEffect(() => {
+		if (uploadingStatus === "DONE") {
+			setTimeout(() => {
+				navigation.reset({ index: 0, routes: [{ name: "Root" }], key: undefined });
+				setClearStore();
+				setUploadingStatus(null);
+			}, 600);
+			Logger.Success("Upload ho gaya nikal idherse");
+		}
+	}, [uploadingStatus]);
 	return (
 		<View style={styles.container}>
 			{uploadingStatus === "UPLOADINGCOVER" ? (
@@ -62,7 +73,7 @@ const UploadIndicator = () => {
 			) : null}
 			{uploadingStatus === "DONE" ? (
 				<>
-					<Lottie source={require("../../../assets/uploadDone.json")} autoPlay loop />
+					<Lottie source={require("../../../assets/uploadDone.json")} autoPlay />
 					<View
 						style={{
 							position: "absolute",
@@ -70,7 +81,7 @@ const UploadIndicator = () => {
 						}}
 					>
 						<StyledText
-							title={"Uploading video"}
+							title={"Video Uploaded"}
 							style={{
 								color: white[700],
 								fontSize: 24,
