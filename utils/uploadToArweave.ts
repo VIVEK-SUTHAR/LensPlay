@@ -7,6 +7,9 @@
 
 import { PublicationMetadataV2Input } from "customTypes/generated";
 import { ProfileMetaDataV1nput } from "customTypes/index";
+import crashlytics from "@react-native-firebase/crashlytics";
+import Logger from "./logger";
+
 
 async function uploadToArweave(metadata: PublicationMetadataV2Input | ProfileMetaDataV1nput) {
 	try {
@@ -32,6 +35,8 @@ async function uploadToArweave(metadata: PublicationMetadataV2Input | ProfileMet
 		}
 	} catch (err) {
 		if (err instanceof Error) {
+			Logger.Log("Error in uploading metadata:", err);
+			crashlytics().log("Error in uploading metadata::" + err.message);
 			throw new Error("Something went wrong");
 		}
 	}

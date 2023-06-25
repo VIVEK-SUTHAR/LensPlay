@@ -3,6 +3,7 @@ import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black } from "constants/Colors";
 import { APP_ID, LENSPLAY_SITE } from "constants/index";
+import crashlytics from "@react-native-firebase/crashlytics";
 import {
 	CollectModuleParams,
 	MetadataAttributeInput,
@@ -80,20 +81,27 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 	const [createOnChainPost] = useCreatePostViaDispatcherMutation({
 		onCompleted: () => {
 			toast.success("Video uploaded successfully");
-			setUploadingStatus("DONE")
+			setUploadingStatus("DONE");
 		},
 		onError(error, clientOptions?) {
 			toast.error("Something went wrong !");
+			Logger.Log("Error while creating onChain Post:", error);
+			crashlytics().log("Error while creating onChain Post:" + error.message);
+			navigation.reset({ index: 0, routes: [{ name: "Root" }] });
+			return;
 		},
 	});
 	const [createMomokaPost] = useCreateDataAvailabilityPostViaDispatcherMutation({
 		onCompleted: () => {
 			toast.success("Video uploaded successfully");
-			setUploadingStatus("DONE")
+			setUploadingStatus("DONE");
 		},
 		onError(error, clientOptions?) {
 			toast.error("Something went wrong !");
-			Logger.Error("post error", error);
+			Logger.Log("Error while creating momoka Post:", error);
+			crashlytics().log("Error while creating momoka Post:" + error.message);
+			navigation.reset({ index: 0, routes: [{ name: "Root" }] });
+			return;
 		},
 	});
 
@@ -200,7 +208,12 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 				},
 			});
 		} catch (error) {
-			console.log(error);
+			if (error instanceof Error) {
+				Logger.Log("Error while uploading video:", error);
+				crashlytics().log("Error while uploading video:" + error.message);
+				navigation.reset({ index: 0, routes: [{ name: "Root" }] });
+				return;
+			}
 		}
 	};
 

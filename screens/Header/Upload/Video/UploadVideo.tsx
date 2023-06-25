@@ -19,7 +19,7 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 	const windowHeight = Dimensions.get("window").height;
 	const { setURLs } = useUploadStore();
 
-	const ThumnailSkleton = () => {
+	const ThumbnailSkeleton = () => {
 		return (
 			<View
 				style={{
@@ -36,9 +36,14 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 	};
 
 	async function getThumbnails() {
-		const data = await generateThumbnail(route.params.localUrl, route.params.duration);
-		if (data) {
-			setThumbnails(data);
+		try {
+			const data = await generateThumbnail(route.params.localUrl, route.params.duration);
+			if (data) {
+				setThumbnails(data);
+			}
+		} catch (error) {
+			navigation.reset({ index: 0, routes: [{ name: "Root" }] });
+			return;
 		}
 	}
 
@@ -156,10 +161,11 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 					})
 				) : (
 					<>
-						<ThumnailSkleton />
-						<ThumnailSkleton />
-						<ThumnailSkleton />
-						<ThumnailSkleton />
+						<ThumbnailSkeleton />
+						<ThumbnailSkeleton />
+						<ThumbnailSkeleton />
+						<ThumbnailSkeleton />
+						<ThumbnailSkeleton />
 					</>
 				)}
 				<View
@@ -254,7 +260,7 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 						navigation.navigate("AddDetails");
 						setURLs(
 							route?.params?.localUrl,
-							selectedCover === 5 ? coverPic : thumbnails[selectedCover]
+							selectedCover === 5 ? coverPic! : thumbnails[selectedCover]
 						);
 					}}
 					bg={"white"}

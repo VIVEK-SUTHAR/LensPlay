@@ -5,6 +5,8 @@
  */
 
 import { IPFS_UPLOAD_API } from "constants/index";
+import crashlytics from "@react-native-firebase/crashlytics";
+import Logger from "./logger";
 
 const API_TOKEN =
 	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEQzQjZCNEYwMjIzQzNBYUJhYTNGY2FjNzc4QkYzZTcwMzk4MjZDMTEiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzYyNjY2NjY2ODIsIm5hbWUiOiJMZW5zUGxheSJ9.yvvWPFyduWg6vQ1H1_TXTpMKlHTUcqnx4Int8vuMdec";
@@ -23,6 +25,10 @@ const uploadImageToIPFS = async (imageBlob: Blob | undefined): Promise<string> =
 		const data = await filehash.json();
 		return data.cid;
 	} catch (error) {
+		if (error instanceof Error) {
+			Logger.Log("Error in uploading image to ipfs:", error);
+			crashlytics().log("Error in uploading image to ipfs:" + error.message);
+		}
 		throw new Error("Something went wrong");
 	}
 };

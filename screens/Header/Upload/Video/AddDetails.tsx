@@ -60,6 +60,22 @@ export default function AddDetails({ navigation }: RootStackScreenProps<"AddDeta
 		if (title.trim().length === 0) return toast.error("Please enter title");
 		if (title.trim().length > 100) return toast.info("Title is too long");
 		if (!description) return toast.error("Please enter description");
+		if(uploadStore?.collectModule?.isPaidCollect && uploadStore?.collectModule?.feeCollectDetails?.amount == ""){
+			toast.error('Please enter a collect fee');
+			return
+		}
+		else if (uploadStore?.collectModule?.isLimitedCollect && uploadStore?.collectModule?.limitedCollectCount == "") {
+			toast.error('Please enter a collect limit');
+			return;
+		}
+		else if (uploadStore?.collectModule?.isRefferalEnabled && uploadStore?.collectModule?.referralPercent == "") {
+			toast.error('Please enter a refferal percentage');
+			return;
+		}
+		else if (uploadStore?.collectModule?.isTimedCollect && uploadStore?.collectModule?.timeLimit == undefined) {
+			toast.error('Please select a date');
+			return;
+		}
 		navigation.push("VideoTypes");
 	};
 
