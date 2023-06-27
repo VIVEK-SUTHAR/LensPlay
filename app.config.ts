@@ -85,7 +85,7 @@ const withPackageVisibility: ConfigPlugin = (config) => {
 const config: ExpoConfig = {
 	name: "LensPlay",
 	slug: "lensplay",
-	version: "1.0.0",
+	version: "1.0.1",
 	// orientation: "portrait",
 	backgroundColor: "#000000",
 	icon: "./assets/images/icon.png",
@@ -98,7 +98,7 @@ const config: ExpoConfig = {
 	},
 	updates: {
 		fallbackToCacheTimeout: 0,
-		url: "https://u.expo.dev/2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f",
+		url: "https://u.expo.dev/3b494bf0-e3fd-4a2c-b484-931ab7394de1",
 	},
 	runtimeVersion: {
 		policy: "sdkVersion",
@@ -108,7 +108,7 @@ const config: ExpoConfig = {
 		supportsTablet: false,
 		requireFullScreen: true,
 		bundleIdentifier: "com.lensplayxyz.lensplay",
-		buildNumber: "3.0.0",
+		buildNumber: "4.0.0",
 		icon: "./assets/images/icon.png",
 		backgroundColor: "#000000",
 		googleServicesFile: "./GoogleService-Info.plist",
@@ -116,7 +116,7 @@ const config: ExpoConfig = {
 	jsEngine: "hermes",
 	android: {
 		package: "com.lensplayxyz.lensplay",
-		versionCode: 6,
+		versionCode: 7,
 		googleServicesFile: "./google-services.json",
 		adaptiveIcon: {
 			foregroundImage: "./assets/images/adaptive-icon.png",
@@ -163,7 +163,7 @@ const config: ExpoConfig = {
 	},
 	extra: {
 		eas: {
-			projectId: "2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f",
+			projectId: "3b494bf0-e3fd-4a2c-b484-931ab7394de1",
 		},
 	},
 	plugins: [

@@ -12,19 +12,17 @@ import type { RootStackScreenProps, RootTabParamList } from "customTypes/navigat
 import * as ImagePicker from "expo-image-picker";
 import * as Linking from "expo-linking";
 import React, { useRef } from "react";
-import { AppState, Dimensions, Pressable, TouchableOpacity, View } from "react-native";
+import { AppState, Dimensions, Pressable, View } from "react-native";
 import Trending from "screens/BottomTabs/Explore/Trending";
 import Feed from "screens/BottomTabs/Home/Feed";
 import Notifications from "screens/BottomTabs/Notification/Notification";
 import ProfileScreen from "screens/BottomTabs/Profile/Profile";
 import Shots from "screens/BottomTabs/Shots/Shots";
-import { CircularIndicator } from "screens/Header/Upload/UploadIndicator";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
 import canUploadedToIpfs from "utils/canUploadToIPFS";
 import getIPFSLink from "utils/getIPFSLink";
-import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
 import getFileSize from "utils/video/getFileSize";
 
