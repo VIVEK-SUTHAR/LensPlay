@@ -134,14 +134,8 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 					headerStyle: { backgroundColor: "black", elevation: 2 },
 					headerTitle: "",
 					headerRight: () => (
-						<View style={{ flexDirection: "row", alignItems: "center" }}>
-							<TouchableOpacity>
-								{uploadStore.uploadingStatus === "PROCCESSING" ||
-								uploadStore.uploadingStatus === "UPLOADING" ? (
-									<CircularIndicator radius={20} strokeWidth={4} progress={10} />
-								) : null}
-							</TouchableOpacity>
-							<Pressable
+						<View style={{ flexDirection: "row", alignItems: "center" }}>							
+							{/* <Pressable
 								onPress={() => uploadRef.current?.snapToIndex(0)}
 								style={{
 									paddingHorizontal: 8,
@@ -151,7 +145,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 								}}
 							>
 								<Icon name="upload-file" size={24} />
-							</Pressable>
+							</Pressable> */}
 							{!isGuest ? (
 								<Pressable
 									onPress={() => navigation.push("Invite")}
@@ -223,7 +217,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 						</View>
 					),
 					tabBarStyle: {
-						backgroundColor: black[600],
+						backgroundColor: black[800],
 						alignItems: "center",
 						justifyContent: "space-between",
 						borderTopColor: "transparent",

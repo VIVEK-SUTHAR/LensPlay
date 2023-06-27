@@ -168,7 +168,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 					width: width,
 					paddingHorizontal: 16,
 					justifyContent: "center",
-					marginVertical: 32,
+					marginTop: 64,
 				}}
 			>
 				<StyledText

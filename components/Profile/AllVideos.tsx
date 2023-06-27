@@ -303,7 +303,7 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId, inWatchLater }: Shee
 		},
 		{
 			name: inWatchLater ? "Remove from watch later" : "Add to watch later",
-			icon: inWatchLater ? "delete" : "images",
+			icon: inWatchLater ? "delete" : "clock",
 			onPress: (pubId) => {
 				if (inWatchLater) {
 					remove(pubId);

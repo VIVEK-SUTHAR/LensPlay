@@ -20,7 +20,7 @@ const useAddWatchLater = () => {
 			parsed.push(publicationId);
 			Logger.Warn("Added to Local", parsed);
 			await AsyncStorage.setItem(StorageKeys.WatchLaters, JSON.stringify(parsed));
-			toast.success("Added to watch later !");
+			toast.success("Added to watch later");
 			addToWatchLater(currentProfile?.id, publicationId).catch(() => {
 				//Retry again here
 			});
@@ -29,7 +29,7 @@ const useAddWatchLater = () => {
 		} else {
 			const publicationIds = [publicationId];
 			await AsyncStorage.setItem(StorageKeys.WatchLaters, JSON.stringify(publicationIds));
-			toast.success("Added to watch later !");
+			toast.success("Added to watch later");
 			setAllWatchLaters(publicationIds);
 			addToWatchLater(currentProfile?.id, publicationId).catch(() => {
 				//Retry again here
@@ -49,7 +49,7 @@ const useAddWatchLater = () => {
 			});
 			await AsyncStorage.setItem(StorageKeys.WatchLaters, JSON.stringify(watchLaterArray));
 			setAllWatchLaters(watchLaterArray.reverse());
-			toast.success("Removed from watch later!");
+			toast.success("Removed from watch later");
 			removeWatchLater(currentProfile?.id, publicationId)
 				.then()
 				.catch(() => {});
@@ -63,7 +63,7 @@ const useAddWatchLater = () => {
 			});
 			await AsyncStorage.setItem(StorageKeys.WatchLaters, JSON.stringify(watchLaterArray));
 			setAllWatchLaters(watchLaterArray.reverse());
-			toast.success("Removed from watch later!");
+			toast.success("Removed from watch later");
 			removeWatchLater(currentProfile?.id, publicationId)
 				.then()
 				.catch(() => {});

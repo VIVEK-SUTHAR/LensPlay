@@ -25,16 +25,21 @@ const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }
 				headerStyle: { backgroundColor: color ? color : "#7A52B5" },
 			});
 		}
+		else{
+			navigation.setOptions({
+				headerStyle: { backgroundColor:'black'},
+			});
+		}
 	});
 	Logger.Log("Cover nd color", cover, color);
 	return (
-		<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+		<SafeAreaView style={{ flex: 1, backgroundColor: "black"}}>
 			{allWatchLaters!.length > 0 ? (
 				<>
 					<LinearGradient
 						style={{
 							alignItems: "center",
-							padding: 8,
+							padding: 16,
 						}}
 						colors={[color ? color : "#7A52B5", "black"]}
 					>
@@ -47,7 +52,7 @@ const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }
 							style={{
 								height: 200,
 								width: "100%",
-								borderRadius: 16,
+								borderRadius: 8,
 							}}
 							contentFit="cover"
 						/>
@@ -79,13 +84,14 @@ const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }
 					<View
 						style={{
 							flex: 1,
+							padding:8,
 						}}
 					>
 						<WatchLaterList />
 					</View>
 				</>
 			) : (
-				<ErrorMesasge message="Look's like you dont have any watch laters yet" withImage={false} />
+				<ErrorMesasge message="Look's like you dont have any watch laters yet" withImage={true} />
 			)}
 		</SafeAreaView>
 	);
