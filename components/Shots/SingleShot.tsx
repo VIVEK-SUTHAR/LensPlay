@@ -11,6 +11,7 @@ import { ResizeMode, Video } from "expo-av";
 import VideoPlayer from "expo-video-player";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Pressable, useWindowDimensions, View } from "react-native";
+import useShotsStore from "store/shotsStore";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
@@ -20,24 +21,18 @@ import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 interface SingleByteProps {
 	item: ShotsPublication;
 	index: number;
-	currentIndex: number;
 }
 
-function SingleShot({ item, index, currentIndex }: SingleByteProps) {
-	const ref = React.useRef<Video>(null);
+function SingleShot({ item, index }: SingleByteProps) {
 	const { height, width } = useWindowDimensions();
 	const bottomTabBarHeight = useBottomTabBarHeight();
 	const [mute, setMute] = useState(false);
-	const [videoURL, setVideoURL] = useState(getIPFSLink(item?.metadata?.media[0]?.original?.url));
-	const navigation = useNavigation();
-
-	navigation.addListener("blur", (e) => {
-		ref.current?.pauseAsync();
-	});
+	const { videoURL, currentIndex, setVideoURL, shotsRef } = useShotsStore();
 
 	const descriptionRef = useRef<BottomSheetMethods>(null);
 
 	useEffect(() => {
+		setVideoURL(getIPFSLink(item?.metadata?.media[0]?.original?.url));
 		if (item?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")) {
 			Logger.Success("Got opti", item?.metadata?.media[0]?.optimized?.url);
 			setVideoURL(item?.metadata?.media[0]?.optimized?.url);
@@ -73,7 +68,7 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
 					<VideoPlayer
 						defaultControlsVisible={false}
 						videoProps={{
-							ref: ref as MutableRefObject<Video>,
+							ref: shotsRef as MutableRefObject<Video>,
 							source: {
 								uri: videoURL,
 							},

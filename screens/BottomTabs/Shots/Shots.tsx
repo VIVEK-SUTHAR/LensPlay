@@ -10,20 +10,31 @@ import {
 } from "customTypes/generated";
 import { ShotsPublication } from "customTypes/index";
 import { RootTabScreenProps } from "customTypes/navigation";
-import * as ScreenOrientation from "expo-screen-orientation";
-import React, { useState } from "react";
+import { Video } from "expo-av";
+import React from "react";
 import { Dimensions, Platform, StyleSheet, View, useWindowDimensions } from "react-native";
 import SwiperFlatList from "react-native-swiper-flatlist";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useProfile } from "store/Store";
+import useShotsStore from "store/shotsStore";
 
 const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
-	const [currentIndex, setCurrentIndex] = useState<number>(0);
+	const ref = React.useRef<Video>(null);
+	const { setCurrentIndex, setShotsRef, clearStore } = useShotsStore();
 	const { currentProfile } = useProfile();
 	const { isGuest, profileId } = useGuestStore();
 	const { accessToken } = useAuthStore();
+	const { height } = useWindowDimensions();
 
-	const { height, width } = useWindowDimensions();
+	navigation.addListener("blur", (e) => {
+		ref.current?.pauseAsync();
+		ref.current?.stopAsync();
+		clearStore();
+	});
+
+	React.useEffect(() => {
+		setShotsRef(ref);
+	}, []);
 
 	const isAndroid = Platform.OS === "android";
 
@@ -69,7 +80,7 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
 		if (!item.hidden) {
 			return (
 				<View style={{ height: isAndroid ? height : "auto" }}>
-					<SingleShot item={item} key={item.id} index={index} currentIndex={currentIndex} />
+					<SingleShot item={item} key={item.id} index={index} />
 				</View>
 			);
 		}
