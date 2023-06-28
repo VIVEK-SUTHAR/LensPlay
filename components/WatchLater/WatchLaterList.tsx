@@ -6,11 +6,13 @@ import ErrorMesasge from "components/common/ErrorMesasge";
 import MyVideoCard, { type actionListType } from "components/common/MyVideoCard";
 import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
 import Skeleton from "components/common/Skeleton";
+import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import Icon from "components/Icon";
 import { NoVideosFound } from "components/Profile/AllVideos";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
-import { black } from "constants/Colors";
+import { black, white } from "constants/Colors";
 import {
 	useAllPublicationsQuery,
 	type Mirror,
@@ -24,6 +26,8 @@ import { useProfile } from "store/Store";
 import useWatchLater from "store/WatchLaterStore";
 import CommonStyles from "styles/index";
 import Logger from "utils/logger";
+import Heading from "components/UI/Heading";
+import formatHandle from "utils/formatHandle";
 
 const WatchLaterList = () => {
 	const [pubId, setPubId] = React.useState("");
@@ -80,18 +84,21 @@ const WatchLaterList = () => {
 			/> */}
 			<FlashList
 				data={watchLaterList}
+				ListHeaderComponent={WatchLaterHeader}
 				ListEmptyComponent={NoVideosFound}
 				removeClippedSubviews={true}
 				estimatedItemSize={110}
 				onEndReachedThreshold={0.7}
 				showsVerticalScrollIndicator={false}
 				renderItem={({ item }: { item: Post | Mirror }) => (
-					<MyVideoCard
-						publication={item}
-						id={item.id}
-						sheetRef={WatchLaterSheetRef}
-						setPubId={handlePubId}
-					/>
+					<View style={{ padding: 8 }}>
+						<MyVideoCard
+							publication={item}
+							id={item.id}
+							sheetRef={WatchLaterSheetRef}
+							setPubId={handlePubId}
+						/>
+					</View>
 				)}
 			/>
 			<WatchLaterSheet sheetRef={WatchLaterSheetRef} pubId={pubId} />
@@ -133,7 +140,7 @@ export const WatchLaterSheet = ({
 			snapPoints={[150]}
 			enablePanDownToClose={true}
 			enableOverDrag={true}
-			bottomInset={32}
+			bottomInset={8}
 			style={CommonStyles.mx_8}
 			detached={true}
 			backgroundStyle={{
@@ -178,6 +185,56 @@ export const WatchLaterSheet = ({
 				}}
 			/>
 		</Sheet>
+	);
+};
+
+const WatchLaterHeader = () => {
+	const { currentProfile } = useProfile();
+	const { cover, color } = useWatchLater();
+	return (
+		<LinearGradient
+			style={{
+				alignItems: "center",
+				padding: 16,
+			}}
+			colors={[color ? color : "#7A52B5", "black"]}
+		>
+			<Image
+				source={{
+					uri: cover ? cover : "https://ik.imagekit.io/4uh8nmwsx/fotor-ai-2023060417146.jpg?f-webp",
+				}}
+				style={{
+					height: 200,
+					width: "100%",
+					borderRadius: 8,
+				}}
+				contentFit="cover"
+			/>
+			<View
+				style={{
+					marginTop: 24,
+					width: "100%",
+				}}
+			>
+				<Heading
+					title="Watch Later"
+					style={{
+						color: white[800],
+						fontWeight: "600",
+						fontSize: 24,
+					}}
+				/>
+				<StyledText
+					title={currentProfile?.name || formatHandle(currentProfile?.handle)}
+					style={{
+						color: white[200],
+						fontWeight: "600",
+						fontSize: 16,
+						marginTop: 2,
+					}}
+				/>
+			</View>
+		</LinearGradient>
 	);
 };
 

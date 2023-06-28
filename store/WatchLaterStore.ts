@@ -2,7 +2,7 @@ import type { Mirror, Post } from "customTypes/generated";
 import create from "zustand";
 
 interface WatchLaterStore {
-	allWatchLaters: null | string[];
+	allWatchLaters: string[];
 	cover: null | string;
 	color: null | string;
 	setAllWatchLaters: (watchLaters: string[]) => void;
@@ -11,7 +11,7 @@ interface WatchLaterStore {
 }
 
 const useWatchLater = create<WatchLaterStore>((set) => ({
-	allWatchLaters: null,
+	allWatchLaters: [],
 	color: null,
 	cover: null,
 	setAllWatchLaters: (newWatchLaters) => {
