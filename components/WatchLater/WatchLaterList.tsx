@@ -21,7 +21,7 @@ import {
 } from "customTypes/generated";
 import useAddWatchLater from "hooks/useAddToWatchLater";
 import React from "react";
-import { Button, FlatList, Share, View } from "react-native";
+import { Button, Dimensions, FlatList, Share, View } from "react-native";
 import { useProfile } from "store/Store";
 import useWatchLater from "store/WatchLaterStore";
 import CommonStyles from "styles/index";
@@ -62,9 +62,54 @@ const WatchLaterList = () => {
 
 	if (loading) {
 		return (
-			<Skeleton number={5}>
-				<ProfileVideoCardSkeleton />
-			</Skeleton>
+			<>
+				<LinearGradient
+					style={{
+						alignItems: "center",
+						padding: 16,
+					}}
+					colors={["#1d1d1d", "black"]}
+				>
+					<View
+						style={{
+							height: 200,
+							width: "100%",
+							borderRadius: 8,
+							backgroundColor: "#1d1d1d",
+						}}
+					/>
+					<View
+						style={{
+							marginTop: 24,
+							width: "100%",
+						}}
+					>
+						<View
+							style={{
+								width: Dimensions.get("screen").width * 0.36,
+								height: 16,
+								backgroundColor: "#1d1d1d",
+								marginHorizontal: 8,
+								marginVertical: 8,
+							}}
+						/>
+						<View
+							style={{
+								width: Dimensions.get("screen").width * 0.3,
+								height: 12,
+								backgroundColor: "#1d1d1d",
+								marginHorizontal: 8,
+								marginVertical: 4,
+							}}
+						/>
+					</View>
+				</LinearGradient>
+				<Skeleton number={5}>
+					<View style={{ padding: 8 }}>
+						<ProfileVideoCardSkeleton />
+					</View>
+				</Skeleton>
+			</>
 		);
 	}
 	return (
