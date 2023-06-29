@@ -132,18 +132,18 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 					headerStyle: { backgroundColor: "black", elevation: 2 },
 					headerTitle: "",
 					headerRight: () => (
-						<View style={{ flexDirection: "row", alignItems: "center" }}>
+						<View style={{ flexDirection: "row", alignItems: "center" }}>							
 							{/* <Pressable
-                onPress={() => uploadRef.current?.snapToIndex(0)}
-                style={{
-                  paddingHorizontal: 8,
-                  height: "100%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Icon name="upload-file" size={24} />
-              </Pressable> */}
+								onPress={() => uploadRef.current?.snapToIndex(0)}
+								style={{
+									paddingHorizontal: 8,
+									height: "100%",
+									alignItems: "center",
+									justifyContent: "center",
+								}}
+							>
+								<Icon name="upload-file" size={24} />
+							</Pressable> */}
 							{!isGuest ? (
 								<Pressable
 									onPress={() => navigation.push("Invite")}
@@ -489,9 +489,10 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 								if (!camera.canceled) {
 									const size = await getFileSize(camera.assets[0].uri);
 									if (!canUploadedToIpfs(size)) {
-										toast.error("Select video less than 100MB");
+										toast.error("Selected video is greater than 5GB");
 										return;
 									}
+									uploadStore.setDuration(camera.assets[0].duration!);
 									navigation.push("UploadVideo", {
 										localUrl: camera.assets[0].uri,
 										duration: camera.assets[0].duration,
@@ -541,7 +542,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 							if (!result.canceled) {
 								const size = await getFileSize(result.assets[0].uri);
 								if (!canUploadedToIpfs(size)) {
-									toast.error("Select video less than 100MB");
+									toast.error("Select video is greater than 5GB");
 									return;
 								}
 								uploadStore.setDuration(result.assets[0].duration!);

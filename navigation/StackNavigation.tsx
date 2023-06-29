@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "customTypes/navigation";
 import React from "react";
-import CreateProfile from "screens/Auth/CreateProfile";
-import Login from "screens/Auth/Login";
+import ConnectWallet from "screens/Auth/ConnectWallet";
+import LetsGetIn from "screens/Auth/LetsGetIn";
 import LoginWithLens from "screens/Auth/LoginWithLens";
 import QRLogin from "screens/Auth/QRLogin";
 import Scanner from "screens/Auth/Scanner";
@@ -25,19 +25,16 @@ import BugReport from "screens/Header/Settings/BugReport";
 import ProfileScanner from "screens/Header/Settings/ProfileScanner";
 import Settings from "screens/Header/Settings/Settings";
 import UploadShots from "screens/Header/Upload/Shots/UploadShots";
+import UploadIndicator from "screens/Header/Upload/UploadIndicator";
 import AddDetails from "screens/Header/Upload/Video/AddDetails";
+import SelectCollectModule from "screens/Header/Upload/Video/SelectCollectModule";
 import UploadVideo from "screens/Header/Upload/Video/UploadVideo";
-import { useReactionStore, useThemeStore } from "store/Store";
-import useVideoURLStore from "store/videoURL";
+import { useThemeStore } from "store/Store";
 import BottomTabNavigator from "./BottomTabNavigation";
-import LetsGetIn from "screens/Auth/LetsGetIn";
-import ConnectWallet from "screens/Auth/ConnectWallet";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
 	const theme = useThemeStore();
-	const { setVideoURI } = useVideoURLStore();
-	const { setReaction, clearStats, setCollectStats, setMirrorStats } = useReactionStore();
 	return (
 		<Stack.Navigator
 			screenOptions={{
@@ -68,14 +65,6 @@ export default function StackNavigation() {
 
 			<Stack.Group key={"Auth Screens"}>
 				<Stack.Screen
-					name="Login"
-					component={Login}
-					options={{
-						animation: "default",
-						headerShown: false,
-					}}
-				/>
-				<Stack.Screen
 					name="LetsGetIn"
 					component={LetsGetIn}
 					options={{
@@ -96,14 +85,6 @@ export default function StackNavigation() {
 					component={LoginWithLens}
 					options={{
 						animation: "default",
-						headerShown: false,
-					}}
-				/>
-				<Stack.Screen
-					name="CreateProfile"
-					component={CreateProfile}
-					options={{
-						animation: "slide_from_bottom",
 						headerShown: false,
 					}}
 				/>
@@ -343,6 +324,21 @@ export default function StackNavigation() {
 				}}
 			/>
 			<Stack.Screen
+				name="SelectCollectModule"
+				component={SelectCollectModule}
+				options={{
+					animation: "slide_from_right",
+					headerShown: true,
+					headerShadowVisible: true,
+					headerTitleStyle: {
+						fontSize: 16,
+						fontWeight: "600",
+					},
+					headerTintColor: "white",
+					headerTitle: "Collect Settings",
+				}}
+			/>
+			<Stack.Screen
 				name="VideoTypes"
 				component={VideoTypes}
 				options={{
@@ -380,6 +376,16 @@ export default function StackNavigation() {
 					headerTintColor: "white",
 					headerTitle: "",
 					headerShadowVisible: false,
+				}}
+			/>
+			<Stack.Screen
+				name="UploadIndicator"
+				component={UploadIndicator}
+				options={{
+					headerBackVisible:false,
+					animation: "default",
+					headerShown: true,
+					headerTintColor: theme.PRIMARY,
 				}}
 			/>
 		</Stack.Navigator>

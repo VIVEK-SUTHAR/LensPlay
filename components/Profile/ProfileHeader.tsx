@@ -1,6 +1,6 @@
 import { type BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
-import { useWalletConnect } from "@walletconnect/react-native-dapp";
+// import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
@@ -42,6 +42,7 @@ import PinnedPublication, { UnPinSheet } from "./PinnedPublication";
 import ProfileLists from "./ProfileLists";
 import UserStats from "./UserStats";
 import VerifiedBadge from "./VerifiedBadge";
+import { useWeb3Modal } from "@web3modal/react-native";
 
 type ProfileHeaderProps = {
 	profileId?: Scalars["ProfileId"];
@@ -291,11 +292,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 							</TouchableOpacity>
 						</View>
 						<SocialLinks profile={profile as Profile} />
-						<PinnedPublication sheetRef={sheetRef as any} profile={profile as Profile}
-						isChannel={isChannel}
+						<PinnedPublication
+							sheetRef={sheetRef as any}
+							profile={profile as Profile}
+							isChannel={isChannel}
 						/>
 						<UserStats profile={profile as Profile} />
-						{/* {!isChannel ? <ProfileLists /> : null} */}
+						{!isChannel ? <ProfileLists /> : null}
 					</View>
 				</ScrollView>
 				{!isChannel ? <UnPinSheet sheetRef={sheetRef} /> : null}
@@ -337,7 +340,8 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 
 	const toast = useToast();
 	const { accessToken } = useAuthStore();
-	const wallet = useWalletConnect();
+	// const wallet = useWalletConnect();
+	const { address, provider, isConnected } = useWeb3Modal();
 
 	/**
 	 * Only Free Follow and Free Collect is supported via Dispatcher
@@ -432,8 +436,11 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 			},
 		});
 		const message = formatUnfollowTypedData(data as CreateUnfollowTypedDataMutationResult);
-		const msgParams = [wallet.accounts[0], JSON.stringify(message)];
-		const sig = await wallet.signTypedData(msgParams);
+		const msgParams = [address, JSON.stringify(message)];
+		const sig = await provider?.request({
+			method: "eth_signTypedData",
+			params: msgParams
+		})
 		void sendUnFollowTxn({
 			variables: {
 				request: {
@@ -464,10 +471,9 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 
 const SubscribeButton = React.memo(_SubscribeButton);
 
-
 export default React.memo(ProfileHeader);
 
-export {SubscribeButton};
+export { SubscribeButton };
 
 const styles = StyleSheet.create({
 	ProfileContainer: {

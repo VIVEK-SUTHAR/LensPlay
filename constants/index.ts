@@ -2,7 +2,7 @@
 const LENS_API_ENDPOINT = "https://api-mumbai.lens.dev/";
 export const LENS_CLAIM_SITE = "https://claim.lens.xyz/";
 
-const IS_MAINNET = false;
+const IS_MAINNET = true;
 //Application
 const APP_ID = "LensPlay";
 
@@ -51,7 +51,7 @@ export const LENSPLAY_TWITTER = "https://twitter.com/lensplayxyz";
 export const LENSPLAY_DISCORD = "https://discord.gg/tgrzS4Actz";
 export const LENSPLAY_SITE = "https://lensplay.xyz";
 export const LENSPLAY_PRIVACY =
-  "https://lensplay.notion.site/LensPlay-Privacy-Policy-22ec19b6e61344c6bd0254dd9ff2d05e";
+	"https://lensplay.notion.site/LensPlay-Privacy-Policy-22ec19b6e61344c6bd0254dd9ff2d05e";
 export const LENSPLAY_TERMS =
 	"https://lensplay.notion.site/LensPlay-T-C-9bfb64c235d9421fa397230c3594afe0";
 
@@ -63,20 +63,19 @@ export const SOURCES = ["lensplay", "lenstube", "orb", "buttrfly"];
 export const DEV = __DEV__;
 
 export {
-  LENS_API_ENDPOINT,
-  IPFS_GATEWAY,
-  APP_ID,
-  STATIC_ASSET,
-  URL_REGEX,
-  IPFS_FREE_UPLOAD_LIMIT,
-  ADDRESS_REGEX,
-  APP_LOGO,
-  IS_MAINNET,
-  BUNDLR_UPLOAD_API,
-  IPFS_UPLOAD_API,
-  APP_NAME,
-  DESCRIPTION,
-  ARWEAVE_GATEWAY,
-  MENTION_REGEX,
+	LENS_API_ENDPOINT,
+	IPFS_GATEWAY,
+	APP_ID,
+	STATIC_ASSET,
+	URL_REGEX,
+	IPFS_FREE_UPLOAD_LIMIT,
+	ADDRESS_REGEX,
+	APP_LOGO,
+	IS_MAINNET,
+	BUNDLR_UPLOAD_API,
+	IPFS_UPLOAD_API,
+	APP_NAME,
+	DESCRIPTION,
+	ARWEAVE_GATEWAY,
+	MENTION_REGEX,
 };
-

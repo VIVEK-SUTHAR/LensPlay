@@ -73,6 +73,7 @@ export type IconName =
   | "images"
   | "image"
   | "camera"
+  | "clock"
   ;
 export type IconProps = {
   name: IconName;

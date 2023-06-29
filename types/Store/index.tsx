@@ -25,6 +25,8 @@ export interface IActivePublication {
 export interface UserStore {
   currentProfile: Profile | undefined;
   hasHandle: boolean | null;
+  profiles: Profile[] | [];
+  setProfiles: (profiles: Profile[]) => void;
   setCurrentProfile: (currentProfile: Profile | undefined) => void;
   setHasHandle: (hasHandle: boolean) => void;
 }
@@ -154,26 +156,27 @@ export type PinStore = {
 };
 
 export interface IUploadStore {
-  videoURL: string | null;
-  coverURL: string | null;
-  title: string;
-  description: string | null;
-  duration: number | null | undefined;
-  isFollowersOnlyCollect: boolean;
-  referenceModule: ReferenceModuleType | null;
-  collectModule: CollectModuleType;
-  uploadingStatus: null | "UPLOADING" | "PROCCESSING";
-  uploadProgress: number;
-  setDuration: (videoDuration: number) => void;
-  setReferenceModule: (userReferenceModule: ReferenceModuleType | null) => void;
-  setURLs: (videoURL: string, coverURL: string) => void;
-  setTitle: (title: string) => void;
-  setDescription: (description: string) => void;
-  setCollectModule: (newCollectModule: CollectModuleType) => void;
-  setIsFollowesOnlyCollect: (newValue: boolean) => void;
-  setUploadingStatus: (status: null | "UPLOADING" | "PROCCESSING") => void;
-  setUploadProgress: (progress: number) => void;
-  setClearStore: () => void;
+	videoURL: string | null;
+	coverURL: string | null;
+	title: string;
+	description: string | null;
+	duration: number | null | undefined;
+	isFollowersOnlyCollect: boolean;
+	referenceModule: ReferenceModuleType | null;
+	collectModule: CollectModuleType;
+	uploadingStatus: null | "UPLOADINGCOVER" | "UPLOADINGVIDEO" | "DONE";
+	uploadProgress: number;
+	setDuration: (videoDuration: number) => void;
+	setReferenceModule: (userReferenceModule: ReferenceModuleType | null) => void;
+	setURLs: (videoURL: string, coverURL: string) => void;
+	setTitle: (title: string) => void;
+	setDescription: (description: string) => void;
+	setCollectModule: (newCollectModule: CollectModuleType) => void;
+	setIsFollowesOnlyCollect: (newValue: boolean) => void;
+	setUploadingStatus: (status: null | "UPLOADINGCOVER" | "UPLOADINGVIDEO"|"DONE") => void;
+	setUploadProgress: (progress: number) => void;
+	setClearStore: () => void;
+	setDisableCollect: () => void;
 }
 
 export interface INetWorkStore {

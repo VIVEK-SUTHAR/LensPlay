@@ -46,9 +46,14 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 	const AllVideoSheetRef = React.useRef<BottomSheetMethods>(null);
 	const [pubId, setPubId] = React.useState("");
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
+	const [inWatchLater, setInWatchLater] = React.useState(false);
 
 	const handlePubId = React.useCallback((pubId: string) => {
 		setPubId(pubId);
+	}, []);
+
+	const handleInWatchLater = React.useCallback((value: boolean) => {
+		setInWatchLater(value);
 	}, []);
 
 	const QueryRequest: PublicationsQueryRequest = {
@@ -175,20 +180,26 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 							id={item.id}
 							sheetRef={AllVideoSheetRef}
 							setPubId={handlePubId}
+							setInWatchLater={handleInWatchLater}
 						/>
 					)}
 				/>
 			)}
-			<AllVideoSheet sheetRef={AllVideoSheetRef} pubId={pubId} profileId={profileId} />
+			<AllVideoSheet
+				sheetRef={AllVideoSheetRef}
+				pubId={pubId}
+				profileId={profileId}
+				inWatchLater={inWatchLater}
+			/>
 		</View>
 	);
 };
 
-export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
+export const AllVideoSheet = ({ sheetRef, pubId, profileId, inWatchLater }: SheetProps) => {
 	const toast = useToast();
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
-	const add = useAddWatchLater();
+	const { add, remove } = useAddWatchLater();
 
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
 
@@ -290,20 +301,24 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 				});
 			},
 		},
-		// {
-		// 	name: "Add to watch later",
-		// 	icon: "images",
-		// 	onPress:(pubId)=> {
-		// 		add(pubId)
-		// 	},
-		// }
+		{
+			name: inWatchLater ? "Remove from watch later" : "Add to watch later",
+			icon: inWatchLater ? "delete" : "clock",
+			onPress: (pubId) => {
+				if (inWatchLater) {
+					remove(pubId);
+				} else {
+					add(pubId);
+				}
+			},
+		},
 	];
 
 	return (
 		<>
 			<Sheet
 				ref={sheetRef}
-				snapPoints={[profileId ? 90 : 200]}
+				snapPoints={[profileId ? 150 : 200]}
 				enablePanDownToClose={true}
 				enableOverDrag={true}
 				bottomInset={32}

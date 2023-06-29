@@ -17,7 +17,6 @@ type CommentModuleSheetProps = {
 
 export type ReferenceModuleListItem = {
 	name: string;
-	isSelected: boolean;
 };
 
 export default function CommentModule({
@@ -179,7 +178,7 @@ function CommentModuleSheet({
 										style={{
 											height: "auto",
 											width: "auto",
-											backgroundColor: activeModule.name === item.name ? theme.PRIMARY : "black",
+											backgroundColor: theme.PRIMARY,
 											borderRadius: 50,
 											padding: 4,
 											marginVertical: 16,
@@ -189,13 +188,11 @@ function CommentModuleSheet({
 									>
 										<Icon
 											name={"done"}
-											color={activeModule.name === item.name ? "black" : "white"}
+											color={ "black"}
 											size={18}
 										/>
 									</View>
-								) : (
-									<></>
-								)}
+								) : null}
 							</Pressable>
 						);
 					}}

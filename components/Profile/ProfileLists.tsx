@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
+import Clock from "assets/Icons/Clock";
 import Icon from "components/Icon";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
@@ -17,19 +18,19 @@ export default function ProfileLists() {
 
 	const ProfileLists = [
 		{
-			icon: <Icon name="images" size={16} />,
+			icon: <Icon name="clock" size={16}  />,
 			label: "Watch Later",
 			onPress: () => {
 				navigation.navigate("WatchLater");
 			},
 		},
-		{
-			icon: <Icon name="images" size={16} />,
-			label: "PlayLists",
-			onPress: () => {
-				navigation.navigate("WatchLater");
-			},
-		},
+		// {
+		// 	icon: <Icon name="images" size={16} />,
+		// 	label: "PlayLists",
+		// 	onPress: () => {
+		// 		navigation.navigate("WatchLater");
+		// 	},
+		// },
 	];
 
 	return (

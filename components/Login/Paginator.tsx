@@ -1,71 +1,39 @@
-import { StyleSheet, View } from "react-native";
+import { white } from "constants/Colors";
 import React from "react";
-import Animated, {
-  useAnimatedStyle,
-  interpolate,
-  Extrapolate,
-  SharedValue,
-} from "react-native-reanimated";
+import { Animated, Dimensions, StyleSheet, View } from "react-native";
+import { LoginSwiper } from "screens/Auth/LetsGetIn";
 
-type data = {
-  [x: string]: any;
-  id: number;
-  imgUrl: string;
-  title: string;
-  desc: string;
-};
-
-interface Props {
-  data: data;
-  x: SharedValue<number>;
-  screenWidth: number;
-}
-
-const Paginator = ({ data, x, screenWidth }: Props) => {
-  const PaginationComp = ({ i }: { i: number }) => {
-    const animatedDotStyle = useAnimatedStyle(() => {
-      const widthAnimation = interpolate(
-        x.value,
-        [(i - 1) * screenWidth, i * screenWidth, (i + 1) * screenWidth],
-        [10, 20, 10],
-        Extrapolate.CLAMP
-      );
-      const opacityAnimation = interpolate(
-        x.value,
-        [(i - 1) * screenWidth, i * screenWidth, (i + 1) * screenWidth],
-        [0.5, 1, 0.5],
-        Extrapolate.CLAMP
-      );
-      return {
-        width: widthAnimation,
-        opacity: opacityAnimation,
-      };
-    });
-    return <Animated.View style={[styles.dots, animatedDotStyle]} />;
-  };
-
-  return (
-    <View style={styles.paginationContainer}>
-      {data.map((_: any, i: number) => {
-        return <PaginationComp i={i} key={i} />;
-      })}
-    </View>
-  );
+const Paginator = ({ data, scrollX }: { data: LoginSwiper[]; scrollX: Animated.Value }) => {
+	const width = Dimensions.get("screen").width;
+	return (
+		<View style={{ flexDirection: "row", alignItems: "center" }}>
+			{data.map((_: any, i: number) => {
+				const inputRange = [(i - 1) * width, i * width, (i + 1) * width];
+				const dotWidth = scrollX.interpolate({
+					inputRange,
+					outputRange: [48, 48, 48],
+					extrapolate: "clamp",
+				});
+				const opacity = scrollX.interpolate({
+					inputRange,
+					outputRange: [0.3, 1, 0.3],
+					extrapolate: "clamp",
+				});
+				return (
+					<Animated.View style={[styles.dot, { width: dotWidth, opacity }]} key={i.toString()} />
+				);
+			})}
+		</View>
+	);
 };
 
 export default Paginator;
 
 const styles = StyleSheet.create({
-  paginationContainer: {
-    flexDirection: "row",
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  dots: {
-    height: 10,
-    backgroundColor: "white",
-    marginHorizontal: 10,
-    borderRadius: 5,
-  },
+	dot: {
+		height: 3,
+		borderRadius: 10,
+		backgroundColor: white[400],
+		marginHorizontal: 5,
+	},
 });

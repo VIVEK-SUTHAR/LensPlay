@@ -1,4 +1,6 @@
 import * as VideoThumbnails from "expo-video-thumbnails";
+import crashlytics from "@react-native-firebase/crashlytics";
+import Logger from "./logger";
 
 const generateThumbnail = async (
 	url: string,
@@ -24,6 +26,12 @@ const generateThumbnail = async (
 			videoThumbnails.push(uri);
 		}
 		return videoThumbnails;
-	} catch (e) {}
+	} catch (e) {
+		if (e instanceof Error) {
+			Logger.Log("Error generating thumbnail", e);
+			crashlytics().log("Error generating thumbnail:" + e.message);
+			return;
+		}
+	}
 };
 export default generateThumbnail;

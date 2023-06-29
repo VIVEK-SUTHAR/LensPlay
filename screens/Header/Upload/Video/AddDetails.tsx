@@ -2,7 +2,7 @@ import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/typ
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
-import CollectModule, { CollectModuleSheet } from "components/Upload/Video/CollectModule";
+import CollectModule from "components/Upload/Video/CollectModule";
 import CommentModule, {
   CommentModuleSheet,
   ReferenceModuleListItem
@@ -26,19 +26,15 @@ const windowHeight = Dimensions.get("window").height;
 const ReferenceModuleList: ReferenceModuleListItem[] = [
 	{
 		name: "Everyone",
-		isSelected: true,
 	},
 	{
 		name: "My followers",
-		isSelected: false,
 	},
 	{
 		name: "My following",
-		isSelected: false,
 	},
 	{
 		name: "Friends of friend",
-		isSelected: false,
 	},
 ];
 
@@ -64,6 +60,22 @@ export default function AddDetails({ navigation }: RootStackScreenProps<"AddDeta
 		if (title.trim().length === 0) return toast.error("Please enter title");
 		if (title.trim().length > 100) return toast.info("Title is too long");
 		if (!description) return toast.error("Please enter description");
+		if(uploadStore?.collectModule?.isPaidCollect && uploadStore?.collectModule?.feeCollectDetails?.amount == ""){
+			toast.error('Please enter a collect fee');
+			return
+		}
+		else if (uploadStore?.collectModule?.isLimitedCollect && uploadStore?.collectModule?.limitedCollectCount == "") {
+			toast.error('Please enter a collect limit');
+			return;
+		}
+		else if (uploadStore?.collectModule?.isRefferalEnabled && uploadStore?.collectModule?.referralPercent == "") {
+			toast.error('Please enter a refferal percentage');
+			return;
+		}
+		else if (uploadStore?.collectModule?.isTimedCollect && uploadStore?.collectModule?.timeLimit == undefined) {
+			toast.error('Please select a date');
+			return;
+		}
 		navigation.push("VideoTypes");
 	};
 
@@ -120,7 +132,6 @@ export default function AddDetails({ navigation }: RootStackScreenProps<"AddDeta
 					/>
 				</View>
 			</SafeAreaView>
-			<CollectModuleSheet collectModuleRef={collectModuleRef} />
 			<CommentModuleSheet
 				ReferenceModuleList={ReferenceModuleList}
 				activeModule={activeModule}

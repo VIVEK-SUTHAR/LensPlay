@@ -6,7 +6,6 @@ import React from "react";
 import { Linking } from "react-native";
 
 /**
- *
  * @param txt Simple text that may contain URLs
  * @returns Same text with URLs highlighted
  */
@@ -17,28 +16,42 @@ const checkIsLensTubeLink = (url: string) => {
 		: /https:\/\/testnet\.lenstube\.xyz\/watch\//;
 
 	const isLentubeLink = lenstube.test(url);
-	if (isLentubeLink) {
-		return true;
-	} else {
-		// Linking.openURL(url);
-		return false;
-	}
+	return isLentubeLink;
 };
+
+// Opens Links in External  Browser
+async function openLinkInBrowser(markDownLink: string) {
+	const match = URL_REGEX.exec(markDownLink);
+	if (match) {
+		const url = match[0];
+		Linking.openURL(url);
+	}
+}
+
+// Returns a formatted, only link text which is tested on standard http regex
+function getDisplayLink(markDownLink: string) {
+	const match = URL_REGEX.exec(markDownLink);
+	if (match) {
+		const url = match[0];
+		return url + "\n";
+	}
+}
+
 function extractURLs(txt: string | undefined) {
 	const navigation = useNavigation();
 	const renderText = (txt: string | undefined) =>
 		txt?.split(" ").map((part, index) =>
 			URL_REGEX.test(part) ? (
 				<StyledText
-					title={part + " "}
+					title={getDisplayLink(part)}
 					key={index}
-					style={{ color: primary, textDecorationLine: "underline" }}
-					onPress={() => {
+					style={{ color: primary, fontWeight: "600" }}
+					onPress={async () => {
 						checkIsLensTubeLink(part)
 							? navigation.navigate("LinkingVideo", {
 									id: part.split("/watch/")[1],
 							  })
-							: Linking.openURL(part);
+							: openLinkInBrowser(part);
 					}}
 				/>
 			) : (
@@ -53,7 +66,7 @@ function extractURLs(txt: string | undefined) {
 					key={string}
 					style={{ color: primary }}
 					onPress={() => {
-						// navigation.navigate("Channel");
+						navigation.navigate("Channel");
 					}}
 				/>
 			);
