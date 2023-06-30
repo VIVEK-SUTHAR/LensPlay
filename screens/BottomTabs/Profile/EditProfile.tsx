@@ -40,11 +40,13 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 	const [avatar, setAvatar] = useState<null | string>(null);
 	const [avatarBlob, setAvatarBlob] = useState<Blob>();
 
+	
 	//states for cover
 	const [cover, setCover] = useState<string>("");
 	const [coverBlob, setCoverBlob] = useState<Blob>();
 
 	//state for name, bio
+
 	const [userData, setUserData] = useState({
 		name: "",
 		bio: "",
