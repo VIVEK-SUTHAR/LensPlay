@@ -60,7 +60,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 		// if (!allWatchLaters) {
 		// 	Logger.Warn("Not null returning")
 		// }
-		// await AsyncStorage.removeItem("@watchLater");
+		// await AsyncStorage.removeItem(StorageKeys.WatchLaters);
 		// return;
 		const watchLater = await AsyncStorage.getItem(StorageKeys.WatchLaters);
 		if (!watchLater) {
@@ -79,9 +79,13 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	}
 
 	const fetchAndStoreWatchLaters = async (pubIds: string[]) => {
-		if (!allWatchLaters) {
+		Logger.Success("Locl pub to store", pubIds);
+		console.log(allWatchLaters);
+		Logger.Error("valye is trutu of falsy", Boolean(allWatchLaters));
+		if (!allWatchLaters.length) {
 			setAllWatchLaters(pubIds);
 		}
+		Logger.Success("not all watch laters");
 		Logger.Log("Added to Store");
 		const coverURL = await getPubCoverImage(pubIds[0]);
 		if (coverURL) {
