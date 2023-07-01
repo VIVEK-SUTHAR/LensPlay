@@ -25,6 +25,7 @@ import { NoVideosFound } from "./AllVideos";
 import Skeleton from "components/common/Skeleton";
 import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
 import useAddWatchLater from "hooks/useAddToWatchLater";
+import useWatchLater from "store/WatchLaterStore";
 
 type CollectedVideosProps = {
 	ethAddress?: string;
@@ -37,21 +38,13 @@ const keyExtractor = (item: CollectedPublication) => item.id;
 const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 	const [pubId, setPubId] = React.useState("");
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
-
 	const CollectedVideoSheetRef = React.useRef<BottomSheetMethods>(null);
-
 	const { accessToken } = useAuthStore();
 	const { currentProfile } = useProfile();
 	const { PRIMARY } = useThemeStore();
-	const [inWatchLater, setInWatchLater] = React.useState(false);
-
 
 	const handlePubId = React.useCallback((pubId: string) => {
 		setPubId(pubId);
-	}, []);
-
-	const handleInWatchLater = React.useCallback((value: boolean) => {
-		setInWatchLater(value);
 	}, []);
 
 	const QueryRequest: PublicationsQueryRequest = {
@@ -175,12 +168,11 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 							id={item.id}
 							sheetRef={CollectedVideoSheetRef}
 							setPubId={handlePubId}
-							setInWatchLater={handleInWatchLater}
 						/>
 					)}
 				/>
 			)}
-			<CollectedVideoSheet sheetRef={CollectedVideoSheetRef} pubId={pubId} inWatchLater={inWatchLater}/>
+			<CollectedVideoSheet sheetRef={CollectedVideoSheetRef} pubId={pubId} />
 		</View>
 	);
 };
@@ -188,13 +180,12 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 export const CollectedVideoSheet = ({
 	sheetRef,
 	pubId,
-	inWatchLater
 }: {
 	sheetRef: React.RefObject<BottomSheetMethods>;
 	pubId: Scalars["InternalPublicationId"];
-	inWatchLater: boolean
 }) => {
-	const {add, remove} = useAddWatchLater();
+	const { add, remove } = useAddWatchLater();
+	const { isInWatchLater } = useWatchLater();
 
 	const actionList: actionListType[] = [
 		{
@@ -208,10 +199,10 @@ export const CollectedVideoSheet = ({
 			},
 		},
 		{
-			name: inWatchLater ? "Remove from watch later" : "Add to watch later",
-			icon: inWatchLater ? "delete" : "clock",
+			name: isInWatchLater ? "Remove from watch later" : "Add to watch later",
+			icon: isInWatchLater ? "delete" : "clock",
 			onPress: (pubId) => {
-				if (inWatchLater) {
+				if (isInWatchLater) {
 					remove(pubId);
 				} else {
 					add(pubId);

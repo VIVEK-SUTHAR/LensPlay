@@ -2,29 +2,21 @@ import type { Mirror, Post } from "customTypes/generated";
 import create from "zustand";
 
 interface WatchLaterStore {
-	allWatchLaters: string[];
+	isInWatchLater: boolean;
 	cover: null | string;
 	color: null | string;
-	setAllWatchLaters: (watchLaters: string[]) => void;
+	setIsInWatchLater: (isInWatchLater: boolean) => void;
 	setCover: (cover: string) => void;
 	setColor: (color: string) => void;
 }
 
 const useWatchLater = create<WatchLaterStore>((set) => ({
-	allWatchLaters: [],
+	isInWatchLater: false,
 	color: null,
 	cover: null,
-	setAllWatchLaters: (newWatchLaters) => {
-		set((state) => {
-			if (state.allWatchLaters === null) {
-				return {
-					allWatchLaters: newWatchLaters,
-				};
-			} else {
-				return {
-					allWatchLaters: newWatchLaters,
-				};
-			}
+	setIsInWatchLater: (isInWatchLater) => {
+		set({
+			isInWatchLater: isInWatchLater
 		});
 	},
 	setCover: (cover) =>

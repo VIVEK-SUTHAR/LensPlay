@@ -26,8 +26,6 @@ type VideoCardProp = {
 const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publication }) => {
 	const { setActivePublication } = useActivePublication();
 
-
-
 	const navigation = useNavigation();
 
 	let playBackurl = React.useMemo(() => publication?.metadata?.media[0]?.original?.url, []);

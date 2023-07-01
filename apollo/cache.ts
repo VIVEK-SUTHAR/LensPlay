@@ -20,6 +20,7 @@ const cache = new InMemoryCache({
         ]),
         followers: cursorBasedPagination(["request", ["profileId"]]),
         following: cursorBasedPagination(["request", ["address"]]),
+        publicationsProfileBookmarks: cursorBasedPagination(["req", ["profileId", "publicationId"]])
       },
     },
   },

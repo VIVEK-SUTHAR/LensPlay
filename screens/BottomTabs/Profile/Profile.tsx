@@ -1,5 +1,4 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import PleaseLogin from "components/PleaseLogin";
 import AllVideos from "components/Profile/AllVideos";
 import CollectedVideos from "components/Profile/CollectedVideos";
@@ -7,27 +6,26 @@ import MirroredVideos from "components/Profile/MirroredVideos";
 import { UnPinSheet } from "components/Profile/PinnedPublication";
 import ProfileHeader from "components/Profile/ProfileHeader";
 import Tabs, { Tab } from "components/UI/Tabs";
-import StorageKeys from "constants/Storage";
+import { PublicationMainFocus, useProfileBookMarksQuery } from "customTypes/generated";
 import { RootTabScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { SafeAreaView } from "react-native";
 import { getColors } from "react-native-image-colors";
 import { useGuestStore } from "store/GuestStore";
-import { useProfile } from "store/Store";
+import { useAuthStore, useProfile } from "store/Store";
 import useWatchLater from "store/WatchLaterStore";
 import CommonStyles from "styles/index";
 import getIPFSLink from "utils/getIPFSLink";
+import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
-import getPubCoverImage from "utils/watchlater/getPubCoverImage";
-import getWatchLaters from "utils/watchlater/getWatchLaters";
 
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	const sheetRef = React.useRef<BottomSheetMethods>(null);
 	const { isGuest } = useGuestStore();
 	const { currentProfile } = useProfile();
-	const { allWatchLaters, setAllWatchLaters, setCover, setColor } = useWatchLater();
-	if (isGuest) return <PleaseLogin />;
+	const { accessToken } = useAuthStore();
+	const { setCover, setColor } = useWatchLater();
 
 	async function handleCover(coverURL: string) {
 		setCover(coverURL);
@@ -56,46 +54,32 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 			});
 	}
 
-	async function getWatchLaterData() {
-		// if (!allWatchLaters) {
-		// 	Logger.Warn("Not null returning")
-		// }
-		// await AsyncStorage.removeItem(StorageKeys.WatchLaters);
-		// return;
-		const watchLater = await AsyncStorage.getItem(StorageKeys.WatchLaters);
-		if (!watchLater) {
-			Logger.Log("No watch laters in local storage");
-			const watchLaterData = await getWatchLaters(currentProfile?.id);
-			if (watchLaterData.length > 0) {
-				await AsyncStorage.setItem(StorageKeys.WatchLaters, JSON.stringify(watchLaterData));
-				fetchAndStoreWatchLaters(watchLaterData);
-			}
-		} else {
-			Logger.Success("From Local Storage");
-			const localPubIds = JSON.parse(watchLater);
-			Logger.Log("Local Pubs", localPubIds);
-			fetchAndStoreWatchLaters(localPubIds.reverse());
-		}
-	}
-
-	const fetchAndStoreWatchLaters = async (pubIds: string[]) => {
-		Logger.Success("Locl pub to store", pubIds);
-		console.log(allWatchLaters);
-		Logger.Error("valye is trutu of falsy", Boolean(allWatchLaters));
-		if (!allWatchLaters.length) {
-			setAllWatchLaters(pubIds);
-		}
-		Logger.Success("not all watch laters");
-		Logger.Log("Added to Store");
-		const coverURL = await getPubCoverImage(pubIds[0]);
-		if (coverURL) {
-			handleCover(getIPFSLink(coverURL));
-		}
-	};
+	const { data, loading } = useProfileBookMarksQuery({
+		variables: {
+			req: {
+				profileId: currentProfile?.id,
+				metadata: {
+					mainContentFocus: [PublicationMainFocus.Video],
+				},
+			},
+		},
+		context: {
+			headers: {
+				"x-access-token": `Bearer ${accessToken}`,
+			},
+		},
+	});
 
 	React.useEffect(() => {
-		getWatchLaterData();
-	}, [allWatchLaters]);
+		Logger.Log("", currentProfile?.id, accessToken);
+		if (!loading && data) {
+			handleCover(
+				getIPFSLink(getRawurl(data?.publicationsProfileBookmarks?.items[0]?.metadata?.cover))
+			);
+		}
+	}, [loading]);
+
+	if (isGuest) return <PleaseLogin />;
 
 	return (
 		<>

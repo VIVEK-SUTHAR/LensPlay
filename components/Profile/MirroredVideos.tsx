@@ -25,6 +25,7 @@ import { ActivityIndicator, FlatList, RefreshControl, Share, View } from "react-
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import CommonStyles from "styles/index";
 import { NoVideosFound } from "./AllVideos";
+import useWatchLater from "store/WatchLaterStore";
 
 type MirroredVideosProps = {
 	channelId?: string;
@@ -39,15 +40,9 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 	const MirroredVideoSheetRef = React.useRef<BottomSheetMethods>(null);
 	const [pubId, setPubId] = React.useState("");
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
-	const [inWatchLater, setInWatchLater] = React.useState(false);
-
 
 	const handlePubId = React.useCallback((pubId: string) => {
 		setPubId(pubId);
-	}, []);
-
-	const handleInWatchLater = React.useCallback((value: boolean) => {
-		setInWatchLater(value);
 	}, []);
 
 	const QueryRequest: PublicationsQueryRequest = {
@@ -181,18 +176,19 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 						id={item.id}
 						sheetRef={MirroredVideoSheetRef}
 						setPubId={handlePubId}
-						setInWatchLater={handleInWatchLater}
 					/>
 				)}
 			/>
-			<MirroredVideoSheet sheetRef={MirroredVideoSheetRef} pubId={pubId} profileId={channelId} inWatchLater={inWatchLater} />
+			<MirroredVideoSheet sheetRef={MirroredVideoSheetRef} pubId={pubId} profileId={channelId} />
 		</View>
 	);
 };
 
-export const MirroredVideoSheet = ({ sheetRef, pubId, profileId, inWatchLater }: SheetProps) => {
+export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
-	const {add, remove} = useAddWatchLater();
+	const { add, remove } = useAddWatchLater();
+	const { isInWatchLater } = useWatchLater();
+
 	const actionList: actionListType[] = [
 		{
 			name: "Share",
@@ -226,10 +222,10 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId, inWatchLater }:
 			},
 		},
 		{
-			name: inWatchLater ? "Remove from watch later" : "Add to watch later",
-			icon: inWatchLater ? "delete" : "clock",
+			name: isInWatchLater ? "Remove from watch later" : "Add to watch later",
+			icon: isInWatchLater ? "delete" : "clock",
 			onPress: (pubId) => {
-				if (inWatchLater) {
+				if (isInWatchLater) {
 					remove(pubId);
 				} else {
 					add(pubId);

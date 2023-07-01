@@ -29,6 +29,7 @@ import { ActivityIndicator, Share, View } from "react-native";
 import { FlatList, RefreshControl } from "react-native-gesture-handler";
 import usePinStore from "store/pinStore";
 import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
+import useWatchLater from "store/WatchLaterStore";
 import getRawurl from "utils/getRawUrl";
 import TrackAction from "utils/Track";
 import uploadToArweave from "utils/uploadToArweave";
@@ -46,14 +47,9 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 	const AllVideoSheetRef = React.useRef<BottomSheetMethods>(null);
 	const [pubId, setPubId] = React.useState("");
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
-	const [inWatchLater, setInWatchLater] = React.useState(false);
 
 	const handlePubId = React.useCallback((pubId: string) => {
 		setPubId(pubId);
-	}, []);
-
-	const handleInWatchLater = React.useCallback((value: boolean) => {
-		setInWatchLater(value);
 	}, []);
 
 	const QueryRequest: PublicationsQueryRequest = {
@@ -180,26 +176,21 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 							id={item.id}
 							sheetRef={AllVideoSheetRef}
 							setPubId={handlePubId}
-							setInWatchLater={handleInWatchLater}
 						/>
 					)}
 				/>
 			)}
-			<AllVideoSheet
-				sheetRef={AllVideoSheetRef}
-				pubId={pubId}
-				profileId={profileId}
-				inWatchLater={inWatchLater}
-			/>
+			<AllVideoSheet sheetRef={AllVideoSheetRef} pubId={pubId} profileId={profileId} />
 		</View>
 	);
 };
 
-export const AllVideoSheet = ({ sheetRef, pubId, profileId, inWatchLater }: SheetProps) => {
+export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 	const toast = useToast();
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
 	const { add, remove } = useAddWatchLater();
+	const { isInWatchLater } = useWatchLater();
 
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
 
@@ -302,10 +293,10 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId, inWatchLater }: Shee
 			},
 		},
 		{
-			name: inWatchLater ? "Remove from watch later" : "Add to watch later",
-			icon: inWatchLater ? "delete" : "clock",
+			name: isInWatchLater ? "Remove from watch later" : "Add to watch later",
+			icon: isInWatchLater ? "delete" : "clock",
 			onPress: (pubId) => {
-				if (inWatchLater) {
+				if (isInWatchLater) {
 					remove(pubId);
 				} else {
 					add(pubId);
