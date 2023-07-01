@@ -6,7 +6,11 @@ import MirroredVideos from "components/Profile/MirroredVideos";
 import { UnPinSheet } from "components/Profile/PinnedPublication";
 import ProfileHeader from "components/Profile/ProfileHeader";
 import Tabs, { Tab } from "components/UI/Tabs";
-import { PublicationMainFocus, useProfileBookMarksQuery } from "customTypes/generated";
+import {
+	PublicationMainFocus,
+	useProfileBookMarksLazyQuery,
+	useProfileBookMarksQuery,
+} from "customTypes/generated";
 import { RootTabScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
@@ -25,7 +29,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	const { isGuest } = useGuestStore();
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
-	const { setCover, setColor } = useWatchLater();
+	const { setCover, setColor, sessionCount } = useWatchLater();
 
 	async function handleCover(coverURL: string) {
 		setCover(coverURL);
@@ -54,7 +58,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 			});
 	}
 
-	const { data, loading } = useProfileBookMarksQuery({
+	const [getBookMarks, { data, loading }] = useProfileBookMarksLazyQuery({
 		variables: {
 			req: {
 				profileId: currentProfile?.id,
@@ -68,16 +72,24 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 				"x-access-token": `Bearer ${accessToken}`,
 			},
 		},
+		fetchPolicy:"no-cache"
 	});
-
 	React.useEffect(() => {
-		Logger.Log("", currentProfile?.id, accessToken);
-		if (!loading && data) {
-			handleCover(
-				getIPFSLink(getRawurl(data?.publicationsProfileBookmarks?.items[0]?.metadata?.cover))
-			);
-		}
-	}, [loading]);
+		getBookMarks()
+			.then((res) => {
+				if (res) {
+					handleCover(
+						getIPFSLink(
+							getRawurl(res?.data?.publicationsProfileBookmarks?.items[0]?.metadata?.cover)
+						)
+					);
+				}
+			})
+			.catch((err) => {
+				Logger.Error("[Error while fetching Bookmarks....]", err);
+			});
+		Logger.Count("EFFECT RAN")
+	}, [sessionCount]);
 
 	if (isGuest) return <PleaseLogin />;
 

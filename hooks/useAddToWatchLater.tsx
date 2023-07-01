@@ -3,16 +3,20 @@ import { useAddBookMarkMutation, useRemoveBookMarkMutation } from "customTypes/g
 import { useAuthStore, useProfile, useToast } from "store/Store";
 import TrackAction from "utils/Track";
 import Logger from "utils/logger";
+import useWatchLater from "store/WatchLaterStore";
 
 const useAddWatchLater = () => {
 	const toast = useToast();
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
-
+	const { setSessionCount } = useWatchLater();
 	const [addToBookMark] = useAddBookMarkMutation({
 		onCompleted: (data) => {
 			Logger.Success("", data);
 			toast.success("Added to watch later");
+			setTimeout(() => {
+				setSessionCount();
+			}, 100);
 			TrackAction(PUBLICATION.ADD_WATCH_LATER);
 		},
 		onError: (error) => {
@@ -25,6 +29,9 @@ const useAddWatchLater = () => {
 		onCompleted: (data) => {
 			Logger.Success("", data);
 			toast.success("removed successfully");
+			setTimeout(() => {
+				setSessionCount();
+			}, 100);
 			TrackAction(PUBLICATION.REMOVE_WATCH_LATER);
 		},
 		onError: (error) => {

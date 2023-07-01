@@ -12,6 +12,7 @@ import Skeleton from "components/common/Skeleton";
 import { black, white } from "constants/Colors";
 import {
 	PublicationMainFocus,
+	useProfileBookMarksLazyQuery,
 	useProfileBookMarksQuery,
 	type Mirror,
 	type Post,
@@ -20,24 +21,54 @@ import {
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import useAddWatchLater from "hooks/useAddToWatchLater";
-import React from "react";
+import React, { useEffect } from "react";
 import { Dimensions, FlatList, Share, View } from "react-native";
 import { useAuthStore, useProfile } from "store/Store";
 import useWatchLater from "store/WatchLaterStore";
 import CommonStyles from "styles/index";
 import formatHandle from "utils/formatHandle";
+import { getColors } from "react-native-image-colors";
+import Logger from "utils/logger";
+import getIPFSLink from "utils/getIPFSLink";
+import getRawurl from "utils/getRawUrl";
 
 const WatchLaterList = () => {
 	const [pubId, setPubId] = React.useState("");
 	const { currentProfile } = useProfile();
 	const WatchLaterSheetRef = React.useRef<BottomSheetMethods>(null);
 	const { accessToken } = useAuthStore();
-
+	const { sessionCount, setColor, setCover } = useWatchLater();
 	const handlePubId = React.useCallback((pubId: string) => {
 		setPubId(pubId);
 	}, []);
+	async function handleCover(coverURL: string) {
+		setCover(coverURL);
+		getColors(coverURL, {
+			fallback: "#000000",
+			cache: true,
+			key: coverURL,
+			quality: "lowest",
+			pixelSpacing: 500,
+		})
+			.then((colors) => {
+				switch (colors.platform) {
+					case "android":
+						setColor(colors?.average);
+						break;
+					case "ios":
+						setColor(colors?.detail);
+						break;
+					default:
+						setColor("#7A52B5");
+				}
+			})
+			.catch((error) => {
+				setColor("#7A52B5");
+				Logger.Error("Failed to fetch image for geting dominient color", error);
+			});
+	}
 
-	const { data, loading } = useProfileBookMarksQuery({
+	const [getBookMarks, { data, loading }] = useProfileBookMarksLazyQuery({
 		variables: {
 			req: {
 				profileId: currentProfile?.id,
@@ -51,8 +82,17 @@ const WatchLaterList = () => {
 				"x-access-token": `Bearer ${accessToken}`,
 			},
 		},
+		fetchPolicy: "no-cache",
 	});
-
+	React.useEffect(() => {
+		getBookMarks().then((res) => {
+			if (res) {
+				handleCover(
+					getIPFSLink(getRawurl(res?.data?.publicationsProfileBookmarks?.items[0]?.metadata?.cover))
+				);
+			}
+		});
+	}, [sessionCount]);
 	const watchLaters = data?.publicationsProfileBookmarks?.items;
 
 	if (loading) {

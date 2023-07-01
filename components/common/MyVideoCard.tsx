@@ -29,7 +29,8 @@ function MyVideoCard({ publication, id, sheetRef, setPubId }: MyVideoCardProps) 
 	const { setActivePublication } = useActivePublication();
 	const { setIsInWatchLater } = useWatchLater();
 
-	const checkInWatchLater = async () => {
+	const checkInWatchLater = () => {
+		console.log(publication?.bookmarked)
 		const hasBookmarked = publication?.bookmarked;
 		Logger.Count("", hasBookmarked);
 		setIsInWatchLater(hasBookmarked);

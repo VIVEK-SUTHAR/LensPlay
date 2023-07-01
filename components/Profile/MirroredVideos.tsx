@@ -61,6 +61,7 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 			reactionRequest: {
 				profileId: currentProfile?.id,
 			},
+			channelId: currentProfile?.id,
 		},
 		context: {
 			headers: {

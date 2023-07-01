@@ -68,6 +68,7 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 			reactionRequest: {
 				profileId: currentProfile?.id,
 			},
+			channelId:currentProfile?.id
 		},
 		context: {
 			headers: {
@@ -190,7 +191,7 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
 	const { add, remove } = useAddWatchLater();
-	const { isInWatchLater } = useWatchLater();
+	const { isInWatchLater, setSessionCount } = useWatchLater();
 
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
 
