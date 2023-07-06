@@ -18,13 +18,12 @@ import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import React, { FC, useRef } from "react";
 import {
-	Linking,
-	Pressable,
+	LayoutAnimation,
+	Linking, Pressable,
 	SafeAreaView,
 	ScrollView,
-	StyleSheet,
-	useWindowDimensions,
-	View,
+	StyleSheet, useWindowDimensions,
+	View
 } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useInviteStore } from "store/InviteStore";
@@ -45,6 +44,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 
 	React.useEffect(() => {
 		const delay = setTimeout(() => {
+			LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
 			setIsReadyToRender(true);
 		}, 0);
 		return () => clearTimeout(delay);

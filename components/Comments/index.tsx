@@ -8,10 +8,10 @@ import {
 	Comment as IComment,
 	PublicationMainFocus,
 	PublicationsQueryRequest,
-	useCommentsQuery
+	useCommentsQuery,
 } from "customTypes/generated";
 import React from "react";
-import { ActivityIndicator, Dimensions, SafeAreaView, View } from "react-native";
+import { ActivityIndicator, Dimensions, LayoutAnimation, SafeAreaView, View } from "react-native";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import formatHandle from "utils/formatHandle";
 import getRawurl from "utils/getRawUrl";
@@ -104,7 +104,7 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 				commentId={item?.id}
 				isAlreadyLiked={item?.reaction === "UPVOTE"}
 				isMirrored={item?.mirrors?.length > 0}
-				isDA = {item?.isDataAvailability}
+				isDA={item?.isDataAvailability}
 				address={item?.profile?.ownedBy}
 			/>
 		);
@@ -138,9 +138,10 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 	}
 
 	if (commentData) {
+
 		const allComments = commentData?.publications?.items as IComment[];
 		return (
-			<View style={{flex:1 }}>
+			<View style={{ flex: 1 }}>
 				<FlashList
 					data={allComments as IComment[]}
 					keyExtractor={keyExtractor}
