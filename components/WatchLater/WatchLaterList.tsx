@@ -1,64 +1,99 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FlashList } from "@shopify/flash-list";
 import Sheet from "components/Bottom";
-import ErrorMesasge from "components/common/ErrorMesasge";
+import Icon from "components/Icon";
+import { NoVideosFound } from "components/Profile/AllVideos";
+import Heading from "components/UI/Heading";
+import Ripple from "components/UI/Ripple";
+import StyledText from "components/UI/StyledText";
 import MyVideoCard, { type actionListType } from "components/common/MyVideoCard";
 import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
 import Skeleton from "components/common/Skeleton";
-import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
-import Icon from "components/Icon";
-import { NoVideosFound } from "components/Profile/AllVideos";
-import Ripple from "components/UI/Ripple";
-import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
 import {
-	useAllPublicationsQuery,
+	PublicationMainFocus,
+	useProfileBookMarksLazyQuery,
+	useProfileBookMarksQuery,
 	type Mirror,
 	type Post,
 	type Scalars,
 } from "customTypes/generated";
+import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import useAddWatchLater from "hooks/useAddToWatchLater";
-import React from "react";
-import { Button, Dimensions, FlatList, Share, View } from "react-native";
-import { useProfile } from "store/Store";
+import React, { useEffect } from "react";
+import { Dimensions, FlatList, Share, View } from "react-native";
+import { useAuthStore, useProfile } from "store/Store";
 import useWatchLater from "store/WatchLaterStore";
 import CommonStyles from "styles/index";
-import Logger from "utils/logger";
-import Heading from "components/UI/Heading";
 import formatHandle from "utils/formatHandle";
+import { getColors } from "react-native-image-colors";
+import Logger from "utils/logger";
+import getIPFSLink from "utils/getIPFSLink";
+import getRawurl from "utils/getRawUrl";
 
 const WatchLaterList = () => {
 	const [pubId, setPubId] = React.useState("");
-	const { allWatchLaters, setAllWatchLaters } = useWatchLater();
 	const { currentProfile } = useProfile();
 	const WatchLaterSheetRef = React.useRef<BottomSheetMethods>(null);
-	Logger.Log("All pubs from Store", allWatchLaters);
+	const { accessToken } = useAuthStore();
+	const { sessionCount, setColor, setCover } = useWatchLater();
 	const handlePubId = React.useCallback((pubId: string) => {
 		setPubId(pubId);
 	}, []);
+	async function handleCover(coverURL: string) {
+		setCover(coverURL);
+		getColors(coverURL, {
+			fallback: "#000000",
+			cache: true,
+			key: coverURL,
+			quality: "lowest",
+			pixelSpacing: 500,
+		})
+			.then((colors) => {
+				switch (colors.platform) {
+					case "android":
+						setColor(colors?.average);
+						break;
+					case "ios":
+						setColor(colors?.detail);
+						break;
+					default:
+						setColor("#7A52B5");
+				}
+			})
+			.catch((error) => {
+				setColor("#7A52B5");
+				Logger.Error("Failed to fetch image for geting dominient color", error);
+			});
+	}
 
-	const {
-		data: Publications,
-		loading,
-		error,
-		refetch,
-	} = useAllPublicationsQuery({
+	const [getBookMarks, { data, loading }] = useProfileBookMarksLazyQuery({
 		variables: {
-			request: {
-				publicationIds: allWatchLaters,
-			},
-			reactionRequest: {
+			req: {
 				profileId: currentProfile?.id,
+				metadata: {
+					mainContentFocus: [PublicationMainFocus.Video],
+				},
 			},
 		},
+		context: {
+			headers: {
+				"x-access-token": `Bearer ${accessToken}`,
+			},
+		},
+		fetchPolicy: "no-cache",
 	});
 	React.useEffect(() => {
-		refetch();
-	}, [allWatchLaters]);
-
-	const watchLaterList = Publications?.publications?.items;
+		getBookMarks().then((res) => {
+			if (res) {
+				handleCover(
+					getIPFSLink(getRawurl(res?.data?.publicationsProfileBookmarks?.items[0]?.metadata?.cover))
+				);
+			}
+		});
+	}, [sessionCount]);
+	const watchLaters = data?.publicationsProfileBookmarks?.items;
 
 	if (loading) {
 		return (
@@ -112,6 +147,7 @@ const WatchLaterList = () => {
 			</>
 		);
 	}
+
 	return (
 		<View
 			style={{
@@ -119,16 +155,8 @@ const WatchLaterList = () => {
 				backgroundColor: "black",
 			}}
 		>
-			{/* <Button
-				title="Delete local"
-				onPress={() => {
-					AsyncStorage.removeItem("@watchLaters").then(() => {
-						Logger.Success("Local deleted");
-					});
-				}}
-			/> */}
 			<FlashList
-				data={watchLaterList}
+				data={watchLaters as Post[] | Mirror[]}
 				ListHeaderComponent={WatchLaterHeader}
 				ListEmptyComponent={NoVideosFound}
 				removeClippedSubviews={true}

@@ -1,82 +1,40 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
+import Icon, { IconName } from "components/Icon";
+import Heading from "components/UI/Heading";
+import StyledText from "components/UI/StyledText";
+import { black } from "constants/Colors";
+import { Mirror, Post, Scalars } from "customTypes/generated";
 import { Image } from "expo-image";
 import React, { memo } from "react";
 import { Dimensions, Pressable, TouchableOpacity, View } from "react-native";
-import { black } from "constants/Colors";
-import { useActivePublication, useProfile } from "store/Store";
-import { Mirror, Post, Scalars } from "customTypes/generated";
+import { useActivePublication } from "store/Store";
+import useWatchLater from "store/WatchLaterStore";
 import getDifference from "utils/getDifference";
 import getIPFSLink from "utils/getIPFSLink";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getPlaceHolderImage from "utils/getPlaceHolder";
 import getRawurl from "utils/getRawUrl";
-import Icon, { IconName } from "components/Icon";
-import Heading from "components/UI/Heading";
-import StyledText from "components/UI/StyledText";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import StorageKeys from "constants/Storage";
 import Logger from "utils/logger";
-import getWatchLaters from "utils/watchlater/getWatchLaters";
 
 type MyVideoCardProps = {
 	publication: Mirror | Post;
 	id: string;
 	sheetRef?: React.RefObject<BottomSheetMethods>;
 	setPubId?: (pubId: Scalars["InternalPublicationId"]) => void;
-	setInWatchLater: (inWatchLater: boolean) => void;
 };
 
-function MyVideoCard({ publication, id, sheetRef, setPubId, setInWatchLater }: MyVideoCardProps) {
+function MyVideoCard({ publication, id, sheetRef, setPubId }: MyVideoCardProps) {
 	const navigation = useNavigation();
 	const { setActivePublication } = useActivePublication();
-	const { currentProfile } = useProfile();
+	const { setIsInWatchLater } = useWatchLater();
 
-	const checkInWatchLater = async () => {
-		// allWatchLaters?.find()
-		const watchLaters = await AsyncStorage.getItem(StorageKeys.WatchLaters);
-		console.log(watchLaters, "idhar hu");
-
-		try {
-			//first check pubId in async storage
-			if (watchLaters) {
-				const watchLaterArray = JSON.parse(watchLaters);
-				const result = watchLaterArray.filter((item: string) => {
-					if (item == publication?.id) {
-						return true;
-					} else {
-						return false;
-					}
-				});
-				if (result.length != 0) {
-					setInWatchLater(true);
-				} else {
-					setInWatchLater(false);
-				}
-			}
-			//if async storage is not yet set than check in db
-			else {
-				const watchLaterArray = await getWatchLaters(currentProfile?.id);
-				const result = watchLaterArray.filter((item: string) => {
-					if (item == publication?.id) {
-						return true;
-					} else {
-						return false;
-					}
-				});
-				if (result.length != 0) {
-					setInWatchLater(true);
-				} else {
-					setInWatchLater(false);
-				}
-			}
-		} catch (error) {
-			if (error instanceof Error) {
-				Logger.Error(error.message);
-			}
-		} finally {
-			sheetRef?.current?.snapToIndex(0);
-		}
+	const checkInWatchLater = () => {
+		console.log(publication?.bookmarked)
+		const hasBookmarked = publication?.bookmarked;
+		Logger.Count("", hasBookmarked);
+		setIsInWatchLater(hasBookmarked);
+		sheetRef?.current?.snapToIndex(0);
 	};
 
 	return (
@@ -179,7 +137,6 @@ export type SheetProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
 	pubId: Scalars["InternalPublicationId"];
 	profileId: Scalars["ProfileId"];
-	inWatchLater: boolean;
 };
 
 export type actionListType = {
