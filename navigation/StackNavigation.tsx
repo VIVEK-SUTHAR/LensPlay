@@ -209,7 +209,7 @@ export default function StackNavigation() {
 				name="Settings"
 				component={Settings}
 				options={{
-					animation: "default",
+					animation: "slide_from_bottom",
 					headerShown: true,
 					headerShadowVisible: false,
 					headerTintColor: theme.PRIMARY,
@@ -382,7 +382,7 @@ export default function StackNavigation() {
 				name="UploadIndicator"
 				component={UploadIndicator}
 				options={{
-					headerBackVisible:false,
+					headerBackVisible: false,
 					animation: "default",
 					headerShown: true,
 					headerTintColor: theme.PRIMARY,

@@ -42,6 +42,7 @@ import {
 	StyleSheet,
 	View,
 	Pressable,
+	LayoutAnimation,
 } from "react-native";
 import {
 	useActivePublication,
@@ -72,6 +73,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	React.useEffect(() => {
 		Logger.Count("Landed in VideoPage");
 		const delay = setTimeout(() => {
+			LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
 			setIsReadyToRender(true);
 		}, 0);
 		return () => clearTimeout(delay);
@@ -160,6 +162,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		if (!reaction) {
 			console.log("here");
 			setReaction(true);
+			LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
 			setVideoPageStats(
 				ReactionData?.publication?.reaction === "UPVOTE",
 				ReactionData?.publication?.reaction === "DOWNVOTE",
@@ -186,7 +189,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		},
 	});
 
-	Logger.Warn("Collect module", getPublicationCollectModule(activePublication?.collectModule))
+	Logger.Warn("Collect module", getPublicationCollectModule(activePublication?.collectModule));
 
 	const collectRef = useRef<BottomSheetMethods>(null);
 	const mirrorRef = useRef<BottomSheetMethods>(null);
