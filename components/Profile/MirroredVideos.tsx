@@ -13,6 +13,7 @@ import { black } from "constants/Colors";
 import { SOURCES } from "constants/index";
 import {
 	Mirror,
+	Post,
 	PublicationMainFocus,
 	PublicationsQueryRequest,
 	PublicationTypes,
@@ -38,11 +39,11 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 	const { PRIMARY } = useThemeStore();
 	const { currentProfile } = useProfile();
 	const MirroredVideoSheetRef = React.useRef<BottomSheetMethods>(null);
-	const [pubId, setPubId] = React.useState("");
+	const [publication, setPublication] = React.useState<Post | Mirror | null >(null);
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
 
 	const handlePubId = React.useCallback((pubId: string) => {
-		setPubId(pubId);
+		setPublication(publication);
 	}, []);
 
 	const QueryRequest: PublicationsQueryRequest = {
@@ -176,16 +177,16 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 						publication={item}
 						id={item.id}
 						sheetRef={MirroredVideoSheetRef}
-						setPubId={handlePubId}
+						setPublication={handlePubId}
 					/>
 				)}
 			/>
-			<MirroredVideoSheet sheetRef={MirroredVideoSheetRef} pubId={pubId} profileId={channelId} />
+			<MirroredVideoSheet sheetRef={MirroredVideoSheetRef} publication={publication} profileId={channelId} />
 		</View>
 	);
 };
 
-export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
+export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) => {
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
 	const { add, remove } = useAddWatchLater();
 	const { isInWatchLater } = useWatchLater();
@@ -225,11 +226,11 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
 		{
 			name: isInWatchLater ? "Remove from watch later" : "Add to watch later",
 			icon: isInWatchLater ? "delete" : "clock",
-			onPress: (pubId) => {
+			onPress: (publication) => {
 				if (isInWatchLater) {
-					remove(pubId);
+					remove(publication);
 				} else {
-					add(pubId);
+					add(publication);
 				}
 			},
 		},
@@ -255,7 +256,7 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
 						return (
 							<Ripple
 								onTap={() => {
-									item.onPress(pubId);
+									item.onPress(publication);
 									sheetRef?.current?.close();
 								}}
 							>
@@ -284,7 +285,7 @@ export const MirroredVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) =
 					}}
 				/>
 			</Sheet>
-			<DeleteVideo sheetRef={deleteRef} pubId={pubId} />
+			<DeleteVideo sheetRef={deleteRef} publication={publication} />
 		</>
 	);
 };

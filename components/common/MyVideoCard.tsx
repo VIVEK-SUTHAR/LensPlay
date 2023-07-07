@@ -21,10 +21,10 @@ type MyVideoCardProps = {
 	publication: Mirror | Post;
 	id: string;
 	sheetRef?: React.RefObject<BottomSheetMethods>;
-	setPubId?: (pubId: Scalars["InternalPublicationId"]) => void;
+	setPublication?: (pubId: Scalars["InternalPublicationId"]) => void;
 };
 
-function MyVideoCard({ publication, id, sheetRef, setPubId }: MyVideoCardProps) {
+function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardProps) {
 	const navigation = useNavigation();
 	const { setActivePublication } = useActivePublication();
 	const { setIsInWatchLater } = useWatchLater();
@@ -114,9 +114,9 @@ function MyVideoCard({ publication, id, sheetRef, setPubId }: MyVideoCardProps) 
 				<TouchableOpacity
 					activeOpacity={0.5}
 					onPress={() => {
-						if (setPubId) {
+						if (setPublication) {
 							checkInWatchLater();
-							setPubId(publication.id);
+							setPublication(publication);
 						}
 					}}
 					style={{
@@ -135,7 +135,7 @@ export default memo(MyVideoCard);
 
 export type SheetProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
-	pubId: Scalars["InternalPublicationId"];
+	publication: Post | Mirror | null;
 	profileId: Scalars["ProfileId"];
 };
 

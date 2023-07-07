@@ -33,13 +33,13 @@ import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 
 const WatchLaterList = () => {
-	const [pubId, setPubId] = React.useState("");
+	const [publication, setPublication] = React.useState<Post | Mirror | null >(null);
 	const { currentProfile } = useProfile();
 	const WatchLaterSheetRef = React.useRef<BottomSheetMethods>(null);
 	const { accessToken } = useAuthStore();
 	const { sessionCount, setColor, setCover } = useWatchLater();
-	const handlePubId = React.useCallback((pubId: string) => {
-		setPubId(pubId);
+	const handlePubId = React.useCallback((publication: Post | Mirror) => {
+		setPublication(publication);
 	}, []);
 	async function handleCover(coverURL: string) {
 		setCover(coverURL);
@@ -169,30 +169,31 @@ const WatchLaterList = () => {
 							publication={item}
 							id={item.id}
 							sheetRef={WatchLaterSheetRef}
-							setPubId={handlePubId}
+							setPublication={handlePubId}
 						/>
 					</View>
 				)}
 			/>
-			<WatchLaterSheet sheetRef={WatchLaterSheetRef} pubId={pubId} />
+			<WatchLaterSheet sheetRef={WatchLaterSheetRef} publication={publication} />
 		</View>
 	);
 };
 
 export const WatchLaterSheet = ({
 	sheetRef,
-	pubId,
+	publication,
 }: {
 	sheetRef: React.RefObject<BottomSheetMethods>;
-	pubId: Scalars["InternalPublicationId"];
+	publication: Post | Mirror | null;
 }) => {
 	const { remove } = useAddWatchLater();
 	const actionList: actionListType[] = [
 		{
 			name: "Remove",
 			icon: "delete",
-			onPress: (pubid: Scalars["InternalPublicationId"]) => {
-				remove(pubId);
+			onPress: (publication: Post | Mirror) => {
+				console.log(publication);	
+				remove(publication);
 			},
 		},
 		{
@@ -229,7 +230,7 @@ export const WatchLaterSheet = ({
 					return (
 						<Ripple
 							onTap={() => {
-								item.onPress(pubId);
+								item.onPress(publication);
 								sheetRef?.current?.close();
 							}}
 						>

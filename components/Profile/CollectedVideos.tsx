@@ -36,7 +36,7 @@ type CollectedPublication = Post | Mirror;
 const keyExtractor = (item: CollectedPublication) => item.id;
 
 const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
-	const [pubId, setPubId] = React.useState("");
+	const [publication, setPublication] = React.useState<Post | Mirror | null >(null);
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
 	const CollectedVideoSheetRef = React.useRef<BottomSheetMethods>(null);
 	const { accessToken } = useAuthStore();
@@ -44,7 +44,7 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 	const { PRIMARY } = useThemeStore();
 
 	const handlePubId = React.useCallback((pubId: string) => {
-		setPubId(pubId);
+		setPublication(publication);
 	}, []);
 
 	const QueryRequest: PublicationsQueryRequest = {
@@ -167,22 +167,22 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 							publication={item}
 							id={item.id}
 							sheetRef={CollectedVideoSheetRef}
-							setPubId={handlePubId}
+							setPublication={handlePubId}
 						/>
 					)}
 				/>
 			)}
-			<CollectedVideoSheet sheetRef={CollectedVideoSheetRef} pubId={pubId} />
+			<CollectedVideoSheet sheetRef={CollectedVideoSheetRef} publication={publication} />
 		</View>
 	);
 };
 
 export const CollectedVideoSheet = ({
 	sheetRef,
-	pubId,
+	publication,
 }: {
 	sheetRef: React.RefObject<BottomSheetMethods>;
-	pubId: Scalars["InternalPublicationId"];
+	publication: Post | Mirror | null;
 }) => {
 	const { add, remove } = useAddWatchLater();
 	const { isInWatchLater } = useWatchLater();
@@ -199,13 +199,13 @@ export const CollectedVideoSheet = ({
 			},
 		},
 		{
-			name: isInWatchLater ? "Remove from watch later" : "Add to watch later",
-			icon: isInWatchLater ? "delete" : "clock",
-			onPress: (pubId) => {
-				if (isInWatchLater) {
-					remove(pubId);
+			name: publication?.bookmarked ? "Remove from watch later" : "Add to watch later",
+			icon: publication?.bookmarked ? "delete" : "clock",
+			onPress: (publication) => {
+				if (publication?.bookmarked) {
+					remove(publication);
 				} else {
-					add(pubId);
+					add(publication);
 				}
 			},
 		},
@@ -230,7 +230,7 @@ export const CollectedVideoSheet = ({
 					return (
 						<Ripple
 							onTap={() => {
-								item.onPress(pubId);
+								item.onPress(publication);
 								sheetRef?.current?.close();
 							}}
 						>

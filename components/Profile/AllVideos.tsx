@@ -13,7 +13,9 @@ import { LENSPLAY_SITE, SOURCES } from "constants/index";
 import { PUBLICATION } from "constants/tracking";
 import {
 	Attribute,
+	Mirror,
 	Post,
+	Publication,
 	PublicationMainFocus,
 	PublicationMetadataDisplayTypes,
 	PublicationsQueryRequest,
@@ -45,11 +47,11 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 	const { PRIMARY } = useThemeStore();
 	const { currentProfile } = useProfile();
 	const AllVideoSheetRef = React.useRef<BottomSheetMethods>(null);
-	const [pubId, setPubId] = React.useState("");
+	const [publication, setPublication] = React.useState<Post | Mirror | null >(null);
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
 
-	const handlePubId = React.useCallback((pubId: string) => {
-		setPubId(pubId);
+	const handlePubId = React.useCallback((publication: Post) => {
+		setPublication(publication);
 	}, []);
 
 	const QueryRequest: PublicationsQueryRequest = {
@@ -176,17 +178,17 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 							publication={item}
 							id={item.id}
 							sheetRef={AllVideoSheetRef}
-							setPubId={handlePubId}
+							setPublication={handlePubId}
 						/>
 					)}
 				/>
 			)}
-			<AllVideoSheet sheetRef={AllVideoSheetRef} pubId={pubId} profileId={profileId} />
+			<AllVideoSheet sheetRef={AllVideoSheetRef} publication={publication} profileId={profileId} />
 		</View>
 	);
 };
 
-export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
+export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) => {
 	const toast = useToast();
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
@@ -219,12 +221,12 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 				displayType: PublicationMetadataDisplayTypes.String,
 				traitType: "pinnedPublicationId",
 				key: "pinnedPublicationId",
-				value: pubId,
+				value: publication?.id,
 			};
 			attrs = [...attr!, newAttribute];
 		}
 		if (isAlreadyPinned) {
-			isAlreadyPinned.value = pubId;
+			isAlreadyPinned.value = publication?.id;
 		}
 
 		const newMetaData: ProfileMetaDataV1nput = {
@@ -236,7 +238,7 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 			attributes: isAlreadyPinned ? attr : (attrs as Attribute[]),
 		};
 		pinStore.setHasPinned(true);
-		pinStore.setPinnedPubId(pubId);
+		pinStore.setPinnedPubId(publication?.id);
 		const hash = await uploadToArweave(newMetaData);
 		createSetProfileMetadataViaDispatcherMutation({
 			variables: {
@@ -296,11 +298,11 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 		{
 			name: isInWatchLater ? "Remove from watch later" : "Add to watch later",
 			icon: isInWatchLater ? "delete" : "clock",
-			onPress: (pubId) => {
+			onPress: (publication) => {
 				if (isInWatchLater) {
-					remove(pubId);
+					remove(publication);
 				} else {
-					add(pubId);
+					add(publication);
 				}
 			},
 		},
@@ -328,7 +330,7 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 						return (
 							<Ripple
 								onTap={() => {
-									item.onPress(pubId);
+									item.onPress(publication);
 									sheetRef?.current?.close();
 								}}
 							>
@@ -357,7 +359,7 @@ export const AllVideoSheet = ({ sheetRef, pubId, profileId }: SheetProps) => {
 					}}
 				/>
 			</Sheet>
-			<DeleteVideo sheetRef={deleteRef} pubId={pubId} />
+			<DeleteVideo sheetRef={deleteRef} publication={publication} />
 		</>
 	);
 };

@@ -5,7 +5,7 @@ import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black } from "constants/Colors";
 import { SETTINGS } from "constants/tracking";
-import { Scalars, useHidePublicationMutation } from "customTypes/generated";
+import { Mirror, Post, Scalars, useHidePublicationMutation } from "customTypes/generated";
 import React from "react";
 import { View } from "react-native";
 import { useAuthStore, useToast } from "store/Store";
@@ -14,10 +14,10 @@ import TrackAction from "utils/Track";
 
 export type DeleteVideoProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
-	pubId: Scalars["InternalPublicationId"];
+	publication: Post | Mirror | null;
 };
 
-export default function DeleteVideo({ sheetRef, pubId }: DeleteVideoProps) {
+export default function DeleteVideo({ sheetRef, publication }: DeleteVideoProps) {
 	const toast = useToast();
 	const { accessToken } = useAuthStore();
 
@@ -95,7 +95,7 @@ export default function DeleteVideo({ sheetRef, pubId }: DeleteVideoProps) {
 							deleteVideo({
 								variables: {
 									request: {
-										publicationId: pubId,
+										publicationId: publication?.id,
 									},
 								},
 								context: {
