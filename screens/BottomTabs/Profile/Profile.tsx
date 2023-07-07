@@ -23,69 +23,9 @@ import Logger from "utils/logger";
 const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	const sheetRef = React.useRef<BottomSheetMethods>(null);
 	const { isGuest } = useGuestStore();
-	const { currentProfile } = useProfile();
-	const { accessToken } = useAuthStore();
-	const { setCover, setColor, sessionCount } = useWatchLater();
+	
 
-	async function handleCover(coverURL: string) {
-		setCover(coverURL);
-		getColors(coverURL, {
-			fallback: "#000000",
-			cache: true,
-			key: coverURL,
-			quality: "lowest",
-			pixelSpacing: 500,
-		})
-			.then((colors) => {
-				switch (colors.platform) {
-					case "android":
-						setColor(colors?.average);
-						break;
-					case "ios":
-						setColor(colors?.detail);
-						break;
-					default:
-						setColor("#7A52B5");
-				}
-			})
-			.catch((error) => {
-				setColor("#7A52B5");
-				Logger.Error("Failed to fetch image for geting dominient color", error);
-			});
-	}
-
-	const [getBookMarks, { data, loading }] = useProfileBookMarksLazyQuery({
-		variables: {
-			req: {
-				profileId: currentProfile?.id,
-				metadata: {
-					mainContentFocus: [PublicationMainFocus.Video],
-				},
-			},
-		},
-		context: {
-			headers: {
-				"x-access-token": `Bearer ${accessToken}`,
-			},
-		},
-	});
-
-	React.useEffect(() => {
-		getBookMarks()
-			.then((res) => {
-				if (res) {
-					handleCover(
-						getIPFSLink(
-							getRawurl(res?.data?.publicationsProfileBookmarks?.items[0]?.metadata?.cover)
-						)
-					);
-				}
-			})
-			.catch((err) => {
-				Logger.Error("[Error while fetching Bookmarks....]", err);
-			});
-		Logger.Count("EFFECT RAN");
-	}, [sessionCount]);
+	
 
 	if (isGuest) return <PleaseLogin />;
 

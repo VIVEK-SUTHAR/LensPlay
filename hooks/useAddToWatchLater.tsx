@@ -72,10 +72,11 @@ const useAddWatchLater = () => {
 		onCompleted: (data) => {
 			Logger.Success("", data);
 			toast.success("removed successfully");
-			setTimeout(() => {
-				setSessionCount();
-			}, 100);
+			// setTimeout(() => {
+			// 	setSessionCount();
+			// }, 100);
 			TrackAction(PUBLICATION.REMOVE_WATCH_LATER);
+			setSessionCount();
 		},
 		onError: (error) => {
 			Logger.Error("", error);

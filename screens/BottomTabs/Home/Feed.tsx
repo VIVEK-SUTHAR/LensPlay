@@ -16,6 +16,7 @@ import {
 	useFeedQuery,
 	type FeedItem,
 	type FeedItemRoot,
+	useProfileBookMarksLazyQuery,
 } from "customTypes/generated";
 import type { RootTabScreenProps } from "customTypes/navigation";
 import * as ScreenOrientation from "expo-screen-orientation";
@@ -31,19 +32,24 @@ import {
 	StyleSheet,
 	View,
 } from "react-native";
+import { getColors } from "react-native-image-colors";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
+import useWatchLater from "store/WatchLaterStore";
 import TrackAction from "utils/Track";
 import getAndSaveNotificationToken from "utils/getAndSaveNotificationToken";
+import getIPFSLink from "utils/getIPFSLink";
+import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	const [refreshing, setRefreshing] = useState<boolean>(false);
 
 	const theme = useThemeStore();
-	const { accessToken } = useAuthStore();
 	const { isGuest } = useGuestStore();
 	const { currentProfile } = useProfile();
+	const { accessToken } = useAuthStore();
+	const { setCover, setColor, sessionCount } = useWatchLater();
 
 	React.useEffect(() => {
 		getAndSaveNotificationToken(currentProfile?.id);
@@ -164,6 +170,67 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 			progressBackgroundColor={"black"}
 		/>
 	);
+
+	//Bookmarks
+	async function handleCover(coverURL: string) {
+		setCover(coverURL);
+		getColors(coverURL, {
+			fallback: "#000000",
+			cache: true,
+			key: coverURL,
+			quality: "lowest",
+			pixelSpacing: 500,
+		})
+			.then((colors) => {
+				switch (colors.platform) {
+					case "android":
+						setColor(colors?.average);
+						break;
+					case "ios":
+						setColor(colors?.detail);
+						break;
+					default:
+						setColor("#7A52B5");
+				}
+			})
+			.catch((error) => {
+				setColor("#7A52B5");
+				Logger.Error("Failed to fetch image for geting dominient color", error);
+			});
+	}
+
+	const [getBookMarks, { data }] = useProfileBookMarksLazyQuery({
+		variables: {
+			req: {
+				profileId: currentProfile?.id,
+				metadata: {
+					mainContentFocus: [PublicationMainFocus.Video],
+				},
+			},
+		},
+		context: {
+			headers: {
+				"x-access-token": `Bearer ${accessToken}`,
+			},
+		},
+	});
+
+	React.useEffect(() => {
+		getBookMarks()
+			.then((res) => {
+				if (res) {
+					handleCover(
+						getIPFSLink(
+							getRawurl(res?.data?.publicationsProfileBookmarks?.items[0]?.metadata?.cover)
+						)
+					);
+				}
+			})
+			.catch((err) => {
+				Logger.Error("[Error while fetching Bookmarks....]", err);
+			});
+		Logger.Count("EFFECT RAN");
+	}, [sessionCount]);
 
 	if (isGuest) return <PleaseLogin />;
 	if (error) {

@@ -70,7 +70,7 @@ const WatchLaterList = () => {
 			});
 	}
 
-	const [getBookMarks, { data, loading }] = useProfileBookMarksLazyQuery({
+	const { data, loading, refetch } = useProfileBookMarksQuery({
 		variables: {
 			req: {
 				profileId: currentProfile?.id,
@@ -84,18 +84,22 @@ const WatchLaterList = () => {
 				"x-access-token": `Bearer ${accessToken}`,
 			},
 		},
-		fetchPolicy: "network-only",
+		fetchPolicy: "cache-only",
+		// notifyOnNetworkStatusChange: false
+		// pollInterval: 3400,
 	});
 
 	React.useEffect(() => {
-		getBookMarks().then((res) => {
+		refetch().then((res) => {
 			if (res) {
 				handleCover(
 					getIPFSLink(getRawurl(res?.data?.publicationsProfileBookmarks?.items[0]?.metadata?.cover))
 				);
 			}
+			Logger.Log("blue");
 		});
-	}, []);
+	}, [sessionCount]);
+
 
 	if (loading) {
 		return (
