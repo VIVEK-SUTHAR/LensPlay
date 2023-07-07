@@ -1,10 +1,19 @@
 import { PUBLICATION } from "constants/tracking";
-import { AddBookMarkDocument, AllPublicationsDocument, Mirror, Post, ProfileBookMarksDocument, ProfileDocument, PublicationMainFocus, useAddBookMarkMutation, useRemoveBookMarkMutation } from "customTypes/generated";
+import {
+	Mirror,
+	Post,
+	ProfileBookMarksDocument,
+	ProfileBookMarksQueryHookResult,
+	ProfileBookMarksQueryResult,
+	PublicationMainFocus,
+	useAddBookMarkMutation,
+	useRemoveBookMarkMutation,
+} from "customTypes/generated";
+import { useState } from "react";
 import { useAuthStore, useProfile, useToast } from "store/Store";
+import useWatchLater from "store/WatchLaterStore";
 import TrackAction from "utils/Track";
 import Logger from "utils/logger";
-import useWatchLater from "store/WatchLaterStore";
-import { useState } from "react";
 
 const useAddWatchLater = () => {
 	const toast = useToast();
@@ -22,32 +31,41 @@ const useAddWatchLater = () => {
 			TrackAction(PUBLICATION.ADD_WATCH_LATER);
 		},
 		onError: (error) => {
-			Logger.Error("", error);
+			Logger.Error("error", error);
 			toast.error("failed to add watch later");
 		},
 		update: (cache) => {
 			cache.modify({
 				id: cache.identify(publication as any),
 				fields: {
-					bookmarked(){
+					bookmarked() {
 						return true;
-					}
-				}
-			});
-			// console.log(cache.);
-			
-			
-			const data = cache.readQuery({
-				query: AllPublicationsDocument,
-				variables: {
-					request: {
-						profileId: currentProfile?.id,
 					},
 				},
 			});
-			console.log(data,'moments');
-			
-		}
+
+			const BookMarksData = cache.readQuery({
+				query: ProfileBookMarksDocument,
+				variables: {
+					req: {
+						profileId: currentProfile?.id,
+						metadata: {
+							mainContentFocus: [PublicationMainFocus.Video],
+						},
+					},
+				},
+			});
+
+			BookMarksData!.publicationsProfileBookmarks.items = [
+				publication,
+				...BookMarksData!.publicationsProfileBookmarks?.items,
+			];
+
+			cache.writeQuery({
+				query: ProfileBookMarksDocument,
+				data: BookMarksData,
+			});
+		},
 	});
 
 	const [removeFromBookMark] = useRemoveBookMarkMutation({
@@ -67,18 +85,42 @@ const useAddWatchLater = () => {
 			cache.modify({
 				id: cache.identify(publication as any),
 				fields: {
-					bookmarked(){
+					bookmarked() {
 						return false;
-					}
-				}
-			})
-		}
+					},
+				},
+			});
+
+			const BookMarksData = cache.readQuery({
+				query: ProfileBookMarksDocument,
+				variables: {
+					req: {
+						profileId: currentProfile?.id,
+						metadata: {
+							mainContentFocus: [PublicationMainFocus.Video],
+						},
+					},
+				},
+			});
+
+			BookMarksData!.publicationsProfileBookmarks.items =
+				BookMarksData!.publicationsProfileBookmarks.items.filter(
+					(bookmark: Post | Mirror) => bookmark?.id !== publication?.id
+				);
+
+			Logger.Success("", BookMarksData!.publicationsProfileBookmarks.items?.length);
+
+			cache.writeQuery({
+				query: ProfileBookMarksDocument,
+				data: BookMarksData,
+			});
+		},
 	});
 
 	const add = async (publication: Post | Mirror) => {
 		setPublication(publication);
 		console.log(publication?.id);
-		
+
 		addToBookMark({
 			variables: {
 				req: {

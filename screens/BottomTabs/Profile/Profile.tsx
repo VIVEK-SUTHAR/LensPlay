@@ -6,11 +6,7 @@ import MirroredVideos from "components/Profile/MirroredVideos";
 import { UnPinSheet } from "components/Profile/PinnedPublication";
 import ProfileHeader from "components/Profile/ProfileHeader";
 import Tabs, { Tab } from "components/UI/Tabs";
-import {
-	PublicationMainFocus,
-	useProfileBookMarksLazyQuery,
-	useProfileBookMarksQuery,
-} from "customTypes/generated";
+import { PublicationMainFocus, useProfileBookMarksLazyQuery } from "customTypes/generated";
 import { RootTabScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
@@ -72,8 +68,8 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 				"x-access-token": `Bearer ${accessToken}`,
 			},
 		},
-		fetchPolicy:"no-cache"
 	});
+
 	React.useEffect(() => {
 		getBookMarks()
 			.then((res) => {
@@ -88,7 +84,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 			.catch((err) => {
 				Logger.Error("[Error while fetching Bookmarks....]", err);
 			});
-		Logger.Count("EFFECT RAN")
+		Logger.Count("EFFECT RAN");
 	}, [sessionCount]);
 
 	if (isGuest) return <PleaseLogin />;

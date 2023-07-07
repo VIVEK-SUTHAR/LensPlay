@@ -33,14 +33,16 @@ import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 
 const WatchLaterList = () => {
-	const [publication, setPublication] = React.useState<Post | Mirror | null >(null);
+	const [publication, setPublication] = React.useState<Post | Mirror | null>(null);
 	const { currentProfile } = useProfile();
 	const WatchLaterSheetRef = React.useRef<BottomSheetMethods>(null);
 	const { accessToken } = useAuthStore();
 	const { sessionCount, setColor, setCover } = useWatchLater();
+
 	const handlePubId = React.useCallback((publication: Post | Mirror) => {
 		setPublication(publication);
 	}, []);
+
 	async function handleCover(coverURL: string) {
 		setCover(coverURL);
 		getColors(coverURL, {
@@ -82,8 +84,9 @@ const WatchLaterList = () => {
 				"x-access-token": `Bearer ${accessToken}`,
 			},
 		},
-		fetchPolicy: "no-cache",
+		fetchPolicy: "network-only",
 	});
+
 	React.useEffect(() => {
 		getBookMarks().then((res) => {
 			if (res) {
@@ -92,8 +95,7 @@ const WatchLaterList = () => {
 				);
 			}
 		});
-	}, [sessionCount]);
-	const watchLaters = data?.publicationsProfileBookmarks?.items;
+	}, []);
 
 	if (loading) {
 		return (
@@ -156,7 +158,7 @@ const WatchLaterList = () => {
 			}}
 		>
 			<FlashList
-				data={watchLaters as Post[] | Mirror[]}
+				data={data?.publicationsProfileBookmarks?.items as Post[] | Mirror[]}
 				ListHeaderComponent={WatchLaterHeader}
 				ListEmptyComponent={NoVideosFound}
 				removeClippedSubviews={true}
@@ -192,7 +194,7 @@ export const WatchLaterSheet = ({
 			name: "Remove",
 			icon: "delete",
 			onPress: (publication: Post | Mirror) => {
-				console.log(publication);	
+				console.log(publication);
 				remove(publication);
 			},
 		},
