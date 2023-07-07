@@ -38,6 +38,14 @@ const aaveMembers = [
 	"0x0ba3", // khaled
 ];
 
+const lensProjects = [
+	"0x0189d3", //molens
+	"0x01bb74", //lensvert
+	"0x01adb0", //lensacademy.lens
+	"0x01a540", //molensticketoffice.lens
+	"0x0178bb", //deanisnearby
+];
+
 export const mainnetVerified = [
 	"0x3a77", // kipto
 	"0x01cc3a", // zonday
@@ -282,4 +290,5 @@ export const mainnetVerified = [
 	"0x0d", // yoginth
 	"0x0c", // lenster
 	...aaveMembers,
+	...lensProjects,
 ];
