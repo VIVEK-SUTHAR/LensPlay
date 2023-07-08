@@ -160,9 +160,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	if (ReactionData) {
 		console.log(ReactionData);
 		if (!reaction) {
-			console.log("here");
 			setReaction(true);
-			LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
 			setVideoPageStats(
 				ReactionData?.publication?.reaction === "UPVOTE",
 				ReactionData?.publication?.reaction === "DOWNVOTE",

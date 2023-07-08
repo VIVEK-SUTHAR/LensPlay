@@ -31,7 +31,6 @@ import { ActivityIndicator, Share, View } from "react-native";
 import { FlatList, RefreshControl } from "react-native-gesture-handler";
 import usePinStore from "store/pinStore";
 import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
-import useWatchLater from "store/WatchLaterStore";
 import getRawurl from "utils/getRawUrl";
 import TrackAction from "utils/Track";
 import uploadToArweave from "utils/uploadToArweave";
@@ -47,10 +46,10 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 	const { PRIMARY } = useThemeStore();
 	const { currentProfile } = useProfile();
 	const AllVideoSheetRef = React.useRef<BottomSheetMethods>(null);
-	const [publication, setPublication] = React.useState<Post | Mirror | null >(null);
+	const [publication, setPublication] = React.useState<Post | Mirror | null>(null);
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
 
-	const handlePubId = React.useCallback((publication: Post) => {
+	const handlePublication = React.useCallback((publication: Post | Mirror) => {
 		setPublication(publication);
 	}, []);
 
@@ -70,7 +69,7 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 			reactionRequest: {
 				profileId: currentProfile?.id,
 			},
-			channelId:currentProfile?.id
+			channelId: currentProfile?.id,
 		},
 		context: {
 			headers: {
@@ -178,7 +177,7 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 							publication={item}
 							id={item.id}
 							sheetRef={AllVideoSheetRef}
-							setPublication={handlePubId}
+							setPublication={handlePublication}
 						/>
 					)}
 				/>
@@ -193,7 +192,6 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
 	const { add, remove } = useAddWatchLater();
-	const { isInWatchLater, setSessionCount } = useWatchLater();
 
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
 
@@ -296,10 +294,10 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 			},
 		},
 		{
-			name: isInWatchLater ? "Remove from watch later" : "Add to watch later",
-			icon: isInWatchLater ? "delete" : "clock",
+			name: publication?.bookmarked ? "Remove from watch later" : "Add to watch later",
+			icon: publication?.bookmarked ? "delete" : "clock",
 			onPress: (publication) => {
-				if (isInWatchLater) {
+				if (publication?.bookmarked) {
 					remove(publication);
 				} else {
 					add(publication);

@@ -27,7 +27,7 @@ const Toast = () => {
 			}).start();
 			setTimeout(() => {
 				toastStore.show("", ToastType.INFO, false);
-			}, 5000);
+			}, 1000);
 		}
 	}, [toastStore.message]);
 	useEffect(() => {

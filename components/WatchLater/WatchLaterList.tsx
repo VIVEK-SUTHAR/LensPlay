@@ -31,6 +31,7 @@ import { getColors } from "react-native-image-colors";
 import Logger from "utils/logger";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
+import { LayoutAnimation } from "react-native";
 
 const WatchLaterList = () => {
 	const [publication, setPublication] = React.useState<Post | Mirror | null>(null);
@@ -39,7 +40,7 @@ const WatchLaterList = () => {
 	const { accessToken } = useAuthStore();
 	const { sessionCount, setColor, setCover } = useWatchLater();
 
-	const handlePubId = React.useCallback((publication: Post | Mirror) => {
+	const handlePublication = React.useCallback((publication: Post | Mirror) => {
 		setPublication(publication);
 	}, []);
 
@@ -90,68 +91,23 @@ const WatchLaterList = () => {
 	});
 
 	React.useEffect(() => {
+		if (!loading) {
+			LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+		}
+	}, [loading]);
+
+	React.useEffect(() => {
 		refetch().then((res) => {
 			if (res) {
 				handleCover(
 					getIPFSLink(getRawurl(res?.data?.publicationsProfileBookmarks?.items[0]?.metadata?.cover))
 				);
 			}
-			Logger.Log("blue");
 		});
 	}, [sessionCount]);
 
-
 	if (loading) {
-		return (
-			<>
-				<LinearGradient
-					style={{
-						alignItems: "center",
-						padding: 16,
-					}}
-					colors={["#1d1d1d", "black"]}
-				>
-					<View
-						style={{
-							height: 200,
-							width: "100%",
-							borderRadius: 8,
-							backgroundColor: "#1d1d1d",
-						}}
-					/>
-					<View
-						style={{
-							marginTop: 24,
-							width: "100%",
-						}}
-					>
-						<View
-							style={{
-								width: Dimensions.get("screen").width * 0.36,
-								height: 16,
-								backgroundColor: "#1d1d1d",
-								marginHorizontal: 8,
-								marginVertical: 8,
-							}}
-						/>
-						<View
-							style={{
-								width: Dimensions.get("screen").width * 0.3,
-								height: 12,
-								backgroundColor: "#1d1d1d",
-								marginHorizontal: 8,
-								marginVertical: 4,
-							}}
-						/>
-					</View>
-				</LinearGradient>
-				<Skeleton number={5}>
-					<View style={{ padding: 8 }}>
-						<ProfileVideoCardSkeleton />
-					</View>
-				</Skeleton>
-			</>
-		);
+		return <WatchLaterSkeleton />;
 	}
 
 	return (
@@ -175,7 +131,7 @@ const WatchLaterList = () => {
 							publication={item}
 							id={item.id}
 							sheetRef={WatchLaterSheetRef}
-							setPublication={handlePubId}
+							setPublication={handlePublication}
 						/>
 					</View>
 				)}
@@ -317,5 +273,60 @@ const WatchLaterHeader = () => {
 		</LinearGradient>
 	);
 };
+
+const WatchLaterSkeleton = () => {
+	return (
+		<>
+			<LinearGradient
+				style={{
+					alignItems: "center",
+					padding: 16,
+				}}
+				colors={["#1d1d1d", "black"]}
+			>
+				<View
+					style={{
+						height: 200,
+						width: "100%",
+						borderRadius: 8,
+						backgroundColor: "#1d1d1d",
+					}}
+				/>
+				<View
+					style={{
+						marginTop: 24,
+						width: "100%",
+					}}
+				>
+					<View
+						style={{
+							width: Dimensions.get("screen").width * 0.36,
+							height: 16,
+							backgroundColor: "#1d1d1d",
+							marginHorizontal: 8,
+							marginVertical: 8,
+						}}
+					/>
+					<View
+						style={{
+							width: Dimensions.get("screen").width * 0.3,
+							height: 12,
+							backgroundColor: "#1d1d1d",
+							marginHorizontal: 8,
+							marginVertical: 4,
+						}}
+					/>
+				</View>
+			</LinearGradient>
+			<Skeleton number={5}>
+				<View style={{ padding: 8 }}>
+					<ProfileVideoCardSkeleton />
+				</View>
+			</Skeleton>
+		</>
+	);
+};
+
+export { WatchLaterSkeleton };
 
 export default WatchLaterList;

@@ -43,7 +43,7 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 	const { currentProfile } = useProfile();
 	const { PRIMARY } = useThemeStore();
 
-	const handlePubId = React.useCallback((pubId: string) => {
+	const handlePublication = React.useCallback((publication: Mirror | Post) => {
 		setPublication(publication);
 	}, []);
 
@@ -167,7 +167,7 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 							publication={item}
 							id={item.id}
 							sheetRef={CollectedVideoSheetRef}
-							setPublication={handlePubId}
+							setPublication={handlePublication}
 						/>
 					)}
 				/>

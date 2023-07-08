@@ -23,11 +23,8 @@ const useAddWatchLater = () => {
 	const [publication, setPublication] = useState<Post | Mirror | null>(null);
 	const [addToBookMark] = useAddBookMarkMutation({
 		onCompleted: (data) => {
-			Logger.Success("", data);
-			toast.success("Added to watch later");
-			setTimeout(() => {
-				setSessionCount();
-			}, 100);
+			Logger.Success("Bookmarks Updated to Server");
+			setSessionCount();
 			TrackAction(PUBLICATION.ADD_WATCH_LATER);
 		},
 		onError: (error) => {
@@ -71,10 +68,6 @@ const useAddWatchLater = () => {
 	const [removeFromBookMark] = useRemoveBookMarkMutation({
 		onCompleted: (data) => {
 			Logger.Success("", data);
-			toast.success("removed successfully");
-			// setTimeout(() => {
-			// 	setSessionCount();
-			// }, 100);
 			TrackAction(PUBLICATION.REMOVE_WATCH_LATER);
 			setSessionCount();
 		},
@@ -83,15 +76,6 @@ const useAddWatchLater = () => {
 			toast.error("failed to remove watch later");
 		},
 		update: (cache) => {
-			cache.modify({
-				id: cache.identify(publication as any),
-				fields: {
-					bookmarked() {
-						return false;
-					},
-				},
-			});
-
 			const BookMarksData = cache.readQuery({
 				query: ProfileBookMarksDocument,
 				variables: {
@@ -109,18 +93,29 @@ const useAddWatchLater = () => {
 					(bookmark: Post | Mirror) => bookmark?.id !== publication?.id
 				);
 
-			Logger.Success("", BookMarksData!.publicationsProfileBookmarks.items?.length);
 
 			cache.writeQuery({
 				query: ProfileBookMarksDocument,
 				data: BookMarksData,
 			});
+
+			cache.modify({
+				id: cache.identify(publication as any),
+				fields: {
+					bookmarked() {
+						return false;
+					},
+				},
+			});
+			toast.success("removed successfully");
 		},
 	});
 
 	const add = async (publication: Post | Mirror) => {
+		console.log(publication, 'red');
 		setPublication(publication);
 		console.log(publication?.id);
+		toast.success("Added to watch later");
 
 		addToBookMark({
 			variables: {
@@ -138,6 +133,7 @@ const useAddWatchLater = () => {
 	};
 
 	const remove = async (publication: Post | Mirror) => {
+		
 		setPublication(publication);
 		removeFromBookMark({
 			variables: {

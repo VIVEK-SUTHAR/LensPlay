@@ -26,7 +26,7 @@ import { ActivityIndicator, FlatList, RefreshControl, Share, View } from "react-
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import CommonStyles from "styles/index";
 import { NoVideosFound } from "./AllVideos";
-import useWatchLater from "store/WatchLaterStore";
+import Logger from "utils/logger";
 
 type MirroredVideosProps = {
 	channelId?: string;
@@ -42,7 +42,7 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 	const [publication, setPublication] = React.useState<Post | Mirror | null >(null);
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
 
-	const handlePubId = React.useCallback((pubId: string) => {
+	const handlePublication = React.useCallback((publication: Post | Mirror) => {
 		setPublication(publication);
 	}, []);
 
@@ -177,7 +177,7 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 						publication={item}
 						id={item.id}
 						sheetRef={MirroredVideoSheetRef}
-						setPublication={handlePubId}
+						setPublication={handlePublication}
 					/>
 				)}
 			/>
@@ -189,7 +189,6 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) => {
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
 	const { add, remove } = useAddWatchLater();
-	const { isInWatchLater } = useWatchLater();
 
 	const actionList: actionListType[] = [
 		{
@@ -224,10 +223,10 @@ export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetPr
 			},
 		},
 		{
-			name: isInWatchLater ? "Remove from watch later" : "Add to watch later",
-			icon: isInWatchLater ? "delete" : "clock",
+			name: publication?.bookmarked ? "Remove from watch later" : "Add to watch later",
+			icon: publication?.bookmarked ? "delete" : "clock",
 			onPress: (publication) => {
-				if (isInWatchLater) {
+				if (publication?.bookmarked) {
 					remove(publication);
 				} else {
 					add(publication);
@@ -256,6 +255,7 @@ export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetPr
 						return (
 							<Ripple
 								onTap={() => {
+									Logger.Log('chumma',publication);
 									item.onPress(publication);
 									sheetRef?.current?.close();
 								}}
