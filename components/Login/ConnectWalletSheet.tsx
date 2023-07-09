@@ -1,7 +1,8 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { useWeb3Modal } from "@web3modal/react-native";
+import { useWalletConnectModal } from '@walletconnect/modal-react-native';
+
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
@@ -42,7 +43,7 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 		}
 	}
 
-	const { open, isConnected, address, isOpen, close } = useWeb3Modal();
+	const { open, isConnected, address, isOpen, close } = useWalletConnectModal();
 
 	const handleConnectWallet = async () => {
 		if (isConnected && address) {

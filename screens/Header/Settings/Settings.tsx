@@ -1,6 +1,6 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useWeb3Modal } from "@web3modal/react-native";
+import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 // import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
@@ -40,7 +40,7 @@ type SettingsItemProps = {
 };
 
 const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
-	const { isConnected, address, provider } = useWeb3Modal();
+	const { isConnected, address, provider } = useWalletConnectModal();
 	const [isReadyToRender, setIsReadyToRender] = React.useState(false);
 
 	React.useEffect(() => {

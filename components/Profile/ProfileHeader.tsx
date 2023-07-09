@@ -42,7 +42,7 @@ import PinnedPublication, { UnPinSheet } from "./PinnedPublication";
 import ProfileLists from "./ProfileLists";
 import UserStats from "./UserStats";
 import VerifiedBadge from "./VerifiedBadge";
-import { useWeb3Modal } from "@web3modal/react-native";
+import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 
 type ProfileHeaderProps = {
 	profileId?: Scalars["ProfileId"];
@@ -341,7 +341,7 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 	const toast = useToast();
 	const { accessToken } = useAuthStore();
 	// const wallet = useWalletConnect();
-	const { address, provider, isConnected } = useWeb3Modal();
+	const { address, provider, isConnected } = useWalletConnectModal();
 
 	/**
 	 * Only Free Follow and Free Collect is supported via Dispatcher

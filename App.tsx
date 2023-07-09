@@ -1,5 +1,4 @@
 import { ApolloProvider } from "@apollo/client";
-import { Web3Modal } from "@web3modal/react-native";
 import { client } from "apollo/client";
 import NetworkStatus from "components/NetworkStatus";
 import Toast from "components/Toast";
@@ -9,6 +8,7 @@ import useCachedResources from "hooks/useCachedResources";
 import React from "react";
 import { Platform, UIManager } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { WalletConnectModal } from '@walletconnect/modal-react-native';
 import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { APP_NAME, DESCRIPTION, LENSPLAY_SITE } from "./constants";
@@ -21,7 +21,7 @@ const providerMetadata = {
 	name: APP_NAME,
 	description: DESCRIPTION,
 	url: LENSPLAY_SITE,
-	icons: ["https://lensplay.xyz/logo.png"],
+	icons: ["https://pbs.twimg.com/profile_images/1633425966709211136/oZTahygd_400x400.jpg"],
 	redirect: {
 		native: "YOUR_APP_SCHEME://",
 		universal: "YOUR_APP_UNIVERSAL_LINK.com",
@@ -47,23 +47,8 @@ export default function App() {
 						<StatusBar style="dark" />
 						<Navigation />
 					</ApolloProvider>
-					<Web3Modal
-						projectId={projectId}
-						providerMetadata={providerMetadata}
-						themeMode="dark"
-						sessionParams={{
-							namespaces: {
-								eip155: {
-									methods: ["eth_sendTransaction", "personal_sign", "eth_signTypedData"],
-									chains: ["eip155:137"],
-									events: ["chainChanged", "accountsChanged"],
-									rpcMap: {},
-								},
-							},
-						}}
-					/>
 				</SafeAreaProvider>
-				<Web3Modal
+				<WalletConnectModal
 					projectId={projectId}
 					providerMetadata={providerMetadata}
 					themeMode="dark"

@@ -30,7 +30,7 @@
 		"@react-navigation/native": "^6.0.2",
 		"@react-navigation/native-stack": "^6.1.0",
 		"@shopify/flash-list": "1.4.0",
-		"@web3modal/react-native": "^1.0.0-alpha.7",
+		"@walletconnect/modal-react-native": "^1.0.0-rc.5",
 		"crypto-js": "^4.1.1",
 		"eslint-config-prettier": "^8.8.0",
 		"expo": "^48.0.0",

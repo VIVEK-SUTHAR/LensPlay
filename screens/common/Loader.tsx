@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useWeb3Modal } from "@web3modal/react-native";
+import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 // import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Heading from "components/UI/Heading";
 import StorageKeys from "constants/Storage";
@@ -29,7 +29,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 	const blackBox = useSharedValue(1);
 	const image = useSharedValue(0);
 	const textOpacity = useSharedValue(0);
-	const { address: WalletAddres } = useWeb3Modal();
+	const { address: WalletAddres } = useWalletConnectModal();
 	// const { accounts } = useWalletConnect();
 
 	const [verifyTokens, { data: isvalidTokens, error: verifyError, loading: verifyLoading }] =
