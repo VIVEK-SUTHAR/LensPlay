@@ -19,14 +19,15 @@ import { StatusBar } from "expo-status-bar";
 import React, { FC, useRef } from "react";
 import {
 	LayoutAnimation,
-	Linking, Pressable,
+	Linking,
+	Pressable,
 	SafeAreaView,
 	ScrollView,
-	StyleSheet, useWindowDimensions,
-	View
+	StyleSheet,
+	useWindowDimensions,
+	View,
 } from "react-native";
 import { useGuestStore } from "store/GuestStore";
-import { useInviteStore } from "store/InviteStore";
 import { useProfile } from "store/Store";
 import TrackAction from "utils/Track";
 
@@ -56,7 +57,6 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 	const logoutref = useRef<BottomSheetMethods>(null);
 	const QRCodeRef = useRef<BottomSheetMethods>(null);
 	const { currentProfile, setCurrentProfile } = useProfile();
-	const { clearInvites } = useInviteStore();
 
 	const SettingItemsList: SettingsItemProps[] = [
 		{
@@ -237,19 +237,14 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 						onPress={async () => {
 							const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
 							await AsyncStorage.removeItem("@user_tokens");
-							await AsyncStorage.removeItem("@user_data");
-							await AsyncStorage.removeItem("@invite_data");
 							await AsyncStorage.removeItem(StorageKeys.UserAddress);
 							setCurrentProfile(undefined);
 							if (isDeskTopLogin) {
 								await AsyncStorage.removeItem("@viaDeskTop");
-								clearInvites();
 								navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] });
 								return;
 							} else {
 								await provider?.disconnect();
-								// await Wallet.killSession();
-								clearInvites();
 								navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] });
 							}
 							TrackAction(AUTH.LOGOUT);

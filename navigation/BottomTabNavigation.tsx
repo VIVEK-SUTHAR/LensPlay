@@ -144,20 +144,6 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 							>
 								<Icon name="upload-file" size={24} />
 							</Pressable> */}
-							{!isGuest ? (
-								<Pressable
-									onPress={() => navigation.push("Invite")}
-									style={{
-										paddingHorizontal: 8,
-										height: "100%",
-										alignItems: "center",
-										justifyContent: "center",
-									}}
-								>
-									<Icon name="invite" size={20} />
-								</Pressable>
-							) : null}
-
 							<Pressable
 								onPress={() => {
 									navigation.push("Search");

@@ -22,7 +22,6 @@ import Animated, {
 import { useAuthStore, useProfile, useToast } from "store/Store";
 import TrackAction from "utils/Track";
 import decryptData from "utils/decryptData";
-import handleUser from "utils/invites/handleUser";
 import getDefaultProfile from "utils/lens/getDefaultProfile";
 import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
@@ -98,20 +97,10 @@ export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">)
 		console.log('address from qr in default profile');
 		
 		const userDefaultProfile = await getDefaultProfile(adress);
-		const userData = await AsyncStorage.getItem("@user_data");
 		
 
 		if (userDefaultProfile) {
 			setCurrentProfile(userDefaultProfile);
-			if (!userData) {
-				const isUser = await handleUser(userDefaultProfile?.id);
-				
-				if (!isUser) {
-					console.log('navigate');
-					
-					navigation.navigate("InviteCode");
-				}
-			}
 			return true;
 		} else {
 			setHasHandle(false);

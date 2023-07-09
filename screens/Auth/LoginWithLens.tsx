@@ -163,12 +163,29 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="transparent" style="light" />
+			<View style={{
+				justifyContent: "flex-end",
+				alignItems: "center",
+				marginBottom: 32,
+				flex: 1,
+			}}>
+			<View
+				style={{
+					width: windowWidth,
+					height: "50%",
+					justifyContent: "center",
+					alignItems: "center",
+				}}
+			>
+				<Login />
+			</View>
 			<View
 				style={{
 					width: width,
 					paddingHorizontal: 16,
 					justifyContent: "center",
-					marginTop: 64,
+					marginTop: 32,
+					
 				}}
 			>
 				<StyledText
@@ -184,15 +201,6 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 					}}
 				/>
 			</View>
-			<View
-				style={{
-					width: windowWidth,
-					height: "50%",
-					justifyContent: "center",
-					alignItems: "center",
-				}}
-			>
-				<Login />
 			</View>
 			<View
 				style={{

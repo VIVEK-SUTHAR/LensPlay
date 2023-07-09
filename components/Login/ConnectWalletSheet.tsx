@@ -13,7 +13,6 @@ import { Pressable, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useProfile } from "store/Store";
 import TrackAction from "utils/Track";
-import handleUser from "utils/invites/handleUser";
 import getProfiles from "utils/lens/getProfiles";
 import Logger from "utils/logger";
 
@@ -28,7 +27,6 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 	const { setCurrentProfile, setHasHandle } = useProfile();
 
 	async function HandleDefaultProfile(adress: Scalars["EthereumAddress"]) {
-		const userData = await AsyncStorage.getItem("@user_data");
 
 		const userDefaultProfile = await getProfiles({
 			ownedBy: adress,
@@ -37,14 +35,6 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 		if (userDefaultProfile) {
 			setHasHandle(true);
 			setCurrentProfile(userDefaultProfile);
-
-			if (!userData) {
-				const isUser = await handleUser(userDefaultProfile?.id);
-				if (!isUser) {
-					navigation.navigate("InviteCode");
-					return;
-				}
-			}
 		} else {
 			setHasHandle(false);
 			setCurrentProfile(undefined);
@@ -67,10 +57,6 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 			handleGuest(false);
 
 			await HandleDefaultProfile(address);
-			const userData = await AsyncStorage.getItem("@user_data");
-			if (!userData) {
-				return;
-			}
 			const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
 			if (isDeskTopLogin) {
 				await AsyncStorage.removeItem("@viaDeskTop");
