@@ -39,10 +39,11 @@ import formatUnfollowTypedData from "utils/lens/formatUnfollowTypedData";
 import Logger from "utils/logger";
 import Cover from "./Cover";
 import PinnedPublication, { UnPinSheet } from "./PinnedPublication";
-import ProfileLists from "./ProfileLists";
+import ProfileLists, { Item } from "./ProfileLists";
 import UserStats from "./UserStats";
 import VerifiedBadge from "./VerifiedBadge";
 import { useWeb3Modal } from "@web3modal/react-native";
+import Icon from "components/Icon";
 
 type ProfileHeaderProps = {
 	profileId?: Scalars["ProfileId"];
@@ -298,6 +299,26 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 							isChannel={isChannel}
 						/>
 						<UserStats profile={profile as Profile} />
+						<Pressable
+							android_ripple={{
+								color: black[200],
+							}}
+							style={styles.itemContainer}
+							onPress={() => {
+								navigation.navigate("FollowAnalytics");
+							}}
+						>
+							<View
+								style={{
+									flexDirection: "row",
+									alignItems: "center",
+								}}
+							>
+								<Icon name="follow" />
+								<StyledText title={"Subscribers Growth"} style={styles.itemText} />
+							</View>
+							<Icon name="rightArrow" size={16} />
+						</Pressable>
 						{!isChannel ? <ProfileLists /> : null}
 					</View>
 				</ScrollView>
@@ -439,8 +460,8 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 		const msgParams = [address, JSON.stringify(message)];
 		const sig = await provider?.request({
 			method: "eth_signTypedData",
-			params: msgParams
-		})
+			params: msgParams,
+		});
 		void sendUnFollowTxn({
 			variables: {
 				request: {
@@ -513,5 +534,22 @@ const styles = StyleSheet.create({
 		color: "#E9E8E8",
 		textAlign: "left",
 		marginTop: 4,
+	},
+	itemContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+		paddingHorizontal: 16,
+		borderBottomWidth: 1,
+		marginVertical: 16,
+		borderRadius:8,
+		backgroundColor:black[700],
+		borderBottomColor: "rgba(0,0,0,0.2)",
+	},
+	itemText: {
+		color: "white",
+		fontSize: 16,
+		paddingVertical: 24,
+		paddingHorizontal: 12,
 	},
 });

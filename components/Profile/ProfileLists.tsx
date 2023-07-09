@@ -69,7 +69,7 @@ export default function ProfileLists() {
 	);
 }
 
-const Item: FC<ProfileListItemProps> = (item: ProfileListItemProps) => {
+export const Item: FC<ProfileListItemProps> = (item: ProfileListItemProps) => {
 	return (
 		<Pressable
 			android_ripple={{

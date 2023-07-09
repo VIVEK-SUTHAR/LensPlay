@@ -7,6 +7,7 @@ import LoginWithLens from "screens/Auth/LoginWithLens";
 import QRLogin from "screens/Auth/QRLogin";
 import Scanner from "screens/Auth/Scanner";
 import EditProfile from "screens/BottomTabs/Profile/EditProfile";
+import FollowAnalytics from "screens/BottomTabs/Profile/FollowAnalytics";
 import UserStats from "screens/BottomTabs/Profile/UserStats";
 import WatchLater from "screens/BottomTabs/Profile/WatchLater";
 import ShotsComment from "screens/BottomTabs/Shots/ShotsComment";
@@ -383,6 +384,15 @@ export default function StackNavigation() {
 				component={UploadIndicator}
 				options={{
 					headerBackVisible: false,
+					animation: "default",
+					headerShown: true,
+					headerTintColor: theme.PRIMARY,
+				}}
+			/>
+			<Stack.Screen
+				name="FollowAnalytics"
+				component={FollowAnalytics}
+				options={{
 					animation: "default",
 					headerShown: true,
 					headerTintColor: theme.PRIMARY,
