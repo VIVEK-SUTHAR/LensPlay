@@ -1,6 +1,7 @@
 import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Upload from "assets/Icons/Upload";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
@@ -133,8 +134,8 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 					headerTitle: "",
 					headerRight: () => (
 						<View style={{ flexDirection: "row", alignItems: "center" }}>							
-							{/* <Pressable
-								onPress={() => uploadRef.current?.snapToIndex(0)}
+							<Pressable
+								onPress={() => uploadTypeRef.current?.snapToIndex(0)}
 								style={{
 									paddingHorizontal: 8,
 									height: "100%",
@@ -142,8 +143,8 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 									justifyContent: "center",
 								}}
 							>
-								<Icon name="upload-file" size={24} />
-							</Pressable> */}
+								<Upload height={24} width={24} />
+							</Pressable>
 							<Pressable
 								onPress={() => {
 									navigation.push("Search");
@@ -351,7 +352,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 				backgroundStyle={{
 					backgroundColor: black[600],
 				}}
-				snapPoints={[190]}
+				snapPoints={[110]}
 			>
 				<View
 					style={{
@@ -392,7 +393,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 							}}
 						/>
 					</Pressable>
-					<Pressable
+					{/* <Pressable
 						android_ripple={{
 							color: "rgba(0,0,0,0.2)",
 						}}
@@ -432,7 +433,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 								marginHorizontal: 16,
 							}}
 						/>
-					</Pressable>
+					</Pressable> */}
 				</View>
 			</Sheet>
 			<Sheet

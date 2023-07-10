@@ -329,7 +329,7 @@ export default function StackNavigation() {
 						fontWeight: "600",
 					},
 					headerTintColor: "white",
-					headerTitle: "Select Video types",
+					headerTitle: "Select video types",
 				}}
 			/>
 			<Stack.Screen
