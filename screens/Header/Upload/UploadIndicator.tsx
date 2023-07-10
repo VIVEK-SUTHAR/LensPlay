@@ -41,7 +41,7 @@ const UploadIndicator: React.FC<RootStackScreenProps<"UploadIndicator">> = ({ na
 						}}
 					>
 						<StyledText
-							title={"Uploading cover"}
+							title={"Uploading Cover"}
 							style={{
 								color: white[700],
 								fontSize: 24,
@@ -61,7 +61,7 @@ const UploadIndicator: React.FC<RootStackScreenProps<"UploadIndicator">> = ({ na
 						}}
 					>
 						<StyledText
-							title={"Uploading video"}
+							title={"Uploading Video"}
 							style={{
 								color: white[700],
 								fontSize: 24,

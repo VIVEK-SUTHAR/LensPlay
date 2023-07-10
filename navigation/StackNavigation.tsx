@@ -363,7 +363,7 @@ export default function StackNavigation() {
 				options={{
 					headerBackVisible: false,
 					animation: "default",
-					headerShown: true,
+					headerShown: false,
 					headerTintColor: theme.PRIMARY,
 				}}
 			/>
