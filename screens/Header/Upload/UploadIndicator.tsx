@@ -29,11 +29,14 @@ const UploadIndicator: React.FC<RootStackScreenProps<"UploadIndicator">> = ({ na
 			Logger.Success("Upload ho gaya nikal idherse");
 		}
 	}, [uploadingStatus]);
+
 	return (
 		<View style={styles.container}>
+			<View style={{ padding: 60 }}>
+				<Lottie source={require("../../../assets/upload.json")} style={{width: "100%"}} autoPlay loop />
+			</View>
 			{uploadingStatus === "UPLOADINGCOVER" ? (
 				<>
-					<Lottie source={require("../../../assets/uploadCover.json")} autoPlay loop />
 					<View
 						style={{
 							position: "absolute",
@@ -53,7 +56,6 @@ const UploadIndicator: React.FC<RootStackScreenProps<"UploadIndicator">> = ({ na
 			) : null}
 			{uploadingStatus === "UPLOADINGVIDEO" ? (
 				<>
-					<Lottie source={require("../../../assets/uploadVideo.json")} autoPlay loop />
 					<View
 						style={{
 							position: "absolute",
@@ -73,7 +75,6 @@ const UploadIndicator: React.FC<RootStackScreenProps<"UploadIndicator">> = ({ na
 			) : null}
 			{uploadingStatus === "DONE" ? (
 				<>
-					<Lottie source={require("../../../assets/uploadDone.json")} autoPlay />
 					<View
 						style={{
 							position: "absolute",

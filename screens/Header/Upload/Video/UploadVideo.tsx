@@ -10,6 +10,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Dimensions, Image, Pressable, SafeAreaView, View } from "react-native";
 import { useUploadStore } from "store/UploadStore";
 import generateThumbnail from "utils/generateThumbnails";
+import Logger from "utils/logger";
 
 export default function UploadVideo({ navigation, route }: RootStackScreenProps<"UploadVideo">) {
 	const [coverPic, setCoverPic] = useState<string | null>(null);
@@ -258,6 +259,7 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 					onPress={() => {
 						videoRef.current?.pauseAsync();
 						navigation.navigate("AddDetails");
+						Logger.Log('eeee', route?.params?.localUrl);
 						setURLs(
 							route?.params?.localUrl,
 							selectedCover === 5 ? coverPic! : thumbnails[selectedCover]

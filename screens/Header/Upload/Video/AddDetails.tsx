@@ -58,7 +58,7 @@ export default function AddDetails({ navigation }: RootStackScreenProps<"AddDeta
 	}, []);
 
 	const handleAddDetails = () => {
-		if (title.trim().length === 0) return toast.error("Please enter title");
+		if (title.trim().length === 0) return toast.error("Please enter Title");
 		if (title.trim().length > 100) return toast.info("Title is too long");
 		if (!description) return toast.error("Please enter description");
 		if (

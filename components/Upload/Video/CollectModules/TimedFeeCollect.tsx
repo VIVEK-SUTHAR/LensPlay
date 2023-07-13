@@ -130,6 +130,9 @@ function SelectTime() {
 							mode={"date"}
 							onChange={onChange}
 							minimumDate={new Date()}
+							display="spinner"
+							positiveButton={{label: 'OK', textColor: 'white'}} 
+							negativeButton={{label: 'Cancel', textColor: 'white'}}
 						/>
 					)}
 				</>

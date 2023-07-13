@@ -3,7 +3,7 @@ import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
 import { RootStackScreenProps } from "customTypes/navigation";
 import React, { useCallback } from "react";
-import { KeyboardAvoidingView, SafeAreaView, TextInput, View } from "react-native";
+import { Dimensions, KeyboardAvoidingView, SafeAreaView, TextInput, View } from "react-native";
 import { AvoidSoftInput, useSoftInputHeightChanged } from "react-native-avoid-softinput";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { useThemeStore, useToast } from "store/Store";
@@ -13,6 +13,7 @@ export default function AddDescription({ navigation }: RootStackScreenProps<"Add
 	const theme = useThemeStore();
 	const { description, setDescription } = useUploadStore();
 	const toast = useToast();
+	const windowHeight = Dimensions.get('window').height;
 
 	const handleDescription = () => {
 		if (!description?.trim()) return toast.error("Please enter description");
@@ -50,14 +51,17 @@ export default function AddDescription({ navigation }: RootStackScreenProps<"Add
 			}}
 		>
 			<KeyboardAvoidingView
-				behavior="padding"
+				// behavior="padding"
 				style={{
 					flex: 1,
+					// backgroundColor: "green"
 				}}
 			>
 				<View
 					style={{
-						height: "90%",
+						// height: "90%",
+						flex: 1,
+						// backgroundColor: "red"
 					}}
 				>
 					<TextInput
@@ -84,10 +88,12 @@ export default function AddDescription({ navigation }: RootStackScreenProps<"Add
 			<Animated.View style={[buttonContainerAnimatedStyle]}>
 				<View
 					style={{
-						paddingHorizontal: 16,
+						paddingHorizontal: 28,
+						paddingVertical: windowHeight/18,
 						flexDirection: "row",
 						justifyContent: "space-between",
 						alignItems: "center",
+						// backgroundColor: "red"
 					}}
 				>
 					<StyledText
