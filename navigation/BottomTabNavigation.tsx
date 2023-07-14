@@ -24,8 +24,12 @@ import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
 import canUploadedToIpfs from "utils/canUploadToIPFS";
 import getIPFSLink from "utils/getIPFSLink";
+import getImageBlobFromUri from "utils/getImageBlobFromUri";
+import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
 import getFileSize from "utils/video/getFileSize";
+import * as FileSystem from 'expo-file-system';
+// import RNFetchBlob from "react-native-fetch-blob";
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
@@ -133,7 +137,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 					headerStyle: { backgroundColor: "black", elevation: 2 },
 					headerTitle: "",
 					headerRight: () => (
-						<View style={{ flexDirection: "row", alignItems: "center" }}>							
+						<View style={{ flexDirection: "row", alignItems: "center" }}>
 							<Pressable
 								onPress={() => uploadTypeRef.current?.snapToIndex(0)}
 								style={{
@@ -528,11 +532,40 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 							}
 							if (!result.canceled) {
 								const size = await getFileSize(result.assets[0].uri);
+								const uri = result.assets[0].uri;
 								if (!canUploadedToIpfs(size)) {
 									toast.error("Select video is greater than 5GB");
 									return;
 								}
 								uploadStore.setDuration(result.assets[0].duration!);
+								// let type = result.assets[0].uri.substring(result.assets[0].uri.lastIndexOf(".") + 1);
+								// console.log(type);
+								
+								// const form = new FormData();
+								// form.append('file', { uri, name: 'media', type: `video/${type}` } as any);
+								// const options: RequestInit = {
+								// 	method: 'POST',
+								// 	body: form
+								//   }
+
+								//   fetch(uri, options).then(res => {
+								// 	console.log("hello1", res)
+								// 	// this.processResponse(path, options, res)
+								//   }).catch(err => {
+								// 	console.log("FETCH ERROR", err)
+								//   })
+
+								// RNFetchBlob.fetch("GET", result.assets[0].uri).then((data) => {
+								// 	Logger.Success(data);
+								// }).catch((error)=>{
+								// 	Logger.Error(error);
+								// });
+								// Logger.Log(res);
+								// const videoBlob = await FileSystem.readAsStringAsync(uri, {
+								// 	encoding: FileSystem.EncodingType.Base64,
+								//   });
+								//   Logger.Log(videoBlob);
+								// Logger.Log("hello2" + res);
 								navigation.push("UploadVideo", {
 									localUrl: result.assets[0].uri,
 									duration: result.assets[0].duration,

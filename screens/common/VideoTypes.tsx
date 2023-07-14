@@ -29,6 +29,7 @@ import uploadToArweave from "utils/uploadToArweave";
 import getFileMimeType from "utils/video/getFileType";
 import { v4 as uuidV4 } from "uuid";
 import uploadVideoToIPFS from "utils/uploadVideoToIPFS";
+import getVideoBlobFromUri from "utils/getVideoBlobFromUri";
 
 const Types: string[] = [
 	"Arts & Entertainment",
@@ -116,12 +117,12 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 	const handleUpload = async () => {
 		try {
 			setUploadingStatus("UPLOADINGCOVER");
-			const imageBlob = await getImageBlobFromUri(uploadStore.coverURL!);
-			const coverImageURI = await uploadImageToIPFS(imageBlob);
-			Logger.Success("Uploaded Cover", coverImageURI);
-			const videoBlob = await getImageBlobFromUri(uploadStore.videoURL!);
+			// const imageBlob = await getImageBlobFromUri(uploadStore.coverURL!);
+			// const coverImageURI = await uploadImageToIPFS(imageBlob);
+			// Logger.Success("Uploaded Cover", coverImageURI);
+			const videoBlob = await getVideoBlobFromUri(uploadStore.videoURL!);
 			// Logger.Success('this is the videoUrl', uploadStore.videoURL!);
-			// Logger.Log('here is the video blob', videoBlob);
+			Logger.Log('here is the video blob', videoBlob);
 			setUploadingStatus("UPLOADINGVIDEO");
 			const ipfsVideoUrl = await uploadImageToIPFS(videoBlob);
 
@@ -169,48 +170,48 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 				media,
 				appId: APP_ID,
 			};
-			const metadataUri = await uploadToArweave(metadata);
-			Logger.Success("Metadata Uploaded", `https://arweave.net/${metadataUri}`);
+			// const metadataUri = await uploadToArweave(metadata);
+			// Logger.Success("Metadata Uploaded", `https://arweave.net/${metadataUri}`);
 
-			const userSelectedCollectModule = getCollectModule(collectModule, currentProfile as any);
-			if (userSelectedCollectModule?.revertCollectModule) {
-				Logger.Log("Momoka Post");
-				createMomokaPost({
-					variables: {
-						request: {
-							contentURI: `ar://${metadataUri}`,
-							from: currentProfile?.id,
-						},
-					},
-					context: {
-						headers: {
-							"x-access-token": `Bearer ${accessToken}`,
-							"origin": LENSPLAY_SITE,
-						},
-					},
-				});
-				return;
-			}
-			Logger.Log("On-Chain post");
-			createOnChainPost({
-				variables: {
-					request: {
-						collectModule: getCollectModule(
-							collectModule,
-							currentProfile as any
-						) as CollectModuleParams,
-						contentURI: `ar://${metadataUri}`,
-						profileId: currentProfile?.id,
-						referenceModule: getReferenceModule(uploadStore.referenceModule),
-					},
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-						"origin": LENSPLAY_SITE,
-					},
-				},
-			});
+			// const userSelectedCollectModule = getCollectModule(collectModule, currentProfile as any);
+			// if (userSelectedCollectModule?.revertCollectModule) {
+			// 	Logger.Log("Momoka Post");
+			// 	createMomokaPost({
+			// 		variables: {
+			// 			request: {
+			// 				contentURI: `ar://${metadataUri}`,
+			// 				from: currentProfile?.id,
+			// 			},
+			// 		},
+			// 		context: {
+			// 			headers: {
+			// 				"x-access-token": `Bearer ${accessToken}`,
+			// 				"origin": LENSPLAY_SITE,
+			// 			},
+			// 		},
+			// 	});
+			// 	return;
+			// }
+			// Logger.Log("On-Chain post");
+			// createOnChainPost({
+			// 	variables: {
+			// 		request: {
+			// 			collectModule: getCollectModule(
+			// 				collectModule,
+			// 				currentProfile as any
+			// 			) as CollectModuleParams,
+			// 			contentURI: `ar://${metadataUri}`,
+			// 			profileId: currentProfile?.id,
+			// 			referenceModule: getReferenceModule(uploadStore.referenceModule),
+			// 		},
+			// 	},
+			// 	context: {
+			// 		headers: {
+			// 			"x-access-token": `Bearer ${accessToken}`,
+			// 			"origin": LENSPLAY_SITE,
+			// 		},
+			// 	},
+			// });
 		} catch (error) {
 			if (error instanceof Error) {
 				Logger.Log("Error while uploading video:", error);

@@ -11,7 +11,7 @@ import Logger from "./logger";
 const API_TOKEN =
 	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEQzQjZCNEYwMjIzQzNBYUJhYTNGY2FjNzc4QkYzZTcwMzk4MjZDMTEiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzYyNjY2NjY2ODIsIm5hbWUiOiJMZW5zUGxheSJ9.yvvWPFyduWg6vQ1H1_TXTpMKlHTUcqnx4Int8vuMdec";
 export const TOKEN =
-	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEZENEM4NEY4NDM1RDUwQ2ZlNzcyMDcwQThBMTZEZDBmZmRBNTk2YmUiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzYyNjYzNzI2NDksIm5hbWUiOiJsZW5zcGxheSJ9.vAGeXl5Z12rBaVH01dqLohO8zKFgeK-vNf3pjVGpMSA";
+	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDQwOTEyQjg5NDQwY0I3MkE5MDMzYjRFQTk2MkFkMDk5NmZiQTUyM2MiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2ODkzMzIyMzE3MjcsIm5hbWUiOiJMZW5zUGxheSJ9._O3rE11FWdy0UyKBFKruTbkTQfpvE6CxNcU_kcdedsM";
 const uploadImageToIPFS = async (imageBlob: Blob | undefined): Promise<string> => {
 	try {
 		const headersList = {
@@ -23,6 +23,7 @@ const uploadImageToIPFS = async (imageBlob: Blob | undefined): Promise<string> =
 			body: imageBlob,
 		});
 		const data = await filehash.json();
+		Logger.Log('upload data', data);
 		return data.cid;
 	} catch (error) {
 		if (error instanceof Error) {
