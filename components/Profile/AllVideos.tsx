@@ -27,7 +27,7 @@ import {
 import type { ProfileMetaDataV1nput } from "customTypes/index";
 import useAddWatchLater from "hooks/useAddToWatchLater";
 import React from "react";
-import { ActivityIndicator, Share, View } from "react-native";
+import { ActivityIndicator, ScrollView, Share, View } from "react-native";
 import { FlatList, RefreshControl } from "react-native-gesture-handler";
 import usePinStore from "store/pinStore";
 import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
@@ -46,6 +46,7 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 	const { PRIMARY } = useThemeStore();
 	const { currentProfile } = useProfile();
 	const AllVideoSheetRef = React.useRef<BottomSheetMethods>(null);
+	const PlayListSheetRef=React.useRef<BottomSheetMethods>(null);
 	const [publication, setPublication] = React.useState<Post | Mirror | null>(null);
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
 
@@ -182,12 +183,68 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 					)}
 				/>
 			)}
-			<AllVideoSheet sheetRef={AllVideoSheetRef} publication={publication} profileId={profileId} />
+			<AllVideoSheet sheetRef={AllVideoSheetRef} publication={publication} profileId={profileId} playListSheetRef={PlayListSheetRef} />
+			<PlayListSheet sheetRef={PlayListSheetRef} />
 		</View>
 	);
 };
-
-export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) => {
+const PlayListSheet = ( {sheetRef}:{sheetRef: React.RefObject<BottomSheetMethods>}) => {
+	return (
+		<Sheet
+			ref={sheetRef}
+			snapPoints={[450]}
+			enablePanDownToClose={true}
+			enableOverDrag={true}
+			bottomInset={32}
+			style={{
+				marginHorizontal: 8,
+			}}
+			backgroundStyle={{
+				backgroundColor: black[600],
+			}}
+			detached={true}
+		>
+			{/* <FlatList
+					data={profileId ? channelActionList : actionList}
+					renderItem={({ item }) => {
+						return (
+							<Ripple
+								onTap={() => {
+									item.onPress(publication);
+									sheetRef?.current?.close();
+								}}
+							>
+								<View
+									style={{
+										width: "100%",
+										height: "auto",
+										paddingVertical: 16,
+										paddingHorizontal: 16,
+										flexDirection: "row",
+										alignItems: "center",
+									}}
+								>
+									<Icon name={item.icon} color={"white"} />
+									<StyledText
+										title={item.name}
+										style={{
+											fontSize: 16,
+											marginHorizontal: 8,
+											color: "white",
+										}}
+									/>
+								</View>
+							</Ripple>
+						);
+					}}
+				/> */}
+			<ScrollView>
+				<View style={{ width: 300, height: 200, backgroundColor: "red" }} />
+			</ScrollView>
+		</Sheet>
+	);
+};
+export const AllVideoSheet = ({ sheetRef, publication, profileId,playListSheetRef }: SheetProps) => {
 	const toast = useToast();
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
@@ -256,6 +313,13 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 
 	const actionList: actionListType[] = [
 		{
+			name: "Add to playlist",
+			icon: "send",
+			onPress(pubId: Scalars["InternalPublicationId"]) {
+				playListSheetRef.current?.snapToIndex(0);
+			},
+		},
+		{
 			name: "Pin this video to your channel",
 			icon: "pin",
 			onPress: (pubid: Scalars["InternalPublicationId"]) => {
@@ -310,7 +374,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 		<>
 			<Sheet
 				ref={sheetRef}
-				snapPoints={[profileId ? 150 : 200]}
+				snapPoints={[profileId ? 150 : 250]}
 				enablePanDownToClose={true}
 				enableOverDrag={true}
 				bottomInset={32}

@@ -124,6 +124,7 @@ export type SheetProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
 	publication: Post | Mirror | null;
 	profileId: Scalars["ProfileId"];
+	playListSheetRef:React.RefObject<BottomSheetMethods>;
 };
 
 export type actionListType = {
