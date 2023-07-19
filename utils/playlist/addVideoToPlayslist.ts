@@ -10,7 +10,7 @@ import { LENSPLAY_API } from "constants/index";
 import { Scalars } from "customTypes/generated";
 import Logger from "utils/logger";
 
-async function createPlaylist( profileId: Scalars["ProfileId"], name: string, cover: string ) {
+async function addVideoToPlaylist( profileId: Scalars["ProfileId"], name: string, playlistId: string, publicationId: Scalars["PublicationId"] ) {
 	try {
 		const headersList = {
 			"Accept": "*/*",
@@ -21,18 +21,19 @@ async function createPlaylist( profileId: Scalars["ProfileId"], name: string, co
 		const bodyContent = JSON.stringify({
 			profileId: profileId,
             name: name,
-            cover: cover
+            playlistId: playlistId,
+            publicationId: publicationId
 		});
 
-		const response = await fetch(`http://192.168.123.216:3000/api/weavedb/createPlaylist`, {
+		const response = await fetch(`http://192.168.123.216:3000/api/weavedb/addVideoToPlaylist`, {
 			method: "POST",
 			body: bodyContent,
 			headers: headersList,
 		});
-		if (response.ok) {
-			const jsondata = await response.json();
+		if (response.ok) {    
+			const jsondata = await response.text();
             Logger.Success(jsondata);
-            return jsondata.playlistId;
+            return jsondata;
 		}
 	} catch (err) {
 		if (err instanceof Error) {
@@ -40,4 +41,4 @@ async function createPlaylist( profileId: Scalars["ProfileId"], name: string, co
 		}
 	}
 }
-export default createPlaylist;
+export default addVideoToPlaylist;

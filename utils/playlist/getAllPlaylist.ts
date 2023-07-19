@@ -19,7 +19,7 @@ async function getAllPlaylist(profileId: Scalars['ProfileId']) {
 			profileId: profileId
 		});
 
-		const response = await fetch(`http://192.168.191.216:3000/api/weavedb/getAllPlaylists`, {
+		const response = await fetch(`http://192.168.123.216:3000/api/weavedb/getAllPlaylists`, {
 			method: "POST",
 			body: bodyContent,
 			headers: headersList,

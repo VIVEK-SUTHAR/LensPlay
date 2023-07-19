@@ -12,22 +12,44 @@ import { Platform, Pressable, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useProfile, useToast } from "store/Store";
 import Logger from "utils/logger";
+import addVideoToPlaylist from "utils/playlist/addVideoToPlayslist";
 import createPlaylist from "utils/playlist/createPlaylist";
 
-const NewPlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<BottomSheetMethods>, publication: Post | Mirror | null }) => {
-    const [name, setName] = React.useState<string>('');
-    const [isLoading, setIsLoading] = React.useState(false);
-    const {currentProfile} = useProfile();
-    const toast = useToast();
+const NewPlaylistSheet = ({
+	sheetRef,
+	publication,
+}: {
+	sheetRef: React.RefObject<BottomSheetMethods>;
+	publication: Post | Mirror | null;
+}) => {
+	const [name, setName] = React.useState<string>("");
+	const [isLoading, setIsLoading] = React.useState(false);
+	const { currentProfile } = useProfile();
+	const toast = useToast();
 
-    const create = async(publication: Post | Mirror | null) => {
-        setIsLoading(true);
-        const playlistId = await createPlaylist(currentProfile?.id, name, publication?.metadata?.cover?.original?.url);
-        setIsLoading(false);
-        toast.success('Playlist created successfully');
-        sheetRef?.current?.close();
-        Logger.Log(playlistId);
-    }
+	const create = async (publication: Post | Mirror | null) => {
+		try {
+			setIsLoading(true);
+			const playlistId = await createPlaylist(
+				currentProfile?.id,
+				name,
+				publication?.metadata?.cover?.original?.url
+			);
+			Logger.Success(playlistId);
+			await addVideoToPlaylist(currentProfile?.id, name, playlistId, publication?.id);
+			setIsLoading(false);
+			toast.success("Playlist created successfully");
+			setName("");
+			sheetRef?.current?.close();
+		} catch (error) {
+			console.log(error);
+
+			toast.error("Something went wrong");
+			setName("");
+			sheetRef?.current?.close();
+		}
+		// Logger.Log(playlistId);
+	};
 
 	return (
 		<Sheet
@@ -75,9 +97,11 @@ const NewPlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject
 					}}
 				/>
 				<BottomSheetScrollView>
-					<View style={{
-                        padding: 12,
-                    }}>
+					<View
+						style={{
+							padding: 12,
+						}}
+					>
 						<TextInput
 							placeholder="Playlist Name"
 							value={name}
@@ -91,31 +115,31 @@ const NewPlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject
 								borderRadius: 8,
 								flex: 1,
 								marginBottom: 8,
-                                // borderColor: white[300],
-                                // borderWidth: 2
+								// borderColor: white[300],
+								// borderWidth: 2
 							}}
 							keyboardType="default"
 							onChange={(e) => {
 								e.preventDefault();
-                                setName(e.nativeEvent.text);
+								setName(e.nativeEvent.text);
 							}}
 						/>
-                        <Button
-						onPress={async () => {
-                            await create(publication);
-						}}
-						mt={16}
-						title="Create"
-						bg={"#f5f5f5"}
-						textStyle={{
-							fontWeight: "600",
-							fontSize: 16,
-							color: "black",
-						}}
-                        isLoading={isLoading}
-						py={12}
-						borderRadius={8}
-					/>
+						<Button
+							onPress={async () => {
+								await create(publication);
+							}}
+							mt={16}
+							title="Create"
+							bg={"#f5f5f5"}
+							textStyle={{
+								fontWeight: "600",
+								fontSize: 16,
+								color: "black",
+							}}
+							isLoading={isLoading}
+							py={12}
+							borderRadius={8}
+						/>
 					</View>
 				</BottomSheetScrollView>
 			</View>

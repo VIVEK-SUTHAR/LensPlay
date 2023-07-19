@@ -152,7 +152,6 @@ const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<Bo
 											<View
 												style={{
 													flexDirection: "row",
-													justifyContent: "center",
 													alignItems: "center",
 												}}
 											>
