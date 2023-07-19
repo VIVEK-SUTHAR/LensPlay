@@ -25,6 +25,8 @@ type MyVideoCardProps = {
 function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardProps) {
 	const navigation = useNavigation();
 	const { setActivePublication } = useActivePublication();
+	console.log(publication.metadata?.cover);
+	
 
 	return (
 		<Pressable

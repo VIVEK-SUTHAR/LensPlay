@@ -8,6 +8,7 @@ import Icon from "components/Icon";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
 import DeleteVideo from "components/VIdeo/DeleteVideo";
+import PlaylistSheet from "components/VIdeo/PlaylistSheet";
 import { black } from "constants/Colors";
 import { LENSPLAY_SITE, SOURCES } from "constants/index";
 import { PUBLICATION } from "constants/tracking";
@@ -187,6 +188,8 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 	);
 };
 
+
+
 export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) => {
 	const toast = useToast();
 	const { currentProfile } = useProfile();
@@ -194,6 +197,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 	const { add, remove } = useAddWatchLater();
 
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
+	const PlaylistSheetRef = React.useRef<BottomSheetMethods>(null);
 
 	const pinStore = usePinStore();
 	const [createSetProfileMetadataViaDispatcherMutation] =
@@ -218,7 +222,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 				__typename: "Attribute",
 				displayType: PublicationMetadataDisplayTypes.String,
 				traitType: "pinnedPublicationId",
-				key: "pinnedPublicationId",
+			key: "pinnedPublicationId",
 				value: publication?.id,
 			};
 			attrs = [...attr!, newAttribute];
@@ -260,6 +264,13 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 			icon: "pin",
 			onPress: (pubid: Scalars["InternalPublicationId"]) => {
 				pinPublication();
+			},
+		},
+		{
+			name: "Add to Playlist",
+			icon: "create",
+			onPress: (pubid: Scalars["InternalPublicationId"]) => {
+				PlaylistSheetRef.current?.snapToIndex(0);
 			},
 		},
 		{
@@ -310,7 +321,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 		<>
 			<Sheet
 				ref={sheetRef}
-				snapPoints={[profileId ? 150 : 200]}
+				snapPoints={[profileId ? 150 : 270]}
 				enablePanDownToClose={true}
 				enableOverDrag={true}
 				bottomInset={32}
@@ -347,7 +358,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 										title={item.name}
 										style={{
 											fontSize: 16,
-											marginHorizontal: 8,
+											marginHorizontal: 12,
 											color: "white",
 										}}
 									/>
@@ -358,6 +369,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 				/>
 			</Sheet>
 			<DeleteVideo sheetRef={deleteRef} publication={publication} />
+			<PlaylistSheet sheetRef={PlaylistSheetRef} />
 		</>
 	);
 };
