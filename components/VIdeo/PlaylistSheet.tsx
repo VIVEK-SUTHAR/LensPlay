@@ -14,29 +14,27 @@ import getImageProxyURL from "utils/getImageProxyURL";
 import getPlaceHolderImage from "utils/getPlaceHolder";
 import NewPlaylistSheet from "./NewPlaylistSheet";
 import ErrorMesasge from "components/common/ErrorMesasge";
+import getAllPlaylist from "utils/playlist/getAllPlaylist";
+import { useProfile } from "store/Store";
+import Logger from "utils/logger";
+import Earth from "assets/Icons/Earth";
+import { Mirror, Post } from "customTypes/generated";
 
-const PlaylistSheet = ({ sheetRef }: { sheetRef: React.RefObject<BottomSheetMethods> }) => {
+const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<BottomSheetMethods>, publication: Post | Mirror | null}) => {
 	const NewPlaylistSheetRef = React.useRef<BottomSheetMethods>(null);
-	const Playlist = [
-		{
-			name: "Music",
-			cover:
-				"https://ik.imagekit.io/lens/media-snapshot/e08e47d23df9fcb15162d4d18adca13c2958a9b153fbf27487c60c4a7c38b052.jpg",
-			videoCount: 10,
-		},
-		{
-			name: "Video",
-			cover:
-				"https://ik.imagekit.io/lens/media-snapshot/214a2225ed102ece199a5f6f0181fe5002b0f0a2edc284b13f85eb0d8d31cc51.jpg",
-			videoCount: 4,
-		},
-		{
-			name: "Romance",
-			cover:
-				"https://ik.imagekit.io/lens/media-snapshot/e08e47d23df9fcb15162d4d18adca13c2958a9b153fbf27487c60c4a7c38b052.jpg",
-			videoCount: 2,
-		},
-	];
+	const { currentProfile } = useProfile();
+	const [playlist, setPlaylist] = React.useState([]);
+	const getPlaylists = async () => {
+		const data = await getAllPlaylist(currentProfile?.id);
+		if (data.length !== 0) {
+			// Logger.Log(data[0], "data");
+			setPlaylist(data[0]?.playlist);
+		}
+	};
+	React.useEffect(() => {
+		Logger.Success("kkkk");
+		getPlaylists();
+	}, []);
 	return (
 		<>
 			<Sheet
@@ -100,12 +98,9 @@ const PlaylistSheet = ({ sheetRef }: { sheetRef: React.RefObject<BottomSheetMeth
 					/>
 					<BottomSheetScrollView style={{ flex: 1 }}>
 						<FlashList
-							data={Playlist}
+							data={playlist}
 							ListEmptyComponent={NoPlaylist}
-							style={{
-								flex: 1,
-							}}
-							renderItem={({ item }) => {
+							renderItem={({ item }: { item: playlistProps }) => {
 								return (
 									<Pressable
 										android_ripple={{
@@ -141,7 +136,11 @@ const PlaylistSheet = ({ sheetRef }: { sheetRef: React.RefObject<BottomSheetMeth
 												borderRadius: 8,
 											}}
 										/>
-										<View>
+										<View
+											style={{
+												gap: 4,
+											}}
+										>
 											<Heading
 												title={item?.name}
 												style={{
@@ -150,14 +149,24 @@ const PlaylistSheet = ({ sheetRef }: { sheetRef: React.RefObject<BottomSheetMeth
 													fontWeight: "600",
 												}}
 											/>
-											<StyledText
-												title={`${item.videoCount} Videos`}
+											<View
 												style={{
-													color: "gray",
-													fontSize: 14,
-													fontWeight: "400",
+													flexDirection: "row",
+													justifyContent: "center",
+													alignItems: "center",
 												}}
-											/>
+											>
+												<Earth height={12} width={12} />
+												<StyledText
+													title={"Public"}
+													style={{
+														color: "gray",
+														fontSize: 14,
+														fontWeight: "400",
+														marginLeft: 4,
+													}}
+												/>
+											</View>
 										</View>
 									</Pressable>
 								);
@@ -166,7 +175,7 @@ const PlaylistSheet = ({ sheetRef }: { sheetRef: React.RefObject<BottomSheetMeth
 					</BottomSheetScrollView>
 				</View>
 			</Sheet>
-			<NewPlaylistSheet sheetRef={NewPlaylistSheetRef} />
+			<NewPlaylistSheet sheetRef={NewPlaylistSheetRef} publication={publication}/>
 		</>
 	);
 };
@@ -180,8 +189,8 @@ const NoPlaylist = () => {
 				alignItems: "center",
 				justifyContent: "center",
 				flexGrow: 1,
-                minHeight: 200,
-                gap: 10,
+				minHeight: 200,
+				gap: 10,
 			}}
 		>
 			<Image
@@ -194,6 +203,12 @@ const NoPlaylist = () => {
 			/>
 		</View>
 	);
+};
+
+export type playlistProps = {
+	cover: string;
+	name: string;
+	profileId: string;
 };
 
 export default PlaylistSheet;

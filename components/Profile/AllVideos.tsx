@@ -369,7 +369,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 				/>
 			</Sheet>
 			<DeleteVideo sheetRef={deleteRef} publication={publication} />
-			<PlaylistSheet sheetRef={PlaylistSheetRef} />
+			<PlaylistSheet sheetRef={PlaylistSheetRef} publication={publication} />
 		</>
 	);
 };
