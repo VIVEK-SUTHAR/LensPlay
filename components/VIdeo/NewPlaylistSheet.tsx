@@ -51,13 +51,6 @@ const NewPlaylistSheet = ({ sheetRef }: { sheetRef: React.RefObject<BottomSheetM
 							fontWeight: "600",
 						}}
 					/>
-					<Pressable
-						onPress={() => {
-							sheetRef?.current?.close();
-						}}
-					>
-						<Icon name="close" size={16} />
-					</Pressable>
 				</View>
 				<View
 					style={{
@@ -73,18 +66,18 @@ const NewPlaylistSheet = ({ sheetRef }: { sheetRef: React.RefObject<BottomSheetM
 						<TextInput
 							placeholder="Playlist Name"
 							value={name}
-							placeholderTextColor="gray"
+							placeholderTextColor={white[200]}
 							selectionColor={primary}
 							style={{
-								backgroundColor: dark_primary,
+								backgroundColor: black[400],
 								color: "white",
 								paddingHorizontal: 16,
 								paddingVertical: Platform.OS === "ios" ? 16 : 8,
 								borderRadius: 8,
 								flex: 1,
 								marginBottom: 8,
-                                borderColor: white[300],
-                                borderWidth: 2
+                                // borderColor: white[300],
+                                // borderWidth: 2
 							}}
 							keyboardType="default"
 							onChange={(e) => {

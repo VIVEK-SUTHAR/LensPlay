@@ -13,6 +13,7 @@ import getIPFSLink from "utils/getIPFSLink";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getPlaceHolderImage from "utils/getPlaceHolder";
 import NewPlaylistSheet from "./NewPlaylistSheet";
+import ErrorMesasge from "components/common/ErrorMesasge";
 
 const PlaylistSheet = ({ sheetRef }: { sheetRef: React.RefObject<BottomSheetMethods> }) => {
 	const NewPlaylistSheetRef = React.useRef<BottomSheetMethods>(null);
@@ -77,7 +78,7 @@ const PlaylistSheet = ({ sheetRef }: { sheetRef: React.RefObject<BottomSheetMeth
 						<Pressable
 							onPress={() => {
 								NewPlaylistSheetRef?.current?.snapToIndex(0);
-                                sheetRef.current?.close();
+								sheetRef.current?.close();
 							}}
 						>
 							<StyledText
@@ -100,6 +101,10 @@ const PlaylistSheet = ({ sheetRef }: { sheetRef: React.RefObject<BottomSheetMeth
 					<BottomSheetScrollView style={{ flex: 1 }}>
 						<FlashList
 							data={Playlist}
+							ListEmptyComponent={NoPlaylist}
+							style={{
+								flex: 1,
+							}}
 							renderItem={({ item }) => {
 								return (
 									<Pressable
@@ -163,6 +168,31 @@ const PlaylistSheet = ({ sheetRef }: { sheetRef: React.RefObject<BottomSheetMeth
 			</Sheet>
 			<NewPlaylistSheet sheetRef={NewPlaylistSheetRef} />
 		</>
+	);
+};
+
+const NoPlaylist = () => {
+	return (
+		<View
+			style={{
+				flex: 1,
+				// backgroundColor: "red",
+				alignItems: "center",
+				justifyContent: "center",
+				flexGrow: 1,
+                minHeight: 200,
+                gap: 10,
+			}}
+		>
+			<Image
+				style={{ height: 180, width: 180, resizeMode: "contain" }}
+				source={require("../../assets/images/error.png")}
+			/>
+			<StyledText
+				title={"You have not created any playlist yet!"}
+				style={{ color: white[300], fontSize: 16, fontWeight: "500" }}
+			/>
+		</View>
 	);
 };
 
