@@ -130,6 +130,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 			<BottomTab.Navigator
 				initialRouteName="Home"
 				screenOptions={{
+					tabBarHideOnKeyboard:true,
 					headerStyle: { backgroundColor: "black", elevation: 2 },
 					headerTitle: "",
 					headerRight: () => (

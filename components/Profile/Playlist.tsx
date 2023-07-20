@@ -29,9 +29,9 @@ const Playlist = () => {
 	);
 };
 
-export default Playlist;
+export default React.memo(Playlist);
 
-const PlaylistCard = () => {
+const PlaylistCard = React.memo(() => {
 	return (
 		<Pressable
 			android_ripple={{
@@ -151,4 +151,4 @@ const PlaylistCard = () => {
 			</View>
 		</Pressable>
 	);
-};
+})

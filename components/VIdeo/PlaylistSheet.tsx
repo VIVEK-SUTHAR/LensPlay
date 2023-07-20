@@ -99,6 +99,7 @@ const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<Bo
 					<BottomSheetScrollView style={{ flex: 1 }}>
 						<FlashList
 							data={playlist}
+							estimatedItemSize={25}
 							ListEmptyComponent={NoPlaylist}
 							renderItem={({ item }: { item: playlistProps }) => {
 								return (

@@ -1,14 +1,12 @@
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import Sheet from "components/Bottom";
-import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
-import Input from "components/UI/Input";
-import { black, dark_primary, dark_secondary, primary, white } from "constants/Colors";
+import { black, primary, white } from "constants/Colors";
 import { Mirror, Post } from "customTypes/generated";
-import React, { useRef } from "react";
-import { Platform, Pressable, View } from "react-native";
+import React from "react";
+import { Platform, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useProfile, useToast } from "store/Store";
 import Logger from "utils/logger";

@@ -52,12 +52,16 @@ const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publ
 		[]
 	);
 
+	const memoizedPlaceHolder = React.useMemo(
+		()=>getPlaceHolderImage(),[]
+	)
+
 	return (
 		<View style={[styles.videoCardContainer, { width: width }]}>
 			<View style={{ height: height }}>
 				<TouchableWithoutFeedback onPress={navigateToVideoPage}>
 					<Image
-						placeholder={getPlaceHolderImage()}
+						placeholder={memoizedPlaceHolder}
 						contentFit="cover"
 						transition={500}
 						priority="high"

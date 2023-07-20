@@ -13,6 +13,8 @@ type AvatarProps = {
   opacity?: number;
 };
 
+const STATIC_COVER =
+  "https://lens.infura-ipfs.io/ipfs/bafybeibv2kpqpjtvuj5uprvq6knnr2reb7ylq3o4bnypqjioqgxmjw2akq/5460475.webp";
 const Avatar: React.FC<AvatarProps> = ({
   src,
   height,
@@ -22,15 +24,15 @@ const Avatar: React.FC<AvatarProps> = ({
   borderWidth = 0,
   opacity = 1,
 }) => {
-  const STATIC_COVER =
-    "https://lens.infura-ipfs.io/ipfs/bafybeibv2kpqpjtvuj5uprvq6knnr2reb7ylq3o4bnypqjioqgxmjw2akq/5460475.webp";
-  const resolvedSrc =
-    getIPFSLink(src) === STATIC_COVER
+  const resolvedSrc =React.useMemo(()=> getIPFSLink(src) === STATIC_COVER
       ? `https://xsgames.co/randomusers/assets/avatars/pixel/${Math.floor(
           53 * Math.random()
         )}.jpg`
-      : getIPFSLink(src);
+      : getIPFSLink(src),[])
 
+  
+    const memoizedPlaceHolder = React.useMemo(() => getPlaceHolderImage(true), []);
+  
   return (
     <Image
       placeholder={getPlaceHolderImage(true)}

@@ -26,6 +26,10 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 	const navigation = useNavigation();
 	const { setActivePublication } = useActivePublication();
 
+	const memoizedPlaceHolder = React.useMemo(
+		()=>getPlaceHolderImage(),[]
+	)
+
 	return (
 		<Pressable
 			android_ripple={{
@@ -43,7 +47,7 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 		>
 			<View>
 				<Image
-					placeholder={getPlaceHolderImage()}
+					placeholder={memoizedPlaceHolder}
 					contentFit="cover"
 					transition={500}
 					cachePolicy="memory-disk"
