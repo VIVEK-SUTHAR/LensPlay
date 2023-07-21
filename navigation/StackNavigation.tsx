@@ -29,6 +29,7 @@ import SelectCollectModule from "screens/Header/Upload/Video/SelectCollectModule
 import UploadVideo from "screens/Header/Upload/Video/UploadVideo";
 import { useThemeStore } from "store/Store";
 import BottomTabNavigator from "./BottomTabNavigation";
+import PlayListScreen from "screens/common/PlayListScreen";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
@@ -365,6 +366,17 @@ export default function StackNavigation() {
 					animation: "default",
 					headerShown: false,
 					headerTintColor: theme.PRIMARY,
+				}}
+			/>
+			<Stack.Screen
+				name="PlayListScreen"
+				component={PlayListScreen}
+				options={{
+					animation: "default",
+					headerShown: true,
+					headerTintColor: "white",
+					headerTitle: "",
+					headerShadowVisible: false,
 				}}
 			/>
 		</Stack.Navigator>

@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import Earth from "assets/Icons/Earth";
 import PlaylistIcon from "assets/Icons/Playlist";
 import Icon from "components/Icon";
@@ -5,13 +6,14 @@ import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black, primary } from "constants/Colors";
 import { Image } from "expo-image";
-import React from "react";
+import React, { useState } from "react";
 import { Dimensions, Pressable, Text } from "react-native";
 import { TouchableOpacity, View } from "react-native";
 import getIPFSLink from "utils/getIPFSLink";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getPlaceHolderImage from "utils/getPlaceHolder";
 import getRawurl from "utils/getRawUrl";
+
 
 const Playlist = () => {
 	return (
@@ -32,6 +34,7 @@ const Playlist = () => {
 export default React.memo(Playlist);
 
 const PlaylistCard = React.memo(() => {
+	const navigation=useNavigation();
 	return (
 		<Pressable
 			android_ripple={{
@@ -43,8 +46,7 @@ const PlaylistCard = React.memo(() => {
 				padding: 8,
 			}}
 			onPress={() => {
-				// setActivePublication(publication);
-				// navigation.navigate("VideoPage");
+				navigation.navigate("PlayListScreen");
 			}}
 		>
 			<View
@@ -77,7 +79,7 @@ const PlaylistCard = React.memo(() => {
 						width: "100%",
 						flex: 1,
 						position: "absolute",
-						backgroundColor: "gray",
+						backgroundColor: "#191919",
 						opacity: 0.8,
 						borderBottomLeftRadius: 4,
 						borderBottomRightRadius: 4,

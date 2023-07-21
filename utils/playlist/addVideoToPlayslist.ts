@@ -25,7 +25,7 @@ async function addVideoToPlaylist( profileId: Scalars["ProfileId"], name: string
             publicationId: publicationId
 		});
 
-		const response = await fetch(`http://192.168.123.216:3000/api/weavedb/addVideoToPlaylist`, {
+		const response = await fetch(`http://192.168.29.239:3000/api/weavedb/addVideoToPlaylist`, {
 			method: "POST",
 			body: bodyContent,
 			headers: headersList,

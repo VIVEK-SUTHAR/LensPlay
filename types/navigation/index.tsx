@@ -100,6 +100,7 @@ export type RootStackParamList = {
 		localUrl: string;
 		duration?: number | null | undefined;
 	};
+	PlayListScreen:undefined;
 	UploadShots: undefined;
 	AddDetails: undefined;
 	AddDescription: undefined;

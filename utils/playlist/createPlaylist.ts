@@ -24,7 +24,7 @@ async function createPlaylist( profileId: Scalars["ProfileId"], name: string, co
             cover: cover
 		});
 
-		const response = await fetch(`http://192.168.123.216:3000/api/weavedb/createPlaylist`, {
+		const response = await fetch(`http://192.168.29.239:3000/api/weavedb/createPlaylist`, {
 			method: "POST",
 			body: bodyContent,
 			headers: headersList,
