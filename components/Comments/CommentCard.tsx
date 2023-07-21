@@ -5,7 +5,7 @@ import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import { dark_primary, primary, white } from "constants/Colors";
+import { black, dark_primary, primary, white } from "constants/Colors";
 import { LENSPLAY_SITE } from "constants/index";
 import { PROFILE, PUBLICATION } from "constants/tracking";
 import {
@@ -196,8 +196,8 @@ const CommentCard: React.FC<CommentCardProps> = ({
 		<View
 			style={{
 				flexDirection: "row",
-				backgroundColor: "black",
-				borderColor: dark_primary,
+				backgroundColor:black[600],
+				borderColor: black[600],
 				borderBottomWidth: 1,
 				paddingVertical: 8,
 				marginVertical: 4,

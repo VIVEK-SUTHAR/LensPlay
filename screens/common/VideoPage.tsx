@@ -1,4 +1,4 @@
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BottomSheetFlatList, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useFocusEffect } from "@react-navigation/native";
 import Sheet from "components/Bottom";
@@ -43,6 +43,7 @@ import {
 	View,
 	Pressable,
 	LayoutAnimation,
+	TouchableOpacity,
 } from "react-native";
 import {
 	useActivePublication,
@@ -287,6 +288,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	};
 	const LENS_MEDIA_URL = activePublication?.metadata?.media[0]?.original?.url;
 	const { setVideoURI, uri } = useVideoURLStore();
+	const commentRef = useRef<BottomSheetMethods>(null);
 
 	useFocusEffect(
 		React.useCallback(() => {
@@ -411,20 +413,40 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 								</>
 							)}
 						</ScrollView>
-						<StyledText
-							title="Comments"
+
+						<View
 							style={{
-								fontSize: 20,
-								fontWeight: "700",
-								color: "white",
-								marginBottom: 8,
+								backgroundColor: black[400],
+								paddingVertical: 4,
+								paddingHorizontal: 8,
+								borderRadius: 8,
+								width: "95%",
+								flexDirection: "row",
+								justifyContent: "space-between",
+								alignSelf: "center",
 							}}
-						/>
-						<Comment publicationId={activePublication?.id} shots={false} />
+						>
+							<StyledText
+								title="Comments"
+								style={{
+									fontSize: 20,
+									fontWeight: "700",
+									color: "white",
+								}}
+							/>
+							<TouchableOpacity
+								onPress={() => {
+									commentRef.current?.snapToIndex(0);
+								}}
+							>
+								<Icon name="arrowDown" color="white" />
+							</TouchableOpacity>
+						</View>
+						{/* <Comment publicationId={activePublication?.id} shots={false} /> */}
 					</View>
 				</ScrollView>
-				<CommentInput publicationId={activePublication?.id} />
 			</SafeAreaView>
+			<CommentsSheet commentSheetRef={commentRef} />
 			<Sheet
 				ref={collectRef}
 				index={-1}
@@ -900,6 +922,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 };
 
 export default VideoPage;
+
 const styles = StyleSheet.create({
 	statsLabel: {
 		color: "white",
@@ -910,3 +933,32 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 });
+
+type CommentsSheetProps = {
+	commentSheetRef: React.RefObject<BottomSheetMethods>;
+};
+const CommentsSheet = ({ commentSheetRef }: CommentsSheetProps) => {
+	const { activePublication } = useActivePublication();
+	return (
+		<Sheet
+			ref={commentSheetRef}
+			snapPoints={["75%"]}
+			enablePanDownToClose={true}
+			enableOverDrag={true}
+			style={{
+				paddingHorizontal: 12,
+			}}
+			backgroundStyle={{
+				backgroundColor: black[600],
+			}}
+		>
+			<CommentInput publicationId={activePublication?.id} />
+			<BottomSheetFlatList
+				data={[0]}
+				renderItem={() => {
+					return <Comment publicationId={activePublication?.id} shots={false} />;
+				}}
+			></BottomSheetFlatList>
+		</Sheet>
+	);
+};
