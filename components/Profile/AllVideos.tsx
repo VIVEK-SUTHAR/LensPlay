@@ -8,7 +8,7 @@ import Icon from "components/Icon";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
 import DeleteVideo from "components/VIdeo/DeleteVideo";
-import PlaylistSheet from "components/VIdeo/PlaylistSheet";
+import PlaylistSheet from "components/Playlist/PlaylistSheet";
 import { black } from "constants/Colors";
 import { LENSPLAY_SITE, SOURCES } from "constants/index";
 import { PUBLICATION } from "constants/tracking";

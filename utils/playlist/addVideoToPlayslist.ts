@@ -6,7 +6,7 @@
  * @returns playlistId of the created playlist
  */
 
-import { LENSPLAY_API } from "constants/index";
+import { LENSPLAY_API, LENSPLAY_WEAVE_API } from "constants/index";
 import { Scalars } from "customTypes/generated";
 import Logger from "utils/logger";
 
@@ -25,7 +25,7 @@ async function addVideoToPlaylist( profileId: Scalars["ProfileId"], name: string
             publicationId: publicationId
 		});
 
-		const response = await fetch(`http://192.168.29.239:3000/api/weavedb/addVideoToPlaylist`, {
+		const response = await fetch(`${LENSPLAY_WEAVE_API}weavedb/addVideoToPlaylist`, {
 			method: "POST",
 			body: bodyContent,
 			headers: headersList,

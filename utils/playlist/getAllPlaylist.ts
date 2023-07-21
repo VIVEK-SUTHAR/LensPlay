@@ -4,7 +4,7 @@
  * @returns lists of all the playlists of that user
  */
 
-import { LENSPLAY_API } from "constants/index";
+import { LENSPLAY_API, LENSPLAY_WEAVE_API } from "constants/index";
 import { Scalars } from "customTypes/generated";
 
 async function getAllPlaylist(profileId: Scalars['ProfileId']) {
@@ -19,7 +19,7 @@ async function getAllPlaylist(profileId: Scalars['ProfileId']) {
 			profileId: profileId
 		});
 
-		const response = await fetch(`http://192.168.29.239:3000/api/weavedb/getAllPlaylists`, {
+		const response = await fetch(`${LENSPLAY_WEAVE_API}weavedb/getAllPlaylists`, {
 			method: "POST",
 			body: bodyContent,
 			headers: headersList,
