@@ -16,7 +16,7 @@ const CommentsSheet = ({ commentSheetRef, pubId }: CommentsSheetProps) => {
 	return (
 		<Sheet
 			ref={commentSheetRef}
-			snapPoints={["75%"]}
+			snapPoints={["75%", "100%"]}
 			index={-1}
 			enablePanDownToClose={true}
 			enableOverDrag={true}

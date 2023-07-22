@@ -1,6 +1,6 @@
 import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import Sheet from "components/Bottom";
 import CommentSheet from "components/Comments/CommentSheet";
 import Icon from "components/Icon";
@@ -8,7 +8,6 @@ import ShotData, { DiscriptionSheet } from "components/Shots/ShotData";
 import ShotReaction from "components/Shots/ShotReaction";
 import { black } from "constants/Colors";
 import { Mirror, Post } from "customTypes/generated";
-import type { ShotsPublication } from "customTypes/index";
 import { ResizeMode, Video } from "expo-av";
 import VideoPlayer from "expo-video-player";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
@@ -21,34 +20,51 @@ import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 
 interface SingleByteProps {
 	item: Post | Mirror;
-	index: number;
-	currentIndex: number;
+	isActive: boolean;
 }
 
-function SingleShot({ item, index, currentIndex }: SingleByteProps) {
-	const ref = React.useRef<Video>(null);
-	const { height, width } = useWindowDimensions();
-	const bottomTabBarHeight = useBottomTabBarHeight();
+function SingleShot({ item, isActive }: SingleByteProps) {
 	const [mute, setMute] = useState(false);
 	const [videoURL, setVideoURL] = useState(getIPFSLink(item?.metadata?.media[0]?.original?.url));
-	const navigation = useNavigation();
+
+	const ref = React.useRef<Video>(null);
 	const commentSheetRef = React.useRef<BottomSheetMethods>(null);
-
-	navigation.addListener("blur", (e) => {
-		ref.current?.pauseAsync();
-	});
-
 	const descriptionRef = useRef<BottomSheetMethods>(null);
+	const isFocused = useIsFocused();
+
+	const { height, width } = useWindowDimensions();
+	const bottomTabBarHeight = useBottomTabBarHeight();
+	const navigation = useNavigation();
+
+	useEffect(() => {
+		navigation.addListener("blur", handleBlur);
+	}, [navigation]);
+
+	const handleBlur = React.useCallback(() => {
+		ref?.current?.pauseAsync();
+	}, []);
+
+	useEffect(() => {
+		if (isFocused && isActive) {
+			ref.current?.setPositionAsync(0);
+			ref.current?.playAsync();
+		}
+		if (!isFocused || !isActive) {
+			ref.current?.setPositionAsync(0);
+			ref.current?.pauseAsync();
+		}
+	}, [isFocused, isActive]);
 
 	useEffect(() => {
 		if (item?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")) {
 			Logger.Success("Got opti", item?.metadata?.media[0]?.optimized?.url);
 			setVideoURL(item?.metadata?.media[0]?.optimized?.url);
 			return;
+		} else {
+			setVideoURL(getIPFSLink(item?.metadata?.media[0].original.url));
 		}
 		checkIfLivePeerAsset(videoURL).then((res) => {
 			if (res) {
-				setVideoURL(res);
 			} else {
 				createLivePeerAsset(videoURL);
 			}
@@ -81,9 +97,10 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
 								uri: videoURL,
 							},
 							onError(error) {
+								Logger.Error("Video Player Error", error);
 								// console.log(error);
 							},
-							shouldPlay: currentIndex === index ? true : false,
+							shouldPlay: isActive,
 							resizeMode: ResizeMode.COVER,
 							isMuted: mute,
 							posterSource: {
