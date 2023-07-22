@@ -3,6 +3,8 @@ import ShotSkeleton from "components/Shots/ShotSkeleton";
 import SingleShot from "components/Shots/SingleShot";
 import {
 	ExplorePublicationRequest,
+	Mirror,
+	Post,
 	PublicationMainFocus,
 	PublicationSortCriteria,
 	PublicationTypes,
@@ -10,12 +12,13 @@ import {
 } from "customTypes/generated";
 import { ShotsPublication } from "customTypes/index";
 import { RootTabScreenProps } from "customTypes/navigation";
-import * as ScreenOrientation from "expo-screen-orientation";
 import React, { useState } from "react";
-import { Dimensions, Platform, StyleSheet, View, useWindowDimensions } from "react-native";
+import { Dimensions, Platform, StyleSheet, useWindowDimensions, View } from "react-native";
 import SwiperFlatList from "react-native-swiper-flatlist";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useProfile } from "store/Store";
+
+type ShotPublication = Pick<ShotsPublication, "item">;
 
 const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
 	const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -57,7 +60,7 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
 		},
 	});
 
-	const data = shotsData?.explorePublications?.items as ShotsPublication[];
+	const data = shotsData?.explorePublications?.items as ShotPublication[];
 
 	const pageInfo = shotsData?.explorePublications.pageInfo;
 
@@ -65,7 +68,7 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
 		setCurrentIndex(index);
 	};
 
-	const renderItem = ({ item, index }: { item: ShotsPublication; index: number }) => {
+	const renderItem = ({ item, index }: { item: Post | Mirror; index: number }) => {
 		if (!item.hidden) {
 			return (
 				<View style={{ height: isAndroid ? height : "auto" }}>
@@ -76,7 +79,7 @@ const Shots = ({ navigation }: RootTabScreenProps<"Shots">) => {
 		return <></>;
 	};
 
-	const keyExtractor = (item: ShotsPublication) => item.id.toString();
+	const keyExtractor = (item : ShotPublication) => item.id.toString();
 
 	const onEndCallBack = () => {
 		if (!pageInfo?.next) {

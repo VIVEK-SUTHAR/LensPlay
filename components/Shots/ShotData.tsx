@@ -1,20 +1,20 @@
-import { default as React, useCallback } from "react";
-import { Dimensions, Pressable, ScrollView, StyleSheet, View } from "react-native";
-import getRawurl from "utils/getRawUrl";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { useNavigation } from "@react-navigation/native";
+import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import { black, white } from "constants/Colors";
-import { ShotsPublication } from "customTypes/index";
 import { VideoCreator } from "components/VIdeo";
-import extractURLs from "utils/extractURL";
+import { black, white } from "constants/Colors";
 import { STATIC_ASSET } from "constants/index";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import Icon from "components/Icon";
+import { Mirror, Post } from "customTypes/generated";
+import { default as React, useCallback } from "react";
+import { Dimensions, Pressable, StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useNavigation } from "@react-navigation/native";
+import extractURLs from "utils/extractURL";
+import getRawurl from "utils/getRawUrl";
 
-function ShotData({ item, descriptionRef }: { item: ShotsPublication; descriptionRef: any }) {
+function ShotData({ item, descriptionRef }: { item: Post | Mirror; descriptionRef: any }) {
 	const handleSheet = useCallback(() => {
 		descriptionRef?.current?.snapToIndex(0);
 	}, []);
@@ -95,7 +95,7 @@ function ShotData({ item, descriptionRef }: { item: ShotsPublication; descriptio
 
 export default React.memo(ShotData);
 
-function DiscriptionSheet({ item, descriptionRef }: { item: ShotsPublication; descriptionRef: any }) {
+function DiscriptionSheet({ item, descriptionRef }: { item: Post | Mirror; descriptionRef: any }) {
 	return (
 		<View
 			style={{

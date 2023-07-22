@@ -1,6 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
 import { Image, ImageProps } from "expo-image";
+import React from "react";
 import getPlaceHolderImage from "utils/getPlaceHolder";
 
 type LPImageProps = Omit<ImageProps, "placeholder">;
@@ -15,12 +14,12 @@ const LPImage: React.FC<LPImageProps> = (props) => {
 		contentFit: "cover",
 	};
 
-	const mergerdProps = {
-		defaultProps,
+	const mergedProps = {
+		...defaultProps,
 		...props,
 	};
 
-	return <Image {...mergerdProps} />;
+	return <Image {...mergedProps} />;
 };
 
 export default React.memo(LPImage);

@@ -12,7 +12,7 @@ import {
 	ReportButton,
 	ShareButton,
 	VideoCreator,
-	VideoMeta
+	VideoMeta,
 } from "components/VIdeo";
 import CollectVideoSheet from "components/VIdeo/Actions/CollectVideoSheet";
 import DisLikeButton from "components/VIdeo/Actions/DisLikeButton";
@@ -36,7 +36,7 @@ import {
 	ScrollView,
 	StyleSheet,
 	TouchableOpacity,
-	View
+	View,
 } from "react-native";
 import { useActivePublication, useReactionStore } from "store/Store";
 import useVideoURLStore from "store/videoURL";
@@ -61,7 +61,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		return () => clearTimeout(delay);
 	}, [activePublication]);
 
-
 	const [isMute, setIsMute] = useState<boolean>(false);
 	const {
 		reaction,
@@ -78,7 +77,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	function handleBackButtonClick() {
 		setStatusBarHidden(false, "fade");
 		setInFullsreen(!inFullscreen);
-		console.log(inFullscreen);
 		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
 		if (!inFullscreen) {
 			navigation.goBack();

@@ -2,10 +2,12 @@ import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/typ
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import Sheet from "components/Bottom";
+import CommentSheet from "components/Comments/CommentSheet";
 import Icon from "components/Icon";
 import ShotData, { DiscriptionSheet } from "components/Shots/ShotData";
 import ShotReaction from "components/Shots/ShotReaction";
 import { black } from "constants/Colors";
+import { Mirror, Post } from "customTypes/generated";
 import type { ShotsPublication } from "customTypes/index";
 import { ResizeMode, Video } from "expo-av";
 import VideoPlayer from "expo-video-player";
@@ -18,7 +20,7 @@ import createLivePeerAsset from "utils/video/createLivePeerAsset";
 import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 
 interface SingleByteProps {
-	item: ShotsPublication;
+	item: Post | Mirror;
 	index: number;
 	currentIndex: number;
 }
@@ -30,6 +32,7 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
 	const [mute, setMute] = useState(false);
 	const [videoURL, setVideoURL] = useState(getIPFSLink(item?.metadata?.media[0]?.original?.url));
 	const navigation = useNavigation();
+	const commentSheetRef = React.useRef<BottomSheetMethods>(null);
 
 	navigation.addListener("blur", (e) => {
 		ref.current?.pauseAsync();
@@ -112,7 +115,8 @@ function SingleShot({ item, index, currentIndex }: SingleByteProps) {
 				</Pressable>
 			</View>
 			<ShotData item={item} descriptionRef={descriptionRef} />
-			<ShotReaction item={item} />
+			<ShotReaction item={item} commentRef={commentSheetRef} />
+			<CommentSheet commentSheetRef={commentSheetRef} pubId={item?.id} />
 			<Sheet
 				ref={descriptionRef}
 				index={-1}

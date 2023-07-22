@@ -3,27 +3,32 @@ import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { FeedItemRoot, Mirror, Post } from "customTypes/generated";
-import { Image } from "expo-image";
-import * as React from "react";
-import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
+import React from "react";
+import { StyleProp, StyleSheet, TouchableWithoutFeedback, View, ViewStyle } from "react-native";
 import { useActivePublication } from "store/Store";
 import formatTime from "utils/formatTime";
 import getDifference from "utils/getDifference";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getIPFSLink from "utils/getIPFSLink";
-import getPlaceHolderImage from "utils/getPlaceHolder";
 import getRawurl from "utils/getRawUrl";
 import getVideoDuration from "utils/getVideoDuration";
 import Logger from "utils/logger";
+import LPImage from "./UI/LPImage";
 
 type VideoCardProp = {
 	publication: FeedItemRoot | Mirror | Post;
 	id: string;
 	height?: number | string;
 	width?: number | string;
+	style?: StyleProp<ViewStyle>;
 };
 
-const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publication }) => {
+const VideoCard: React.FC<VideoCardProp> = ({
+	width = "auto",
+	height = 200,
+	publication,
+	style,
+}) => {
 	const { setActivePublication } = useActivePublication();
 
 	const navigation = useNavigation();
@@ -51,18 +56,12 @@ const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publ
 		[]
 	);
 
-	const memoizedPlaceHolder = React.useMemo(
-		()=>getPlaceHolderImage(),[]
-	)
-
 	return (
-		<View style={[styles.videoCardContainer, { width: width }]}>
+		<View style={[styles.videoCardContainer, { width: width }, style]}>
 			<View style={{ height: height }}>
 				<TouchableWithoutFeedback onPress={navigateToVideoPage}>
-					<Image
-						placeholder={memoizedPlaceHolder}
+					<LPImage
 						contentFit="cover"
-						transition={500}
 						priority="high"
 						source={{
 							uri: coverImage,

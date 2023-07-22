@@ -113,7 +113,13 @@ const MoreVideosList = React.memo(() => {
 
 	const renderItem = React.useCallback(({ item }: { item: Post }) => {
 		if (item.id === activePublication?.id) return null;
-		return <VideoCard publication={item} id={item.id} />;
+		return (
+			<VideoCard
+				publication={item}
+				id={item.id}
+				style={{ marginHorizontal: 0, marginVertical: 4 }}
+			/>
+		);
 	}, []);
 
 	if (loading)
