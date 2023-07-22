@@ -31,6 +31,20 @@ export default function DeleteVideo({ sheetRef, publication }: DeleteVideoProps)
 			Logger.Error("Failed to Delete Video", error);
 		},
 	});
+	function deleteInLens() {
+		deleteVideo({
+			variables: {
+				request: {
+					publicationId: publication?.id,
+				},
+			},
+			context: {
+				headers: {
+					"x-access-token": `Bearer ${accessToken}`,
+				},
+			},
+		});
+	}
 
 	return (
 		<Sheet
@@ -91,20 +105,7 @@ export default function DeleteVideo({ sheetRef, publication }: DeleteVideoProps)
 						borderRadius={8}
 					/>
 					<Button
-						onPress={() => {
-							deleteVideo({
-								variables: {
-									request: {
-										publicationId: publication?.id,
-									},
-								},
-								context: {
-									headers: {
-										"x-access-token": `Bearer ${accessToken}`,
-									},
-								},
-							});
-						}}
+						onPress={deleteInLens}
 						mt={16}
 						title="Delete"
 						bg={"#f5f5f5"}

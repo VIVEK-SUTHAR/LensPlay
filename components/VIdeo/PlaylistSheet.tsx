@@ -1,24 +1,22 @@
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { FlashList } from "@shopify/flash-list";
+import Earth from "assets/Icons/Earth";
 import Sheet from "components/Bottom";
-import Icon from "components/Icon";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import { black, dark_primary, dark_secondary, primary, white } from "constants/Colors";
+import { black, primary, white } from "constants/Colors";
+import { Mirror, Post } from "customTypes/generated";
 import { Image } from "expo-image";
 import React from "react";
 import { Dimensions, Pressable, View } from "react-native";
-import getIPFSLink from "utils/getIPFSLink";
-import getImageProxyURL from "utils/getImageProxyURL";
-import getPlaceHolderImage from "utils/getPlaceHolder";
-import NewPlaylistSheet from "./NewPlaylistSheet";
-import ErrorMesasge from "components/common/ErrorMesasge";
-import getAllPlaylist from "utils/playlist/getAllPlaylist";
 import { useProfile } from "store/Store";
+import getImageProxyURL from "utils/getImageProxyURL";
+import getIPFSLink from "utils/getIPFSLink";
+import getPlaceHolderImage from "utils/getPlaceHolder";
 import Logger from "utils/logger";
-import Earth from "assets/Icons/Earth";
-import { Mirror, Post } from "customTypes/generated";
+import getAllPlaylist from "utils/playlist/getAllPlaylist";
+import NewPlaylistSheet from "./NewPlaylistSheet";
 
 const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<BottomSheetMethods>, publication: Post | Mirror | null}) => {
 	const NewPlaylistSheetRef = React.useRef<BottomSheetMethods>(null);

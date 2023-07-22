@@ -19,6 +19,7 @@ import DisLikeButton from "components/VIdeo/Actions/DisLikeButton";
 import MetaDataSheet from "components/VIdeo/Actions/MetaDataSheet";
 import MirrorButton from "components/VIdeo/Actions/MirrorButton";
 import MirrorVideoSheet from "components/VIdeo/Actions/MirrorVideoSheet";
+import MoreVideos from "components/VIdeo/MoreVideos";
 import VideoPageSkeleton from "components/VIdeo/VideoPageSkeleton";
 import VideoPlayer from "components/VideoPlayer";
 import { black, dark_primary } from "constants/Colors";
@@ -49,6 +50,7 @@ import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
+	const { activePublication } = useActivePublication();
 
 	React.useEffect(() => {
 		Logger.Count("Landed in VideoPage");
@@ -57,9 +59,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 			setIsReadyToRender(true);
 		}, 0);
 		return () => clearTimeout(delay);
-	}, []);
+	}, [activePublication]);
 
-	const { activePublication } = useActivePublication();
 
 	const [isMute, setIsMute] = useState<boolean>(false);
 	const {
@@ -159,7 +160,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 			return () => {
 				setVideoURI("");
 			};
-		}, [])
+		}, [activePublication])
 	);
 
 	if (!isReadyToRender) return <VideoPageSkeleton />;
@@ -263,16 +264,17 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							<StyledText
 								title="Comments"
 								style={{
-									fontSize: 20,
+									fontSize: 16,
 									fontWeight: "700",
 									color: "white",
 								}}
 							/>
 							<TouchableOpacity onPress={openCommentSheet}>
-								<Icon name="arrowDown" color="white" />
+								<Icon name="arrowDown" color="white" size={24} />
 							</TouchableOpacity>
 						</View>
 					</View>
+					<MoreVideos />
 				</ScrollView>
 			</SafeAreaView>
 			<CommentSheet commentSheetRef={commentRef} />
@@ -282,17 +284,17 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		</>
 	);
 };
-
 export default VideoPage;
 const styles = StyleSheet.create({
 	commentsContainer: {
-		backgroundColor: black[400],
-		paddingVertical: 4,
-		paddingHorizontal: 8,
+		backgroundColor: black[600],
+		paddingVertical: 8,
+		paddingHorizontal: 12,
 		borderRadius: 8,
-		width: "95%",
+		width: "98%",
 		flexDirection: "row",
 		justifyContent: "space-between",
+		alignItems: "center",
 		alignSelf: "center",
 	},
 });

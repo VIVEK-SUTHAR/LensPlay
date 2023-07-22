@@ -28,7 +28,6 @@ const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publ
 
 	const navigation = useNavigation();
 
-	let playBackurl = React.useMemo(() => publication?.metadata?.media[0]?.original?.url, []);
 	const navigateToVideoPage = React.useCallback(() => {
 		Logger.Count("Start Navigation from VideoCard");
 		navigation.navigate("VideoPage");
