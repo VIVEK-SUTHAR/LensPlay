@@ -18,7 +18,7 @@ const headerTop = 44 - 16;
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
-export default function PlaylistCover({ scrollY }: { scrollY: SharedValue<number> }) {
+export default function PlaylistCover({ scrollY,coverLink,playlistTitle }: { scrollY: SharedValue<number>,coverLink:string,playlistTitle:string }) {
 	const inset = useSafeAreaInsets();
 	const layoutY = useSharedValue(0);
 	const opacityAnim = useAnimatedStyle(() => {
@@ -74,9 +74,7 @@ export default function PlaylistCover({ scrollY }: { scrollY: SharedValue<number
 		<Animated.View style={[styles.imageContainer, opacityAnim]}>
 			<Animated.Image
 				style={[styles.imageStyle, scaleAnim]}
-				source={{
-					uri: "https://ik.imagekit.io/lens/media-snapshot/214a2225ed102ece199a5f6f0181fe5002b0f0a2edc284b13f85eb0d8d31cc51.jpg",
-				}}
+				source={{uri:coverLink}}
 			/>
 			<Animated.View
 				onLayout={(event: LayoutChangeEvent) => {
@@ -105,7 +103,7 @@ export default function PlaylistCover({ scrollY }: { scrollY: SharedValue<number
 						color: white[700],
 						fontWeight: "600",
 					}}
-					title={"Music"}
+					title={playlistTitle}
 				/>
                 <Play height={48} width={48} />
 			</Animated.View>

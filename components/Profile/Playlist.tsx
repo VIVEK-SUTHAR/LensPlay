@@ -2,39 +2,56 @@ import { useNavigation } from "@react-navigation/native";
 import Earth from "assets/Icons/Earth";
 import PlaylistIcon from "assets/Icons/Playlist";
 import Icon from "components/Icon";
+import { playlistProps } from "components/Playlist/PlaylistSheet";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
+import MyVideoCard from "components/common/MyVideoCard";
 import { black, primary } from "constants/Colors";
+import { RootStackScreenProps } from "customTypes/navigation";
 import { Image } from "expo-image";
-import React, { useState } from "react";
-import { Dimensions, Pressable, Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Dimensions, FlatList, Pressable, ScrollView, Text } from "react-native";
 import { TouchableOpacity, View } from "react-native";
+import { useProfile } from "store/Store";
 import getIPFSLink from "utils/getIPFSLink";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getPlaceHolderImage from "utils/getPlaceHolder";
 import getRawurl from "utils/getRawUrl";
-
+import getAllPlaylist from "utils/playlist/getAllPlaylist";
 
 const Playlist = () => {
+	const [playlistData, setplaylistData] = useState();
+	const { currentProfile } = useProfile();
+	const fetchPlaylist = async () => {
+		const allPlaylist = await getAllPlaylist(currentProfile?.id);
+
+		console.log("all playlist", allPlaylist[0]);
+		setplaylistData(allPlaylist[0]?.playlist);
+		console.log("apna ", playlistData);
+	};
+
+	useEffect(() => {
+		fetchPlaylist();
+	}, []);
+
+	const renderItem = ({ item }: { item: playlistProps }) => {
+		return (
+			<>
+				<PlaylistCard playlistId={item.playlistId} profileId={item.profileId} name={item.name} cover={item.cover} />
+			</>
+		);
+	};
 	return (
-		<View
-			style={{
-				flex: 1,
-				backgroundColor: "black",
-				paddingVertical: 8,
-			}}
-		>
-			<PlaylistCard />
-            <PlaylistCard />
-            <PlaylistCard />
+		<View style={{ flex: 1, backgroundColor: black[800] }}>
+			<FlatList data={playlistData} renderItem={renderItem} />
 		</View>
 	);
 };
 
 export default React.memo(Playlist);
 
-const PlaylistCard = React.memo(() => {
-	const navigation=useNavigation();
+const PlaylistCard = React.memo(({ name, cover,playlistId }: playlistProps) => {
+	const navigation = useNavigation();
 	return (
 		<Pressable
 			android_ripple={{
@@ -46,7 +63,7 @@ const PlaylistCard = React.memo(() => {
 				padding: 8,
 			}}
 			onPress={() => {
-				navigation.navigate("PlayListScreen");
+				navigation.navigate("PlayListScreen",{playlistId:playlistId,playlistTitle:name});
 			}}
 		>
 			<View
@@ -62,9 +79,7 @@ const PlaylistCard = React.memo(() => {
 					cachePolicy="memory-disk"
 					source={{
 						uri: getImageProxyURL({
-							formattedLink: getIPFSLink(
-								"https://ik.imagekit.io/lens/media-snapshot/e08e47d23df9fcb15162d4d18adca13c2958a9b153fbf27487c60c4a7c38b052.jpg"
-							),
+							formattedLink: getIPFSLink(cover),
 						}),
 					}}
 					style={{
@@ -104,25 +119,22 @@ const PlaylistCard = React.memo(() => {
 					}}
 				>
 					<Heading
-						title={"Playlist Name"}
+						title={name}
 						style={{ color: "white", fontSize: 16, fontWeight: "600" }}
 						numberOfLines={3}
 					/>
-                    <View
+					{/* <View
 						style={{
 							marginTop: 2,
 						}}
 					>
-						<StyledText
-							title={'Sahil Kakwani'}
-							style={{ color: "gray", fontSize: 12 }}
-						/>
-					</View>
+						<StyledText title={"Sahil Kakwani"} style={{ color: "gray", fontSize: 12 }} />
+					</View> */}
 					<View
 						style={{
 							flexDirection: "row",
 							alignItems: "center",
-                            marginTop: 4
+							marginTop: 4,
 						}}
 					>
 						<Earth height={10} width={10} />
@@ -153,4 +165,4 @@ const PlaylistCard = React.memo(() => {
 			</View>
 		</Pressable>
 	);
-})
+});

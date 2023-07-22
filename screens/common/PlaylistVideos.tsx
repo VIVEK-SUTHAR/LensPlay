@@ -33,6 +33,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import Heading from "components/UI/Heading";
 import PlaylistHeader from "components/Playlist/PlaylistHeader";
 import PlaylistCover from "components/Playlist/PlaylistCover";
+import getIPFSLink from "utils/getIPFSLink";
+import getRawurl from "utils/getRawUrl";
 
 type Props = {
 	videoTitle: string;
@@ -40,11 +42,11 @@ type Props = {
 	result: any;
 };
 
-const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = () => {
+const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = ({route}) => {
 	const scrollY = useSharedValue<number>(0);
-	const [playlistVideo, setplaylistVideo] = useState<Post[] | Mirror[]>([]);
-	const [fetchPublications] = useAllPublicationsLazyQuery();
-
+	const [playlistVideo, setplaylistVideo] = useState<Post[]>([]);
+	const [fetchPublications,{data}] = useAllPublicationsLazyQuery();
+	
 	const posterSize = Dimensions.get("screen").height / 3;
 	const scrollHandler = useAnimatedScrollHandler({
 		onScroll: (event) => {
@@ -54,30 +56,36 @@ const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = () => {
 	});
 
 	const fetchAllVideos = async () => {
-		const data = await getAllVideos("Blink-0x018c00");
+		const data = await getAllVideos(route.params.playlistId);
 		console.log("im here", data[0].publicationId);
 		const publications = await fetchPublications({
 			variables: { request: { publicationIds: data[0].publicationId } },
 		});
 		console.log(publications.data?.publications.items);
 		const playListVideos = publications.data?.publications.items;
+		const playlistCover=publications.data?.publications.items[0]?.metadata.cover;
+		const coverLink=getIPFSLink(getRawurl(playlistCover));
+		
+		console.log('haas',coverLink);
+		
 		console.log(playListVideos, "n");
-
+		
 		setplaylistVideo(playListVideos);
 	};
 	React.useEffect(() => {
 		fetchAllVideos();
 	}, []);
-
+	
 	const renderItem = ({ item }: { item: Post | Mirror }) => {
 		return (
 			<>
-				<MyVideoCard publication={item} id={item?.id} />
-				<MyVideoCard publication={item} id={item?.id} />
-				<MyVideoCard publication={item} id={item?.id} />
-				<MyVideoCard publication={item} id={item?.id} />
-				<MyVideoCard publication={item} id={item?.id} />
-				<MyVideoCard publication={item} id={item?.id} />
+				<MyVideoCard  publication={item} id={item?.id} />
+				<MyVideoCard  publication={item} id={item?.id} />
+				<MyVideoCard  publication={item} id={item?.id} />
+				<MyVideoCard  publication={item} id={item?.id} />
+				<MyVideoCard  publication={item} id={item?.id} />
+				<MyVideoCard  publication={item} id={item?.id} />
+				<MyVideoCard  publication={item} id={item?.id} />
 			</>
 		);
 	};
@@ -89,8 +97,8 @@ const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = () => {
 				backgroundColor: "black",
 			}}
 		>
-			<PlaylistHeader scrollY={scrollY} />
-			<PlaylistCover scrollY={scrollY} />
+			<PlaylistHeader playlistTitle={route.params.playlistTitle} scrollY={scrollY} />
+			<PlaylistCover coverLink={getIPFSLink(getRawurl(data?.publications.items[0]?.metadata.cover))} playlistTitle={route.params.playlistTitle} scrollY={scrollY} />
 			<Animated.FlatList
 				data={playlistVideo}
 				renderItem={renderItem}

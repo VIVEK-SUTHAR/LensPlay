@@ -209,6 +209,7 @@ export type playlistProps = {
 	cover: string;
 	name: string;
 	profileId: string;
+	playlistId:string
 };
 
 export default PlaylistSheet;
