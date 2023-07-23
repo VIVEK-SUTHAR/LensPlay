@@ -5,38 +5,32 @@ import Icon from "components/Icon";
 import { playlistProps } from "components/Playlist/PlaylistSheet";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import MyVideoCard from "components/common/MyVideoCard";
-import { black, primary } from "constants/Colors";
-import { RootStackScreenProps } from "customTypes/navigation";
+import { black } from "constants/Colors";
 import React, { useEffect, useState } from "react";
 import { RefreshControl } from "react-native";
 import { Image } from "react-native";
 import { Dimensions, FlatList, Pressable, ScrollView, Text } from "react-native";
 import { TouchableOpacity, View } from "react-native";
-import { useProfile, useThemeStore } from "store/Store";
+import { usePlaylistStore, useProfile, useThemeStore } from "store/Store";
 import getIPFSLink from "utils/getIPFSLink";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getPlaceHolderImage from "utils/getPlaceHolder";
-import getRawurl from "utils/getRawUrl";
 import getAllPlaylist from "utils/playlist/getAllPlaylist";
 
 const Playlist = () => {
-	const [playlistData, setplaylistData] = useState();
 	const [refreshing, setRefreshing] = useState<boolean>(false);
 	const [isloading, setisloading] = useState(true);
 	const theme=useThemeStore();
 	const { currentProfile } = useProfile();
+	const {playlistArray, setPlaylistArray} = usePlaylistStore();
+
 	const fetchPlaylist = async () => {
 		const allPlaylist = await getAllPlaylist(currentProfile?.id);
 		setisloading(false);
 		console.log("all playlist", allPlaylist[0]);
-		setplaylistData(allPlaylist[0]?.playlist);
-		console.log("apna ", playlistData);
+		setPlaylistArray(allPlaylist[0]?.playlist);
 	};
 
-	useEffect(() => {
-		fetchPlaylist();
-	}, []);
 
 	const renderItem = ({ item }: { item: playlistProps }) => {
 		return (
@@ -75,7 +69,7 @@ const Playlist = () => {
 				</>
 			) : (
 				<FlatList
-					data={playlistData}
+					data={playlistArray}
 					renderItem={renderItem}
 					refreshControl={_RefreshControl}
 					ListEmptyComponent={() => {
