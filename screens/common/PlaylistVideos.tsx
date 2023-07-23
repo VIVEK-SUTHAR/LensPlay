@@ -47,9 +47,10 @@ import Logger from "utils/logger";
 import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
 import DeleteVideo from "components/VIdeo/DeleteVideo";
-import { useProfile } from "store/Store";
+import { useProfile, useThemeStore } from "store/Store";
 import removeVideoFromPlaylist from "utils/playlist/removeVideoFromPlaylist";
 import MyVideoCardSkeleton from "components/UI/MyVideoCardSkeleton";
+import { RefreshControl } from "react-native";
 
 type Props = {
 	videoTitle: string;
@@ -65,6 +66,8 @@ const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = ({ rout
 	}, []);
 	const [playlistVideo, setplaylistVideo] = useState<Post[]>([]);
 	const { currentProfile } = useProfile();
+	const theme=useThemeStore();
+	const [refreshing, setRefreshing] = useState<boolean>(false);
 	const [fetchPublications, { data }] = useAllPublicationsLazyQuery();
 	const [isLoading, setisLoading] = useState(true);
 	const PlaylistVideoSheetRef = React.useRef<BottomSheetMethods>(null);
@@ -95,6 +98,18 @@ const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = ({ rout
 
 		setplaylistVideo(playListVideos);
 	};
+	const onRefresh = () => {
+		setRefreshing(true);
+		fetchAllVideos().then(() => setRefreshing(false));
+	};
+	const _RefreshControl = (
+		<RefreshControl
+			refreshing={refreshing}
+			onRefresh={onRefresh}
+			colors={[theme.PRIMARY]}
+			progressBackgroundColor={"black"}
+		/>
+	);
 	React.useEffect(() => {
 		fetchAllVideos();
 	}, []);
@@ -146,6 +161,7 @@ const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = ({ rout
 					<Animated.FlatList
 						data={playlistVideo}
 						renderItem={renderItem}
+						refreshControl={_RefreshControl}
 						contentContainerStyle={{
 							paddingTop: posterSize + 24,
 							gap: 16,
