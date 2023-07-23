@@ -83,16 +83,20 @@ const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = ({ rout
 	const fetchAllVideos = async () => {
 		const data = await getAllVideos(route.params.playlistId);
 		console.log("im here", data[0].publicationId);
+		const publicationIds = data[0].publicationId.filter((elements:string) => {
+			return elements !== null;
+		   });
+		   
 		const publications = await fetchPublications({
-			variables: { request: { publicationIds: data[0].publicationId } },
+			variables: { request: { publicationIds: publicationIds } },
 		});
 		setisLoading(false);
-		console.log(publications.data?.publications.items);
+		// console.log(publications.data?.publications.items);
 		const playListVideos = publications.data?.publications.items;
 		const playlistCover = publications.data?.publications.items[0]?.metadata.cover;
 		const coverLink = getIPFSLink(getRawurl(playlistCover));
 
-		console.log("haas", coverLink);
+		// console.log("haas", coverLink);
 
 		console.log(playListVideos, "n");
 

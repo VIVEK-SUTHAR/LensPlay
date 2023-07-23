@@ -8,7 +8,7 @@ import { Mirror, Post, Scalars } from "customTypes/generated";
 import { Image } from "expo-image";
 import React, { memo } from "react";
 import { Dimensions, Pressable, TouchableOpacity, View } from "react-native";
-import { useActivePublication } from "store/Store";
+import { useActivePublication, usePlaylistStore } from "store/Store";
 import getDifference from "utils/getDifference";
 import getIPFSLink from "utils/getIPFSLink";
 import getImageProxyURL from "utils/getImageProxyURL";
@@ -25,6 +25,7 @@ type MyVideoCardProps = {
 function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardProps) {
 	const navigation = useNavigation();
 	const { setActivePublication } = useActivePublication();
+	const pubId=usePlaylistStore();
 
 	const memoizedPlaceHolder = React.useMemo(
 		()=>getPlaceHolderImage(),[]
@@ -108,6 +109,7 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 					activeOpacity={0.5}
 					onPress={() => {
 						setPublication(publication);
+						pubId.setPubId(publication?.id);
 						sheetRef?.current?.snapToIndex(0);
 					}}
 					style={{

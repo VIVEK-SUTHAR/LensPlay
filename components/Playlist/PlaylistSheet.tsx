@@ -15,7 +15,7 @@ import getPlaceHolderImage from "utils/getPlaceHolder";
 import NewPlaylistSheet from "./NewPlaylistSheet";
 import ErrorMesasge from "components/common/ErrorMesasge";
 import getAllPlaylist from "utils/playlist/getAllPlaylist";
-import { useProfile, useToast } from "store/Store";
+import { usePlaylistStore, useProfile, useToast } from "store/Store";
 import Logger from "utils/logger";
 import Earth from "assets/Icons/Earth";
 import { Mirror, Post } from "customTypes/generated";
@@ -26,6 +26,7 @@ const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<Bo
 	const NewPlaylistSheetRef = React.useRef<BottomSheetMethods>(null);
 	const { currentProfile } = useProfile();
 	const [playlist, setPlaylist] = React.useState([]);
+	const {pubId} = usePlaylistStore()
 	const toast=useToast();
 	const getPlaylists = async () => {
 		const data = await getAllPlaylist(currentProfile?.id);
@@ -38,6 +39,7 @@ const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<Bo
 		Logger.Success("kkkk");
 		getPlaylists();
 	}, []);
+	Logger.Count('hooja',publication?.metadata?.name,publication?.id)
 	return (
 		<>
 			<Sheet
@@ -120,9 +122,9 @@ const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<Bo
 											gap: 16,
 										}}
 										onPress={async() => {
-											console.log('buddy');
+											Logger.Warn('buddy',currentProfile?.id,item.name,item.playlistId,pubId);
 											sheetRef.current?.close();
-											await addVideoToPlaylist(item.profileId,item.name,item.playlistId,publication?.id);
+											await addVideoToPlaylist(currentProfile?.id,item.name,item.playlistId,pubId);
 											toast.show('Video added to playlist',ToastType.SUCCESS,true)
 										}}
 									>

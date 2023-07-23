@@ -1,3 +1,4 @@
+import { playlistProps } from "components/Playlist/PlaylistSheet";
 import { CollectModuleType } from "../../utils/getCollectModule";
 import { FeedItemRoot, Maybe, Mirror, Post, Profile } from "../generated";
 
@@ -22,6 +23,12 @@ export interface IActivePublication {
 	setActivePublication: (newPublication: Post | Mirror | FeedItemRoot) => void;
 }
 
+export interface IPlaylist {
+	playlistArray: playlistProps[];
+	pubId: string;
+	setPlaylistArray: (newPublication: playlistProps[]) => void;
+	setPubId: (newPubId: string) => void;
+}
 export interface UserStore {
 	currentProfile: Profile | undefined;
 	hasHandle: boolean | null;

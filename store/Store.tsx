@@ -1,9 +1,11 @@
+import { playlistProps } from "components/Playlist/PlaylistSheet";
 import type { FeedItemRoot, Mirror, Post } from "customTypes/generated";
 import {
 	DisLikeObject,
 	IActivePublication,
 	IAuthStore,
 	ICommentStore,
+	IPlaylist,
 	IReactionStore,
 	IThemeStore,
 	OptimisticStore,
@@ -165,6 +167,23 @@ export const useActivePublication = create<IActivePublication>((set) => ({
 	},
 }));
 
-const useStore = create((set) => ({}));
+export const usePlaylistStore = create<IPlaylist>((set) => ({
+	playlistArray: [],
+	pubId:'',
+	setPubId:(newPubId:string)=>{
+		set({
+			pubId:newPubId,
+		})
+	},
+	setPlaylistArray: (newPlaylist: playlistProps[]) => {
+		set({
+			playlistArray: newPlaylist,
+		});
+	},
+}));
 
-export default useStore;
+// export const 
+
+// const useStore = create((set) => ({}));
+
+// export default useStore;
