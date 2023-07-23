@@ -34,13 +34,14 @@ import {
 } from "react-native";
 import { getColors } from "react-native-image-colors";
 import { useGuestStore } from "store/GuestStore";
-import { useAuthStore, useProfile, useThemeStore } from "store/Store";
+import { useAuthStore, usePlaylistStore, useProfile, useThemeStore } from "store/Store";
 import useWatchLater from "store/WatchLaterStore";
 import TrackAction from "utils/Track";
 import getAndSaveNotificationToken from "utils/getAndSaveNotificationToken";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
+import getAllPlaylist from "utils/playlist/getAllPlaylist";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -49,10 +50,23 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	const { isGuest } = useGuestStore();
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
+	const { setPlaylistArray } = usePlaylistStore();
 	const { setCover, setColor, sessionCount } = useWatchLater();
 
 	React.useEffect(() => {
 		getAndSaveNotificationToken(currentProfile?.id);
+	}, []);
+
+	const getPlaylists = async () => {
+		console.log("calllllllll");
+		const data = await getAllPlaylist(currentProfile?.id);
+		if (data.length !== 0) {
+			setPlaylistArray(data[0]?.playlist);
+		}
+	};
+
+	React.useEffect(() => {
+		getPlaylists();
 	}, []);
 
 	ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);

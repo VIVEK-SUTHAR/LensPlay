@@ -24,7 +24,6 @@ const NewPlaylistSheet = ({
 	const [isLoading, setIsLoading] = React.useState(false);
 	const { currentProfile } = useProfile();
 	const toast = useToast();
-	Logger.Success('okBhai',publication?.metadata?.name)
 	const create = async (publication: Post | Mirror | null) => {
 		try {
 			setIsLoading(true);

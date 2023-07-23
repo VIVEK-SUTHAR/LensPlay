@@ -23,7 +23,7 @@ const ARWEAVE_GATEWAY = "https://arweave.net";
 
 //LENSPLAY-API's
 export const LENSPLAY_API = "https://lensplay-api.vercel.app/api/";
-export const LENSPLAY_WEAVE_API = "http://192.168.29.239:3000/api/";
+export const LENSPLAY_WEAVE_API = "http://192.168.114.216:3000/api/";
 
 //UPLOAD_APIS
 const IPFS_UPLOAD_API = "https://api.web3.storage/upload";

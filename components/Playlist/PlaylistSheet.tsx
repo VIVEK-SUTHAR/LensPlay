@@ -1,47 +1,45 @@
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import { FlashList } from "@shopify/flash-list";
 import Sheet from "components/Bottom";
-import Icon from "components/Icon";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black, dark_primary, dark_secondary, primary, white } from "constants/Colors";
 import { Image } from "expo-image";
 import React from "react";
-import { Dimensions, Pressable, View } from "react-native";
+import { Dimensions, FlatList, Pressable, TouchableOpacity, View } from "react-native";
 import getIPFSLink from "utils/getIPFSLink";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getPlaceHolderImage from "utils/getPlaceHolder";
 import NewPlaylistSheet from "./NewPlaylistSheet";
-import ErrorMesasge from "components/common/ErrorMesasge";
-import getAllPlaylist from "utils/playlist/getAllPlaylist";
 import { usePlaylistStore, useProfile, useToast } from "store/Store";
 import Logger from "utils/logger";
 import Earth from "assets/Icons/Earth";
 import { Mirror, Post } from "customTypes/generated";
 import addVideoToPlaylist from "utils/playlist/addVideoToPlayslist";
-import { ToastType } from "customTypes/Store";
 
 const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<BottomSheetMethods>, publication: Post | Mirror | null}) => {
 	const NewPlaylistSheetRef = React.useRef<BottomSheetMethods>(null);
 	const { currentProfile } = useProfile();
-	const [playlist, setPlaylist] = React.useState([]);
-	const {pubId} = usePlaylistStore()
+	const { playlistArray } = usePlaylistStore();
 	const toast=useToast();
-	const getPlaylists = async () => {
-		console.log("calllllllll")
-		const data = await getAllPlaylist(currentProfile?.id);
-		if (data.length !== 0) {
-			// Logger.Log(data[0], "data");
-			setPlaylist(data[0]?.playlist);
-		}
-	};
-	React.useEffect(() => {
-		Logger.Success("kkkk");
+
+	const addToPlaylist = async (publication: Post | Mirror | null, item: playlistProps) => {
+		try {
 			
-			getPlaylists();
-	}, []);
-	Logger.Count('hooja',publication?.metadata?.name,publication?.id)
+			Logger.Success("Boom Boom",publication?.id);
+			await addVideoToPlaylist(currentProfile?.id, item?.name, item?.playlistId, publication?.id);
+			toast.success("Video added successfully");
+			sheetRef?.current?.close();
+		} catch (error) {
+			console.log(error);
+
+			toast.error("Something went wrong");
+			sheetRef?.current?.close();
+		}
+		// Logger.Log(playlistId);
+	};
+	
+	// Logger.Count('hooja',publication?.metadata?.name,publication?.id)
 	return (
 		<>
 			<Sheet
@@ -104,9 +102,8 @@ const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<Bo
 						}}
 					/>
 					<BottomSheetScrollView style={{ flex: 1 }}>
-						<FlashList
-							data={playlist}
-							estimatedItemSize={25}
+						<FlatList
+							data={playlistArray}
 							ListEmptyComponent={NoPlaylist}
 							renderItem={({ item }: { item: playlistProps }) => {
 								return (
@@ -123,12 +120,8 @@ const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<Bo
 											marginTop: 8,
 											gap: 16,
 										}}
-										onPress={async() => {
-											Logger.Warn('buddy',currentProfile?.id,item.name,item.playlistId,pubId);
-											sheetRef.current?.close();
-											Logger.Warn("pubid just before adding....", pubId);
-											await addVideoToPlaylist(currentProfile?.id,item.name,item.playlistId,pubId);
-											toast.show('Video added to playlist',ToastType.SUCCESS,true)
+										onPress={async () => {
+											await addToPlaylist(publication, item);
 										}}
 									>
 										<Image
