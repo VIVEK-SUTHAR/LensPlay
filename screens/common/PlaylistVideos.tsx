@@ -1,6 +1,7 @@
 import {
 	Dimensions,
 	FlatList,
+	Image,
 	LayoutChangeEvent,
 	SafeAreaView,
 	ScrollView,
@@ -107,42 +108,6 @@ const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = ({ rout
 					publication={item}
 					id={item?.id}
 				/>
-				<MyVideoCard
-					setPublication={handlePublication}
-					sheetRef={PlaylistVideoSheetRef}
-					publication={item}
-					id={item?.id}
-				/>
-				<MyVideoCard
-					setPublication={handlePublication}
-					sheetRef={PlaylistVideoSheetRef}
-					publication={item}
-					id={item?.id}
-				/>
-				<MyVideoCard
-					setPublication={handlePublication}
-					sheetRef={PlaylistVideoSheetRef}
-					publication={item}
-					id={item?.id}
-				/>
-				<MyVideoCard
-					setPublication={handlePublication}
-					sheetRef={PlaylistVideoSheetRef}
-					publication={item}
-					id={item?.id}
-				/>
-				<MyVideoCard
-					setPublication={handlePublication}
-					sheetRef={PlaylistVideoSheetRef}
-					publication={item}
-					id={item?.id}
-				/>
-				<MyVideoCard
-					setPublication={handlePublication}
-					sheetRef={PlaylistVideoSheetRef}
-					publication={item}
-					id={item?.id}
-				/>
 			</>
 		);
 	};
@@ -154,20 +119,27 @@ const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = ({ rout
 				backgroundColor: "black",
 			}}
 		>
-			<View style={{position:"relative"}} >
 				<PlaylistHeader playlistTitle={route.params.playlistTitle} scrollY={scrollY} />
 				<PlaylistCover
 					coverLink={getIPFSLink(getRawurl(data?.publications.items[0]?.metadata.cover))}
 					playlistTitle={route.params.playlistTitle}
 					scrollY={scrollY}
 				/>
-			</View>
-			{(isLoading) ? (
+			{isLoading ? (
 				<>
-					<MyVideoCardSkeleton />
-					<MyVideoCardSkeleton />
-					<MyVideoCardSkeleton />
-					<MyVideoCardSkeleton />
+					<View
+						style={{
+							paddingTop: posterSize + 24,
+							gap: 16,
+							paddingHorizontal: 4,
+							paddingBottom: 48,
+						}}
+					>
+						<MyVideoCardSkeleton />
+						<MyVideoCardSkeleton />
+						<MyVideoCardSkeleton />
+						<MyVideoCardSkeleton />
+					</View>
 				</>
 			) : (
 				<>
@@ -177,11 +149,38 @@ const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = ({ rout
 						contentContainerStyle={{
 							paddingTop: posterSize + 24,
 							gap: 16,
-							paddingHorizontal: 16,
+							paddingHorizontal: 4,
 							paddingBottom: 48,
 						}}
 						onScroll={scrollHandler}
 						showsVerticalScrollIndicator={false}
+						ListEmptyComponent={() => {
+							return (
+								<View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+									<Image
+										source={require("../../assets/images/notfound.png")}
+										style={{
+											resizeMode: "contain",
+											maxHeight: "50%",
+											maxWidth: "50%",
+											justifyContent: "center",
+											alignSelf: "center",
+										}}
+									/>
+									<StyledText
+										title={"This playlist has no videos"}
+										numberOfLines={1}
+										style={{
+											color: "#ffffff",
+											fontSize: 20,
+											fontWeight: "400",
+											justifyContent: "center",
+											textAlign:"center"
+										}}
+									/>
+								</View>
+							);
+						}}
 					/>
 					<PlaylistVideoSheet
 						sheetRef={PlaylistVideoSheetRef}

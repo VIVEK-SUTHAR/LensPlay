@@ -79,7 +79,6 @@ export default function PlaylistCover({
 		};
 	});
 	return (
-		<View style={{position:"relative"}} >
 			<Animated.View style={[styles.imageContainer, opacityAnim]}>
 				<Animated.Image style={[styles.imageStyle, scaleAnim]} source={{ uri: coverLink }} />
 				<Animated.View
@@ -134,7 +133,6 @@ export default function PlaylistCover({
 					]}
 				/>
 			</Animated.View>
-		</View>
 	);
 }
 

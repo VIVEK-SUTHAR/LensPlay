@@ -15,16 +15,18 @@ import getPlaceHolderImage from "utils/getPlaceHolder";
 import NewPlaylistSheet from "./NewPlaylistSheet";
 import ErrorMesasge from "components/common/ErrorMesasge";
 import getAllPlaylist from "utils/playlist/getAllPlaylist";
-import { useProfile } from "store/Store";
+import { useProfile, useToast } from "store/Store";
 import Logger from "utils/logger";
 import Earth from "assets/Icons/Earth";
 import { Mirror, Post } from "customTypes/generated";
 import addVideoToPlaylist from "utils/playlist/addVideoToPlayslist";
+import { ToastType } from "customTypes/Store";
 
 const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<BottomSheetMethods>, publication: Post | Mirror | null}) => {
 	const NewPlaylistSheetRef = React.useRef<BottomSheetMethods>(null);
 	const { currentProfile } = useProfile();
 	const [playlist, setPlaylist] = React.useState([]);
+	const toast=useToast();
 	const getPlaylists = async () => {
 		const data = await getAllPlaylist(currentProfile?.id);
 		if (data.length !== 0) {
@@ -120,7 +122,8 @@ const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<Bo
 										onPress={async() => {
 											console.log('buddy');
 											sheetRef.current?.close();
-											await addVideoToPlaylist(item.profileId,item.playlistId,item.name,publication?.id);
+											await addVideoToPlaylist(item.profileId,item.name,item.playlistId,publication?.id);
+											toast.show('Video added to playlist',ToastType.SUCCESS,true)
 										}}
 									>
 										<Image

@@ -8,11 +8,12 @@ import StyledText from "components/UI/StyledText";
 import MyVideoCard from "components/common/MyVideoCard";
 import { black, primary } from "constants/Colors";
 import { RootStackScreenProps } from "customTypes/navigation";
-import { Image } from "expo-image";
 import React, { useEffect, useState } from "react";
+import { RefreshControl } from "react-native";
+import { Image } from "react-native";
 import { Dimensions, FlatList, Pressable, ScrollView, Text } from "react-native";
 import { TouchableOpacity, View } from "react-native";
-import { useProfile } from "store/Store";
+import { useProfile, useThemeStore } from "store/Store";
 import getIPFSLink from "utils/getIPFSLink";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getPlaceHolderImage from "utils/getPlaceHolder";
@@ -21,7 +22,9 @@ import getAllPlaylist from "utils/playlist/getAllPlaylist";
 
 const Playlist = () => {
 	const [playlistData, setplaylistData] = useState();
+	const [refreshing, setRefreshing] = useState<boolean>(false);
 	const [isloading, setisloading] = useState(true);
+	const theme=useThemeStore();
 	const { currentProfile } = useProfile();
 	const fetchPlaylist = async () => {
 		const allPlaylist = await getAllPlaylist(currentProfile?.id);
@@ -47,9 +50,21 @@ const Playlist = () => {
 			</>
 		);
 	};
+	const onRefresh = () => {
+		setRefreshing(true);
+		fetchPlaylist().then(() => setRefreshing(false));
+	};
+	const _RefreshControl = (
+		<RefreshControl
+			refreshing={refreshing}
+			onRefresh={onRefresh}
+			colors={[theme.PRIMARY]}
+			progressBackgroundColor={"black"}
+		/>
+	);
 	return (
 		<View style={{ flex: 1, backgroundColor: black[800] }}>
-			{ (isloading) ? (
+			{isloading ? (
 				<>
 					<PlaylistCardSkeleton />
 					<PlaylistCardSkeleton />
@@ -59,7 +74,38 @@ const Playlist = () => {
 					<PlaylistCardSkeleton />
 				</>
 			) : (
-				<FlatList data={playlistData} renderItem={renderItem} />
+				<FlatList
+					data={playlistData}
+					renderItem={renderItem}
+					refreshControl={_RefreshControl}
+					ListEmptyComponent={() => {
+						return (
+							<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+								<Image
+									source={require("../../assets/images/notfound.png")}
+									style={{
+										resizeMode: "contain",
+										maxHeight: "50%",
+										maxWidth: "50%",
+										justifyContent: "center",
+										alignSelf: "center",
+									}}
+								/>
+								<StyledText
+									title={"No playlist created"}
+									numberOfLines={1}
+									style={{
+										color: "#ffffff",
+										fontSize: 20,
+										fontWeight: "400",
+										justifyContent: "center",
+										textAlign: "center",
+									}}
+								/>
+							</View>
+						);
+					}}
+				/>
 			)}
 		</View>
 	);
@@ -87,7 +133,6 @@ const PlaylistCard = React.memo(({ name, cover, playlistId }: playlistProps) => 
 				style={{
 					width: 140,
 					height: 80,
-					
 				}}
 			>
 				<Image
@@ -117,7 +162,6 @@ const PlaylistCard = React.memo(({ name, cover, playlistId }: playlistProps) => 
 						borderBottomLeftRadius: 4,
 						borderBottomRightRadius: 4,
 						alignItems: "flex-end",
-						
 					}}
 				>
 					<PlaylistIcon height={20} width={20} style={{ marginRight: 8 }} />
@@ -190,13 +234,13 @@ export const PlaylistCardSkeleton = () => {
 				maxWidth: Dimensions.get("window").width,
 				padding: 8,
 			}}
-			>
+		>
 			<View
 				style={{
 					width: 140,
 					height: 80,
 					backgroundColor: "#191919",
-					borderRadius:8,
+					borderRadius: 8,
 				}}
 			>
 				<View
@@ -236,8 +280,16 @@ export const PlaylistCardSkeleton = () => {
 						width: "96%",
 					}}
 				>
-					<Heading title={''} numberOfLines={1} style={{backgroundColor:"#191919",marginVertical:2,borderRadius:2}} />
-					<Heading title={''} numberOfLines={1} style={{backgroundColor:"#191919",marginVertical:2,width:"50%",borderRadius:2}} />
+					<Heading
+						title={""}
+						numberOfLines={1}
+						style={{ backgroundColor: "#191919", marginVertical: 2, borderRadius: 2 }}
+					/>
+					<Heading
+						title={""}
+						numberOfLines={1}
+						style={{ backgroundColor: "#191919", marginVertical: 2, width: "50%", borderRadius: 2 }}
+					/>
 					<View
 						style={{
 							flexDirection: "row",

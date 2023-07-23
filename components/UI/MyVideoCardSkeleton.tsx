@@ -13,7 +13,7 @@ const MyVideoCardSkeleton = (props: Props) => {
 				style={{
 					flexDirection: "row",
 					maxWidth: Dimensions.get("window").width,
-					padding: 8,
+					padding: 2,
 				}}
 			>
 				<View>
