@@ -15,8 +15,14 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const posterSize = Dimensions.get("screen").height / 3;
 const headerTop = 44 - 16;
 
-export default function PlaylistHeader({ scrollY,playlistTitle }: { scrollY: SharedValue<number>,playlistTitle:string }) {
-  const navigation=useNavigation();
+export default function PlaylistHeader({
+	scrollY,
+	playlistTitle,
+}: {
+	scrollY: SharedValue<number>;
+	playlistTitle: string;
+}) {
+	const navigation = useNavigation();
 	const inset = useSafeAreaInsets();
 	const opacityAnim = useAnimatedStyle(() => {
 		return {
@@ -56,45 +62,47 @@ export default function PlaylistHeader({ scrollY,playlistTitle }: { scrollY: Sha
 		};
 	});
 	return (
-		<Animated.View
-			style={[
-				{
-					position: "absolute",
-					width: "100%",
-					paddingVertical: 16,
-					flexDirection: "row",
-					justifyContent: "flex-start",
-					alignItems: "center",
-					backgroundColor: black[700],
-					zIndex: 1,
-				},
-				opacityAnim,
-			]}
-		>
-			<Pressable
-				style={{
-					width: 40,
-					height: 40,
-					borderRadius: 50,
-					backgroundColor: "rgba(255,255,255,0.1)",
-					justifyContent: "center",
-					alignItems: "center",
-          marginHorizontal:16
-				}}
-        onPress={()=>{
-          navigation.goBack();
-        }}
+		<View style={{ position: "relative" }}>
+			<Animated.View
+				style={[
+					{
+						position: "absolute",
+						width: "100%",
+						paddingVertical: 16,
+						flexDirection: "row",
+						justifyContent: "flex-start",
+						alignItems: "center",
+						backgroundColor: black[700],
+						zIndex: 1,
+					},
+					opacityAnim,
+				]}
 			>
-				<Icon name="arrowLeft" size={24} />
-			</Pressable>
-			<Heading
-				style={{
-					color: white[700],
-					fontSize: 24,
-					fontWeight: "500",
-				}}
-				title={playlistTitle}
-			/>
-		</Animated.View>
+				<Pressable
+					style={{
+						width: 40,
+						height: 40,
+						borderRadius: 50,
+						backgroundColor: "rgba(255,255,255,0.1)",
+						justifyContent: "center",
+						alignItems: "center",
+						marginHorizontal: 16,
+					}}
+					onPress={() => {
+						navigation.goBack();
+					}}
+				>
+					<Icon name="arrowLeft" size={24} />
+				</Pressable>
+				<Heading
+					style={{
+						color: white[700],
+						fontSize: 24,
+						fontWeight: "500",
+					}}
+					title={playlistTitle}
+				/>
+			</Animated.View>
+		</View>
 	);
 }

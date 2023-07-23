@@ -18,6 +18,7 @@ import StyledText from "../UI/StyledText";
 type MyVideoCardProps = {
   publication: Mirror | Post;
   id: string;
+  playlistId:string;
   sheetRef?: React.RefObject<BottomSheetMethods>;
   setPubId?: (pubId: Scalars["InternalPublicationId"]) => void;
 };
@@ -26,6 +27,7 @@ function MyVideoCard({
   publication,
   id,
   sheetRef,
+  playlistId,
   setPubId,
 }: MyVideoCardProps) {
   const navigation = useNavigation();

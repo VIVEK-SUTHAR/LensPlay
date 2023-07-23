@@ -103,6 +103,7 @@ export type RootStackParamList = {
 	PlayListScreen:{
 		playlistId:string;
 		playlistTitle:string;
+		channelId?:string;
 	};
 	UploadShots: undefined;
 	AddDetails: undefined;

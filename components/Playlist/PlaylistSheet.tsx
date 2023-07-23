@@ -19,6 +19,7 @@ import { useProfile } from "store/Store";
 import Logger from "utils/logger";
 import Earth from "assets/Icons/Earth";
 import { Mirror, Post } from "customTypes/generated";
+import addVideoToPlaylist from "utils/playlist/addVideoToPlayslist";
 
 const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<BottomSheetMethods>, publication: Post | Mirror | null}) => {
 	const NewPlaylistSheetRef = React.useRef<BottomSheetMethods>(null);
@@ -116,9 +117,10 @@ const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<Bo
 											marginTop: 8,
 											gap: 16,
 										}}
-										onPress={() => {
-											// setActivePublication(publication);
-											// navigation.navigate("VideoPage");
+										onPress={async() => {
+											console.log('buddy');
+											sheetRef.current?.close();
+											await addVideoToPlaylist(item.profileId,item.playlistId,item.name,publication?.id);
 										}}
 									>
 										<Image
@@ -209,7 +211,7 @@ export type playlistProps = {
 	cover: string;
 	name: string;
 	profileId: string;
-	playlistId:string
+	playlistId:string;
 };
 
 export default PlaylistSheet;

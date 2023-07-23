@@ -3,7 +3,7 @@ import Heading from "components/UI/Heading";
 import { white } from "constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { Dimensions, LayoutChangeEvent, StyleSheet } from "react-native";
+import { Dimensions, LayoutChangeEvent, StyleSheet, View } from "react-native";
 import Animated, {
 	Extrapolation,
 	SharedValue,
@@ -18,7 +18,15 @@ const headerTop = 44 - 16;
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
-export default function PlaylistCover({ scrollY,coverLink,playlistTitle }: { scrollY: SharedValue<number>,coverLink:string,playlistTitle:string }) {
+export default function PlaylistCover({
+	scrollY,
+	coverLink,
+	playlistTitle,
+}: {
+	scrollY: SharedValue<number>;
+	coverLink: string;
+	playlistTitle: string;
+}) {
 	const inset = useSafeAreaInsets();
 	const layoutY = useSharedValue(0);
 	const opacityAnim = useAnimatedStyle(() => {
@@ -71,63 +79,62 @@ export default function PlaylistCover({ scrollY,coverLink,playlistTitle }: { scr
 		};
 	});
 	return (
-		<Animated.View style={[styles.imageContainer, opacityAnim]}>
-			<Animated.Image
-				style={[styles.imageStyle, scaleAnim]}
-				source={{uri:coverLink}}
-			/>
-			<Animated.View
-				onLayout={(event: LayoutChangeEvent) => {
-					"worklet";
-					layoutY.value = event.nativeEvent.layout.y;
-				}}
-				style={[
-					{
-						position: "absolute",
-						top: 0,
-						left: 0,
-						right: 0,
-						bottom: -10,
-						justifyContent: "space-between",
-                        alignItems: "flex-end",
-						paddingHorizontal: 18,
-						zIndex: 10,
-                        flexDirection: "row"
-					},
-					textAnim,
-				]}
-			>
-				<Heading
-					style={{
-						fontSize: 36,
-						color: white[700],
-						fontWeight: "600",
+		<View style={{position:"relative"}} >
+			<Animated.View style={[styles.imageContainer, opacityAnim]}>
+				<Animated.Image style={[styles.imageStyle, scaleAnim]} source={{ uri: coverLink }} />
+				<Animated.View
+					onLayout={(event: LayoutChangeEvent) => {
+						"worklet";
+						layoutY.value = event.nativeEvent.layout.y;
 					}}
-					title={playlistTitle}
+					style={[
+						{
+							position: "absolute",
+							top: 0,
+							left: 0,
+							right: 0,
+							bottom: -10,
+							justifyContent: "space-between",
+							alignItems: "flex-end",
+							paddingHorizontal: 18,
+							zIndex: 10,
+							flexDirection: "row",
+						},
+						textAnim,
+					]}
+				>
+					<Heading
+						style={{
+							fontSize: 36,
+							color: white[700],
+							fontWeight: "600",
+						}}
+						title={playlistTitle}
+					/>
+					<Play height={48} width={48} />
+				</Animated.View>
+				<AnimatedLinearGradient
+					style={[
+						{
+							position: "absolute",
+							top: 0,
+							left: 0,
+							right: 0,
+							bottom: 0,
+						},
+						scaleAnim,
+					]}
+					colors={[
+						`rgba(0,0,0,${0})`,
+						`rgba(0,0,0,${0.2})`,
+						`rgba(0,0,0,${0.4})`,
+						`rgba(0,0,0,${0.6})`,
+						`rgba(0,0,0,${0.8})`,
+						`rgba(0,0,0,${1})`,
+					]}
 				/>
-                <Play height={48} width={48} />
 			</Animated.View>
-			<AnimatedLinearGradient
-				style={[
-					{
-						position: "absolute",
-						top: 0,
-						left: 0,
-						right: 0,
-						bottom: 0,
-					},
-					scaleAnim,
-				]}
-				colors={[
-					`rgba(0,0,0,${0})`,
-					`rgba(0,0,0,${0.2})`,
-					`rgba(0,0,0,${0.4})`,
-					`rgba(0,0,0,${0.6})`,
-					`rgba(0,0,0,${0.8})`,
-					`rgba(0,0,0,${1})`,
-				]}
-			/>
-		</Animated.View>
+		</View>
 	);
 }
 
