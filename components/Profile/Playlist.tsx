@@ -15,6 +15,7 @@ import { usePlaylistStore, useProfile, useThemeStore } from "store/Store";
 import getIPFSLink from "utils/getIPFSLink";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getPlaceHolderImage from "utils/getPlaceHolder";
+import Logger from "utils/logger";
 import getAllPlaylist from "utils/playlist/getAllPlaylist";
 
 const Playlist = () => {
@@ -23,10 +24,11 @@ const Playlist = () => {
 	const theme=useThemeStore();
 	const { currentProfile } = useProfile();
 	const {playlistArray, setPlaylistArray} = usePlaylistStore();
-
+	Logger.Success('ply arr',playlistArray)
 	const fetchPlaylist = async () => {
-		const allPlaylist = await getAllPlaylist(currentProfile?.id);
 		setisloading(false);
+		const allPlaylist = await getAllPlaylist(currentProfile?.id);
+		setisloading(true);
 		console.log("all playlist", allPlaylist[0]);
 		setPlaylistArray(allPlaylist[0]?.playlist);
 	};
@@ -58,7 +60,7 @@ const Playlist = () => {
 	);
 	return (
 		<View style={{ flex: 1, backgroundColor: black[800] }}>
-			{isloading ? (
+			{!(isloading) ? (
 				<>
 					<PlaylistCardSkeleton />
 					<PlaylistCardSkeleton />

@@ -68,11 +68,12 @@ const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = ({ rout
 	const { currentProfile } = useProfile();
 	const theme=useThemeStore();
 	const [refreshing, setRefreshing] = useState<boolean>(false);
-	const [fetchPublications, { data }] = useAllPublicationsLazyQuery();
+	const [fetchPublications, { data }] = useAllPublicationsLazyQuery({fetchPolicy:"no-cache"});
 	const [isLoading, setisLoading] = useState(true);
 	const PlaylistVideoSheetRef = React.useRef<BottomSheetMethods>(null);
 	const [publication, setPublication] = React.useState<Post | Mirror | null>(null);
 	const posterSize = Dimensions.get("screen").height / 3;
+	Logger.Warn('lele',route.params.playlistId)
 	const scrollHandler = useAnimatedScrollHandler({
 		onScroll: (event) => {
 			"worklet";
@@ -82,25 +83,26 @@ const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = ({ rout
 
 	const fetchAllVideos = async () => {
 		const data = await getAllVideos(route.params.playlistId);
-		console.log("im here", data[0].publicationId);
-		const publicationIds = data[0].publicationId.filter((elements:string) => {
-			return elements !== null;
-		   });
+		Logger.Success("im here", data[0].publicationId);
+		// const publicationIds = data[0].publicationId.filter((elements:string) => {
+		// 	return elements !== null;
+		//    });
 		   
 		const publications = await fetchPublications({
-			variables: { request: { publicationIds: publicationIds } },
+			variables: { request: { publicationIds: data[0]?.publicationId } },
 		});
 		setisLoading(false);
 		// console.log(publications.data?.publications.items);
-		const playListVideos = publications.data?.publications.items;
+		// const playListVideos = publications.data?.publications.items;
 		const playlistCover = publications.data?.publications.items[0]?.metadata.cover;
 		const coverLink = getIPFSLink(getRawurl(playlistCover));
 
 		// console.log("haas", coverLink);
 
-		console.log(playListVideos, "n");
+		// console.log(playListVideos, "n");
 
-		setplaylistVideo(playListVideos);
+		// setplaylistVideo(publications.data?.publications.items);
+
 	};
 	const onRefresh = () => {
 		setRefreshing(true);
@@ -163,7 +165,7 @@ const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = ({ rout
 			) : (
 				<>
 					<Animated.FlatList
-						data={playlistVideo}
+						data={data?.publications.items}
 						renderItem={renderItem}
 						refreshControl={_RefreshControl}
 						contentContainerStyle={{
@@ -173,6 +175,7 @@ const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = ({ rout
 							paddingBottom: 48,
 						}}
 						onScroll={scrollHandler}
+						// extraData={playlistVideo}
 						showsVerticalScrollIndicator={false}
 						ListEmptyComponent={() => {
 							return (
