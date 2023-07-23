@@ -24,7 +24,8 @@ async function addVideoToPlaylist( profileId: Scalars["ProfileId"], name: string
             playlistId: playlistId,
             publicationId: publicationId
 		});
-
+		Logger.Count("PUB IS IN ADD TO VODELAYLIST UTL",publicationId)
+		Logger.Success("BODY CONTENT", bodyContent);
 		const response = await fetch(`${LENSPLAY_WEAVE_API}weavedb/addVideoToPlaylist`, {
 			method: "POST",
 			body: bodyContent,

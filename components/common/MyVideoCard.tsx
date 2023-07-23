@@ -14,7 +14,7 @@ import getIPFSLink from "utils/getIPFSLink";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getPlaceHolderImage from "utils/getPlaceHolder";
 import getRawurl from "utils/getRawUrl";
-
+import Logger from "utils/logger"
 type MyVideoCardProps = {
 	publication: Mirror | Post;
 	id: string;
@@ -25,7 +25,7 @@ type MyVideoCardProps = {
 function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardProps) {
 	const navigation = useNavigation();
 	const { setActivePublication } = useActivePublication();
-	const pubId=usePlaylistStore();
+	const {setPubId,pubId}=usePlaylistStore();
 
 	const memoizedPlaceHolder = React.useMemo(
 		()=>getPlaceHolderImage(),[]
@@ -109,7 +109,10 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 					activeOpacity={0.5}
 					onPress={() => {
 						setPublication(publication);
-						pubId.setPubId(publication?.id);
+						let temp = publication?.id;
+						setPubId(temp);
+						console.log(publication?.id,"temp")
+						Logger.Error('PUB SET IN STORE',pubId)
 						sheetRef?.current?.snapToIndex(0);
 					}}
 					style={{

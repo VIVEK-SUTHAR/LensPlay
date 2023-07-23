@@ -29,6 +29,7 @@ const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<Bo
 	const {pubId} = usePlaylistStore()
 	const toast=useToast();
 	const getPlaylists = async () => {
+		console.log("calllllllll")
 		const data = await getAllPlaylist(currentProfile?.id);
 		if (data.length !== 0) {
 			// Logger.Log(data[0], "data");
@@ -37,7 +38,8 @@ const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<Bo
 	};
 	React.useEffect(() => {
 		Logger.Success("kkkk");
-		getPlaylists();
+			
+			getPlaylists();
 	}, []);
 	Logger.Count('hooja',publication?.metadata?.name,publication?.id)
 	return (
@@ -124,6 +126,7 @@ const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<Bo
 										onPress={async() => {
 											Logger.Warn('buddy',currentProfile?.id,item.name,item.playlistId,pubId);
 											sheetRef.current?.close();
+											Logger.Warn("pubid just before adding....", pubId);
 											await addVideoToPlaylist(currentProfile?.id,item.name,item.playlistId,pubId);
 											toast.show('Video added to playlist',ToastType.SUCCESS,true)
 										}}
