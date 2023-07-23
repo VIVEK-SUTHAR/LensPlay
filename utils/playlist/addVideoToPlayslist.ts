@@ -32,7 +32,7 @@ async function addVideoToPlaylist( profileId: Scalars["ProfileId"], name: string
 			headers: headersList,
 		});
 		if (response.ok) {    
-			const jsondata = await response.text();
+			const jsondata = await response.json();
             Logger.Success(jsondata);
             return jsondata;
 		}

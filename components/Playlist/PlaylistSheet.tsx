@@ -17,18 +17,35 @@ import Earth from "assets/Icons/Earth";
 import { Mirror, Post } from "customTypes/generated";
 import addVideoToPlaylist from "utils/playlist/addVideoToPlayslist";
 
-const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<BottomSheetMethods>, publication: Post | Mirror | null}) => {
+const PlaylistSheet = ({
+	sheetRef,
+	publication,
+}: {
+	sheetRef: React.RefObject<BottomSheetMethods>;
+	publication: Post | Mirror | null;
+}) => {
 	const NewPlaylistSheetRef = React.useRef<BottomSheetMethods>(null);
 	const { currentProfile } = useProfile();
 	const { playlistArray } = usePlaylistStore();
-	const toast=useToast();
+	const toast = useToast();
 
 	const addToPlaylist = async (publication: Post | Mirror | null, item: playlistProps) => {
 		try {
-			
-			Logger.Success("Boom Boom",publication?.id);
-			await addVideoToPlaylist(currentProfile?.id, item?.name, item?.playlistId, publication?.id);
-			toast.success("Video added successfully");
+			Logger.Success("Boom Boom", publication?.id);
+			const addVideo = await addVideoToPlaylist(
+				currentProfile?.id,
+				item?.name,
+				item?.playlistId,
+				publication?.id
+			);
+			Logger.Success(JSON.stringify(addVideo));
+
+			if (addVideo?.data == "Already in Playlist") {
+				toast.info("Already in playlist");
+			}
+			else{
+				toast.success("Video added successfully");
+			}
 			sheetRef?.current?.close();
 		} catch (error) {
 			console.log(error);
@@ -38,7 +55,7 @@ const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<Bo
 		}
 		// Logger.Log(playlistId);
 	};
-	
+
 	// Logger.Count('hooja',publication?.metadata?.name,publication?.id)
 	return (
 		<>
@@ -178,7 +195,7 @@ const PlaylistSheet = ({ sheetRef, publication }: { sheetRef: React.RefObject<Bo
 					</BottomSheetScrollView>
 				</View>
 			</Sheet>
-			<NewPlaylistSheet sheetRef={NewPlaylistSheetRef} publication={publication}/>
+			<NewPlaylistSheet sheetRef={NewPlaylistSheetRef} publication={publication} />
 		</>
 	);
 };
@@ -212,7 +229,7 @@ export type playlistProps = {
 	cover: string;
 	name: string;
 	profileId: string;
-	playlistId:string;
+	playlistId: string;
 };
 
 export default PlaylistSheet;
