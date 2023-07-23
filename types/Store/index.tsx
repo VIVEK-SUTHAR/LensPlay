@@ -26,8 +26,10 @@ export interface IActivePublication {
 export interface IPlaylist {
 	playlistArray: playlistProps[];
 	pubId: string;
+	videoPlaylist: Post[];
 	setPlaylistArray: (newPublication: playlistProps[]) => void;
 	setPubId: (newPubId: string) => void;
+	setVideoPlaylist: (newVideo: Post[]) => void;
 }
 export interface UserStore {
 	currentProfile: Profile | undefined;

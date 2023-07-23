@@ -47,7 +47,7 @@ import Logger from "utils/logger";
 import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
 import DeleteVideo from "components/VIdeo/DeleteVideo";
-import { useProfile, useThemeStore } from "store/Store";
+import { usePlaylistStore, useProfile, useThemeStore, useToast } from "store/Store";
 import removeVideoFromPlaylist from "utils/playlist/removeVideoFromPlaylist";
 import MyVideoCardSkeleton from "components/UI/MyVideoCardSkeleton";
 import { RefreshControl } from "react-native";
@@ -60,12 +60,9 @@ type Props = {
 
 const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = ({ route }) => {
 	const scrollY = useSharedValue<number>(0);
-	// const [PubId, setPubId] = useState();
 	const handlePublication = React.useCallback((publication: Post | Mirror) => {
 		setPublication(publication);
 	}, []);
-	const [playlistVideo, setplaylistVideo] = useState<Post[]>([]);
-	const { currentProfile } = useProfile();
 	const theme=useThemeStore();
 	const [refreshing, setRefreshing] = useState<boolean>(false);
 	const [fetchPublications, { data }] = useAllPublicationsLazyQuery({fetchPolicy:"no-cache"});
@@ -73,7 +70,7 @@ const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = ({ rout
 	const PlaylistVideoSheetRef = React.useRef<BottomSheetMethods>(null);
 	const [publication, setPublication] = React.useState<Post | Mirror | null>(null);
 	const posterSize = Dimensions.get("screen").height / 3;
-	Logger.Warn('lele',route.params.playlistId)
+	const {videoPlaylist, setVideoPlaylist} = usePlaylistStore();
 	const scrollHandler = useAnimatedScrollHandler({
 		onScroll: (event) => {
 			"worklet";
@@ -84,25 +81,14 @@ const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = ({ rout
 	const fetchAllVideos = async () => {
 		const data = await getAllVideos(route.params.playlistId);
 		Logger.Success("im here", data[0].publicationId);
-		// const publicationIds = data[0].publicationId.filter((elements:string) => {
-		// 	return elements !== null;
-		//    });
 		   
 		const publications = await fetchPublications({
 			variables: { request: { publicationIds: data[0]?.publicationId } },
 		});
 		setisLoading(false);
-		// console.log(publications.data?.publications.items);
-		// const playListVideos = publications.data?.publications.items;
 		const playlistCover = publications.data?.publications.items[0]?.metadata.cover;
 		const coverLink = getIPFSLink(getRawurl(playlistCover));
-
-		// console.log("haas", coverLink);
-
-		// console.log(playListVideos, "n");
-
-		// setplaylistVideo(publications.data?.publications.items);
-
+		setVideoPlaylist(publications.data?.publications.items);
 	};
 	const onRefresh = () => {
 		setRefreshing(true);
@@ -165,7 +151,7 @@ const PlaylistVideos: React.FC<RootStackScreenProps<"PlayListScreen">> = ({ rout
 			) : (
 				<>
 					<Animated.FlatList
-						data={data?.publications.items}
+						data={videoPlaylist}
 						renderItem={renderItem}
 						refreshControl={_RefreshControl}
 						contentContainerStyle={{
@@ -224,7 +210,15 @@ export const PlaylistVideoSheet = ({
 	playlistId,
 }: SheetProps) => {
 	// const deleteRef=React.useRef<BottomSheetMethods>(null);
+	const {videoPlaylist, setVideoPlaylist} = usePlaylistStore();
+	const toast = useToast();
 	const removeVideo = async () => {
+		const newPublications = videoPlaylist.filter((Publication, index) => {
+			return Publication.id != publication?.id;
+		  });
+		  Logger.Log('Here is new playlist', newPublications);
+		setVideoPlaylist(newPublications);
+		toast.success("Video removed successfully");
 		const removePlaylistVideo = await removeVideoFromPlaylist(playlistId!, publication?.id);
 		console.log("ye saaabb", removePlaylistVideo);
 	};

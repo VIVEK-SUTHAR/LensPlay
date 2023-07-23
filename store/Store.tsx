@@ -33,7 +33,7 @@ export const useProfile = create<UserStore>((set) => ({
 	profiles: [],
 	setCurrentProfile: (newProfile) => set({ currentProfile: newProfile }),
 	setHasHandle: (hasHandle) => set({ hasHandle: hasHandle }),
-	setProfiles: (profiles) => set({profiles: profiles}),
+	setProfiles: (profiles) => set({ profiles: profiles }),
 }));
 
 export const useThemeStore = create<IThemeStore>((set) => ({
@@ -136,8 +136,7 @@ export const useCommentStore = create<ICommentStore>((set) => ({
 			comment: comment,
 		});
 	},
-
-}))
+}));
 
 export const useOptimisticStore = create<OptimisticStore>((set) => ({
 	optimitisticComment: {
@@ -169,20 +168,26 @@ export const useActivePublication = create<IActivePublication>((set) => ({
 
 export const usePlaylistStore = create<IPlaylist>((set) => ({
 	playlistArray: [],
-	pubId:'',
-	setPubId:(newPubId:string)=>{
+	videoPlaylist: [],
+	pubId: "",
+	setPubId: (newPubId: string) => {
 		set({
-			pubId:newPubId,
-		})
+			pubId: newPubId,
+		});
 	},
 	setPlaylistArray: (newPlaylist: playlistProps[]) => {
 		set({
 			playlistArray: newPlaylist,
 		});
 	},
+	setVideoPlaylist: (newVideo: Post[]) => {
+		set({
+			videoPlaylist: newVideo,
+		});
+	},
 }));
 
-// export const 
+// export const
 
 // const useStore = create((set) => ({}));
 
