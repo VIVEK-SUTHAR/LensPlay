@@ -18,28 +18,27 @@ import getPlaceHolderImage from "utils/getPlaceHolder";
 import Logger from "utils/logger";
 import getAllPlaylist from "utils/playlist/getAllPlaylist";
 
-const Playlist = () => {
+const Playlist = ({ profileId }: { profileId: string }) => {
 	const [refreshing, setRefreshing] = useState<boolean>(false);
 	const [isloading, setisloading] = useState(true);
-	const theme=useThemeStore();
+	const theme = useThemeStore();
 	const { currentProfile } = useProfile();
-	const {playlistArray, setPlaylistArray} = usePlaylistStore();
-	Logger.Success('ply arr',playlistArray)
+	const { playlistArray, setPlaylistArray } = usePlaylistStore();
+	Logger.Success("ply arr", playlistArray);
 	const fetchPlaylist = async () => {
 		setisloading(false);
-		const allPlaylist = await getAllPlaylist(currentProfile?.id);
+		const allPlaylist = await getAllPlaylist(profileId ? profileId : currentProfile?.id);
 		setisloading(true);
 		console.log("all playlist", allPlaylist[0]);
 		setPlaylistArray(allPlaylist[0]?.playlist);
 	};
-
 
 	const renderItem = ({ item }: { item: playlistProps }) => {
 		return (
 			<>
 				<PlaylistCard
 					playlistId={item.playlistId}
-					profileId={item.profileId}
+					profileId={profileId}
 					name={item.name}
 					cover={item.cover}
 				/>
@@ -60,7 +59,7 @@ const Playlist = () => {
 	);
 	return (
 		<View style={{ flex: 1, backgroundColor: black[800] }}>
-			{!(isloading) ? (
+			{!isloading ? (
 				<>
 					<PlaylistCardSkeleton />
 					<PlaylistCardSkeleton />
@@ -109,7 +108,8 @@ const Playlist = () => {
 
 export default React.memo(Playlist);
 
-const PlaylistCard = React.memo(({ name, cover, playlistId }: playlistProps) => {
+const PlaylistCard = React.memo(({ name, cover, playlistId,profileId }: playlistProps) => {
+	const { currentProfile } = useProfile();
 	const navigation = useNavigation();
 	return (
 		<Pressable
@@ -122,7 +122,11 @@ const PlaylistCard = React.memo(({ name, cover, playlistId }: playlistProps) => 
 				padding: 8,
 			}}
 			onPress={() => {
-				navigation.navigate("PlayListScreen", { playlistId: playlistId, playlistTitle: name });
+				navigation.navigate("PlayListScreen", {
+					playlistId: playlistId,
+					playlistTitle: name,
+					profileId: profileId ? profileId : currentProfile?.id,
+				});
 			}}
 		>
 			<View

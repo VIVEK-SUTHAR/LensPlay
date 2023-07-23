@@ -104,6 +104,7 @@ export type RootStackParamList = {
 		playlistId:string;
 		playlistTitle:string;
 		channelId?:string;
+		profileId?:string;
 	};
 	UploadShots: undefined;
 	AddDetails: undefined;

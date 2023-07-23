@@ -4,6 +4,7 @@ import AllVideos from "components/Profile/AllVideos";
 import CollectedVideos from "components/Profile/CollectedVideos";
 import MirroredVideos from "components/Profile/MirroredVideos";
 import { UnPinSheet } from "components/Profile/PinnedPublication";
+import Playlist from "components/Profile/Playlist";
 import ProfileHeader from "components/Profile/ProfileHeader";
 import ProfileSkeleton from "components/UI/ProfileSkeleton";
 import Tabs, { Tab } from "components/UI/Tabs";
@@ -50,6 +51,10 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 						children={() => <ProfileHeader profileId={channelId} ethAddress={ethAddress} />}
 					/>
 					<Tab.Screen name="All Videos" children={() => <AllVideos profileId={channelId} />} />
+					<Tab.Screen
+						name="Playlist"
+						children={() => <Playlist profileId={channelId} />}
+					/>
 					<Tab.Screen
 						name="Mirror Videos"
 						children={() => <MirroredVideos channelId={channelId} />}
