@@ -37,7 +37,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 				<Tabs>
 					<Tab.Screen name="Home" children={() => <ProfileHeader />} />
 					<Tab.Screen name="All Videos" children={() => <AllVideos />} />
-					<Tab.Screen name="Playlist" children={() => <Playlist />} />
+					{/* <Tab.Screen name="Playlist" children={() => <Playlist />} /> */}
 					<Tab.Screen name="Mirror Videos" children={() => <MirroredVideos />} />
 					<Tab.Screen name="Collected Videos" children={() => <CollectedVideos />} />
 				</Tabs>

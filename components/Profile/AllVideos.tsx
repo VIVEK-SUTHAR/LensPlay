@@ -266,13 +266,13 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 				pinPublication();
 			},
 		},
-		{
-			name: "Add to Playlist",
-			icon: "create",
-			onPress: (pubid: Scalars["InternalPublicationId"]) => {
-				PlaylistSheetRef.current?.snapToIndex(0);
-			},
-		},
+		// {
+		// 	name: "Add to Playlist",
+		// 	icon: "create",
+		// 	onPress: (pubid: Scalars["InternalPublicationId"]) => {
+		// 		PlaylistSheetRef.current?.snapToIndex(0);
+		// 	},
+		// },
 		{
 			name: "Share",
 			icon: "share",
@@ -321,10 +321,10 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 		<>
 			<Sheet
 				ref={sheetRef}
-				snapPoints={[profileId ? 150 : 270]}
+				snapPoints={[profileId ? 150 : 200]}
 				enablePanDownToClose={true}
 				enableOverDrag={true}
-				bottomInset={32}
+				bottomInset={16}
 				style={{
 					marginHorizontal: 8,
 				}}
