@@ -57,10 +57,11 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 			TrackAction(APP_OPEN);
 			Logger.Log("In App Loader");
 			const userTokens = await AsyncStorage.getItem("@user_tokens");
+			
 			const address = await AsyncStorage.getItem(StorageKeys.UserAddress);
 			let profileId;
 
-			if (!userTokens && !address) {
+			if (!userTokens || !address) {
 				Logger.Error("No Data and no address found,Goin to Login");
 				navigation.replace("LetsGetIn");
 				return;

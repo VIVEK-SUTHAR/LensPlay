@@ -153,11 +153,6 @@ export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">)
 					return;
 				}
 				console.log('here');
-				
-				const userData = await AsyncStorage.getItem("@user_data");
-				if (!userData){
-					return
-				}
 
 				await AsyncStorage.setItem("@viaDeskTop", "true");
 

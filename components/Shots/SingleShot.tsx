@@ -69,7 +69,7 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 				createLivePeerAsset(videoURL);
 			}
 		});
-	}, []);
+	}, [isActive]);
 
 	return (
 		<>
