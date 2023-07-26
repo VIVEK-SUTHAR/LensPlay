@@ -1,35 +1,32 @@
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
-import React, { useRef, useState } from "react";
-import { Dimensions, Pressable, Share, Text, TouchableOpacity, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import { freeCollectPublication } from "../../api";
-import { PUBLICATION, SHOT } from "constants/tracking";
-import { useGuestStore } from "store/GuestStore";
-import { useAuthStore, useThemeStore, useToast } from "store/Store";
-import { ToastType } from "customTypes/Store";
-import TrackAction from "utils/Track";
-import getIPFSLink from "utils/getIPFSLink";
-import getRawurl from "utils/getRawUrl";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
-import Button from "components/UI/Button";
-import { LikeButton } from "components/VIdeo";
-import { ShotsPublication } from "customTypes/index";
-import { Image } from "expo-image";
-import getPlaceHolderImage from "utils/getPlaceHolder";
-import getImageProxyURL from "utils/getImageProxyURL";
-import { black, primary, white } from "constants/Colors";
-import Heading from "components/UI/Heading";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import StyledText from "components/UI/StyledText";
 import Avatar from "components/UI/Avatar";
+import Button from "components/UI/Button";
+import Heading from "components/UI/Heading";
+import StyledText from "components/UI/StyledText";
+import { LikeButton } from "components/VIdeo";
+import { black, primary, white } from "constants/Colors";
 import { LENSPLAY_SITE } from "constants/index";
+import { PUBLICATION, SHOT } from "constants/tracking";
 import { useProxyActionMutation } from "customTypes/generated";
+import { ShotsPublication } from "customTypes/index";
+import { ToastType } from "customTypes/Store";
+import { Image } from "expo-image";
+import React, { useRef, useState } from "react";
+import { Pressable, Share, Text, TouchableOpacity, View } from "react-native";
+import { useGuestStore } from "store/GuestStore";
+import { useAuthStore, useThemeStore, useToast } from "store/Store";
+import getIPFSLink from "utils/getIPFSLink";
+import getPlaceHolderImage from "utils/getPlaceHolder";
+import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
+import TrackAction from "utils/Track";
 
-function ShotReaction({ item }: { item: ShotsPublication }) {
+function ShotReaction({ item, commentRef }: ShotsPublication) {
 	const [totalCollects, setTotalCollects] = useState<number>(item?.stats?.totalAmountOfCollects);
 	const [collected, setCollected] = useState<boolean>(item?.hasCollectedByMe);
 	const collectSheetRef = useRef<BottomSheetMethods>(null);
@@ -40,13 +37,12 @@ function ShotReaction({ item }: { item: ShotsPublication }) {
 	const toast = useToast();
 	const { isGuest } = useGuestStore();
 
-
 	const [createProxyAction] = useProxyActionMutation({
 		onCompleted: (data) => {
 			toast.show("Collect Submitted", ToastType.SUCCESS, true);
-				setCollected(true);
-				setTotalCollects((prev) => prev + 1);
-				TrackAction(SHOT.SHOTS_COLLECT);
+			setCollected(true);
+			setTotalCollects((prev) => prev + 1);
+			TrackAction(SHOT.SHOTS_COLLECT);
 		},
 		onError: (error) => {
 			if (error.message == "Can only collect if the publication has a `FreeCollectModule` set") {
@@ -135,9 +131,7 @@ function ShotReaction({ item }: { item: ShotsPublication }) {
 					}}
 					onPress={(e) => {
 						e.preventDefault();
-						navigation.navigate("ShotsComment", {
-							publicationId: item?.id,
-						});
+						commentRef?.current?.snapToIndex(0);
 					}}
 				>
 					<Icon name="comment" size={32} />
@@ -288,11 +282,7 @@ function ShotReaction({ item }: { item: ShotsPublication }) {
 									marginTop: 8,
 								}}
 							>
-								<Avatar
-									src={getRawurl(item?.profile?.picture)}
-									height={40}
-									width={40}
-								/>
+								<Avatar src={getRawurl(item?.profile?.picture)} height={40} width={40} />
 							</View>
 						</View>
 						<View
@@ -301,14 +291,14 @@ function ShotReaction({ item }: { item: ShotsPublication }) {
 							}}
 						>
 							<Button
-								title={'Collect the shots for free'}
+								title={"Collect the shots for free"}
 								py={12}
 								textStyle={{
 									fontSize: 20,
 									fontWeight: "600",
 									textAlign: "center",
 								}}
-								bg={ primary }
+								bg={primary}
 								onPress={collectPublication}
 							/>
 						</View>

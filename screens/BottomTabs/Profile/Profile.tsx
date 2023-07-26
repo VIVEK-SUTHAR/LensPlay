@@ -4,6 +4,7 @@ import AllVideos from "components/Profile/AllVideos";
 import CollectedVideos from "components/Profile/CollectedVideos";
 import MirroredVideos from "components/Profile/MirroredVideos";
 import { UnPinSheet } from "components/Profile/PinnedPublication";
+import Playlist from "components/Profile/Playlist";
 import ProfileHeader from "components/Profile/ProfileHeader";
 import Tabs, { Tab } from "components/UI/Tabs";
 import { PublicationMainFocus, useProfileBookMarksLazyQuery } from "customTypes/generated";
@@ -36,6 +37,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 				<Tabs>
 					<Tab.Screen name="Home" children={() => <ProfileHeader />} />
 					<Tab.Screen name="All Videos" children={() => <AllVideos />} />
+					{/* <Tab.Screen name="Playlist" children={() => <Playlist />} /> */}
 					<Tab.Screen name="Mirror Videos" children={() => <MirroredVideos />} />
 					<Tab.Screen name="Collected Videos" children={() => <CollectedVideos />} />
 				</Tabs>

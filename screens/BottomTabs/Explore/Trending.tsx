@@ -2,11 +2,13 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Dimensions,
   FlatList,
   Pressable,
   RefreshControl,
   SafeAreaView,
   ScrollView,
+  View,
 } from "react-native";
 // import NotFound from "../../../components/Profile/NotFound";
 import ErrorMessage from "../../../components/common/ErrorMesasge";
@@ -158,14 +160,23 @@ export default function Trending({
   
   const _MoreLoader = () => {
     return (
-      <>
-        {pageInfo?.next ? (
-          <ActivityIndicator size={"large"} color={theme.PRIMARY} />
-        ) : (
-          <ErrorMessage message="No more Videos to load" withImage={false} />
-        )}
-      </>
-    );
+			<>
+				{pageInfo?.next ? (
+					<View
+						style={{
+							height: 100,
+							width: Dimensions.get("screen").width,
+							justifyContent: "center",
+							alignItems: "center",
+						}}
+					>
+						<ActivityIndicator size={"small"} color={theme.PRIMARY} />
+					</View>
+				) : (
+					<ErrorMessage message="No more Videos to load" withImage={false} />
+				)}
+			</>
+		);
   };
 
   const MoreLoader = React.memo(_MoreLoader);
@@ -180,7 +191,7 @@ export default function Trending({
         />
         );
       }
-      return <></>;
+      return null;
     };
     
     return (

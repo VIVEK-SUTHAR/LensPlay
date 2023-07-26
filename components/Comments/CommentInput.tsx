@@ -1,5 +1,6 @@
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
+import { black } from "constants/Colors";
 import { LENSPLAY_SITE } from "constants/index";
 import {
 	useCreateCommentViaDispatcherMutation,
@@ -119,12 +120,13 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 	return (
 		<View
 			style={{
-				backgroundColor: "#1A1A1A",
+				backgroundColor: black[500],
 				width: "100%",
 				height: 60,
 				flexDirection: "row",
 				justifyContent: "center",
 				alignItems: "center",
+				borderRadius:8
 			}}
 		>
 			<View

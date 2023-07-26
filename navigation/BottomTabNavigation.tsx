@@ -24,6 +24,7 @@ import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
 import canUploadedToIpfs from "utils/canUploadToIPFS";
 import getIPFSLink from "utils/getIPFSLink";
+import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
 import getFileSize from "utils/video/getFileSize";
 
@@ -130,6 +131,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 			<BottomTab.Navigator
 				initialRouteName="Home"
 				screenOptions={{
+					tabBarHideOnKeyboard:true,
 					headerStyle: { backgroundColor: "black", elevation: 2 },
 					headerTitle: "",
 					headerRight: () => (
@@ -475,6 +477,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 								}
 								if (!camera.canceled) {
 									const size = await getFileSize(camera.assets[0].uri);
+									Logger.Success('ye size he',size);
 									if (!canUploadedToIpfs(size)) {
 										toast.error("Selected video is greater than 5GB");
 										return;
@@ -528,9 +531,10 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 							}
 							if (!result.canceled) {
 								const size = await getFileSize(result.assets[0].uri);
+								Logger.Success('ye gallery size he',size);
 								if (!canUploadedToIpfs(size)) {
-									toast.error("Select video is greater than 5GB");
-									return;
+									toast.error("Select video is greater than 100MB");
+									return ;
 								}
 								uploadStore.setDuration(result.assets[0].duration!);
 								navigation.push("UploadVideo", {

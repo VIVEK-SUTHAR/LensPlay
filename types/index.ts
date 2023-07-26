@@ -1,3 +1,4 @@
+import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { BottomSheetProps } from "@gorhom/bottom-sheet";
 import React from "react";
 import { Attribute, InputMaybe, Mirror, Post, Scalars } from "./generated";
@@ -43,4 +44,7 @@ export type ProfileMetaDataV1nput = {
   attributes: InputMaybe<Attribute[]> | undefined;
 };
 
-export type ShotsPublication = Post | Mirror;
+export type ShotsPublication = {
+  item: Post | Mirror,
+  commentRef:React.RefObject<BottomSheetMethods>
+};

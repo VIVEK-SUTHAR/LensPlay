@@ -92,7 +92,6 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 	const renderItem = ({ item }: { item: IComment }) => {
 		return (
 			<CommentCard
-				key={item?.id}
 				username={item?.profile?.handle}
 				avatar={getRawurl(item?.profile?.picture)}
 				commentText={item?.metadata?.content || item?.metadata?.description}
@@ -138,7 +137,6 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 	}
 
 	if (commentData) {
-
 		const allComments = commentData?.publications?.items as IComment[];
 		return (
 			<View style={{ flex: 1 }}>
