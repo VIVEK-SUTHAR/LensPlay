@@ -50,7 +50,6 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 	const [createDataAvaibalityComment] = useCreateDataAvailabilityCommentViaDispatcherMutation({
 		onCompleted: (data) => {
 			Logger.Success("DA Comment published", data);
-			toast.success("Comment submitted!");
 		},
 		onError: (err, cliOpt) => {
 			Logger.Error("Error in DA Comment", err, "\nClient Option", cliOpt);
@@ -70,6 +69,9 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 		const isDAPublication = activePublication?.isDataAvailability;
 
 		if (isDAPublication) {
+			toast.success("Comment submitted!");
+			setCommentText("");
+			setIsFocused(false);
 			const contenturi = await uploadMetaDataToArweave(commentText, currentProfile?.handle);
 			createDataAvaibalityComment({
 				variables: {

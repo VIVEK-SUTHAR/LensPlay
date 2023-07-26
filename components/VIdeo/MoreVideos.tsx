@@ -16,6 +16,7 @@ import React from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { useActivePublication, useAuthStore, useProfile, useThemeStore } from "store/Store";
 import formatHandle from "utils/formatHandle";
+import Logger from "utils/logger";
 
 const MoreVideos = () => {
 	const { activePublication } = useActivePublication();
@@ -26,9 +27,10 @@ const MoreVideos = () => {
 			<StyledText
 				title={`More Videos by ${title}`}
 				style={{
-					fontSize: 20,
+					fontSize: 18,
 					fontWeight: "700",
 					color: "white",
+					marginBottom: 8
 				}}
 				numberOfLines={1}
 			/>
@@ -42,6 +44,8 @@ const MoreVideosList = React.memo(() => {
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
 	const { PRIMARY } = useThemeStore();
+	const title =
+		activePublication?.profile?.name || formatHandle(activePublication?.profile?.handle);
 
 	const QueryRequest: PublicationsQueryRequest = {
 		profileId: activePublication?.profile?.id,
@@ -69,6 +73,7 @@ const MoreVideosList = React.memo(() => {
 	});
 
 	const AllVideos = data?.publications?.items;
+	Logger.Log('yeh hai', AllVideos);
 
 	const pageInfo = data?.publications?.pageInfo;
 
@@ -124,12 +129,17 @@ const MoreVideosList = React.memo(() => {
 
 	if (loading)
 		return (
-			<View style={{ paddingHorizontal: 8, backgroundColor: "black" }}>
+			<View style={{ backgroundColor: "black" }}>
 				<Skeleton number={10}>
 					<VideoCardSkeleton />
 				</Skeleton>
 			</View>
 		);
+
+	if (AllVideos?.length === 1)
+	return (
+			<NotFound message={`No additional videos from ${title.split(' ')[0]}`} height={220} width={220} />
+	);
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -153,7 +163,7 @@ export default React.memo(MoreVideos);
 
 const styles = StyleSheet.create({
 	moreVideosHeader: {
-		paddingHorizontal: 12,
+		paddingHorizontal: 16,
 		marginVertical: 8,
 	},
 });

@@ -268,7 +268,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 								}}
 							/>
 							<TouchableOpacity onPress={openCommentSheet}>
-								<Icon name="arrowDown" color="white" size={24} />
+								<Icon name="arrowDown" color="white" size={20} />
 							</TouchableOpacity>
 						</View>
 					</View>

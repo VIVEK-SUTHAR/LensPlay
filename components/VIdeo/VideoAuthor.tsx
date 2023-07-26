@@ -66,7 +66,7 @@ const VideoCreator: React.FC<VideoCreatorProps> = React.memo((props) => {
 					<Heading title={uploadedBy} style={styles.heading} numberOfLines={1} />
 					<StyledText
 						numberOfLines={1}
-						title={showSubscribers ? `${subscribersCount} Subscribers` : `@${uploadedBy}`}
+						title={showSubscribers ? `${subscribersCount} Subscribers` : `@${activePublication?.profile?.handle}`}
 						style={styles.subtext}
 					/>
 				</View>

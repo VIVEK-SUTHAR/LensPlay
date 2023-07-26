@@ -8,7 +8,7 @@ import Icon from "components/Icon";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
 import DeleteVideo from "components/VIdeo/DeleteVideo";
-import PlaylistSheet from "components/VIdeo/PlaylistSheet";
+// import PlaylistSheet from "components/VIdeo/PlaylistSheet";
 import { black } from "constants/Colors";
 import { LENSPLAY_SITE, SOURCES } from "constants/index";
 import { PUBLICATION } from "constants/tracking";
@@ -197,7 +197,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 	const { add, remove } = useAddWatchLater();
 
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
-	const PlaylistSheetRef = React.useRef<BottomSheetMethods>(null);
+	// const PlaylistSheetRef = React.useRef<BottomSheetMethods>(null);
 
 	const pinStore = usePinStore();
 	const [createSetProfileMetadataViaDispatcherMutation] =
@@ -369,7 +369,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 				/>
 			</Sheet>
 			<DeleteVideo sheetRef={deleteRef} publication={publication} />
-			<PlaylistSheet sheetRef={PlaylistSheetRef} publication={publication} />
+			{/* <PlaylistSheet sheetRef={PlaylistSheetRef} publication={publication} /> */}
 		</>
 	);
 };
