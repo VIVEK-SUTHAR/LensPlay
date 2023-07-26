@@ -86,7 +86,7 @@ const config: ExpoConfig = {
 	name: "LensPlay",
 	slug: "test",
 	version: "1.0.1",
-	// orientation: "portrait",
+	orientation: "portrait",
 	backgroundColor: "#000000",
 	icon: "./assets/images/icon.png",
 	scheme: "lensplay",
@@ -116,6 +116,8 @@ const config: ExpoConfig = {
 	jsEngine: "hermes",
 	android: {
 		package: "com.lensplayxyz.lensplay",
+
+		
 		versionCode: 7,
 		googleServicesFile: "./google-services.json",
 		adaptiveIcon: {
@@ -195,11 +197,10 @@ const config: ExpoConfig = {
 				},
 				android: {
 					compileSdkVersion: 33,
-					targetSdkVersion: 31,
+					targetSdkVersion: 33,
 					buildToolsVersion: "33.0.0",
 					minSdkVersion: 22,
 					newArchEnabled: true,
-					enableProguardInReleaseBuilds: true,
 				},
 			},
 		],

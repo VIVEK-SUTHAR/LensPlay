@@ -1,3 +1,5 @@
+import "./expo-crypto-shim.ts";
+import "react-native-gesture-handler";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "apollo/client";
 import NetworkStatus from "components/NetworkStatus";
@@ -8,11 +10,10 @@ import useCachedResources from "hooks/useCachedResources";
 import React from "react";
 import { Platform, UIManager } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { WalletConnectModal } from '@walletconnect/modal-react-native';
+import { WalletConnectModal } from "@walletconnect/modal-react-native";
 import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { APP_NAME, DESCRIPTION, LENSPLAY_SITE } from "./constants";
-import "./expo-crypto-shim.ts";
 import Navigation from "./navigation";
 
 const projectId = "6097f40a8f4f91e37e66cf3a5ca1fba2";
