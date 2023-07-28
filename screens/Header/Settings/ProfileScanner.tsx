@@ -15,6 +15,7 @@ import Animated, {
 	withRepeat,
 	withTiming,
 } from "react-native-reanimated";
+import Logger from "utils/logger";
 
 export default function ProfileScanner({ navigation }: RootStackScreenProps<"ProfileScanner">) {
 	const [permission, requestPermission] = Camera.useCameraPermissions();
@@ -48,6 +49,7 @@ export default function ProfileScanner({ navigation }: RootStackScreenProps<"Pro
 	}, []);
 
 	const handleBarcodeScanned = React.useCallback((data: { data: any }) => {
+		Logger.Warn('nice',data?.data)
 		navigation.replace("Channel", {
 			handle: data?.data,
 		});

@@ -109,7 +109,7 @@ function ProfileQRSheet() {
       }}
     >
       <QRCodeStyled
-        data={currentProfile?.id}
+        data={currentProfile?.handle}
         style={{
           backgroundColor: "transparent",
         }}
