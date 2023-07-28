@@ -16,7 +16,6 @@ import React from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { useActivePublication, useAuthStore, useProfile, useThemeStore } from "store/Store";
 import formatHandle from "utils/formatHandle";
-import Logger from "utils/logger";
 
 const MoreVideos = () => {
 	const { activePublication } = useActivePublication();
@@ -73,7 +72,6 @@ const MoreVideosList = React.memo(() => {
 	});
 
 	const AllVideos = data?.publications?.items;
-	Logger.Log('yeh hai', AllVideos);
 
 	const pageInfo = data?.publications?.pageInfo;
 

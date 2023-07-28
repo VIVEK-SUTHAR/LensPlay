@@ -33,7 +33,6 @@ import { FlatList, RefreshControl } from "react-native-gesture-handler";
 import usePinStore from "store/pinStore";
 import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
 import getRawurl from "utils/getRawUrl";
-import Logger from "utils/logger";
 import TrackAction from "utils/Track";
 import uploadToArweave from "utils/uploadToArweave";
 import { v4 as uuidV4 } from "uuid";
@@ -98,7 +97,6 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 		} catch (error) {
 		} finally {
 			setRefreshing(false);
-			Logger.Warn("refresh in all videos", profileId);
 		}
 	}, [profileId]);
 

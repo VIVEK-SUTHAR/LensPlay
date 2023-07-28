@@ -96,7 +96,6 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 		} catch (error) {
 		} finally {
 		  setRefreshing(false);
-		  Logger.Warn('refresh data ', ethAddress);
 		}
 	  }, [ethAddress]);
 

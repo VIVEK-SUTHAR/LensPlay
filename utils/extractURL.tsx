@@ -4,7 +4,6 @@ import { primary } from "constants/Colors";
 import { IS_MAINNET, MENTION_REGEX, URL_REGEX } from "constants/index";
 import React from "react";
 import { Linking } from "react-native";
-import Logger from "./logger";
 
 /**
  * @param txt Simple text that may contain URLs
@@ -61,7 +60,6 @@ function extractURLs(txt: string | undefined) {
 		);
 	const checkIsLens = (string: string) => {
 		const handle = string.split("@")[1] + ".lens";
-		Logger.Success("ok ", handle);
 		if (MENTION_REGEX.test(string)) {
 			return (
 				<StyledText

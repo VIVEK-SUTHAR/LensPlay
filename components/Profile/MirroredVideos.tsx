@@ -94,7 +94,6 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 		} catch (error) {
 		} finally {
 		  setRefreshing(false);
-		  Logger.Warn('refresh data ', channelId);
 		}
 	  }, [channelId]);
 	  
@@ -264,7 +263,6 @@ export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetPr
 						return (
 							<Ripple
 								onTap={() => {
-									Logger.Log('chumma',publication);
 									item.onPress(publication);
 									sheetRef?.current?.close();
 								}}

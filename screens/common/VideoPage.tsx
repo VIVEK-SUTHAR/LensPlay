@@ -53,7 +53,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const { activePublication } = useActivePublication();
 
 	React.useEffect(() => {
-		Logger.Count("Landed in VideoPage");
 		const delay = setTimeout(() => {
 			LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
 			setIsReadyToRender(true);

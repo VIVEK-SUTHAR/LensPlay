@@ -23,6 +23,9 @@ import {
 } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
+import SwiperFlatList from "react-native-swiper-flatlist";
+import { ShotsPublication } from "customTypes/index";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 type ShotPublication = Post | Mirror;
 
@@ -111,16 +114,29 @@ const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 		},
 		[]
 	);
+	const handleChangeIndexValue = ({ index }: { index: number }) => {
+		setCurrentIndex(index);
+	};
+	const BottomTabHeight = useBottomTabBarHeight();
+	const ITEM_HEIGHT = isAndroid ? height : height - BottomTabHeight;
+	const getItemLayout = (_: any, index: number) => {
+		return {
+			length: ITEM_HEIGHT,
+			offset: ITEM_HEIGHT * index,
+			index,
+		};
+	};
 
 	const ListFooter = React.memo(() => {
 		return <ActivityIndicator style={{ paddingVertical: 12 }} size="small" color={PRIMARY} />;
 	});
+	const keyExtractor = (item: ShotsPublication) => item.id.toString();
 
 	if (loading) return <ShotSkeleton />;
 
 	return (
 		<View style={styles.container}>
-			<FlashList
+			{/* <FlashList
 				data={data}
 				pagingEnabled={true}
 				renderItem={renderItem}
@@ -133,8 +149,8 @@ const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 				onEndReachedThreshold={0.8}
 				removeClippedSubviews={true}
 				ListFooterComponent={ListFooter}
-			/>
-			{/* <SwiperFlatList
+			/> */}
+			<SwiperFlatList
 				vertical={true}
 				keyExtractor={keyExtractor}
 				onChangeIndex={handleChangeIndexValue}
@@ -147,7 +163,7 @@ const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 				onEndReached={onEndCallBack}
 				getItemLayout={getItemLayout}
 				removeClippedSubviews={true}
-			/> */}
+			/>
 		</View>
 	);
 };
