@@ -41,10 +41,8 @@ const VideoCard: React.FC<VideoCardProp> = ({
 
 	const navigateToUserChannel = React.useCallback(() => {
 		navigation.navigate("Channel", {
-			profileId: publication?.profile?.id,
-			isFollowdByMe: publication?.profile?.isFollowedByMe,
-			name: publication?.profile?.name || publication?.profile?.handle,
-			ethAddress: publication?.profile?.ownedBy,
+			handle: publication?.profile?.handle,
+			name: publication?.profile?.name,
 		});
 	}, []);
 

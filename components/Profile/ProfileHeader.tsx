@@ -20,6 +20,7 @@ import {
 	type MediaSet,
 	type Profile,
 	type Scalars,
+	ProfileQuery,
 } from "customTypes/generated";
 import React, { useState } from "react";
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
@@ -45,11 +46,11 @@ import VerifiedBadge from "./VerifiedBadge";
 import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 
 type ProfileHeaderProps = {
-	profileId?: Scalars["ProfileId"];
-	ethAddress?: Scalars["EthereumAddress"];
+	Profile: ProfileQuery | undefined;
+	onRefresh:any;
 };
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile,onRefresh }) => {
 	const [refreshing, setRefreshing] = useState(false);
 
 	const sheetRef = React.useRef<BottomSheetMethods>(null);
@@ -59,38 +60,19 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 	const { accessToken } = useAuthStore();
 	const theme = useThemeStore();
 	const navigation = useNavigation();
+	const profile=Profile?.profile;
 
-	const {
-		data: Profile,
-		loading,
-		error,
-		refetch,
-	} = useProfileQuery({
-		variables: {
-			request: {
-				profileId: profileId ? profileId : currentProfile?.id,
-			},
-		},
-		context: {
-			headers: {
-				"x-access-token": `Bearer ${accessToken}`,
-			},
-		},
-	});
-
-	const onRefresh = React.useCallback(async () => {
-		setRefreshing(true);
-		await refetch({
-			request: {
-				profileId: profileId ? profileId : currentProfile?.id,
-			},
-		}).catch((err) => {
-			Logger.Error("Error in Refreshing error", err);
-		});
-		setRefreshing(false);
-	}, []);
-
-	const profile = Profile?.profile;
+	// const onRefresh = React.useCallback(async () => {
+	// 	setRefreshing(true);
+	// 	await refetch({
+	// 		request: {
+	// 			profileId: profileId ? profileId : currentProfile?.id,
+	// 		},
+	// 	}).catch((err) => {
+	// 		Logger.Error("Error in Refreshing error", err);
+	// 	});
+	// 	setRefreshing(false);
+	// }, []);
 
 	const navigateToFullImageAvatar = React.useCallback(() => {
 		navigation.navigate("FullImage", {
@@ -102,8 +84,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 
 	const navigateToUserStats = React.useCallback(() => {
 		navigation.navigate("UserStats", {
-			profileId: profileId,
-			ethAddress: ethAddress,
+			profileId: profile?.id,
+			ethAddress: profile?.ownedBy,
 			activeTab: "subscriber",
 		});
 	}, []);
@@ -153,19 +135,19 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 		navigation.navigate("WatchLater");
 	};
 
-	const isChannel = profileId ? true : false;
+	const isChannel = profile?.id !==currentProfile?.id ? true : false;
 
-	if (loading) return <ProfileSkeleton />;
-	if (error)
-		return (
-			<ErrorMesasge
-				message="Something went wrong"
-				withImage={true}
-				retryMethod={onRefresh}
-				withButton={true}
-			/>
-		);
-	if (profile) {
+	// if (loading) return <ProfileSkeleton />;
+	// if (error)
+	// 	return (
+	// 		<ErrorMesasge
+	// 			message="Something went wrong"
+	// 			withImage={true}
+	// 			retryMethod={onRefresh}
+	// 			withButton={true}
+	// 		/>
+	// 	);
+	// if (profile) {
 		return (
 			<>
 				<ScrollView
@@ -196,7 +178,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 						</Pressable>
 						<View style={styles.editButtonContainer}>
 							{isChannel ? (
-								<SubscribeButton channelId={profile?.id} isFollwebByMe={profile?.isFollowedByMe} />
+								<SubscribeButton channelId={profile?.id} isFollwebByMe={profile?.isFollowedByMe!} />
 							) : (
 								<EditChannelButton />
 							)}
@@ -246,7 +228,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 								onPress={navigateToUserStats}
 							>
 								<StyledText
-									title={formatInteraction(profile?.stats?.totalFollowing)}
+									title={formatInteraction(profile?.stats?.totalFollowing!)}
 									style={{
 										fontSize: 14,
 										fontWeight: "600",
@@ -273,7 +255,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 								onPress={navigateToUserStats}
 							>
 								<StyledText
-									title={formatInteraction(profile?.stats?.totalFollowers)}
+									title={formatInteraction(profile?.stats?.totalFollowers!)}
 									style={{
 										fontSize: 14,
 										fontWeight: "600",
@@ -305,8 +287,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileId, ethAddress }) 
 			</>
 		);
 	}
-	return null;
-};
+// };
 
 type SubscribeButtonProps = {
 	isFollwebByMe: boolean;
@@ -439,8 +420,8 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 		const msgParams = [address, JSON.stringify(message)];
 		const sig = await provider?.request({
 			method: "eth_signTypedData",
-			params: msgParams
-		})
+			params: msgParams,
+		});
 		void sendUnFollowTxn({
 			variables: {
 				request: {

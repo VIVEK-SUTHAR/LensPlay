@@ -49,11 +49,8 @@ const VideoCreator: React.FC<VideoCreatorProps> = React.memo((props) => {
 	const { activePublication } = useActivePublication();
 	const goToChannel = React.useCallback(() => {
 		navigation.navigate("Channel", {
-			profileId: activePublication?.profile.id,
-			ethAddress: activePublication?.profile?.ownedBy,
 			handle: activePublication?.profile?.handle,
-			isFollowdByMe: activePublication?.profile?.isFollowedByMe,
-			name: activePublication?.profile?.name || activePublication?.profile?.handle,
+			name: activePublication?.profile?.name,
 		});
 	}, []);
 	return (
@@ -66,7 +63,11 @@ const VideoCreator: React.FC<VideoCreatorProps> = React.memo((props) => {
 					<Heading title={uploadedBy} style={styles.heading} numberOfLines={1} />
 					<StyledText
 						numberOfLines={1}
-						title={showSubscribers ? `${subscribersCount} Subscribers` : `@${activePublication?.profile?.handle}`}
+						title={
+							showSubscribers
+								? `${subscribersCount} Subscribers`
+								: `@${activePublication?.profile?.handle}`
+						}
 						style={styles.subtext}
 					/>
 				</View>
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
 	},
 	textContainer: {
 		marginHorizontal: 8,
-		maxWidth: Dimensions.get("window").width/2.5,
+		maxWidth: Dimensions.get("window").width / 2.5,
 	},
 	heading: {
 		color: "white",

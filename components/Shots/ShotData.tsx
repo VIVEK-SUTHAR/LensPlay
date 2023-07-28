@@ -23,11 +23,8 @@ function ShotData({ item, descriptionRef }: { item: Post | Mirror; descriptionRe
 
 	const goToChannel = React.useCallback(() => {
 		navigation.navigate("Channel", {
-			profileId: item?.profile.id,
-			ethAddress: item?.profile?.ownedBy,
 			handle: item?.profile?.handle,
-			isFollowdByMe: item?.profile?.isFollowedByMe,
-			name: item?.profile?.name || item?.profile?.handle,
+			name: item?.profile?.name,
 		});
 	}, []);
 

@@ -22,10 +22,8 @@ const MirrorNotification = ({ notification }: MirrorNotificationProps) => {
 
 	const goToChannel = () => {
 		navigation.navigate("Channel", {
-			profileId: profile?.id,
-			ethAddress: profile?.ownedBy,
-			isFollowdByMe: profile?.isFollowedByMe,
-			name: profile?.name || profile?.handle,
+			handle: profile?.handle,
+			name: profile?.name,
 		});
 	};
 	return (

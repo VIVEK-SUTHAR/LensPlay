@@ -21,12 +21,8 @@ const MentionNotification = ({ notification }: MentionNotificationProps) => {
 
 	const goToChannel = () => {
 		navigation.navigate("Channel", {
-			profileId: notification?.mentionPublication?.profile?.id,
-			isFollowdByMe: notification?.mentionPublication?.profile?.isFollowedByMe,
-			name:
-				notification?.mentionPublication?.profile?.name ||
-				notification?.mentionPublication?.profile?.handle,
-			ethAddress: notification?.mentionPublication?.profile?.ownedBy,
+			handle: notification?.mentionPublication?.profile?.handle,
+			name: notification?.mentionPublication?.profile?.name,
 		});
 	};
 
