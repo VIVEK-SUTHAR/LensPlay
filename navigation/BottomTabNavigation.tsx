@@ -78,9 +78,9 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 			return;
 		}
 		if (url?.includes("/channel/")) {
-			const profile_id = LINK?.split("/channel/")[1];
+			const handle = LINK?.split("/channel/")[1];
 			navigation.navigate("Channel", {
-				profileId: profile_id,
+				handle: handle,
 			});
 			return;
 		}
