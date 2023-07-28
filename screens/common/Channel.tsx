@@ -65,6 +65,7 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 
 	const onRefresh = React.useCallback(async () => {
 		setRefreshing(true);
+		Logger.Warn('hellloo222',route?.params?.handle);
 		await refetch({
 			request: {
 				handle: route?.params?.handle,
@@ -72,10 +73,11 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 		}).catch((err) => {
 			Logger.Error("Error in Refreshing error", err);
 		});
-		setRefreshing(false);
-		Logger.Warn('helll oo',Profile?.profile?.id);
+		Logger.Warn('hellloo bhai',route?.params?.handle);
 
-	}, []);
+		setRefreshing(false);
+
+	}, [route?.params?.handle]);
 
 	// const channelId = React.useMemo(() => route.params.profileId, [navigation,route]);
 	// const ethAddress = React.useMemo(() => route.params.ethAddress, [navigation,route]);
@@ -111,7 +113,7 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 					/>
 					<Tab.Screen
 						name="Mirror Videos"
-						children={() => <MirroredVideos channelId={channelId} />}
+						children={() => <MirroredVideos channelId={Profile?.profile?.id} />}
 					/>
 					<Tab.Screen
 						name="Collected Videos"

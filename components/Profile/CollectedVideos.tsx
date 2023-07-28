@@ -26,6 +26,7 @@ import Skeleton from "components/common/Skeleton";
 import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
 import useAddWatchLater from "hooks/useAddToWatchLater";
 import useWatchLater from "store/WatchLaterStore";
+import Logger from "utils/logger";
 
 type CollectedVideosProps = {
 	ethAddress?: string;
@@ -77,18 +78,27 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
 		try {
-			refetch({
-				request: QueryRequest,
+		  refetch({
+			request: {
+				collectedBy: ethAddress ? ethAddress : currentProfile?.ownedBy,
+				publicationTypes: [PublicationTypes.Post, PublicationTypes.Mirror],
+				metadata: {
+					mainContentFocus: [PublicationMainFocus.Video],
+				},
+				sources: SOURCES,
+				limit: 10,
+			},
+		  })
+			.then(() => {
+			  setRefreshing(false);
 			})
-				.then(() => {
-					setRefreshing(false);
-				})
-				.catch(() => {});
+			.catch((err) => {});
 		} catch (error) {
 		} finally {
-			setRefreshing(false);
+		  setRefreshing(false);
+		  Logger.Warn('refresh data ', ethAddress);
 		}
-	}, []);
+	  }, [ethAddress]);
 
 	const _MoreLoader = () => {
 		return (

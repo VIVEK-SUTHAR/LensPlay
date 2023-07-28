@@ -56,7 +56,7 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 	}, []);
 
 	const QueryRequest: PublicationsQueryRequest = {
-		profileId: profileId,
+		profileId: profileId ? profileId : currentProfile?.id,
 		publicationTypes: [PublicationTypes.Post],
 		metadata: {
 			mainContentFocus: [PublicationMainFocus.Video],
@@ -98,9 +98,9 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 		} catch (error) {
 		} finally {
 			setRefreshing(false);
-			Logger.Warn('refresh in all videos',profileId);
+			Logger.Warn("refresh in all videos", profileId);
 		}
-	}, []);
+	}, [profileId]);
 
 	const _MoreLoader = () => {
 		return (

@@ -45,9 +45,8 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 	const handlePublication = React.useCallback((publication: Post | Mirror) => {
 		setPublication(publication);
 	}, []);
-	const currentChannelId=channelId;
 	const QueryRequest: PublicationsQueryRequest = {
-		profileId: currentChannelId ? currentChannelId : currentProfile?.id,
+		profileId: channelId ? channelId : currentProfile?.id,
 		publicationTypes: [PublicationTypes.Mirror],
 		metadata: {
 			mainContentFocus: [PublicationMainFocus.Video],
@@ -79,7 +78,7 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 		try {
 		  refetch({
 			request: {
-			  profileId: currentChannelId ? currentChannelId : currentProfile?.id,
+			  profileId: channelId ? channelId : currentProfile?.id,
 			  publicationTypes: [PublicationTypes.Mirror],
 			  metadata: {
 				mainContentFocus: [PublicationMainFocus.Video],
@@ -95,9 +94,9 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 		} catch (error) {
 		} finally {
 		  setRefreshing(false);
-		  Logger.Warn('refresh data ', currentChannelId);
+		  Logger.Warn('refresh data ', channelId);
 		}
-	  }, [currentChannelId]);
+	  }, [channelId]);
 	  
 
 	const _MoreLoader = () => {

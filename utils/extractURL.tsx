@@ -60,8 +60,8 @@ function extractURLs(txt: string | undefined) {
 			)
 		);
 	const checkIsLens = (string: string) => {
-		const handle=string.split("@")[1]+".lens" ;
-		Logger.Success('ok ',handle);
+		const handle = string.split("@")[1] + ".lens";
+		Logger.Success("ok ", handle);
 		if (MENTION_REGEX.test(string)) {
 			return (
 				<StyledText
@@ -69,7 +69,7 @@ function extractURLs(txt: string | undefined) {
 					key={string}
 					style={{ color: primary }}
 					onPress={() => {
-						navigation.navigate("Channel",{handle:handle});
+						navigation.navigate("Channel", { handle: handle });
 					}}
 				/>
 			);
