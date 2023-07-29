@@ -1,648 +1,332 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import CommentSheet from "components/Comments/CommentSheet";
+import Skeleton from "components/common/Skeleton";
+import Icon from "components/Icon";
+import LPImage from "components/UI/LPImage";
+import CollectVideoSheet from "components/VIdeo/Actions/CollectVideoSheet";
+import MetaDataSheet from "components/VIdeo/Actions/MetaDataSheet";
+import MirrorVideoSheet from "components/VIdeo/Actions/MirrorVideoSheet";
+import MoreVideos from "components/VIdeo/MoreVideos";
+import VideoPlayer from "components/VideoPlayer";
+import { black, dark_primary } from "constants/Colors";
+import { Post, usePublicationDetailsLazyQuery } from "customTypes/generated";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
+import { useReaction } from "hooks/useLensQuery";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  BackHandler,
-  Dimensions,
-  Image,
-  SafeAreaView,
-  ScrollView,
-  View,
-} from "react-native";
-import { freeCollectPublication, freeMirror } from "../../api";
-import fetchPublicationById from "../../apollo/Queries/fetchPublicationById";
-import getComments from "../../apollo/Queries/getComments";
+import { BackHandler, Dimensions, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import useVideoURLStore from "store/videoURL";
+import getImageProxyURL from "utils/getImageProxyURL";
+import Logger from "utils/logger";
 import { client } from "../../apollo/client";
-import Sheet from "../../components/Bottom";
-import Comment from "../../components/Comments";
-import CommentInput from "../../components/Comments/CommentInput";
+import fetchPublicationById from "../../apollo/Queries/fetchPublicationById";
 import Button from "../../components/UI/Button";
 import StyledText from "../../components/UI/StyledText";
 import {
-  CollectButton,
-  LikeButton,
-  ReportButton,
-  ShareButton,
-  VideoCreator,
-  VideoMeta,
+	CollectButton,
+	LikeButton,
+	ReportButton,
+	ShareButton,
+	VideoCreator,
+	VideoMeta,
 } from "../../components/VIdeo";
 import DisLikeButton from "../../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../../components/VIdeo/Actions/MirrorButton";
-import Player from "../../components/VideoPlayer";
-import { black, primary } from "../../constants/Colors";
-import {
-  useAuthStore,
-  useProfile,
-  useReactionStore,
-  useToast,
-} from "../../store/Store";
-import { Comments, LensPublication } from "../../types/Lens/Feed";
-import { ToastType } from "../../types/Store";
-import {
-  Mirror,
-  Post,
-  PublicationMainFocus,
-  PublicationsQueryRequest,
-  useCommentsQuery,
-  useRefreshTokensMutation,
-  useVerifyTokensLazyQuery,
-} from "../../types/generated";
+import { useActivePublication, useAuthStore, useReactionStore } from "../../store/Store";
 import { RootStackScreenProps } from "../../types/navigation/types";
-import extractURLs from "../../utils/extractURL";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
-import getDefaultProfile from "../../utils/lens/getDefaultProfile";
-import storeTokens from "../../utils/storeTokens";
 
-const LinkingVideo = ({
-  navigation,
-  route,
-}: RootStackScreenProps<"LinkingVideo">) => {
-  const [inFullscreen, setInFullsreen] = useState<boolean>(false);
-  const [commentText, setCommentText] = useState<string>("");
-  const [isMute, setIsMute] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [videoData, setVideoData] = useState<LensPublication>();
-
-  const collectRef = useRef<BottomSheetMethods>(null);
-  const mirrorRef = useRef<BottomSheetMethods>(null);
-  const descRef = useRef<BottomSheetMethods>(null);
-
-  const {
-    reaction,
-    comment,
-    setReaction,
-    videopageStats,
-    collectStats,
-    mirrorStats,
-    setVideoPageStats,
-    clearStats,
-    setCollectStats,
-    setMirrorStats,
-  } = useReactionStore();
-
-  const { accessToken, setAccessToken, setRefreshToken } = useAuthStore();
-  const [activePublication, setactivePublication] = useState<
-    Post | Mirror | null
-  >(null);
-  const { setHasHandle, currentProfile, setCurrentProfile } = useProfile();
-  const toast = useToast();
-
-  const [
-    verifyTokens,
-    { data: isvalidTokens, error: verifyError, loading: verifyLoading },
-  ] = useVerifyTokensLazyQuery();
-
-  const [
-    getAccessFromRefresh,
-    { data: newTokens, error, loading },
-  ] = useRefreshTokensMutation();
-
-  const collectPublication = async () => {
-    try {
-      if (collectStats?.isCollected) {
-        toast.show(
-          "You have already collected the video",
-          ToastType.ERROR,
-          true
-        );
-        return;
-      }
-      const data = await freeCollectPublication(
-        activePublication?.id,
-        accessToken
-      );
-      if (data) {
-        toast.show("Collect Submitted", ToastType.SUCCESS, true);
-        setCollectStats(true, collectStats?.collectCount + 1);
-        collectRef?.current?.close();
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.show(error.message, ToastType.ERROR, true);
-        collectRef?.current?.close();
-      }
-    } finally {
-      collectRef?.current?.close();
-    }
-  };
-
-  const onMirror = async () => {
-    if (mirrorStats?.isMirrored) {
-      toast.show("Already mirrored", ToastType.ERROR, true);
-      mirrorRef.current?.close();
-      return;
-    }
-    try {
-      const data = await freeMirror(
-        accessToken,
-        currentProfile?.id,
-        activePublication?.id
-      );
-      if (data) {
-        toast.show("Mirror submitted", ToastType.SUCCESS, true);
-        setMirrorStats(true, mirrorStats.mirrorCount + 1);
-        mirrorRef.current?.close();
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.show(error.message, ToastType.ERROR, true);
-        mirrorRef?.current?.close();
-      }
-    }
-  };
-
-  function handleBackButtonClick() {
-    setStatusBarHidden(false, "fade");
-    setInFullsreen(!inFullscreen);
-    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
-    if (!inFullscreen) {
-      navigation.goBack();
+const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo">) => {
+	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
+	const [isMute, setIsMute] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const {
+		reaction,
+		setReaction,
+		videopageStats,
+		collectStats,
+		mirrorStats,
+		setVideoPageStats,
+		clearStats,
+		setCollectStats,
+		setMirrorStats,
+	} = useReactionStore();
+	const { activePublication, setActivePublication } = useActivePublication();
+  const { data: ReactionData, error:ReactionError, loading:ReactionLoading } = useReaction(route.params.id);
+	function handleBackButtonClick() {
+		setStatusBarHidden(false, "fade");
+		setInFullsreen(!inFullscreen);
+		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+		if (!inFullscreen) {
       setReaction(false);
-      clearStats();
-      setCollectStats(false, 0);
-      setMirrorStats(false, 0);
-    }
-    return true;
-  }
+			clearStats();
+			setCollectStats(false, 0);
+			setMirrorStats(false, 0);
+			navigation.goBack();
+		}
+		return true;
+	}
 
-  const setProfile = async (address: string) => {
-    const userDefaultProfile = await getDefaultProfile(address);
-    if (userDefaultProfile) {
-      setHasHandle(true);
-      setCurrentProfile(userDefaultProfile);
-      return userDefaultProfile;
-    } else {
-      setHasHandle(false);
-    }
-  };
+	useEffect(() => {
+		BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+		getVideoById(route.params.id);
+	}, [route.params.id]);
+	const { setVideoURI, uri } = useVideoURLStore();
+	const [fetchPub] = usePublicationDetailsLazyQuery();
+  Logger.Error("REACTION ERROR",ReactionData)
+	const getVideoById = async (pubId: string) => {
+		try {
+			const feed = await fetchPub({
+				variables: {
+					request: {
+						publicationId: pubId,
+					},
+				},
+			});
+			setActivePublication(feed?.data?.publication as Post);
+			if (
+				activePublication?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")
+			) {
+				setVideoURI(feed?.data?.publication?.metadata?.media[0]?.optimized?.url);
+				return;
+			}
+			setVideoURI(feed?.data?.publication?.metadata?.media[0]?.original?.url);
+			if (ReactionData) {
+					setReaction(true);
+					setVideoPageStats(
+						ReactionData?.publication?.reaction === "UPVOTE",
+						ReactionData?.publication?.reaction === "DOWNVOTE",
+						ReactionData?.publication?.stats?.totalUpvotes
+					);
+					setCollectStats(
+						ReactionData?.publication?.hasCollectedByMe,
+						ReactionData?.publication?.stats?.totalAmountOfCollects
+					);
+					setMirrorStats(
+						ReactionData?.publication?.mirrors?.length > 0,
+						ReactionData?.publication?.stats?.totalAmountOfMirrors
+					);
+			}
+			return feed;
+		} catch (error) {
+			if (error instanceof Error) {
+				Logger.Error("Failed to fetch video", error);
+			}
+		} finally {
+			setIsLoading(false);
+		}
+	};
 
-  const handleAsyncStorage = async () => {
-    try {
-      setIsLoading(true);
-      const userTokens = await AsyncStorage.getItem("@user_tokens");
-      const waitList = await AsyncStorage.getItem("@waitlist");
-      if (!userTokens) {
-        navigation.replace("Login");
-        return;
-      } else {
-        const accessToken = JSON.parse(userTokens).accessToken;
-        const refreshToken = JSON.parse(userTokens).refreshToken;
-        verifyTokens({
-          variables: {
-            request: {
-              accessToken: accessToken,
-            },
-          },
-        });
-        if (waitList) {
-          if (isvalidTokens?.verify) {
-            const address = JSON.parse(waitList).address;
-            setAccessToken(accessToken);
-            setRefreshToken(refreshToken);
-            const profile = await setProfile(address);
-            getVideoById(route?.params?.id, profile?.id, accessToken);
-          } else {
-            getAccessFromRefresh({
-              variables: {
-                request: {
-                  refreshToken: refreshToken,
-                },
-              },
-            });
-            const address = JSON.parse(waitList).address;
-            const profile = await setProfile(address);
-            setAccessToken(newTokens?.refresh.accessToken);
-            setRefreshToken(newTokens?.refresh.refreshToken);
-            await storeTokens(
-              newTokens?.refresh.accessToken,
-              newTokens?.refresh.refreshToken
-            );
-            getVideoById(
-              route?.params?.id,
-              profile?.id,
-              newTokens?.refresh.accessToken
-            );
-          }
-        }
-      }
-    } catch (error) {
-      // console.log(error);
-    }
-  };
+	const collectRef = useRef<BottomSheetMethods>(null);
+	const mirrorRef = useRef<BottomSheetMethods>(null);
+	const descRef = useRef<BottomSheetMethods>(null);
+	const commentRef = useRef<BottomSheetMethods>(null);
 
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
-    handleAsyncStorage();
-  }, []);
+	const openCommentSheet = () => commentRef?.current?.snapToIndex(0);
 
-  const QueryRequest: PublicationsQueryRequest = {
-    commentsOf: route?.params?.id,
-    metadata: {
-      mainContentFocus: [
-        PublicationMainFocus.Video,
-        PublicationMainFocus.Article,
-        PublicationMainFocus.Embed,
-        PublicationMainFocus.Link,
-        PublicationMainFocus.TextOnly,
-      ],
-    },
-    limit: 50,
-  };
-
-  const {
-    data: commentData,
-    error: commentError,
-    loading: commentLoading,
-    refetch,
-  } = useCommentsQuery({
-    variables: {
-      request: QueryRequest,
-      reactionRequest: {
-        profileId: currentProfile?.id,
-      },
-    },
-    initialFetchPolicy: "network-only",
-    refetchWritePolicy: "merge",
-    context: {
-      headers: {
-        "x-access-token": `Bearer ${accessToken}`,
-      },
-    },
-  });
-
-  async function fetchComments(
-    publicationId: string,
-    id: string
-  ): Promise<void> {
-    try {
-      const data = await client.query({
-        query: getComments,
-        variables: {
-          postId: publicationId,
-          id: currentProfile?.id || id,
-        },
-        context: {
-          headers: {
-            "x-access-token": accessToken ? `Bearer ${accessToken}` : "",
-          },
-        },
-      });
-      setComments(data.data.publications.items);
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error("Can't fetch comments", { cause: error.cause });
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  const getVideoById = async (pubId: string, id: string, tokens: string) => {
-    try {
-      const feed = await client.query({
-        query: fetchPublicationById,
-        variables: {
-          pubId: pubId,
-          id: currentProfile?.id || id,
-        },
-        context: {
-          headers: {
-            "x-access-token":
-              accessToken || tokens ? `Bearer ${accessToken || tokens}` : "",
-          },
-        },
-      });
-
-      setactivePublication(feed.data.publication);
-      if (!reaction) {
-        setReaction(true);
-
-        setVideoPageStats(
-          feed?.data?.publication?.reaction === "UPVOTE",
-          feed?.data?.publication?.reaction === "DOWNVOTE",
-          feed?.data?.publication?.stats?.totalUpvotes
-        );
-
-        setCollectStats(
-          feed?.data?.publication?.hasCollectedByMe,
-          feed?.data?.publication?.stats?.totalAmountOfCollects
-        );
-        setMirrorStats(
-          feed?.data?.publication?.mirrors?.length > 0,
-          feed?.data?.publication?.stats?.totalAmountOfMirrors
-        );
-      }
-      await fetchComments(pubId, id);
-
-      return feed;
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error("Something went wrong", { cause: error });
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-        <View
-          style={{
-            height: 280,
-            backgroundColor: "gray",
-          }}
-        ></View>
-        <View
-          style={{
-            flexDirection: "row",
-            marginVertical: 15,
-            justifyContent: "space-between",
-            paddingHorizontal: 5,
-          }}
-        >
-          <View
-            style={{ height: 15, width: 150, backgroundColor: "gray" }}
-          ></View>
-          <View
-            style={{ height: 15, width: 35, backgroundColor: "gray" }}
-          ></View>
-        </View>
-        <View
-          style={{
-            width: "100%",
-            flexDirection: "row",
-            paddingVertical: 4,
-            justifyContent: "space-between",
-            marginTop: 8,
-          }}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <View
-              style={{
-                height: 40,
-                width: 40,
-                borderRadius: 50,
-                backgroundColor: "gray",
-              }}
-            ></View>
-            <View style={{ marginHorizontal: 8 }}>
-              <View
-                style={{ height: 8, width: 100, backgroundColor: "gray" }}
-              ></View>
-              <View
-                style={{
-                  height: 8,
-                  width: 45,
-                  backgroundColor: "gray",
-                  marginVertical: 8,
-                }}
-              ></View>
-            </View>
-          </View>
-          <Button
-            title={"Subscribe"}
-            width={"auto"}
-            px={16}
-            py={8}
-            type={"filled"}
-            bg={"gray"}
-            textStyle={{
-              fontSize: 16,
-              fontWeight: "700",
-              marginHorizontal: 4,
-              color: "black",
-            }}
-            onPress={async () => {}}
-          />
-        </View>
-      </SafeAreaView>
-    );
-  }
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-      <Player
-        poster={activePublication?.metadata?.cover}
-        title={activePublication?.metadata?.name}
-        url={activePublication?.metadata?.media[0]?.original?.url}
-        inFullscreen={inFullscreen}
-        isMute={isMute}
-        setInFullscreen={setInFullsreen}
-        setIsMute={setIsMute}
-      />
-      <ScrollView>
-        <View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
-          <VideoMeta
-            title={activePublication?.metadata?.name}
-            description={activePublication?.metadata?.description}
-            descRef={descRef}
-          />
-          <VideoCreator
-            profileId={activePublication?.profile?.id}
-            avatarLink={activePublication?.profile?.picture?.original?.url}
-            uploadedBy={
-              activePublication?.profile?.name ||
-              activePublication?.profile?.handle
-            }
-            alreadyFollowing={
-              activePublication?.profile?.isFollowedByMe || false
-            }
-          />
-          <ScrollView
-            style={{
-              paddingVertical: 24,
-            }}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-          >
-            <LikeButton
-              like={videopageStats?.likeCount}
-              id={activePublication?.id}
-              isalreadyLiked={videopageStats?.isLiked}
-            />
-            <DisLikeButton
-              isalreadyDisLiked={videopageStats?.isDisliked}
-              id={activePublication?.id}
-            />
-            <MirrorButton
-              id={activePublication?.id}
-              totalMirrors={mirrorStats?.mirrorCount}
-              isAlreadyMirrored={mirrorStats?.isMirrored}
-              bannerUrl={activePublication?.metadata?.cover}
-              mirrorRef={mirrorRef}
-            />
-            <CollectButton
-              totalCollects={collectStats?.collectCount}
-              collectRef={collectRef}
-              hasCollected={collectStats?.isCollected}
-            />
-            <ShareButton
-              title={
-                activePublication?.profile?.name ||
-                activePublication?.profile.handle
-              }
-              publicationId={activePublication?.id}
-            />
-            <ReportButton publicationId={activePublication?.id} />
-          </ScrollView>
-          <StyledText
-            title="Comments"
-            style={{
-              fontSize: 20,
-              fontWeight: "700",
-              color: "white",
-              marginBottom: 8,
-            }}
-          />
-          <Comment publicationId={activePublication?.id} />
-        </View>
-      </ScrollView>
-      <CommentInput publicationId={activePublication?.id} />
-      <Sheet
-        ref={collectRef}
-        index={-1}
-        enablePanDownToClose={true}
-        backgroundStyle={{
-          backgroundColor: black[600],
-        }}
-        snapPoints={[390]}
-        >
-          <View
-            style={{
-              maxWidth: "100%",
-              alignItems: "center",
-              justifyContent: "space-evenly",
-              height: "100%",
-            }}
-          >
-            <Image
-              source={{
-                uri: getIPFSLink(activePublication?.metadata?.cover),
-              }}
-              style={{
-                height: Dimensions.get("screen").height / 4,
-                borderRadius: 8,
-                width: Dimensions.get("screen").width - 48,
-                resizeMode: "cover",
-              }}
-              progressiveRenderingEnabled={true}
-            />
-            <Button
-              title={
-                collectStats?.isCollected
-                  ? "Already collected the video"
-                  : `Collect the video`
-              }
-              width={"90%"}
-              py={12}
-              textStyle={{
-                fontSize: 20,
-                fontWeight: "700",
-                textAlign: "center",
-              }}
-              bg={collectStats?.isCollected ? "#c0c0c0" : primary}
-              // onPress={collectPublication}
-              onPress={() => {
-                collectPublication();
-              }}
-            />
-          </View>
-        </Sheet>
-      <Sheet
-        ref={mirrorRef}
-        index={-1}
-        enablePanDownToClose={true}
-        backgroundStyle={{
-          backgroundColor: "#1d1d1d",
-        }}
-        snapPoints={[390]}
-        children={
-          <View
-            style={{
-              maxWidth: "100%",
-              alignItems: "center",
-              justifyContent: "space-evenly",
-              height: "100%",
-            }}
-          >
-            <Image
-              source={{
-                uri: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
-              }}
-              style={{
-                height: Dimensions.get("screen").height / 4,
-                borderRadius: 8,
-                width: Dimensions.get("screen").width - 48,
-                resizeMode: "cover",
-              }}
-              progressiveRenderingEnabled={true}
-            />
-            <Button
-              title={
-                mirrorStats?.isMirrored
-                  ? "Already mirrored these video"
-                  : "Mirror the video"
-              }
-              width={"90%"}
-              py={12}
-              my={4}
-              textStyle={{
-                fontSize: 20,
-                fontWeight: "700",
-                textAlign: "center",
-              }}
-              onPress={onMirror}
-              bg={mirrorStats?.isMirrored ? "#c0c0c0" : primary}
-            />
-          </View>
-        }
-      />
-      <Sheet
-        ref={descRef}
-        index={-1}
-        enablePanDownToClose={true}
-        backgroundStyle={{
-          backgroundColor: "#1d1d1d",
-        }}
-        snapPoints={[550, 740]}
-        children={
-          <View style={{ paddingHorizontal: 16 }}>
-            <ScrollView>
-              <View
-                style={{
-                  maxWidth: "100%",
-                  marginTop: 32,
-                  justifyContent: "space-between",
-                }}
-              >
-                <StyledText
-                  title={"Description"}
-                  style={{
-                    fontSize: 20,
-                    fontWeight: "600",
-                    marginVertical: 4,
-                    color: "white",
-                    textAlign: "left",
-                  }}
-                />
-                <StyledText
-                  title={extractURLs(activePublication?.metadata?.description)}
-                  style={{
-                    textAlign: "justify",
-                    color: "white",
-                    marginTop: 8,
-                  }}
-                />
-              </View>
-            </ScrollView>
-          </View>
-        }
-      />
-    </SafeAreaView>
-  );
+	if (isLoading) {
+		return (
+			<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+				<View
+					style={{
+						height: 280,
+						backgroundColor: "gray",
+					}}
+				></View>
+				<View
+					style={{
+						flexDirection: "row",
+						marginVertical: 15,
+						justifyContent: "space-between",
+						paddingHorizontal: 5,
+					}}
+				>
+					<View style={{ height: 15, width: 150, backgroundColor: "gray" }}></View>
+					<View style={{ height: 15, width: 35, backgroundColor: "gray" }}></View>
+				</View>
+				<View
+					style={{
+						width: "100%",
+						flexDirection: "row",
+						paddingVertical: 4,
+						justifyContent: "space-between",
+						marginTop: 8,
+					}}
+				>
+					<View style={{ flexDirection: "row", alignItems: "center" }}>
+						<View
+							style={{
+								height: 40,
+								width: 40,
+								borderRadius: 50,
+								backgroundColor: "gray",
+							}}
+						/>
+						<View style={{ marginHorizontal: 8 }}>
+							<View style={{ height: 8, width: 100, backgroundColor: "gray" }}></View>
+							<View
+								style={{
+									height: 8,
+									width: 45,
+									backgroundColor: "gray",
+									marginVertical: 8,
+								}}
+							></View>
+						</View>
+					</View>
+					<Button
+						title={"Subscribe"}
+						width={"auto"}
+						px={16}
+						py={8}
+						type={"filled"}
+						bg={"gray"}
+						textStyle={{
+							fontSize: 16,
+							fontWeight: "700",
+							marginHorizontal: 4,
+							color: "black",
+						}}
+						onPress={async () => {}}
+					/>
+				</View>
+			</SafeAreaView>
+		);
+	}
+	return (
+		<>
+			<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+				{uri?.length > 0 ? (
+					<VideoPlayer
+						poster={getRawurl(activePublication?.metadata?.cover)}
+						title={activePublication?.metadata?.name || ""}
+						url={uri}
+						inFullscreen={inFullscreen}
+						isMute={isMute}
+						setInFullscreen={setInFullsreen}
+						setIsMute={setIsMute}
+					/>
+				) : (
+					<LPImage
+						source={{
+							uri: getImageProxyURL({
+								formattedLink: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
+							}),
+						}}
+						style={{
+							width: inFullscreen
+								? Dimensions.get("screen").height
+								: Dimensions.get("screen").width,
+							height: inFullscreen ? Dimensions.get("screen").width : 250,
+						}}
+					/>
+				)}
+				<ScrollView>
+					<View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
+						<VideoMeta
+							title={activePublication?.metadata?.name}
+							description={activePublication?.metadata?.description}
+							descRef={descRef}
+						/>
+						<VideoCreator
+							profileId={activePublication?.profile?.id}
+							avatarLink={getRawurl(activePublication?.profile?.picture)}
+							uploadedBy={activePublication?.profile?.name || activePublication?.profile?.handle}
+							alreadyFollowing={activePublication?.profile?.isFollowedByMe || false}
+						/>
+						<ScrollView
+							style={{
+								paddingVertical: 24,
+							}}
+							horizontal={true}
+							showsHorizontalScrollIndicator={false}
+						>
+							{ReactionLoading  ? (
+								<Skeleton
+									children={
+										<Button
+											title={""}
+											mx={4}
+											px={34}
+											width={"auto"}
+											bg={dark_primary}
+											type={"filled"}
+											borderRadius={8}
+										/>
+									}
+									number={5}
+									horizontal={true}
+								/>
+							) : (
+								<>
+									<LikeButton
+										like={videopageStats?.likeCount}
+										id={activePublication?.id}
+										isalreadyLiked={videopageStats?.isLiked}
+									/>
+									<DisLikeButton
+										isalreadyDisLiked={videopageStats?.isDisliked}
+										id={activePublication?.id}
+									/>
+									<MirrorButton
+										id={activePublication?.id}
+										totalMirrors={mirrorStats?.mirrorCount}
+										isAlreadyMirrored={mirrorStats?.isMirrored}
+										bannerUrl={getRawurl(activePublication?.metadata?.cover)}
+										mirrorRef={mirrorRef}
+									/>
+									<CollectButton
+										totalCollects={collectStats?.collectCount}
+										collectRef={collectRef}
+										hasCollected={collectStats?.isCollected}
+									/>
+									<ShareButton
+										title={activePublication?.profile?.name || activePublication?.profile.handle}
+										publicationId={activePublication?.id}
+									/>
+									<ReportButton publicationId={activePublication?.id} />
+								</>
+							)}
+						</ScrollView>
+						<View style={styles.commentsContainer}>
+							<StyledText
+								title="Comments"
+								style={{
+									fontSize: 16,
+									fontWeight: "700",
+									color: "white",
+								}}
+							/>
+							<TouchableOpacity onPress={openCommentSheet}>
+								<Icon name="arrowDown" color="white" size={20} />
+							</TouchableOpacity>
+						</View>
+					</View>
+					<MoreVideos />
+				</ScrollView>
+			</SafeAreaView>
+			<CommentSheet commentSheetRef={commentRef} />
+			<MetaDataSheet sheetRef={descRef} />
+			<CollectVideoSheet sheetRef={collectRef} />
+			<MirrorVideoSheet sheetRef={mirrorRef} />
+		</>
+	);
 };
 
 export default LinkingVideo;
+
+const styles = StyleSheet.create({
+	commentsContainer: {
+		backgroundColor: black[600],
+		paddingVertical: 8,
+		paddingHorizontal: 12,
+		borderRadius: 8,
+		width: "98%",
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		alignSelf: "center",
+	},
+});
