@@ -257,19 +257,21 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 								</>
 							)}
 						</ScrollView>
-						<View style={styles.commentsContainer}>
+						<TouchableOpacity
+							style={styles.commentsContainer}
+							onPress={openCommentSheet}
+							activeOpacity={0.8}
+						>
 							<StyledText
 								title="Comments"
 								style={{
 									fontSize: 16,
-									fontWeight: "700",
+									fontWeight: "600",
 									color: "white",
 								}}
 							/>
-							<TouchableOpacity onPress={openCommentSheet}>
-								<Icon name="arrowDown" color="white" size={20} />
-							</TouchableOpacity>
-						</View>
+							<Icon name="arrowDown" color="white" size={16} />
+						</TouchableOpacity>
 					</View>
 					<MoreVideos />
 				</ScrollView>
@@ -285,8 +287,7 @@ export default VideoPage;
 const styles = StyleSheet.create({
 	commentsContainer: {
 		backgroundColor: black[600],
-		paddingVertical: 8,
-		paddingHorizontal: 12,
+		padding: 12,
 		borderRadius: 8,
 		width: "98%",
 		flexDirection: "row",
