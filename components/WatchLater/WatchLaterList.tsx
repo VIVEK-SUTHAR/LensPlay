@@ -161,9 +161,10 @@ export const WatchLaterSheet = ({
 		{
 			name: "Share",
 			icon: "share",
-			onPress: (pubid: Scalars["InternalPublicationId"]) => {
+			onPress: (publication: Scalars["InternalPublicationId"]) => {
+				Logger.Success('chal dikha ',publication?.id)
 				Share.share({
-					message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${pubid}`,
+					message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${publication?.id}`,
 					title: "Watch video on LensPlay",
 				});
 			},
