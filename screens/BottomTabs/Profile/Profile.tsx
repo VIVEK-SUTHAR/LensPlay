@@ -49,14 +49,13 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 		setRefreshing(true);
 		await refetch({
 			request: {
-				handle:currentProfile?.handle,
+				handle: currentProfile?.handle,
 			},
 		}).catch((err) => {
 			Logger.Error("Error in Refreshing error", err);
 		});
 		setRefreshing(false);
-		Logger.Warn('hellloo',Profile?.profile?.id);
-
+		Logger.Warn("hellloo", Profile?.profile?.id);
 	}, []);
 
 	if (isGuest) return <PleaseLogin />;
@@ -84,10 +83,19 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 							}
 						}}
 					/>
-					<Tab.Screen name="All Videos" children={() => <AllVideos profileId={Profile?.profile?.id} />} />
+					<Tab.Screen
+						name="All Videos"
+						children={() => <AllVideos profileId={Profile?.profile?.id} />}
+					/>
 					{/* <Tab.Screen name="Playlist" children={() => <Playlist />} /> */}
-					<Tab.Screen name="Mirror Videos" children={() => <MirroredVideos channelId={Profile?.profile?.id} />} />
-					<Tab.Screen name="Collected Videos" children={() => <CollectedVideos ethAddress={Profile?.profile?.ownedBy} />} />
+					<Tab.Screen
+						name="Mirror Videos"
+						children={() => <MirroredVideos channelId={Profile?.profile?.id} />}
+					/>
+					<Tab.Screen
+						name="Collected Videos"
+						children={() => <CollectedVideos ethAddress={Profile?.profile?.ownedBy} />}
+					/>
 				</Tabs>
 			</SafeAreaView>
 			<UnPinSheet sheetRef={sheetRef} />

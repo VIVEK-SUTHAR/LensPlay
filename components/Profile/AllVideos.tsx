@@ -192,6 +192,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
 	const { add, remove } = useAddWatchLater();
+	const isChannel = currentProfile?.id !== profileId;
 
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
 	// const PlaylistSheetRef = React.useRef<BottomSheetMethods>(null);
@@ -318,7 +319,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 		<>
 			<Sheet
 				ref={sheetRef}
-				snapPoints={[profileId ? 150 : 200]}
+				snapPoints={[isChannel ? 150 : 200]}
 				enablePanDownToClose={true}
 				enableOverDrag={true}
 				bottomInset={16}
@@ -331,7 +332,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 				detached={true}
 			>
 				<FlatList
-					data={profileId ? channelActionList : actionList}
+					data={isChannel ? channelActionList : actionList}
 					renderItem={({ item }) => {
 						return (
 							<Ripple
