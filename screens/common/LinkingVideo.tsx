@@ -55,6 +55,25 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 	} = useReactionStore();
 	const { activePublication, setActivePublication } = useActivePublication();
   const { data: ReactionData, error:ReactionError, loading:ReactionLoading } = useReaction(route.params.id);
+  if (ReactionData) {
+		if (!reaction) {
+			setReaction(true);
+			setVideoPageStats(
+				ReactionData?.publication?.reaction === "UPVOTE",
+				ReactionData?.publication?.reaction === "DOWNVOTE",
+				ReactionData?.publication?.stats?.totalUpvotes
+			);
+			setCollectStats(
+				ReactionData?.publication?.hasCollectedByMe,
+				ReactionData?.publication?.stats?.totalAmountOfCollects
+			);
+			setMirrorStats(
+				ReactionData?.publication?.mirrors?.length > 0,
+				ReactionData?.publication?.stats?.totalAmountOfMirrors
+			);
+		}
+	}
+
 	function handleBackButtonClick() {
 		setStatusBarHidden(false, "fade");
 		setInFullsreen(!inFullscreen);
@@ -93,22 +112,6 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 				return;
 			}
 			setVideoURI(feed?.data?.publication?.metadata?.media[0]?.original?.url);
-			if (ReactionData) {
-					setReaction(true);
-					setVideoPageStats(
-						ReactionData?.publication?.reaction === "UPVOTE",
-						ReactionData?.publication?.reaction === "DOWNVOTE",
-						ReactionData?.publication?.stats?.totalUpvotes
-					);
-					setCollectStats(
-						ReactionData?.publication?.hasCollectedByMe,
-						ReactionData?.publication?.stats?.totalAmountOfCollects
-					);
-					setMirrorStats(
-						ReactionData?.publication?.mirrors?.length > 0,
-						ReactionData?.publication?.stats?.totalAmountOfMirrors
-					);
-			}
 			return feed;
 		} catch (error) {
 			if (error instanceof Error) {
