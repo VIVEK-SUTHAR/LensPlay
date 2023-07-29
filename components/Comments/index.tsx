@@ -137,7 +137,6 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 	if (commentData) {
 		const allComments = commentData?.publications?.items as IComment[];
 		return (
-			<>
 				<FlashList
 					data={allComments as IComment[]}
 					keyExtractor={keyExtractor}
@@ -156,7 +155,6 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 						paddingBottom: 148,
 					}}
 				/>
-			</>
 		);
 	}
 

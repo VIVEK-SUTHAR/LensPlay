@@ -6,7 +6,7 @@ import React from "react";
 import { useActivePublication } from "store/Store";
 import Comment from ".";
 import CommentInput from "./CommentInput";
-import { BottomSheetFooter } from "@gorhom/bottom-sheet";
+import { BottomSheetFooter, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetDefaultFooterProps } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetFooter/types";
 import { Pressable, View } from "react-native";
 import Heading from "components/UI/Heading";
@@ -33,6 +33,7 @@ const CommentsSheet = ({ commentSheetRef, pubId }: CommentsSheetProps) => {
 		<Sheet
 			ref={commentSheetRef}
 			snapPoints={["75%", "95%"]}
+			android_keyboardInputMode="adjustResize"
 			index={-1}
 			enablePanDownToClose={true}
 			backgroundStyle={{
@@ -67,7 +68,9 @@ const CommentsSheet = ({ commentSheetRef, pubId }: CommentsSheetProps) => {
 					<Icon name="close" size={16} />
 				</Pressable>
 			</View>
-			<Comment publicationId={activePublication?.id || pubId} shots={false} />
+			<BottomSheetScrollView>
+				<Comment publicationId={activePublication?.id || pubId} shots={false} />
+			</BottomSheetScrollView>
 		</Sheet>
 	);
 };
