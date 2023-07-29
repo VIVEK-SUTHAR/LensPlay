@@ -39,7 +39,7 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 	const { PRIMARY } = useThemeStore();
 	const { currentProfile } = useProfile();
 	const MirroredVideoSheetRef = React.useRef<BottomSheetMethods>(null);
-	const [publication, setPublication] = React.useState<Post | Mirror | null >(null);
+	const [publication, setPublication] = React.useState<Post | Mirror | null>(null);
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
 
 	const handlePublication = React.useCallback((publication: Post | Mirror) => {
@@ -76,27 +76,26 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
 		try {
-		  refetch({
-			request: {
-			  profileId: channelId ? channelId : currentProfile?.id,
-			  publicationTypes: [PublicationTypes.Mirror],
-			  metadata: {
-				mainContentFocus: [PublicationMainFocus.Video],
-			  },
-			  sources: SOURCES,
-			  limit: 10,
-			},
-		  })
-			.then(() => {
-			  setRefreshing(false);
+			refetch({
+				request: {
+					profileId: channelId ? channelId : currentProfile?.id,
+					publicationTypes: [PublicationTypes.Mirror],
+					metadata: {
+						mainContentFocus: [PublicationMainFocus.Video],
+					},
+					sources: SOURCES,
+					limit: 10,
+				},
 			})
-			.catch((err) => {});
+				.then(() => {
+					setRefreshing(false);
+				})
+				.catch((err) => {});
 		} catch (error) {
 		} finally {
-		  setRefreshing(false);
+			setRefreshing(false);
 		}
-	  }, [channelId]);
-	  
+	}, [channelId]);
 
 	const _MoreLoader = () => {
 		return (
@@ -189,14 +188,20 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 					/>
 				)}
 			/>
-			<MirroredVideoSheet sheetRef={MirroredVideoSheetRef} publication={publication} profileId={channelId} />
+			<MirroredVideoSheet
+				sheetRef={MirroredVideoSheetRef}
+				publication={publication}
+				profileId={channelId}
+			/>
 		</View>
 	);
 };
 
 export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) => {
-	const deleteRef = React.useRef<BottomSheetMethods>(null);
+	const { currentProfile } = useProfile();
 	const { add, remove } = useAddWatchLater();
+	const deleteRef = React.useRef<BottomSheetMethods>(null);
+	const isChannel = currentProfile?.id !== profileId;
 
 	const actionList: actionListType[] = [
 		{
@@ -258,7 +263,7 @@ export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetPr
 				detached={true}
 			>
 				<FlatList
-					data={profileId ? channelActionList : actionList}
+					data={isChannel ? channelActionList : actionList}
 					renderItem={({ item }) => {
 						return (
 							<Ripple

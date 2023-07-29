@@ -37,7 +37,7 @@ type CollectedPublication = Post | Mirror;
 const keyExtractor = (item: CollectedPublication) => item.id;
 
 const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
-	const [publication, setPublication] = React.useState<Post | Mirror | null >(null);
+	const [publication, setPublication] = React.useState<Post | Mirror | null>(null);
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
 	const CollectedVideoSheetRef = React.useRef<BottomSheetMethods>(null);
 	const { accessToken } = useAuthStore();
@@ -78,26 +78,26 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
 		try {
-		  refetch({
-			request: {
-				collectedBy: ethAddress ? ethAddress : currentProfile?.ownedBy,
-				publicationTypes: [PublicationTypes.Post, PublicationTypes.Mirror],
-				metadata: {
-					mainContentFocus: [PublicationMainFocus.Video],
+			refetch({
+				request: {
+					collectedBy: ethAddress ? ethAddress : currentProfile?.ownedBy,
+					publicationTypes: [PublicationTypes.Post, PublicationTypes.Mirror],
+					metadata: {
+						mainContentFocus: [PublicationMainFocus.Video],
+					},
+					sources: SOURCES,
+					limit: 10,
 				},
-				sources: SOURCES,
-				limit: 10,
-			},
-		  })
-			.then(() => {
-			  setRefreshing(false);
 			})
-			.catch((err) => {});
+				.then(() => {
+					setRefreshing(false);
+				})
+				.catch((err) => {});
 		} catch (error) {
 		} finally {
-		  setRefreshing(false);
+			setRefreshing(false);
 		}
-	  }, [ethAddress]);
+	}, [ethAddress]);
 
 	const _MoreLoader = () => {
 		return (
@@ -194,7 +194,6 @@ export const CollectedVideoSheet = ({
 	publication: Post | Mirror | null;
 }) => {
 	const { add, remove } = useAddWatchLater();
-	const { isInWatchLater } = useWatchLater();
 
 	const actionList: actionListType[] = [
 		{
