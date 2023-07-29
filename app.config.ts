@@ -83,6 +83,9 @@ const withPackageVisibility: ConfigPlugin = (config) => {
 };
 
 const config: ExpoConfig = {
+	experiments: {
+		turboModules: true,
+	},
 	name: "LensPlay",
 	slug: "test",
 	version: "1.0.1",
@@ -98,7 +101,7 @@ const config: ExpoConfig = {
 	},
 	updates: {
 		fallbackToCacheTimeout: 0,
-		url: "https://u.expo.dev/e7d8274d-41e8-4289-a3f3-00e5e8cac9fc",
+		url: "https://u.expo.dev/043827e8-7dd5-4c71-967f-283a4aa0abaf",
 	},
 	runtimeVersion: {
 		policy: "sdkVersion",
@@ -117,7 +120,6 @@ const config: ExpoConfig = {
 	android: {
 		package: "com.lensplayxyz.lensplay",
 
-		
 		versionCode: 7,
 		googleServicesFile: "./google-services.json",
 		adaptiveIcon: {
@@ -165,7 +167,7 @@ const config: ExpoConfig = {
 	},
 	extra: {
 		eas: {
-			projectId: "e7d8274d-41e8-4289-a3f3-00e5e8cac9fc",
+			projectId: "043827e8-7dd5-4c71-967f-283a4aa0abaf",
 		},
 	},
 	plugins: [

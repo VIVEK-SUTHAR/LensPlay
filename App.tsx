@@ -1,5 +1,4 @@
 import "./expo-crypto-shim.ts";
-import "react-native-gesture-handler";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "apollo/client";
 import NetworkStatus from "components/NetworkStatus";
@@ -11,7 +10,6 @@ import React from "react";
 import { Platform, UIManager } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { WalletConnectModal } from "@walletconnect/modal-react-native";
-import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { APP_NAME, DESCRIPTION, LENSPLAY_SITE } from "./constants";
 import Navigation from "./navigation";
