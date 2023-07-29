@@ -131,13 +131,19 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 			<BottomTab.Navigator
 				initialRouteName="Home"
 				screenOptions={{
-					tabBarHideOnKeyboard:true,
+					tabBarHideOnKeyboard: true,
 					headerStyle: { backgroundColor: "black", elevation: 2 },
 					headerTitle: "",
 					headerRight: () => (
-						<View style={{ flexDirection: "row", alignItems: "center" }}>							
+						<View style={{ flexDirection: "row", alignItems: "center" }}>
 							<Pressable
-								onPress={() => uploadTypeRef.current?.snapToIndex(0)}
+								onPress={() => {
+									if (isGuest) {
+										toast.error("Please login to upload");
+										return;
+									}
+									uploadTypeRef.current?.snapToIndex(0);
+								}}
 								style={{
 									paddingHorizontal: 8,
 									height: "100%",
@@ -477,7 +483,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 								}
 								if (!camera.canceled) {
 									const size = await getFileSize(camera.assets[0].uri);
-									Logger.Success('ye size he',size);
+									Logger.Success("ye size he", size);
 									if (!canUploadedToIpfs(size)) {
 										toast.error("Selected video is greater than 5GB");
 										return;
@@ -531,10 +537,10 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 							}
 							if (!result.canceled) {
 								const size = await getFileSize(result.assets[0].uri);
-								Logger.Success('ye gallery size he',size);
+								Logger.Success("ye gallery size he", size);
 								if (!canUploadedToIpfs(size)) {
 									toast.error("Select video is greater than 100MB");
-									return ;
+									return;
 								}
 								uploadStore.setDuration(result.assets[0].duration!);
 								navigation.push("UploadVideo", {
