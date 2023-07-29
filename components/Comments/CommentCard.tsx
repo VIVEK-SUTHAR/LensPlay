@@ -5,7 +5,7 @@ import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import { dark_primary, primary, white } from "constants/Colors";
+import { black, dark_primary, primary, white } from "constants/Colors";
 import { LENSPLAY_SITE } from "constants/index";
 import { PROFILE, PUBLICATION } from "constants/tracking";
 import {
@@ -57,7 +57,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
 	isAlreadyLiked,
 	isMirrored,
 	isDA,
-	address
+	address,
 }) => {
 	const [Liked, setLiked] = useState<boolean>(isAlreadyLiked);
 	const [likes, setLikes] = useState<number>(stats?.totalUpvotes);
@@ -141,16 +141,14 @@ const CommentCard: React.FC<CommentCardProps> = ({
 		}
 	};
 
-
 	const onMirror = async () => {
 		if (isMirrored) {
 			toast.show("Already mirrored", ToastType.ERROR, true);
 			return;
 		}
 		try {
-						
 			toast.success("Mirror submitted!");
-			setMirrorCount(mirrorCount => mirrorCount + 1);
+			setMirrorCount((mirrorCount) => mirrorCount + 1);
 			setIsMirror(true);
 			if (isDA) {
 				createDataAvaibalityMirror({
@@ -187,7 +185,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
 		} catch (error) {
 			if (error instanceof Error) {
 				toast.show(error.message, ToastType.ERROR, true);
-				Logger.Error(error.message+'')
+				Logger.Error(error.message + "");
 			}
 		}
 	};
@@ -196,8 +194,8 @@ const CommentCard: React.FC<CommentCardProps> = ({
 		<View
 			style={{
 				flexDirection: "row",
-				backgroundColor: "black",
-				borderColor: dark_primary,
+				backgroundColor: black[600],
+				borderColor: black[600],
 				borderBottomWidth: 1,
 				paddingVertical: 8,
 				marginVertical: 4,
@@ -206,11 +204,8 @@ const CommentCard: React.FC<CommentCardProps> = ({
 			<Pressable
 				onPress={() => {
 					navigation.navigate("Channel", {
-						profileId: id,
-						isFollowdByMe: isFollowdByMe,
 						name: name,
-						ethAddress: address,
-						handle: username
+						handle: username,
 					});
 				}}
 				style={{
@@ -283,19 +278,19 @@ const CommentCard: React.FC<CommentCardProps> = ({
 						px={16}
 						bg="transparent"
 						textStyle={{
-							color: isMirror?PRIMARY:"white",
+							color: isMirror ? PRIMARY : "white",
 							fontSize: 14,
 							fontWeight: "500",
 							marginLeft: 4,
 						}}
-						icon={<Icon name="mirror" size={20} color={isMirror?PRIMARY:"white"}/>}
+						icon={<Icon name="mirror" size={20} color={isMirror ? PRIMARY : "white"} />}
 						borderColor="#232323"
 						onPress={async () => {
 							if (isGuest) {
 								toast.show("Please Login", ToastType.ERROR, true);
 								return;
 							}
-							if(!isMirror){
+							if (!isMirror) {
 								onMirror();
 							}
 						}}

@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useWeb3Modal } from "@web3modal/react-native";
+import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 import Login from "assets/Icons/Login";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
@@ -55,7 +55,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 		if (!address) return "0x...000";
 		return "0x.." + address.slice(address.length - 4, address.length);
 	};
-	const { address, provider, isConnected } = useWeb3Modal();
+	const { address, provider, isConnected } = useWalletConnectModal();
 
 	const handleLoginWithLens = async () => {
 		if (!hasHandle) {
@@ -163,12 +163,29 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="transparent" style="light" />
+			<View style={{
+				justifyContent: "flex-end",
+				alignItems: "center",
+				marginBottom: 32,
+				flex: 1,
+			}}>
+			<View
+				style={{
+					width: windowWidth,
+					height: "50%",
+					justifyContent: "center",
+					alignItems: "center",
+				}}
+			>
+				<Login />
+			</View>
 			<View
 				style={{
 					width: width,
 					paddingHorizontal: 16,
 					justifyContent: "center",
-					marginTop: 64,
+					marginTop: 32,
+					
 				}}
 			>
 				<StyledText
@@ -184,15 +201,6 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 					}}
 				/>
 			</View>
-			<View
-				style={{
-					width: windowWidth,
-					height: "50%",
-					justifyContent: "center",
-					alignItems: "center",
-				}}
-			>
-				<Login />
 			</View>
 			<View
 				style={{

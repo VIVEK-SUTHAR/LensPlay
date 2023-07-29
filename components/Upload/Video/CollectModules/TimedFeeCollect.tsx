@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useUploadStore } from "store/UploadStore";
-import { CollectToggle } from "../CollectModule";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import StyledText from "components/UI/StyledText";
-import { black, dark_primary, primary } from "constants/Colors";
-import { Platform, Pressable, View } from "react-native";
 import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import Calendar from "assets/Icons/Calendar";
+import StyledText from "components/UI/StyledText";
+import { black, dark_primary } from "constants/Colors";
+import React from "react";
+import { Platform, Pressable, View } from "react-native";
+import { useUploadStore } from "store/UploadStore";
+import { CollectToggle } from "../CollectModule";
 
 const TimedFeeCollect = () => {
 	const { collectModule, setCollectModule } = useUploadStore();
@@ -49,7 +48,6 @@ const TimedFeeCollect = () => {
 					}
 				}}
 			/>
-
 			{collectModule?.isTimedCollect && <SelectTime />}
 		</View>
 	);
@@ -90,7 +88,32 @@ function SelectTime() {
 				setCalendarClick(true);
 			}}
 		>
-			{calendarClick && (
+			<View
+				style={{
+					backgroundColor: dark_primary,
+					flexDirection: "row",
+					alignItems: "center",
+					justifyContent: "flex-end",
+					borderRightWidth: 2,
+					borderColor: black[700],
+					paddingRight: 16,
+				}}
+			>
+				<Calendar height={20} width={20} />
+			</View>
+			{Platform.OS === "android" && (
+				<StyledText
+					title={collectModule?.timeLimit ? formatString(collectModule?.timeLimit) : "Select Date"}
+					style={{
+						color: "white",
+						flex: 0.9,
+						fontSize: 16,
+						alignSelf: "center",
+						paddingLeft: 16,
+					}}
+				/>
+			)}
+			{Platform.OS === "ios" ? (
 				<DateTimePicker
 					testID="dateTimePicker"
 					value={collectModule?.timeLimit ? collectModule?.timeLimit : new Date()}
@@ -98,36 +121,22 @@ function SelectTime() {
 					onChange={onChange}
 					minimumDate={new Date()}
 				/>
+			) : (
+				<>
+					{calendarClick && (
+						<DateTimePicker
+							testID="dateTimePicker"
+							value={collectModule?.timeLimit ? collectModule?.timeLimit : new Date()}
+							mode={"date"}
+							onChange={onChange}
+							minimumDate={new Date()}
+							display="spinner"
+							positiveButton={{label: 'OK', textColor: 'white'}} 
+							negativeButton={{label: 'Cancel', textColor: 'white'}}
+						/>
+					)}
+				</>
 			)}
-
-			<View
-				style={{
-					backgroundColor: dark_primary,
-					flexDirection: "row",
-					alignItems: "center",
-					justifyContent: "flex-end",
-					borderTopRightRadius: 8,
-					borderBottomRightRadius: 8,
-				}}
-			>
-				<Calendar height={20} width={20} />
-			</View>
-			<View
-				style={{
-					flex: 0.008,
-					backgroundColor: black[800],
-					marginHorizontal: 12,
-				}}
-			/>
-			<StyledText
-				title={collectModule?.timeLimit ? formatString(collectModule?.timeLimit) : "Select Date"}
-				style={{
-					color: "white",
-					flex: 0.9,
-					fontSize: 16,
-					alignSelf: "center",
-				}}
-			/>
 		</Pressable>
 	);
 }

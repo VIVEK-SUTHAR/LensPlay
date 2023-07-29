@@ -28,6 +28,7 @@ import uploadImageToIPFS from "utils/uploadImageToIPFS";
 import uploadToArweave from "utils/uploadToArweave";
 import getFileMimeType from "utils/video/getFileType";
 import { v4 as uuidV4 } from "uuid";
+import uploadVideoToIPFS from "utils/uploadVideoToIPFS";
 
 const Types: string[] = [
 	"Arts & Entertainment",
@@ -48,7 +49,7 @@ const Types: string[] = [
 
 export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTypes">) {
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
-	const { setUploadingStatus, setUploadProgress, setClearStore, collectModule } = useUploadStore();
+	const { setUploadingStatus, setDisableCollect, collectModule } = useUploadStore();
 	const toast = useToast();
 	const uploadStore = useUploadStore();
 	const { currentProfile } = useProfile();
@@ -79,9 +80,10 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 	}
 
 	const [createOnChainPost] = useCreatePostViaDispatcherMutation({
-		onCompleted: () => {
+		onCompleted: (data) => {
 			toast.success("Video uploaded successfully");
 			setUploadingStatus("DONE");
+			Logger.Log('',data);
 		},
 		onError(error, clientOptions?) {
 			toast.error("Something went wrong !");
@@ -118,6 +120,8 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 			const coverImageURI = await uploadImageToIPFS(imageBlob);
 			Logger.Success("Uploaded Cover", coverImageURI);
 			const videoBlob = await getImageBlobFromUri(uploadStore.videoURL!);
+			// Logger.Success('this is the videoUrl', uploadStore.videoURL!);
+			// Logger.Log('here is the video blob', videoBlob);
 			setUploadingStatus("UPLOADINGVIDEO");
 			const ipfsVideoUrl = await uploadImageToIPFS(videoBlob);
 
@@ -174,7 +178,7 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 				createMomokaPost({
 					variables: {
 						request: {
-							contentURI: `ar://ZhoHMEqMtz0q45sx_yEymXRSRzYmxYGEUI8PtV1xkEg`,
+							contentURI: `ar://${metadataUri}`,
 							from: currentProfile?.id,
 						},
 					},
@@ -214,6 +218,10 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 				navigation.reset({ index: 0, routes: [{ name: "Root" }] });
 				return;
 			}
+		}
+		finally {
+			Logger.Log('Idhar execute hua');		
+			setDisableCollect();
 		}
 	};
 

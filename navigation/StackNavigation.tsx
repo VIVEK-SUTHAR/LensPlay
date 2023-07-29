@@ -13,8 +13,6 @@ import ShotsComment from "screens/BottomTabs/Shots/ShotsComment";
 import AddDescription from "screens/common/AddDescription";
 import Channel from "screens/common/Channel";
 import FullImage from "screens/common/FullImage";
-import Invite from "screens/common/Invite";
-import InviteCode from "screens/common/InviteCode";
 import LinkingVideo from "screens/common/LinkingVideo";
 import Loader from "screens/common/Loader";
 import ReportPublication from "screens/common/ReportPublication";
@@ -44,25 +42,6 @@ export default function StackNavigation() {
 			}}
 			initialRouteName={"Loader"}
 		>
-			<Stack.Group key={"Invite Code"}>
-				<Stack.Screen
-					name="Invite"
-					component={Invite}
-					options={{
-						animation: "fade_from_bottom",
-						headerShown: false,
-					}}
-				/>
-				<Stack.Screen
-					name="InviteCode"
-					component={InviteCode}
-					options={{
-						animation: "default",
-						headerShown: false,
-					}}
-				/>
-			</Stack.Group>
-
 			<Stack.Group key={"Auth Screens"}>
 				<Stack.Screen
 					name="LetsGetIn"
@@ -350,7 +329,7 @@ export default function StackNavigation() {
 						fontWeight: "600",
 					},
 					headerTintColor: "white",
-					headerTitle: "Select Video types",
+					headerTitle: "Select video types",
 				}}
 			/>
 			<Stack.Screen
@@ -384,7 +363,7 @@ export default function StackNavigation() {
 				options={{
 					headerBackVisible: false,
 					animation: "default",
-					headerShown: true,
+					headerShown: false,
 					headerTintColor: theme.PRIMARY,
 				}}
 			/>

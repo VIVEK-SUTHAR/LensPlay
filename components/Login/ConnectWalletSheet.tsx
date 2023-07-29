@@ -1,7 +1,8 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { useWeb3Modal } from "@web3modal/react-native";
+import { useWalletConnectModal } from '@walletconnect/modal-react-native';
+
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
@@ -13,7 +14,6 @@ import { Pressable, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useProfile } from "store/Store";
 import TrackAction from "utils/Track";
-import handleUser from "utils/invites/handleUser";
 import getProfiles from "utils/lens/getProfiles";
 import Logger from "utils/logger";
 
@@ -28,7 +28,6 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 	const { setCurrentProfile, setHasHandle } = useProfile();
 
 	async function HandleDefaultProfile(adress: Scalars["EthereumAddress"]) {
-		const userData = await AsyncStorage.getItem("@user_data");
 
 		const userDefaultProfile = await getProfiles({
 			ownedBy: adress,
@@ -37,14 +36,6 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 		if (userDefaultProfile) {
 			setHasHandle(true);
 			setCurrentProfile(userDefaultProfile);
-
-			if (!userData) {
-				const isUser = await handleUser(userDefaultProfile?.id);
-				if (!isUser) {
-					navigation.navigate("InviteCode");
-					return;
-				}
-			}
 		} else {
 			setHasHandle(false);
 			setCurrentProfile(undefined);
@@ -52,7 +43,7 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 		}
 	}
 
-	const { open, isConnected, address, isOpen, close } = useWeb3Modal();
+	const { open, isConnected, address, isOpen, close } = useWalletConnectModal();
 
 	const handleConnectWallet = async () => {
 		if (isConnected && address) {
@@ -67,10 +58,6 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 			handleGuest(false);
 
 			await HandleDefaultProfile(address);
-			const userData = await AsyncStorage.getItem("@user_data");
-			if (!userData) {
-				return;
-			}
 			const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
 			if (isDeskTopLogin) {
 				await AsyncStorage.removeItem("@viaDeskTop");

@@ -9,7 +9,7 @@ import { IPFS_UPLOAD_API } from "constants/index";
 const API_TOKEN =
 	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGY2RmYyMWNDMDcyNTEzOGY1YjMyMzhhRjk5NWI2RGVDNDdFNDZGMTUiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2ODA1MjUzMjMxMDAsIm5hbWUiOiJ2aWRlb3Rlc3QifQ.xqaXALtnSPPPe4fo4gwN8IsD3lzwiTwLL0lQfjNE1jQ";
 
-const uploadImageToIPFS = async (imageBlob: Blob | undefined): Promise<string> => {
+const uploadVideoToIPFS = async (imageBlob: Blob | undefined): Promise<string> => {
 	try {
 		const headersList = {
 			Authorization: `Bearer ${API_TOKEN}`,
@@ -25,4 +25,4 @@ const uploadImageToIPFS = async (imageBlob: Blob | undefined): Promise<string> =
 		throw new Error("Something went wrong");
 	}
 };
-export default uploadImageToIPFS;
+export default uploadVideoToIPFS;

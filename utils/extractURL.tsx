@@ -59,6 +59,7 @@ function extractURLs(txt: string | undefined) {
 			)
 		);
 	const checkIsLens = (string: string) => {
+		const handle = string.split("@")[1] + ".lens";
 		if (MENTION_REGEX.test(string)) {
 			return (
 				<StyledText
@@ -66,7 +67,7 @@ function extractURLs(txt: string | undefined) {
 					key={string}
 					style={{ color: primary }}
 					onPress={() => {
-						navigation.navigate("Channel");
+						navigation.navigate("Channel", { handle: handle });
 					}}
 				/>
 			);

@@ -20,10 +20,8 @@ const CommentNotification: React.FC<CommentNotificationProps> = ({ notification 
 
 	const goToChannel = () => {
 		navigation.navigate("Channel", {
-			profileId: notification?.profile?.id,
-			ethAddress: notification?.profile?.ownedBy,
-			isFollowdByMe: notification?.profile?.isFollowedByMe,
-			name: notification?.profile?.name || notification?.profile?.handle,
+			handle: notification?.profile?.handle,
+			name: notification?.profile?.name,
 		});
 	};
 

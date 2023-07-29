@@ -1,6 +1,7 @@
 import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Upload from "assets/Icons/Upload";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
@@ -23,6 +24,7 @@ import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
 import canUploadedToIpfs from "utils/canUploadToIPFS";
 import getIPFSLink from "utils/getIPFSLink";
+import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
 import getFileSize from "utils/video/getFileSize";
 
@@ -76,9 +78,9 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 			return;
 		}
 		if (url?.includes("/channel/")) {
-			const profile_id = LINK?.split("/channel/")[1];
+			const handle = LINK?.split("/channel/")[1];
 			navigation.navigate("Channel", {
-				profileId: profile_id,
+				handle: handle,
 			});
 			return;
 		}
@@ -129,12 +131,13 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 			<BottomTab.Navigator
 				initialRouteName="Home"
 				screenOptions={{
+					tabBarHideOnKeyboard:true,
 					headerStyle: { backgroundColor: "black", elevation: 2 },
 					headerTitle: "",
 					headerRight: () => (
 						<View style={{ flexDirection: "row", alignItems: "center" }}>							
-							{/* <Pressable
-								onPress={() => uploadRef.current?.snapToIndex(0)}
+							<Pressable
+								onPress={() => uploadTypeRef.current?.snapToIndex(0)}
 								style={{
 									paddingHorizontal: 8,
 									height: "100%",
@@ -142,22 +145,8 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 									justifyContent: "center",
 								}}
 							>
-								<Icon name="upload-file" size={24} />
-							</Pressable> */}
-							{!isGuest ? (
-								<Pressable
-									onPress={() => navigation.push("Invite")}
-									style={{
-										paddingHorizontal: 8,
-										height: "100%",
-										alignItems: "center",
-										justifyContent: "center",
-									}}
-								>
-									<Icon name="invite" size={20} />
-								</Pressable>
-							) : null}
-
+								<Upload height={24} width={24} />
+							</Pressable>
 							<Pressable
 								onPress={() => {
 									navigation.push("Search");
@@ -365,7 +354,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 				backgroundStyle={{
 					backgroundColor: black[600],
 				}}
-				snapPoints={[190]}
+				snapPoints={[110]}
 			>
 				<View
 					style={{
@@ -406,7 +395,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 							}}
 						/>
 					</Pressable>
-					<Pressable
+					{/* <Pressable
 						android_ripple={{
 							color: "rgba(0,0,0,0.2)",
 						}}
@@ -446,7 +435,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 								marginHorizontal: 16,
 							}}
 						/>
-					</Pressable>
+					</Pressable> */}
 				</View>
 			</Sheet>
 			<Sheet
@@ -488,6 +477,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 								}
 								if (!camera.canceled) {
 									const size = await getFileSize(camera.assets[0].uri);
+									Logger.Success('ye size he',size);
 									if (!canUploadedToIpfs(size)) {
 										toast.error("Selected video is greater than 5GB");
 										return;
@@ -541,9 +531,10 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 							}
 							if (!result.canceled) {
 								const size = await getFileSize(result.assets[0].uri);
+								Logger.Success('ye gallery size he',size);
 								if (!canUploadedToIpfs(size)) {
-									toast.error("Select video is greater than 5GB");
-									return;
+									toast.error("Select video is greater than 100MB");
+									return ;
 								}
 								uploadStore.setDuration(result.assets[0].duration!);
 								navigation.push("UploadVideo", {

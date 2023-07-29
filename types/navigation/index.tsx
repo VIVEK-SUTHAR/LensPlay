@@ -71,11 +71,8 @@ export type RootStackParamList = {
 	};
 	VideoPage: undefined;
 	Channel: {
-		profileId: string;
-		isFollowdByMe?: boolean;
-		name?: string | null;
-		ethAddress?: string;
-		handle?: string;
+		handle: string;
+		name?: string;
 	};
 	Search: undefined;
 	YourVideos: {
@@ -106,8 +103,6 @@ export type RootStackParamList = {
 	VideoTypes: undefined;
 	SelectCollectModule: undefined;
 	ProfileScanner: undefined;
-	Invite: undefined;
-	InviteCode: undefined;
 	WatchLater: undefined;
 	UploadIndicator: undefined;
 };

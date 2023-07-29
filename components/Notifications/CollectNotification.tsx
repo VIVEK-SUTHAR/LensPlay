@@ -45,12 +45,8 @@ const CollectNotification: React.FC<CollectNotificationProps> = ({ notification 
 				<Pressable
 					onPress={() => {
 						navigation.navigate("Channel", {
-							profileId: notification?.wallet?.defaultProfile?.id,
-							isFollowdByMe: notification?.wallet?.defaultProfile?.isFollowedByMe,
-							name:
-								notification?.wallet?.defaultProfile?.name ||
-								notification?.wallet?.defaultProfile?.handle,
-							ethAddress: notification?.wallet?.address,
+							handle: notification?.wallet?.defaultProfile?.handle,
+							name: notification?.wallet?.defaultProfile?.name,
 						});
 					}}
 					style={{

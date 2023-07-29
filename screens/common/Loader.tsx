@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useWeb3Modal } from "@web3modal/react-native";
+import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 // import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Heading from "components/UI/Heading";
 import StorageKeys from "constants/Storage";
@@ -17,9 +17,6 @@ import Animated, {
 	withTiming,
 } from "react-native-reanimated";
 import { useAuthStore, useProfile } from "store/Store";
-import getDateDifference from "utils/generateDateDifference";
-import createInviteCode from "utils/invites/createInviteCodes";
-import handleUser from "utils/invites/handleUser";
 import getDefaultProfile from "utils/lens/getDefaultProfile";
 import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
@@ -32,7 +29,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 	const blackBox = useSharedValue(1);
 	const image = useSharedValue(0);
 	const textOpacity = useSharedValue(0);
-	const { address: WalletAddres } = useWeb3Modal();
+	const { address: WalletAddres } = useWalletConnectModal();
 	// const { accounts } = useWalletConnect();
 
 	const [verifyTokens, { data: isvalidTokens, error: verifyError, loading: verifyLoading }] =
@@ -40,7 +37,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 
 	const [getAccessFromRefresh, { data: newTokens, error, loading }] = useRefreshTokensMutation();
 
-	async function HandleDefaultProfile(adress: string) {
+	async function HandleDefaultProfile(adress: string | undefined) {
 		Logger.Warn("We are in Handle");
 		Logger.Warn("We are in Handle efault profile");
 		Logger.Warn("Calling get default profile");
@@ -55,72 +52,16 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 		return userDefaultProfile?.id;
 	}
 
-	async function checkInvite(profileId: string) {
-		try {
-			const apiResponse = await fetch("https://lensplay-api.vercel.app/api/invites/checkInvite", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					profileId: profileId,
-				}),
-			});
-
-			const jsonRes = await apiResponse.json();
-
-			if (jsonRes?.found) {
-				return true;
-			} else {
-				return false;
-			}
-		} catch (error) {
-			console.log(error);
-		}
-	}
-
-	async function handleInviteCode(created_at: string, profileId: string) {
-		//get the invite data from async storage
-		const inviteData = await AsyncStorage.getItem("@invite_data");
-		const dateDiff = getDateDifference(created_at);
-		Logger.Count("yeh hai diference", dateDiff);
-		console.log(inviteData);
-
-		//check if it's been five days since the user creation
-		if (dateDiff > 5) {
-			Logger.Warn("difference hai isliye kaam chaalu");
-			if (!inviteData) {
-				const hasInviteCodes = await checkInvite(profileId);
-				if (hasInviteCodes) {
-					await AsyncStorage.setItem(
-						"@invite_data",
-						JSON.stringify({
-							hasInviteCodes: true,
-						})
-					);
-				} else {
-					await createInviteCode(profileId);
-					await AsyncStorage.setItem(
-						"@invite_data",
-						JSON.stringify({
-							hasInviteCodes: true,
-						})
-					);
-				}
-			}
-		}
-	}
-
 	const getLocalStorage = async () => {
 		try {
 			TrackAction(APP_OPEN);
 			Logger.Log("In App Loader");
 			const userTokens = await AsyncStorage.getItem("@user_tokens");
-			const userData = await AsyncStorage.getItem("@user_data");
+			
 			const address = await AsyncStorage.getItem(StorageKeys.UserAddress);
 			let profileId;
 
-			if (!userTokens && !address) {
+			if (!userTokens || !address) {
 				Logger.Error("No Data and no address found,Goin to Login");
 				navigation.replace("LetsGetIn");
 				return;
@@ -135,24 +76,12 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 				profileId = await HandleDefaultProfile(WalletAddres);
 			}
 
-			if (!userData) {
-				Logger.Error("user data nai hai");
-				const isUser = await handleUser(profileId);
-				if (!isUser) {
-					Logger.Log("user data hai lekin invited nai hai");
-					navigation.replace("LetsGetIn");
-					return;
-				}
-			}
-
-			if (userTokens && userData) {
+			if (userTokens) {
 				Logger.Warn("UserTokens from Local Storage", JSON.stringify(userTokens));
-				Logger.Warn("UserData from Local Stoarage", JSON.stringify(userData));
 				Logger.Success("Got Tokens and Data ");
 				const accessToken = JSON.parse(userTokens).accessToken;
 				const refreshToken = JSON.parse(userTokens).refreshToken;
 
-				const created_at = JSON.parse(userData).createdAt;
 
 				if (!accessToken || !refreshToken) {
 					Logger.Error("No access and refresh,goin to Login");
@@ -171,7 +100,6 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 					Logger.Success("Access token is valid,going to feed");
 					setAccessToken(accessToken);
 					setRefreshToken(refreshToken);
-					await handleInviteCode(created_at, profileId);
 					navigation.replace("Root");
 				} else {
 					Logger.Error("Invalid Tokens,Gnerating new tokens");
@@ -182,7 +110,6 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 							},
 						},
 					});
-					await handleInviteCode(created_at, profileId);
 					Logger.Error("Generated new tokens");
 					setAccessToken(newData?.data?.refresh?.accessToken);
 					setRefreshToken(newData?.data?.refresh?.refreshToken);

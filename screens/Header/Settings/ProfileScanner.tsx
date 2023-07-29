@@ -9,12 +9,13 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import { Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
 import Animated, {
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming
+	interpolate,
+	useAnimatedStyle,
+	useSharedValue,
+	withRepeat,
+	withTiming,
 } from "react-native-reanimated";
+import Logger from "utils/logger";
 
 export default function ProfileScanner({ navigation }: RootStackScreenProps<"ProfileScanner">) {
 	const [permission, requestPermission] = Camera.useCameraPermissions();
@@ -48,8 +49,9 @@ export default function ProfileScanner({ navigation }: RootStackScreenProps<"Pro
 	}, []);
 
 	const handleBarcodeScanned = React.useCallback((data: { data: any }) => {
+		Logger.Warn('nice',data?.data)
 		navigation.replace("Channel", {
-			profileId: data?.data,
+			handle: data?.data,
 		});
 	}, []);
 	if (!permission) {

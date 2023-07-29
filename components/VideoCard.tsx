@@ -3,32 +3,36 @@ import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { FeedItemRoot, Mirror, Post } from "customTypes/generated";
-import { Image } from "expo-image";
-import * as React from "react";
-import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
+import React from "react";
+import { StyleProp, StyleSheet, TouchableWithoutFeedback, View, ViewStyle } from "react-native";
 import { useActivePublication } from "store/Store";
 import formatTime from "utils/formatTime";
 import getDifference from "utils/getDifference";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getIPFSLink from "utils/getIPFSLink";
-import getPlaceHolderImage from "utils/getPlaceHolder";
 import getRawurl from "utils/getRawUrl";
 import getVideoDuration from "utils/getVideoDuration";
 import Logger from "utils/logger";
+import LPImage from "./UI/LPImage";
 
 type VideoCardProp = {
 	publication: FeedItemRoot | Mirror | Post;
 	id: string;
 	height?: number | string;
 	width?: number | string;
+	style?: StyleProp<ViewStyle>;
 };
 
-const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publication }) => {
+const VideoCard: React.FC<VideoCardProp> = ({
+	width = "auto",
+	height = 200,
+	publication,
+	style,
+}) => {
 	const { setActivePublication } = useActivePublication();
 
 	const navigation = useNavigation();
 
-	let playBackurl = React.useMemo(() => publication?.metadata?.media[0]?.original?.url, []);
 	const navigateToVideoPage = React.useCallback(() => {
 		Logger.Count("Start Navigation from VideoCard");
 		navigation.navigate("VideoPage");
@@ -37,10 +41,8 @@ const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publ
 
 	const navigateToUserChannel = React.useCallback(() => {
 		navigation.navigate("Channel", {
-			profileId: publication?.profile?.id,
-			isFollowdByMe: publication?.profile?.isFollowedByMe,
-			name: publication?.profile?.name || publication?.profile?.handle,
-			ethAddress: publication?.profile?.ownedBy,
+			handle: publication?.profile?.handle,
+			name: publication?.profile?.name,
 		});
 	}, []);
 
@@ -53,13 +55,11 @@ const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publ
 	);
 
 	return (
-		<View style={[styles.videoCardContainer, { width: width }]}>
+		<View style={[styles.videoCardContainer, { width: width }, style]}>
 			<View style={{ height: height }}>
 				<TouchableWithoutFeedback onPress={navigateToVideoPage}>
-					<Image
-						placeholder={getPlaceHolderImage()}
+					<LPImage
 						contentFit="cover"
-						transition={500}
 						priority="high"
 						source={{
 							uri: coverImage,

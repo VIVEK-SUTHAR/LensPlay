@@ -18,7 +18,6 @@ import {
 	Pressable,
 	ScrollView,
 	StyleSheet,
-	TextInput,
 	View,
 } from "react-native";
 import { useGuestStore } from "store/GuestStore";

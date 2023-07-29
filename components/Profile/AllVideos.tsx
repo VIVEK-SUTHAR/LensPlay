@@ -8,6 +8,7 @@ import Icon from "components/Icon";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
 import DeleteVideo from "components/VIdeo/DeleteVideo";
+// import PlaylistSheet from "components/VIdeo/PlaylistSheet";
 import { black } from "constants/Colors";
 import { LENSPLAY_SITE, SOURCES } from "constants/index";
 import { PUBLICATION } from "constants/tracking";
@@ -31,7 +32,6 @@ import { ActivityIndicator, Share, View } from "react-native";
 import { FlatList, RefreshControl } from "react-native-gesture-handler";
 import usePinStore from "store/pinStore";
 import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
-import useWatchLater from "store/WatchLaterStore";
 import getRawurl from "utils/getRawUrl";
 import TrackAction from "utils/Track";
 import uploadToArweave from "utils/uploadToArweave";
@@ -47,10 +47,10 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 	const { PRIMARY } = useThemeStore();
 	const { currentProfile } = useProfile();
 	const AllVideoSheetRef = React.useRef<BottomSheetMethods>(null);
-	const [publication, setPublication] = React.useState<Post | Mirror | null >(null);
+	const [publication, setPublication] = React.useState<Post | Mirror | null>(null);
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
 
-	const handlePubId = React.useCallback((publication: Post) => {
+	const handlePublication = React.useCallback((publication: Post | Mirror) => {
 		setPublication(publication);
 	}, []);
 
@@ -70,7 +70,7 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 			reactionRequest: {
 				profileId: currentProfile?.id,
 			},
-			channelId:currentProfile?.id
+			channelId: currentProfile?.id,
 		},
 		context: {
 			headers: {
@@ -78,7 +78,6 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 			},
 		},
 	});
-
 	const AllVideos = data?.publications?.items;
 
 	const pageInfo = data?.publications?.pageInfo;
@@ -99,7 +98,7 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 		} finally {
 			setRefreshing(false);
 		}
-	}, []);
+	}, [profileId]);
 
 	const _MoreLoader = () => {
 		return (
@@ -178,7 +177,7 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 							publication={item}
 							id={item.id}
 							sheetRef={AllVideoSheetRef}
-							setPublication={handlePubId}
+							setPublication={handlePublication}
 						/>
 					)}
 				/>
@@ -193,9 +192,10 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
 	const { add, remove } = useAddWatchLater();
-	const { isInWatchLater, setSessionCount } = useWatchLater();
+	const isChannel = currentProfile?.id !== profileId;
 
 	const deleteRef = React.useRef<BottomSheetMethods>(null);
+	// const PlaylistSheetRef = React.useRef<BottomSheetMethods>(null);
 
 	const pinStore = usePinStore();
 	const [createSetProfileMetadataViaDispatcherMutation] =
@@ -264,6 +264,13 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 				pinPublication();
 			},
 		},
+		// {
+		// 	name: "Add to Playlist",
+		// 	icon: "create",
+		// 	onPress: (pubid: Scalars["InternalPublicationId"]) => {
+		// 		PlaylistSheetRef.current?.snapToIndex(0);
+		// 	},
+		// },
 		{
 			name: "Share",
 			icon: "share",
@@ -296,10 +303,10 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 			},
 		},
 		{
-			name: isInWatchLater ? "Remove from watch later" : "Add to watch later",
-			icon: isInWatchLater ? "delete" : "clock",
+			name: publication?.bookmarked ? "Remove from watch later" : "Add to watch later",
+			icon: publication?.bookmarked ? "delete" : "clock",
 			onPress: (publication) => {
-				if (isInWatchLater) {
+				if (publication?.bookmarked) {
 					remove(publication);
 				} else {
 					add(publication);
@@ -312,10 +319,10 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 		<>
 			<Sheet
 				ref={sheetRef}
-				snapPoints={[profileId ? 150 : 200]}
+				snapPoints={[isChannel ? 150 : 200]}
 				enablePanDownToClose={true}
 				enableOverDrag={true}
-				bottomInset={32}
+				bottomInset={16}
 				style={{
 					marginHorizontal: 8,
 				}}
@@ -325,7 +332,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 				detached={true}
 			>
 				<FlatList
-					data={profileId ? channelActionList : actionList}
+					data={isChannel ? channelActionList : actionList}
 					renderItem={({ item }) => {
 						return (
 							<Ripple
@@ -349,7 +356,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 										title={item.name}
 										style={{
 											fontSize: 16,
-											marginHorizontal: 8,
+											marginHorizontal: 12,
 											color: "white",
 										}}
 									/>
@@ -360,6 +367,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 				/>
 			</Sheet>
 			<DeleteVideo sheetRef={deleteRef} publication={publication} />
+			{/* <PlaylistSheet sheetRef={PlaylistSheetRef} publication={publication} /> */}
 		</>
 	);
 };

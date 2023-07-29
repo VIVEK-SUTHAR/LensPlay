@@ -20,10 +20,7 @@ const FollowNotification: React.FC<FollowNotificationProps> = ({ notification })
 
 	const goToChannel = () => {
 		navigation.navigate("Channel", {
-			profileId: notification?.wallet?.defaultProfile?.id,
-			isFollowdByMe: notification?.isFollowedByMe,
 			name: notification?.wallet?.defaultProfile?.name,
-			ethAddress: notification?.wallet?.address,
 			handle: notification?.wallet?.defaultProfile?.handle,
 		});
 	};

@@ -30,10 +30,8 @@ function ProfileCard({
 			activeOpacity={0.6}
 			onPress={() => {
 				navigation.navigate("Channel", {
-					profileId: profileId,
-					isFollowdByMe: isFollowed,
+					handle:handle,
 					name: profileName,
-					ethAddress: owner,
 				});
 			}}
 		>

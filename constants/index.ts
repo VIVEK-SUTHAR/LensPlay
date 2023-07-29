@@ -17,7 +17,7 @@ const APP_LOGO = "FINAL HONE KE BAD YAHA DAL DENA KOI";
 export const CAPTURE_BUTTON_SIZE = 78;
 
 //Storage
-const IPFS_FREE_UPLOAD_LIMIT = IS_MAINNET ? 5000 : 100;
+const IPFS_FREE_UPLOAD_LIMIT = IS_MAINNET ? 100 : 100;
 const IPFS_GATEWAY = "https://ipfs.io/ipfs/";
 const ARWEAVE_GATEWAY = "https://arweave.net";
 

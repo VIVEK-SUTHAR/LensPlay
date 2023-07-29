@@ -26,6 +26,7 @@ import Skeleton from "components/common/Skeleton";
 import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
 import useAddWatchLater from "hooks/useAddToWatchLater";
 import useWatchLater from "store/WatchLaterStore";
+import Logger from "utils/logger";
 
 type CollectedVideosProps = {
 	ethAddress?: string;
@@ -36,14 +37,14 @@ type CollectedPublication = Post | Mirror;
 const keyExtractor = (item: CollectedPublication) => item.id;
 
 const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
-	const [publication, setPublication] = React.useState<Post | Mirror | null >(null);
+	const [publication, setPublication] = React.useState<Post | Mirror | null>(null);
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
 	const CollectedVideoSheetRef = React.useRef<BottomSheetMethods>(null);
 	const { accessToken } = useAuthStore();
 	const { currentProfile } = useProfile();
 	const { PRIMARY } = useThemeStore();
 
-	const handlePubId = React.useCallback((pubId: string) => {
+	const handlePublication = React.useCallback((publication: Mirror | Post) => {
 		setPublication(publication);
 	}, []);
 
@@ -78,17 +79,25 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 		setRefreshing(true);
 		try {
 			refetch({
-				request: QueryRequest,
+				request: {
+					collectedBy: ethAddress ? ethAddress : currentProfile?.ownedBy,
+					publicationTypes: [PublicationTypes.Post, PublicationTypes.Mirror],
+					metadata: {
+						mainContentFocus: [PublicationMainFocus.Video],
+					},
+					sources: SOURCES,
+					limit: 10,
+				},
 			})
 				.then(() => {
 					setRefreshing(false);
 				})
-				.catch(() => {});
+				.catch((err) => {});
 		} catch (error) {
 		} finally {
 			setRefreshing(false);
 		}
-	}, []);
+	}, [ethAddress]);
 
 	const _MoreLoader = () => {
 		return (
@@ -167,7 +176,7 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 							publication={item}
 							id={item.id}
 							sheetRef={CollectedVideoSheetRef}
-							setPublication={handlePubId}
+							setPublication={handlePublication}
 						/>
 					)}
 				/>
@@ -185,7 +194,6 @@ export const CollectedVideoSheet = ({
 	publication: Post | Mirror | null;
 }) => {
 	const { add, remove } = useAddWatchLater();
-	const { isInWatchLater } = useWatchLater();
 
 	const actionList: actionListType[] = [
 		{

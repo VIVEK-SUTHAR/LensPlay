@@ -23,10 +23,8 @@ const ReactionNotification: React.FC<ReactionNotificationProps> = ({ notificatio
 	const profile = notification?.profile;
 	const goToChannel = () => {
 		navigation.navigate("Channel", {
-			profileId: profile?.id,
-			ethAddress: profile?.ownedBy,
-			isFollowdByMe: profile?.isFollowedByMe,
-			name: profile?.name || profile?.handle,
+			handle: profile?.handle,
+			name: profile?.name,
 		});
 	};
 

@@ -9,33 +9,26 @@ import { Image } from "expo-image";
 import React, { memo } from "react";
 import { Dimensions, Pressable, TouchableOpacity, View } from "react-native";
 import { useActivePublication } from "store/Store";
-import useWatchLater from "store/WatchLaterStore";
 import getDifference from "utils/getDifference";
 import getIPFSLink from "utils/getIPFSLink";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getPlaceHolderImage from "utils/getPlaceHolder";
 import getRawurl from "utils/getRawUrl";
-import Logger from "utils/logger";
 
 type MyVideoCardProps = {
 	publication: Mirror | Post;
 	id: string;
 	sheetRef?: React.RefObject<BottomSheetMethods>;
-	setPublication?: (pubId: Scalars["InternalPublicationId"]) => void;
+	setPublication: (publication: Mirror | Post) => void;
 };
 
 function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardProps) {
 	const navigation = useNavigation();
 	const { setActivePublication } = useActivePublication();
-	const { setIsInWatchLater } = useWatchLater();
 
-	const checkInWatchLater = () => {
-		console.log(publication?.bookmarked)
-		const hasBookmarked = publication?.bookmarked;
-		Logger.Count("", hasBookmarked);
-		setIsInWatchLater(hasBookmarked);
-		sheetRef?.current?.snapToIndex(0);
-	};
+	const memoizedPlaceHolder = React.useMemo(
+		()=>getPlaceHolderImage(),[]
+	)
 
 	return (
 		<Pressable
@@ -54,7 +47,7 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 		>
 			<View>
 				<Image
-					placeholder={getPlaceHolderImage()}
+					placeholder={memoizedPlaceHolder}
 					contentFit="cover"
 					transition={500}
 					cachePolicy="memory-disk"
@@ -114,10 +107,8 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 				<TouchableOpacity
 					activeOpacity={0.5}
 					onPress={() => {
-						if (setPublication) {
-							checkInWatchLater();
-							setPublication(publication);
-						}
+						setPublication(publication);
+						sheetRef?.current?.snapToIndex(0);
 					}}
 					style={{
 						padding: 4,
