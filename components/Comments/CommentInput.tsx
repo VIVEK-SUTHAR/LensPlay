@@ -1,3 +1,4 @@
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import { black } from "constants/Colors";
@@ -122,64 +123,70 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 	return (
 		<View
 			style={{
-				backgroundColor: black[500],
-				width: "100%",
-				height: 60,
-				flexDirection: "row",
-				justifyContent: "center",
-				alignItems: "center",
-				borderRadius:8
+				paddingBottom: 24,
+				backgroundColor: black[600],
+				borderTopWidth: 1,
+				borderColor: black[400],
 			}}
 		>
 			<View
 				style={{
-					flex: 0.2,
+					width: "100%",
+					flexDirection: "row",
 					justifyContent: "center",
 					alignItems: "center",
 				}}
 			>
-				<Avatar src={getIPFSLink(getRawurl(currentProfile?.picture))} height={28} width={28} />
+				<View
+					style={{
+						flex: 0.2,
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<Avatar src={getIPFSLink(getRawurl(currentProfile?.picture))} height={28} width={28} />
+				</View>
+				<BottomSheetTextInput
+					placeholder="What's in your mind"
+					style={{ flex: 1, color: "white" }}
+					selectionColor={PRIMARY}
+					value={commentText}
+					onFocus={() => {
+						setIsFocused((state) => !state);
+					}}
+					onSubmitEditing={() => {
+						setIsFocused((state) => !state);
+					}}
+					onPressIn={() => {
+						setIsFocused((state) => !state);
+					}}
+					onPressOut={() => {
+						setIsFocused((state) => !state);
+					}}
+					onBlur={() => {
+						setIsFocused((state) => !state);
+					}}
+					onChange={(e) => {
+						setCommentText(e.nativeEvent.text);
+					}}
+					placeholderTextColor={"white"}
+				/>
+				<Pressable
+					android_ripple={{
+						color: commentText.length === 0 ? "gray" : PRIMARY,
+						radius: 20,
+					}}
+					style={{
+						height: 60,
+						justifyContent: "center",
+						alignItems: "center",
+						paddingHorizontal: 12,
+					}}
+					onPressIn={publishComment}
+				>
+					<Icon name="send" color={commentText.length === 0 ? "gray" : PRIMARY} size={24} />
+				</Pressable>
 			</View>
-			<TextInput
-				placeholder="What's in your mind"
-				style={{ flex: 1, color: "white" }}
-				selectionColor={PRIMARY}
-				value={commentText}
-				onFocus={() => {
-					setIsFocused((state) => !state);
-				}}
-				onSubmitEditing={() => {
-					setIsFocused((state) => !state);
-				}}
-				onPressIn={() => {
-					setIsFocused((state) => !state);
-				}}
-				onPressOut={() => {
-					setIsFocused((state) => !state);
-				}}
-				onBlur={() => {
-					setIsFocused((state) => !state);
-				}}
-				onChange={(e) => {
-					setCommentText(e.nativeEvent.text);
-				}}
-				placeholderTextColor={"white"}
-			/>
-			<Pressable
-				android_ripple={{
-					color: commentText.length === 0 ? "gray" : PRIMARY,
-					radius: 20,
-				}}
-				style={{
-					height: 60,
-					justifyContent: "center",
-					alignItems: "center",
-					paddingHorizontal: 12,
-				}}
-				onPressIn={publishComment}
-			>
-				<Icon name="send" color={commentText.length === 0 ? "gray" : PRIMARY} size={24} />
-			</Pressable>
 		</View>
 	);
 };

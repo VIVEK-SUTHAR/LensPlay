@@ -16,6 +16,7 @@ import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import formatHandle from "utils/formatHandle";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
+import CommentInput from "./CommentInput";
 
 interface CommentProps {
 	publicationId: string;
@@ -126,11 +127,8 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 	if (error) {
 		return <NotFound />;
 	}
-	if (shots) {
-		if (loading) return <Loading />;
-	} else {
-		if (loading) return <Loading />;
-	}
+
+	if (loading) return <Loading />;
 
 	if (!commentData?.publications?.items.length) {
 		return <NotFound />;
@@ -139,7 +137,7 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 	if (commentData) {
 		const allComments = commentData?.publications?.items as IComment[];
 		return (
-			<View style={{ flex: 1 }}>
+			<>
 				<FlashList
 					data={allComments as IComment[]}
 					keyExtractor={keyExtractor}
@@ -153,8 +151,12 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 					onEndReached={onEndCallBack}
 					renderItem={renderItem}
 					showsVerticalScrollIndicator={false}
+					contentContainerStyle={{
+						paddingHorizontal: 16,
+						paddingBottom: 148,
+					}}
 				/>
-			</View>
+			</>
 		);
 	}
 
