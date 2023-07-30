@@ -269,6 +269,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 					name="Shots"
 					component={Shots}
 					options={{
+						freezeOnBlur:  true,
 						tabBarLabel: "",
 						headerShown: false,
 						tabBarIcon: ({ focused }) => {
