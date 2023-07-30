@@ -1,14 +1,16 @@
 import RecordingButton from "components/Upload/Shot/RecordingButton";
+import ShotControllers from "components/Upload/Shot/ShotControllers";
 import React from "react";
-import { ActivityIndicator, Linking, View } from "react-native";
+import { ActivityIndicator, Linking, View, useWindowDimensions } from "react-native";
 import { Camera, CameraDevice, useCameraDevices } from "react-native-vision-camera";
 import { useCreateShotStore } from "store/CreateShotStore";
 
 export default function UploadShots() {
 	const camera = React.useRef<Camera>(null);
-	const { isBackCamera } = useCreateShotStore();
+	const { height } = useWindowDimensions();
+	const { isBackCamera, isFlashOn, isMute } = useCreateShotStore();
 	const devices = useCameraDevices();
-	const device = devices.back;
+	const device = devices?.back;
 
 	async function requestPermission() {
 		const hasCameraPermission = await Camera.getCameraPermissionStatus();
@@ -46,6 +48,8 @@ export default function UploadShots() {
 				device={isBackCamera ? (devices.back as CameraDevice) : (devices.front as CameraDevice)}
 				isActive={true}
 				video={true}
+				audio={isMute ? false : true}
+				torch={isFlashOn ? "on" : "off"}
 				enableZoomGesture={true}
 			/>
 			<View
@@ -55,11 +59,20 @@ export default function UploadShots() {
 					justifyContent: "center",
 					alignItems: "center",
 					width: "100%",
-					flexDirection: "row",
-					gap: 32,
 				}}
 			>
 				<RecordingButton ref={camera} />
+			</View>
+			<View
+				style={{
+					position: "absolute",
+					top: height / 10,
+					right: 16,
+					justifyContent: "center",
+					alignItems: "center",
+				}}
+			>
+				<ShotControllers />
 			</View>
 		</>
 	);

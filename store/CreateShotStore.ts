@@ -4,25 +4,32 @@ export interface ICreateShotStore {
     isBackCamera: boolean;
     isFlashOn: boolean;
     isRecording: boolean;
-    handleBackCamera: (isBackCamera: boolean) => void;
-    handleFlash: (isFlashOn: boolean) => void;
-    handleRecording: (isRecording: boolean) => void;
+    isMute: boolean;
+    setIsBackCamera: (isBackCamera: boolean) => void;
+    setIsFlashOn: (isFlashOn: boolean) => void;
+    setIsRecording: (isRecording: boolean) => void;
+    setIsMute: (isMute: boolean) => void;
 }
 
 export const useCreateShotStore = create<ICreateShotStore>((set) => ({
     isBackCamera: true,
     isFlashOn: false,
     isRecording: false,
-    handleBackCamera: (isBackCamera: boolean) =>
+    isMute: false,
+    setIsBackCamera: (isBackCamera: boolean) =>
         set({
             isBackCamera: isBackCamera,
         }),
-    handleFlash: (isFlashOn: boolean) =>
+    setIsFlashOn: (isFlashOn: boolean) =>
         set({
             isFlashOn: isFlashOn,
         }),
-    handleRecording: (isRecording: boolean) =>
+    setIsRecording: (isRecording: boolean) =>
         set({
             isRecording: isRecording,
+        }),
+    setIsMute: (isMute: boolean) =>
+        set({
+            isMute: isMute,
         }),
 }));
