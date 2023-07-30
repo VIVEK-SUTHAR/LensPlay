@@ -98,7 +98,7 @@ const config: ExpoConfig = {
 	},
 	updates: {
 		fallbackToCacheTimeout: 0,
-		url: "https://u.expo.dev/3b494bf0-e3fd-4a2c-b484-931ab7394de1",
+		url: "https://u.expo.dev/2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f",
 	},
 	runtimeVersion: {
 		policy: "sdkVersion",
@@ -163,7 +163,7 @@ const config: ExpoConfig = {
 	},
 	extra: {
 		eas: {
-			projectId: "7c19ca0a-17bf-439c-b5be-7b6ae4eb24ef",
+			projectId: "2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f",
 		},
 	},
 	plugins: [
