@@ -163,7 +163,7 @@ const config: ExpoConfig = {
 	},
 	extra: {
 		eas: {
-			projectId: "3b494bf0-e3fd-4a2c-b484-931ab7394de1",
+			projectId: "7c19ca0a-17bf-439c-b5be-7b6ae4eb24ef",
 		},
 	},
 	plugins: [
@@ -193,6 +193,16 @@ const config: ExpoConfig = {
 					useFrameworks: "static",
 				},
 			},
+		],
+		[
+			"react-native-vision-camera",
+			{
+				"cameraPermissionText": "LensPlay needs access to your Camera.",
+
+				// optionally, if you want to record audio:
+				"enableMicrophonePermission": true,
+				"microphonePermissionText": "LensPlay needs access to your Microphone."
+			}
 		],
 		"@react-native-firebase/app",
 		"@react-native-firebase/perf",
