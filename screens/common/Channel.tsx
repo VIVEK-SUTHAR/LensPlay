@@ -60,12 +60,10 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 			},
 		},
 	});
-	const channelId=Profile?.profile?.id;
-	
+	const channelId = Profile?.profile?.id;
 
 	const onRefresh = React.useCallback(async () => {
 		setRefreshing(true);
-		Logger.Warn('hellloo222',route?.params?.handle);
 		await refetch({
 			request: {
 				handle: route?.params?.handle,
@@ -73,10 +71,8 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 		}).catch((err) => {
 			Logger.Error("Error in Refreshing error", err);
 		});
-		Logger.Warn('hellloo bhai',route?.params?.handle);
 
 		setRefreshing(false);
-
 	}, [route?.params?.handle]);
 
 	// const channelId = React.useMemo(() => route.params.profileId, [navigation,route]);
@@ -84,6 +80,21 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 
 	if (isGuest) return <PleaseLogin />;
 	if (!isReadyToRender) return <ProfileSkeleton />;
+	if (loading) return <ProfileSkeleton />;
+	if (error)
+		return (
+			<ErrorMesasge
+				message="Something went wrong"
+				withImage={true}
+				retryMethod={onRefresh}
+				withButton={true}
+			/>
+		);
+	if (!Profile?.profile)
+		return (
+			<ErrorMesasge message="Sorry, Profile doesn't exist" withImage={true} withButton={false} />
+		);
+		Logger.Success(JSON.stringify(Profile));
 	return (
 		<>
 			<SafeAreaView style={CommonStyles.screenContainer}>
@@ -91,21 +102,7 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 				<Tabs>
 					<Tab.Screen
 						name="Home"
-						children={() => {
-							if (loading) return <ProfileSkeleton />;
-							if (error)
-								return (
-									<ErrorMesasge
-										message="Something went wrong"
-										withImage={true}
-										retryMethod={onRefresh}
-										withButton={true}
-									/>
-								);
-							if (Profile) {
-								return <ProfileHeader Profile={Profile} onRefresh={onRefresh} />;
-							}
-						}}
+						children={() => <ProfileHeader Profile={Profile} onRefresh={onRefresh} />}
 					/>
 					<Tab.Screen
 						name="All Videos"

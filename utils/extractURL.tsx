@@ -59,7 +59,11 @@ function extractURLs(txt: string | undefined) {
 			)
 		);
 	const checkIsLens = (string: string) => {
-		const handle = string.split("@")[1] + ".lens";
+		var handle = string.split("@")[1];
+		if (!(string.includes(".lens"))) {
+			handle = handle + ".lens";
+		}
+		
 		if (MENTION_REGEX.test(string)) {
 			return (
 				<StyledText

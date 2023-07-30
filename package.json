@@ -63,7 +63,6 @@
 		"react-dom": "18.2.0",
 		"react-native": "0.71.7",
 		"react-native-avoid-softinput": "^3.1.6",
-		"react-native-confetti-cannon": "^1.5.2",
 		"react-native-gesture-handler": "~2.9.0",
 		"react-native-get-random-values": "~1.8.0",
 		"react-native-image-colors": "^2.0.0",
