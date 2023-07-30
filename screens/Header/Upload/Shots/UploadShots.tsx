@@ -1,35 +1,35 @@
-import Icon from "components/Icon";
+import RecordingButton from "components/Upload/Shot/RecordingButton";
 import React from "react";
-import { ActivityIndicator, Pressable, View } from "react-native";
+import { ActivityIndicator, Linking, View } from "react-native";
 import { Camera, CameraDevice, useCameraDevices } from "react-native-vision-camera";
-import Logger from "utils/logger";
+import { useCreateShotStore } from "store/CreateShotStore";
 
 export default function UploadShots() {
-	const [isBackCamera, setisBackCamera] = React.useState<boolean>(false);
 	const camera = React.useRef<Camera>(null);
+	const { isBackCamera } = useCreateShotStore();
+	const devices = useCameraDevices();
+	const device = devices.back;
 
 	async function requestPermission() {
-		const newCameraPermission = await Camera.requestCameraPermission();
-		const newMicrophonePermission = await Camera.requestMicrophonePermission();
+		const hasCameraPermission = await Camera.getCameraPermissionStatus();
+		const hasMicrophonePermission = await Camera.getMicrophonePermissionStatus();
+		if (hasCameraPermission === "not-determined") {
+			const newCameraPermission = await Camera.requestCameraPermission();
+			if (newCameraPermission === "denied") {
+				Linking.openSettings();
+			}
+		}
+		if (hasMicrophonePermission === "not-determined") {
+			const newMicrophonePermission = await Camera.requestMicrophonePermission();
+			if (newMicrophonePermission === "denied") {
+				Linking.openSettings();
+			}
+		}
 	}
 
 	React.useEffect(() => {
 		requestPermission();
 	}, []);
-
-	const devices = useCameraDevices();
-	const device = devices.front;
-
-	async function startRecording() {
-		camera?.current?.startRecording({
-			onRecordingFinished: (video) => Logger.Count("video", video),
-			onRecordingError: (error) => console.error(error),
-		});
-	}
-
-	async function stopRecording() {
-		await camera?.current?.stopRecording();
-	}
 
 	if (device == null) return <ActivityIndicator />;
 	return (
@@ -59,19 +59,7 @@ export default function UploadShots() {
 					gap: 32,
 				}}
 			>
-				<Pressable onPress={startRecording}>
-					<Icon name="camera" size={48} />
-				</Pressable>
-				<Pressable onPress={stopRecording}>
-					<Icon name="done" size={48} />
-				</Pressable>
-				<Pressable
-					onPress={() => {
-						setisBackCamera(!isBackCamera);
-					}}
-				>
-					<Icon name="done" size={48} />
-				</Pressable>
+				<RecordingButton ref={camera} />
 			</View>
 		</>
 	);

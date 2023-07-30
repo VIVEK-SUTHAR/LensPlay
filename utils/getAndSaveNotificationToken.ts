@@ -49,7 +49,7 @@ async function getAndSaveNotificationToken(profileId: string) {
 				Logger.Warn("Notification token difference is <28 days ");
 			}
 		}
-	} catch (error) {}
+	} catch (error) { }
 }
 export default getAndSaveNotificationToken;
 
