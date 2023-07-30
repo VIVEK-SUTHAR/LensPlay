@@ -5,7 +5,7 @@ import Paginator from "components/Login/Paginator";
 import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
-import { LENSPLAY_SITE } from "constants/index";
+import { LENSPLAY_PRIVACY, LENSPLAY_SITE, LENSPLAY_TERMS } from "constants/index";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
@@ -123,7 +123,7 @@ const LetsGetIn = ({ navigation }: RootStackScreenProps<"LetsGetIn">) => {
 								}}
 								title={"Privacy Policy"}
 								onPress={() => {
-									Linking.openURL(LENSPLAY_SITE);
+									Linking.openURL(LENSPLAY_PRIVACY);
 								}}
 							/>{" "}
 							<StyledText title={"and "} style={{ color: "gray" }} />
@@ -135,7 +135,7 @@ const LetsGetIn = ({ navigation }: RootStackScreenProps<"LetsGetIn">) => {
 								}}
 								title={"Terms and Condition"}
 								onPress={() => {
-									Linking.openURL(LENSPLAY_SITE);
+									Linking.openURL(LENSPLAY_TERMS);
 								}}
 							/>{" "}
 						</>

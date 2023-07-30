@@ -5,7 +5,7 @@ import StyledText from "components/UI/StyledText";
 import { FeedItemRoot, Mirror, Post } from "customTypes/generated";
 import React from "react";
 import { StyleProp, StyleSheet, TouchableWithoutFeedback, View, ViewStyle } from "react-native";
-import { useActivePublication } from "store/Store";
+import { useActivePublication, useReactionStore } from "store/Store";
 import formatTime from "utils/formatTime";
 import getDifference from "utils/getDifference";
 import getImageProxyURL from "utils/getImageProxyURL";
@@ -30,10 +30,15 @@ const VideoCard: React.FC<VideoCardProp> = ({
 	style,
 }) => {
 	const { setActivePublication } = useActivePublication();
+	const { setReaction, clearStats, setCollectStats, setMirrorStats } = useReactionStore();
 
 	const navigation = useNavigation();
 
 	const navigateToVideoPage = React.useCallback(() => {
+		setReaction(false);
+		clearStats();
+		setCollectStats(false, 0);
+		setMirrorStats(false, 0);
 		Logger.Count("Start Navigation from VideoCard");
 		navigation.navigate("VideoPage");
 		setActivePublication(publication);
