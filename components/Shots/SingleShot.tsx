@@ -13,10 +13,9 @@ import VideoPlayer from "expo-video-player";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Pressable, useWindowDimensions, View } from "react-native";
 import getIPFSLink from "utils/getIPFSLink";
+import getPublicationMediaURL from "utils/getPublicationMediaURL";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
-import createLivePeerAsset from "utils/video/createLivePeerAsset";
-import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 
 interface SingleByteProps {
 	item: Post | Mirror;
@@ -25,7 +24,7 @@ interface SingleByteProps {
 
 function SingleShot({ item, isActive }: SingleByteProps) {
 	const [mute, setMute] = useState(false);
-	const [videoURL, setVideoURL] = useState(getIPFSLink(item?.metadata?.media[0]?.original?.url));
+	// const [videoURL, setVideoURL] = useState(getIPFSLink(item?.metadata?.media[0]?.original?.url));
 
 	const ref = React.useRef<Video>(null);
 	const commentSheetRef = React.useRef<BottomSheetMethods>(null);
@@ -55,21 +54,21 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 		}
 	}, [isFocused, isActive]);
 
-	useEffect(() => {
-		if (item?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")) {
-			Logger.Success("Got opti", item?.metadata?.media[0]?.optimized?.url);
-			setVideoURL(item?.metadata?.media[0]?.optimized?.url);
-			return;
-		} else {
-			setVideoURL(getIPFSLink(item?.metadata?.media[0].original.url));
-		}
-		checkIfLivePeerAsset(videoURL).then((res) => {
-			if (res) {
-			} else {
-				createLivePeerAsset(videoURL);
-			}
-		});
-	}, [isActive]);
+	// useEffect(() => {
+	// 	if (item?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")) {
+	// 		Logger.Success("Got opti", item?.metadata?.media[0]?.optimized?.url);
+	// 		setVideoURL(item?.metadata?.media[0]?.optimized?.url);
+	// 		return;
+	// 	} else {
+	// 		setVideoURL(getIPFSLink(item?.metadata?.media[0].original.url));
+	// 	}
+	// 	checkIfLivePeerAsset(videoURL).then((res) => {
+	// 		if (res) {
+	// 		} else {
+	// 			createLivePeerAsset(videoURL);
+	// 		}
+	// 	});
+	// }, [isActive]);
 
 	return (
 		<>
@@ -94,7 +93,7 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 						videoProps={{
 							ref: ref as MutableRefObject<Video>,
 							source: {
-								uri: videoURL,
+								uri: getPublicationMediaURL(item as Post)!,
 							},
 							onError(error) {
 								Logger.Error("Video Player Error", error);
@@ -149,4 +148,4 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 	);
 }
 
-export default React.memo(SingleShot);
+export default SingleShot;

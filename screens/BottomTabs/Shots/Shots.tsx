@@ -26,6 +26,7 @@ import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import SwiperFlatList from "react-native-swiper-flatlist";
 import { ShotsPublication } from "customTypes/index";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import Logger from "utils/logger";
 
 type ShotPublication = Post | Mirror;
 
@@ -46,7 +47,7 @@ const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 			mainContentFocus: [PublicationMainFocus.Video],
 		},
 		sources: ["lensplay", "lenstube-bytes"],
-		limit: 3,
+		limit: 5,
 	};
 
 	const {
@@ -130,15 +131,20 @@ const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 	const ListFooter = React.memo(() => {
 		return <ActivityIndicator style={{ paddingVertical: 12 }} size="small" color={PRIMARY} />;
 	});
-	const keyExtractor = (item: ShotsPublication) => item.id.toString();
+	// const keyExtractor = (item: ShotsPublication) => item.id.toString();
 
 	if (loading) return <ShotSkeleton />;
 
+	if (data) {
+		Logger.Success("data array of ",data.length)
+	}
+
 	return (
 		<View style={styles.container}>
-			{/* <FlashList
+			<FlashList
 				data={data}
 				pagingEnabled={true}
+				decelerationRate={"fast"}
 				renderItem={renderItem}
 				estimatedItemSize={646}
 				showsVerticalScrollIndicator={false}
@@ -149,8 +155,8 @@ const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 				onEndReachedThreshold={0.8}
 				removeClippedSubviews={true}
 				ListFooterComponent={ListFooter}
-			/> */}
-			<SwiperFlatList
+			/>
+			{/* <SwiperFlatList
 				vertical={true}
 				keyExtractor={keyExtractor}
 				onChangeIndex={handleChangeIndexValue}
@@ -163,7 +169,7 @@ const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 				onEndReached={onEndCallBack}
 				getItemLayout={getItemLayout}
 				removeClippedSubviews={true}
-			/>
+			/> */}
 		</View>
 	);
 };
