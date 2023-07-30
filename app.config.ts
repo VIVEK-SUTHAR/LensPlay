@@ -112,6 +112,7 @@ const config: ExpoConfig = {
 		icon: "./assets/images/icon.png",
 		backgroundColor: "#000000",
 		googleServicesFile: "./GoogleService-Info.plist",
+		associatedDomains: ["applinks:lensplay.xyz"],
 	},
 	jsEngine: "hermes",
 	android: {
