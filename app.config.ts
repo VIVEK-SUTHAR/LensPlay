@@ -162,9 +162,9 @@ const config: ExpoConfig = {
 		favicon: "./assets/images/favicon.png",
 	},
 	extra: {
-		eas: {
-			projectId: "2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f",
-		},
+		// eas: {
+		// projectId: "7c19ca0a-17bf-439c-b5be-7b6ae4eb24ef",
+		// },
 	},
 	plugins: [
 		[
@@ -192,17 +192,24 @@ const config: ExpoConfig = {
 				ios: {
 					useFrameworks: "static",
 				},
+				android: {
+					//Required for VisonCamara to build,as they use 1.5.0 as default
+					//and App is building on latest gradle 1.6 so overriding is necessary
+					//Also this can be done through expo prebuild and chnaging in
+					//build.gradle -> set kotlinVersion to 1.7.0
+					kotlinVersion: "1.7.0",
+				},
 			},
 		],
 		[
 			"react-native-vision-camera",
 			{
-				"cameraPermissionText": "LensPlay needs access to your Camera.",
+				cameraPermissionText: "LensPlay needs access to your Camera.",
 
 				// optionally, if you want to record audio:
-				"enableMicrophonePermission": true,
-				"microphonePermissionText": "LensPlay needs access to your Microphone."
-			}
+				enableMicrophonePermission: true,
+				microphonePermissionText: "LensPlay needs access to your Microphone.",
+			},
 		],
 		"@react-native-firebase/app",
 		"@react-native-firebase/perf",
