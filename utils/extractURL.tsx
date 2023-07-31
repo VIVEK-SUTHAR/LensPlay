@@ -71,7 +71,7 @@ function extractURLs(txt: string | undefined) {
 					key={string}
 					style={{ color: primary }}
 					onPress={() => {
-						navigation.navigate("Channel", { handle: handle });
+						navigation.navigate("Channel", { handle: handle.toLowerCase() });
 					}}
 				/>
 			);

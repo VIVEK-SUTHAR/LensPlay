@@ -351,7 +351,7 @@ export default function StackNavigation() {
 				component={WatchLater}
 				options={{
 					animation: "default",
-					headerShown: true,
+					headerShown: false,
 					headerTintColor: "white",
 					headerTitle: "",
 					headerShadowVisible: false,

@@ -32,8 +32,11 @@ import Logger from "utils/logger";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 import { LayoutAnimation } from "react-native";
+import WatchLaterHeader from "./WatchLaterHeader";
+import Animated from "react-native-reanimated";
 
-const WatchLaterList = () => {
+const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
+const WatchLaterList = ({ scrollHandler }: { scrollHandler: any }) => {
 	const [publication, setPublication] = React.useState<Post | Mirror | null>(null);
 	const { currentProfile } = useProfile();
 	const WatchLaterSheetRef = React.useRef<BottomSheetMethods>(null);
@@ -117,11 +120,12 @@ const WatchLaterList = () => {
 				backgroundColor: "black",
 			}}
 		>
-			<FlashList
+			<AnimatedFlashList
 				data={data?.publicationsProfileBookmarks?.items as Post[] | Mirror[]}
-				ListHeaderComponent={WatchLaterHeader}
+				ListHeaderComponent={WatchLaterCover}
 				ListEmptyComponent={NoVideosFound}
 				removeClippedSubviews={true}
+				onScroll={scrollHandler}
 				estimatedItemSize={110}
 				onEndReachedThreshold={0.7}
 				showsVerticalScrollIndicator={false}
@@ -162,7 +166,7 @@ export const WatchLaterSheet = ({
 			name: "Share",
 			icon: "share",
 			onPress: (publication: Scalars["InternalPublicationId"]) => {
-				Logger.Success('chal dikha ',publication?.id)
+				Logger.Success("chal dikha ", publication?.id);
 				Share.share({
 					message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${publication?.id}`,
 					title: "Watch video on LensPlay",
@@ -225,7 +229,7 @@ export const WatchLaterSheet = ({
 	);
 };
 
-const WatchLaterHeader = () => {
+const WatchLaterCover = () => {
 	const { currentProfile } = useProfile();
 	const { cover, color } = useWatchLater();
 	return (

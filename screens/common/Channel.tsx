@@ -51,7 +51,7 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 		variables: {
 			request: {
 				// profileId: profileId ? profileId : currentProfile?.id,
-				handle: route.params.handle,
+				handle: route?.params?.handle==="lensprotocol.lens"?"lensprotocol": route?.params?.handle,
 			},
 		},
 		context: {
