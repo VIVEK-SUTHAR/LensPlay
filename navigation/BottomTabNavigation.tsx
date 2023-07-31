@@ -14,6 +14,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as Linking from "expo-linking";
 import React, { useRef } from "react";
 import { AppState, Dimensions, Pressable, View } from "react-native";
+import { Camera } from "react-native-vision-camera";
 import Trending from "screens/BottomTabs/Explore/Trending";
 import Feed from "screens/BottomTabs/Home/Feed";
 import Notifications from "screens/BottomTabs/Notification/Notification";
@@ -406,17 +407,17 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 							paddingVertical: 8,
 						}}
 						onPress={async () => {
-							//   const cameraPermission = await Camera.requestCameraPermission();
-							//   const microphonePermission = await Camera.requestMicrophonePermission();
-							//   if (
-							//     cameraPermission === "authorized" &&
-							//     microphonePermission === "authorized"
-							//   ) {
-							//     navigation.push("UploadShots");
-							//   } else {
-							//     uploadRef.current?.close();
-							//   }
-							navigation.push("UploadShots");
+							  const cameraPermission = await Camera.requestCameraPermission();
+							  const microphonePermission = await Camera.requestMicrophonePermission();
+							  if (
+							    cameraPermission === "authorized" &&
+							    microphonePermission === "authorized"
+							  ) {
+							    navigation.push("UploadShots");
+							  } else {
+							    uploadRef.current?.close();
+							  }
+							// navigation.push("UploadShots");
 						}}
 					>
 						<View
