@@ -117,7 +117,7 @@ const config: ExpoConfig = {
 	jsEngine: "hermes",
 	android: {
 		package: "com.lensplayxyz.lensplay",
-		versionCode: 9,
+		versionCode: 10,
 		googleServicesFile: "./google-services.json",
 		adaptiveIcon: {
 			foregroundImage: "./assets/images/adaptive-icon.png",
