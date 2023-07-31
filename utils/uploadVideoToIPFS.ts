@@ -7,7 +7,7 @@
 import { IPFS_UPLOAD_API } from "constants/index";
 
 const API_TOKEN =
-	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGY2RmYyMWNDMDcyNTEzOGY1YjMyMzhhRjk5NWI2RGVDNDdFNDZGMTUiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2ODA1MjUzMjMxMDAsIm5hbWUiOiJ2aWRlb3Rlc3QifQ.xqaXALtnSPPPe4fo4gwN8IsD3lzwiTwLL0lQfjNE1jQ";
+	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDExNDlDRjEzMzdCQkEzNDVCNTYzRjZGNjE3OURiNDVBNmMxZkYzYTgiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2OTA4Mjc2Nzc5NjgsIm5hbWUiOiJMZW5zUGxheSBVcGxvYWQifQ.x8SF5wTMkKh-zKtV795GRwzQRFl4BkHkvroqgXIsM1M";
 
 const uploadVideoToIPFS = async (imageBlob: Blob | undefined): Promise<string> => {
 	try {
