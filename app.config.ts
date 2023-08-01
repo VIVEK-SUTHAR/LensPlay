@@ -99,10 +99,7 @@ const config: ExpoConfig = {
 		resizeMode: "contain",
 		backgroundColor: "#000000",
 	},
-	updates: {
-		fallbackToCacheTimeout: 0,
-		url: "https://u.expo.dev/043827e8-7dd5-4c71-967f-283a4aa0abaf",
-	},
+	
 	runtimeVersion: {
 		policy: "sdkVersion",
 	},
@@ -119,7 +116,6 @@ const config: ExpoConfig = {
 	jsEngine: "hermes",
 	android: {
 		package: "com.lensplayxyz.lensplay",
-
 		versionCode: 7,
 		googleServicesFile: "./google-services.json",
 		adaptiveIcon: {
