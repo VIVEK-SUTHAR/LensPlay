@@ -2,10 +2,10 @@ import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
+import Player from "components/VideoPlayer/Player";
 import type { RootStackScreenProps } from "customTypes/navigation";
 import { ResizeMode, Video } from "expo-av";
 import * as ImagePicker from "expo-image-picker";
-import VideoPlayer from "expo-video-player";
 import React, { useEffect, useRef, useState } from "react";
 import { Dimensions, Image, Pressable, SafeAreaView, View } from "react-native";
 import { useUploadStore } from "store/UploadStore";
@@ -82,7 +82,7 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 					width: "100%",
 				}}
 			>
-				<VideoPlayer
+				<Player
 					videoProps={{
 						source: {
 							uri: route?.params?.localUrl,
@@ -259,7 +259,7 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 					onPress={() => {
 						videoRef.current?.pauseAsync();
 						navigation.navigate("AddDetails");
-						Logger.Log('eeee', route?.params?.localUrl);
+						Logger.Log("eeee", route?.params?.localUrl);
 						setURLs(
 							route?.params?.localUrl,
 							selectedCover === 5 ? coverPic! : thumbnails[selectedCover]

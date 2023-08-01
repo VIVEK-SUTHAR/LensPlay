@@ -4,12 +4,12 @@ import { primary } from "constants/Colors";
 import { ResizeMode, Video } from "expo-av";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
-import VideoPlayer from "expo-video-player";
 import React, { MutableRefObject, useRef } from "react";
 import { Dimensions, Platform, View } from "react-native";
 import { useThemeStore } from "store/Store";
 import getIPFSLink from "utils/getIPFSLink";
 import Logger from "utils/logger";
+import Player from "./Player";
 
 interface VideoPlayerProps {
 	url: string;
@@ -30,7 +30,7 @@ Dimensions.addEventListener("change", (data) => {
 	console.log("Height Width", data.window.width);
 });
 
-function Player({
+function VideoPlayer({
 	inFullscreen,
 	poster,
 	title,
@@ -43,11 +43,11 @@ function Player({
 }: VideoPlayerProps) {
 	const videoRef = useRef<Video>();
 	const { PRIMARY } = useThemeStore();
-	Logger.Log("IN FULLSCREEN",inFullscreen)
+	Logger.Log("IN FULLSCREEN", inFullscreen);
 	const isAndroid = Platform.OS === "android";
 
 	return (
-		<VideoPlayer
+		<Player
 			style={{
 				width: inFullscreen ? Dimensions.get("screen").height : Dimensions.get("screen").width,
 				height: inFullscreen ? Dimensions.get("screen").width * 0.96 : 250,
@@ -141,4 +141,4 @@ function Player({
 	);
 }
 
-export default React.memo(Player);
+export default React.memo(VideoPlayer);

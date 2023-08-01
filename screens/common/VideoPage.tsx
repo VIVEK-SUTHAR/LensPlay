@@ -191,7 +191,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 					/>
 				)}
 				<ScrollView>
-					<View style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
+					<View style={{ paddingHorizontal: 8, marginTop: 24, marginBottom: 16 }}>
 						<VideoMeta
 							title={activePublication?.metadata?.name}
 							description={activePublication?.metadata?.description}

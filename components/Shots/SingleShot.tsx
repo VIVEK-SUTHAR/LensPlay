@@ -6,10 +6,11 @@ import CommentSheet from "components/Comments/CommentSheet";
 import Icon from "components/Icon";
 import ShotData, { DiscriptionSheet } from "components/Shots/ShotData";
 import ShotReaction from "components/Shots/ShotReaction";
+import VideoPlayer from "components/VideoPlayer";
+import Player from "components/VideoPlayer/Player";
 import { black } from "constants/Colors";
 import { Mirror, Post } from "customTypes/generated";
 import { ResizeMode, Video } from "expo-av";
-import VideoPlayer from "expo-video-player";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Pressable, useWindowDimensions, View } from "react-native";
 import getIPFSLink from "utils/getIPFSLink";
@@ -89,7 +90,7 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 						backgroundColor: "cyan",
 					}}
 				>
-					<VideoPlayer
+					<Player
 						defaultControlsVisible={false}
 						videoProps={{
 							ref: ref as MutableRefObject<Video>,
