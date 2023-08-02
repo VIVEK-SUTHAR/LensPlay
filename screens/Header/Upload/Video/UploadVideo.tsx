@@ -11,6 +11,7 @@ import { Dimensions, Image, Pressable, SafeAreaView, View } from "react-native";
 import { useUploadStore } from "store/UploadStore";
 import generateThumbnail from "utils/generateThumbnails";
 import Logger from "utils/logger";
+import { NFTStorage, File, Blob } from "nft.storage";
 
 export default function UploadVideo({ navigation, route }: RootStackScreenProps<"UploadVideo">) {
 	const [coverPic, setCoverPic] = useState<string | null>(null);
@@ -19,6 +20,12 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 	const videoRef = useRef<Video>();
 	const windowHeight = Dimensions.get("window").height;
 	const { setURLs } = useUploadStore();
+	const NFT_STORAGE_TOKEN =
+		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDRlMzBiRUVjNEM2ODI1YTM4NmUyZUJCMzY0MjBGMzdFN2U0MEI1QzUiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5MDk2NTI4NjQ4OSwibmFtZSI6IkxwVXBsb2FkIn0.J_lWk2QESf9CFDYvSlNqsV4by63psuDe9575bIuKXfc";
+	const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
+	const someData = new Blob([route.params.localUrl]);
+
+	const cid = async () => await client.storeBlob(someData);
 
 	const ThumbnailSkeleton = () => {
 		return (

@@ -479,10 +479,10 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 								if (!camera.canceled) {
 									const size = await getFileSize(camera.assets[0].uri);
 									Logger.Success('ye size he',size);
-									if (!canUploadedToIpfs(size)) {
-										toast.error("Selected video is greater than 5GB");
-										return;
-									}
+									// if (!canUploadedToIpfs(size)) {
+									// 	toast.error("Selected video is greater than 5GB");
+									// 	return;
+									// }
 									uploadStore.setDuration(camera.assets[0].duration!);
 									navigation.push("UploadVideo", {
 										localUrl: camera.assets[0].uri,
