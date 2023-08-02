@@ -49,42 +49,11 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 	const [getAccessFromRefresh, { data: newTokens, error, loading }] = useRefreshTokensMutation();
 
 	React.useEffect(() => {
-		const handle = async () => {
-			const url = await Linking.getInitialURL();
-			handleNavigation(url);
-		};
-		handle();
-		AppState.addEventListener("change", handle);
-		Linking.addEventListener("url", (e) => {
-			handleNavigation(e.url);
-		});
-	}, []);
-
-	React.useEffect(() => {
 		updateTokens();
 		setInterval(() => {
 			updateTokens();
 		}, 60000);
 	}, []);
-
-	function handleNavigation(url: string | null) {
-		if (!url) return;
-		const LINK = url;
-		if (url?.includes("/watch/")) {
-			const video_id = LINK?.split("/watch/")[1];
-			navigation.navigate("LinkingVideo", {
-				id: video_id,
-			});
-			return;
-		}
-		if (url?.includes("/channel/")) {
-			const handle = LINK?.split("/channel/")[1];
-			navigation.navigate("Channel", {
-				handle: handle,
-			});
-			return;
-		}
-	}
 
 	const updateTokens = async () => {
 		const userTokens = await AsyncStorage.getItem("@user_tokens");

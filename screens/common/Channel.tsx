@@ -20,7 +20,7 @@ import formatHandle from "utils/formatHandle";
 import Logger from "utils/logger";
 
 const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, route }) => {
-	const [isReadyToRender, setIsReadyToRender] = React.useState(false);
+	const [isReadyToRender, setIsReadyToRender] = React.useState(false);	
 
 	const { isGuest } = useGuestStore();
 
