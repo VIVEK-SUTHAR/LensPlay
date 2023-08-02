@@ -57,7 +57,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 			TrackAction(APP_OPEN);
 			Logger.Log("In App Loader");
 			const userTokens = await AsyncStorage.getItem("@user_tokens");
-			
+
 			const address = await AsyncStorage.getItem(StorageKeys.UserAddress);
 			let profileId;
 
@@ -81,7 +81,6 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 				Logger.Success("Got Tokens and Data ");
 				const accessToken = JSON.parse(userTokens).accessToken;
 				const refreshToken = JSON.parse(userTokens).refreshToken;
-
 
 				if (!accessToken || !refreshToken) {
 					Logger.Error("No access and refresh,goin to Login");

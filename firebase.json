@@ -1,6 +1,7 @@
 {
-    "react-native": {
-      "crashlytics_debug_enabled": true,
-      "crashlytics_auto_collection_enabled": true
-    }
+	"react-native": {
+		"crashlytics_debug_enabled": true,
+		"crashlytics_auto_collection_enabled": true,
+		"messaging_ios_auto_register_for_remote_messages": false
+	}
 }

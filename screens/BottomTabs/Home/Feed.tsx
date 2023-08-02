@@ -275,6 +275,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 		</SafeAreaView>
 	);
 };
+
 export default Feed;
 
 const NotFound = ({ navigation }: { navigation: any }) => {
