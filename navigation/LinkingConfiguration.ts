@@ -3,19 +3,16 @@ import * as Linking from "expo-linking";
 
 import { RootStackParamList } from "customTypes/navigation/types";
 
-const linking: LinkingOptions<RootStackParamList> = {
+const linkingConfig: LinkingOptions<RootStackParamList> = {
 	prefixes: [
-		Linking.createURL("lensplay://"),
-		Linking.createURL("https://lensplay.xyz"),
-		Linking.createURL("https://lenstube.xyz"),
-		Linking.createURL("https://testnet.lenstube.xyz"),
+		Linking.createURL("/"),
 	],
 	config: {
 		screens: {
 			NotFound: "*",
 			Channel: {
-				path: "channel/:id",
-				parse: { id: String },
+				path: "channel/:handle",
+				parse: { handle: String },
 			},
 			LinkingVideo: {
 				path: "watch/:id",
@@ -25,4 +22,4 @@ const linking: LinkingOptions<RootStackParamList> = {
 	},
 };
 
-export default linking;
+export default linkingConfig;

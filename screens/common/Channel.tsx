@@ -51,7 +51,8 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 		variables: {
 			request: {
 				// profileId: profileId ? profileId : currentProfile?.id,
-				handle: route?.params?.handle==="lensprotocol.lens"?"lensprotocol": route?.params?.handle,
+				handle:
+					route?.params?.handle === "lensprotocol.lens" ? "lensprotocol" : route?.params?.handle,
 			},
 		},
 		context: {
@@ -94,7 +95,7 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 		return (
 			<ErrorMesasge message="Sorry, Profile doesn't exist" withImage={true} withButton={false} />
 		);
-		Logger.Success(JSON.stringify(Profile));
+	Logger.Success(JSON.stringify(Profile));
 	return (
 		<>
 			<SafeAreaView style={CommonStyles.screenContainer}>

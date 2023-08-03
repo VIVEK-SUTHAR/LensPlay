@@ -1,11 +1,11 @@
 import { NavigationContainer } from "@react-navigation/native";
 import * as React from "react";
-import linking from "./LinkingConfiguration";
 import StackNavigation from "./StackNavigation";
+import linkingConfig from "./LinkingConfiguration";
 
 export default function Navigation() {
   return (
-    <NavigationContainer linking={linking}>
+    <NavigationContainer linking={linkingConfig}>
       <StackNavigation />
     </NavigationContainer>
   );

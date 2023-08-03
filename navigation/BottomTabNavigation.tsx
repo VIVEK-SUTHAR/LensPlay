@@ -49,42 +49,11 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 	const [getAccessFromRefresh, { data: newTokens, error, loading }] = useRefreshTokensMutation();
 
 	React.useEffect(() => {
-		const handle = async () => {
-			const url = await Linking.getInitialURL();
-			handleNavigation(url);
-		};
-		handle();
-		AppState.addEventListener("change", handle);
-		Linking.addEventListener("url", (e) => {
-			handleNavigation(e.url);
-		});
-	}, []);
-
-	React.useEffect(() => {
 		updateTokens();
 		setInterval(() => {
 			updateTokens();
 		}, 60000);
 	}, []);
-
-	function handleNavigation(url: string | null) {
-		if (!url) return;
-		const LINK = url;
-		if (url?.includes("/watch/")) {
-			const video_id = LINK?.split("/watch/")[1];
-			navigation.navigate("LinkingVideo", {
-				id: video_id,
-			});
-			return;
-		}
-		if (url?.includes("/channel/")) {
-			const handle = LINK?.split("/channel/")[1];
-			navigation.navigate("Channel", {
-				handle: handle,
-			});
-			return;
-		}
-	}
 
 	const updateTokens = async () => {
 		const userTokens = await AsyncStorage.getItem("@user_tokens");
@@ -131,11 +100,11 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 			<BottomTab.Navigator
 				initialRouteName="Home"
 				screenOptions={{
-					tabBarHideOnKeyboard:true,
+					tabBarHideOnKeyboard: true,
 					headerStyle: { backgroundColor: "black", elevation: 2 },
 					headerTitle: "",
 					headerRight: () => (
-						<View style={{ flexDirection: "row", alignItems: "center" }}>							
+						<View style={{ flexDirection: "row", alignItems: "center" }}>
 							<Pressable
 								onPress={() => uploadTypeRef.current?.snapToIndex(0)}
 								style={{
@@ -269,7 +238,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 					name="Shots"
 					component={Shots}
 					options={{
-						freezeOnBlur:  true,
+						freezeOnBlur: true,
 						tabBarLabel: "",
 						headerShown: false,
 						tabBarIcon: ({ focused }) => {
@@ -478,7 +447,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 								}
 								if (!camera.canceled) {
 									const size = await getFileSize(camera.assets[0].uri);
-									Logger.Success('ye size he',size);
+									Logger.Success("ye size he", size);
 									if (!canUploadedToIpfs(size)) {
 										toast.error("Selected video is greater than 5GB");
 										return;
@@ -532,10 +501,10 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 							}
 							if (!result.canceled) {
 								const size = await getFileSize(result.assets[0].uri);
-								Logger.Success('ye gallery size he',size);
+								Logger.Success("ye gallery size he", size);
 								if (!canUploadedToIpfs(size)) {
 									toast.error("Select video is greater than 100MB");
-									return ;
+									return;
 								}
 								uploadStore.setDuration(result.assets[0].duration!);
 								navigation.push("UploadVideo", {
