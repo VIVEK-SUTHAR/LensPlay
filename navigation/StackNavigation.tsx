@@ -31,6 +31,7 @@ import useVideoURLStore from "store/videoURL";
 import BottomTabNavigator from "./BottomTabNavigation";
 import LetsGetIn from "screens/Auth/LetsGetIn";
 import ConnectWallet from "screens/Auth/ConnectWallet";
+import PickNFT from "screens/BottomTabs/Profile/PickNFT";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
@@ -370,6 +371,18 @@ export default function StackNavigation() {
 					headerShown: true,
 					headerTintColor: "white",
 					headerTitle: "",
+					headerShadowVisible: false,
+				}}
+			/>
+			<Stack.Screen
+				name="PickNFT"
+				component={PickNFT}
+				options={{
+					animation: "fade_from_bottom",
+					headerShown: true,
+					presentation: "modal",
+					headerTintColor: "white",
+					headerTitle: "Select NFT",
 					headerShadowVisible: false,
 				}}
 			/>

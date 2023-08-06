@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { Platform } from "react-native";
 //Lens Protocol
 const LENS_API_ENDPOINT = "https://api-mumbai.lens.dev/";
 export const LENS_CLAIM_SITE = "https://claim.lens.xyz/";
@@ -37,7 +37,7 @@ const STATIC_ASSET =
 //API_TOKENS
 // export const LIVEPEER_API_TOKEN = "57f82e71-546c-4bf3-861a-9cdd56d97677";
 export const LIVEPEER_API_TOKEN = "8d89f7e5-9b5a-416e-94bc-50c4e87a07f2";
-
+export const AIRSTACK_KEY = "";
 //Regular Expressions
 const URL_REGEX =
 	/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
@@ -62,8 +62,6 @@ export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 export const SOURCES = ["lensplay", "lenstube", "orb", "buttrfly"];
 
 export const DEV = __DEV__;
-
-
 
 export {
 	LENS_API_ENDPOINT,

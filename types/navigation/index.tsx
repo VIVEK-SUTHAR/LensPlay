@@ -54,8 +54,6 @@ declare global {
 export type RootStackParamList = {
 	Root: NavigatorScreenParams<RootTabParamList> | undefined;
 	ConnectWallet: undefined;
-	Modal: undefined;
-	NotFound: undefined;
 	Login: undefined;
 	Waitlist: undefined;
 	Loader: undefined;
@@ -109,6 +107,7 @@ export type RootStackParamList = {
 	Invite: undefined;
 	InviteCode: undefined;
 	WatchLater: undefined;
+	PickNFT: undefined;
 };
 
 /**
