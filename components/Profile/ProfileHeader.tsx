@@ -8,7 +8,7 @@ import ProfileSkeleton from "components/UI/ProfileSkeleton";
 import StyledText from "components/UI/StyledText";
 import ErrorMesasge from "components/common/ErrorMesasge";
 import SocialLinks from "components/common/SocialLinks";
-import { black, white } from "constants/Colors";
+import { black, primary, white } from "constants/Colors";
 import { LENSPLAY_SITE } from "constants/index";
 import { PROFILE } from "constants/tracking";
 import {
@@ -24,7 +24,7 @@ import {
 } from "customTypes/generated";
 import React, { useState } from "react";
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { getColors } from "react-native-image-colors";
 import { useBgColorStore } from "store/BgColorStore";
 import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
@@ -44,23 +44,30 @@ import ProfileLists from "./ProfileLists";
 import UserStats from "./UserStats";
 import VerifiedBadge from "./VerifiedBadge";
 import { useWalletConnectModal } from "@walletconnect/modal-react-native";
+import Matic from "assets/Icons/Matic";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import Sheet from "components/Bottom";
+import { Platform } from "react-native";
+import { ToastType } from "customTypes/Store";
 
 type ProfileHeaderProps = {
 	Profile: ProfileQuery | undefined;
-	onRefresh:any;
+	onRefresh: any;
 };
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile,onRefresh }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => {
 	const [refreshing, setRefreshing] = useState(false);
 
 	const sheetRef = React.useRef<BottomSheetMethods>(null);
+	const supportSheetRef = React.useRef<BottomSheetMethods>(null);
 
 	const { setAvatarColors } = useBgColorStore();
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
 	const theme = useThemeStore();
 	const navigation = useNavigation();
-	const profile=Profile?.profile;
+	const profile = Profile?.profile;
+	const { address, provider, isConnected } = useWalletConnectModal();
 
 	// const onRefresh = React.useCallback(async () => {
 	// 	setRefreshing(true);
@@ -135,7 +142,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile,onRefresh }) => {
 		navigation.navigate("WatchLater");
 	};
 
-	const isChannel = profile?.id !==currentProfile?.id ? true : false;
+	const isChannel = profile?.id !== currentProfile?.id ? true : false;
 
 	// if (loading) return <ProfileSkeleton />;
 	// if (error)
@@ -148,145 +155,156 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile,onRefresh }) => {
 	// 		/>
 	// 	);
 	// if (profile) {
-		return (
-			<>
-				<ScrollView
-					style={CommonStyles.screenContainer}
-					refreshControl={
-						<RefreshControl
-							refreshing={refreshing}
-							onRefresh={onRefresh}
-							colors={[theme.PRIMARY]}
-							progressBackgroundColor={black[400]}
-						/>
-					}
-					showsVerticalScrollIndicator={false}
-				>
-					<Cover
-						navigation={navigation}
-						url={getIPFSLink(getRawurl(profile?.coverPicture as MediaSet))}
+	return (
+		<>
+			<ScrollView
+				style={CommonStyles.screenContainer}
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+						colors={[theme.PRIMARY]}
+						progressBackgroundColor={black[400]}
 					/>
+				}
+				showsVerticalScrollIndicator={false}
+			>
+				<Cover
+					navigation={navigation}
+					url={getIPFSLink(getRawurl(profile?.coverPicture as MediaSet))}
+				/>
 
-					<View style={styles.ProfileContainer}>
-						<Pressable onPress={navigateToFullImageAvatar}>
-							<Avatar
-								src={getRawurl(profile?.picture as MediaSet)}
-								height={90}
-								width={90}
-								borderRadius={100}
-							/>
-						</Pressable>
-						<View style={styles.editButtonContainer}>
-							{isChannel ? (
+				<View style={styles.ProfileContainer}>
+					<Pressable onPress={navigateToFullImageAvatar}>
+						<Avatar
+							src={getRawurl(profile?.picture as MediaSet)}
+							height={90}
+							width={90}
+							borderRadius={100}
+						/>
+					</Pressable>
+					<View style={styles.editButtonContainer}>
+						{isChannel ? (
+							<View style={styles.subscribeContainer}>
 								<SubscribeButton channelId={profile?.id} isFollwebByMe={profile?.isFollowedByMe!} />
-							) : (
-								<EditChannelButton />
-							)}
-						</View>
-					</View>
-					<View style={CommonStyles.mx_16}>
-						<View
-							style={{
-								flexDirection: "row",
-								justifyContent: "space-between",
-								alignItems: "center",
-							}}
-						>
-							<View>
-								<View style={{ flexDirection: "row", alignItems: "center" }}>
-									<Heading
-										title={profile?.name || formatHandle(profile?.handle)}
-										style={{
-											fontSize: 16,
-											marginTop: 8,
-											fontWeight: "bold",
-											color: "white",
-										}}
-									/>
-									<VerifiedBadge profileId={profile?.id} />
-								</View>
-								<StyledText
-									title={formatHandle(profile?.handle)}
-									style={{
-										fontSize: 12,
-										fontWeight: "500",
-										color: "gray",
-									}}
+								<Button
+									title={""}
+									icon={<Matic height={36} width={36} />}
+									width={"auto"}
+									px={0}
+									py={0}
+									onPress={() => supportSheetRef?.current?.snapToIndex(0)}
 								/>
 							</View>
-						</View>
-						{profile?.bio ? (
-							<StyledText title={extractURLs(profile?.bio)} style={styles.bioStyle} />
-						) : null}
-						<View style={styles.subFlexContainer}>
-							<TouchableOpacity
-								activeOpacity={0.5}
-								style={{
-									flexDirection: "row",
-									alignItems: "center",
-								}}
-								onPress={navigateToUserStats}
-							>
-								<StyledText
-									title={formatInteraction(profile?.stats?.totalFollowing!)}
-									style={{
-										fontSize: 14,
-										fontWeight: "600",
-										color: "white",
-									}}
-								/>
-								<StyledText
-									title={"subscription"}
-									style={{
-										fontSize: 14,
-										fontWeight: "500",
-										color: "gray",
-										marginLeft: 4,
-									}}
-								/>
-							</TouchableOpacity>
-							<TouchableOpacity
-								activeOpacity={0.5}
-								style={{
-									flexDirection: "row",
-									alignItems: "center",
-									marginLeft: 8,
-								}}
-								onPress={navigateToUserStats}
-							>
-								<StyledText
-									title={formatInteraction(profile?.stats?.totalFollowers!)}
-									style={{
-										fontSize: 14,
-										fontWeight: "600",
-										color: "white",
-									}}
-								/>
-								<StyledText
-									title={"subscribers"}
-									style={{
-										fontSize: 14,
-										fontWeight: "500",
-										color: "gray",
-										marginLeft: 4,
-									}}
-								/>
-							</TouchableOpacity>
-						</View>
-						<SocialLinks profile={profile as Profile} />
-						<PinnedPublication
-							sheetRef={sheetRef as any}
-							profile={profile as Profile}
-							isChannel={isChannel}
-						/>
-						<UserStats profile={profile as Profile} />
-						{!isChannel ? <ProfileLists /> : null}
+						) : (
+							<EditChannelButton />
+						)}
 					</View>
-				</ScrollView>
-				{!isChannel ? <UnPinSheet sheetRef={sheetRef} /> : null}
-			</>
-		);
-	}
+				</View>
+				<View style={CommonStyles.mx_16}>
+					<View
+						style={{
+							flexDirection: "row",
+							justifyContent: "space-between",
+							alignItems: "center",
+						}}
+					>
+						<View>
+							<View style={{ flexDirection: "row", alignItems: "center" }}>
+								<Heading
+									title={profile?.name || formatHandle(profile?.handle)}
+									style={{
+										fontSize: 16,
+										marginTop: 8,
+										fontWeight: "bold",
+										color: "white",
+									}}
+								/>
+								<VerifiedBadge profileId={profile?.id} />
+							</View>
+							<StyledText
+								title={formatHandle(profile?.handle)}
+								style={{
+									fontSize: 12,
+									fontWeight: "500",
+									color: "gray",
+								}}
+							/>
+						</View>
+					</View>
+					{profile?.bio ? (
+						<StyledText title={extractURLs(profile?.bio)} style={styles.bioStyle} />
+					) : null}
+					<View style={styles.subFlexContainer}>
+						<TouchableOpacity
+							activeOpacity={0.5}
+							style={{
+								flexDirection: "row",
+								alignItems: "center",
+							}}
+							onPress={navigateToUserStats}
+						>
+							<StyledText
+								title={formatInteraction(profile?.stats?.totalFollowing!)}
+								style={{
+									fontSize: 14,
+									fontWeight: "600",
+									color: "white",
+								}}
+							/>
+							<StyledText
+								title={"subscription"}
+								style={{
+									fontSize: 14,
+									fontWeight: "500",
+									color: "gray",
+									marginLeft: 4,
+								}}
+							/>
+						</TouchableOpacity>
+						<TouchableOpacity
+							activeOpacity={0.5}
+							style={{
+								flexDirection: "row",
+								alignItems: "center",
+								marginLeft: 8,
+							}}
+							onPress={navigateToUserStats}
+						>
+							<StyledText
+								title={formatInteraction(profile?.stats?.totalFollowers!)}
+								style={{
+									fontSize: 14,
+									fontWeight: "600",
+									color: "white",
+								}}
+							/>
+							<StyledText
+								title={"subscribers"}
+								style={{
+									fontSize: 14,
+									fontWeight: "500",
+									color: "gray",
+									marginLeft: 4,
+								}}
+							/>
+						</TouchableOpacity>
+					</View>
+					<SocialLinks profile={profile as Profile} />
+					<PinnedPublication
+						sheetRef={sheetRef as any}
+						profile={profile as Profile}
+						isChannel={isChannel}
+					/>
+					<UserStats profile={profile as Profile} />
+					{!isChannel ? <ProfileLists /> : null}
+				</View>
+			</ScrollView>
+			{!isChannel ? <UnPinSheet sheetRef={sheetRef} /> : null}
+			{isChannel ? <SupportSheet supportRef={supportSheetRef} profile={Profile} /> : null}
+		</>
+	);
+};
 // };
 
 type SubscribeButtonProps = {
@@ -436,7 +454,7 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 		<Button
 			title={getButtonText()}
 			width={"auto"}
-			px={24}
+			px={16}
 			py={8}
 			type={"filled"}
 			bg={"white"}
@@ -454,6 +472,137 @@ const SubscribeButton = React.memo(_SubscribeButton);
 
 export default React.memo(ProfileHeader);
 
+const _supportSheet = ({
+	supportRef,
+	profile,
+}: {
+	supportRef: React.RefObject<BottomSheetMethods>;
+	profile: ProfileQuery | undefined;
+}) => {
+	const [amount, setAmount] = React.useState("");
+	const [isLoading, setIsLoading] = React.useState(false);
+	const toast = useToast();
+	const { address, provider, isConnected } = useWalletConnectModal();
+	return (
+		<Sheet
+			ref={supportRef}
+			snapPoints={[230]}
+			enablePanDownToClose={true}
+			enableOverDrag={true}
+			bottomInset={32}
+			style={{
+				marginHorizontal: 8,
+			}}
+			backgroundStyle={{
+				backgroundColor: black[600],
+			}}
+			detached={true}
+		>
+			<View
+				style={{
+					flex: 1,
+				}}
+			>
+				<View
+					style={{
+						flexDirection: "row",
+						justifyContent: "space-between",
+						alignItems: "center",
+						paddingHorizontal: 18,
+						paddingVertical: 8,
+					}}
+				>
+					<Heading
+						title={`Support @${profile?.profile?.handle}`}
+						style={{
+							fontSize: 20,
+							color: white[800],
+							fontWeight: "600",
+						}}
+					/>
+				</View>
+				<View
+					style={{
+						borderBottomColor: black[300],
+						borderBottomWidth: 1.5,
+						marginTop: 4,
+					}}
+				/>
+				<BottomSheetScrollView>
+					<View
+						style={{
+							padding: 12,
+						}}
+					>
+						<TextInput
+							placeholder="Enter amount in Matic"
+							value={amount}
+							placeholderTextColor={white[200]}
+							selectionColor={primary}
+							style={{
+								backgroundColor: black[400],
+								color: "white",
+								paddingHorizontal: 16,
+								paddingVertical: Platform.OS === "ios" ? 16 : 8,
+								borderRadius: 8,
+								flex: 1,
+								marginBottom: 8,
+								// borderColor: white[300],
+								// borderWidth: 2
+							}}
+							keyboardType="number-pad"
+							onChange={(e) => {
+								e.preventDefault();
+								setAmount(e.nativeEvent.text);
+								console.log(typeof amount);
+							}}
+						/>
+						<Button
+							onPress={async () => {
+								setIsLoading(true);
+								try {
+									const intValue = parseInt(amount, 10);
+									const intGweiValue = intValue * (10**18)
+									const hexAmount = "0x" + intGweiValue.toString(16);
+									await provider?.request({
+										method: "eth_sendTransaction",
+										params: [
+											{
+												from: address,
+												to: profile?.profile?.ownedBy,
+												data: '0x',
+												value: hexAmount,
+											},
+										],
+									});
+									setIsLoading(false);
+									toast.show("Amount sent successfully", ToastType.SUCCESS, true);
+								} catch (error) {
+									setIsLoading(false);
+									toast.show("Something went wrong", ToastType.ERROR, true);
+								}
+							}}
+							mt={16}
+							title="Send"
+							bg={"#f5f5f5"}
+							textStyle={{
+								fontWeight: "600",
+								fontSize: 16,
+								color: "black",
+							}}
+							isLoading={isLoading}
+							py={12}
+							borderRadius={8}
+						/>
+					</View>
+				</BottomSheetScrollView>
+			</View>
+		</Sheet>
+	);
+};
+
+const SupportSheet = React.memo(_supportSheet);
+
 export { SubscribeButton };
 
 const styles = StyleSheet.create({
@@ -464,6 +613,13 @@ const styles = StyleSheet.create({
 		marginLeft: 8,
 		marginTop: "-20%",
 		zIndex: 12,
+	},
+	subscribeContainer: {
+		flex: 1,
+		flexDirection: "row",
+		alignItems: "center",
+		width: "100%",
+		gap: 16,
 	},
 	editButtonContainer: {
 		justifyContent: "flex-end",

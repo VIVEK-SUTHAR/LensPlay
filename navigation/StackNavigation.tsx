@@ -1,7 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "customTypes/navigation";
 import React from "react";
-import Login from "screens/Auth/Login";
 import LoginWithLens from "screens/Auth/LoginWithLens";
 import QRLogin from "screens/Auth/QRLogin";
 import Scanner from "screens/Auth/Scanner";
@@ -12,8 +11,6 @@ import ShotsComment from "screens/BottomTabs/Shots/ShotsComment";
 import AddDescription from "screens/common/AddDescription";
 import Channel from "screens/common/Channel";
 import FullImage from "screens/common/FullImage";
-import Invite from "screens/common/Invite";
-import InviteCode from "screens/common/InviteCode";
 import LinkingVideo from "screens/common/LinkingVideo";
 import Loader from "screens/common/Loader";
 import ReportPublication from "screens/common/ReportPublication";
@@ -47,34 +44,7 @@ export default function StackNavigation() {
 			}}
 			initialRouteName={"Loader"}
 		>
-			<Stack.Group key={"Invite Code"}>
-				<Stack.Screen
-					name="Invite"
-					component={Invite}
-					options={{
-						animation: "fade_from_bottom",
-						headerShown: false,
-					}}
-				/>
-				<Stack.Screen
-					name="InviteCode"
-					component={InviteCode}
-					options={{
-						animation: "default",
-						headerShown: false,
-					}}
-				/>
-			</Stack.Group>
-
 			<Stack.Group key={"Auth Screens"}>
-				<Stack.Screen
-					name="Login"
-					component={Login}
-					options={{
-						animation: "default",
-						headerShown: false,
-					}}
-				/>
 				<Stack.Screen
 					name="LetsGetIn"
 					component={LetsGetIn}
