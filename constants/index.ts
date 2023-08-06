@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 //Lens Protocol
 const LENS_API_ENDPOINT = "https://api-mumbai.lens.dev/";
 export const LENS_CLAIM_SITE = "https://claim.lens.xyz/";
@@ -17,7 +18,7 @@ const APP_LOGO = "FINAL HONE KE BAD YAHA DAL DENA KOI";
 export const CAPTURE_BUTTON_SIZE = 78;
 
 //Storage
-const IPFS_FREE_UPLOAD_LIMIT = IS_MAINNET ? 100 : 100;
+const IPFS_FREE_UPLOAD_LIMIT = IS_MAINNET ? 5000 : 100;
 const IPFS_GATEWAY = "https://ipfs.io/ipfs/";
 const ARWEAVE_GATEWAY = "https://arweave.net";
 
@@ -36,7 +37,7 @@ const STATIC_ASSET =
 //API_TOKENS
 // export const LIVEPEER_API_TOKEN = "57f82e71-546c-4bf3-861a-9cdd56d97677";
 export const LIVEPEER_API_TOKEN = "8d89f7e5-9b5a-416e-94bc-50c4e87a07f2";
-
+export const AIRSTACK_KEY = "";
 //Regular Expressions
 const URL_REGEX =
 	/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
@@ -51,9 +52,9 @@ export const LENSPLAY_TWITTER = "https://twitter.com/lensplayxyz";
 export const LENSPLAY_DISCORD = "https://discord.gg/tgrzS4Actz";
 export const LENSPLAY_SITE = "https://lensplay.xyz";
 export const LENSPLAY_PRIVACY =
-	"https://island-hat-05d.notion.site/LensPlay-Privacy-Policy-bc6f36fa5434481bb3b57bf79f1e552d";
+	"https://lensplay.notion.site/LensPlay-Privacy-Policy-22ec19b6e61344c6bd0254dd9ff2d05e";
 export const LENSPLAY_TERMS =
-	"https://lensplay.notion.site/LensPlay-T-C-9bfb64c235d9421fa397230c3594afe0?pvs=4";
+	"https://lensplay.notion.site/LensPlay-T-C-9bfb64c235d9421fa397230c3594afe0";
 
 //MISC
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";

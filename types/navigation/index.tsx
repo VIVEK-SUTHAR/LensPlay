@@ -54,8 +54,7 @@ declare global {
 export type RootStackParamList = {
 	Root: NavigatorScreenParams<RootTabParamList> | undefined;
 	ConnectWallet: undefined;
-	Modal: undefined;
-	NotFound: undefined;
+	Login: undefined;
 	Waitlist: undefined;
 	Loader: undefined;
 	ReportPublication: {
@@ -71,8 +70,11 @@ export type RootStackParamList = {
 	};
 	VideoPage: undefined;
 	Channel: {
-		handle: string;
-		name?: string;
+		profileId: string;
+		isFollowdByMe?: boolean;
+		name?: string | null;
+		ethAddress?: string;
+		handle?: string;
 	};
 	Search: undefined;
 	YourVideos: {
@@ -101,10 +103,11 @@ export type RootStackParamList = {
 	AddDetails: undefined;
 	AddDescription: undefined;
 	VideoTypes: undefined;
-	SelectCollectModule: undefined;
 	ProfileScanner: undefined;
+	Invite: undefined;
+	InviteCode: undefined;
 	WatchLater: undefined;
-	UploadIndicator: undefined;
+	PickNFT: undefined;
 };
 
 /**

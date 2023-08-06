@@ -1,8 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "customTypes/navigation";
 import React from "react";
-import ConnectWallet from "screens/Auth/ConnectWallet";
-import LetsGetIn from "screens/Auth/LetsGetIn";
+import Login from "screens/Auth/Login";
 import LoginWithLens from "screens/Auth/LoginWithLens";
 import QRLogin from "screens/Auth/QRLogin";
 import Scanner from "screens/Auth/Scanner";
@@ -13,6 +12,8 @@ import ShotsComment from "screens/BottomTabs/Shots/ShotsComment";
 import AddDescription from "screens/common/AddDescription";
 import Channel from "screens/common/Channel";
 import FullImage from "screens/common/FullImage";
+import Invite from "screens/common/Invite";
+import InviteCode from "screens/common/InviteCode";
 import LinkingVideo from "screens/common/LinkingVideo";
 import Loader from "screens/common/Loader";
 import ReportPublication from "screens/common/ReportPublication";
@@ -23,16 +24,20 @@ import BugReport from "screens/Header/Settings/BugReport";
 import ProfileScanner from "screens/Header/Settings/ProfileScanner";
 import Settings from "screens/Header/Settings/Settings";
 import UploadShots from "screens/Header/Upload/Shots/UploadShots";
-import UploadIndicator from "screens/Header/Upload/UploadIndicator";
 import AddDetails from "screens/Header/Upload/Video/AddDetails";
-import SelectCollectModule from "screens/Header/Upload/Video/SelectCollectModule";
 import UploadVideo from "screens/Header/Upload/Video/UploadVideo";
-import { useThemeStore } from "store/Store";
+import { useReactionStore, useThemeStore } from "store/Store";
+import useVideoURLStore from "store/videoURL";
 import BottomTabNavigator from "./BottomTabNavigation";
+import LetsGetIn from "screens/Auth/LetsGetIn";
+import ConnectWallet from "screens/Auth/ConnectWallet";
+import PickNFT from "screens/BottomTabs/Profile/PickNFT";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
 	const theme = useThemeStore();
+	const { setVideoURI } = useVideoURLStore();
+	const { setReaction, clearStats, setCollectStats, setMirrorStats } = useReactionStore();
 	return (
 		<Stack.Navigator
 			screenOptions={{
@@ -42,7 +47,34 @@ export default function StackNavigation() {
 			}}
 			initialRouteName={"Loader"}
 		>
+			<Stack.Group key={"Invite Code"}>
+				<Stack.Screen
+					name="Invite"
+					component={Invite}
+					options={{
+						animation: "fade_from_bottom",
+						headerShown: false,
+					}}
+				/>
+				<Stack.Screen
+					name="InviteCode"
+					component={InviteCode}
+					options={{
+						animation: "default",
+						headerShown: false,
+					}}
+				/>
+			</Stack.Group>
+
 			<Stack.Group key={"Auth Screens"}>
+				<Stack.Screen
+					name="Login"
+					component={Login}
+					options={{
+						animation: "default",
+						headerShown: false,
+					}}
+				/>
 				<Stack.Screen
 					name="LetsGetIn"
 					component={LetsGetIn}
@@ -188,7 +220,7 @@ export default function StackNavigation() {
 				name="Settings"
 				component={Settings}
 				options={{
-					animation: "slide_from_bottom",
+					animation: "default",
 					headerShown: true,
 					headerShadowVisible: false,
 					headerTintColor: theme.PRIMARY,
@@ -303,21 +335,6 @@ export default function StackNavigation() {
 				}}
 			/>
 			<Stack.Screen
-				name="SelectCollectModule"
-				component={SelectCollectModule}
-				options={{
-					animation: "slide_from_right",
-					headerShown: true,
-					headerShadowVisible: true,
-					headerTitleStyle: {
-						fontSize: 16,
-						fontWeight: "600",
-					},
-					headerTintColor: "white",
-					headerTitle: "Collect Settings",
-				}}
-			/>
-			<Stack.Screen
 				name="VideoTypes"
 				component={VideoTypes}
 				options={{
@@ -329,7 +346,7 @@ export default function StackNavigation() {
 						fontWeight: "600",
 					},
 					headerTintColor: "white",
-					headerTitle: "Select video types",
+					headerTitle: "Select Video types",
 				}}
 			/>
 			<Stack.Screen
@@ -351,20 +368,22 @@ export default function StackNavigation() {
 				component={WatchLater}
 				options={{
 					animation: "default",
-					headerShown: false,
+					headerShown: true,
 					headerTintColor: "white",
 					headerTitle: "",
 					headerShadowVisible: false,
 				}}
 			/>
 			<Stack.Screen
-				name="UploadIndicator"
-				component={UploadIndicator}
+				name="PickNFT"
+				component={PickNFT}
 				options={{
-					headerBackVisible: false,
-					animation: "default",
-					headerShown: false,
-					headerTintColor: theme.PRIMARY,
+					animation: "fade_from_bottom",
+					headerShown: true,
+					presentation: "modal",
+					headerTintColor: "white",
+					headerTitle: "Select NFT",
+					headerShadowVisible: false,
 				}}
 			/>
 		</Stack.Navigator>

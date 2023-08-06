@@ -28,6 +28,8 @@ import TrackAction from "utils/Track";
 import { SETTINGS } from "constants/tracking";
 import Logger from "utils/logger";
 import uploadProfileMetadata from "utils/uploadProfileMetadata";
+import SelectAvatarModal from "components/EditProfile/SelectAvatarModal";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 
 const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 	const { currentProfile } = useProfile();
@@ -40,13 +42,11 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 	const [avatar, setAvatar] = useState<null | string>(null);
 	const [avatarBlob, setAvatarBlob] = useState<Blob>();
 
-	
 	//states for cover
 	const [cover, setCover] = useState<string>("");
 	const [coverBlob, setCoverBlob] = useState<Blob>();
 
 	//state for name, bio
-
 	const [userData, setUserData] = useState({
 		name: "",
 		bio: "",
@@ -165,23 +165,23 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 
 	const updateProfileAvatar = async () => {
 		const imageCID = await uploadImageToIPFS(avatarBlob);
-					await createSetProfileImageUriViaDispatcherMutation({
-						variables: {
-							request: {
-								profileId: currentProfile?.id,
-								url: `ipfs://${imageCID}`,
-							},
-						},
-						context: {
-							headers: {
-								"x-access-token": `Bearer ${accessToken}`,
-								"origin": LENSPLAY_SITE,
-							},
-						},
-					});
+		await createSetProfileImageUriViaDispatcherMutation({
+			variables: {
+				request: {
+					profileId: currentProfile?.id,
+					url: `ipfs://${imageCID}`,
+				},
+			},
+			context: {
+				headers: {
+					"x-access-token": `Bearer ${accessToken}`,
+					"origin": LENSPLAY_SITE,
+				},
+			},
+		});
 
-					TrackAction(SETTINGS.PROFILE.UPDATE_AVATAR);
-	}
+		TrackAction(SETTINGS.PROFILE.UPDATE_AVATAR);
+	};
 
 	const updateProfileMetadata = async () => {
 		//get the current cover and populate the local variable
@@ -191,7 +191,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 		if (coverBlob) {
 			coverURI = await uploadImageToIPFS(coverBlob);
 			coverURI = coverURI;
-			Logger.Success('updated cover');
+			Logger.Success("updated cover");
 		}
 
 		//upload the metadata to arweave and get it's txn id
@@ -216,7 +216,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 				},
 			},
 		});
-	}
+	};
 
 	const handleUpdate = async () => {
 		try {
@@ -236,17 +236,20 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 			} else {
 				//update avatar as well as metadata
 				if (avatarBlob && canUpload()) {
-					Logger.Warn('need to update both');
-					const [avatarResult, metadataResult] = await Promise.all([updateProfileAvatar(), updateProfileMetadata()]);		
+					Logger.Warn("need to update both");
+					const [avatarResult, metadataResult] = await Promise.all([
+						updateProfileAvatar(),
+						updateProfileMetadata(),
+					]);
 				}
 				//update avatar
-				else if(avatarBlob) {
-					Logger.Warn('need to update avatar');
+				else if (avatarBlob) {
+					Logger.Warn("need to update avatar");
 					await updateProfileAvatar();
 				}
 				//update metadata
 				else {
-					Logger.Warn('need to update metadata');
+					Logger.Warn("need to update metadata");
 					await updateProfileMetadata();
 				}
 
@@ -260,162 +263,167 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 		}
 	};
 
+	const selectAvatarRef = React.useRef<BottomSheetMethods>(null);
+
 	return (
-		<SafeAreaView
-			style={{
-				flex: 1,
-				backgroundColor: "black",
-			}}
-		>
-			<ScrollView style={styles.container}>
-				<Pressable
-					onPress={selectCover}
-					style={{
-						height: windowHeight / 4,
-						width: "100%",
-					}}
-				>
-					<View
+		<>
+			<SafeAreaView
+				style={{
+					flex: 1,
+					backgroundColor: "black",
+				}}
+			>
+				<ScrollView style={styles.container}>
+					<Pressable
+						onPress={selectCover}
 						style={{
-							position: "absolute",
-							height: "100%",
+							height: windowHeight / 4,
 							width: "100%",
-							backgroundColor: "rgba(255,255,255,0.02)",
-							zIndex: 4,
-							justifyContent: "center",
-							alignItems: "center",
 						}}
 					>
-						<Icon name="edit" />
-					</View>
-					<Image
-						source={{
-							uri: cover || getIPFSLink(getRawurl(currentProfile?.coverPicture)),
-						}}
+						<View
+							style={{
+								position: "absolute",
+								height: "100%",
+								width: "100%",
+								backgroundColor: "rgba(255,255,255,0.02)",
+								zIndex: 4,
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+						>
+							<Icon name="edit" />
+						</View>
+						<Image
+							source={{
+								uri: cover || getIPFSLink(getRawurl(currentProfile?.coverPicture)),
+							}}
+							style={{
+								opacity: 0.5,
+								height: "100%",
+								width: "100%",
+								resizeMode: "cover",
+							}}
+						/>
+					</Pressable>
+					<Pressable
 						style={{
-							opacity: 0.5,
-							height: "100%",
-							width: "100%",
-							resizeMode: "cover",
+							marginHorizontal: 10,
+							marginTop: -40,
+							height: windowHeight / 8,
+							width: windowHeight / 8,
 						}}
-					/>
-				</Pressable>
-				<Pressable
-					style={{
-						marginHorizontal: 10,
-						marginTop: -40,
-						height: windowHeight / 8,
-						width: windowHeight / 8,
-					}}
-					onPress={selectAvatar}
-				>
-					<View
-						style={{
-							position: "absolute",
-							height: "100%",
-							width: "100%",
-							backgroundColor: "rgba(255,255,255,0.02)",
-							zIndex: 10,
-							justifyContent: "center",
-							alignItems: "center",
-						}}
+						onPress={() => selectAvatarRef.current?.snapToIndex(0)}
 					>
-						<Icon name="edit" size={20} />
+						<View
+							style={{
+								position: "absolute",
+								height: "100%",
+								width: "100%",
+								backgroundColor: "rgba(255,255,255,0.02)",
+								zIndex: 10,
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+						>
+							<Icon name="edit" size={20} />
+						</View>
+						<Avatar
+							src={avatar || getRawurl(currentProfile?.picture)}
+							height={"100%"}
+							width={"100%"}
+							opacity={0.9}
+						/>
+					</Pressable>
+					<View style={{ padding: 16 }}>
+						<Input
+							label="Name"
+							value={userData.name}
+							placeHolder={currentProfile?.name || formatHandle(currentProfile?.handle)}
+							onChange={(e) => {
+								setUserData({
+									name: e.nativeEvent.text,
+									bio: userData.bio,
+								});
+							}}
+						/>
+						<TextArea
+							label="Bio"
+							placeHolder={currentProfile?.bio || "What describes you the best"}
+							value={userData.bio}
+							rows={6}
+							onChange={(e) => {
+								setUserData({
+									name: userData.name,
+									bio: e.nativeEvent.text,
+								});
+							}}
+						/>
+						<StyledText title="Social Links" style={styles.textStyle} />
+						<Input
+							label="Twitter"
+							value={socialLinks.twitter}
+							placeHolder={initialSocialLinks.twitter || "@username"}
+							onChange={(e) => {
+								setSocialLinks({
+									...socialLinks,
+									twitter: e.nativeEvent.text,
+								});
+							}}
+						/>
+						<Input
+							label="Instagram"
+							placeHolder={initialSocialLinks.instagram || "@username"}
+							value={socialLinks.instagram}
+							onChange={(e) => {
+								setSocialLinks({
+									...socialLinks,
+									instagram: e.nativeEvent.text,
+								});
+							}}
+						/>
+						<Input
+							label="Youtube"
+							placeHolder={initialSocialLinks.youtube || "Youtube Link"}
+							value={socialLinks.youtube}
+							onChange={(e) => {
+								setSocialLinks({
+									...socialLinks,
+									youtube: e.nativeEvent.text,
+								});
+							}}
+						/>
+						<Input
+							label="Website"
+							value={socialLinks.website}
+							placeHolder={initialSocialLinks.website || "https://your-site.com"}
+							onChange={(e) => {
+								setSocialLinks({
+									...socialLinks,
+									website: e.nativeEvent.text,
+								});
+							}}
+						/>
 					</View>
-					<Avatar
-						src={avatar || getRawurl(currentProfile?.picture)}
-						height={"100%"}
-						width={"100%"}
-						opacity={0.9}
-					/>
-				</Pressable>
-				<View style={{ padding: 16 }}>
-					<Input
-						label="Name"
-						value={userData.name}
-						placeHolder={currentProfile?.name || formatHandle(currentProfile?.handle)}
-						onChange={(e) => {
-							setUserData({
-								name: e.nativeEvent.text,
-								bio: userData.bio,
-							});
-						}}
-					/>
-					<TextArea
-						label="Bio"
-						placeHolder={currentProfile?.bio || "What describes you the best"}
-						value={userData.bio}
-						rows={6}
-						onChange={(e) => {
-							setUserData({
-								name: userData.name,
-								bio: e.nativeEvent.text,
-							});
-						}}
-					/>
-					<StyledText title="Social Links" style={styles.textStyle} />
-					<Input
-						label="Twitter"
-						value={socialLinks.twitter}
-						placeHolder={initialSocialLinks.twitter || "@username"}
-						onChange={(e) => {
-							setSocialLinks({
-								...socialLinks,
-								twitter: e.nativeEvent.text,
-							});
-						}}
-					/>
-					<Input
-						label="Instagram"
-						placeHolder={initialSocialLinks.instagram || "@username"}
-						value={socialLinks.instagram}
-						onChange={(e) => {
-							setSocialLinks({
-								...socialLinks,
-								instagram: e.nativeEvent.text,
-							});
-						}}
-					/>
-					<Input
-						label="Youtube"
-						placeHolder={initialSocialLinks.youtube || "Youtube Link"}
-						value={socialLinks.youtube}
-						onChange={(e) => {
-							setSocialLinks({
-								...socialLinks,
-								youtube: e.nativeEvent.text,
-							});
-						}}
-					/>
-					<Input
-						label="Website"
-						value={socialLinks.website}
-						placeHolder={initialSocialLinks.website || "https://your-site.com"}
-						onChange={(e) => {
-							setSocialLinks({
-								...socialLinks,
-								website: e.nativeEvent.text,
-							});
-						}}
-					/>
-				</View>
-				<View style={[styles.inputContainer]}>
-					<Button
-						title="Save"
-						width={"100%"}
-						py={16}
-						my={16}
-						textStyle={{
-							textAlign: "center",
-							fontSize: 16,
-							fontWeight: "600",
-						}}
-						isLoading={isUpdating}
-						onPress={handleUpdate}
-					/>
-				</View>
-			</ScrollView>
-		</SafeAreaView>
+					<View style={[styles.inputContainer]}>
+						<Button
+							title="Save"
+							width={"100%"}
+							py={16}
+							my={16}
+							textStyle={{
+								textAlign: "center",
+								fontSize: 16,
+								fontWeight: "600",
+							}}
+							isLoading={isUpdating}
+							onPress={handleUpdate}
+						/>
+					</View>
+				</ScrollView>
+			</SafeAreaView>
+			<SelectAvatarModal ref={selectAvatar} />
+		</>
 	);
 };
 
