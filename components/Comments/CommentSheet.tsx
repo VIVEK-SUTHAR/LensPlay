@@ -69,7 +69,7 @@ const CommentsSheet = ({ commentSheetRef, pubId }: CommentsSheetProps) => {
 				</Pressable>
 			</View>
 			<BottomSheetScrollView>
-				<Comment publicationId={activePublication?.id || pubId} shots={false} />
+				<Comment publicationId={pubId || activePublication?.id} shots={false} />
 			</BottomSheetScrollView>
 		</Sheet>
 	);
