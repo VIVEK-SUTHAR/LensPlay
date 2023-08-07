@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
-import { white } from "constants/Colors";
+import { black, white } from "constants/Colors";
 import * as ImagePicker from "expo-image-picker";
 import { MediaTypeOptions } from "expo-image-picker";
 import React from "react";
@@ -17,7 +17,7 @@ type OptionProps = {
 	onPress: () => void;
 };
 
-const SelectAvatarModal = React.forwardRef(({}, ref: React.Ref<BottomSheetMethods>) => {
+const SelectAvatarModal = ({ sheetRef }: { sheetRef: React.RefObject<BottomSheetMethods> }) => {
 	const navigation = useNavigation();
 
 	const selectImageFromGallery = React.useCallback(() => {
@@ -61,15 +61,23 @@ const SelectAvatarModal = React.forwardRef(({}, ref: React.Ref<BottomSheetMethod
 
 	return (
 		<Sheet
-			snapPoints={["50%"]}
-			ref={ref}
+			snapPoints={["30%"]}
+			ref={sheetRef}
 			detached={true}
-			bottomInset={Dimensions.get("screen").height / 2}
+			enablePanDownToClose={true}
+			bottomInset={32}
+			enableOverDrag={true}
+			style={{
+				marginHorizontal: 8,
+			}}
+			backgroundStyle={{
+				backgroundColor: black[600],
+			}}
 		>
 			<BottomSheetFlatList data={SelectAvatarOptions} renderItem={renderItem} />
 		</Sheet>
 	);
-});
+};
 
 const Option: React.FC<OptionProps> = React.memo((item) => {
 	return (
@@ -78,6 +86,10 @@ const Option: React.FC<OptionProps> = React.memo((item) => {
 				style={{
 					flexDirection: "row",
 					alignItems: "center",
+					width: "100%",
+					height: "auto",
+					paddingVertical: 16,
+					paddingHorizontal: 16,
 				}}
 			>
 				{item.icon}
@@ -91,8 +103,9 @@ export default SelectAvatarModal;
 
 const styles = StyleSheet.create({
 	itemText: {
-		fontSize: 20,
-		color: white[100],
+		fontSize: 16,
+		color:"white",
 		fontWeight: "500",
+		marginHorizontal: 12,
 	},
 });

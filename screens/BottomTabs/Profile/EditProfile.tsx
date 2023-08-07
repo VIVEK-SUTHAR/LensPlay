@@ -422,7 +422,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 					</View>
 				</ScrollView>
 			</SafeAreaView>
-			<SelectAvatarModal ref={selectAvatar} />
+			<SelectAvatarModal sheetRef={selectAvatarRef} />
 		</>
 	);
 };
