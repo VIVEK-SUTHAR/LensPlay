@@ -2,12 +2,14 @@ import notifee, { EventType } from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
 import { registerRootComponent } from 'expo';
 import App from './App';
+import Logger from 'utils/logger';
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-	console.log('Message handled in the background!', remoteMessage);
+	Logger.Count("here", remoteMessage)
 });
 
 notifee.onBackgroundEvent(async ({ type, detail }) => {
+	console.log(detail)
 	// Check if the user pressed the "Mark as read" action
 	if (type === EventType.ACTION_PRESS) {
 		// Update external API
