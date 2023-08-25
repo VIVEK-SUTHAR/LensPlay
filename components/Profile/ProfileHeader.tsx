@@ -326,6 +326,7 @@ const EditChannelButton = () => {
 	const navigation = useNavigation();
 
 	const goToEditChannel = () => {
+		Logger.Log("called edit button")
 		navigation.navigate("EditProfile");
 	};
 

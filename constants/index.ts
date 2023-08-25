@@ -37,7 +37,7 @@ const STATIC_ASSET =
 //API_TOKENS
 // export const LIVEPEER_API_TOKEN = "57f82e71-546c-4bf3-861a-9cdd56d97677";
 export const LIVEPEER_API_TOKEN = "8d89f7e5-9b5a-416e-94bc-50c4e87a07f2";
-export const AIRSTACK_KEY = "";
+export const AIRSTACK_KEY = "2009115a47d644149caaede014db1b4f";
 //Regular Expressions
 const URL_REGEX =
 	/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
