@@ -19,7 +19,7 @@ export interface IThemeStore {
 
 export interface IActivePublication {
 	activePublication: Post | Mirror | FeedItemRoot | null;
-	setActivePublication: (newPublication: Post | Mirror | FeedItemRoot) => void;
+	setActivePublication: (newPublication: Post | Mirror | FeedItemRoot | null) => void;
 }
 
 export interface UserStore {

@@ -158,7 +158,7 @@ export const useOptimisticStore = create<OptimisticStore>((set) => ({
 
 export const useActivePublication = create<IActivePublication>((set) => ({
 	activePublication: null,
-	setActivePublication: (newPublication: Post | Mirror | FeedItemRoot) => {
+	setActivePublication: (newPublication: Post | Mirror | FeedItemRoot | null) => {
 		set({
 			activePublication: newPublication,
 		});

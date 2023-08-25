@@ -49,6 +49,16 @@ import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import Sheet from "components/Bottom";
 import { Platform } from "react-native";
 import { ToastType } from "customTypes/Store";
+import sendTip from "utils/tip/sendTip";
+import subscribeChannel from "utils/tip/subscribeChannel";
+// // Import the crypto getRandomValues shim (**BEFORE** the shims)
+// import "react-native-get-random-values"
+
+// // Import the the ethers shims (**BEFORE** ethers)
+// import "@ethersproject/shims"
+
+// // Import the ethers library
+// import { ethers } from "ethers";
 
 type ProfileHeaderProps = {
 	Profile: ProfileQuery | undefined;
@@ -483,6 +493,53 @@ const _supportSheet = ({
 	const [isLoading, setIsLoading] = React.useState(false);
 	const toast = useToast();
 	const { address, provider, isConnected } = useWalletConnectModal();
+	const { currentProfile } = useProfile();
+
+	const sendToken = async () => {
+		try {
+			if (amount == "") {
+				toast.show("Please enter an amount", ToastType.ERROR, true);
+				setIsLoading(false);
+				return;
+			}
+			const amountRegex = /^[0-9.]+$/;
+			if (!amountRegex.test(amount)) {
+				toast.show("Invalid amount", ToastType.ERROR, true);
+				setIsLoading(false);
+				return;
+			}
+			const intValue = parseInt(amount, 10);
+			const intGweiValue = intValue * 10 ** 18;
+			const hexAmount = "0x" + intGweiValue.toString(16);
+			Logger.Success(profile?.profile?.ownedBy);
+			
+
+			const txResult = await provider?.request({
+				method: "eth_sendTransaction",
+				params: [
+					{
+						from: address,
+						to: profile?.profile?.ownedBy,
+						data: "0x",
+						value: hexAmount,
+					},
+				],
+			});
+			console.log(txResult, 'This is tx result');
+			
+			// await subscribeChannel(profile?.profile?.ownedBy);
+			const result = await sendTip(currentProfile?.ownedBy, amount, profile?.profile?.ownedBy);
+			Logger.Log("this is tip", result);
+			setAmount("");
+			setIsLoading(false);
+			toast.show("Amount sent successfully", ToastType.SUCCESS, true);
+		} catch (error) {
+			setAmount("");
+			setIsLoading(false);
+			Logger.Log('error aya hai', error)
+			toast.show("Something went wrong", ToastType.ERROR, true);
+		}
+	};
 	return (
 		<Sheet
 			ref={supportRef}
@@ -560,27 +617,7 @@ const _supportSheet = ({
 						<Button
 							onPress={async () => {
 								setIsLoading(true);
-								try {
-									const intValue = parseInt(amount, 10);
-									const intGweiValue = intValue * (10**18)
-									const hexAmount = "0x" + intGweiValue.toString(16);
-									await provider?.request({
-										method: "eth_sendTransaction",
-										params: [
-											{
-												from: address,
-												to: profile?.profile?.ownedBy,
-												data: '0x',
-												value: hexAmount,
-											},
-										],
-									});
-									setIsLoading(false);
-									toast.show("Amount sent successfully", ToastType.SUCCESS, true);
-								} catch (error) {
-									setIsLoading(false);
-									toast.show("Something went wrong", ToastType.ERROR, true);
-								}
+								await sendToken();
 							}}
 							mt={16}
 							title="Send"
@@ -617,7 +654,7 @@ const styles = StyleSheet.create({
 	subscribeContainer: {
 		flex: 1,
 		flexDirection: "row",
-		alignItems: "center",
+		alignItems: "flex-end",
 		width: "100%",
 		gap: 16,
 	},
