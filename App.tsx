@@ -1,6 +1,7 @@
 import { ApolloProvider } from "@apollo/client";
 import notifee, { AndroidStyle, EventType } from "@notifee/react-native";
 import messaging from "@react-native-firebase/messaging";
+import { useNavigation } from "@react-navigation/native";
 import { WalletConnectModal } from "@walletconnect/modal-react-native";
 import { client } from "apollo/client";
 import NetworkStatus from "components/NetworkStatus";
@@ -51,12 +52,13 @@ export default function App() {
 	const isLoadingComplete = useCachedResources();
 	React.useEffect(() => {
 		notifee.onForegroundEvent(({ type, detail }) => {
-			Logger.Success("ss", detail);
 			switch (type) {
 				case EventType.DISMISSED:
 					Logger.Warn("User Dismissed notification", detail.notification);
 					break;
 				case EventType.PRESS:
+					Logger.Log("Pressed", detail.notification?.data);
+					//navi
 					break;
 			}
 		});
@@ -94,6 +96,9 @@ export default function App() {
 							picture: imageUrl,
 						},
 					},
+					data: {
+						pubId:remoteMessage?.data?.pubId
+					}
 				});
 			} else {
 				notifee.displayNotification({
