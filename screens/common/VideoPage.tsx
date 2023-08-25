@@ -19,6 +19,8 @@ import DisLikeButton from "components/VIdeo/Actions/DisLikeButton";
 import MetaDataSheet from "components/VIdeo/Actions/MetaDataSheet";
 import MirrorButton from "components/VIdeo/Actions/MirrorButton";
 import MirrorVideoSheet from "components/VIdeo/Actions/MirrorVideoSheet";
+import SupportButton from "components/VIdeo/Actions/SupportButton";
+import SupportSheet from "components/VIdeo/Actions/SupportSheet";
 import MoreVideos from "components/VIdeo/MoreVideos";
 import VideoPageSkeleton from "components/VIdeo/VideoPageSkeleton";
 import VideoPlayer from "components/VideoPlayer";
@@ -51,6 +53,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
 	const { activePublication } = useActivePublication();
+	const supportSheetRef = React.useRef<BottomSheetMethods>(null);
 
 	React.useEffect(() => {
 		const delay = setTimeout(() => {
@@ -237,6 +240,9 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 										isalreadyDisLiked={videopageStats?.isDisliked}
 										id={activePublication?.id}
 									/>
+									<SupportButton
+										supportSheetRef={supportSheetRef}
+									/>
 									<MirrorButton
 										id={activePublication?.id}
 										totalMirrors={mirrorStats?.mirrorCount}
@@ -276,6 +282,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 					<MoreVideos />
 				</ScrollView>
 			</SafeAreaView>
+			<SupportSheet supportRef={supportSheetRef} profile={activePublication?.profile} />
 			<CommentSheet commentSheetRef={commentRef} />
 			<MetaDataSheet sheetRef={descRef} />
 			<CollectVideoSheet sheetRef={collectRef} />
