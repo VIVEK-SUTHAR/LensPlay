@@ -102,22 +102,31 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 					navigation.replace("Root");
 				} else {
 					Logger.Error("Invalid Tokens,Gnerating new tokens");
-					const newData = await getAccessFromRefresh({
-						variables: {
-							request: {
-								refreshToken: refreshToken,
+					try {
+						const newData = await getAccessFromRefresh({
+							variables: {
+								request: {
+									refreshToken: refreshToken,
+								},
 							},
-						},
-					});
-					Logger.Error("Generated new tokens");
-					setAccessToken(newData?.data?.refresh?.accessToken);
-					setRefreshToken(newData?.data?.refresh?.refreshToken);
-					await storeTokens(
-						newData?.data?.refresh?.accessToken,
-						newData?.data?.refresh?.refreshToken
-					);
-					Logger.Error("Goint to Feed");
-					navigation.replace("Root");
+						});
+						Logger.Error("Generated new tokens");
+						setAccessToken(newData?.data?.refresh?.accessToken);
+						setRefreshToken(newData?.data?.refresh?.refreshToken);
+						await storeTokens(
+							newData?.data?.refresh?.accessToken,
+							newData?.data?.refresh?.refreshToken
+						);
+						Logger.Error("Goint to Feed");
+						navigation.replace("Root");
+					} catch (error) {
+						if (error instanceof Error) {
+							if (error?.message?.includes("InvalidJwtToken")) {
+								Logger.Error("Error", error);
+								navigation.replace("LetsGetIn");
+							}
+						}
+					}
 				}
 			}
 		} catch (error) {
