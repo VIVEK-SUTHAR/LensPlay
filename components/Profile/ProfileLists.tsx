@@ -17,13 +17,6 @@ export default function ProfileLists() {
 	const navigation = useNavigation();
 
 	const ProfileLists = [
-		{
-			icon: <Icon name="clock" size={16}  />,
-			label: "Watch Later",
-			onPress: () => {
-				navigation.navigate("WatchLater");
-			},
-		},
 		// {
 		// 	icon: <Icon name="images" size={16} />,
 		// 	label: "PlayLists",
@@ -31,6 +24,13 @@ export default function ProfileLists() {
 		// 		navigation.navigate("WatchLater");
 		// 	},
 		// },
+		{
+			icon: <Icon name="clock" size={16}  />,
+			label: "Watch Later",
+			onPress: () => {
+				navigation.navigate("WatchLater");
+			},
+		},
 	];
 
 	return (

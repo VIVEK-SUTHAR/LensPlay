@@ -105,6 +105,7 @@ export type RootStackParamList = {
 	ProfileScanner: undefined;
 	WatchLater: undefined;
 	UploadIndicator: undefined;
+	FollowAnalytics: undefined;
 };
 
 /**
