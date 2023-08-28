@@ -1,13 +1,16 @@
+import { useNavigation } from "@react-navigation/native";
+import ErrorMesasge from "components/common/ErrorMesasge";
 import Skeleton from "components/common/Skeleton";
-import ProfileCard from "components/ProfileCard";
+import Icon from "components/Icon";
+import Avatar from "components/UI/Avatar";
+import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import ProfileCardSkeleton from "components/UI/ProfileCardSkeleton";
 import StyledText from "components/UI/StyledText";
-import { ErrorMessage } from "components/VideoPlayer/utils";
 import { black, primary, white } from "constants/Colors";
 import { Follower, FollowersRequest, useAllFollowersQuery } from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import {
 	ActivityIndicator,
 	Dimensions,
@@ -15,8 +18,10 @@ import {
 	LayoutAnimation,
 	SafeAreaView,
 	StyleSheet,
-	View
+	TouchableOpacity,
+	View,
 } from "react-native";
+import ViewShot from "react-native-view-shot";
 import { LineChart } from "react-native-wagmi-charts";
 import { useProfile } from "store/Store";
 import getFollowesData from "utils/analytics/getFollowersData";
@@ -27,6 +32,8 @@ type FollowersCount = {
 	before7Days: number;
 	before14Days: number;
 };
+
+const CHART_WIDTH = Dimensions.get("window").width - 20;
 const FollowAnalytics: React.FC<RootStackScreenProps<"FollowAnalytics">> = ({ navigation }) => {
 	const [followersCount, setFollowersCount] = useState<FollowersCount | null>(null);
 	const { currentProfile } = useProfile();
@@ -53,6 +60,7 @@ const FollowAnalytics: React.FC<RootStackScreenProps<"FollowAnalytics">> = ({ na
 		});
 	}, []);
 
+	const viewCaptureRef = useRef();
 	React.useEffect(() => {
 		fetchData()
 			.then((res) => {
@@ -70,30 +78,35 @@ const FollowAnalytics: React.FC<RootStackScreenProps<"FollowAnalytics">> = ({ na
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<StyledText
-				title="Your Followers growth in last 14 days"
-				style={{
-					color: white[500],
-					fontWeight: "600",
-					fontSize: 18,
-					marginVertical: 24,
-				}}
-			/>
 			{followersCount ? (
 				<View>
-					<FollowersGrowthChart
-						labels={["14 Days", "7 Days", "Today"]}
-						data={[
-							followersCount.before14Days,
-							followersCount.before7Days,
-							Number(currentProfile?.stats?.totalFollowers),
-						]}
-					/>
-					<FollowerCountText
-						before7={followersCount.before7Days}
-						current={Number(currentProfile?.stats?.totalFollowers)}
-					/>
-					<RecentSubscribers />
+					<ViewShot ref={viewCaptureRef as any}>
+						<StyledText
+							title="Your Followers growth in last 14 days"
+							style={{
+								color: white[500],
+								fontWeight: "600",
+								fontSize: 18,
+								marginVertical: 24,
+							}}
+						/>
+						<FollowersGrowthChart
+							labels={["14 Days", "7 Days", "Today"]}
+							data={[
+								followersCount.before14Days,
+								followersCount.before7Days,
+								Number(currentProfile?.stats?.totalFollowers),
+							]}
+						/>
+						<FollowerCountText
+							before7={followersCount.before7Days}
+							current={Number(currentProfile?.stats?.totalFollowers)}
+						/>
+						<RecentSubscribers
+							limit={Number(currentProfile?.stats?.totalFollowers) - followersCount.before7Days}
+						/>
+					</ViewShot>
+					<ShareOnLens viewRef={viewCaptureRef} />
 				</View>
 			) : (
 				<ActivityIndicator color={"hotpink"} size="large" />
@@ -145,7 +158,7 @@ const FollowersGrowthChart: React.FC<FollowersGrowthChartProps> = React.memo(({ 
 	return (
 		<View style={styles.chartContainer}>
 			<LineChart.Provider data={dataa}>
-				<LineChart width={Dimensions.get("window").width - 20} height={220}>
+				<LineChart width={CHART_WIDTH} height={220}>
 					<LineChart.Path color={primary}>
 						<LineChart.Gradient />
 						<LineChart.Dot color={primary} at={2} hasPulse />
@@ -174,29 +187,32 @@ const FollowerCountText = ({ current, before7 = 0 }: { current: number; before7:
 	);
 };
 
-const RecentSubscribers = React.memo(() => {
+const RecentSubscribers = React.memo(({ limit }: { limit: number }) => {
 	const { currentProfile } = useProfile();
-
+	const navigation = useNavigation();
+	Logger.Log("Limit", limit);
 	const request: FollowersRequest = {
 		profileId: currentProfile?.id,
-		limit: 3,
+		limit: limit ?? 3,
 	};
 	const { data, loading, error } = useAllFollowersQuery({
 		variables: {
 			request,
 		},
 	});
+
 	const renderItem = React.useCallback(({ item }: { item: Follower }) => {
 		return (
-			<ProfileCard
-				key={item?.wallet?.address}
-				profileIcon={getRawurl(item?.wallet?.defaultProfile?.picture)}
-				profileName={item?.wallet?.defaultProfile?.name}
-				handle={item?.wallet?.defaultProfile?.handle}
-				profileId={item?.wallet?.defaultProfile?.id}
-				owner={item?.wallet?.address}
-				isFollowed={false}
-			/>
+			<TouchableOpacity
+				style={{ marginHorizontal: 4 }}
+				onPress={() => {
+					navigation.navigate("Channel", {
+						handle: item?.wallet?.defaultProfile?.handle,
+					});
+				}}
+			>
+				<Avatar height={56} width={56} src={getRawurl(item?.wallet?.defaultProfile?.picture)} />
+			</TouchableOpacity>
 		);
 	}, []);
 	const subscribers = data?.followers?.items as Follower[];
@@ -205,22 +221,64 @@ const RecentSubscribers = React.memo(() => {
 	if (loading) return <Skeleton children={<ProfileCardSkeleton />} number={3} />;
 
 	if (data?.followers?.items?.length === 0)
-		return <ErrorMessage style={{}} message="Looks like you don't have any subscribers" />;
+		return <ErrorMesasge message="Looks like you don't have any subscribers" />;
+	if (error) {
+		return <ErrorMesasge message="Something went wrong" />;
+	}
 	return (
-		<View style={{ backgroundColor: "black", padding: 8 }}>
+		<View
+			style={{
+				backgroundColor: black[600],
+				padding: 8,
+				justifyContent: "center",
+				alignItems: "center",
+				flexWrap: "wrap",
+			}}
+		>
 			<Heading
 				style={{
 					color: white[500],
 					fontWeight: "600",
 					fontSize: 18,
+					alignSelf: "flex-start",
+					marginVertical: 16,
 				}}
 				title="Your Recent Subscribers"
 			/>
 			<FlatList
+				horizontal
 				data={subscribers}
 				keyExtractor={keyExtractor}
 				removeClippedSubviews={true}
 				renderItem={renderItem}
+				scrollEnabled={true}
+				contentContainerStyle={{ justifyContent: "center", alignItems: "center" }}
+			/>
+		</View>
+	);
+});
+
+const ShareOnLens = React.memo(({ viewRef }: { viewRef: any }) => {
+	const navigation = useNavigation();
+	const onShare = React.useCallback(() => {
+		viewRef.current.capture().then((uri: string) => {
+			navigation.navigate("ShareOnLens", {
+				imageUri: uri,
+			});
+		});
+	}, []);
+
+	return (
+		<View style={{ marginVertical: 36 }}>
+			<Button
+				title={"Share on Lens"}
+				textStyle={{ fontSize: 20, fontWeight: "600", color: "white" }}
+				bg={"transparent"}
+				borderColor={white[400]}
+				icon={<Icon name="share" size={24} color="white" />}
+				py={8}
+				iconPosition="right"
+				onPress={onShare}
 			/>
 		</View>
 	);
@@ -229,7 +287,7 @@ const RecentSubscribers = React.memo(() => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "black",
+		backgroundColor: black[600],
 		paddingHorizontal: 8,
 	},
 	chartContainer: {

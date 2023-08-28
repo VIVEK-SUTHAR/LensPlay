@@ -17,6 +17,7 @@ import FullImage from "screens/common/FullImage";
 import LinkingVideo from "screens/common/LinkingVideo";
 import Loader from "screens/common/Loader";
 import ReportPublication from "screens/common/ReportPublication";
+import ShareOnLens from "screens/common/ShareOnLens";
 import VideoPage from "screens/common/VideoPage";
 import VideoTypes from "screens/common/VideoTypes";
 import Search from "screens/Header/Search/Search";
@@ -373,6 +374,14 @@ export default function StackNavigation() {
 				component={FollowAnalytics}
 				options={{
 					animation: "none",
+					headerTintColor: theme.PRIMARY,
+				}}
+			/>
+			<Stack.Screen
+				name="ShareOnLens"
+				component={ShareOnLens}
+				options={{
+					animation: "flip",
 					headerTintColor: theme.PRIMARY,
 				}}
 			/>
