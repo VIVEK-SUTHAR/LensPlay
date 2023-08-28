@@ -1,7 +1,4 @@
 import { ApolloProvider } from "@apollo/client";
-import notifee, { AndroidStyle, EventType } from "@notifee/react-native";
-import messaging from "@react-native-firebase/messaging";
-import { useNavigation } from "@react-navigation/native";
 import { WalletConnectModal } from "@walletconnect/modal-react-native";
 import { client } from "apollo/client";
 import NetworkStatus from "components/NetworkStatus";
@@ -14,7 +11,6 @@ import { Platform, UIManager } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import Logger from "utils/logger";
 import { APP_NAME, DESCRIPTION, LENSPLAY_SITE } from "./constants";
 import "./expo-crypto-shim.ts";
 import Navigation from "./navigation";
@@ -42,6 +38,7 @@ const sessionParams = {
 		},
 	},
 };
+
 if (Platform.OS === "android") {
 	if (UIManager.setLayoutAnimationEnabledExperimental) {
 		UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -50,69 +47,6 @@ if (Platform.OS === "android") {
 
 export default function App() {
 	const isLoadingComplete = useCachedResources();
-	React.useEffect(() => {
-		notifee.onForegroundEvent(({ type, detail }) => {
-			switch (type) {
-				case EventType.DISMISSED:
-					Logger.Warn("User Dismissed notification", detail.notification);
-					break;
-				case EventType.PRESS:
-					Logger.Log("Pressed", detail.notification?.data);
-					//navi
-					break;
-			}
-		});
-
-		const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-			Logger.Count("New Noti received from LP Server", remoteMessage);
-			let channelId;
-			let imageUrl;
-			if (Platform.OS === "android") {
-				channelId = await notifee.createChannel({
-					id: "default",
-					name: "Default Channel",
-				});
-			}
-			const notification = remoteMessage?.notification;
-			imageUrl = remoteMessage.data?.fcm_options?.image;
-			if (Platform.OS === "android") {
-				imageUrl = remoteMessage?.notification?.android?.imageUrl;
-			}
-			if (imageUrl) {
-				notifee.displayNotification({
-					title: notification?.title,
-					body: notification?.body,
-					ios: {
-						attachments: [
-							{
-								url: imageUrl,
-							},
-						],
-					},
-					android: {
-						channelId,
-						style: {
-							type: AndroidStyle.BIGPICTURE,
-							picture: imageUrl,
-						},
-					},
-					data: {
-						pubId:remoteMessage?.data?.pubId
-					}
-				});
-			} else {
-				notifee.displayNotification({
-					title: notification?.title,
-					body: notification?.body,
-					android: {
-						channelId,
-					},
-				});
-			}
-		});
-
-		return unsubscribe;
-	}, []);
 
 	if (!isLoadingComplete) {
 		return null;
