@@ -9,7 +9,7 @@
 import { LENSPLAY_API } from "constants/index";
 import { Scalars } from "customTypes/generated";
 
-async function sendTip(senderAddress: Scalars["EthereumAddress"], tipAmount: string, recieverAddress: Scalars["EthereumAddress"]) {
+async function sendTip(senderAddress: Scalars["EthereumAddress"], tipAmount: string, recieverAddress: Scalars["EthereumAddress"], message: string) {
 	try {
 		const headersList = {
 			"Accept": "*/*",
@@ -20,7 +20,8 @@ async function sendTip(senderAddress: Scalars["EthereumAddress"], tipAmount: str
 		const bodyContent = JSON.stringify({
 			senderAddress: senderAddress,
 			tipAmount: tipAmount,
-            receiverAddress: recieverAddress
+            receiverAddress: recieverAddress,
+			message: message
 		});
 
 		const response = await fetch(`http://192.168.107.216:3000/api/notifications/send`, {

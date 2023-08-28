@@ -21,6 +21,7 @@ const _supportSheet = ({
 	profile: Profile | undefined;
 }) => {
 	const [amount, setAmount] = React.useState("");
+	const [message, setMessage] = React.useState("");
 	const [isLoading, setIsLoading] = React.useState(false);
 	const toast = useToast();
 	const { address, provider, isConnected } = useWalletConnectModal();
@@ -43,7 +44,6 @@ const _supportSheet = ({
 			const intGweiValue = intValue * 10 ** 18;
 			const hexAmount = "0x" + intGweiValue.toString(16);
 			Logger.Success(profile?.ownedBy);
-			
 
 			const txResult = await provider?.request({
 				method: "eth_sendTransaction",
@@ -56,10 +56,10 @@ const _supportSheet = ({
 					},
 				],
 			});
-			console.log(txResult, 'This is tx result');
-			
+			console.log(txResult, "This is tx result");
+
 			// await subscribeChannel(profile?.profile?.ownedBy);
-			const result = await sendTip(currentProfile?.ownedBy, amount, profile?.ownedBy);
+			const result = await sendTip(currentProfile?.ownedBy, amount, profile?.ownedBy, message);
 			Logger.Log("this is tip", result);
 			setAmount("");
 			setIsLoading(false);
@@ -67,14 +67,14 @@ const _supportSheet = ({
 		} catch (error) {
 			setAmount("");
 			setIsLoading(false);
-			Logger.Log('error aya hai', error)
+			Logger.Log("error aya hai", error);
 			toast.show("Something went wrong", ToastType.ERROR, true);
 		}
 	};
 	return (
 		<Sheet
 			ref={supportRef}
-			snapPoints={[230]}
+			snapPoints={[280]}
 			enablePanDownToClose={true}
 			enableOverDrag={true}
 			bottomInset={32}
@@ -134,15 +134,30 @@ const _supportSheet = ({
 								paddingVertical: Platform.OS === "ios" ? 16 : 8,
 								borderRadius: 8,
 								flex: 1,
-								marginBottom: 8,
-								// borderColor: white[300],
-								// borderWidth: 2
 							}}
 							keyboardType="number-pad"
 							onChange={(e) => {
 								e.preventDefault();
 								setAmount(e.nativeEvent.text);
-								console.log(typeof amount);
+							}}
+						/>
+						<TextInput
+							placeholder="Message"
+							value={message}
+							placeholderTextColor={white[200]}
+							selectionColor={primary}
+							style={{
+								backgroundColor: black[400],
+								color: "white",
+								paddingHorizontal: 16,
+								paddingVertical: Platform.OS === "ios" ? 16 : 8,
+								borderRadius: 8,
+								flex: 1,
+								marginVertical: 16
+							}}
+							onChange={(e) => {
+								e.preventDefault();
+								setMessage(e.nativeEvent.text);
 							}}
 						/>
 						<Button
@@ -150,7 +165,6 @@ const _supportSheet = ({
 								setIsLoading(true);
 								await sendToken();
 							}}
-							mt={16}
 							title="Send"
 							bg={"#f5f5f5"}
 							textStyle={{
