@@ -4,6 +4,65 @@ import messaging from "@react-native-firebase/messaging";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import StorageKeys from "constants/Storage";
 
+async function getFCMTokenFromFirebase() {
+	try {
+		await messaging().requestPermission();
+		await messaging().registerDeviceForRemoteMessages();
+		const notificationToken = await messaging().getToken();
+		return notificationToken;
+	} catch (error) {
+		throw new Error("Failed to get token");
+	}
+}
+
+async function saveTokenInDB(id: string, token: string) {
+	try {
+		const userAddress = await AsyncStorage.getItem(StorageKeys.UserAddress);
+		if (!userAddress) return;
+		const rawBody = {
+			profileId: id,
+			address: userAddress,
+			FCMToken: token,
+		};
+		const apiResponse = await fetch(`${LENSPLAY_API}notifications/saveToken`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(rawBody),
+		});
+		if (apiResponse.ok) {
+			Logger.Success("Tokens Saved to DB ");
+		}
+	} catch (error) {
+		Logger.Error("Failed to Save Token in DB....");
+	}
+}
+
+async function updateTokenInDB(id: string, token: string) {
+	try {
+		const userAddress = await AsyncStorage.getItem(StorageKeys.UserAddress);
+		if (!userAddress) return;
+		const rawBody = {
+			profileId: id,
+			address: userAddress,
+			newToken: token,
+		};
+		const apiResponse = await fetch(`${LENSPLAY_API}notifications/updateToken`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(rawBody),
+		});
+		if (apiResponse.ok) {
+			Logger.Success("Tokens Updated in DB !");
+		}
+	} catch (error) {
+		Logger.Error("Failed to Save Token in DB....");
+	}
+}
+
 async function getAndSaveNotificationToken(profileId: string) {
 	try {
 		const LocalFCMToken = await AsyncStorage.getItem(StorageKeys.NotificationToken);
@@ -16,7 +75,7 @@ async function getAndSaveNotificationToken(profileId: string) {
 			};
 			if (newToken) {
 				await AsyncStorage.setItem(StorageKeys.NotificationToken, JSON.stringify(notificationData));
-				await savtTokenInDB(profileId, newToken);
+				await saveTokenInDB(profileId, newToken);
 			} else {
 				Logger.Error("[Error]: In Genarating notification token");
 			}
@@ -51,64 +110,5 @@ async function getAndSaveNotificationToken(profileId: string) {
 		}
 	} catch (error) { }
 }
+
 export default getAndSaveNotificationToken;
-
-async function getFCMTokenFromFirebase() {
-	try {
-		const granted = await messaging().requestPermission();
-		console.log(granted)
-		await messaging().registerDeviceForRemoteMessages();
-		const notificationToken = await messaging().getToken();
-		return notificationToken;
-	} catch (error) {
-		throw new Error("Failed to get token");
-	}
-}
-
-async function savtTokenInDB(id: string, token: string) {
-	try {
-		const userAddress = await AsyncStorage.getItem(StorageKeys.UserAddress);
-		if (!userAddress) return;
-		const rawBody = {
-			profileId: id,
-			address: userAddress,
-			FCMToken: token,
-		};
-		const apiResponse = await fetch(`${LENSPLAY_API}notifications/saveToken`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(rawBody),
-		});
-		if (apiResponse.ok) {
-			Logger.Success("Tokens Saved to DB ");
-		}
-	} catch (error) {
-		Logger.Error("Failed to Save Token in DB....");
-	}
-}
-
-async function updateTokenInDB(id: string, token: string) {
-	try {
-		const userAddress = await AsyncStorage.getItem(StorageKeys.UserAddress);
-		if (!userAddress) return;
-		const rawBody = {
-			profileId: id,
-			address: userAddress,
-			newToken: token,
-		};
-		const apiResponse = await fetch(`${LENSPLAY_API}notifications/updateToken`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(rawBody),
-		});
-		if (apiResponse.ok) {
-			Logger.Success("Tokens Updated in DB !");
-		}
-	} catch (error) {
-		Logger.Error("Failed to Save Token in DB....");
-	}
-}

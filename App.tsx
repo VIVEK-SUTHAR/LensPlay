@@ -1,7 +1,6 @@
 import { ApolloProvider } from "@apollo/client";
 import notifee, { AndroidStyle, EventType } from "@notifee/react-native";
 import messaging from "@react-native-firebase/messaging";
-import { useNavigation } from "@react-navigation/native";
 import { WalletConnectModal } from "@walletconnect/modal-react-native";
 import { client } from "apollo/client";
 import NetworkStatus from "components/NetworkStatus";
@@ -97,8 +96,8 @@ export default function App() {
 						},
 					},
 					data: {
-						pubId:remoteMessage?.data?.pubId
-					}
+						pubId: remoteMessage?.data?.pubId,
+					},
 				});
 			} else {
 				notifee.displayNotification({

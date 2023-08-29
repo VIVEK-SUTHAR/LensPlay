@@ -1,4 +1,9 @@
+import { MaterialIcons } from "@expo/vector-icons";
+import Slider from "@react-native-community/slider";
+import SecondBackward from "assets/Icons/SecondBackward";
+import SecondForward from "assets/Icons/SecondForward";
 import { AVPlaybackStatus, Audio, Video } from "expo-av";
+import React, { useEffect, useRef, useState } from "react";
 import {
 	ActivityIndicator,
 	Animated,
@@ -9,7 +14,10 @@ import {
 	TouchableWithoutFeedback,
 	View,
 } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { runOnJS } from "react-native-reanimated";
 import { ControlStates, ErrorSeverity, PlaybackStates, Props } from "../../types/Videoplayer/index";
+import { defaultProps } from "./props";
 import {
 	ErrorMessage,
 	TouchableButton,
@@ -17,15 +25,6 @@ import {
 	getMinutesSecondsFromMilliseconds,
 	styles,
 } from "./utils";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
-import { defaultProps } from "./props";
-import { useEffect, useRef, useState } from "react";
-import React from "react";
-import Slider from "@react-native-community/slider";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { runOnJS } from "react-native-reanimated";
-import SecondForward from "assets/Icons/SecondForward";
-import SecondBackward from "assets/Icons/SecondBackward";
 
 const Player = (tempProps: Props) => {
 	const props = deepMerge(defaultProps, tempProps) as Props;
@@ -242,11 +241,11 @@ const Player = (tempProps: Props) => {
 			const c_position = playbackInstanceInfo.position;
 			if (playbackInstance) {
 				await playbackInstance.setStatusAsync({
-					positionMillis: c_position + 5000,
+					positionMillis: c_position + 10000,
 					shouldPlay: true,
 				});
 			}
-			const position = c_position + 5000;
+			const position = c_position + 10000;
 			setPlaybackInstanceInfo({
 				...playbackInstanceInfo,
 				position,
@@ -269,11 +268,11 @@ const Player = (tempProps: Props) => {
 			const currentPosition = playbackInstanceInfo.position;
 			if (playbackInstance) {
 				await playbackInstance.setStatusAsync({
-					positionMillis: currentPosition - 5000,
+					positionMillis: currentPosition - 10000,
 					shouldPlay: true,
 				});
 			}
-			const position = currentPosition - 5000;
+			const position = currentPosition - 10000;
 			setPlaybackInstanceInfo({
 				...playbackInstanceInfo,
 				position,
@@ -393,6 +392,7 @@ const Player = (tempProps: Props) => {
 												style={props.icon.style}
 												width={24}
 												height={24}
+												onPress={fastBackward}
 											/>
 										</View>
 									</TouchableButton>
@@ -445,6 +445,7 @@ const Player = (tempProps: Props) => {
 												style={props.icon.style}
 												width={24}
 												height={24}
+												onPress={fastForward}
 											/>
 										</View>
 									</TouchableButton>

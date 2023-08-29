@@ -29,7 +29,7 @@ const MoreVideos = () => {
 					fontSize: 18,
 					fontWeight: "700",
 					color: "white",
-					marginBottom: 8
+					marginBottom: 8,
 				}}
 				numberOfLines={1}
 			/>
@@ -135,9 +135,13 @@ const MoreVideosList = React.memo(() => {
 		);
 
 	if (AllVideos?.length === 1)
-	return (
-			<NotFound message={`No additional videos from ${title.split(' ')[0]}`} height={220} width={220} />
-	);
+		return (
+			<NotFound
+				message={`No additional videos from ${title.split(" ")[0]}`}
+				height={220}
+				width={220}
+			/>
+		);
 
 	return (
 		<View style={{ flex: 1 }}>
