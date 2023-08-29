@@ -106,9 +106,6 @@ export type RootStackParamList = {
 	WatchLater: undefined;
 	UploadIndicator: undefined;
 	FollowAnalytics: undefined;
-	ShareOnLens: {
-		imageUri: string;
-	};
 };
 
 /**

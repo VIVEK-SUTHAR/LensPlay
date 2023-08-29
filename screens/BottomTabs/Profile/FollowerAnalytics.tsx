@@ -1,16 +1,14 @@
 import { useNavigation } from "@react-navigation/native";
 import ErrorMesasge from "components/common/ErrorMesasge";
 import Skeleton from "components/common/Skeleton";
-import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
-import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import ProfileCardSkeleton from "components/UI/ProfileCardSkeleton";
 import StyledText from "components/UI/StyledText";
 import { black, primary, white } from "constants/Colors";
 import { Follower, FollowersRequest, useAllFollowersQuery } from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import {
 	ActivityIndicator,
 	Dimensions,
@@ -19,9 +17,8 @@ import {
 	SafeAreaView,
 	StyleSheet,
 	TouchableOpacity,
-	View,
+	View
 } from "react-native";
-import ViewShot from "react-native-view-shot";
 import { LineChart } from "react-native-wagmi-charts";
 import { useProfile } from "store/Store";
 import getFollowesData from "utils/analytics/getFollowersData";
@@ -60,7 +57,6 @@ const FollowAnalytics: React.FC<RootStackScreenProps<"FollowAnalytics">> = ({ na
 		});
 	}, []);
 
-	const viewCaptureRef = useRef();
 	React.useEffect(() => {
 		fetchData()
 			.then((res) => {
@@ -80,33 +76,30 @@ const FollowAnalytics: React.FC<RootStackScreenProps<"FollowAnalytics">> = ({ na
 		<SafeAreaView style={styles.container}>
 			{followersCount ? (
 				<View>
-					<ViewShot ref={viewCaptureRef as any}>
-						<StyledText
-							title="Your Followers growth in last 14 days"
-							style={{
-								color: white[500],
-								fontWeight: "600",
-								fontSize: 18,
-								marginVertical: 24,
-							}}
-						/>
-						<FollowersGrowthChart
-							labels={["14 Days", "7 Days", "Today"]}
-							data={[
-								followersCount.before14Days,
-								followersCount.before7Days,
-								Number(currentProfile?.stats?.totalFollowers),
-							]}
-						/>
-						<FollowerCountText
-							before7={followersCount.before7Days}
-							current={Number(currentProfile?.stats?.totalFollowers)}
-						/>
-						<RecentSubscribers
-							limit={Number(currentProfile?.stats?.totalFollowers) - followersCount.before7Days}
-						/>
-					</ViewShot>
-					<ShareOnLens viewRef={viewCaptureRef} />
+					<StyledText
+						title="Your Followers growth in last 14 days"
+						style={{
+							color: white[500],
+							fontWeight: "600",
+							fontSize: 18,
+							marginVertical: 24,
+						}}
+					/>
+					<FollowersGrowthChart
+						labels={["14 Days", "7 Days", "Today"]}
+						data={[
+							followersCount.before14Days,
+							followersCount.before7Days,
+							Number(currentProfile?.stats?.totalFollowers),
+						]}
+					/>
+					<FollowerCountText
+						before7={followersCount.before7Days}
+						current={Number(currentProfile?.stats?.totalFollowers)}
+					/>
+					<RecentSubscribers
+						limit={Number(currentProfile?.stats?.totalFollowers) - followersCount.before7Days}
+					/>
 				</View>
 			) : (
 				<ActivityIndicator color={"hotpink"} size="large" />
@@ -253,32 +246,6 @@ const RecentSubscribers = React.memo(({ limit }: { limit: number }) => {
 				renderItem={renderItem}
 				scrollEnabled={true}
 				contentContainerStyle={{ justifyContent: "center", alignItems: "center" }}
-			/>
-		</View>
-	);
-});
-
-const ShareOnLens = React.memo(({ viewRef }: { viewRef: any }) => {
-	const navigation = useNavigation();
-	const onShare = React.useCallback(() => {
-		viewRef.current.capture().then((uri: string) => {
-			navigation.navigate("ShareOnLens", {
-				imageUri: uri,
-			});
-		});
-	}, []);
-
-	return (
-		<View style={{ marginVertical: 36 }}>
-			<Button
-				title={"Share on Lens"}
-				textStyle={{ fontSize: 20, fontWeight: "600", color: "white" }}
-				bg={"transparent"}
-				borderColor={white[400]}
-				icon={<Icon name="share" size={24} color="white" />}
-				py={8}
-				iconPosition="right"
-				onPress={onShare}
 			/>
 		</View>
 	);
