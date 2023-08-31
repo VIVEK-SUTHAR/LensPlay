@@ -9,7 +9,6 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 });
 
 notifee.onBackgroundEvent(async ({ type, detail }) => {
-	console.log(detail)
 	// Check if the user pressed the "Mark as read" action
 	if (type === EventType.ACTION_PRESS) {
 		// Update external API

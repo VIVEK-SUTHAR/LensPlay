@@ -1,26 +1,24 @@
 import { type BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
-// import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Avatar from "components/UI/Avatar";
+import { useWalletConnectModal } from "@walletconnect/modal-react-native";
+import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
-import ProfileSkeleton from "components/UI/ProfileSkeleton";
 import StyledText from "components/UI/StyledText";
-import ErrorMesasge from "components/common/ErrorMesasge";
 import SocialLinks from "components/common/SocialLinks";
 import { black, white } from "constants/Colors";
 import { LENSPLAY_SITE } from "constants/index";
 import { PROFILE } from "constants/tracking";
 import {
+	ProfileQuery,
 	useBroadcastMutation,
 	useCreateUnfollowTypedDataMutation,
-	useProfileQuery,
 	useProxyActionMutation,
 	type CreateUnfollowTypedDataMutationResult,
 	type MediaSet,
 	type Profile,
 	type Scalars,
-	ProfileQuery,
 } from "customTypes/generated";
 import React, { useState } from "react";
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
@@ -43,9 +41,6 @@ import PinnedPublication, { UnPinSheet } from "./PinnedPublication";
 import ProfileLists from "./ProfileLists";
 import UserStats from "./UserStats";
 import VerifiedBadge from "./VerifiedBadge";
-import { useWalletConnectModal } from "@walletconnect/modal-react-native";
-import Icon from "components/Icon";
-
 type ProfileHeaderProps = {
 	Profile: ProfileQuery | undefined;
 	onRefresh: any;
@@ -280,9 +275,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 						profile={profile as Profile}
 						isChannel={isChannel}
 					/>
-					<Icon name="rightArrow" size={16} />
 					<UserStats profile={profile as Profile} />
-					<Pressable
+					{/* <Pressable
 						style={{
 							flexDirection: "row",
 							alignItems: "center",
@@ -293,7 +287,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 					>
 						<Icon name="follow" />
 						<StyledText title={"Subscribers Growth"} style={styles.itemText} />
-					</Pressable>
+					</Pressable> */}
 					{!isChannel ? <ProfileLists /> : null}
 				</View>
 			</ScrollView>
