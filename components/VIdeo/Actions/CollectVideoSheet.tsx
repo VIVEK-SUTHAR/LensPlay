@@ -1,7 +1,20 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import React from "react";
-import Sheet from "components/Bottom";
+import { ApolloCache } from "@apollo/client";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Sheet from "components/Bottom";
+import Icon from "components/Icon";
+import Avatar from "components/UI/Avatar";
+import Button from "components/UI/Button";
+import Heading from "components/UI/Heading";
+import LPImage from "components/UI/LPImage";
+import StyledText from "components/UI/StyledText";
+import { black, white } from "constants/Colors";
+import { LENSPLAY_SITE } from "constants/index";
+import { PUBLICATION } from "constants/tracking";
+import { ToastType } from "customTypes/Store";
+import { useProxyActionMutation } from "customTypes/generated";
+import React from "react";
+import { Pressable, StyleSheet, View } from "react-native";
 import {
 	useActivePublication,
 	useAuthStore,
@@ -9,33 +22,41 @@ import {
 	useThemeStore,
 	useToast,
 } from "store/Store";
-import { black, white } from "constants/Colors";
-import Heading from "components/UI/Heading";
-import Icon from "components/Icon";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import LPImage from "components/UI/LPImage";
+import TrackAction from "utils/Track";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
-import StyledText from "components/UI/StyledText";
-import Avatar from "components/UI/Avatar";
-import Button from "components/UI/Button";
-import { ToastType } from "customTypes/Store";
-import { useProxyActionMutation } from "customTypes/generated";
-import TrackAction from "utils/Track";
-import { PUBLICATION } from "constants/tracking";
-import { LENSPLAY_SITE } from "constants/index";
 import Logger from "utils/logger";
 
 type CollectVideoSheetProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
 };
+
 const CollectVideoSheet: React.FC<CollectVideoSheetProps> = ({ sheetRef: collectRef }) => {
 	const { activePublication } = useActivePublication();
-
 	const { collectStats, setCollectStats } = useReactionStore();
 	const theme = useThemeStore();
 	const toast = useToast();
 	const { accessToken } = useAuthStore();
+
+	const updateCache = (cache: ApolloCache<any>) => {
+		try {
+			cache.modify({
+				id: cache.identify(activePublication as any),
+				fields: {
+					hasCollectedByMe() {
+						return true;
+					},
+					stats: (stats) => ({
+						...stats,
+						totalAmountOfCollects: stats.totalAmountOfCollects + 1,
+					}),
+				},
+			});
+		} catch (error) {
+			Logger.Error("error in updating cache", error);
+		}
+	};
+
 	const [createProcyAction] = useProxyActionMutation({
 		onCompleted: (data) => {
 			toast.show("Collect Submitted", ToastType.SUCCESS, true);
@@ -52,7 +73,9 @@ const CollectVideoSheet: React.FC<CollectVideoSheetProps> = ({ sheetRef: collect
 
 			collectRef?.current?.close();
 		},
+		update: (cache) => updateCache(cache),
 	});
+
 	const collectPublication = async () => {
 		try {
 			if (collectStats?.isCollected) {

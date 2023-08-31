@@ -29,10 +29,12 @@ import Logger from "utils/logger";
 import { LENSPLAY_SITE } from "constants/index";
 import TrackAction from "utils/Track";
 import { PUBLICATION } from "constants/tracking";
+import { ApolloCache } from "@apollo/client";
 
 type MirrorVideoSheetProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
 };
+
 const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef }) => {
 	const { activePublication } = useActivePublication();
 	const { accessToken } = useAuthStore();
@@ -41,18 +43,45 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 	const isDAPublication = activePublication?.isDataAvailability;
 	const toast = useToast();
 	const theme = useThemeStore();
-	const userStore = useProfile();
+	const { currentProfile } = useProfile();
 
-	const [createOnChainMirror] = useCreateMirrorViaDispatcherMutation();
+	const updateCache = (cache: ApolloCache<any>) => {
+		try {
+			cache.modify({
+				id: cache.identify(activePublication as any),
+				fields: {
+					mirrors: (mirrors) => [...mirrors, currentProfile?.id],
+					stats: (stats) => ({
+						...stats,
+						totalAmountOfMirrors: stats.totalAmountOfMirrors + 1,
+					}),
+				},
+			});
+		} catch (error) {
+			Logger.Error("error", error);
+		}
+	};
+
+	const [createOnChainMirror] = useCreateMirrorViaDispatcherMutation({
+		onCompleted: (data) => {
+			Logger.Success("Mirrored", data);
+		},
+		onError: (err) => {
+			Logger.Error("Error in Mirror", err);
+			toast.show(err.message, ToastType.ERROR, true);
+		},
+		update: (cache) => updateCache(cache),
+	});
 
 	const [createDataAvaibalityMirror] = useCreateDataAvailabilityMirrorViaDispatcherMutation({
 		onCompleted: (data) => {
 			Logger.Success("DA Mirrored", data);
 		},
-		onError: (err, cliOpt) => {
-			Logger.Error("Error in DA Mirror", err, "\nClient Option", cliOpt);
+		onError: (err) => {
+			Logger.Error("Error in DA Mirror", err);
 			toast.show(err.message, ToastType.ERROR, true);
 		},
+		update: (cache) => updateCache(cache),
 	});
 
 	const onMirror = async () => {
@@ -73,7 +102,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 			createDataAvaibalityMirror({
 				variables: {
 					request: {
-						from: userStore?.currentProfile?.id,
+						from: currentProfile?.id,
 						mirror: activePublication?.id,
 					},
 				},
@@ -93,7 +122,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 			await createOnChainMirror({
 				variables: {
 					request: {
-						profileId: userStore?.currentProfile?.id,
+						profileId: currentProfile?.id,
 						publicationId: activePublication?.id,
 					},
 				},
@@ -264,5 +293,3 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 };
 
 export default MirrorVideoSheet;
-
-const styles = StyleSheet.create({});
