@@ -101,31 +101,24 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 
 	useEffect(() => {
 		const handler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+		setReaction(true);
+		setVideoPageStats(
+			activePublication?.reaction === "UPVOTE",
+			activePublication?.reaction === "DOWNVOTE",
+			activePublication?.stats?.totalUpvotes || 0
+		);
+		setCollectStats(
+			activePublication?.hasCollectedByMe || false,
+			activePublication?.stats?.totalAmountOfCollects || 0
+		);
+		setMirrorStats(
+			activePublication?.mirrors?.length > 0,
+			activePublication?.stats?.totalAmountOfMirrors || 0
+		);
 		return () => {
 			handler.remove();
 		};
 	}, []);
-
-	const { data: ReactionData, error, loading } = useReaction(activePublication?.id);
-
-	if (ReactionData) {
-		if (!reaction) {
-			setReaction(true);
-			setVideoPageStats(
-				ReactionData?.publication?.reaction === "UPVOTE",
-				ReactionData?.publication?.reaction === "DOWNVOTE",
-				ReactionData?.publication?.stats?.totalUpvotes
-			);
-			setCollectStats(
-				ReactionData?.publication?.hasCollectedByMe,
-				ReactionData?.publication?.stats?.totalAmountOfCollects
-			);
-			setMirrorStats(
-				ReactionData?.publication?.mirrors?.length > 0,
-				ReactionData?.publication?.stats?.totalAmountOfMirrors
-			);
-		}
-	}
 
 	const collectRef = useRef<BottomSheetMethods>(null);
 	const mirrorRef = useRef<BottomSheetMethods>(null);
