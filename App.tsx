@@ -65,6 +65,7 @@ export default function App() {
 		const unsubscribe = messaging().onMessage(async (remoteMessage) => {
 			Logger.Count("New Noti received from LP Server", remoteMessage);
 			let channelId;
+			let imageUrl;
 			if (Platform.OS === "android") {
 				channelId = await notifee.createChannel({
 					id: "default",
@@ -72,13 +73,41 @@ export default function App() {
 				});
 			}
 			const notification = remoteMessage?.notification;
-			notifee.displayNotification({
-				title: notification?.title,
-				body: notification?.body,
-				android: {
-					channelId,
-				},
-			});
+			imageUrl = remoteMessage.data?.fcm_options?.image;
+			if (Platform.OS === "android") {
+				imageUrl = remoteMessage?.notification?.android?.imageUrl;
+			}
+			if (imageUrl) {
+				notifee.displayNotification({
+					title: notification?.title,
+					body: notification?.body,
+					ios: {
+						attachments: [
+							{
+								url: imageUrl,
+							},
+						],
+					},
+					android: {
+						channelId,
+						style: {
+							type: AndroidStyle.BIGPICTURE,
+							picture: imageUrl,
+						},
+					},
+					data: {
+						pubId: remoteMessage?.data?.pubId,
+					},
+				});
+			} else {
+				notifee.displayNotification({
+					title: notification?.title,
+					body: notification?.body,
+					android: {
+						channelId,
+					},
+				});
+			}
 		});
 
 		return unsubscribe;
