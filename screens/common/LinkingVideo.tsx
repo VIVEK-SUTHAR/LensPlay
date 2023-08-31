@@ -42,9 +42,9 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
 	const [isMute, setIsMute] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [hasFetchedReaction, setHasFetchedReaction] = useState(false);
+
 	const {
-		reaction,
-		setReaction,
 		videopageStats,
 		collectStats,
 		mirrorStats,
@@ -53,11 +53,18 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 		setCollectStats,
 		setMirrorStats,
 	} = useReactionStore();
+
 	const { activePublication, setActivePublication } = useActivePublication();
-  const { data: ReactionData, error:ReactionError, loading:ReactionLoading } = useReaction(route.params.id);
-  if (ReactionData) {
-		if (!reaction) {
-			setReaction(true);
+
+	const {
+		data: ReactionData,
+		error: ReactionError,
+		loading: ReactionLoading,
+	} = useReaction(route.params.id);
+
+	if (ReactionData) {
+		if (!hasFetchedReaction) {
+			setHasFetchedReaction(true);
 			setVideoPageStats(
 				ReactionData?.publication?.reaction === "UPVOTE",
 				ReactionData?.publication?.reaction === "DOWNVOTE",
@@ -74,53 +81,63 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 		}
 	}
 
-	function handleBackButtonClick() {
-		setStatusBarHidden(false, "fade");
-		setInFullsreen(!inFullscreen);
-		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+	const handleBackButtonClick = () => {
 		if (!inFullscreen) {
-      setReaction(false);
+			setHasFetchedReaction(false);
 			clearStats();
 			setCollectStats(false, 0);
 			setMirrorStats(false, 0);
 			navigation.goBack();
+		} else {
+			setStatusBarHidden(false, "fade");
+			setInFullsreen(!inFullscreen);
+			ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
 		}
 		return true;
-	}
+	};
+
+	useEffect(() => {
+		getVideoById(route.params.id);
+	}, [route.params.id]);
 
 	useEffect(() => {
 		BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
-		getVideoById(route.params.id);
 	}, [route.params.id]);
+
 	const { setVideoURI, uri } = useVideoURLStore();
+
 	const [fetchPub] = usePublicationDetailsLazyQuery();
-  Logger.Error("REACTION ERROR",ReactionData)
-	const getVideoById = async (pubId: string) => {
-		try {
-			const feed = await fetchPub({
-				variables: {
-					request: {
-						publicationId: pubId,
+	Logger.Error("REACTION ERROR", ReactionData);
+
+	const getVideoById = React.useCallback(
+		async (pubId: string) => {
+			try {
+				const feed = await fetchPub({
+					variables: {
+						request: {
+							publicationId: pubId,
+						},
 					},
-				},
-			});
-			setActivePublication(feed?.data?.publication as Post);
-			if (
-				activePublication?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")
-			) {
-				setVideoURI(feed?.data?.publication?.metadata?.media[0]?.optimized?.url);
-				return;
+				});
+				setActivePublication(feed?.data?.publication as Post);
+				if (
+					activePublication?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")
+				) {
+					setVideoURI(feed?.data?.publication?.metadata?.media[0]?.optimized?.url);
+					return;
+				}
+				setVideoURI(feed?.data?.publication?.metadata?.media[0]?.original?.url);
+				return feed;
+			} catch (error) {
+				if (error instanceof Error) {
+					Logger.Error("Failed to fetch video", error);
+				}
+			} finally {
+				setIsLoading(false);
 			}
-			setVideoURI(feed?.data?.publication?.metadata?.media[0]?.original?.url);
-			return feed;
-		} catch (error) {
-			if (error instanceof Error) {
-				Logger.Error("Failed to fetch video", error);
-			}
-		} finally {
-			setIsLoading(false);
-		}
-	};
+		},
+		[setActivePublication, setVideoURI]
+	);
 
 	const collectRef = useRef<BottomSheetMethods>(null);
 	const mirrorRef = useRef<BottomSheetMethods>(null);
@@ -130,73 +147,7 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 	const openCommentSheet = () => commentRef?.current?.snapToIndex(0);
 
 	if (isLoading) {
-		return (
-			<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-				<View
-					style={{
-						height: 280,
-						backgroundColor: "gray",
-					}}
-				></View>
-				<View
-					style={{
-						flexDirection: "row",
-						marginVertical: 15,
-						justifyContent: "space-between",
-						paddingHorizontal: 5,
-					}}
-				>
-					<View style={{ height: 15, width: 150, backgroundColor: "gray" }}></View>
-					<View style={{ height: 15, width: 35, backgroundColor: "gray" }}></View>
-				</View>
-				<View
-					style={{
-						width: "100%",
-						flexDirection: "row",
-						paddingVertical: 4,
-						justifyContent: "space-between",
-						marginTop: 8,
-					}}
-				>
-					<View style={{ flexDirection: "row", alignItems: "center" }}>
-						<View
-							style={{
-								height: 40,
-								width: 40,
-								borderRadius: 50,
-								backgroundColor: "gray",
-							}}
-						/>
-						<View style={{ marginHorizontal: 8 }}>
-							<View style={{ height: 8, width: 100, backgroundColor: "gray" }}></View>
-							<View
-								style={{
-									height: 8,
-									width: 45,
-									backgroundColor: "gray",
-									marginVertical: 8,
-								}}
-							></View>
-						</View>
-					</View>
-					<Button
-						title={"Subscribe"}
-						width={"auto"}
-						px={16}
-						py={8}
-						type={"filled"}
-						bg={"gray"}
-						textStyle={{
-							fontSize: 16,
-							fontWeight: "700",
-							marginHorizontal: 4,
-							color: "black",
-						}}
-						onPress={async () => {}}
-					/>
-				</View>
-			</SafeAreaView>
-		);
+		return <LoadingSkeleton />;
 	}
 	return (
 		<>
@@ -246,7 +197,7 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 							horizontal={true}
 							showsHorizontalScrollIndicator={false}
 						>
-							{ReactionLoading  ? (
+							{ReactionLoading ? (
 								<Skeleton
 									children={
 										<Button
@@ -315,6 +266,76 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 			<CollectVideoSheet sheetRef={collectRef} />
 			<MirrorVideoSheet sheetRef={mirrorRef} />
 		</>
+	);
+};
+
+const LoadingSkeleton = () => {
+	return (
+		<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+			<View
+				style={{
+					height: 280,
+					backgroundColor: "gray",
+				}}
+			></View>
+			<View
+				style={{
+					flexDirection: "row",
+					marginVertical: 15,
+					justifyContent: "space-between",
+					paddingHorizontal: 5,
+				}}
+			>
+				<View style={{ height: 15, width: 150, backgroundColor: "gray" }}></View>
+				<View style={{ height: 15, width: 35, backgroundColor: "gray" }}></View>
+			</View>
+			<View
+				style={{
+					width: "100%",
+					flexDirection: "row",
+					paddingVertical: 4,
+					justifyContent: "space-between",
+					marginTop: 8,
+				}}
+			>
+				<View style={{ flexDirection: "row", alignItems: "center" }}>
+					<View
+						style={{
+							height: 40,
+							width: 40,
+							borderRadius: 50,
+							backgroundColor: "gray",
+						}}
+					/>
+					<View style={{ marginHorizontal: 8 }}>
+						<View style={{ height: 8, width: 100, backgroundColor: "gray" }}></View>
+						<View
+							style={{
+								height: 8,
+								width: 45,
+								backgroundColor: "gray",
+								marginVertical: 8,
+							}}
+						></View>
+					</View>
+				</View>
+				<Button
+					title={"Subscribe"}
+					width={"auto"}
+					px={16}
+					py={8}
+					type={"filled"}
+					bg={"gray"}
+					textStyle={{
+						fontSize: 16,
+						fontWeight: "700",
+						marginHorizontal: 4,
+						color: "black",
+					}}
+					onPress={async () => {}}
+				/>
+			</View>
+		</SafeAreaView>
 	);
 };
 
