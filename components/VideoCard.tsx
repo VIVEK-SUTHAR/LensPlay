@@ -42,7 +42,7 @@ const VideoCard: React.FC<VideoCardProp> = ({
 		Logger.Count("Start Navigation from VideoCard");
 		navigation.navigate("VideoPage");
 		setActivePublication(publication);
-	}, []);
+	}, [publication]);
 
 	const navigateToUserChannel = React.useCallback(() => {
 		navigation.navigate("Channel", {

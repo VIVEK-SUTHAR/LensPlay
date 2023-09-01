@@ -48,7 +48,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
 	const { activePublication } = useActivePublication();
-
 	React.useEffect(() => {
 		const delay = setTimeout(() => {
 			LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
