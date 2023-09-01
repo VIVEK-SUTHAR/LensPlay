@@ -57,7 +57,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 			TrackAction(APP_OPEN);
 			Logger.Log("In App Loader");
 			const userTokens = await AsyncStorage.getItem("@user_tokens");
-			
+
 			const address = await AsyncStorage.getItem(StorageKeys.UserAddress);
 			let profileId;
 
@@ -82,7 +82,6 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 				const accessToken = JSON.parse(userTokens).accessToken;
 				const refreshToken = JSON.parse(userTokens).refreshToken;
 
-
 				if (!accessToken || !refreshToken) {
 					Logger.Error("No access and refresh,goin to Login");
 					navigation.replace("LetsGetIn");
@@ -103,22 +102,31 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 					navigation.replace("Root");
 				} else {
 					Logger.Error("Invalid Tokens,Gnerating new tokens");
-					const newData = await getAccessFromRefresh({
-						variables: {
-							request: {
-								refreshToken: refreshToken,
+					try {
+						const newData = await getAccessFromRefresh({
+							variables: {
+								request: {
+									refreshToken: refreshToken,
+								},
 							},
-						},
-					});
-					Logger.Error("Generated new tokens");
-					setAccessToken(newData?.data?.refresh?.accessToken);
-					setRefreshToken(newData?.data?.refresh?.refreshToken);
-					await storeTokens(
-						newData?.data?.refresh?.accessToken,
-						newData?.data?.refresh?.refreshToken
-					);
-					Logger.Error("Goint to Feed");
-					navigation.replace("Root");
+						});
+						Logger.Error("Generated new tokens");
+						setAccessToken(newData?.data?.refresh?.accessToken);
+						setRefreshToken(newData?.data?.refresh?.refreshToken);
+						await storeTokens(
+							newData?.data?.refresh?.accessToken,
+							newData?.data?.refresh?.refreshToken
+						);
+						Logger.Error("Goint to Feed");
+						navigation.replace("Root");
+					} catch (error) {
+						if (error instanceof Error) {
+							if (error?.message?.includes("InvalidJwtToken")) {
+								Logger.Error("Error", error);
+								navigation.replace("LetsGetIn");
+							}
+						}
+					}
 				}
 			}
 		} catch (error) {

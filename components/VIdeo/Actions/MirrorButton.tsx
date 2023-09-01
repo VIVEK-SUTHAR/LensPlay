@@ -5,28 +5,21 @@ import { dark_primary } from "constants/Colors";
 import { ToastType } from "customTypes/Store";
 import React from "react";
 import { useGuestStore } from "store/GuestStore";
-import { useThemeStore, useToast } from "store/Store";
+import { useReactionStore, useThemeStore, useToast } from "store/Store";
 
 type MirrorButtonProps = {
-	id: string;
-	totalMirrors: number;
-	bannerUrl: string;
-	isAlreadyMirrored: boolean;
 	mirrorRef: React.RefObject<BottomSheetMethods>;
 };
 
-const MirrorButton: React.FC<MirrorButtonProps> = ({
-	totalMirrors,
-	isAlreadyMirrored,
-	mirrorRef,
-}) => {
+const MirrorButton = ({ mirrorRef }: MirrorButtonProps) => {
 	const Toast = useToast();
 	const { PRIMARY } = useThemeStore();
 	const { isGuest } = useGuestStore();
+	const { mirrorStats } = useReactionStore();
 
 	return (
 		<Button
-			title={totalMirrors?.toString()}
+			title={mirrorStats.mirrorCount?.toString()}
 			onPress={() => {
 				if (isGuest) {
 					Toast.show("Please Login", ToastType.ERROR, true);
@@ -43,10 +36,10 @@ const MirrorButton: React.FC<MirrorButtonProps> = ({
 			textStyle={{
 				fontSize: 14,
 				fontWeight: "500",
-				color: isAlreadyMirrored ? PRIMARY : "white",
+				color: mirrorStats.isMirrored ? PRIMARY : "white",
 				marginLeft: 4,
 			}}
-			icon={<Icon name="mirror" size={20} color={isAlreadyMirrored ? PRIMARY : "white"} />}
+			icon={<Icon name="mirror" size={20} color={mirrorStats.isMirrored ? PRIMARY : "white"} />}
 		/>
 	);
 };

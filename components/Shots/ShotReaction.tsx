@@ -51,7 +51,6 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 				Logger.Log(error.message);
 				toast.show("Something went wrong", ToastType.ERROR, true);
 			}
-
 			collectSheetRef?.current?.close();
 		},
 	});
