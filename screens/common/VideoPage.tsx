@@ -51,7 +51,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
 	const { activePublication } = useActivePublication();
-
 	React.useEffect(() => {
 		const delay = setTimeout(() => {
 			LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
@@ -111,10 +110,10 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 			activePublication?.hasCollectedByMe || false,
 			activePublication?.stats?.totalAmountOfCollects || 0
 		);
-		setMirrorStats(
-			activePublication?.mirrors?.length > 0,
-			activePublication?.stats?.totalAmountOfMirrors || 0
-		);
+		// setMirrorStats(
+		// 	activePublication?.mirrors?.length > 0,
+		// 	activePublication?.stats?.totalAmountOfMirrors || 0
+		// );
 		return () => {
 			handler.remove();
 		};
@@ -203,7 +202,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							horizontal={true}
 							showsHorizontalScrollIndicator={false}
 						>
-							{loading || !reaction ? (
+							{!reaction ? (
 								<Skeleton
 									children={
 										<Button
@@ -230,13 +229,13 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 										isalreadyDisLiked={videopageStats?.isDisliked}
 										id={activePublication?.id}
 									/>
-									<MirrorButton
+									{/* <MirrorButton
 										id={activePublication?.id}
 										totalMirrors={mirrorStats?.mirrorCount}
 										isAlreadyMirrored={mirrorStats?.isMirrored}
 										bannerUrl={getRawurl(activePublication?.metadata?.cover)}
 										mirrorRef={mirrorRef}
-									/>
+									/> */}
 									<CollectButton
 										totalCollects={collectStats?.collectCount}
 										collectRef={collectRef}
