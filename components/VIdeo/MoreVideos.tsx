@@ -150,7 +150,7 @@ const MoreVideosList = React.memo(() => {
 				keyExtractor={keyExtractor}
 				ListEmptyComponent={<NotFound message="Looks like no videos" />}
 				removeClippedSubviews={true}
-				estimatedItemSize={110}
+				estimatedItemSize={122}
 				ListFooterComponent={<MoreLoader />}
 				onEndReachedThreshold={0.7}
 				onEndReached={onEndCallBack}

@@ -30,9 +30,10 @@ import {
 import DisLikeButton from "../../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../../components/VIdeo/Actions/MirrorButton";
 import { useActivePublication, useReactionStore } from "../../store/Store";
-import { RootStackScreenProps } from "../../types/navigation/types";
+
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
+import { RootStackScreenProps } from "customTypes/navigation";
 
 const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo">) => {
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
@@ -58,27 +59,6 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 	useEffect(() => {
 		BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
 		getVideoById(route.params.id);
-		setVideoPageStats(
-			activePublication?.reaction === "UPVOTE",
-			activePublication?.reaction === "DOWNVOTE",
-			activePublication?.stats?.totalUpvotes || 0
-		);
-		setCollectStats(
-			activePublication?.hasCollectedByMe || false,
-			activePublication?.stats?.totalAmountOfCollects || 0
-		);
-		if (activePublication?.__typename === "Mirror") {
-			setMirrorStats(
-				activePublication?.mirrorOf.mirrors?.length > 0,
-				activePublication?.stats?.totalAmountOfMirrors || 0
-			);
-		}
-		if (activePublication?.__typename === "Post") {
-			setMirrorStats(
-				activePublication?.mirrors?.length > 0,
-				activePublication?.stats?.totalAmountOfMirrors || 0
-			);
-		}
 	}, [route.params.id]);
 
 	const { setVideoURI, uri } = useVideoURLStore();
@@ -94,6 +74,27 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 				},
 			});
 			setActivePublication(feed?.data?.publication as Post);
+			setVideoPageStats(
+				activePublication?.reaction === "UPVOTE",
+				activePublication?.reaction === "DOWNVOTE",
+				activePublication?.stats?.totalUpvotes || 0
+			);
+			setCollectStats(
+				activePublication?.hasCollectedByMe || false,
+				activePublication?.stats?.totalAmountOfCollects || 0
+			);
+			if (activePublication?.__typename === "Mirror") {
+				setMirrorStats(
+					activePublication?.mirrorOf.mirrors?.length > 0,
+					activePublication?.stats?.totalAmountOfMirrors || 0
+				);
+			}
+			if (activePublication?.__typename === "Post") {
+				setMirrorStats(
+					activePublication?.mirrors?.length > 0,
+					activePublication?.stats?.totalAmountOfMirrors || 0
+				);
+			}
 			if (
 				activePublication?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")
 			) {
