@@ -1,6 +1,5 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import CommentSheet from "components/Comments/CommentSheet";
-import Skeleton from "components/common/Skeleton";
 import Icon from "components/Icon";
 import LPImage from "components/UI/LPImage";
 import CollectVideoSheet from "components/VIdeo/Actions/CollectVideoSheet";
@@ -8,19 +7,16 @@ import MetaDataSheet from "components/VIdeo/Actions/MetaDataSheet";
 import MirrorVideoSheet from "components/VIdeo/Actions/MirrorVideoSheet";
 import MoreVideos from "components/VIdeo/MoreVideos";
 import VideoPlayer from "components/VideoPlayer";
-import { black, dark_primary } from "constants/Colors";
+import { black } from "constants/Colors";
 import { Post, usePublicationDetailsLazyQuery } from "customTypes/generated";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
-import { useReaction } from "hooks/useLensQuery";
 import React, { useEffect, useRef, useState } from "react";
 import { BackHandler, Dimensions, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import useVideoURLStore from "store/videoURL";
 import getImageProxyURL from "utils/getImageProxyURL";
 import Logger from "utils/logger";
-import { client } from "../../apollo/client";
-import fetchPublicationById from "../../apollo/Queries/fetchPublicationById";
 import Button from "../../components/UI/Button";
 import StyledText from "../../components/UI/StyledText";
 import {
@@ -33,7 +29,7 @@ import {
 } from "../../components/VIdeo";
 import DisLikeButton from "../../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../../components/VIdeo/Actions/MirrorButton";
-import { useActivePublication, useAuthStore, useReactionStore } from "../../store/Store";
+import { useActivePublication, useReactionStore } from "../../store/Store";
 import { RootStackScreenProps } from "../../types/navigation/types";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
@@ -42,44 +38,15 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
 	const [isMute, setIsMute] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
-	const {
-		reaction,
-		setReaction,
-		videopageStats,
-		collectStats,
-		mirrorStats,
-		setVideoPageStats,
-		clearStats,
-		setCollectStats,
-		setMirrorStats,
-	} = useReactionStore();
+	const { videopageStats, setVideoPageStats, clearStats, setCollectStats, setMirrorStats } =
+		useReactionStore();
 	const { activePublication, setActivePublication } = useActivePublication();
-  const { data: ReactionData, error:ReactionError, loading:ReactionLoading } = useReaction(route.params.id);
-  if (ReactionData) {
-		if (!reaction) {
-			setReaction(true);
-			setVideoPageStats(
-				ReactionData?.publication?.reaction === "UPVOTE",
-				ReactionData?.publication?.reaction === "DOWNVOTE",
-				ReactionData?.publication?.stats?.totalUpvotes
-			);
-			setCollectStats(
-				ReactionData?.publication?.hasCollectedByMe,
-				ReactionData?.publication?.stats?.totalAmountOfCollects
-			);
-			setMirrorStats(
-				ReactionData?.publication?.mirrors?.length > 0,
-				ReactionData?.publication?.stats?.totalAmountOfMirrors
-			);
-		}
-	}
 
 	function handleBackButtonClick() {
 		setStatusBarHidden(false, "fade");
 		setInFullsreen(!inFullscreen);
 		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
 		if (!inFullscreen) {
-      setReaction(false);
 			clearStats();
 			setCollectStats(false, 0);
 			setMirrorStats(false, 0);
@@ -91,10 +58,32 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 	useEffect(() => {
 		BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
 		getVideoById(route.params.id);
+		setVideoPageStats(
+			activePublication?.reaction === "UPVOTE",
+			activePublication?.reaction === "DOWNVOTE",
+			activePublication?.stats?.totalUpvotes || 0
+		);
+		setCollectStats(
+			activePublication?.hasCollectedByMe || false,
+			activePublication?.stats?.totalAmountOfCollects || 0
+		);
+		if (activePublication?.__typename === "Mirror") {
+			setMirrorStats(
+				activePublication?.mirrorOf.mirrors?.length > 0,
+				activePublication?.stats?.totalAmountOfMirrors || 0
+			);
+		}
+		if (activePublication?.__typename === "Post") {
+			setMirrorStats(
+				activePublication?.mirrors?.length > 0,
+				activePublication?.stats?.totalAmountOfMirrors || 0
+			);
+		}
 	}, [route.params.id]);
+
 	const { setVideoURI, uri } = useVideoURLStore();
 	const [fetchPub] = usePublicationDetailsLazyQuery();
-  Logger.Error("REACTION ERROR",ReactionData)
+
 	const getVideoById = async (pubId: string) => {
 		try {
 			const feed = await fetchPub({
@@ -239,73 +228,41 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 							uploadedBy={activePublication?.profile?.name || activePublication?.profile?.handle}
 							alreadyFollowing={activePublication?.profile?.isFollowedByMe || false}
 						/>
-						<ScrollView
+					</View>
+					<ScrollView
+						style={{
+							marginBottom: 16,
+							marginStart: 4,
+						}}
+						horizontal={true}
+						showsHorizontalScrollIndicator={false}
+					>
+						<LikeButton
+							like={videopageStats?.likeCount}
+							id={activePublication?.id}
+							isalreadyLiked={videopageStats?.isLiked}
+						/>
+						<DisLikeButton
+							isalreadyDisLiked={videopageStats?.isDisliked}
+							id={activePublication?.id}
+						/>
+						<MirrorButton mirrorRef={mirrorRef} />
+						<CollectButton collectRef={collectRef} />
+						<ShareButton />
+						<ReportButton />
+					</ScrollView>
+					<View style={styles.commentsContainer}>
+						<StyledText
+							title="Comments"
 							style={{
-								paddingVertical: 24,
+								fontSize: 16,
+								fontWeight: "700",
+								color: "white",
 							}}
-							horizontal={true}
-							showsHorizontalScrollIndicator={false}
-						>
-							{ReactionLoading  ? (
-								<Skeleton
-									children={
-										<Button
-											title={""}
-											mx={4}
-											px={34}
-											width={"auto"}
-											bg={dark_primary}
-											type={"filled"}
-											borderRadius={8}
-										/>
-									}
-									number={5}
-									horizontal={true}
-								/>
-							) : (
-								<>
-									<LikeButton
-										like={videopageStats?.likeCount}
-										id={activePublication?.id}
-										isalreadyLiked={videopageStats?.isLiked}
-									/>
-									<DisLikeButton
-										isalreadyDisLiked={videopageStats?.isDisliked}
-										id={activePublication?.id}
-									/>
-									<MirrorButton
-										id={activePublication?.id}
-										totalMirrors={mirrorStats?.mirrorCount}
-										isAlreadyMirrored={mirrorStats?.isMirrored}
-										bannerUrl={getRawurl(activePublication?.metadata?.cover)}
-										mirrorRef={mirrorRef}
-									/>
-									<CollectButton
-										totalCollects={collectStats?.collectCount}
-										collectRef={collectRef}
-										hasCollected={collectStats?.isCollected}
-									/>
-									<ShareButton
-										title={activePublication?.profile?.name || activePublication?.profile.handle}
-										publicationId={activePublication?.id}
-									/>
-									<ReportButton publicationId={activePublication?.id} />
-								</>
-							)}
-						</ScrollView>
-						<View style={styles.commentsContainer}>
-							<StyledText
-								title="Comments"
-								style={{
-									fontSize: 16,
-									fontWeight: "700",
-									color: "white",
-								}}
-							/>
-							<TouchableOpacity onPress={openCommentSheet}>
-								<Icon name="arrowDown" color="white" size={20} />
-							</TouchableOpacity>
-						</View>
+						/>
+						<TouchableOpacity onPress={openCommentSheet}>
+							<Icon name="arrowDown" color="white" size={20} />
+						</TouchableOpacity>
 					</View>
 					<MoreVideos />
 				</ScrollView>

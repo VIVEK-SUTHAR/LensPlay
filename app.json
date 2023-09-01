@@ -1,0 +1,114 @@
+{
+	"expo": {
+		"name": "LensPlay",
+		"slug": "test",
+		"version": "1.0.2",
+		"orientation": "portrait",
+		"backgroundColor": "#000000",
+		"icon": "./assets/images/icon.png",
+		"scheme": "lensplay",
+		"userInterfaceStyle": "automatic",
+		"splash": {
+			"image": "./assets/images/adaptive-icon.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#000000"
+		},
+		"updates": {
+			"fallbackToCacheTimeout": 0,
+			"url": "https://u.expo.dev/bc883fdb-0b27-478c-9139-ad6577b8aca6"
+		},
+		"runtimeVersion": {
+			"policy": "sdkVersion"
+		},
+		"assetBundlePatterns": ["**/*"],
+		"ios": {
+			"supportsTablet": false,
+			"requireFullScreen": true,
+			"bundleIdentifier": "com.lensplayxyz.lensplay",
+			"icon": "./assets/images/icon.png",
+			"backgroundColor": "#000000",
+			"googleServicesFile": "./GoogleService-Info.plist",
+			"associatedDomains": ["applinks:lensplay.xyz"]
+		},
+		"jsEngine": "hermes",
+		"android": {
+			"package": "com.lensplayxyz.lensplay",
+			"googleServicesFile": "./google-services.json",
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/images/adaptive-icon.png",
+				"backgroundColor": "#000000"
+			},
+			"intentFilters": [
+				{
+					"action": "VIEW",
+					"data": [
+						{
+							"scheme": "lensplay"
+						}
+					],
+					"category": ["BROWSABLE", "DEFAULT"]
+				},
+				{
+					"action": "VIEW",
+					"autoVerify": true,
+					"data": [
+						{
+							"scheme": "https",
+							"host": "www.lensplay.xyz",
+							"pathPrefix": "/watch/"
+						}
+					],
+					"category": ["BROWSABLE", "DEFAULT"]
+				},
+				{
+					"action": "VIEW",
+					"autoVerify": true,
+					"data": [
+						{
+							"scheme": "https",
+							"host": "www.lensplay.xyz",
+							"pathPrefix": "/channel/"
+						}
+					],
+					"category": ["BROWSABLE", "DEFAULT"]
+				}
+			]
+		},
+		"extra": {
+			"eas": {
+				"projectId": "bc883fdb-0b27-478c-9139-ad6577b8aca6"
+			}
+		},
+		"plugins": [
+			[
+				"expo-image-picker",
+				{
+					"photosPermission": "The app accesses your gallery to let you share them with your friends on Lens"
+				}
+			],
+			[
+				"expo-camera",
+				{
+					"cameraPermission": "Allow LensPlay to access your camera."
+				}
+			],
+			[
+				"expo-screen-orientation",
+				{
+					"initialOrientation": "DEFAULT"
+				}
+			],
+			[
+				"expo-build-properties",
+				{
+					"ios": {
+						"useFrameworks": "static"
+					}
+				}
+			],
+			"@react-native-firebase/app",
+			"@react-native-firebase/perf",
+			"@react-native-firebase/crashlytics"
+		]
+	}
+}

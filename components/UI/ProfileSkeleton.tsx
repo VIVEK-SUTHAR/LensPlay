@@ -10,7 +10,6 @@ const ProfileSkeleton = () => {
 	return (
 		<ScrollView
 			style={{
-				// paddingHorizontal: 8,
 				backgroundColor: "#111111",
 				height: Dimensions.get("screen").height,
 			}}
@@ -231,8 +230,9 @@ const ProfileSkeleton = () => {
 									flexWrap: "wrap",
 								}}
 							>
-								{[...Array(4)].map(() => (
+								{[...Array(4)].map((_, index) => (
 									<View
+										key={index}
 										style={{
 											height: 130,
 											width: "48%",
