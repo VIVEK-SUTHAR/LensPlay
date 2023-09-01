@@ -214,23 +214,10 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							isalreadyDisLiked={videopageStats?.isDisliked}
 							id={activePublication?.id}
 						/>
-						<MirrorButton
-							id={activePublication?.id}
-							totalMirrors={mirrorStats?.mirrorCount}
-							isAlreadyMirrored={mirrorStats?.isMirrored}
-							bannerUrl={getRawurl(activePublication?.metadata?.cover)}
-							mirrorRef={mirrorRef}
-						/>
-						<CollectButton
-							totalCollects={collectStats?.collectCount}
-							collectRef={collectRef}
-							hasCollected={collectStats?.isCollected}
-						/>
-						<ShareButton
-							title={activePublication?.profile?.name || activePublication?.profile.handle}
-							publicationId={activePublication?.id}
-						/>
-						<ReportButton publicationId={activePublication?.id} />
+						<MirrorButton mirrorRef={mirrorRef} />
+						<CollectButton collectRef={collectRef} />
+						<ShareButton />
+						<ReportButton />
 					</ScrollView>
 					<View
 						style={{
