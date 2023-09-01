@@ -1,9 +1,7 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useFocusEffect } from "@react-navigation/native";
 import CommentSheet from "components/Comments/CommentSheet";
-import Skeleton from "components/common/Skeleton";
 import Icon from "components/Icon";
-import Button from "components/UI/Button";
 import LPImage from "components/UI/LPImage";
 import StyledText from "components/UI/StyledText";
 import {
@@ -22,11 +20,10 @@ import MirrorVideoSheet from "components/VIdeo/Actions/MirrorVideoSheet";
 import MoreVideos from "components/VIdeo/MoreVideos";
 import VideoPageSkeleton from "components/VIdeo/VideoPageSkeleton";
 import VideoPlayer from "components/VideoPlayer";
-import { black, dark_primary } from "constants/Colors";
+import { black } from "constants/Colors";
 import { RootStackScreenProps } from "customTypes/navigation";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
-import { useReaction } from "hooks/useLensQuery";
 import React, { useEffect, useRef, useState } from "react";
 import {
 	BackHandler,
@@ -51,7 +48,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
 	const { activePublication } = useActivePublication();
-
 	React.useEffect(() => {
 		const delay = setTimeout(() => {
 			LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
@@ -62,8 +58,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 
 	const [isMute, setIsMute] = useState<boolean>(false);
 	const {
-		reaction,
-		setReaction,
 		videopageStats,
 		collectStats,
 		mirrorStats,
@@ -79,7 +73,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
 		if (!inFullscreen) {
 			navigation.goBack();
-			setReaction(false);
 			clearStats();
 			setCollectStats(false, 0);
 			setMirrorStats(false, 0);
@@ -88,7 +81,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	}
 
 	navigation.addListener("blur", () => {
-		setReaction(false);
 		setVideoURI("");
 		clearStats();
 		setCollectStats(false, 0);
@@ -100,32 +92,33 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	});
 
 	useEffect(() => {
+		setVideoPageStats(
+			activePublication?.reaction === "UPVOTE",
+			activePublication?.reaction === "DOWNVOTE",
+			activePublication?.stats?.totalUpvotes || 0
+		);
+		setCollectStats(
+			activePublication?.hasCollectedByMe || false,
+			activePublication?.stats?.totalAmountOfCollects || 0
+		);
+		if (activePublication?.__typename === "Mirror") {
+			setMirrorStats(
+				activePublication?.mirrorOf.mirrors?.length > 0,
+				activePublication?.stats?.totalAmountOfMirrors || 0
+			);
+		}
+		if (activePublication?.__typename === "Post") {
+			setMirrorStats(
+				activePublication?.mirrors?.length > 0,
+				activePublication?.stats?.totalAmountOfMirrors || 0
+			);
+		}
+
 		const handler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
 		return () => {
 			handler.remove();
 		};
 	}, []);
-
-	const { data: ReactionData, error, loading } = useReaction(activePublication?.id);
-
-	if (ReactionData) {
-		if (!reaction) {
-			setReaction(true);
-			setVideoPageStats(
-				ReactionData?.publication?.reaction === "UPVOTE",
-				ReactionData?.publication?.reaction === "DOWNVOTE",
-				ReactionData?.publication?.stats?.totalUpvotes
-			);
-			setCollectStats(
-				ReactionData?.publication?.hasCollectedByMe,
-				ReactionData?.publication?.stats?.totalAmountOfCollects
-			);
-			setMirrorStats(
-				ReactionData?.publication?.mirrors?.length > 0,
-				ReactionData?.publication?.stats?.totalAmountOfMirrors
-			);
-		}
-	}
 
 	const collectRef = useRef<BottomSheetMethods>(null);
 	const mirrorRef = useRef<BottomSheetMethods>(null);
@@ -203,60 +196,34 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							uploadedBy={activePublication?.profile?.name || activePublication?.profile?.handle}
 							alreadyFollowing={activePublication?.profile?.isFollowedByMe || false}
 						/>
-						<ScrollView
-							style={{
-								paddingVertical: 24,
-							}}
-							horizontal={true}
-							showsHorizontalScrollIndicator={false}
-						>
-							{loading || !reaction ? (
-								<Skeleton
-									children={
-										<Button
-											title={""}
-											mx={4}
-											px={34}
-											width={"auto"}
-											bg={dark_primary}
-											type={"filled"}
-											borderRadius={8}
-										/>
-									}
-									number={5}
-									horizontal={true}
-								/>
-							) : (
-								<>
-									<LikeButton
-										like={videopageStats?.likeCount}
-										id={activePublication?.id}
-										isalreadyLiked={videopageStats?.isLiked}
-									/>
-									<DisLikeButton
-										isalreadyDisLiked={videopageStats?.isDisliked}
-										id={activePublication?.id}
-									/>
-									<MirrorButton
-										id={activePublication?.id}
-										totalMirrors={mirrorStats?.mirrorCount}
-										isAlreadyMirrored={mirrorStats?.isMirrored}
-										bannerUrl={getRawurl(activePublication?.metadata?.cover)}
-										mirrorRef={mirrorRef}
-									/>
-									<CollectButton
-										totalCollects={collectStats?.collectCount}
-										collectRef={collectRef}
-										hasCollected={collectStats?.isCollected}
-									/>
-									<ShareButton
-										title={activePublication?.profile?.name || activePublication?.profile.handle}
-										publicationId={activePublication?.id}
-									/>
-									<ReportButton publicationId={activePublication?.id} />
-								</>
-							)}
-						</ScrollView>
+					</View>
+					<ScrollView
+						style={{
+							marginBottom: 16,
+							marginStart: 4,
+						}}
+						horizontal={true}
+						showsHorizontalScrollIndicator={false}
+					>
+						<LikeButton
+							like={videopageStats?.likeCount}
+							id={activePublication?.id}
+							isalreadyLiked={videopageStats?.isLiked}
+						/>
+						<DisLikeButton
+							isalreadyDisLiked={videopageStats?.isDisliked}
+							id={activePublication?.id}
+						/>
+						<MirrorButton mirrorRef={mirrorRef} />
+						<CollectButton collectRef={collectRef} />
+						<ShareButton />
+						<ReportButton />
+					</ScrollView>
+					<View
+						style={{
+							marginHorizontal: 8,
+						}}
+					>
 						<TouchableOpacity
 							style={styles.commentsContainer}
 							onPress={openCommentSheet}
@@ -283,13 +250,15 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		</>
 	);
 };
+
 export default VideoPage;
+
 const styles = StyleSheet.create({
 	commentsContainer: {
 		backgroundColor: black[600],
 		padding: 12,
 		borderRadius: 8,
-		width: "98%",
+		width: "100%",
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",

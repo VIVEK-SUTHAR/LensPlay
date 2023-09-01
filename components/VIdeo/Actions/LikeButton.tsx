@@ -1,16 +1,24 @@
+import { ApolloCache } from "@apollo/client";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
 import { PUBLICATION, SHOT } from "constants/tracking";
 import {
-  ReactionTypes,
-  useAddReactionMutation,
-  useRemoveReactionMutation
+	ReactionTypes,
+	useAddReactionMutation,
+	useRemoveReactionMutation,
 } from "customTypes/generated";
 import { ToastType } from "customTypes/Store";
 import React, { useState } from "react";
 import { useGuestStore } from "store/GuestStore";
-import { useAuthStore, useProfile, useReactionStore, useThemeStore, useToast } from "store/Store";
+import {
+	useActivePublication,
+	useAuthStore,
+	useProfile,
+	useReactionStore,
+	useThemeStore,
+	useToast,
+} from "store/Store";
 import formatInteraction from "utils/formatInteraction";
 import Logger from "utils/logger";
 import TrackAction from "utils/Track";
@@ -23,17 +31,39 @@ type LikeButtonProps = {
 };
 
 const LikeButton: React.FC<LikeButtonProps> = ({ like, isalreadyLiked, id, bytes = false }) => {
-
 	const [isLiked, setIsLiked] = useState(isalreadyLiked);
-  const [likeCount, setLikeCount] = useState(like);
-  
+	const [likeCount, setLikeCount] = useState(like);
 	const userStore = useProfile();
-  const toast = useToast();
-  
+	const toast = useToast();
 	const { PRIMARY } = useThemeStore();
 	const { isGuest } = useGuestStore();
 	const { setVideoPageStats } = useReactionStore();
 	const { accessToken } = useAuthStore();
+	const { activePublication } = useActivePublication();
+
+	const updateCache = (cache: ApolloCache<any>, type: ReactionTypes.Upvote | null) => {
+		try {
+			cache.modify({
+				id: cache.identify(activePublication as any),
+				fields: {
+					reaction() {
+						if (type) {
+							return ReactionTypes.Upvote;
+						} else {
+							return null;
+						}
+					},
+					stats: (stats) => ({
+						...stats,
+						totalUpvotes:
+							type === ReactionTypes.Upvote ? stats.totalUpvotes + 1 : stats.totalUpvotes - 1,
+					}),
+				},
+			});
+		} catch (error) {
+			Logger.Error("error", error);
+		}
+	};
 
 	const [addReaction] = useAddReactionMutation({
 		onCompleted: () => {},
@@ -47,6 +77,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ like, isalreadyLiked, id, bytes
 			Logger.Error("Failed to add Like In Like Button", error);
 			toast.show("Something went wrong!", ToastType.ERROR, true);
 		},
+		update: (cache) => updateCache(cache, ReactionTypes.Upvote),
 	});
 
 	const [removeReaction] = useRemoveReactionMutation({
@@ -61,6 +92,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ like, isalreadyLiked, id, bytes
 			Logger.Error("Failed to remove Like In Like Button", error);
 			toast.show("Something went wrong!", ToastType.ERROR, true);
 		},
+		update: (cache) => updateCache(cache, null),
 	});
 
 	const onLike = async () => {
@@ -110,7 +142,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ like, isalreadyLiked, id, bytes
 						"x-access-token": `Bearer ${accessToken}`,
 					},
 				},
-      });
+			});
 		}
 	};
 

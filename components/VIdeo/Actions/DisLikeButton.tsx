@@ -1,16 +1,24 @@
+import { ApolloCache } from "@apollo/client";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
 import { PUBLICATION } from "constants/tracking";
 import {
-  ReactionTypes,
-  useAddReactionMutation,
-  useRemoveReactionMutation
+	ReactionTypes,
+	useAddReactionMutation,
+	useRemoveReactionMutation,
 } from "customTypes/generated";
 import { ToastType } from "customTypes/Store";
 import React from "react";
 import { useGuestStore } from "store/GuestStore";
-import { useAuthStore, useProfile, useReactionStore, useThemeStore, useToast } from "store/Store";
+import {
+	useActivePublication,
+	useAuthStore,
+	useProfile,
+	useReactionStore,
+	useThemeStore,
+	useToast,
+} from "store/Store";
 import Logger from "utils/logger";
 import TrackAction from "utils/Track";
 
@@ -26,6 +34,26 @@ const DisLikeButton: React.FC<DisLikeButtonProps> = ({ isalreadyDisLiked, id }) 
 	const { videopageStats, setVideoPageStats } = useReactionStore();
 	const { accessToken } = useAuthStore();
 	const toast = useToast();
+	const { activePublication } = useActivePublication();
+
+	const updateCache = (cache: ApolloCache<any>, type: ReactionTypes.Downvote | null) => {
+		try {
+			cache.modify({
+				id: cache.identify(activePublication as any),
+				fields: {
+					reaction() {
+						if (type) {
+							return ReactionTypes.Downvote;
+						} else {
+							return null;
+						}
+					},
+				},
+			});
+		} catch (error) {
+			Logger.Error("error", error);
+		}
+	};
 
 	const [addReaction] = useAddReactionMutation({
 		onError: (error) => {
@@ -38,6 +66,7 @@ const DisLikeButton: React.FC<DisLikeButtonProps> = ({ isalreadyDisLiked, id }) 
 			Logger.Error("Failed to add like in Dislike", error);
 		},
 		onCompleted: (data) => {},
+		update: (cache) => updateCache(cache, ReactionTypes.Downvote),
 	});
 
 	const [removeReaction] = useRemoveReactionMutation({
@@ -47,6 +76,7 @@ const DisLikeButton: React.FC<DisLikeButtonProps> = ({ isalreadyDisLiked, id }) 
 			toast.show("Something went wrong!", ToastType.ERROR, true);
 		},
 		onCompleted: (data) => {},
+		update: (cache) => updateCache(cache, null),
 	});
 
 	const onDislike = async () => {
