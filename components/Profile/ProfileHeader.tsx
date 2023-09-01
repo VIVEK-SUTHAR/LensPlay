@@ -50,6 +50,7 @@ import Sheet from "components/Bottom";
 import { Platform } from "react-native";
 import { ToastType } from "customTypes/Store";
 import sendTip from "utils/tip/sendTip";
+import TipInfo from "screens/BottomTabs/Profile/TipInfo";
 
 type ProfileHeaderProps = {
 	Profile: ProfileQuery | undefined;
@@ -189,7 +190,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 								<SubscribeButton channelId={profile?.id} isFollwebByMe={profile?.isFollowedByMe!} />
 							</View>
 						) : (
-							<EditChannelButton />
+							<View style={{ flexDirection: "row", paddingHorizontal: 2, columnGap: 8 }}>
+								<EditChannelButton />
+								<TipInfoButton />
+							</View>
 						)}
 					</View>
 				</View>
@@ -318,9 +322,31 @@ const EditChannelButton = () => {
 			borderColor={white[100]}
 			px={24}
 			py={8}
-			bg={"transparent"}
+			bg={"red"}
 			textStyle={styles.editButtonText}
 			onPress={goToEditChannel}
+		/>
+	);
+};
+
+const TipInfoButton = () => {
+	const navigation = useNavigation();
+
+	const goToTipInfo = () => {
+		navigation.navigate("TipInfo");
+	};
+
+	return (
+		<Button
+			title={"Tip"}
+			width={"auto"}
+			type="outline"
+			borderColor={white[100]}
+			px={24}
+			py={8}
+			bg={"transparent"}
+			textStyle={styles.editButtonText}
+			onPress={goToTipInfo}
 		/>
 	);
 };
@@ -462,8 +488,6 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 const SubscribeButton = React.memo(_SubscribeButton);
 
 export default React.memo(ProfileHeader);
-
-
 
 export { SubscribeButton };
 

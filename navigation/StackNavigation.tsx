@@ -29,6 +29,7 @@ import BottomTabNavigator from "./BottomTabNavigation";
 import LetsGetIn from "screens/Auth/LetsGetIn";
 import ConnectWallet from "screens/Auth/ConnectWallet";
 import PickNFT from "screens/BottomTabs/Profile/PickNFT";
+import TipInfo from "screens/BottomTabs/Profile/TipInfo";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
@@ -171,6 +172,23 @@ export default function StackNavigation() {
 					},
 				}}
 			/>
+
+			<Stack.Screen
+				name="TipInfo"
+				component={TipInfo}
+				options={{
+					animation: "slide_from_right",
+					headerShown: false,
+					headerShadowVisible: false,
+					headerTitle: "Tip History",
+					headerTintColor: theme.PRIMARY,
+					headerTitleStyle: {
+						fontSize: 16,
+						fontWeight: "600",
+					},
+				}}
+			/>
+
 			<Stack.Screen
 				name="ReportPublication"
 				component={ReportPublication}

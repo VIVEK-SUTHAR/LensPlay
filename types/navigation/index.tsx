@@ -63,6 +63,7 @@ export type RootStackParamList = {
 	LetsGetIn: undefined;
 	LoginWithLens: undefined;
 	EditProfile: undefined;
+	TipInfo:undefined;
 	UserStats: {
 		profileId?: string;
 		activeTab: string;

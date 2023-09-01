@@ -104,7 +104,7 @@ const PickNFT: React.FC<RootStackScreenProps<"PickNFT">> = () => {
 					keyExtractor={keyExtractor}
 					renderItem={({ item }) => {
 						return <NFTCard nftData={item} />;
-					}}k
+					}}
 					ListFooterComponent={ListFooter}
 					onEndReached={onEndCallBack}
 					removeClippedSubviews={true}
