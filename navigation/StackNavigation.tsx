@@ -177,15 +177,11 @@ export default function StackNavigation() {
 				name="TipInfo"
 				component={TipInfo}
 				options={{
-					animation: "slide_from_right",
+					animation: "default",
 					headerShown: false,
+					headerTintColor: "white",
+					headerTitle: "",
 					headerShadowVisible: false,
-					headerTitle: "Tip History",
-					headerTintColor: theme.PRIMARY,
-					headerTitleStyle: {
-						fontSize: 16,
-						fontWeight: "600",
-					},
 				}}
 			/>
 

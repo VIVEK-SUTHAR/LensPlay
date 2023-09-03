@@ -1,20 +1,22 @@
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import Animated, { Extrapolation, SharedValue, interpolate, useAnimatedStyle } from 'react-native-reanimated'
-import { useNavigation } from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { black, white } from 'constants/Colors';
-import { Pressable } from 'react-native';
-import Icon from 'components/Icon';
-import Heading from 'components/UI/Heading';
+import { useNavigation } from "@react-navigation/native";
+import Icon from "components/Icon";
+import Heading from "components/UI/Heading";
+import { black, white } from "constants/Colors";
+import React from "react";
+import { Dimensions, Pressable, View } from "react-native";
+import Animated, {
+	Extrapolation,
+	SharedValue,
+	interpolate,
+	useAnimatedStyle,
+} from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type Props = {}
-
-const posterSize = Dimensions.get("screen").height / 3;
+const posterSize = Dimensions.get("screen").height / 4;
 const headerTop = 44 - 16;
 
-const TipHeader = ({ scrollY}: { scrollY: SharedValue<number>}) => {
-    const navigation=useNavigation();
+export default function TipHeader({ scrollY }: { scrollY: SharedValue<number> }) {
+	const navigation = useNavigation();
 	const inset = useSafeAreaInsets();
 	const opacityAnim = useAnimatedStyle(() => {
 		return {
@@ -63,6 +65,7 @@ const TipHeader = ({ scrollY}: { scrollY: SharedValue<number>}) => {
 					flexDirection: "row",
 					justifyContent: "flex-start",
 					alignItems: "center",
+					alignSelf: "center",
 					backgroundColor: black[700],
 					zIndex: 1,
 				},
@@ -71,33 +74,31 @@ const TipHeader = ({ scrollY}: { scrollY: SharedValue<number>}) => {
 		>
 			<Pressable
 				style={{
-					width: 40,
-					height: 40,
-					borderRadius: 50,
-					backgroundColor: "rgba(255,255,255,0.1)",
+					width: 36,
+					height: 36,
 					justifyContent: "center",
 					alignItems: "center",
-          marginHorizontal:16
+					alignSelf: "center",
+					marginLeft: 8,
+					marginTop: 2
 				}}
-        onPress={()=>{
-          navigation.goBack();
-        }}
+				onPress={() => {
+					navigation.goBack();
+				}}
 			>
-				<Icon name="arrowLeft" size={24} />
+				<Icon name="arrowLeft" size={24} style={{alignItems: "center", justifyContent: "center"}}/>
 			</Pressable>
-			{/* <Heading
+			<Heading
 				style={{
 					color: white[700],
 					fontSize: 24,
 					fontWeight: "500",
+					marginLeft: 4,
+					alignSelf: "center",
+					// marginBottom: 8
 				}}
-				title={playlistTitle}
-			/> */}
+				title={"Donations"}
+			/>
 		</Animated.View>
 	);
-
 }
-
-export default TipHeader
-
-const styles = StyleSheet.create({})
