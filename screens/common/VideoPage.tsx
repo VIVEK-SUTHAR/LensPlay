@@ -240,9 +240,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 										isalreadyDisLiked={videopageStats?.isDisliked}
 										id={activePublication?.id}
 									/>
-									<SupportButton
-										supportSheetRef={supportSheetRef}
-									/>
 									<MirrorButton
 										id={activePublication?.id}
 										totalMirrors={mirrorStats?.mirrorCount}
@@ -255,6 +252,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 										collectRef={collectRef}
 										hasCollected={collectStats?.isCollected}
 									/>
+									<SupportButton supportSheetRef={supportSheetRef} />
 									<ShareButton
 										title={activePublication?.profile?.name || activePublication?.profile.handle}
 										publicationId={activePublication?.id}

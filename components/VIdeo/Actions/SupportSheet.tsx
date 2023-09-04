@@ -1,4 +1,4 @@
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BottomSheetScrollView, BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 import Sheet from "components/Bottom";
@@ -6,9 +6,9 @@ import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import { black, primary, white } from "constants/Colors";
 import { ToastType } from "customTypes/Store";
-import { Profile, ProfileQuery } from "customTypes/generated";
+import { Profile } from "customTypes/generated";
 import React from "react";
-import { Platform, TextInput, View } from "react-native";
+import { Platform, View } from "react-native";
 import { useProfile, useToast } from "store/Store";
 import Logger from "utils/logger";
 import sendTip from "utils/tip/sendTip";
@@ -77,7 +77,7 @@ const _supportSheet = ({
 			snapPoints={[280]}
 			enablePanDownToClose={true}
 			enableOverDrag={true}
-			bottomInset={32}
+			bottomInset={64}
 			style={{
 				marginHorizontal: 8,
 			}}
@@ -96,14 +96,14 @@ const _supportSheet = ({
 						flexDirection: "row",
 						justifyContent: "space-between",
 						alignItems: "center",
-						paddingHorizontal: 18,
+						paddingHorizontal: 16,
 						paddingVertical: 8,
 					}}
 				>
 					<Heading
 						title={`Support @${profile?.handle}`}
 						style={{
-							fontSize: 20,
+							fontSize: 18,
 							color: white[800],
 							fontWeight: "600",
 						}}
@@ -112,8 +112,8 @@ const _supportSheet = ({
 				<View
 					style={{
 						borderBottomColor: black[300],
-						borderBottomWidth: 1.5,
-						marginTop: 4,
+						borderBottomWidth: 1,
+						marginVertical: 8,
 					}}
 				/>
 				<BottomSheetScrollView>
@@ -122,7 +122,7 @@ const _supportSheet = ({
 							padding: 12,
 						}}
 					>
-						<TextInput
+						<BottomSheetTextInput
 							placeholder="Enter amount in Matic"
 							value={amount}
 							placeholderTextColor={white[200]}
@@ -141,7 +141,7 @@ const _supportSheet = ({
 								setAmount(e.nativeEvent.text);
 							}}
 						/>
-						<TextInput
+						<BottomSheetTextInput
 							placeholder="Message"
 							value={message}
 							placeholderTextColor={white[200]}
@@ -153,7 +153,7 @@ const _supportSheet = ({
 								paddingVertical: Platform.OS === "ios" ? 16 : 8,
 								borderRadius: 8,
 								flex: 1,
-								marginVertical: 16
+								marginVertical: 16,
 							}}
 							onChange={(e) => {
 								e.preventDefault();
@@ -166,7 +166,7 @@ const _supportSheet = ({
 								await sendToken();
 							}}
 							title="Send"
-							bg={"#f5f5f5"}
+							bg={white[600]}
 							textStyle={{
 								fontWeight: "600",
 								fontSize: 16,

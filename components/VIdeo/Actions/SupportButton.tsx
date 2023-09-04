@@ -12,16 +12,7 @@ type ShareButtonProps = {
 	supportSheetRef: React.RefObject<BottomSheetMethods>;
 };
 
-const SupportButton = ({ supportSheetRef}: ShareButtonProps) => {
-	// const shareVideo = React.useCallback(async () => {
-	// 	try {
-	// 		await Share.share({
-	// 			message: `Let's watch ${title} on LensPlay,here's link, https://lensplay.xyz/watch/${publicationId}
-    //     `,
-	// 		});
-	// 		void TrackAction(PUBLICATION.SHARE);
-	// 	} catch (error) {}
-	// }, []);
+const SupportButton = ({ supportSheetRef }: ShareButtonProps) => {
 	return (
 		<Button
 			title={"Support"}
