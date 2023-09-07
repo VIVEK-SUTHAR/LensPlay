@@ -3,6 +3,7 @@ import Logger from "utils/logger";
 import messaging from "@react-native-firebase/messaging";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import StorageKeys from "constants/Storage";
+import updateTokenInCache from "./updateTokenInCache";
 
 async function getFCMTokenFromFirebase() {
 	try {
@@ -75,6 +76,7 @@ async function getAndSaveNotificationToken(profileId: string) {
 			};
 			if (newToken) {
 				await AsyncStorage.setItem(StorageKeys.NotificationToken, JSON.stringify(notificationData));
+				await updateTokenInCache(profileId, newToken);
 				await saveTokenInDB(profileId, newToken);
 			} else {
 				Logger.Error("[Error]: In Genarating notification token");
@@ -100,6 +102,7 @@ async function getAndSaveNotificationToken(profileId: string) {
 						StorageKeys.NotificationToken,
 						JSON.stringify(notificationData)
 					);
+					await updateTokenInCache(profileId, newToken);
 					await updateTokenInDB(profileId, newToken);
 				} else {
 					Logger.Error("[Error]: In Genarating notification token");
@@ -108,7 +111,7 @@ async function getAndSaveNotificationToken(profileId: string) {
 				Logger.Warn("Notification token difference is <28 days ");
 			}
 		}
-	} catch (error) { }
+	} catch (error) {}
 }
 
 export default getAndSaveNotificationToken;
