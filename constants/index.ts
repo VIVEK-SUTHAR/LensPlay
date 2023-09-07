@@ -24,6 +24,7 @@ const ARWEAVE_GATEWAY = "https://arweave.net";
 
 //LENSPLAY-API's
 export const LENSPLAY_API = "https://lensplay-api.vercel.app/api/";
+export const LENSPLAY_POSTGRES_API = "https://push-noti-postgres.vercel.app/api"
 
 //UPLOAD_APIS
 const IPFS_UPLOAD_API = "https://api.web3.storage/upload";

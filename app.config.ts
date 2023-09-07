@@ -113,6 +113,9 @@ const config: ExpoConfig = {
 		backgroundColor: "#000000",
 		googleServicesFile: "./GoogleService-Info.plist",
 		associatedDomains: ["applinks:lensplay.xyz"],
+		infoPlist: {
+			LSApplicationQueriesSchemes: ["metamask", "trust", "safe", "rainbow", "uniswap"],
+		},
 	},
 	jsEngine: "hermes",
 	android: {

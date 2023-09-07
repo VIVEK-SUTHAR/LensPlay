@@ -65,6 +65,25 @@ export interface ICommentStore {
 	setComments: (comment: boolean) => void;
 }
 
+export interface ISupportStore {
+	totalDonation: Number;
+	totalTip: Number;
+	tips: Tip[] | [] | null;
+	setTotalDonation: (donation: Number) => void;
+	setTotalTip: (tip: Number) => void;
+	setTips: (tips: Tip[] | []) => void;
+}
+
+export type Tip = {
+	id: String;
+	userId: String;
+	creatorId: String;
+	pubId: String;
+	message: String;
+	amount: Number;
+	tippedAt: String;
+};
+
 export interface videoPageStatsObject {
 	isLiked: boolean;
 	isDisliked: boolean;

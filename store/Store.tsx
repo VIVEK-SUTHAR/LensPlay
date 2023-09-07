@@ -5,6 +5,7 @@ import {
 	IAuthStore,
 	ICommentStore,
 	IReactionStore,
+	ISupportStore,
 	IThemeStore,
 	OptimisticStore,
 	OptimitisticComment,
@@ -31,7 +32,7 @@ export const useProfile = create<UserStore>((set) => ({
 	profiles: [],
 	setCurrentProfile: (newProfile) => set({ currentProfile: newProfile }),
 	setHasHandle: (hasHandle) => set({ hasHandle: hasHandle }),
-	setProfiles: (profiles) => set({profiles: profiles}),
+	setProfiles: (profiles) => set({ profiles: profiles }),
 }));
 
 export const useThemeStore = create<IThemeStore>((set) => ({
@@ -134,8 +135,28 @@ export const useCommentStore = create<ICommentStore>((set) => ({
 			comment: comment,
 		});
 	},
+}));
 
-}))
+export const useSupportStore = create<ISupportStore>((set) => ({
+	totalDonation: 0,
+	totalTip: 0,
+	tips: null,
+	setTotalDonation: (donation) => {
+		set({
+			totalDonation: donation,
+		});
+	},
+	setTotalTip: (tip) => {
+		set({
+			totalTip: tip,
+		});
+	},
+	setTips: (tips) => {
+		set({
+			tips: tips,
+		});
+	},
+}));
 
 export const useOptimisticStore = create<OptimisticStore>((set) => ({
 	optimitisticComment: {

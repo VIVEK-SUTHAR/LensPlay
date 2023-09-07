@@ -9,8 +9,9 @@ import { ToastType } from "customTypes/Store";
 import { Profile } from "customTypes/generated";
 import React from "react";
 import { Platform, View } from "react-native";
-import { useProfile, useToast } from "store/Store";
+import { useActivePublication, useProfile, useToast } from "store/Store";
 import Logger from "utils/logger";
+import donate from "utils/tip/donate";
 import sendTip from "utils/tip/sendTip";
 
 const _supportSheet = ({
@@ -26,6 +27,7 @@ const _supportSheet = ({
 	const toast = useToast();
 	const { address, provider, isConnected } = useWalletConnectModal();
 	const { currentProfile } = useProfile();
+	const { activePublication } = useActivePublication();
 
 	const sendToken = async () => {
 		try {
@@ -58,9 +60,18 @@ const _supportSheet = ({
 			});
 			console.log(txResult, "This is tx result");
 
+			const result = await donate(
+				currentProfile?.id,
+				profile?.id,
+				activePublication?.id,
+				message,
+				parseFloat(amount)
+			);
+			Logger.Warn("", result);
+
 			// await subscribeChannel(profile?.profile?.ownedBy);
-			const result = await sendTip(currentProfile?.ownedBy, amount, profile?.ownedBy, message);
-			Logger.Log("this is tip", result);
+			// const result = await sendTip(currentProfile?.ownedBy, amount, profile?.ownedBy, message);
+			// Logger.Log("this is tip", result);
 			setAmount("");
 			setIsLoading(false);
 			toast.show("Amount sent successfully", ToastType.SUCCESS, true);

@@ -51,7 +51,6 @@ import { Platform } from "react-native";
 import { ToastType } from "customTypes/Store";
 import sendTip from "utils/tip/sendTip";
 import TipInfo from "screens/BottomTabs/Profile/TipInfo";
-
 type ProfileHeaderProps = {
 	Profile: ProfileQuery | undefined;
 	onRefresh: any;
@@ -69,18 +68,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 	const theme = useThemeStore();
 	const navigation = useNavigation();
 	const profile = Profile?.profile;
-
-	// const onRefresh = React.useCallback(async () => {
-	// 	setRefreshing(true);
-	// 	await refetch({
-	// 		request: {
-	// 			profileId: profileId ? profileId : currentProfile?.id,
-	// 		},
-	// 	}).catch((err) => {
-	// 		Logger.Error("Error in Refreshing error", err);
-	// 	});
-	// 	setRefreshing(false);
-	// }, []);
 
 	const navigateToFullImageAvatar = React.useCallback(() => {
 		navigation.navigate("FullImage", {
