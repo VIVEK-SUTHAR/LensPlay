@@ -7,7 +7,7 @@ import getTotal from "utils/tip/getTotal";
 const useFetchSupport = () => {
 	const [loading, setLoading] = React.useState(true);
 	const [error, setError] = React.useState<Error | null>(null);
-	const { tips, setTips, totalDonation, setTotalDonation, totalTip, setTotalTip } =
+	const { tips, setTips, totalDonation, setTotalDonation, totalTip, setTotalTip,donorIds,setDonorIds } =
 		useSupportStore();
 	const { currentProfile } = useProfile();
 
@@ -19,12 +19,14 @@ const useFetchSupport = () => {
 			if (!tips) {
 				const userTips = await getAllTips(currentProfile?.id);
 				setTips(userTips);
+				const donorIds=userTips.map((item)=>setDonorIds(item?.userId));
+				Logger.Success('adad',typeof(donorIds))
 				const userStats = await getTotal(currentProfile?.id);
 				Logger.Log("", userStats);
 				if (userStats) {
 					Logger.Warn("", userStats?.totalDonation);
 					setTotalDonation(userStats?.totalDonation);
-					setTotalTip(userStats?.totalTip);
+					setTotalTip(userStats?.totalTip); 
 				}
 			}
 			setLoading(false);

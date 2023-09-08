@@ -69,9 +69,11 @@ export interface ISupportStore {
 	totalDonation: Number;
 	totalTip: Number;
 	tips: Tip[] | [] | null;
+	donorIds: [];
 	setTotalDonation: (donation: Number) => void;
 	setTotalTip: (tip: Number) => void;
 	setTips: (tips: Tip[] | []) => void;
+	setDonorIds: (donorId: []) => void;
 }
 
 export type Tip = {

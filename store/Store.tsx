@@ -141,6 +141,7 @@ export const useSupportStore = create<ISupportStore>((set) => ({
 	totalDonation: 0,
 	totalTip: 0,
 	tips: null,
+	donorIds:[],
 	setTotalDonation: (donation) => {
 		set({
 			totalDonation: donation,
@@ -156,6 +157,11 @@ export const useSupportStore = create<ISupportStore>((set) => ({
 			tips: tips,
 		});
 	},
+	setDonorIds: (donorId)=>{
+		set({
+			donorIds:donorId,
+		})
+	}
 }));
 
 export const useOptimisticStore = create<OptimisticStore>((set) => ({

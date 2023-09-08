@@ -37,6 +37,7 @@ import { ErrorMessage } from "components/VideoPlayer/utils";
 import { Tip } from "customTypes/Store";
 import { white } from "constants/Colors";
 import NotFound from "components/common/NotFound";
+import Logger from "utils/logger";
 
 type Props = {};
 const posterSize = Dimensions.get("screen").height / 3;
@@ -52,8 +53,7 @@ const TipInfo: React.FC<RootStackScreenProps<"TipInfo">> = ({ route }) => {
 	const theme = useThemeStore();
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
 	const { loading, error } = useFetchSupport();
-	const { tips } = useSupportStore();
-
+	const { tips,donorIds } = useSupportStore();
 	const scrollHandler = useAnimatedScrollHandler({
 		onScroll: (event) => {
 			"worklet";
@@ -62,8 +62,10 @@ const TipInfo: React.FC<RootStackScreenProps<"TipInfo">> = ({ route }) => {
 	});
 
 	const renderItem = ({ item }: { item: Tip }) => {
+		console.log('ye rha itemmm: ',item);
 		return <Transaction />;
 	};
+	Logger.Warn('dekho',donorIds)
 
 	const onRefresh = () => {
 		setRefreshing(true);
@@ -118,7 +120,7 @@ const TipInfo: React.FC<RootStackScreenProps<"TipInfo">> = ({ route }) => {
 				refreshControl={_RefreshControl}
 				contentContainerStyle={{
 					paddingTop: posterSize + 24,
-					gap: 16,
+					// gap: 4,
 					paddingHorizontal: 4,
 					paddingBottom: 48,
 				}}

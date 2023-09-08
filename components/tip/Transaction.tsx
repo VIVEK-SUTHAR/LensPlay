@@ -7,6 +7,12 @@ import getRawurl from "utils/getRawUrl";
 import StyledText from "components/UI/StyledText";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Image } from "react-native";
+import Heading from "components/UI/Heading";
+import Matic from "assets/Icons/Matic";
+import Eth from "assets/Icons/Eth";
+import Usdc from "assets/Icons/Usdc";
+import Dai from "assets/Icons/Dai";
+import { useSupportStore } from "store/Store";
 
 type TransactionProps = {};
 
@@ -23,57 +29,52 @@ const Transaction = ({}: TransactionProps) => {
 			}}
 			style={{
 				flexDirection: "row",
-				padding: 12,
-				borderBottomWidth: 1,
-				borderBottomColor: dark_primary,
+				paddingHorizontal: 12,
+				paddingVertical: 12,
+				// borderBottomWidth: 1,
+				borderTopColor: dark_primary,
+				// borderWidth:2,
+				// borderColor:"red"
 			}}
 		>
 			<View style={{ flex: 1 }}>
 				<View
 					style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}
 				>
-					<View style={{ flexDirection: "row", paddingHorizontal: 4 }}>
-						<Pressable onPress={goToChannel}>
-							{/* <Avatar src={require('../../assets/images/circle.webp')} height={35} width={35} /> */}
-						</Pressable>
-						<View
-							style={{ flexDirection: "column", alignItems: "flex-start", paddingHorizontal: 8 }}
-						>
-							<StyledText
-								title={
-									// notification?.profile?.handle?.split(".")[0] ||
-									// formatAddress(notification?.profile?.ownedBy)
-									"this and that"
-								}
-								style={{ color: "white", fontWeight: "500" }}
-							/>
-							<StyledText
-								// title={` mirrored your ${
-								// 	notification?.publication?.__typename == "Post"
-								// 		? "post"
-								// 		: notification?.publication?.__typename == "Comment"
-								// 		? "comment"
-								// 		: "mirrored post"
-								// }`}
-								title={"22 Aug at 12:30 PM"}
-								style={{ color: "gray" }}
-							/>
-							{/* <StyledText
-								// title={getDifference(notification?.createdAt)}
-                                title={'aur ek'}
-								style={{ fontSize: 10, color: "gray" }}
-							/> */}
+					<View
+						style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}
+					>
+						<Image
+							// source={require("../../assets/images/home.png")}
+							source={{
+								uri: "https://creatorspace.imgix.net/users/cliyb7e4u01d6ry01z06snm45/xEIcd55aBLMJ3oyj-nyoling.png?w=300&h=300",
+							}}
+							style={{ width: 48, height: 48, borderRadius: 50 }}
+						/>
+						<View style={{ flexDirection: "row" }}>
+							<Pressable onPress={goToChannel}></Pressable>
+							<View
+								style={{ flexDirection: "column", alignItems: "flex-start", paddingHorizontal: 16 }}
+							>
+								{/* <StyledText
+									title={
+										"Vivek Suthar"
+									}
+									style={{ color: "white", fontWeight: "500",fontSize:20}}
+								/> */}
+								<View style={styles.textContainer}>
+									<Heading title={"Vivek Suthar"} style={styles.heading} numberOfLines={1} />
+								</View>
+								<StyledText title={"22 Aug at 12:30 PM"} style={{ color: "gray", fontSize: 14 }} />
+							</View>
 						</View>
 					</View>
-					<View style={{ flexDirection: "row", paddingHorizontal: 4 }}>
-						<Image
-							source={require("../../assets/images/error.png")}
-							style={{ width: 24, height: 24, borderRadius: 50, marginHorizontal: 8 }}
-						/>
+					<View style={{ flexDirection: "row", paddingHorizontal: 4,gap:4 }}>
+						<Matic height={24} width={24} />
 						<StyledText
-							title={"300 Matic"}
+							title={"300 MATIC"}
 							numberOfLines={2}
-							style={{ color: "grey", fontSize: 18 }}
+							style={{ color: "grey", fontSize: 18, fontWeight: "600" }}
 						/>
 					</View>
 				</View>
@@ -84,4 +85,13 @@ const Transaction = ({}: TransactionProps) => {
 
 export default Transaction;
 
-// const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	textContainer: {
+		maxWidth: Dimensions.get("window").width / 2.5,
+	},
+	heading: {
+		color: "white",
+		fontSize: 20,
+		fontWeight: "500",
+	},
+});

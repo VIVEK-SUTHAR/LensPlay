@@ -99,7 +99,7 @@ export default function PosterImage({ scrollY }: { scrollY: SharedValue<number> 
 							color: white[700],
 							fontWeight: "600",
 						}}
-						title={"$"+totalDonation}
+						title={"$"+totalTip}
 					/>
 					<StyledText
 						style={{

@@ -8,7 +8,7 @@ import { black, primary, white } from "constants/Colors";
 import { ToastType } from "customTypes/Store";
 import { Profile } from "customTypes/generated";
 import React from "react";
-import { Platform, View } from "react-native";
+import { Platform, TextInput, View } from "react-native";
 import { useActivePublication, useProfile, useToast } from "store/Store";
 import Logger from "utils/logger";
 import donate from "utils/tip/donate";
@@ -88,7 +88,7 @@ const _supportSheet = ({
 			snapPoints={[280]}
 			enablePanDownToClose={true}
 			enableOverDrag={true}
-			bottomInset={64}
+			bottomInset={14}
 			style={{
 				marginHorizontal: 8,
 			}}
@@ -133,7 +133,7 @@ const _supportSheet = ({
 							padding: 12,
 						}}
 					>
-						<BottomSheetTextInput
+						<TextInput
 							placeholder="Enter amount in Matic"
 							value={amount}
 							placeholderTextColor={white[200]}
@@ -152,7 +152,7 @@ const _supportSheet = ({
 								setAmount(e.nativeEvent.text);
 							}}
 						/>
-						<BottomSheetTextInput
+						<TextInput
 							placeholder="Message"
 							value={message}
 							placeholderTextColor={white[200]}
