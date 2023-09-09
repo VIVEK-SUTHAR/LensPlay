@@ -12,9 +12,9 @@ import Animated, {
 	useSharedValue,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useSupportStore } from "store/Store";
+import { useSupportStore } from "store/SupportStore";
 
-const posterSize = Dimensions.get("screen").height / 4;
+const posterSize = Dimensions.get("screen").height / 5;
 const headerTop = 44 - 16;
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
@@ -23,7 +23,7 @@ export default function PosterImage({ scrollY }: { scrollY: SharedValue<number> 
 	const inset = useSafeAreaInsets();
 	const layoutY = useSharedValue(0);
 	const { totalDonation, totalTip } = useSupportStore();
-	
+
 	const opacityAnim = useAnimatedStyle(() => {
 		return {
 			opacity: interpolate(
@@ -47,7 +47,7 @@ export default function PosterImage({ scrollY }: { scrollY: SharedValue<number> 
 					scale: interpolate(
 						scrollY.value,
 						[-posterSize / 8, 0, (posterSize - (headerTop + inset.top)) / 2],
-						[1.1, 1, 0.95],
+						[1.5, 1, 0.95],
 						"clamp"
 					),
 				},
@@ -99,7 +99,7 @@ export default function PosterImage({ scrollY }: { scrollY: SharedValue<number> 
 							color: white[700],
 							fontWeight: "600",
 						}}
-						title={"$"+totalTip}
+						title={"$" + totalTip}
 					/>
 					<StyledText
 						style={{

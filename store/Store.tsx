@@ -137,33 +137,6 @@ export const useCommentStore = create<ICommentStore>((set) => ({
 	},
 }));
 
-export const useSupportStore = create<ISupportStore>((set) => ({
-	totalDonation: 0,
-	totalTip: 0,
-	tips: null,
-	donorIds:[],
-	setTotalDonation: (donation) => {
-		set({
-			totalDonation: donation,
-		});
-	},
-	setTotalTip: (tip) => {
-		set({
-			totalTip: tip,
-		});
-	},
-	setTips: (tips) => {
-		set({
-			tips: tips,
-		});
-	},
-	setDonorIds: (donorId)=>{
-		set({
-			donorIds:donorId,
-		})
-	}
-}));
-
 export const useOptimisticStore = create<OptimisticStore>((set) => ({
 	optimitisticComment: {
 		commentText: "",

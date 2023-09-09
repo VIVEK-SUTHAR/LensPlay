@@ -27,7 +27,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { RootStackScreenProps } from "customTypes/navigation";
 import TipHeader from "components/tip/TipHeader";
 import { StatusBar } from "expo-status-bar";
-import { useSupportStore, useThemeStore } from "store/Store";
+import { useAuthStore, useThemeStore } from "store/Store";
 import StyledText from "components/UI/StyledText";
 import { Image } from "expo-image";
 import PosterImage from "components/tip/PosterImage";
@@ -38,22 +38,23 @@ import { Tip } from "customTypes/Store";
 import { white } from "constants/Colors";
 import NotFound from "components/common/NotFound";
 import Logger from "utils/logger";
+import { useUserProfilesQuery } from "customTypes/generated";
+import { useSupportStore } from "store/SupportStore";
 
 type Props = {};
 const posterSize = Dimensions.get("screen").height / 3;
 const headerTop = 44 - 16;
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 const TipInfo: React.FC<RootStackScreenProps<"TipInfo">> = ({ route }) => {
-	// const posterSize = Dimensions.get("screen").height / 2;
-
 	const scrollY = useSharedValue<number>(0);
 	const navigation = useNavigation();
 	const inset = useSafeAreaInsets();
-	const posterSize = Dimensions.get("screen").height / 4;
+	const posterSize = Dimensions.get("screen").height / 5;
 	const theme = useThemeStore();
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
-	const { loading, error } = useFetchSupport();
-	const { tips,donorIds } = useSupportStore();
+	const { loading, error, refetch } = useFetchSupport();
+	const { tips, donorProfiles } = useSupportStore();
+	const { accessToken } = useAuthStore();
 	const scrollHandler = useAnimatedScrollHandler({
 		onScroll: (event) => {
 			"worklet";
@@ -61,17 +62,18 @@ const TipInfo: React.FC<RootStackScreenProps<"TipInfo">> = ({ route }) => {
 		},
 	});
 
-	const renderItem = ({ item }: { item: Tip }) => {
-		console.log('ye rha itemmm: ',item);
-		return <Transaction />;
+	const renderItem = ({ item, index }: { item: Tip; index: number }) => {
+		if (donorProfiles) {
+			return <Transaction tip={item} donorProfile={donorProfiles[index]} />;
+		} else {
+			return <></>;
+		}
 	};
-	Logger.Warn('dekho',donorIds)
 
-	const onRefresh = () => {
+	const onRefresh = async () => {
 		setRefreshing(true);
-		setTimeout(() => {
-			setRefreshing(false);
-		}, 2000);
+		await refetch();
+		setRefreshing(false);
 	};
 
 	const _RefreshControl = (
@@ -127,15 +129,6 @@ const TipInfo: React.FC<RootStackScreenProps<"TipInfo">> = ({ route }) => {
 				onScroll={scrollHandler}
 				ListEmptyComponent={() => {
 					return (
-						// <View
-						// 	style={{
-						// 		alignItems: "center",
-						// 		justifyContent: "center",
-						// 		alignSelf: "center",
-						// 		backgroundColor: 'red',
-						// 		flex: 1,
-						// 	}}
-						// >
 						<View
 							style={{
 								paddingTop: 24,
@@ -149,7 +142,6 @@ const TipInfo: React.FC<RootStackScreenProps<"TipInfo">> = ({ route }) => {
 						</View>
 					);
 				}}
-				// extraData={playlistVideo}
 				showsVerticalScrollIndicator={false}
 			/>
 		</SafeAreaView>

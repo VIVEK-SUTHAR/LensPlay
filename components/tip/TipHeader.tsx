@@ -12,7 +12,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const posterSize = Dimensions.get("screen").height / 4;
+const posterSize = Dimensions.get("screen").height / 5;
 const headerTop = 44 - 16;
 
 export default function TipHeader({ scrollY }: { scrollY: SharedValue<number> }) {

@@ -69,11 +69,11 @@ export interface ISupportStore {
 	totalDonation: Number;
 	totalTip: Number;
 	tips: Tip[] | [] | null;
-	donorIds: [];
+	donorProfiles: Profile[] | undefined;
 	setTotalDonation: (donation: Number) => void;
 	setTotalTip: (tip: Number) => void;
 	setTips: (tips: Tip[] | []) => void;
-	setDonorIds: (donorId: []) => void;
+	setDonorProfiles: (donor: Profile[]) => void;
 }
 
 export type Tip = {
@@ -83,7 +83,7 @@ export type Tip = {
 	pubId: String;
 	message: String;
 	amount: Number;
-	tippedAt: String;
+	tippedAt: Date;
 };
 
 export interface videoPageStatsObject {
