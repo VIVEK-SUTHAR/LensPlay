@@ -93,7 +93,6 @@ const useAddWatchLater = () => {
 					(bookmark: Post | Mirror) => bookmark?.id !== publication?.id
 				);
 
-
 			cache.writeQuery({
 				query: ProfileBookMarksDocument,
 				data: BookMarksData,
@@ -112,7 +111,7 @@ const useAddWatchLater = () => {
 	});
 
 	const add = async (publication: Post | Mirror) => {
-		console.log(publication, 'red');
+		console.log(publication, "red");
 		setPublication(publication);
 		console.log(publication?.id);
 		toast.success("Added to watch later");
@@ -133,7 +132,6 @@ const useAddWatchLater = () => {
 	};
 
 	const remove = async (publication: Post | Mirror) => {
-		
 		setPublication(publication);
 		removeFromBookMark({
 			variables: {

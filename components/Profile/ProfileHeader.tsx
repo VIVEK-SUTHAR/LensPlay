@@ -1,8 +1,7 @@
 import { type BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
-import Avatar from "components/UI/Avatar";
 import { useWalletConnectModal } from "@walletconnect/modal-react-native";
-import Icon from "components/Icon";
+import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
@@ -53,7 +52,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 
 	const { setAvatarColors } = useBgColorStore();
 	const { currentProfile } = useProfile();
-	const { accessToken } = useAuthStore();
 	const theme = useThemeStore();
 	const navigation = useNavigation();
 	const profile = Profile?.profile;
