@@ -154,7 +154,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 						>
 							<Heading
 								title="LensPlay"
-								style={{ fontSize: 24, fontWeight: "600", color: "white" }}
+								style={{ fontSize: 24, fontWeight: "700", color: "white" }}
 							/>
 							<View
 								style={{

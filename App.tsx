@@ -1,4 +1,5 @@
 import { ApolloProvider } from "@apollo/client";
+import { FontAwesome } from "@expo/vector-icons";
 import notifee, { AndroidStyle, EventType } from "@notifee/react-native";
 import messaging from "@react-native-firebase/messaging";
 import { WalletConnectModal } from "@walletconnect/modal-react-native";
@@ -6,8 +7,9 @@ import { client } from "apollo/client";
 import NetworkStatus from "components/NetworkStatus";
 import Toast from "components/Toast";
 import "expo-dev-client";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import useCachedResources from "hooks/useCachedResources";
 import React from "react";
 import { Platform, UIManager } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -17,6 +19,8 @@ import Logger from "utils/logger";
 import { APP_NAME, DESCRIPTION, LENSPLAY_SITE } from "./constants";
 import "./expo-crypto-shim.ts";
 import Navigation from "./navigation";
+
+SplashScreen.preventAutoHideAsync();
 
 const projectId = "6097f40a8f4f91e37e66cf3a5ca1fba2";
 
@@ -41,6 +45,7 @@ const sessionParams = {
 		},
 	},
 };
+
 if (Platform.OS === "android") {
 	if (UIManager.setLayoutAnimationEnabledExperimental) {
 		UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -48,7 +53,24 @@ if (Platform.OS === "android") {
 }
 
 export default function App() {
-	const isLoadingComplete = useCachedResources();
+	const [fontsLoaded] = useFonts({
+		PlusJakartaSans_Regular: require("./assets/fonts/PlusJakartaSans-Regular.ttf"),
+		PlusJakartaSans_Medium: require("./assets/fonts/PlusJakartaSans-Medium.ttf"),
+		PlusJakartaSans_SemiBold: require("./assets/fonts/PlusJakartaSans-SemiBold.ttf"),
+		PlusJakartaSans_Bold: require("./assets/fonts/PlusJakartaSans-Bold.ttf"),
+		OpenSans_Regular: require("./assets/fonts/OpenSans-Regular.ttf"),
+		OpenSans_Medium: require("./assets/fonts/OpenSans-Medium.ttf"),
+		OpenSans_SemiBold: require("./assets/fonts/OpenSans-SemiBold.ttf"),
+		OpenSans_Bold: require("./assets/fonts/OpenSans-Bold.ttf"),
+		...FontAwesome.font,
+	});
+
+	const onLayoutRootView = React.useCallback(async () => {
+		if (fontsLoaded) {
+			await SplashScreen.hideAsync();
+		}
+	}, [fontsLoaded]);
+
 	React.useEffect(() => {
 		notifee.onForegroundEvent(({ type, detail }) => {
 			switch (type) {
@@ -57,7 +79,6 @@ export default function App() {
 					break;
 				case EventType.PRESS:
 					Logger.Log("Pressed", detail.notification?.data);
-					//navi
 					break;
 			}
 		});
@@ -113,26 +134,26 @@ export default function App() {
 		return unsubscribe;
 	}, []);
 
-	if (!isLoadingComplete) {
-		return null;
-	} else {
-		return (
-			<GestureHandlerRootView style={{ flex: 1 }}>
-				<SafeAreaProvider>
-					<Toast />
-					<NetworkStatus />
-					<ApolloProvider client={client}>
-						<StatusBar style="dark" />
-						<Navigation />
-					</ApolloProvider>
-				</SafeAreaProvider>
-				<WalletConnectModal
-					projectId={projectId}
-					providerMetadata={providerMetadata}
-					themeMode="dark"
-					sessionParams={sessionParams}
-				/>
-			</GestureHandlerRootView>
-		);
+	if (!fontsLoaded) {
+		return <></>;
 	}
+
+	return (
+		<GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
+			<SafeAreaProvider>
+				<Toast />
+				<NetworkStatus />
+				<ApolloProvider client={client}>
+					<StatusBar style="dark" />
+					<Navigation />
+				</ApolloProvider>
+			</SafeAreaProvider>
+			<WalletConnectModal
+				projectId={projectId}
+				providerMetadata={providerMetadata}
+				themeMode="dark"
+				sessionParams={sessionParams}
+			/>
+		</GestureHandlerRootView>
+	);
 }

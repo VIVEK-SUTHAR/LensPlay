@@ -1,56 +1,43 @@
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-import React, { FC, useCallback } from "react";
+import React, { FC } from "react";
 import { StyleProp, Text, TextStyle } from "react-native";
 
 interface HeadingProps {
-  title: string | React.ReactNode;
-  style: StyleProp<TextStyle>;
-  numberOfLines?: number;
+	title: string | React.ReactNode;
+	style: StyleProp<TextStyle>;
+	numberOfLines?: number;
 }
 
-SplashScreen.preventAutoHideAsync();
-
 const Heading: FC<HeadingProps> = ({ title, style, ...rest }) => {
-  const [fontsLoaded] = useFonts({
-    PlusJakartaSans_Regular: require("../../assets/fonts/PlusJakartaSans-Regular.ttf"),
-    PlusJakartaSans_Medium: require("../../assets/fonts/PlusJakartaSans-Medium.ttf"),
-    PlusJakartaSans_SemiBold: require("../../assets/fonts/PlusJakartaSans-SemiBold.ttf"),
-    PlusJakartaSans_Bold: require("../../assets/fonts/PlusJakartaSans-Bold.ttf"),
-  });
+	const getFontFamily = (fontWeight: string | undefined) => {
+		if (fontWeight === undefined) {
+			return "PlusJakartaSans_Regular";
+		}
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
+		switch (fontWeight) {
+			case "700":
+				return "PlusJakartaSans_Bold";
+			case "600":
+				return "PlusJakartaSans_SemiBold";
+			case "500":
+				return "PlusJakartaSans_Medium";
+			default:
+				return "PlusJakartaSans_Regular";
+		}
+	};
 
-  if (!fontsLoaded) {
-    return null;
-  }
-
-  const getFontFamily = (fontWeight: number) => {
-    switch (fontWeight) {
-      case 700:
-        return "PlusJakartaSans_Bold";
-      case 600:
-        return "PlusJakartaSans_SemiBold";
-      case 500:
-        return "PlusJakartaSans_Medium";
-      default:
-        return "PlusJakartaSans_Regular";
-    }
-  };
-
-  var newStyle = Object.assign({}, style, {
-    fontFamily: getFontFamily(parseInt(style?.fontWeight)),
-  });
-
-  return (
-    <Text style={newStyle} {...rest} onLayout={onLayoutRootView}>
-      {title}
-    </Text>
-  );
+	return (
+		<Text
+			style={[
+				style,
+				{
+					fontFamily: getFontFamily(style?.fontWeight),
+				},
+			]}
+			{...rest}
+		>
+			{title}
+		</Text>
+	);
 };
 
 export default Heading;
