@@ -50,7 +50,6 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 	} = useProfileQuery({
 		variables: {
 			request: {
-				// profileId: profileId ? profileId : currentProfile?.id,
 				handle:
 					route?.params?.handle === "lensprotocol.lens" ? "lensprotocol" : route?.params?.handle,
 			},
@@ -76,9 +75,6 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 		setRefreshing(false);
 	}, [route?.params?.handle]);
 
-	// const channelId = React.useMemo(() => route.params.profileId, [navigation,route]);
-	// const ethAddress = React.useMemo(() => route.params.ethAddress, [navigation,route]);
-
 	if (isGuest) return <PleaseLogin />;
 	if (!isReadyToRender) return <ProfileSkeleton />;
 	if (loading) return <ProfileSkeleton />;
@@ -91,6 +87,7 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 				withButton={true}
 			/>
 		);
+
 	if (!Profile?.profile)
 		return (
 			<ErrorMesasge message="Sorry, Profile doesn't exist" withImage={true} withButton={false} />

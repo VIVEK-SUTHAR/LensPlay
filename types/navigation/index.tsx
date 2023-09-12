@@ -75,10 +75,6 @@ export type RootStackParamList = {
 		name?: string;
 	};
 	Search: undefined;
-	YourVideos: {
-		videos: Post[] | Mirror[];
-		title: string;
-	};
 	ShotsComment: {
 		publicationId: string;
 	};

@@ -80,6 +80,7 @@
 		"react-native-view-shot": "^3.7.0",
 		"react-native-wagmi-charts": "^2.3.0",
 		"react-native-web": "~0.18.7",
+		"uuid": "^9.0.0",
 		"xml2js": "^0.4.23",
 		"zustand": "^4.1.4"
 	},

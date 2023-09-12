@@ -13,7 +13,7 @@ export default function AddDescription({ navigation }: RootStackScreenProps<"Add
 	const theme = useThemeStore();
 	const { description, setDescription } = useUploadStore();
 	const toast = useToast();
-	const windowHeight = Dimensions.get('window').height;
+	const windowHeight = Dimensions.get("window").height;
 
 	const handleDescription = () => {
 		if (!description?.trim()) return toast.error("Please enter description");
@@ -51,17 +51,13 @@ export default function AddDescription({ navigation }: RootStackScreenProps<"Add
 			}}
 		>
 			<KeyboardAvoidingView
-				// behavior="padding"
 				style={{
 					flex: 1,
-					// backgroundColor: "green"
 				}}
 			>
 				<View
 					style={{
-						// height: "90%",
 						flex: 1,
-						// backgroundColor: "red"
 					}}
 				>
 					<TextInput
@@ -89,11 +85,10 @@ export default function AddDescription({ navigation }: RootStackScreenProps<"Add
 				<View
 					style={{
 						paddingHorizontal: 28,
-						paddingVertical: windowHeight/18,
+						paddingVertical: windowHeight / 18,
 						flexDirection: "row",
 						justifyContent: "space-between",
 						alignItems: "center",
-						// backgroundColor: "red"
 					}}
 				>
 					<StyledText

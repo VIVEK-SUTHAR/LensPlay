@@ -1,13 +1,12 @@
+import crashlytics from "@react-native-firebase/crashlytics";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black } from "constants/Colors";
 import { APP_ID, LENSPLAY_SITE } from "constants/index";
-import crashlytics from "@react-native-firebase/crashlytics";
 import {
 	CollectModuleParams,
 	MetadataAttributeInput,
-	Profile,
 	PublicationMainFocus,
 	PublicationMetadataDisplayTypes,
 	PublicationMetadataMediaInput,
@@ -28,7 +27,6 @@ import uploadImageToIPFS from "utils/uploadImageToIPFS";
 import uploadToArweave from "utils/uploadToArweave";
 import getFileMimeType from "utils/video/getFileType";
 import { v4 as uuidV4 } from "uuid";
-import uploadVideoToIPFS from "utils/uploadVideoToIPFS";
 
 const Types: string[] = [
 	"Arts & Entertainment",
@@ -83,7 +81,7 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 		onCompleted: (data) => {
 			toast.success("Video uploaded successfully");
 			setUploadingStatus("DONE");
-			Logger.Log('',data);
+			Logger.Log("", data);
 		},
 		onError(error, clientOptions?) {
 			toast.error("Something went wrong !");
@@ -218,9 +216,8 @@ export default function VideoTypes({ navigation }: RootStackScreenProps<"VideoTy
 				navigation.reset({ index: 0, routes: [{ name: "Root" }] });
 				return;
 			}
-		}
-		finally {
-			Logger.Log('Idhar execute hua');		
+		} finally {
+			Logger.Log("Idhar execute hua");
 			setDisableCollect();
 		}
 	};
