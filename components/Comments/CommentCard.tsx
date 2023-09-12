@@ -1,13 +1,12 @@
-import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import { black, dark_primary, primary, white } from "constants/Colors";
+import { black, primary } from "constants/Colors";
 import { LENSPLAY_SITE } from "constants/index";
-import { PROFILE, PUBLICATION } from "constants/tracking";
+import { PUBLICATION } from "constants/tracking";
 import {
 	PublicationStats,
 	ReactionTypes,
@@ -17,7 +16,7 @@ import {
 	useRemoveReactionMutation,
 } from "customTypes/generated";
 import { ToastType } from "customTypes/Store";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Pressable, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
@@ -63,7 +62,6 @@ const CommentCard: React.FC<CommentCardProps> = ({
 	const [likes, setLikes] = useState<number>(stats?.totalUpvotes);
 	const [mirrorCount, setMirrorCount] = useState<number>(stats?.totalAmountOfMirrors);
 	const [isMirror, setIsMirror] = useState<boolean>(isMirrored);
-
 	const { accessToken } = useAuthStore();
 	const navigation = useNavigation();
 	const userStore = useProfile();

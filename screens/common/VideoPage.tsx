@@ -48,6 +48,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
 	const { activePublication } = useActivePublication();
+
 	React.useEffect(() => {
 		const delay = setTimeout(() => {
 			LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
@@ -57,15 +58,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	}, [activePublication]);
 
 	const [isMute, setIsMute] = useState<boolean>(false);
-	const {
-		videopageStats,
-		collectStats,
-		mirrorStats,
-		setVideoPageStats,
-		clearStats,
-		setCollectStats,
-		setMirrorStats,
-	} = useReactionStore();
+	const { videopageStats, setVideoPageStats, clearStats, setCollectStats, setMirrorStats } =
+		useReactionStore();
 
 	function handleBackButtonClick() {
 		setStatusBarHidden(false, "fade");

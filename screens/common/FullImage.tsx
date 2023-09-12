@@ -11,7 +11,7 @@ import {
 	Pressable,
 	SafeAreaView,
 	StyleSheet,
-	View
+	View,
 } from "react-native";
 import { useBgColorStore } from "store/BgColorStore";
 import getImageProxyURL from "utils/getImageProxyURL";
