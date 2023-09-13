@@ -25,6 +25,7 @@ import getPlaceHolderImage from "utils/getPlaceHolder";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
 import TrackAction from "utils/Track";
+import ShotLikeButton from "./Reaction/ShotLikeButton";
 
 function ShotReaction({ item, commentRef }: ShotsPublication) {
 	const [totalCollects, setTotalCollects] = useState<number>(item?.stats?.totalAmountOfCollects);
@@ -116,12 +117,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 					alignItems: "center",
 				}}
 			>
-				<LikeButton
-					like={item?.stats?.totalUpvotes}
-					id={item?.id}
-					isalreadyLiked={item?.reaction === "UPVOTE"}
-					bytes={true}
-				/>
+				<ShotLikeButton publication={item} />
 				<TouchableOpacity
 					style={{
 						padding: 10,
