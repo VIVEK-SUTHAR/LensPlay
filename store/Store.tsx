@@ -31,7 +31,7 @@ export const useProfile = create<UserStore>((set) => ({
 	profiles: [],
 	setCurrentProfile: (newProfile) => set({ currentProfile: newProfile }),
 	setHasHandle: (hasHandle) => set({ hasHandle: hasHandle }),
-	setProfiles: (profiles) => set({profiles: profiles}),
+	setProfiles: (profiles) => set({ profiles: profiles }),
 }));
 
 export const useThemeStore = create<IThemeStore>((set) => ({
@@ -134,8 +134,7 @@ export const useCommentStore = create<ICommentStore>((set) => ({
 			comment: comment,
 		});
 	},
-
-}))
+}));
 
 export const useOptimisticStore = create<OptimisticStore>((set) => ({
 	optimitisticComment: {

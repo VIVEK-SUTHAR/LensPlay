@@ -35,6 +35,7 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
+import { useLikeStore } from "store/ReactionStore";
 import { useActivePublication, useReactionStore } from "store/Store";
 import useVideoURLStore from "store/videoURL";
 import getImageProxyURL from "utils/getImageProxyURL";
@@ -48,6 +49,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
 	const { activePublication } = useActivePublication();
+	const { setLikeCount, setIsLiked, setIsDisLiked } = useLikeStore();
 
 	React.useEffect(() => {
 		const delay = setTimeout(() => {
@@ -58,8 +60,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	}, [activePublication]);
 
 	const [isMute, setIsMute] = useState<boolean>(false);
-	const { videopageStats, setVideoPageStats, clearStats, setCollectStats, setMirrorStats } =
-		useReactionStore();
+	const { clearStats, setCollectStats, setMirrorStats } = useReactionStore();
 
 	function handleBackButtonClick() {
 		setStatusBarHidden(false, "fade");
@@ -86,11 +87,9 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	});
 
 	useEffect(() => {
-		setVideoPageStats(
-			activePublication?.reaction === "UPVOTE",
-			activePublication?.reaction === "DOWNVOTE",
-			activePublication?.stats?.totalUpvotes || 0
-		);
+		setIsLiked(activePublication?.reaction === "UPVOTE");
+		setIsDisLiked(activePublication?.reaction === "DOWNVOTE");
+		setLikeCount(activePublication?.stats?.totalUpvotes!);
 		setCollectStats(
 			activePublication?.hasCollectedByMe || false,
 			activePublication?.stats?.totalAmountOfCollects || 0
@@ -199,15 +198,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 						horizontal={true}
 						showsHorizontalScrollIndicator={false}
 					>
-						<LikeButton
-							like={videopageStats?.likeCount}
-							id={activePublication?.id}
-							isalreadyLiked={videopageStats?.isLiked}
-						/>
-						<DisLikeButton
-							isalreadyDisLiked={videopageStats?.isDisliked}
-							id={activePublication?.id}
-						/>
+						<LikeButton />
+						<DisLikeButton />
 						<MirrorButton mirrorRef={mirrorRef} />
 						<CollectButton collectRef={collectRef} />
 						<ShareButton />

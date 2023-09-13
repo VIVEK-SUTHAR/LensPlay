@@ -49,7 +49,7 @@ const CollectButton = ({ collectRef }: CollectVideoPrpos) => {
 						return;
 					}
 					if (isRevertCollect) {
-						toast.error("This video can't be collected");
+						toast.error("This video is not collectible");
 						return;
 					}
 					if (isPaidCollet) {
