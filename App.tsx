@@ -52,6 +52,9 @@ if (Platform.OS === "android") {
 	}
 }
 
+
+console.log("App Running in DEV MODE", __DEV__);
+console.log("App BUndle Load Time", __BUNDLE_START_TIME__);
 export default function App() {
 	const [fontsLoaded] = useFonts({
 		PlusJakartaSans_Regular: require("./assets/fonts/PlusJakartaSans-Regular.ttf"),

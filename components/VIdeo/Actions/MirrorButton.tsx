@@ -44,4 +44,4 @@ const MirrorButton = ({ mirrorRef }: MirrorButtonProps) => {
 	);
 };
 
-export default MirrorButton;
+export default React.memo(MirrorButton);

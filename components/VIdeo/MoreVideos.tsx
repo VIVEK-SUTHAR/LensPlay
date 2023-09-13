@@ -26,10 +26,9 @@ const MoreVideos = () => {
 			<StyledText
 				title={`More Videos by ${title}`}
 				style={{
-					fontSize: 16,
-					fontWeight: "600",
+					fontSize: 20,
+					fontWeight: "700",
 					color: "white",
-					marginBottom: 16,
 				}}
 				numberOfLines={1}
 			/>
@@ -43,8 +42,6 @@ const MoreVideosList = React.memo(() => {
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
 	const { PRIMARY } = useThemeStore();
-	const title =
-		activePublication?.profile?.name || formatHandle(activePublication?.profile?.handle);
 
 	const QueryRequest: PublicationsQueryRequest = {
 		profileId: activePublication?.profile?.id,
@@ -64,6 +61,8 @@ const MoreVideosList = React.memo(() => {
 			},
 			channelId: currentProfile?.id,
 		},
+		initialFetchPolicy: "no-cache",
+		fetchPolicy:"no-cache",
 		context: {
 			headers: {
 				"x-access-token": `Bearer ${accessToken}`,
@@ -116,31 +115,16 @@ const MoreVideosList = React.memo(() => {
 
 	const renderItem = React.useCallback(({ item }: { item: Post }) => {
 		if (item.id === activePublication?.id) return null;
-		return (
-			<VideoCard
-				publication={item}
-				id={item.id}
-				style={{ marginHorizontal: 0, marginVertical: 4 }}
-			/>
-		);
+		return <VideoCard publication={item} id={item.id} />;
 	}, []);
 
 	if (loading)
 		return (
-			<View style={{ backgroundColor: "black" }}>
+			<View style={{ paddingHorizontal: 8, backgroundColor: "black" }}>
 				<Skeleton number={10}>
 					<VideoCardSkeleton />
 				</Skeleton>
 			</View>
-		);
-
-	if (AllVideos?.length === 1)
-		return (
-			<NotFound
-				message={`No additional videos from ${title.split(" ")[0]}`}
-				height={220}
-				width={220}
-			/>
 		);
 
 	return (
@@ -150,10 +134,7 @@ const MoreVideosList = React.memo(() => {
 				keyExtractor={keyExtractor}
 				ListEmptyComponent={<NotFound message="Looks like no videos" />}
 				removeClippedSubviews={true}
-				estimatedItemSize={122}
-				ListFooterComponent={<MoreLoader />}
-				onEndReachedThreshold={0.7}
-				onEndReached={onEndCallBack}
+				estimatedItemSize={110}
 				showsVerticalScrollIndicator={false}
 				renderItem={renderItem}
 			/>
@@ -165,7 +146,7 @@ export default React.memo(MoreVideos);
 
 const styles = StyleSheet.create({
 	moreVideosHeader: {
-		paddingHorizontal: 16,
-		marginVertical: 16,
+		paddingHorizontal: 12,
+		marginVertical: 8,
 	},
 });

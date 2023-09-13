@@ -175,4 +175,4 @@ const LikeButton: React.FC<LikeButtonProps> = ({ like, isalreadyLiked, id, bytes
 	);
 };
 
-export default LikeButton;
+export default React.memo(LikeButton);

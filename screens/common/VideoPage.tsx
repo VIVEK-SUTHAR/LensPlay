@@ -51,9 +51,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 
 	React.useEffect(() => {
 		const delay = setTimeout(() => {
-			LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
 			setIsReadyToRender(true);
-		}, 0);
+		}, 100);
 		return () => clearTimeout(delay);
 	}, [activePublication]);
 
@@ -61,7 +60,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const { videopageStats, setVideoPageStats, clearStats, setCollectStats, setMirrorStats } =
 		useReactionStore();
 
-	function handleBackButtonClick() {
+	const handleBackButtonClick = React.useCallback(() => {
 		setStatusBarHidden(false, "fade");
 		setInFullsreen(!inFullscreen);
 		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
@@ -72,18 +71,16 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 			setMirrorStats(false, 0);
 		}
 		return true;
-	}
+	}, [navigation]);
 
-	navigation.addListener("blur", () => {
+	const handleBlur = React.useCallback(() => {
 		setVideoURI("");
 		clearStats();
 		setCollectStats(false, 0);
 		setMirrorStats(false, 0);
-	});
+	}, []);
 
-	navigation.addListener("focus", () => {
-		setInFullsreen(false);
-	});
+	navigation.addListener("blur", handleBlur);
 
 	useEffect(() => {
 		setVideoPageStats(

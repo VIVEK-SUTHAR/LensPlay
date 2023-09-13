@@ -1,7 +1,7 @@
 {
 	"expo": {
 		"name": "LensPlay",
-		"slug": "test",
+		"slug": "lensplay",
 		"version": "1.0.2",
 		"orientation": "portrait",
 		"backgroundColor": "#000000",
@@ -15,7 +15,7 @@
 		},
 		"updates": {
 			"fallbackToCacheTimeout": 0,
-			"url": "https://u.expo.dev/bc883fdb-0b27-478c-9139-ad6577b8aca6"
+			"url": "https://u.expo.dev/ab0b7a55-2257-4fb4-8851-a907ffbdf237"
 		},
 		"runtimeVersion": {
 			"policy": "sdkVersion"
@@ -75,9 +75,9 @@
 			]
 		},
 		"extra": {
-			"eas": {
-				"projectId": "bc883fdb-0b27-478c-9139-ad6577b8aca6"
-			}
+			// "eas": {
+				// "projectId": "ab0b7a55-2257-4fb4-8851-a907ffbdf237"
+			// }
 		},
 		"plugins": [
 			[
@@ -106,6 +106,8 @@
 					}
 				}
 			],
+			["expo-community-flipper"],
+			["react-native-flipper-performance-plugin"],
 			"@react-native-firebase/app",
 			"@react-native-firebase/perf",
 			"@react-native-firebase/crashlytics"

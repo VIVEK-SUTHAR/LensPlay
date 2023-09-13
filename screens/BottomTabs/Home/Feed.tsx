@@ -124,13 +124,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 
 	const renderItem = React.useCallback(({ item }: { item: FeedItem }) => {
 		if (!item.root.hidden) {
-			return (
-				<VideoCard
-					key={`${item?.root?.id}-${item?.root?.createdAt}`}
-					publication={item?.root as FeedItemRoot}
-					id={item?.root?.id}
-				/>
-			);
+			return <VideoCard publication={item?.root as FeedItemRoot} id={item?.root?.id} />;
 		}
 		return null;
 	}, []);
@@ -229,7 +223,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 			.catch((err) => {
 				Logger.Error("[Error while fetching Bookmarks....]", err);
 			});
-		Logger.Count("EFFECT RAN");
 	}, [sessionCount]);
 
 	if (isGuest) return <PleaseLogin />;
@@ -275,7 +268,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 		</SafeAreaView>
 	);
 };
-
 export default Feed;
 
 const NotFound = ({ navigation }: { navigation: any }) => {

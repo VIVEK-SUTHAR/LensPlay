@@ -145,4 +145,4 @@ const DisLikeButton: React.FC<DisLikeButtonProps> = ({ isalreadyDisLiked, id }) 
 	);
 };
 
-export default DisLikeButton;
+export default React.memo(DisLikeButton);

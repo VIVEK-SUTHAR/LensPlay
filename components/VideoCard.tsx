@@ -3,42 +3,32 @@ import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { FeedItemRoot, Mirror, Post } from "customTypes/generated";
-import React from "react";
-import { StyleProp, StyleSheet, TouchableWithoutFeedback, View, ViewStyle } from "react-native";
-import { useActivePublication, useReactionStore } from "store/Store";
+import { Image } from "expo-image";
+import * as React from "react";
+import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
+import { useActivePublication } from "store/Store";
 import formatTime from "utils/formatTime";
 import getDifference from "utils/getDifference";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getIPFSLink from "utils/getIPFSLink";
+import getPlaceHolderImage from "utils/getPlaceHolder";
 import getRawurl from "utils/getRawUrl";
 import getVideoDuration from "utils/getVideoDuration";
 import Logger from "utils/logger";
-import LPImage from "./UI/LPImage";
 
 type VideoCardProp = {
 	publication: FeedItemRoot | Mirror | Post;
 	id: string;
 	height?: number | string;
 	width?: number | string;
-	style?: StyleProp<ViewStyle>;
 };
 
-const VideoCard: React.FC<VideoCardProp> = ({
-	width = "auto",
-	height = 200,
-	publication,
-	style,
-}) => {
+const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publication }) => {
 	const { setActivePublication } = useActivePublication();
-	const { setReaction, clearStats, setCollectStats, setMirrorStats } = useReactionStore();
 
 	const navigation = useNavigation();
 
 	const navigateToVideoPage = React.useCallback(() => {
-		setReaction(false);
-		clearStats();
-		setCollectStats(false, 0);
-		setMirrorStats(false, 0);
 		Logger.Count("Start Navigation from VideoCard");
 		navigation.navigate("VideoPage");
 		setActivePublication(publication);
@@ -47,24 +37,22 @@ const VideoCard: React.FC<VideoCardProp> = ({
 	const navigateToUserChannel = React.useCallback(() => {
 		navigation.navigate("Channel", {
 			handle: publication?.profile?.handle,
-			name: publication?.profile?.name,
+			name: publication?.profile?.name ?? "",
 		});
-	}, []);
+	}, [publication]);
 
-	const coverImage = React.useMemo(
-		() =>
-			getImageProxyURL({
-				formattedLink: getIPFSLink(getRawurl(publication?.metadata?.cover)),
-			}),
-		[]
-	);
+	const coverImage = getImageProxyURL({
+		formattedLink: getIPFSLink(getRawurl(publication?.metadata?.cover)),
+	});
 
 	return (
-		<View style={[styles.videoCardContainer, { width: width }, style]}>
+		<View style={[styles.videoCardContainer, { width: width }]}>
 			<View style={{ height: height }}>
 				<TouchableWithoutFeedback onPress={navigateToVideoPage}>
-					<LPImage
+					<Image
+						placeholder={getPlaceHolderImage()}
 						contentFit="cover"
+						transition={500}
 						priority="high"
 						source={{
 							uri: coverImage,
@@ -78,7 +66,7 @@ const VideoCard: React.FC<VideoCardProp> = ({
 						style={styles.coverImage}
 					/>
 				</TouchableWithoutFeedback>
-				{getVideoDuration(publication.metadata) && (
+				{getVideoDuration(publication?.metadata) && (
 					<View style={styles.videoDurationBox}>
 						<StyledText
 							title={formatTime(getVideoDuration(publication.metadata))}

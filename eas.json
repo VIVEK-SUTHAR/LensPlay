@@ -1,6 +1,6 @@
 {
 	"build": {
-		"cli": { "appVersionSource": "remote" },
+		// "cli": { "appVersionSource": "remote" },
 		"development-simulator": {
 			"developmentClient": true,
 			"distribution": "internal",
