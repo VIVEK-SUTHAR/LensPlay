@@ -1,4 +1,3 @@
-import { ApolloCache } from "@apollo/client";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import Sheet from "components/Bottom";
@@ -9,20 +8,12 @@ import Heading from "components/UI/Heading";
 import LPImage from "components/UI/LPImage";
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
-import { LENSPLAY_SITE } from "constants/index";
-import { PUBLICATION } from "constants/tracking";
 import { ToastType } from "customTypes/Store";
-import { useProxyActionMutation } from "customTypes/generated";
+import useCollect from "hooks/reactions/useCollect";
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import {
-	useActivePublication,
-	useAuthStore,
-	useReactionStore,
-	useThemeStore,
-	useToast,
-} from "store/Store";
-import TrackAction from "utils/Track";
+import { useCollectStore } from "store/ReactionStore";
+import { useActivePublication, useThemeStore, useToast } from "store/Store";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
@@ -33,52 +24,14 @@ type CollectVideoSheetProps = {
 
 const CollectVideoSheet: React.FC<CollectVideoSheetProps> = ({ sheetRef: collectRef }) => {
 	const { activePublication } = useActivePublication();
-	const { collectStats, setCollectStats } = useReactionStore();
 	const theme = useThemeStore();
 	const toast = useToast();
-	const { accessToken } = useAuthStore();
+	const { collectPublication } = useCollect();
+	const { collectCount, isCollected, setCollectCount, setIsCollected } = useCollectStore();
 
-	const updateCache = (cache: ApolloCache<any>) => {
+	const handleCollect = async () => {
 		try {
-			cache.modify({
-				id: cache.identify(activePublication as any),
-				fields: {
-					hasCollectedByMe() {
-						return true;
-					},
-					stats: (stats) => ({
-						...stats,
-						totalAmountOfCollects: stats.totalAmountOfCollects + 1,
-					}),
-				},
-			});
-		} catch (error) {
-			Logger.Error("error in updating cache", error);
-		}
-	};
-
-	const [createProcyAction] = useProxyActionMutation({
-		onCompleted: (data) => {
-			toast.show("Collect Submitted", ToastType.SUCCESS, true);
-			setCollectStats(true, collectStats?.collectCount + 1);
-			collectRef?.current?.close();
-			TrackAction(PUBLICATION.COLLECT_VIDEO);
-		},
-		onError: (error) => {
-			if (error.message == "Can only collect if the publication has a `FreeCollectModule` set") {
-				toast.show("You can't collect this video", ToastType.ERROR, true);
-			} else {
-				toast.show("Something went wrong", ToastType.ERROR, true);
-			}
-
-			collectRef?.current?.close();
-		},
-		update: (cache) => updateCache(cache),
-	});
-
-	const collectPublication = async () => {
-		try {
-			if (collectStats?.isCollected) {
+			if (isCollected) {
 				toast.show("You have already collected the video", ToastType.ERROR, true);
 				return;
 			}
@@ -86,27 +39,11 @@ const CollectVideoSheet: React.FC<CollectVideoSheetProps> = ({ sheetRef: collect
 				toast.show("Dispatcher is disabled", ToastType.ERROR, true);
 				return;
 			}
-			await createProcyAction({
-				variables: {
-					request: {
-						collect: {
-							freeCollect: {
-								publicationId: activePublication?.id,
-							},
-						},
-					},
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-						"origin": LENSPLAY_SITE,
-					},
-				},
-			});
+			setIsCollected(true);
+			setCollectCount(collectCount + 1);
+			collectPublication(activePublication);
 		} catch (error) {
-			if (error instanceof Error) {
-				Logger.Error(error + "");
-			}
+			Logger.Error(error + "");
 		} finally {
 			collectRef?.current?.close();
 		}
@@ -245,17 +182,15 @@ const CollectVideoSheet: React.FC<CollectVideoSheetProps> = ({ sheetRef: collect
 						}}
 					>
 						<Button
-							title={collectStats?.isCollected ? "Video already collected" : `Collect Video`}
+							title={isCollected ? "Collected" : `Collect Video`}
 							py={12}
 							textStyle={{
 								fontSize: 20,
 								fontWeight: "600",
 								textAlign: "center",
 							}}
-							bg={collectStats?.isCollected ? "#c0c0c0" : theme.PRIMARY}
-							onPress={() => {
-								collectPublication();
-							}}
+							bg={isCollected ? "#c0c0c0" : theme.PRIMARY}
+							onPress={handleCollect}
 						/>
 					</View>
 				</BottomSheetScrollView>

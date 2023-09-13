@@ -1,30 +1,28 @@
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { useNavigation } from "@react-navigation/native";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import { LikeButton } from "components/VIdeo";
 import { black, primary, white } from "constants/Colors";
 import { LENSPLAY_SITE } from "constants/index";
 import { PUBLICATION, SHOT } from "constants/tracking";
+import { ToastType } from "customTypes/Store";
 import { useProxyActionMutation } from "customTypes/generated";
 import { ShotsPublication } from "customTypes/index";
-import { ToastType } from "customTypes/Store";
 import { Image } from "expo-image";
 import React, { useRef, useState } from "react";
 import { Pressable, Share, Text, TouchableOpacity, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useThemeStore, useToast } from "store/Store";
+import TrackAction from "utils/Track";
 import getIPFSLink from "utils/getIPFSLink";
 import getPlaceHolderImage from "utils/getPlaceHolder";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
-import TrackAction from "utils/Track";
 import ShotLikeButton from "./Reaction/ShotLikeButton";
 
 function ShotReaction({ item, commentRef }: ShotsPublication) {
@@ -32,7 +30,6 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 	const [collected, setCollected] = useState<boolean>(item?.hasCollectedByMe);
 	const collectSheetRef = useRef<BottomSheetMethods>(null);
 	const bottomTabBarHeight = useBottomTabBarHeight();
-	const navigation = useNavigation();
 	const { PRIMARY } = useThemeStore();
 	const { accessToken } = useAuthStore();
 	const toast = useToast();

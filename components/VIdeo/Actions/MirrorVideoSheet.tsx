@@ -1,8 +1,19 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import React from "react";
-import Sheet from "components/Bottom";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Sheet from "components/Bottom";
+import Icon from "components/Icon";
+import Avatar from "components/UI/Avatar";
+import Button from "components/UI/Button";
+import Heading from "components/UI/Heading";
+import LPImage from "components/UI/LPImage";
+import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
+import { PUBLICATION } from "constants/tracking";
+import { ToastType } from "customTypes/Store";
+import useMirror from "hooks/reactions/useMirror";
+import React from "react";
+import { Pressable, View } from "react-native";
+import { useMirrorStore } from "store/ReactionStore";
 import {
 	useActivePublication,
 	useAuthStore,
@@ -11,25 +22,10 @@ import {
 	useThemeStore,
 	useToast,
 } from "store/Store";
-import Heading from "components/UI/Heading";
-import Icon from "components/Icon";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import LPImage from "components/UI/LPImage";
+import TrackAction from "utils/Track";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
-import StyledText from "components/UI/StyledText";
-import Avatar from "components/UI/Avatar";
-import Button from "components/UI/Button";
-import { ToastType } from "customTypes/Store";
-import {
-	useCreateDataAvailabilityMirrorViaDispatcherMutation,
-	useCreateMirrorViaDispatcherMutation,
-} from "customTypes/generated";
 import Logger from "utils/logger";
-import { LENSPLAY_SITE } from "constants/index";
-import TrackAction from "utils/Track";
-import { PUBLICATION } from "constants/tracking";
-import { ApolloCache } from "@apollo/client";
 
 type MirrorVideoSheetProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
@@ -44,103 +40,29 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 	const toast = useToast();
 	const theme = useThemeStore();
 	const { currentProfile } = useProfile();
+	const { mirrorPublication } = useMirror();
+	const { isMirrored, mirrorCount, setIsMirrored, setMirrorCount } = useMirrorStore();
 
-	const updateCache = (cache: ApolloCache<any>) => {
-		try {
-			cache.modify({
-				id: cache.identify(activePublication as any),
-				fields: {
-					mirrors: (mirrors) => [...mirrors, currentProfile?.id],
-					stats: (stats) => ({
-						...stats,
-						totalAmountOfMirrors: stats.totalAmountOfMirrors + 1,
-					}),
-				},
-			});
-		} catch (error) {
-			Logger.Error("error", error);
-		}
-	};
-
-	const [createOnChainMirror] = useCreateMirrorViaDispatcherMutation({
-		onCompleted: (data) => {
-			Logger.Success("Mirrored", data);
-		},
-		onError: (err) => {
-			Logger.Error("Error in Mirror", err);
-			toast.show(err.message, ToastType.ERROR, true);
-		},
-		update: (cache) => updateCache(cache),
-	});
-
-	const [createDataAvaibalityMirror] = useCreateDataAvailabilityMirrorViaDispatcherMutation({
-		onCompleted: (data) => {
-			Logger.Success("DA Mirrored", data);
-		},
-		onError: (err) => {
-			Logger.Error("Error in DA Mirror", err);
-			toast.show(err.message, ToastType.ERROR, true);
-		},
-		update: (cache) => updateCache(cache),
-	});
-
-	const onMirror = async () => {
-		if (mirrorStats?.isMirrored) {
-			toast.show("Already mirrored", ToastType.ERROR, true);
-			mirrorRef.current?.close();
-			return;
-		}
+	const handleMirror = async () => {
+		if (isMirrored) return;
 		if (!activePublication?.profile?.dispatcher?.canUseRelay) {
 			toast.show("Dispatcher is disabled", ToastType.ERROR, true);
 			mirrorRef.current?.close();
 			return;
 		}
-		if (isDAPublication) {
-			toast.success("Mirror submitted");
-			setMirrorStats(true, mirrorStats.mirrorCount + 1);
-			mirrorRef.current?.close();
-			createDataAvaibalityMirror({
-				variables: {
-					request: {
-						from: currentProfile?.id,
-						mirror: activePublication?.id,
-					},
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-						"origin": LENSPLAY_SITE,
-					},
-				},
-			});
-			return;
-		}
 		try {
-			toast.success("Mirror submitted!");
-			setMirrorStats(true, mirrorStats.mirrorCount + 1);
+			setIsMirrored(true);
+			setMirrorCount(mirrorCount + 1);
 			mirrorRef.current?.close();
-			await createOnChainMirror({
-				variables: {
-					request: {
-						profileId: currentProfile?.id,
-						publicationId: activePublication?.id,
-					},
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-						"origin": LENSPLAY_SITE,
-					},
-				},
-			});
+			await mirrorPublication(activePublication);
 			TrackAction(PUBLICATION.MIRROR);
 		} catch (error) {
-			if (error instanceof Error) {
-				toast.show(error.message, ToastType.ERROR, true);
-				mirrorRef?.current?.close();
-			}
+			Logger.Error("", error);
+		} finally {
+			mirrorRef?.current?.close();
 		}
 	};
+
 	return (
 		<Sheet
 			ref={mirrorRef}
@@ -273,17 +195,15 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 						}}
 					>
 						<Button
-							title={mirrorStats?.isMirrored ? "Video already mirrored" : `Mirror Video`}
+							title={isMirrored ? "Mirrored" : `Mirror Video`}
 							py={12}
 							textStyle={{
 								fontSize: 20,
 								fontWeight: "600",
 								textAlign: "center",
 							}}
-							bg={mirrorStats?.isMirrored ? "#c0c0c0" : theme.PRIMARY}
-							onPress={() => {
-								onMirror();
-							}}
+							bg={isMirrored ? "#c0c0c0" : theme.PRIMARY}
+							onPress={handleMirror}
 						/>
 					</View>
 				</BottomSheetScrollView>
