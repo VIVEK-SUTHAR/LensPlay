@@ -8,16 +8,15 @@ import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black, primary, white } from "constants/Colors";
-import { LENSPLAY_SITE } from "constants/index";
-import { PUBLICATION, SHOT } from "constants/tracking";
+import { PUBLICATION } from "constants/tracking";
 import { ToastType } from "customTypes/Store";
-import { useProxyActionMutation } from "customTypes/generated";
 import { ShotsPublication } from "customTypes/index";
 import { Image } from "expo-image";
+import useCollect from "hooks/reactions/useCollect";
 import React, { useRef, useState } from "react";
 import { Pressable, Share, Text, TouchableOpacity, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
-import { useAuthStore, useThemeStore, useToast } from "store/Store";
+import { useThemeStore, useToast } from "store/Store";
 import TrackAction from "utils/Track";
 import getIPFSLink from "utils/getIPFSLink";
 import getPlaceHolderImage from "utils/getPlaceHolder";
@@ -31,55 +30,23 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 	const collectSheetRef = useRef<BottomSheetMethods>(null);
 	const bottomTabBarHeight = useBottomTabBarHeight();
 	const { PRIMARY } = useThemeStore();
-	const { accessToken } = useAuthStore();
 	const toast = useToast();
 	const { isGuest } = useGuestStore();
+	const { collectPublication } = useCollect();
 
-	const [createProxyAction] = useProxyActionMutation({
-		onCompleted: (data) => {
-			toast.show("Collect Submitted", ToastType.SUCCESS, true);
-			setCollected(true);
-			setTotalCollects((prev) => prev + 1);
-			TrackAction(SHOT.SHOTS_COLLECT);
-		},
-		onError: (error) => {
-			if (error.message == "Can only collect if the publication has a `FreeCollectModule` set") {
-				toast.show("You can't collect this video", ToastType.ERROR, true);
-			} else {
-				Logger.Log(error.message);
-				toast.show("Something went wrong", ToastType.ERROR, true);
-			}
-			collectSheetRef?.current?.close();
-		},
-	});
-
-	const collectPublication = React.useCallback(async () => {
+	const handleCollect = React.useCallback(async () => {
 		try {
 			if (isGuest) {
 				toast.show("Please Login", ToastType.ERROR, true);
 				return;
 			}
-			if (item?.hasCollectedByMe) {
+			if (collected) {
 				toast.show("You have already collected the video", ToastType.ERROR, true);
 				return;
 			}
-			await createProxyAction({
-				variables: {
-					request: {
-						collect: {
-							freeCollect: {
-								publicationId: item?.id,
-							},
-						},
-					},
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-						"origin": LENSPLAY_SITE,
-					},
-				},
-			});
+			setCollected(true);
+			setTotalCollects(totalCollects + 1);
+			await collectPublication(item);
 		} catch (error) {
 			if (error instanceof Error) {
 				Logger.Log(error.message);
@@ -291,7 +258,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 									textAlign: "center",
 								}}
 								bg={primary}
-								onPress={collectPublication}
+								onPress={handleCollect}
 							/>
 						</View>
 					</BottomSheetScrollView>

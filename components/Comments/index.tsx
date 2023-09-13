@@ -91,23 +91,7 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 	const MoreLoader = React.memo(_MoreLoader);
 
 	const renderItem = ({ item }: { item: IComment }) => {
-		return (
-			<CommentCard
-				username={item?.profile?.handle}
-				avatar={getRawurl(item?.profile?.picture)}
-				commentText={item?.metadata?.content || item?.metadata?.description}
-				commentTime={item?.createdAt}
-				id={item?.profile?.id}
-				isFollowdByMe={item?.profile?.isFollowedByMe}
-				name={item?.profile?.name || formatHandle(item?.profile?.handle)}
-				stats={item?.stats}
-				commentId={item?.id}
-				isAlreadyLiked={item?.reaction === "UPVOTE"}
-				isMirrored={item?.mirrors?.length > 0}
-				isDA={item?.isDataAvailability}
-				address={item?.profile?.ownedBy}
-			/>
-		);
+		return <CommentCard comment={item} />;
 	};
 
 	const onEndCallBack = React.useCallback(() => {
@@ -137,7 +121,7 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 	if (commentData) {
 		const allComments = commentData?.publications?.items as IComment[];
 		return (
-			<View style={{ flex: 1,minHeight:4 }}>
+			<View style={{ flex: 1, minHeight: 4 }}>
 				<FlashList
 					data={allComments as IComment[]}
 					keyExtractor={keyExtractor}

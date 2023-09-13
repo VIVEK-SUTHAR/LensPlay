@@ -2,15 +2,8 @@ import { ApolloCache } from "@apollo/client";
 import cache from "apollo/cache";
 import { LENSPLAY_SITE } from "constants/index";
 import { PUBLICATION } from "constants/tracking";
-import { ToastType } from "customTypes/Store";
 import { FeedItemRoot, Mirror, Post, useProxyActionMutation } from "customTypes/generated";
-import {
-	useActivePublication,
-	useAuthStore,
-	useReactionStore,
-	useThemeStore,
-	useToast,
-} from "store/Store";
+import { useAuthStore } from "store/Store";
 import TrackAction from "utils/Track";
 import Logger from "utils/logger";
 

@@ -5,181 +5,57 @@ import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black, primary } from "constants/Colors";
-import { LENSPLAY_SITE } from "constants/index";
-import { PUBLICATION } from "constants/tracking";
-import {
-	PublicationStats,
-	ReactionTypes,
-	useAddReactionMutation,
-	useCreateDataAvailabilityMirrorViaDispatcherMutation,
-	useCreateMirrorViaDispatcherMutation,
-	useRemoveReactionMutation,
-} from "customTypes/generated";
+import { Comment } from "customTypes/generated";
 import { ToastType } from "customTypes/Store";
+import useLike from "hooks/reactions/useLike";
+import useMirror from "hooks/reactions/useMirror";
 import React, { useState } from "react";
 import { Pressable, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
-import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
+import { useThemeStore, useToast } from "store/Store";
 import extractURLs from "utils/extractURL";
-import getDifference from "utils/getDifference";
+import formatHandle from "utils/formatHandle";
+import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
-import TrackAction from "utils/Track";
 
-type CommentCardProps = {
-	avatar: string;
-	username: string;
-	commentText: string;
-	commentTime: string;
-	id: string;
-	isFollowdByMe: boolean | undefined;
-	name: string | undefined;
-	stats: PublicationStats;
-	commentId: string;
-	isIndexing?: boolean;
-	isAlreadyLiked: boolean;
-	isMirrored: boolean;
-	isDA: boolean;
-	address: string;
-};
-
-const CommentCard: React.FC<CommentCardProps> = ({
-	avatar,
-	username,
-	commentText,
-	commentTime,
-	id,
-	isFollowdByMe,
-	name,
-	stats,
-	commentId,
-	isIndexing,
-	isAlreadyLiked,
-	isMirrored,
-	isDA,
-	address,
-}) => {
-	const [Liked, setLiked] = useState<boolean>(isAlreadyLiked);
-	const [likes, setLikes] = useState<number>(stats?.totalUpvotes);
-	const [mirrorCount, setMirrorCount] = useState<number>(stats?.totalAmountOfMirrors);
-	const [isMirror, setIsMirror] = useState<boolean>(isMirrored);
-	const { accessToken } = useAuthStore();
+function CommentCard({ comment }: { comment: Comment }) {
+	const [isLiked, setIsLiked] = useState<boolean>(comment?.reaction === "UPVOTE");
+	const [likeCount, setLikeCount] = useState<number>(comment?.stats?.totalUpvotes);
+	const [mirrorCount, setMirrorCount] = useState<number>(comment?.stats?.totalAmountOfMirrors);
+	const [isMirrored, setIsMirrored] = useState<boolean>(comment?.mirrors.length > 0);
 	const navigation = useNavigation();
-	const userStore = useProfile();
 	const { isGuest } = useGuestStore();
-	const toast = useToast();
-
-	const [addReaction] = useAddReactionMutation({
-		onError: () => {
-			toast.show("Something went wrong!", ToastType.ERROR, true);
-		},
-		onCompleted: () => {
-			setLiked(true);
-			setLikes((prev) => prev + 1);
-		},
-	});
-
-	const [createOnChainMirror] = useCreateMirrorViaDispatcherMutation();
-
 	const { PRIMARY } = useThemeStore();
+	const toast = useToast();
+	const { addLike, removeLike } = useLike();
+	const { mirrorPublication } = useMirror();
 
-	const [createDataAvaibalityMirror] = useCreateDataAvailabilityMirrorViaDispatcherMutation({
-		onCompleted: (data) => {
-			Logger.Success("DA Mirrored", data);
-		},
-		onError: (err, cliOpt) => {
-			Logger.Error("Error in DA Mirror", err, "\nClient Option", cliOpt);
-			toast.show(err.message, ToastType.ERROR, true);
-		},
-	});
-
-	const [removeReaction] = useRemoveReactionMutation({
-		onError: () => {
-			toast.show("Something went wrong!", ToastType.ERROR, true);
-		},
-		onCompleted: () => {
-			setLiked(false);
-			setLikes((prev) => prev - 1);
-		},
-	});
-
-	const setLike = async () => {
-		if (isIndexing) return;
-		if (!Liked) {
-			addReaction({
-				variables: {
-					request: {
-						profileId: userStore.currentProfile?.id,
-						reaction: ReactionTypes.Upvote,
-						publicationId: commentId,
-					},
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-						"origin": LENSPLAY_SITE,
-					},
-				},
-			});
+	const handleLike = async () => {
+		if (isGuest) {
+			toast.show("Please Login", ToastType.ERROR, true);
+			return;
+		}
+		if (!isLiked) {
+			setIsLiked(true);
+			setLikeCount(likeCount + 1);
+			await addLike(comment);
 		} else {
-			removeReaction({
-				variables: {
-					request: {
-						profileId: userStore.currentProfile?.id,
-						reaction: ReactionTypes.Upvote,
-						publicationId: commentId,
-					},
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-						"origin": LENSPLAY_SITE,
-					},
-				},
-			});
+			setIsLiked(false);
+			setLikeCount(likeCount - 1);
+			await removeLike(comment);
 		}
 	};
 
-	const onMirror = async () => {
-		if (isMirrored) {
-			toast.show("Already mirrored", ToastType.ERROR, true);
+	const handleMirror = async () => {
+		if (isGuest) {
+			toast.show("Please Login", ToastType.ERROR, true);
 			return;
 		}
+		if (isMirrored) return;
 		try {
-			toast.success("Mirror submitted!");
-			setMirrorCount((mirrorCount) => mirrorCount + 1);
-			setIsMirror(true);
-			if (isDA) {
-				createDataAvaibalityMirror({
-					variables: {
-						request: {
-							from: userStore?.currentProfile?.id,
-							mirror: commentId,
-						},
-					},
-					context: {
-						headers: {
-							"x-access-token": `Bearer ${accessToken}`,
-							"origin": LENSPLAY_SITE,
-						},
-					},
-				});
-				return;
-			}
-			await createOnChainMirror({
-				variables: {
-					request: {
-						profileId: userStore?.currentProfile?.id,
-						publicationId: commentId,
-					},
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-						"origin": LENSPLAY_SITE,
-					},
-				},
-			});
-			TrackAction(PUBLICATION.MIRROR);
+			setIsMirrored(true);
+			setMirrorCount(mirrorCount + 1);
+			await mirrorPublication(comment);
 		} catch (error) {
 			if (error instanceof Error) {
 				toast.show(error.message, ToastType.ERROR, true);
@@ -202,19 +78,22 @@ const CommentCard: React.FC<CommentCardProps> = ({
 			<Pressable
 				onPress={() => {
 					navigation.navigate("Channel", {
-						name: name,
-						handle: username,
+						name: comment?.profile?.name || formatHandle(comment?.profile?.handle),
+						handle: comment?.profile?.handle,
 					});
 				}}
 				style={{
 					marginRight: 8,
 				}}
 			>
-				<Avatar src={avatar} height={40} width={40} />
+				<Avatar src={getRawurl(comment?.profile?.picture)} height={40} width={40} />
 			</Pressable>
 			<View style={{ flex: 1 }}>
 				<View>
-					<Heading title={name || id} style={{ fontSize: 14, color: "white", fontWeight: "500" }} />
+					<Heading
+						title={comment?.profile?.name || formatHandle(comment?.profile?.handle)}
+						style={{ fontSize: 14, color: "white", fontWeight: "500" }}
+					/>
 					<View
 						style={{
 							flexDirection: "row",
@@ -222,10 +101,9 @@ const CommentCard: React.FC<CommentCardProps> = ({
 							justifyContent: "space-between",
 						}}
 					>
-						<Heading title={`@${username}`} style={{ fontSize: 12, color: "gray", marginTop: 2 }} />
-						<StyledText
-							title={isIndexing ? "Indexing" : getDifference(commentTime)}
-							style={{ fontSize: 10, color: "gray" }}
+						<Heading
+							title={formatHandle(comment?.profile?.handle)}
+							style={{ fontSize: 12, color: "gray", marginTop: 2 }}
 						/>
 					</View>
 				</View>
@@ -236,7 +114,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
 						fontWeight: "600",
 						marginTop: 4,
 					}}
-					title={extractURLs(commentText)}
+					title={extractURLs(comment?.metadata?.content || comment?.metadata?.description)}
 				></StyledText>
 				<View
 					style={{
@@ -247,26 +125,19 @@ const CommentCard: React.FC<CommentCardProps> = ({
 					}}
 				>
 					<Button
-						title={likes}
-						onPress={() => {
-							if (isGuest) {
-								toast.show("Please Login", ToastType.ERROR, true);
-								return;
-							}
-							setLike();
-							setLiked((prev) => !prev);
-						}}
+						title={likeCount}
+						onPress={handleLike}
 						width={"auto"}
 						bg="transparent"
 						type={"filled"}
 						textStyle={{
-							color: Liked ? primary : "white",
+							color: isLiked ? primary : "white",
 							fontSize: 14,
 							fontWeight: "500",
 							marginLeft: 4,
 							paddingEnd: 16,
 						}}
-						icon={<Icon name="like" size={16} color={Liked ? primary : "white"} />}
+						icon={<Icon name="like" size={16} color={isLiked ? primary : "white"} />}
 					/>
 					<Button
 						title={mirrorCount}
@@ -276,22 +147,14 @@ const CommentCard: React.FC<CommentCardProps> = ({
 						px={16}
 						bg="transparent"
 						textStyle={{
-							color: isMirror ? PRIMARY : "white",
+							color: isMirrored ? PRIMARY : "white",
 							fontSize: 14,
 							fontWeight: "500",
 							marginLeft: 4,
 						}}
-						icon={<Icon name="mirror" size={20} color={isMirror ? PRIMARY : "white"} />}
+						icon={<Icon name="mirror" size={20} color={isMirrored ? PRIMARY : "white"} />}
 						borderColor="#232323"
-						onPress={async () => {
-							if (isGuest) {
-								toast.show("Please Login", ToastType.ERROR, true);
-								return;
-							}
-							if (!isMirror) {
-								onMirror();
-							}
-						}}
+						onPress={handleMirror}
 					/>
 					<Button
 						title={""}
@@ -310,7 +173,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
 						borderColor="#232323"
 						onPress={() => {
 							navigation.navigate("ReportPublication", {
-								publicationId: id,
+								publicationId: comment?.id,
 							});
 						}}
 					/>
@@ -318,6 +181,6 @@ const CommentCard: React.FC<CommentCardProps> = ({
 			</View>
 		</View>
 	);
-};
+}
 
 export default React.memo(CommentCard);

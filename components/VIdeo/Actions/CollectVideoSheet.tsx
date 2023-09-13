@@ -31,17 +31,14 @@ const CollectVideoSheet: React.FC<CollectVideoSheetProps> = ({ sheetRef: collect
 
 	const handleCollect = async () => {
 		try {
-			if (isCollected) {
-				toast.show("You have already collected the video", ToastType.ERROR, true);
-				return;
-			}
+			if (isCollected) return;
 			if (!activePublication?.profile?.dispatcher?.canUseRelay) {
 				toast.show("Dispatcher is disabled", ToastType.ERROR, true);
 				return;
 			}
 			setIsCollected(true);
 			setCollectCount(collectCount + 1);
-			collectPublication(activePublication);
+			await collectPublication(activePublication);
 		} catch (error) {
 			Logger.Error(error + "");
 		} finally {

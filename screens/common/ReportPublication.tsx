@@ -61,7 +61,6 @@ const ReportPublication = ({ navigation, route }: RootStackScreenProps<"ReportPu
 	const [activeReason, setActiveReason] = useState<RESONTYPEDATA>(reportData[0]);
 	const [activeSubReason, setActiveSubReason] = useState<string>(activeReason.subReason[0].reason);
 	const [addiText, setAddiText] = useState<string>("");
-	const theme = useThemeStore();
 	const toast = useToast();
 	const { accessToken } = useAuthStore();
 	const { isGuest } = useGuestStore();

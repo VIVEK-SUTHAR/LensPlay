@@ -31,12 +31,12 @@ function LikeButton() {
 			}
 			setLikeCount(likeCount + 1);
 			setIsLiked(true);
-			addLike(activePublication!);
+			await addLike(activePublication!);
 			void TrackAction(SHOT.SHOTS_LIKE);
 		} else {
 			setLikeCount(likeCount - 1);
 			setIsLiked(false);
-			removeLike(activePublication!);
+			await removeLike(activePublication!);
 		}
 	};
 
