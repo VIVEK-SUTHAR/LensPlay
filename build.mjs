@@ -26,9 +26,22 @@ If the --ios flag is present, submits an EAS build for iOS.
 
 Run Below Command to Build
 
--> yarn release-build 
+-> yarn build
+
+-> Run yarn build --prod for Release Builds
 
 */
+
+const LensPlayProductionConfig = {
+	Slug: "lensplay",
+	EasProjectID: "3b494bf0-e3fd-4a2c-b484-931ab7394de1",
+	updatesUrl: `https://u.expo.dev/3b494bf0-e3fd-4a2c-b484-931ab7394de1`,
+};
+const LensPlayDevelopmentConfig = {
+	Slug: "test",
+	EasProjectID: "dc292891-6e08-49db-8e82-247dd43a39f7",
+	updatesUrl: `https://u.expo.dev/dc292891-6e08-49db-8e82-247dd43a39f7`,
+};
 
 const APP_JSON_PATH = "./app.json";
 
@@ -102,27 +115,53 @@ function logEASBuildMessage() {
 	console.log("eas build --profile beta --platform android");
 }
 
+function updateAppJsononEnvironment(isProductionBuild) {
+	try {
+		const appJsonContent = fs.readFileSync(APP_JSON_PATH, "utf-8");
+		let appConfig = JSON.parse(appJsonContent);
+		if (isProductionBuild) {
+			appConfig.expo.slug = LensPlayProductionConfig.Slug;
+			appConfig.expo.updates.url = LensPlayProductionConfig.updatesUrl;
+			appConfig.expo.extra.eas.projectId = LensPlayProductionConfig.EasProjectID;
+		} else {
+			appConfig.expo.slug = LensPlayDevelopmentConfig.Slug;
+			appConfig.expo.updates.url = LensPlayDevelopmentConfig.updatesUrl;
+			appConfig.expo.extra.eas.projectId = LensPlayDevelopmentConfig.EasProjectID;
+		}
+		fs.writeFileSync(APP_JSON_PATH, JSON.stringify(appConfig, null, 2));
+	} catch (error) {}
+}
+
 function main() {
 	try {
+		let isProductionBuild = yargs.argv.prod ?? false;
+		console.log("IS Release Build", isProductionBuild);
+		updateAppJsononEnvironment(isProductionBuild);
 		if (!yargs.argv.ios && !yargs.argv.android) {
 			console.log("No Platform Specified...", LogLevel.WARNING);
 			console.log("Building for Android and iOS");
-			updateReleaseConfigForiOS();
-			updateVersionCode();
-			commitToGit();
+			if (isProductionBuild) {
+				updateReleaseConfigForiOS();
+				updateVersionCode();
+				commitToGit();
+			}
 			logEASBuildMessage();
 			submitEASBuildForAndroid();
 		}
 		if (yargs.argv.ios) {
 			console.log("Platform : iOS Syncing config and startiing...");
-			updateReleaseConfigForiOS();
-			commitToGit();
+			if (isProductionBuild) {
+				updateReleaseConfigForiOS();
+				commitToGit();
+			}
 			logEASBuildMessage();
 		}
 		if (yargs.argv.android) {
-			console.log("Platform : Android Syncing config and startiing...");
-			updateVersionCode();
-			commitToGit();
+			console.log("Platform : Android Syncing config and starting...");
+			if (isProductionBuild) {
+				updateVersionCode();
+				commitToGit();
+			}
 			submitEASBuildForAndroid();
 		}
 	} catch (error) {}
