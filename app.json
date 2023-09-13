@@ -76,7 +76,7 @@
 		},
 		"extra": {
 			"eas": {
-				"projectId": "7c19ca0a-17bf-439c-b5be-7b6ae4eb24ef"
+				"projectId": "ab0b7a55-2257-4fb4-8851-a907ffbdf237"
 			}
 		},
 		"plugins": [
@@ -106,6 +106,8 @@
 					}
 				}
 			],
+			["expo-community-flipper"],
+			["react-native-flipper-performance-plugin"],
 			"@react-native-firebase/app",
 			"@react-native-firebase/perf",
 			"@react-native-firebase/crashlytics"

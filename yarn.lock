@@ -3036,10 +3036,10 @@
     component-type "^1.2.1"
     join-component "^1.1.0"
 
-"@shopify/flash-list@1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@shopify/flash-list/-/flash-list-1.4.0.tgz#cf299486ec9a7c97b7a8b1e8b6bf144a78141ed6"
-  integrity sha512-PvPOyk353LuETFnNA038+QaJsAFlCQ2TYC7DHP3YnYqTX72g2BM6qLoLsPaptXKuoXX+dinOo0MbEm7HDjTy1g==
+"@shopify/flash-list@1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@shopify/flash-list/-/flash-list-1.5.0.tgz#f1cf3c4f9bb706a58c3d1f794ddfaedb5872f431"
+  integrity sha512-XeocevDIXastr6jh3TPo1MzV5XkdqTyWtw/j8kUhz9EOBc2SzNWbpJWyzrAsYKlqYNrnxxs0P9C0amlX2jaQnw==
   dependencies:
     recyclerlistview "4.2.0"
     tslib "2.4.0"
@@ -6312,6 +6312,14 @@ expo-clipboard@~4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/expo-clipboard/-/expo-clipboard-4.1.2.tgz#0844566ae8ad1cf72854dc1bbd704c3b09c5d391"
   integrity sha512-YSuIs4CV+3gypl7X74sp2ruwAVuhnOngsWs7EGkcvRdX0BBrZZMk3GXGw9a59sU6SW4wGWAfwrhyCT41GUaN+A==
+
+expo-community-flipper@^48.0.1:
+  version "48.0.1"
+  resolved "https://registry.yarnpkg.com/expo-community-flipper/-/expo-community-flipper-48.0.1.tgz#38f8795e270aff9cf9231632b087bd367deb2374"
+  integrity sha512-FqxpX7duwUYKERtOQAY/hzYfiuVN3FxaCEhfyTLqtCEeCpeLkDPEWhwdQwl9U/wkt8HQsuvlQHyviGbsw8oPEg==
+  dependencies:
+    semver "^7.3.8"
+    ts-dedent "^2.2.0"
 
 expo-constants@~14.2.0, expo-constants@~14.2.1:
   version "14.2.1"
@@ -10715,6 +10723,16 @@ react-native-crypto@^2.0.1:
     public-encrypt "^4.0.0"
     randomfill "^1.0.3"
 
+react-native-flipper-performance-plugin@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-flipper-performance-plugin/-/react-native-flipper-performance-plugin-0.4.0.tgz#961ff2f9ccc942d2a4cabd4f6d401034c5402007"
+  integrity sha512-D9Z5VrktJjUenYB4X9qfKcqg9YSyQWOD7fKoxkzXoKxbyalGoWib79iD3OBHOBZEsk5RbQ006zYL7VQwA3D4Wg==
+
+react-native-flipper@^0.212.0:
+  version "0.212.0"
+  resolved "https://registry.yarnpkg.com/react-native-flipper/-/react-native-flipper-0.212.0.tgz#b3fdd47676ecd09a25edd77a1466acace6276762"
+  integrity sha512-bDRfIgE3v/jjEEdnvGP0T6maDD+bXhDAQ/SZUYTKd/CQ6YIU1c0EF+e0urU62LNMv6XEFQKz226McdddyVhYZA==
+
 react-native-gesture-handler@~2.9.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.9.0.tgz#2f63812e523c646f25b9ad660fc6f75948e51241"
@@ -11443,7 +11461,7 @@ semver@^7.3.5:
   dependencies:
     lru-cache "^6.0.0"
 
-semver@^7.5.3, semver@^7.5.4:
+semver@^7.3.8, semver@^7.5.3, semver@^7.5.4:
   version "7.5.4"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.5.4.tgz#483986ec4ed38e1c6c48c34894a9182dbff68a6e"
   integrity sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==
@@ -12361,6 +12379,11 @@ ts-api-utils@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/ts-api-utils/-/ts-api-utils-1.0.3.tgz#f12c1c781d04427313dbac808f453f050e54a331"
   integrity sha512-wNMeqtMz5NtwpT/UZGY5alT+VoKdSsOOP/kqHFcUW1P/VRhH2wJ48+DN2WwUliNbQ976ETwDL0Ifd2VVvgonvg==
+
+ts-dedent@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/ts-dedent/-/ts-dedent-2.2.0.tgz#39e4bd297cd036292ae2394eb3412be63f563bb5"
+  integrity sha512-q5W7tVM71e2xjHZTlgfTDoPF/SmqKG5hddq9SzR49CH2hayqRKJtQ4mtRlSxKaJlR/+9rEM+mnBHf7I2/BQcpQ==
 
 ts-interface-checker@^0.1.9:
   version "0.1.13"
