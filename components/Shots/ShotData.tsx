@@ -24,7 +24,7 @@ function ShotData({ item, descriptionRef }: { item: Post | Mirror; descriptionRe
 	const goToChannel = React.useCallback(() => {
 		navigation.navigate("Channel", {
 			handle: item?.profile?.handle,
-			name: item?.profile?.name,
+			name: item?.profile?.name!,
 		});
 	}, []);
 
@@ -210,10 +210,7 @@ function DiscriptionSheet({ item, descriptionRef }: { item: Post | Mirror; descr
 						}}
 					>
 						<VideoCreator
-							alreadyFollowing={item?.profile?.isFollowedByMe || false}
-							avatarLink={getRawurl(item?.profile?.picture) || STATIC_ASSET}
-							profileId={item?.profile?.id}
-							uploadedBy={item?.profile?.name || item?.profile?.handle}
+							profile={item?.profile}
 							showSubscribeButton={false}
 							showSubscribers={true}
 							subscribersCount={item?.profile?.stats?.totalFollowers}

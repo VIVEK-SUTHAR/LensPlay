@@ -197,12 +197,7 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 							description={activePublication?.metadata?.description}
 							descRef={descRef}
 						/>
-						<VideoCreator
-							profileId={activePublication?.profile?.id}
-							avatarLink={getRawurl(activePublication?.profile?.picture)}
-							uploadedBy={activePublication?.profile?.name || activePublication?.profile?.handle}
-							alreadyFollowing={activePublication?.profile?.isFollowedByMe || false}
-						/>
+						<VideoCreator profile={activePublication?.profile} />
 					</View>
 					<ScrollView
 						style={{

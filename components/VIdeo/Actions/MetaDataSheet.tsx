@@ -126,10 +126,7 @@ const MetaDataSheet = ({ sheetRef: descRef }: MetaDataSheetProps) => {
 							}}
 						/>
 						<VideoCreator
-							alreadyFollowing={activePublication?.profile?.isFollowedByMe || false}
-							avatarLink={getRawurl(activePublication?.profile?.picture) || STATIC_ASSET}
-							profileId={activePublication?.profile?.id}
-							uploadedBy={activePublication?.profile?.name || activePublication?.profile?.handle}
+							profile={activePublication?.profile}
 							showSubscribeButton={false}
 							showSubscribers={true}
 							subscribersCount={activePublication?.profile?.stats?.totalFollowers}

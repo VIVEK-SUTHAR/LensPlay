@@ -1,80 +1,56 @@
 import { useNavigation } from "@react-navigation/native";
 import { SubscribeButton } from "components/Profile/ProfileHeader";
 import Avatar from "components/UI/Avatar";
-import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import { LENSPLAY_SITE } from "constants/index";
-import { useProxyActionMutation } from "customTypes/generated";
+import { Profile } from "customTypes/generated";
 import React, { useCallback, useState } from "react";
 import { Dimensions, TouchableOpacity } from "react-native";
 import { StyleSheet, View } from "react-native";
-import { useGuestStore } from "store/GuestStore";
-import { useActivePublication, useAuthStore, useToast } from "store/Store";
-import Logger from "utils/logger";
+import getRawurl from "utils/getRawUrl";
 
 type VideoCreatorProps = {
-	avatarLink: string;
-	uploadedBy: string;
-	profileId: string;
-	alreadyFollowing: boolean;
 	showSubscribeButton?: boolean;
 	showSubscribers?: boolean;
 	subscribersCount?: number;
+	profile: Profile | undefined;
 };
 
 const VideoCreator: React.FC<VideoCreatorProps> = React.memo((props) => {
 	const {
-		profileId,
-		uploadedBy,
-		avatarLink,
-		alreadyFollowing,
+		profile,
 		showSubscribers = false,
 		subscribersCount = 0,
 		showSubscribeButton = true,
 	} = props;
 
-	const [following, setFollowing] = useState<boolean>(alreadyFollowing);
-
-	const { accessToken } = useAuthStore();
-	const { isGuest } = useGuestStore();
-	const toast = useToast();
-
-	const [freeFollow] = useProxyActionMutation({
-		onError: (error) => {
-			Logger.Error("Failed to follow via videoauthor", error);
-		},
-	});
 	const navigation = useNavigation();
-	const { activePublication } = useActivePublication();
 	const goToChannel = React.useCallback(() => {
 		navigation.navigate("Channel", {
-			handle: activePublication?.profile?.handle,
-			name: activePublication?.profile?.name,
+			handle: profile?.handle,
+			name: profile?.name!,
 		});
 	}, []);
 	return (
 		<View style={styles.container}>
 			<View style={styles.contentContainer}>
 				<TouchableOpacity onPress={goToChannel} activeOpacity={0.5}>
-					<Avatar src={avatarLink} width={40} height={40} />
+					<Avatar src={getRawurl(profile?.picture)} width={40} height={40} />
 				</TouchableOpacity>
 				<View style={styles.textContainer}>
-					<Heading title={uploadedBy} style={styles.heading} numberOfLines={1} />
+					<Heading
+						title={profile?.name || profile?.handle}
+						style={styles.heading}
+						numberOfLines={1}
+					/>
 					<StyledText
 						numberOfLines={1}
-						title={
-							showSubscribers
-								? `${subscribersCount} Subscribers`
-								: `@${activePublication?.profile?.handle}`
-						}
+						title={showSubscribers ? `${subscribersCount} Subscribers` : `@${profile?.handle}`}
 						style={styles.subtext}
 					/>
 				</View>
 			</View>
-			{showSubscribeButton ? (
-				<SubscribeButton channelId={profileId} isFollwebByMe={following} />
-			) : null}
+			{showSubscribeButton ? <SubscribeButton profile={profile} /> : null}
 		</View>
 	);
 });

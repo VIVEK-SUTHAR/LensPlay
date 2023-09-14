@@ -171,11 +171,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 						/>
 					</Pressable>
 					<View style={styles.editButtonContainer}>
-						{isChannel ? (
-							<SubscribeButton channelId={profile?.id} isFollwebByMe={profile?.isFollowedByMe!} />
-						) : (
-							<EditChannelButton />
-						)}
+						{isChannel ? <SubscribeButton profile={profile} /> : <EditChannelButton />}
 					</View>
 				</View>
 				<View style={CommonStyles.mx_16}>
@@ -297,8 +293,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 // };
 
 type SubscribeButtonProps = {
-	isFollwebByMe: boolean;
-	channelId: Scalars["ProfileId"];
+	profile: Profile | undefined;
 };
 
 const EditChannelButton = () => {
@@ -323,12 +318,11 @@ const EditChannelButton = () => {
 	);
 };
 
-const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollwebByMe }) => {
-	const [isFollowing, setIsFollowing] = useState(isFollwebByMe);
+const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ profile }) => {
+	const [isFollowing, setIsFollowing] = useState(profile?.isFollowedByMe || false);
 
 	const toast = useToast();
 	const { accessToken } = useAuthStore();
-	// const wallet = useWalletConnect();
 	const { address, provider, isConnected } = useWalletConnectModal();
 
 	/**
@@ -407,7 +401,7 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 				request: {
 					follow: {
 						freeFollow: {
-							profileId: channelId,
+							profileId: profile?.id,
 						},
 					},
 				},
@@ -419,7 +413,7 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 		const data = await getTypedData({
 			variables: {
 				request: {
-					profile: channelId,
+					profile: profile?.id,
 				},
 			},
 		});
