@@ -29,18 +29,16 @@ import {
 } from "../../components/VIdeo";
 import DisLikeButton from "../../components/VIdeo/Actions/DisLikeButton";
 import MirrorButton from "../../components/VIdeo/Actions/MirrorButton";
-import { useActivePublication, useReactionStore } from "../../store/Store";
+import { useActivePublication } from "../../store/Store";
 
+import { RootStackScreenProps } from "customTypes/navigation";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
-import { RootStackScreenProps } from "customTypes/navigation";
 
 const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo">) => {
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
 	const [isMute, setIsMute] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
-	const { videopageStats, setVideoPageStats, clearStats, setCollectStats, setMirrorStats } =
-		useReactionStore();
 	const { activePublication, setActivePublication } = useActivePublication();
 
 	function handleBackButtonClick() {
@@ -48,9 +46,6 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 		setInFullsreen(!inFullscreen);
 		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
 		if (!inFullscreen) {
-			clearStats();
-			setCollectStats(false, 0);
-			setMirrorStats(false, 0);
 			navigation.goBack();
 		}
 		return true;
@@ -74,27 +69,6 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 				},
 			});
 			setActivePublication(feed?.data?.publication as Post);
-			setVideoPageStats(
-				activePublication?.reaction === "UPVOTE",
-				activePublication?.reaction === "DOWNVOTE",
-				activePublication?.stats?.totalUpvotes || 0
-			);
-			setCollectStats(
-				activePublication?.hasCollectedByMe || false,
-				activePublication?.stats?.totalAmountOfCollects || 0
-			);
-			if (activePublication?.__typename === "Mirror") {
-				setMirrorStats(
-					activePublication?.mirrorOf.mirrors?.length > 0,
-					activePublication?.stats?.totalAmountOfMirrors || 0
-				);
-			}
-			if (activePublication?.__typename === "Post") {
-				setMirrorStats(
-					activePublication?.mirrors?.length > 0,
-					activePublication?.stats?.totalAmountOfMirrors || 0
-				);
-			}
 			if (
 				activePublication?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")
 			) {
@@ -238,15 +212,8 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 						horizontal={true}
 						showsHorizontalScrollIndicator={false}
 					>
-						<LikeButton
-							like={videopageStats?.likeCount}
-							id={activePublication?.id}
-							isalreadyLiked={videopageStats?.isLiked}
-						/>
-						<DisLikeButton
-							isalreadyDisLiked={videopageStats?.isDisliked}
-							id={activePublication?.id}
-						/>
+						<LikeButton />
+						<DisLikeButton />
 						<MirrorButton mirrorRef={mirrorRef} />
 						<CollectButton collectRef={collectRef} />
 						<ShareButton />

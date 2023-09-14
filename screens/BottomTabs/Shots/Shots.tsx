@@ -1,4 +1,4 @@
-import { FlashList } from "@shopify/flash-list";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import ShotSkeleton from "components/Shots/ShotSkeleton";
 import SingleShot from "components/Shots/SingleShot";
 import {
@@ -10,6 +10,7 @@ import {
 	PublicationTypes,
 	useExploreQuery,
 } from "customTypes/generated";
+import { ShotsPublication } from "customTypes/index";
 import { RootTabScreenProps } from "customTypes/navigation";
 import React, { useCallback, useState } from "react";
 import {
@@ -17,15 +18,13 @@ import {
 	Dimensions,
 	Platform,
 	StyleSheet,
-	useWindowDimensions,
 	View,
 	ViewToken,
+	useWindowDimensions,
 } from "react-native";
+import SwiperFlatList from "react-native-swiper-flatlist";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
-import SwiperFlatList from "react-native-swiper-flatlist";
-import { ShotsPublication } from "customTypes/index";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 type ShotPublication = Post | Mirror;
 
@@ -59,8 +58,9 @@ const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 		variables: {
 			request: QueryRequest,
 			reactionRequest: {
-				profileId: isGuest ? profileId : currentProfile?.id,
+				profileId: isGuest ? "" : currentProfile?.id,
 			},
+			channelId: currentProfile?.id,
 		},
 		context: {
 			headers: {
@@ -130,7 +130,7 @@ const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 	const ListFooter = React.memo(() => {
 		return <ActivityIndicator style={{ paddingVertical: 12 }} size="small" color={PRIMARY} />;
 	});
-	const keyExtractor = (item: ShotsPublication) => item.id.toString();
+	const keyExtractor = (item: ShotsPublication) => item?.item?.id.toString();
 
 	if (loading) return <ShotSkeleton />;
 

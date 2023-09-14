@@ -40,6 +40,11 @@ function LikeButton() {
 		}
 	};
 
+	React.useEffect(() => {
+		setIsLiked(activePublication?.reaction === "UPVOTE");
+		setLikeCount(activePublication?.stats?.totalUpvotes!);
+	}, []);
+
 	return (
 		<Button
 			title={formatInteraction(likeCount)}

@@ -6,8 +6,7 @@ import { ToastType } from "customTypes/Store";
 import React from "react";
 import { useGuestStore } from "store/GuestStore";
 import { useMirrorStore } from "store/ReactionStore";
-import { useActivePublication, useReactionStore, useThemeStore, useToast } from "store/Store";
-import Logger from "utils/logger";
+import { useActivePublication, useThemeStore, useToast } from "store/Store";
 
 type MirrorButtonProps = {
 	mirrorRef: React.RefObject<BottomSheetMethods>;
@@ -21,7 +20,6 @@ const MirrorButton = ({ mirrorRef }: MirrorButtonProps) => {
 	const { activePublication } = useActivePublication();
 
 	React.useEffect(() => {
-		Logger.Log('yeh jai', activePublication?.mirrors);
 		if (activePublication?.__typename === "Post") {
 			if (activePublication?.mirrors.length > 0) {
 				setIsMirrored(true);

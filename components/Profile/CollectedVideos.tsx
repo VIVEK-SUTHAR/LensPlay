@@ -1,32 +1,30 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { FlashList } from "@shopify/flash-list";
 import Sheet from "components/Bottom";
-import MyVideoCard, { type actionListType } from "components/common/MyVideoCard";
 import Icon from "components/Icon";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
+import MyVideoCard, { type actionListType } from "components/common/MyVideoCard";
+import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
+import Skeleton from "components/common/Skeleton";
 import { black } from "constants/Colors";
 import { SOURCES } from "constants/index";
 import {
+	PublicationMainFocus,
+	PublicationTypes,
+	useProfileCollectsQuery,
 	type Mirror,
 	type Post,
-	PublicationMainFocus,
 	type PublicationsQueryRequest,
-	PublicationTypes,
 	type Scalars,
-	useProfileCollectsQuery,
 } from "customTypes/generated";
+import useAddWatchLater from "hooks/useAddToWatchLater";
 import React from "react";
 import { ActivityIndicator, FlatList, Share, View } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import CommonStyles from "styles/index";
 import { NoVideosFound } from "./AllVideos";
-import Skeleton from "components/common/Skeleton";
-import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
-import useAddWatchLater from "hooks/useAddToWatchLater";
-import useWatchLater from "store/WatchLaterStore";
-import Logger from "utils/logger";
 
 type CollectedVideosProps = {
 	ethAddress?: string;
@@ -64,6 +62,7 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 			reactionRequest: {
 				profileId: currentProfile?.id,
 			},
+			channelId: currentProfile?.id,
 		},
 		context: {
 			headers: {

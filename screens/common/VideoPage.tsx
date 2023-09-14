@@ -34,8 +34,7 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
-import { useLikeStore } from "store/ReactionStore";
-import { useActivePublication, useReactionStore } from "store/Store";
+import { useActivePublication } from "store/Store";
 import useVideoURLStore from "store/videoURL";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getIPFSLink from "utils/getIPFSLink";
@@ -48,7 +47,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
 	const { activePublication } = useActivePublication();
-	const { setLikeCount, setIsLiked, setIsDisLiked } = useLikeStore();
+	const [isMute, setIsMute] = useState<boolean>(false);
 
 	React.useEffect(() => {
 		const delay = setTimeout(() => {
@@ -57,52 +56,23 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		return () => clearTimeout(delay);
 	}, [activePublication]);
 
-	const [isMute, setIsMute] = useState<boolean>(false);
-	const { clearStats, setCollectStats, setMirrorStats } = useReactionStore();
-
 	const handleBackButtonClick = React.useCallback(() => {
 		setStatusBarHidden(false, "fade");
 		setInFullsreen(!inFullscreen);
 		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
 		if (!inFullscreen) {
 			navigation.goBack();
-			clearStats();
-			setCollectStats(false, 0);
-			setMirrorStats(false, 0);
 		}
 		return true;
 	}, [navigation]);
 
 	const handleBlur = React.useCallback(() => {
 		setVideoURI("");
-		clearStats();
-		setCollectStats(false, 0);
-		setMirrorStats(false, 0);
 	}, []);
 
 	navigation.addListener("blur", handleBlur);
 
 	useEffect(() => {
-		setIsLiked(activePublication?.reaction === "UPVOTE");
-		setIsDisLiked(activePublication?.reaction === "DOWNVOTE");
-		setLikeCount(activePublication?.stats?.totalUpvotes!);
-		setCollectStats(
-			activePublication?.hasCollectedByMe || false,
-			activePublication?.stats?.totalAmountOfCollects || 0
-		);
-		if (activePublication?.__typename === "Mirror") {
-			setMirrorStats(
-				activePublication?.mirrorOf.mirrors?.length > 0,
-				activePublication?.stats?.totalAmountOfMirrors || 0
-			);
-		}
-		if (activePublication?.__typename === "Post") {
-			setMirrorStats(
-				activePublication?.mirrors?.length > 0,
-				activePublication?.stats?.totalAmountOfMirrors || 0
-			);
-		}
-
 		const handler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
 		return () => {
 			handler.remove();

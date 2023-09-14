@@ -7,7 +7,7 @@ import useDisLike from "hooks/reactions/useDisLike";
 import React from "react";
 import { useGuestStore } from "store/GuestStore";
 import { useLikeStore } from "store/ReactionStore";
-import { useActivePublication, useReactionStore, useThemeStore, useToast } from "store/Store";
+import { useActivePublication, useThemeStore, useToast } from "store/Store";
 import TrackAction from "utils/Track";
 
 function DisLikeButton() {
@@ -16,7 +16,6 @@ function DisLikeButton() {
 		useLikeStore();
 	const { isGuest } = useGuestStore();
 	const { PRIMARY } = useThemeStore();
-	const { videopageStats, setVideoPageStats } = useReactionStore();
 	const toast = useToast();
 	const { addDisLike, removeDisLike } = useDisLike();
 
@@ -34,10 +33,14 @@ function DisLikeButton() {
 			addDisLike(activePublication!);
 			void TrackAction(PUBLICATION.DISLIKE);
 		} else {
-			setVideoPageStats(false, false, videopageStats.likeCount);
+			setIsDisLiked(false);
 			removeDisLike(activePublication!);
 		}
 	};
+
+	React.useEffect(() => {
+		setIsDisLiked(activePublication?.reaction === "DOWNVOTE");
+	}, []);
 
 	return (
 		<Button

@@ -1,10 +1,8 @@
 import type { FeedItemRoot, Mirror, Post } from "customTypes/generated";
 import {
-	DisLikeObject,
 	IActivePublication,
 	IAuthStore,
 	ICommentStore,
-	IReactionStore,
 	IThemeStore,
 	OptimisticStore,
 	OptimitisticComment,
@@ -13,7 +11,6 @@ import {
 	UserStore,
 } from "customTypes/Store";
 import { create } from "zustand";
-
 
 export const useAuthStore = create<IAuthStore>((set) => ({
 	accessToken: "",
@@ -67,67 +64,6 @@ export const useToast = create<ToastProps>((set) => ({
 		set({ isVisible: isVisible, message: message, type: type }),
 }));
 
-export const useReactionStore = create<IReactionStore>((set) => ({
-	reaction: false,
-	videopageStats: {
-		isLiked: false,
-		isDisliked: false,
-		likeCount: 0,
-	},
-	collectStats: {
-		isCollected: false,
-		collectCount: 0,
-	},
-	mirrorStats: {
-		isMirrored: false,
-		mirrorCount: 0,
-	},
-	likedComments: [{ id: 0 }],
-	setReaction: (reaction) => {
-		set({
-			reaction: reaction,
-		});
-	},
-	setVideoPageStats: (isLiked, isDisliked, likeCount) => {
-		set({
-			videopageStats: {
-				isLiked: isLiked,
-				isDisliked: isDisliked,
-				likeCount: likeCount,
-			},
-		});
-	},
-	setCollectStats: (isCollected, collectCount) => {
-		set({
-			collectStats: {
-				isCollected: isCollected,
-				collectCount: collectCount,
-			},
-		});
-	},
-	setMirrorStats: (isMirrored, mirrorCount) => {
-		set({
-			mirrorStats: {
-				isMirrored: isMirrored,
-				mirrorCount: mirrorCount,
-			},
-		});
-	},
-	clearStats: () => {
-		set({
-			videopageStats: {
-				isLiked: false,
-				isDisliked: false,
-				likeCount: 0,
-			},
-		});
-	},
-	addToLikedComments: (commentId: string) => {
-		set((state) => ({
-			likedComments: [...state.likedComments, { id: commentId } as unknown as DisLikeObject],
-		}));
-	},
-}));
 export const useCommentStore = create<ICommentStore>((set) => ({
 	comment: false,
 	setComments: (comment) => {

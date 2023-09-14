@@ -213,7 +213,10 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	React.useEffect(() => {
 		getBookMarks()
 			.then((res) => {
-				if (res) {
+				if (
+					(res && res?.data?.publicationsProfileBookmarks?.items[0]?.__typename === "Post") ||
+					res?.data?.publicationsProfileBookmarks?.items[0]?.__typename === "Mirror"
+				) {
 					handleCover(
 						getIPFSLink(
 							getRawurl(res?.data?.publicationsProfileBookmarks?.items[0]?.metadata?.cover)

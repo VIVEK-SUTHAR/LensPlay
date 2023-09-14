@@ -34,7 +34,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	} = useProfileQuery({
 		variables: {
 			request: {
-				// profileId: profileId ? profileId : currentProfile?.id,
 				handle: currentProfile?.handle,
 			},
 		},

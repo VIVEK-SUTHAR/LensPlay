@@ -26,7 +26,6 @@ import { ActivityIndicator, FlatList, RefreshControl, Share, View } from "react-
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import CommonStyles from "styles/index";
 import { NoVideosFound } from "./AllVideos";
-import Logger from "utils/logger";
 
 type MirroredVideosProps = {
 	channelId?: string;
@@ -61,7 +60,7 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 			reactionRequest: {
 				profileId: currentProfile?.id,
 			},
-			// channelId: currentProfile?.id,
+			channelId: currentProfile?.id,
 		},
 		context: {
 			headers: {

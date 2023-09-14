@@ -1,4 +1,3 @@
-import type { Mirror, Post } from "customTypes/generated";
 import { create } from "zustand";
 
 interface WatchLaterStore {

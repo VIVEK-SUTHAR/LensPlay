@@ -46,19 +46,6 @@ export enum ToastType {
 	ERROR = "ERROR",
 	INFO = "INFO",
 }
-export interface IReactionStore {
-	reaction: boolean;
-	videopageStats: videoPageStatsObject;
-	collectStats: collectStatsObject;
-	mirrorStats: mirrorStatsObject;
-	setReaction: (reaction: boolean) => void;
-	setVideoPageStats: (isLiked: boolean, isDisliked: boolean, likeCount: number) => void;
-	setCollectStats: (isCollected: boolean, collectCount: number) => void;
-	setMirrorStats: (isMirrored: boolean, mirrorCount: number) => void;
-	clearStats: () => void;
-	likedComments: DisLikeObject[];
-	addToLikedComments: (commentId: string) => void;
-}
 
 export interface ICommentStore {
 	comment: boolean;

@@ -14,14 +14,7 @@ import useMirror from "hooks/reactions/useMirror";
 import React from "react";
 import { Pressable, View } from "react-native";
 import { useMirrorStore } from "store/ReactionStore";
-import {
-	useActivePublication,
-	useAuthStore,
-	useProfile,
-	useReactionStore,
-	useThemeStore,
-	useToast,
-} from "store/Store";
+import { useActivePublication, useThemeStore, useToast } from "store/Store";
 import TrackAction from "utils/Track";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
@@ -33,13 +26,8 @@ type MirrorVideoSheetProps = {
 
 const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef }) => {
 	const { activePublication } = useActivePublication();
-	const { accessToken } = useAuthStore();
-	const { mirrorStats, setMirrorStats } = useReactionStore();
-
-	const isDAPublication = activePublication?.isDataAvailability;
 	const toast = useToast();
 	const theme = useThemeStore();
-	const { currentProfile } = useProfile();
 	const { mirrorPublication } = useMirror();
 	const { isMirrored, mirrorCount, setIsMirrored, setMirrorCount } = useMirrorStore();
 
