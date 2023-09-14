@@ -1,5 +1,5 @@
 import type { PinStore } from "customTypes/Store";
-import create from "zustand";
+import { create } from "zustand";
 
 const usePinStore = create<PinStore>((set) => ({
 	publicationId: undefined,

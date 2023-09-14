@@ -79,6 +79,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 			reactionRequest: {
 				profileId: currentProfile?.id,
 			},
+			channelId: currentProfile?.id,
 		},
 		fetchPolicy: "network-only",
 		context: {

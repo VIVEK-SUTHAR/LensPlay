@@ -1,5 +1,5 @@
 import { INetWorkStore } from "customTypes/Store";
-import create from "zustand";
+import { create } from "zustand";
 
 const useNetworkStore = create<INetWorkStore>((set) => ({
 	isOffline: false,

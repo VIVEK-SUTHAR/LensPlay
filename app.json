@@ -80,6 +80,8 @@
 			}
 		},
 		"plugins": [
+			["expo-community-flipper"],
+			["react-native-flipper-performance-plugin"],	  
 			[
 				"expo-image-picker",
 				{
