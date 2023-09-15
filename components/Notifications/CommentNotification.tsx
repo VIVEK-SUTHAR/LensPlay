@@ -1,8 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
+import CommentIcon from "assets/Icons/Comment";
+import Comment from "assets/Icons/Comment";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import StyledText from "components/UI/StyledText";
-import { dark_primary } from "constants/Colors";
+import { black, dark_primary } from "constants/Colors";
 import type { NewCommentNotification } from "customTypes/generated";
 import React, { memo } from "react";
 import { Pressable, View } from "react-native";
@@ -44,9 +46,10 @@ const CommentNotification: React.FC<CommentNotificationProps> = ({ notification 
 					width: 35,
 					marginHorizontal: 4,
 					alignItems: "center",
+					alignSelf:"center"
 				}}
 			>
-				<Icon name="comment" color="#8696FE" />
+				<CommentIcon width={26} height={26} />
 			</View>
 			<View style={{ flex: 1 }}>
 				<Pressable

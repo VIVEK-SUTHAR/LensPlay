@@ -1,4 +1,5 @@
 import Earth from "assets/Icons/Earth";
+import More from "assets/Icons/More";
 import PlaylistIcon from "assets/Icons/Playlist";
 import Icon from "components/Icon";
 import Heading from "components/UI/Heading";
@@ -23,8 +24,8 @@ const Playlist = () => {
 			}}
 		>
 			<PlaylistCard />
-            <PlaylistCard />
-            <PlaylistCard />
+			<PlaylistCard />
+			<PlaylistCard />
 		</View>
 	);
 };
@@ -106,21 +107,18 @@ const PlaylistCard = React.memo(() => {
 						style={{ color: "white", fontSize: 16, fontWeight: "600" }}
 						numberOfLines={3}
 					/>
-                    <View
+					<View
 						style={{
 							marginTop: 2,
 						}}
 					>
-						<StyledText
-							title={'Sahil Kakwani'}
-							style={{ color: "gray", fontSize: 12 }}
-						/>
+						<StyledText title={"Sahil Kakwani"} style={{ color: "gray", fontSize: 12 }} />
 					</View>
 					<View
 						style={{
 							flexDirection: "row",
 							alignItems: "center",
-                            marginTop: 4
+							marginTop: 4,
 						}}
 					>
 						<Earth height={10} width={10} />
@@ -146,9 +144,9 @@ const PlaylistCard = React.memo(() => {
 						height: "30%",
 					}}
 				>
-					<Icon name="more" size={16} />
+					<More width={16} height={16} />
 				</TouchableOpacity>
 			</View>
 		</Pressable>
 	);
-})
+});

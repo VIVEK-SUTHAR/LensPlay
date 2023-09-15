@@ -14,6 +14,7 @@ import getRawurl from "../../utils/getRawUrl";
 import Icon, { IconName } from "../Icon";
 import Heading from "../UI/Heading";
 import StyledText from "../UI/StyledText";
+import More from "assets/Icons/More";
 
 type MyVideoCardProps = {
   publication: Mirror | Post;
@@ -123,7 +124,7 @@ function MyVideoCard({
             height: "30%",
           }}
         >
-          <Icon name="more" size={16} />
+          <More width={16} height={16} />
         </TouchableOpacity>
       </View>
     </Pressable>

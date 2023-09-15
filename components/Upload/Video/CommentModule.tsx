@@ -8,6 +8,7 @@ import Sheet from "components/Bottom";
 import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
 import ArrowForward from "assets/Icons/ArrowForward";
+import Done from "assets/Icons/Done";
 
 type CommentModuleSheetProps = {
 	referenceModuleRef: React.RefObject<BottomSheetMethods>;
@@ -187,7 +188,7 @@ function CommentModuleSheet({
 											alignItems: "center",
 										}}
 									>
-										<Icon name={"done"} color={"black"} size={18} />
+<Done height={18} width={18} />
 									</View>
 								) : null}
 							</Pressable>

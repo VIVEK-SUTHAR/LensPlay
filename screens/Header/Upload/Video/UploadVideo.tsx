@@ -1,4 +1,6 @@
+import Done from "assets/Icons/Done";
 import Edit from "assets/Icons/Edit";
+import QR from "assets/Icons/QR";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
@@ -155,7 +157,7 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 											borderRadius: 4,
 										}}
 									>
-										<Icon name="done" />
+										<Done width={48} height={48} />
 									</View>
 								) : null}
 							</Pressable>
@@ -213,7 +215,7 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 												alignItems: "center",
 											}}
 										>
-											<Icon name="done" />
+											<Done width={48} height={48} />
 										</View>
 									) : null}
 								</>

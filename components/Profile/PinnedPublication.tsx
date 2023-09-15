@@ -29,6 +29,7 @@ import uploadToArweave from "utils/uploadToArweave";
 import { v4 as uuidV4 } from "uuid";
 import Unpin from "assets/Icons/Unpin";
 import Pin from "assets/Icons/Pin";
+import More from "assets/Icons/More";
 
 export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
 	const { currentProfile } = useProfile();
@@ -283,7 +284,7 @@ export default function PinnedPublication({
 									height: "30%",
 								}}
 							>
-								<Icon name="more" size={16} />
+								<More width={16} height={16} />
 							</TouchableOpacity>
 						) : null}
 					</View>

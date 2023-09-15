@@ -2,6 +2,7 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 import Bug from "assets/Icons/Bug";
+import QR from "assets/Icons/QR";
 // import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
@@ -88,7 +89,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 			headerRight: () => {
 				return (
 					<Pressable onPress={() => navigation.push("ProfileScanner")}>
-						<Icon name="qr" size={20} />
+						<QR width={20} height={20} />
 					</Pressable>
 				);
 			},

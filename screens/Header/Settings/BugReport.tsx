@@ -1,5 +1,6 @@
 import { WINDOW_WIDTH } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Done from "assets/Icons/Done";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
@@ -328,7 +329,7 @@ function BugSheet({ data, bugSheetRef, activeReason, setActiveReason }: BugSheet
 											alignItems: "center",
 										}}
 									>
-										<Icon name={"done"} color={"black"} size={18} />
+										<Done width={18} height={18} />
 									</View>
 								) : null}
 							</Pressable>

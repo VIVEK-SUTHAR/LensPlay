@@ -18,6 +18,7 @@ import { useThemeStore } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
 import LimitedFeeCollect from "components/Upload/Video/CollectModules/LimitedFeeCollect";
 import PaidCollect from "components/Upload/Video/CollectModules/PaidCollect";
+import QR from "assets/Icons/QR";
 
 const TokenList: TokenListItem[] = [
 	{
@@ -184,7 +185,7 @@ function TokenSheet({ TokenList, activeToken, tokenSheetRef }: TokenSheetProps) 
 											alignItems: "center",
 										}}
 									>
-										<Icon name={"done"} color={"black"} size={18} />
+										<QR height={18} width={18} />
 									</View>
 								) : null}
 							</Pressable>

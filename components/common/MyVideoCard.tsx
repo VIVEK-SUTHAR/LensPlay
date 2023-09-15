@@ -1,5 +1,6 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
+import More from "assets/Icons/More";
 import Icon, { IconName } from "components/Icon";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
@@ -26,9 +27,7 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 	const navigation = useNavigation();
 	const { setActivePublication } = useActivePublication();
 
-	const memoizedPlaceHolder = React.useMemo(
-		()=>getPlaceHolderImage(),[]
-	)
+	const memoizedPlaceHolder = React.useMemo(() => getPlaceHolderImage(), []);
 
 	return (
 		<Pressable
@@ -115,7 +114,7 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 						height: "30%",
 					}}
 				>
-					<Icon name="more" size={16} />
+					<More height={16} width={16} />
 				</TouchableOpacity>
 			</View>
 		</Pressable>

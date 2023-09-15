@@ -26,6 +26,7 @@ import ShotLikeButton from "./Reaction/ShotLikeButton";
 import ShareIcon from "assets/Icons/ShareIcon";
 import Collect from "assets/Icons/Collect";
 import Close from "assets/Icons/Close";
+import CommentIcon from "assets/Icons/Comment";
 
 function ShotReaction({ item, commentRef }: ShotsPublication) {
 	const [totalCollects, setTotalCollects] = useState<number>(item?.stats?.totalAmountOfCollects);
@@ -96,7 +97,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 						commentRef?.current?.snapToIndex(0);
 					}}
 				>
-					<Icon name="comment" size={32} />
+					<CommentIcon width={32} height={32} />
 					<Text style={{ color: "white" }}>{item?.stats?.totalAmountOfComments}</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
