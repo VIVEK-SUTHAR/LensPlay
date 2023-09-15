@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { SubscribeButton } from "components/Profile/ProfileHeader";
+import SubscribeButton from "components/Profile/SubscribeButton";
 import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
