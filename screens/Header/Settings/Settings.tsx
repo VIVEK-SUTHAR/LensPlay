@@ -3,6 +3,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 import Bug from "assets/Icons/Bug";
 import QR from "assets/Icons/QR";
+import Privacy from "assets/Icons/Privacy";
+import Terms from "assets/Icons/Terms";
 // import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
@@ -32,6 +34,8 @@ import {
 import { useGuestStore } from "store/GuestStore";
 import { useProfile } from "store/Store";
 import TrackAction from "utils/Track";
+import RightArrow from "assets/Icons/RightArrow";
+import Mail from "assets/Icons/Mail";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
@@ -62,21 +66,21 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 
 	const SettingItemsList: SettingsItemProps[] = [
 		{
-			icon: <Icon name="policy" size={24} />,
+			icon: <Terms height={24} width={24} />,
 			label: "Terms and Conditions",
 			onPress: () => {
 				Linking.openURL(LENSPLAY_TERMS);
 			},
 		},
 		{
-			icon: <Icon name="terms" size={24} />,
+			icon: <Privacy height={26} width={26} />,
 			label: "Privacy Policy",
 			onPress: () => {
 				Linking.openURL(LENSPLAY_PRIVACY);
 			},
 		},
 		{
-			icon: <Icon name="mail" size={24} />,
+			icon: <Mail height={24} width={24} />,
 			label: "Contact Us",
 			onPress: () => {
 				Linking.openURL(`mailto:lensplay.ac@gmail.com`);
@@ -299,7 +303,7 @@ const Item: FC<SettingsItemProps> = (item: SettingsItemProps) => {
 				{item.icon}
 				<StyledText title={item.label} style={styles.itemText} />
 			</View>
-			<Icon name="rightArrow" size={16} />
+			<RightArrow height={30} width={30} />
 		</Pressable>
 	);
 };

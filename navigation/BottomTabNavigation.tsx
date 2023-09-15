@@ -1,6 +1,8 @@
 import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import HomeFilled from "assets/Icons/HomeFilled";
+import HomeOutlined from "assets/Icons/HomeOutlined";
 import Record from "assets/Icons/Record";
 import Search from "assets/Icons/Search";
 import Setting from "assets/Icons/Setting";
@@ -204,7 +206,11 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 										height: "100%",
 									}}
 								>
-									<Icon name={focused ? "home_filled" : "home_outline"} color={"white"} size={25} />
+									{focused ? (
+										<HomeFilled height={25} width={25} />
+									) : (
+										<HomeOutlined color={"white"} height={26} width={26} />
+									)}
 								</View>
 							);
 						},
@@ -357,7 +363,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 								borderRadius: 50,
 							}}
 						>
-							<Icon name="create" size={24} />
+							{/* <Icon name="create" size={24} /> */}
 						</View>
 						<StyledText
 							title={"Create a video"}

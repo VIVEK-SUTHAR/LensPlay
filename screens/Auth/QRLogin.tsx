@@ -1,3 +1,4 @@
+import QR from "assets/Icons/QR";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
@@ -123,7 +124,7 @@ const QRLogin = ({ navigation }: RootStackScreenProps<"QRLogin">) => {
 							fontSize: 16,
 							fontWeight: "500",
 						}}
-						icon={<Icon name="qr" color="black" />}
+						icon={<QR height={20} width={20} color={"black"} />}
 						iconPosition="right"
 					/>
 				</View>

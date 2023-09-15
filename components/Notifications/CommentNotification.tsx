@@ -1,7 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
 import CommentIcon from "assets/Icons/Comment";
-import Comment from "assets/Icons/Comment";
-import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import StyledText from "components/UI/StyledText";
 import { black, dark_primary } from "constants/Colors";
@@ -23,7 +21,7 @@ const CommentNotification: React.FC<CommentNotificationProps> = ({ notification 
 	const goToChannel = () => {
 		navigation.navigate("Channel", {
 			handle: notification?.profile?.handle,
-			name: notification?.profile?.name,
+			name: notification?.profile?.name!,
 		});
 	};
 
@@ -46,7 +44,7 @@ const CommentNotification: React.FC<CommentNotificationProps> = ({ notification 
 					width: 35,
 					marginHorizontal: 4,
 					alignItems: "center",
-					alignSelf:"center"
+					alignSelf: "center",
 				}}
 			>
 				<CommentIcon width={26} height={26} />

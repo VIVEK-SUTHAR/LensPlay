@@ -6,7 +6,7 @@ const QR = (props: SvgProps) => (
     viewBox="0 0 24 24"
     fill="none"
     aria-labelledby="qrIconTitle"
-    stroke="#ffffff"
+    stroke={props.color?props.color:"#ffffff"}
     strokeWidth={1}
     strokeLinecap="square"
     strokeLinejoin="miter"

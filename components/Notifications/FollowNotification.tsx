@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import Icon from "components/Icon";
+import Follow from "assets/Icons/Follow";
 import Avatar from "components/UI/Avatar";
 import StyledText from "components/UI/StyledText";
 import { dark_primary } from "constants/Colors";
@@ -20,7 +20,7 @@ const FollowNotification: React.FC<FollowNotificationProps> = ({ notification })
 
 	const goToChannel = () => {
 		navigation.navigate("Channel", {
-			name: notification?.wallet?.defaultProfile?.name,
+			name: notification?.wallet?.defaultProfile?.name!,
 			handle: notification?.wallet?.defaultProfile?.handle,
 		});
 	};
@@ -46,7 +46,7 @@ const FollowNotification: React.FC<FollowNotificationProps> = ({ notification })
 					alignItems: "center",
 				}}
 			>
-				<Icon name="follow" size={30} color="#EA8FEA" />
+				<Follow height={28} width={28} color="#EA8FEA" />
 			</View>
 			<View style={{ flex: 1 }}>
 				<Pressable

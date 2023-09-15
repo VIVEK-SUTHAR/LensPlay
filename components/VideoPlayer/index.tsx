@@ -1,6 +1,6 @@
 import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
-import { primary } from "constants/Colors";
+import { primary, white } from "constants/Colors";
 import { ResizeMode, Video } from "expo-av";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
@@ -10,6 +10,9 @@ import { useThemeStore } from "store/Store";
 import getIPFSLink from "utils/getIPFSLink";
 import Logger from "utils/logger";
 import Player from "./Player";
+import Play from "assets/Icons/Play";
+import Pause from "assets/Icons/Pause";
+import Replay from "assets/Icons/Replay";
 
 interface VideoPlayerProps {
 	url: string;
@@ -70,9 +73,9 @@ function VideoPlayer({
 			}}
 			icon={{
 				size: 48,
-				play: <Icon name="play" size={48} color={PRIMARY} />,
-				pause: <Icon name="pause" size={52} color={PRIMARY} />,
-				replay: <Icon name="replay" color={PRIMARY} size={48} />,
+				play: <Play height={48} width={48} color={white[800]} />,
+				pause: <Pause  height={48} width={48} color={white[800]} />,
+				replay: <Replay height={48} width={48} color={white[800]} />
 			}}
 			header={
 				<View

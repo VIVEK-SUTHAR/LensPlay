@@ -34,6 +34,7 @@ import { useActivePublication } from "../../store/Store";
 import { RootStackScreenProps } from "customTypes/navigation";
 import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
+import ArrowDown from "assets/Icons/ArrowDown";
 
 const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo">) => {
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
@@ -224,7 +225,7 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 							}}
 						/>
 						<TouchableOpacity onPress={openCommentSheet}>
-							<Icon name="arrowDown" color="white" size={20} />
+							<ArrowDown color="white" height={16} width={16} />
 						</TouchableOpacity>
 					</View>
 					<MoreVideos />

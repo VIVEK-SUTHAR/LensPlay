@@ -5,7 +5,6 @@ import ErrorMesasge from "components/common/ErrorMesasge";
 import MyVideoCard, { actionListType, SheetProps } from "components/common/MyVideoCard";
 import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
 import Skeleton from "components/common/Skeleton";
-import Icon from "components/Icon";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
 import DeleteVideo from "components/VIdeo/DeleteVideo";

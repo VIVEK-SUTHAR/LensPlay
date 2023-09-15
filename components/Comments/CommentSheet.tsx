@@ -10,7 +10,6 @@ import { BottomSheetFooter, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetDefaultFooterProps } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetFooter/types";
 import { Pressable, View } from "react-native";
 import Heading from "components/UI/Heading";
-import Icon from "components/Icon";
 import Close from "assets/Icons/Close";
 
 type CommentsSheetProps = {

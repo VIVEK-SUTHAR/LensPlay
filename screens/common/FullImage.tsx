@@ -1,3 +1,4 @@
+import ArrowLeft from "assets/Icons/ArrowLeft";
 import Icon from "components/Icon";
 import { RootStackScreenProps } from "customTypes/navigation";
 import Constants from "expo-constants";
@@ -69,7 +70,7 @@ const FullImage = ({ navigation, route }: RootStackScreenProps<"FullImage">) => 
 			<StatusBar backgroundColor="transparent" style="auto" />
 			<View style={styles.headerStyle}>
 				<Pressable onPress={goBack}>
-					<Icon name="arrowLeft" />
+					<ArrowLeft color={"#ffffff"} height={26} width={26} />
 				</Pressable>
 			</View>
 			<Animated.View {...panResponder.panHandlers} style={[pan.getLayout(), styles.imageContainer]}>

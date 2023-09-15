@@ -1,7 +1,6 @@
 import Earth from "assets/Icons/Earth";
 import More from "assets/Icons/More";
 import PlaylistIcon from "assets/Icons/Playlist";
-import Icon from "components/Icon";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black, primary } from "constants/Colors";

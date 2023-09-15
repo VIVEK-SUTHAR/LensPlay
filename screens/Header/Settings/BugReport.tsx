@@ -1,5 +1,6 @@
 import { WINDOW_WIDTH } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import ArrowDown from "assets/Icons/ArrowDown";
 import Done from "assets/Icons/Done";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
@@ -169,7 +170,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
 							style={{ fontSize: 14, fontWeight: "600", color: "white" }}
 							title={activeReason || "Bug Category"}
 						/>
-						<Icon name="arrowDown" size={16} />
+						<ArrowDown color="white" height={16} width={16} />
 					</TouchableOpacity>
 				</View>
 				<View style={{}}>

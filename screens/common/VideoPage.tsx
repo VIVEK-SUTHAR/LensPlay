@@ -1,5 +1,6 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useFocusEffect } from "@react-navigation/native";
+import ArrowDown from "assets/Icons/ArrowDown";
 import CommentSheet from "components/Comments/CommentSheet";
 import Icon from "components/Icon";
 import LPImage from "components/UI/LPImage";
@@ -184,7 +185,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 									color: "white",
 								}}
 							/>
-							<Icon name="arrowDown" color="white" size={16} />
+							<ArrowDown color="white" height={16} width={16} />
 						</TouchableOpacity>
 					</View>
 					<MoreVideos />

@@ -1,7 +1,10 @@
-import Icon, { IconProps } from "components/Icon";
+import Instagram from "assets/Icons/Instagram";
+import Link from "assets/Icons/Link";
+import Twitter from "assets/Icons/Twitter";
+import Youtube from "assets/Icons/Youtube";
 import { dark_primary } from "constants/Colors";
 import { Maybe, Profile } from "customTypes/generated";
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { Linking, Pressable, View } from "react-native";
 
 type socialLinksProps = {
@@ -12,9 +15,8 @@ type socialLinksProps = {
 };
 
 type linksData = {
-	icon: IconProps["name"];
+	icon: ReactElement;
 	link: Maybe<string> | undefined;
-	color: string;
 };
 
 function getLink(key: string, value: Maybe<string> | undefined) {
@@ -62,24 +64,20 @@ function _SocialLinks({ profile }: { profile: Profile }) {
 
 	const linksData: linksData[] = [
 		{
-			icon: "twitter",
+			icon: <Twitter height={16} width={16} color={"#1DA1F2"} />,
 			link: getLink("twitter", links.twitter),
-			color: "#1DA1F2",
 		},
 		{
-			icon: "instagram",
+			icon: <Instagram height={16} width={16} color={"#1DA1F2"} />,
 			link: getLink("instagram", links.instagram),
-			color: "#1DA1F2",
 		},
 		{
-			icon: "youtube",
+			icon: <Youtube height={16} width={16} color={"#1DA1F2"} />,
 			link: getLink("youtube", links.youtube),
-			color: "#1DA1F2",
 		},
 		{
-			icon: "link",
+			icon: <Link height={16} width={16} color={"#1DA1F2"} />,
 			link: links.website,
-			color: "#1DA1F2",
 		},
 	];
 	return (
@@ -93,7 +91,6 @@ function _SocialLinks({ profile }: { profile: Profile }) {
 			{linksData.map((link) =>
 				link.link ? (
 					<Pressable
-						key={link.icon}
 						style={{
 							flexDirection: "row",
 							alignItems: "center",
@@ -109,7 +106,7 @@ function _SocialLinks({ profile }: { profile: Profile }) {
 							}
 						}}
 					>
-						<Icon name={link.icon} color={link.color} size={16} />
+						{link.icon}
 					</Pressable>
 				) : null
 			)}

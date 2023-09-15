@@ -243,7 +243,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 							navigation.navigate("FollowAnalytics");
 						}}
 					>
-						<Icon name="follow" />
+						<Follow />
 						<StyledText title={"Subscribers Growth"} style={styles.itemText} />
 					</Pressable> */}
 						{!isChannel ? <ProfileLists /> : null}

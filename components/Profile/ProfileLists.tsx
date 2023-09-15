@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import Clock from "assets/Icons/Clock";
+import RightArrow from "assets/Icons/RightArrow";
 import Icon from "components/Icon";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
@@ -87,7 +88,7 @@ const Item: FC<ProfileListItemProps> = (item: ProfileListItemProps) => {
 				{item.icon}
 				<StyledText title={item.label} style={styles.itemText} />
 			</View>
-			<Icon name="rightArrow" size={16} />
+			<RightArrow height={30} width={30} />
 		</Pressable>
 	);
 };

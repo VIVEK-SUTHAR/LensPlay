@@ -1,7 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import Sheet from "components/Bottom";
 import { type SheetProps } from "components/common/MyVideoCard";
-import Icon from "components/Icon";
 import Heading from "components/UI/Heading";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";

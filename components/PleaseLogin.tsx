@@ -3,7 +3,6 @@ import React from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { black, white } from "constants/Colors";
-import Icon from "./Icon";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import ArrowForward from "assets/Icons/ArrowForward";

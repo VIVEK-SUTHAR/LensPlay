@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
+import Mention from "assets/Icons/Mention";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import StyledText from "components/UI/StyledText";
@@ -48,7 +49,7 @@ const MentionNotification = ({ notification }: MentionNotificationProps) => {
 					alignItems: "center",
 				}}
 			>
-				<Icon name="mention" color="#79E0EE" size={24} />
+				<Mention color="#79E0EE" height={24} width={24} />
 			</View>
 			<View style={{ flex: 1 }} key={React.useId()}>
 				<Pressable

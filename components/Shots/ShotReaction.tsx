@@ -27,6 +27,7 @@ import ShareIcon from "assets/Icons/ShareIcon";
 import Collect from "assets/Icons/Collect";
 import Close from "assets/Icons/Close";
 import CommentIcon from "assets/Icons/Comment";
+import Info from "assets/Icons/Info";
 
 function ShotReaction({ item, commentRef }: ShotsPublication) {
 	const [totalCollects, setTotalCollects] = useState<number>(item?.stats?.totalAmountOfCollects);
@@ -215,7 +216,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 								alignItems: "center",
 							}}
 						>
-							<Icon name="info" color={black[100]} size={16} />
+							<Info color={black[100]} height={20} width={20} />
 							<StyledText
 								title={"This video is free to collect"}
 								style={{

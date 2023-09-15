@@ -10,6 +10,7 @@ import {
 import { dark_primary } from "constants/Colors";
 import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
+import ArrowDown from "assets/Icons/ArrowDown";
 
 interface Props {
   label: string;
@@ -101,7 +102,7 @@ const Dropdown: FC<Props> = ({ label, data, onSelect,width }) => {
         <Text style={styles.buttonText}>
           {(selected && selected.reason) || label}
         </Text>
-        <Icon name="arrowDown" size={16} />
+        <ArrowDown height={16} width={16} />
       </TouchableOpacity>
     </View>
   );

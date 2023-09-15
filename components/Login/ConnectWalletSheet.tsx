@@ -2,8 +2,8 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { useWalletConnectModal } from "@walletconnect/modal-react-native";
-
-import Icon from "components/Icon";
+import Desktop from "assets/Icons/Desktop";
+import Wallet from "assets/Icons/Wallet";
 import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
@@ -116,7 +116,7 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 						color: black[700],
 					}}
 					py={16}
-					icon={<Icon name="wallet" color={black[700]} size={20} />}
+					icon={<Wallet color={black[700]} height={20} width={20} />}
 				/>
 				{/* <Web3Button /> */}
 				<View
@@ -167,7 +167,7 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 						color: white[600],
 					}}
 					py={16}
-					icon={<Icon name="desktop" color={white[600]} size={20} />}
+					icon={<Desktop color={white[600]} height={20} width={20} />}
 				/>
 				<Pressable
 					style={{

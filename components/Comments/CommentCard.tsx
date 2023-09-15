@@ -2,7 +2,6 @@ import { useNavigation } from "@react-navigation/native";
 import Like from "assets/Icons/Like";
 import Mirror from "assets/Icons/Mirror";
 import Report from "assets/Icons/Report";
-import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
