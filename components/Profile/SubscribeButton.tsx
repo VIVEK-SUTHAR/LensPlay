@@ -8,7 +8,7 @@ import { useGuestStore } from "store/GuestStore";
 import { useToast } from "store/Store";
 import Logger from "utils/logger";
 
-function SubscribeButton({ profile }: { profile: Profile | undefined }) {
+function SubscribeButton({ profile }: { profile: Profile }) {
 	const [isFollowing, setIsFollowing] = React.useState<boolean>(profile?.isFollowedByMe || false);
 	const { subscribeChannel } = useSubscribe();
 	const { signUnsubscribeMessage, unSubscribeChannel } = useUnsubscribe();
@@ -30,7 +30,7 @@ function SubscribeButton({ profile }: { profile: Profile | undefined }) {
 				return;
 			}
 			setIsFollowing(true);
-			subscribeChannel(profile as Profile);
+			subscribeChannel(profile);
 		} catch (error) {
 			Logger.Error("error in following", error);
 		}
@@ -42,10 +42,10 @@ function SubscribeButton({ profile }: { profile: Profile | undefined }) {
 				toast.show("Please Login", ToastType.ERROR, true);
 				return;
 			}
-			const hasSigned = await signUnsubscribeMessage(profile as Profile);
+			const hasSigned = await signUnsubscribeMessage(profile);
 			if (hasSigned) {
 				setIsFollowing(false);
-				await unSubscribeChannel(profile as Profile);
+				await unSubscribeChannel(profile);
 			}
 		} catch (error) {
 			Logger.Error("error in Unsubscribe", error);
