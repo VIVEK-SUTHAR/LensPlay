@@ -19,7 +19,6 @@ export default function useLike() {
 	const [removeReaction] = useRemoveReactionMutation();
 
 	const updateCache = (
-		cache: ApolloCache<any>,
 		type: ReactionTypes.Upvote | null,
 		publication: Post | Mirror | FeedItemRoot
 	) => {
@@ -47,7 +46,7 @@ export default function useLike() {
 	};
 
 	const addLike = async (publication: Post | Mirror | FeedItemRoot) => {
-		updateCache(cache, ReactionTypes.Upvote, publication);
+		updateCache(ReactionTypes.Upvote, publication);
 		void addReaction({
 			variables: {
 				request: {
@@ -65,7 +64,7 @@ export default function useLike() {
 	};
 
 	const removeLike = async (publication: Post | Mirror | FeedItemRoot) => {
-		updateCache(cache, null, publication);
+		updateCache(null, publication);
 		void removeReaction({
 			variables: {
 				request: {

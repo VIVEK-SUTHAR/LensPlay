@@ -1,16 +1,13 @@
-import { ApolloCache, FetchResult } from "@apollo/client";
 import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 import cache from "apollo/cache";
 import { LENSPLAY_SITE } from "constants/index";
 import { PROFILE } from "constants/tracking";
 import {
-	CreateUnfollowTypedDataMutation,
 	CreateUnfollowTypedDataMutationResult,
 	Profile,
 	useBroadcastMutation,
 	useCreateUnfollowTypedDataMutation,
 } from "customTypes/generated";
-import React from "react";
 import { useAuthStore } from "store/Store";
 import TrackAction from "utils/Track";
 import formatUnfollowTypedData from "utils/lens/formatUnfollowTypedData";
@@ -19,15 +16,12 @@ import Logger from "utils/logger";
 export default function useUnsubscribe() {
 	const { accessToken } = useAuthStore();
 	const { address, provider } = useWalletConnectModal();
-	const [signature, setSignature] = React.useState<unknown | null>(null);
-	const [typeData, setTypeData] =
-		React.useState<FetchResult<CreateUnfollowTypedDataMutation> | null>(null);
 
 	// First req sign if user sign message successfully then unsubscribe channel
 	// fun signUnsubscribeMessage - to req sign
 	// fun unSubscribeChannel - to unsubscribe channel
 
-	const updateCache = (cache: ApolloCache<any>, profile: Profile) => {
+	const updateCache = (profile: Profile) => {
 		try {
 			cache.modify({
 				id: cache.identify(profile as any),
@@ -69,13 +63,13 @@ export default function useUnsubscribe() {
 		},
 	});
 
-	const unSubscribeChannel = async (profile: Profile) => {
-		updateCache(cache, profile);
+	const unSubscribeChannel = async (profile: Profile, signature: any, id: any) => {
+		updateCache(profile);
 		void sendUnFollowTxn({
 			variables: {
 				request: {
 					signature: signature,
-					id: typeData?.data?.createUnfollowTypedData?.id,
+					id: id,
 				},
 			},
 		});
@@ -95,13 +89,14 @@ export default function useUnsubscribe() {
 			method: "eth_signTypedData",
 			params: msgParams,
 		});
-		if (sign) {
-			setSignature(sign);
-			setTypeData(data);
-			return true;
-		} else {
-			return false;
+
+		const id = data?.data?.createUnfollowTypedData?.id;
+
+		if (sign && id) {
+			return { sign, id };
 		}
+
+		return null;
 	};
 
 	return { signUnsubscribeMessage, unSubscribeChannel };

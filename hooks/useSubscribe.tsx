@@ -1,4 +1,3 @@
-import { ApolloCache } from "@apollo/client";
 import cache from "apollo/cache";
 import { LENSPLAY_SITE } from "constants/index";
 import { Profile, useProxyActionMutation } from "customTypes/generated";
@@ -8,7 +7,7 @@ import Logger from "utils/logger";
 export default function useSubscribe() {
 	const { accessToken } = useAuthStore();
 
-	const updateCache = (cache: ApolloCache<any>, channel: Profile) => {
+	const updateCache = (channel: Profile) => {
 		try {
 			cache.modify({
 				id: cache.identify(channel as any),
@@ -37,7 +36,7 @@ export default function useSubscribe() {
 	});
 
 	const subscribeChannel = (channel: Profile) => {
-		updateCache(cache, channel);
+		updateCache(channel);
 		void freeFollowViaDispatcher({
 			variables: {
 				request: {

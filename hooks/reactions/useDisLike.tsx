@@ -19,7 +19,6 @@ export default function useDisLike() {
 	const [removeReaction] = useRemoveReactionMutation();
 
 	const updateCache = (
-		cache: ApolloCache<any>,
 		type: ReactionTypes.Downvote | null,
 		publication: Post | Mirror | FeedItemRoot
 	) => {
@@ -42,7 +41,7 @@ export default function useDisLike() {
 	};
 
 	const addDisLike = async (publication: Post | Mirror | FeedItemRoot) => {
-		updateCache(cache, ReactionTypes.Downvote, publication);
+		updateCache(ReactionTypes.Downvote, publication);
 		void addReaction({
 			variables: {
 				request: {
@@ -60,7 +59,7 @@ export default function useDisLike() {
 	};
 
 	const removeDisLike = async (publication: Post | Mirror | FeedItemRoot) => {
-		updateCache(cache, null, publication);
+		updateCache(null, publication);
 		void removeReaction({
 			variables: {
 				request: {

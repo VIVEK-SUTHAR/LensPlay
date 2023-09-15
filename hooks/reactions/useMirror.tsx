@@ -1,4 +1,3 @@
-import { ApolloCache } from "@apollo/client";
 import cache from "apollo/cache";
 import { LENSPLAY_SITE } from "constants/index";
 import { PUBLICATION } from "constants/tracking";
@@ -17,7 +16,7 @@ export default function useMirror() {
 	const { accessToken } = useAuthStore();
 	const { currentProfile } = useProfile();
 
-	const updateCache = (cache: ApolloCache<any>, publication: Post | Mirror | FeedItemRoot) => {
+	const updateCache = (publication: Post | Mirror | FeedItemRoot) => {
 		try {
 			cache.modify({
 				id: cache.identify(publication as any),
@@ -55,7 +54,7 @@ export default function useMirror() {
 	const mirrorPublication = async (publication: Post | Mirror | FeedItemRoot) => {
 		const isDAPublication = publication?.isDataAvailability;
 		try {
-			updateCache(cache, publication);
+			updateCache(publication);
 			if (isDAPublication) {
 				await createDataAvaibalityMirror({
 					variables: {

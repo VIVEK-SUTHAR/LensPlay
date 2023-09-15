@@ -3,8 +3,6 @@ import {
 	Mirror,
 	Post,
 	ProfileBookMarksDocument,
-	ProfileBookMarksQueryHookResult,
-	ProfileBookMarksQueryResult,
 	PublicationMainFocus,
 	useAddBookMarkMutation,
 	useRemoveBookMarkMutation,

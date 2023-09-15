@@ -42,10 +42,10 @@ function SubscribeButton({ profile }: { profile: Profile }) {
 				toast.show("Please Login", ToastType.ERROR, true);
 				return;
 			}
-			const hasSigned = await signUnsubscribeMessage(profile);
-			if (hasSigned) {
+			const data = await signUnsubscribeMessage(profile);
+			if (data) {
 				setIsFollowing(false);
-				await unSubscribeChannel(profile);
+				await unSubscribeChannel(profile, data.sign, data.id);
 			}
 		} catch (error) {
 			Logger.Error("error in Unsubscribe", error);

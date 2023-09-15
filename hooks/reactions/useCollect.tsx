@@ -1,4 +1,3 @@
-import { ApolloCache } from "@apollo/client";
 import cache from "apollo/cache";
 import { LENSPLAY_SITE } from "constants/index";
 import { PUBLICATION } from "constants/tracking";
@@ -10,7 +9,7 @@ import Logger from "utils/logger";
 export default function useCollect() {
 	const { accessToken } = useAuthStore();
 
-	const updateCache = (cache: ApolloCache<any>, publication: Post | Mirror | FeedItemRoot) => {
+	const updateCache = (publication: Post | Mirror | FeedItemRoot) => {
 		try {
 			cache.modify({
 				id: cache.identify(publication as any),
@@ -38,7 +37,7 @@ export default function useCollect() {
 
 	const collectPublication = async (publication: Post | Mirror | FeedItemRoot) => {
 		try {
-			updateCache(cache, publication);
+			updateCache(publication);
 			await createProxyAction({
 				variables: {
 					request: {
