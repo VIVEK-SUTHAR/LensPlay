@@ -1,4 +1,5 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import ArrowForward from "assets/Icons/ArrowForward";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
@@ -185,7 +186,7 @@ const ReportPublication = ({ navigation, route }: RootStackScreenProps<"ReportPu
 								maxWidth: "75%",
 							}}
 						/>
-						<Icon name="arrowForward" size={16} />
+						<ArrowForward height={16} width={16} />
 					</View>
 				</Pressable>
 				<StyledText
@@ -229,7 +230,7 @@ const ReportPublication = ({ navigation, route }: RootStackScreenProps<"ReportPu
 								maxWidth: "75%",
 							}}
 						/>
-						<Icon name="arrowForward" size={16} />
+						<ArrowForward height={16} width={16} />
 					</View>
 				</Pressable>
 				<View style={styles.inputContainer}>

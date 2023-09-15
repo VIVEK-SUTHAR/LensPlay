@@ -1,4 +1,5 @@
 import { FlashList } from "@shopify/flash-list";
+import ArrowForward from "assets/Icons/ArrowForward";
 import Icon from "components/Icon";
 import PleaseLogin from "components/PleaseLogin";
 import Button from "components/UI/Button";
@@ -311,7 +312,7 @@ const NotFound = ({ navigation }: { navigation: any }) => {
 					/>
 					<Button
 						title="Explore"
-						icon={<Icon name="arrowForward" size={16} color={black[500]} />}
+						icon={<ArrowForward height={16} width={16} />}
 						iconPosition="right"
 						width={"auto"}
 						bg={white[800]}

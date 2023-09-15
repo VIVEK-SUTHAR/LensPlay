@@ -113,7 +113,7 @@ export default function StackNavigation() {
 				component={VideoPage}
 				options={{
 					headerShown: false,
-					presentation: "card",
+					// presentation: "card",
 					animation: "default",
 				}}
 			/>

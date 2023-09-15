@@ -32,6 +32,7 @@ import formatHandle from "utils/formatHandle";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
+import ArrowForward from "assets/Icons/ArrowForward";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -163,44 +164,45 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="transparent" style="light" />
-			<View style={{
-				justifyContent: "flex-end",
-				alignItems: "center",
-				marginBottom: 32,
-				flex: 1,
-			}}>
 			<View
 				style={{
-					width: windowWidth,
-					height: "50%",
-					justifyContent: "center",
+					justifyContent: "flex-end",
 					alignItems: "center",
+					marginBottom: 32,
+					flex: 1,
 				}}
 			>
-				<Login />
-			</View>
-			<View
-				style={{
-					width: width,
-					paddingHorizontal: 16,
-					justifyContent: "center",
-					marginTop: 32,
-					
-				}}
-			>
-				<StyledText
-					title={
-						hasHandle
-							? "Hurry up, Your Lens frens are waiting!"
-							: "Oops! You don't have a lens profile"
-					}
+				<View
 					style={{
-						color: "white",
-						fontSize: 32,
-						fontWeight: "600",
+						width: windowWidth,
+						height: "50%",
+						justifyContent: "center",
+						alignItems: "center",
 					}}
-				/>
-			</View>
+				>
+					<Login />
+				</View>
+				<View
+					style={{
+						width: width,
+						paddingHorizontal: 16,
+						justifyContent: "center",
+						marginTop: 32,
+					}}
+				>
+					<StyledText
+						title={
+							hasHandle
+								? "Hurry up, Your Lens frens are waiting!"
+								: "Oops! You don't have a lens profile"
+						}
+						style={{
+							color: "white",
+							fontSize: 32,
+							fontWeight: "600",
+						}}
+					/>
+				</View>
 			</View>
 			<View
 				style={{
@@ -283,7 +285,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 							textStyle={{ fontSize: 20, fontWeight: "600", color: black[800] }}
 							bg={white[700]}
 							py={16}
-							icon={<Icon name="arrowForward" color={black[700]} size={16} />}
+							icon={<ArrowForward height={16} width={16} />}
 							iconPosition="right"
 							onPress={async () => {
 								if (isDesktop) {

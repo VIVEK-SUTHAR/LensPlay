@@ -7,6 +7,7 @@ import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useUploadStore } from "store/UploadStore";
+import ArrowForward from "assets/Icons/ArrowForward";
 
 type CollectModuleSheetProp = {
 	collectModuleRef: React.RefObject<BottomSheetMethods>;
@@ -21,7 +22,7 @@ export type CollectToggleType = {
 
 export default function CollectModule({ collectModuleRef }: CollectModuleSheetProp) {
 	const navigation = useNavigation();
-	const {collectModule} = useUploadStore();
+	const { collectModule } = useUploadStore();
 	return (
 		<Pressable
 			style={{
@@ -54,7 +55,7 @@ export default function CollectModule({ collectModuleRef }: CollectModuleSheetPr
 					}}
 				/>
 				<StyledText
-					title={collectModule?.isPaidCollect?'Paid':'Free'}
+					title={collectModule?.isPaidCollect ? "Paid" : "Free"}
 					style={{
 						color: "gray",
 						fontSize: 12,
@@ -79,7 +80,7 @@ export default function CollectModule({ collectModuleRef }: CollectModuleSheetPr
 						maxWidth: "65%",
 					}}
 				/>
-				<Icon name="arrowForward" size={16} />
+				<ArrowForward height={16} width={16} />
 			</View>
 		</Pressable>
 	);

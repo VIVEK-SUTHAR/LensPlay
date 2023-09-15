@@ -1,4 +1,5 @@
 import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import ArrowForward from "assets/Icons/ArrowForward";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
@@ -124,7 +125,7 @@ export default function AddDetails({ navigation }: RootStackScreenProps<"AddDeta
 						style={styles.descriptionContainer}
 					>
 						<Heading title="Add description" style={styles.descHeading} />
-						<Icon name="arrowForward" size={20} color="white" />
+						<ArrowForward height={16} width={16} />
 					</Pressable>
 					<CollectModule collectModuleRef={collectModuleRef} />
 					<CommentModule sheetRef={referenceModuleRef} activeModule={activeModule.name} />

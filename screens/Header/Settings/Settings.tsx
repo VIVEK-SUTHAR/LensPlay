@@ -1,6 +1,7 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnectModal } from "@walletconnect/modal-react-native";
+import Bug from "assets/Icons/Bug";
 // import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
@@ -149,7 +150,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 						}}
 					>
 						<SettingsItem
-							icon={<Icon name="bug" size={24} />}
+							icon={<Bug height={16} width={16} />}
 							label={"Report a bug"}
 							onPress={() => navigation.push("BugReport")}
 						/>

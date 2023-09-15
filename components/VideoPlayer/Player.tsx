@@ -9,6 +9,7 @@ import {
 	Animated,
 	Dimensions,
 	Platform,
+	Pressable,
 	StyleSheet,
 	Text,
 	TouchableWithoutFeedback,
@@ -280,20 +281,20 @@ const Player = (tempProps: Props) => {
 		}
 	};
 
-	const doubleTapOnForWard = Gesture.Tap()
-		.numberOfTaps(2)
-		.maxDuration(250)
-		.runOnJS(true)
-		.onStart(() => {
-			runOnJS(fastForward)();
-		});
-	const doubleTapOnBackWord = Gesture.Tap()
-		.numberOfTaps(2)
-		.maxDuration(250)
-		.runOnJS(true)
-		.onStart(() => {
-			runOnJS(fastBackward)();
-		});
+	// const doubleTapOnForWard = Gesture.Tap()
+	// 	.numberOfTaps(2)
+	// 	.maxDuration(250)
+	// 	.runOnJS(true)
+	// 	.onStart(() => {
+	// 		runOnJS(fastForward)();
+	// 	});
+	// const doubleTapOnBackWord = Gesture.Tap()
+	// 	.numberOfTaps(2)
+	// 	.maxDuration(250)
+	// 	.runOnJS(true)
+	// 	.onStart(() => {
+	// 		runOnJS(fastBackward)();
+	// 	});
 
 	return (
 		<View
@@ -371,32 +372,47 @@ const Player = (tempProps: Props) => {
 									},
 								]}
 							>
-								<GestureDetector gesture={doubleTapOnBackWord}>
-									<TouchableButton
-										hitSlop={{
-											bottom: 40,
-											left: 20,
-											top: 40,
-											right: 20,
+								{/* <GestureDetector gesture={doubleTapOnBackWord}> */}
+								{/* <TouchableButton
+									hitSlop={{
+										bottom: 40,
+										left: 20,
+										top: 40,
+										right: 20,
+									}}
+								>
+									<View
+										style={{
+											height: props.style.height || 280,
+											alignItems: "center",
+											justifyContent: "center",
 										}}
 									>
-										<View
-											style={{
-												height: props.style.height || 280,
-												alignItems: "center",
-												justifyContent: "center",
-											}}
-										>
-											<SecondBackward
-												color={props.icon.color}
-												style={props.icon.style}
-												width={24}
-												height={24}
-												onPress={fastBackward}
-											/>
-										</View>
-									</TouchableButton>
-								</GestureDetector>
+										<SecondBackward
+											color={props.icon.color}
+											style={props.icon.style}
+											width={24}
+											height={24}
+											onPress={fastBackward}
+										/>
+									</View>
+								</TouchableButton> */}
+								{/* </GestureDetector> */}
+								<View
+									style={{
+										height: props.style.height || 280,
+										alignItems: "center",
+										justifyContent: "center",
+									}}
+								>
+									<SecondBackward
+										color={props.icon.color}
+										style={props.icon.style}
+										width={24}
+										height={24}
+										onPress={fastBackward}
+									/>
+								</View>
 								<TouchableButton onPress={togglePlay}>
 									<View>
 										{playbackInstanceInfo.state === PlaybackStates.Buffering &&
@@ -424,8 +440,8 @@ const Player = (tempProps: Props) => {
 										)}
 									</View>
 								</TouchableButton>
-								<GestureDetector gesture={doubleTapOnForWard}>
-									<TouchableButton
+								{/* <GestureDetector gesture={doubleTapOnForWard}> */}
+								{/* <TouchableButton
 										hitSlop={{
 											bottom: 40,
 											left: 20,
@@ -448,8 +464,24 @@ const Player = (tempProps: Props) => {
 												onPress={fastForward}
 											/>
 										</View>
-									</TouchableButton>
-								</GestureDetector>
+									</TouchableButton> */}
+								{/* </GestureDetector> */}
+
+								<View
+									style={{
+										height: props.style.height || 280,
+										alignItems: "center",
+										justifyContent: "center",
+									}}
+								>
+									<SecondForward
+										color={props.icon.color}
+										style={props.icon.style}
+										width={24}
+										height={24}
+										onPress={fastForward}
+									/>
+								</View>
 							</View>
 						</View>
 					</Animated.View>

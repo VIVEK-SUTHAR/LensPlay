@@ -1,5 +1,6 @@
 import { useLazyQuery } from "@apollo/client";
 import { FlashList } from "@shopify/flash-list";
+import ArrowLeft from "assets/Icons/ArrowLeft";
 import Icon from "components/Icon";
 import ProfileCard from "components/ProfileCard";
 import { SEARCH } from "constants/tracking";
@@ -79,7 +80,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 								paddingHorizontal: 4,
 							}}
 						>
-							<Icon name="arrowLeft" size={20} />
+							<ArrowLeft width={16} height={16} />
 						</Pressable>
 						<TextInput
 							ref={inputRef}

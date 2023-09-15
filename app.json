@@ -108,6 +108,8 @@
 					}
 				}
 			],
+			"expo-community-flipper",
+			"react-native-flipper-performance-plugin",
 			"@react-native-firebase/app",
 			"@react-native-firebase/perf",
 			"@react-native-firebase/crashlytics"
