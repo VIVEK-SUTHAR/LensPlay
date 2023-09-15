@@ -1,20 +1,19 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { useWalletConnectModal } from '@walletconnect/modal-react-native';
+import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
 import { AUTH, GUEST_MODE } from "constants/tracking";
-import { Scalars } from "customTypes/generated";
+import { Profile, Scalars, useAllProfilesLazyQuery } from "customTypes/generated";
 import React from "react";
 import { Pressable, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useProfile } from "store/Store";
 import TrackAction from "utils/Track";
-import getProfiles from "utils/lens/getProfiles";
 import Logger from "utils/logger";
 
 type ConnectWalletSheetProps = {
@@ -27,15 +26,20 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 	const { handleGuest } = useGuestStore();
 	const { setCurrentProfile, setHasHandle } = useProfile();
 
-	async function HandleDefaultProfile(adress: Scalars["EthereumAddress"]) {
+	const [getProfile, { data, loading, error }] = useAllProfilesLazyQuery();
 
-		const userDefaultProfile = await getProfiles({
-			ownedBy: adress,
+	async function HandleDefaultProfile(address: Scalars["EthereumAddress"]) {
+		const userProfiles = await getProfile({
+			variables: {
+				request: {
+					ownedBy: address,
+				},
+			},
 		});
 
-		if (userDefaultProfile) {
+		if (userProfiles) {
 			setHasHandle(true);
-			setCurrentProfile(userDefaultProfile);
+			setCurrentProfile(userProfiles?.data?.profiles?.items[0] as Profile);
 		} else {
 			setHasHandle(false);
 			setCurrentProfile(undefined);

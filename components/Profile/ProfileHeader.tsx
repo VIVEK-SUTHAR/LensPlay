@@ -46,18 +46,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 	const navigation = useNavigation();
 	const profile = Profile?.profile;
 
-	// const onRefresh = React.useCallback(async () => {
-	// 	setRefreshing(true);
-	// 	await refetch({
-	// 		request: {
-	// 			profileId: profileId ? profileId : currentProfile?.id,
-	// 		},
-	// 	}).catch((err) => {
-	// 		Logger.Error("Error in Refreshing error", err);
-	// 	});
-	// 	setRefreshing(false);
-	// }, []);
-
 	const navigateToFullImageAvatar = React.useCallback(() => {
 		navigation.navigate("FullImage", {
 			url: getIPFSLink(getRawurl(profile?.picture as MediaSet)),
@@ -116,17 +104,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 	}, [profile]);
 
 	const isChannel = profile?.id !== currentProfile?.id ? true : false;
-
-	// if (loading) return <ProfileSkeleton />;
-	// if (error)
-	// 	return (
-	// 		<ErrorMesasge
-	// 			message="Something went wrong"
-	// 			withImage={true}
-	// 			retryMethod={onRefresh}
-	// 			withButton={true}
-	// 		/>
-	// 	);
 
 	if (profile) {
 		return (

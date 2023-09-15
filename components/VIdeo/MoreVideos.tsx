@@ -26,9 +26,11 @@ const MoreVideos = () => {
 			<StyledText
 				title={`More Videos by ${title}`}
 				style={{
-					fontSize: 20,
-					fontWeight: "700",
+					fontSize: 16,
+					fontWeight: "600",
 					color: "white",
+					paddingHorizontal: 12,
+					marginBottom: 8
 				}}
 				numberOfLines={1}
 			/>
@@ -62,7 +64,7 @@ const MoreVideosList = React.memo(() => {
 			channelId: currentProfile?.id,
 		},
 		initialFetchPolicy: "no-cache",
-		fetchPolicy:"no-cache",
+		fetchPolicy: "no-cache",
 		context: {
 			headers: {
 				"x-access-token": `Bearer ${accessToken}`,
@@ -146,7 +148,6 @@ export default React.memo(MoreVideos);
 
 const styles = StyleSheet.create({
 	moreVideosHeader: {
-		paddingHorizontal: 12,
-		marginVertical: 8,
+		marginVertical: 16,
 	},
 });
