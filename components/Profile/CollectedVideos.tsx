@@ -25,6 +25,9 @@ import { RefreshControl } from "react-native-gesture-handler";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import CommonStyles from "styles/index";
 import { NoVideosFound } from "./AllVideos";
+import ShareIcon from "assets/Icons/ShareIcon";
+import Delete from "assets/Icons/Delete";
+import Clock from "assets/Icons/Clock";
 
 type CollectedVideosProps = {
 	ethAddress?: string;
@@ -197,7 +200,7 @@ export const CollectedVideoSheet = ({
 	const actionList: actionListType[] = [
 		{
 			name: "Share",
-			icon: "share",
+			icon: <ShareIcon height={20} width={20} />,
 			onPress: (pubid: Scalars["InternalPublicationId"]) => {
 				Share.share({
 					message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${pubid}`,
@@ -207,7 +210,11 @@ export const CollectedVideoSheet = ({
 		},
 		{
 			name: publication?.bookmarked ? "Remove from watch later" : "Add to watch later",
-			icon: publication?.bookmarked ? "delete" : "clock",
+			icon: publication?.bookmarked ? (
+				<Delete height={20} width={20} />
+			) : (
+				<Clock height={20} width={20} />
+			),
 			onPress: (publication) => {
 				if (publication?.bookmarked) {
 					remove(publication);
@@ -251,7 +258,7 @@ export const CollectedVideoSheet = ({
 									alignItems: "center",
 								}}
 							>
-								<Icon name={item.icon} color={"white"} />
+								{item?.icon}
 								<StyledText
 									title={item.name}
 									style={{

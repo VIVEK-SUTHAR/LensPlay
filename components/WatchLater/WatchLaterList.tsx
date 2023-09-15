@@ -34,6 +34,8 @@ import getRawurl from "utils/getRawUrl";
 import { LayoutAnimation } from "react-native";
 import WatchLaterHeader from "./WatchLaterHeader";
 import Animated from "react-native-reanimated";
+import Delete from "assets/Icons/Delete";
+import ShareIcon from "assets/Icons/ShareIcon";
 
 const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 const WatchLaterList = ({ scrollHandler }: { scrollHandler: any }) => {
@@ -156,7 +158,7 @@ export const WatchLaterSheet = ({
 	const actionList: actionListType[] = [
 		{
 			name: "Remove",
-			icon: "delete",
+			icon: <Delete height={20} width={20} />,
 			onPress: (publication: Post | Mirror) => {
 				console.log(publication);
 				remove(publication);
@@ -164,7 +166,7 @@ export const WatchLaterSheet = ({
 		},
 		{
 			name: "Share",
-			icon: "share",
+			icon: <ShareIcon height={20} width={20} />,
 			onPress: (publication: Scalars["InternalPublicationId"]) => {
 				Logger.Success("chal dikha ", publication?.id);
 				Share.share({
@@ -211,7 +213,7 @@ export const WatchLaterSheet = ({
 									alignItems: "center",
 								}}
 							>
-								<Icon name={item.icon} color={"white"} />
+								{item?.icon}
 								<StyledText
 									title={item.name}
 									style={{

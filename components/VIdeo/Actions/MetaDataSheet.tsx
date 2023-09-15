@@ -13,6 +13,7 @@ import CommonStyles from "styles/index";
 import extractURLs from "utils/extractURL";
 import getRawurl from "utils/getRawUrl";
 import VideoCreator from "../VideoAuthor";
+import Close from "assets/Icons/Close";
 
 type MetaDataSheetProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
@@ -46,7 +47,7 @@ const MetaDataSheet = ({ sheetRef: descRef }: MetaDataSheetProps) => {
 							descRef?.current?.close();
 						}}
 					>
-						<Icon name="close" size={16} />
+						<Close height={20} width={20} />
 					</Pressable>
 				</View>
 				<View

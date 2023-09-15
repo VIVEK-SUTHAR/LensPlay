@@ -25,7 +25,7 @@ export default function ProfileLists() {
 		// 	},
 		// },
 		{
-			icon: <Icon name="clock" size={16}  />,
+			icon: <Clock height={16} width={16} />,
 			label: "Watch Later",
 			onPress: () => {
 				navigation.navigate("WatchLater");

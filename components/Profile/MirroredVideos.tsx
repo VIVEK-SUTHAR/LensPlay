@@ -26,6 +26,9 @@ import { ActivityIndicator, FlatList, RefreshControl, Share, View } from "react-
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import CommonStyles from "styles/index";
 import { NoVideosFound } from "./AllVideos";
+import ShareIcon from "assets/Icons/ShareIcon";
+import Delete from "assets/Icons/Delete";
+import Clock from "assets/Icons/Clock";
 
 type MirroredVideosProps = {
 	channelId?: string;
@@ -205,7 +208,7 @@ export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetPr
 	const actionList: actionListType[] = [
 		{
 			name: "Share",
-			icon: "share",
+			icon: <ShareIcon height={20} width={20} />,
 			onPress: (pubid: Scalars["InternalPublicationId"]) => {
 				void Share.share({
 					message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${pubid}`,
@@ -215,7 +218,7 @@ export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetPr
 		},
 		{
 			name: "Delete",
-			icon: "delete",
+			icon: <Delete height={20} width={20} />,
 			onPress: (pubid: Scalars["InternalPublicationId"]) => {
 				sheetRef.current?.close();
 				deleteRef.current?.snapToIndex(0);
@@ -226,7 +229,7 @@ export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetPr
 	const channelActionList: actionListType[] = [
 		{
 			name: "Share",
-			icon: "share",
+			icon: <ShareIcon height={20} width={20} />,
 			onPress: (pubid: Scalars["InternalPublicationId"]) => {
 				Share.share({
 					message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${pubid}`,
@@ -236,7 +239,11 @@ export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetPr
 		},
 		{
 			name: publication?.bookmarked ? "Remove from watch later" : "Add to watch later",
-			icon: publication?.bookmarked ? "delete" : "clock",
+			icon: publication?.bookmarked ? (
+				<Delete height={20} width={20} />
+			) : (
+				<Clock height={20} width={20} />
+			),
 			onPress: (publication) => {
 				if (publication?.bookmarked) {
 					remove(publication);
@@ -281,7 +288,7 @@ export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetPr
 										alignItems: "center",
 									}}
 								>
-									<Icon name={item.icon} color={"white"} />
+									{item?.icon}
 									<StyledText
 										title={item.name}
 										style={{

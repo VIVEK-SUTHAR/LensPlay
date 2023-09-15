@@ -1,3 +1,4 @@
+import Dislike from "assets/Icons/Dislike";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
@@ -58,7 +59,7 @@ function DisLikeButton() {
 				color: "white",
 			}}
 			borderColor={isDisLiked ? PRIMARY : "white"}
-			icon={<Icon name="dislike" size={20} color={isDisLiked ? PRIMARY : "white"} />}
+			icon={<Dislike height={18} width={18} color={isDisLiked ? PRIMARY : "white"} />}
 		/>
 	);
 }

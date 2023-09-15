@@ -1,4 +1,5 @@
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
+import Send from "assets/Icons/Send";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import { black } from "constants/Colors";
@@ -184,7 +185,7 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 					}}
 					onPressIn={publishComment}
 				>
-					<Icon name="send" color={commentText.length === 0 ? "gray" : PRIMARY} size={24} />
+					<Send color={commentText.length === 0 ? "gray" : PRIMARY} height={24} width={24} />
 				</Pressable>
 			</View>
 		</View>

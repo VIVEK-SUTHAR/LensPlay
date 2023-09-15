@@ -1,3 +1,4 @@
+import Edit from "assets/Icons/Edit";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
@@ -224,7 +225,7 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 									alignItems: "center",
 								}}
 							>
-								<Icon name="edit" />
+								<Edit height={22} width={22} />
 								<StyledText
 									title={"Select cover"}
 									style={{

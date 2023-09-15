@@ -1,5 +1,9 @@
 import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { FlashList } from "@shopify/flash-list";
+import Clock from "assets/Icons/Clock";
+import Delete from "assets/Icons/Delete";
+import Pin from "assets/Icons/Pin";
+import ShareIcon from "assets/Icons/ShareIcon";
 import Sheet from "components/Bottom";
 import MyVideoCard, { actionListType, SheetProps } from "components/common/MyVideoCard";
 import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
@@ -259,7 +263,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 	const actionList: actionListType[] = [
 		{
 			name: "Pin this video to your channel",
-			icon: "pin",
+			icon: <Pin height={20} width={20} />,
 			onPress: (pubid: Scalars["InternalPublicationId"]) => {
 				pinPublication();
 			},
@@ -273,7 +277,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 		// },
 		{
 			name: "Share",
-			icon: "share",
+			icon: <ShareIcon height={20} width={20} />,
 			onPress: (pubid: Scalars["InternalPublicationId"]) => {
 				Share.share({
 					message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${pubid}`,
@@ -283,7 +287,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 		},
 		{
 			name: "Delete",
-			icon: "delete",
+			icon: <Delete height={20} width={20} />,
 			onPress: (pubid: Scalars["InternalPublicationId"]) => {
 				sheetRef.current?.close();
 				deleteRef.current?.snapToIndex(0);
@@ -294,7 +298,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 	const channelActionList: actionListType[] = [
 		{
 			name: "Share",
-			icon: "share",
+			icon: <ShareIcon height={20} width={20} />,
 			onPress: (pubid: Scalars["InternalPublicationId"]) => {
 				Share.share({
 					message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${pubid}`,
@@ -304,7 +308,11 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 		},
 		{
 			name: publication?.bookmarked ? "Remove from watch later" : "Add to watch later",
-			icon: publication?.bookmarked ? "delete" : "clock",
+			icon: publication?.bookmarked ? (
+				<Delete height={20} width={20} />
+			) : (
+				<Clock height={20} width={20} />
+			),
 			onPress: (publication) => {
 				if (publication?.bookmarked) {
 					remove(publication);
@@ -351,7 +359,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 										alignItems: "center",
 									}}
 								>
-									<Icon name={item.icon} color={"white"} />
+									{item?.icon}
 									<StyledText
 										title={item.name}
 										style={{

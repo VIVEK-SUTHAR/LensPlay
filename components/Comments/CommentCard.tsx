@@ -1,4 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
+import Like from "assets/Icons/Like";
+import Mirror from "assets/Icons/Mirror";
+import Report from "assets/Icons/Report";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
@@ -137,7 +140,7 @@ function CommentCard({ comment }: { comment: Comment }) {
 							marginLeft: 4,
 							paddingEnd: 16,
 						}}
-						icon={<Icon name="like" size={16} color={isLiked ? primary : "white"} />}
+						icon={<Like height={14} width={14} color={isLiked ? primary : "white"} />}
 					/>
 					<Button
 						title={mirrorCount}
@@ -152,7 +155,7 @@ function CommentCard({ comment }: { comment: Comment }) {
 							fontWeight: "500",
 							marginLeft: 4,
 						}}
-						icon={<Icon name="mirror" size={20} color={isMirrored ? PRIMARY : "white"} />}
+						icon={<Mirror height={20} width={20} color={isMirrored ? PRIMARY : "white"} />}
 						borderColor="#232323"
 						onPress={handleMirror}
 					/>
@@ -169,7 +172,7 @@ function CommentCard({ comment }: { comment: Comment }) {
 							fontWeight: "500",
 							marginLeft: 4,
 						}}
-						icon={<Icon name="report" size={20} />}
+						icon={<Report height={24} width={24} />}
 						borderColor="#232323"
 						onPress={() => {
 							navigation.navigate("ReportPublication", {

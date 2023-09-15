@@ -1,5 +1,6 @@
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
+import Close from "assets/Icons/Close";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
@@ -120,7 +121,7 @@ function DiscriptionSheet({ item, descriptionRef }: { item: Post | Mirror; descr
 						descriptionRef?.current?.close();
 					}}
 				>
-					<Icon name="close" size={16} />
+					<Close height={20} width={20} />
 				</Pressable>
 			</View>
 			<View

@@ -11,6 +11,7 @@ import { BottomSheetDefaultFooterProps } from "@gorhom/bottom-sheet/lib/typescri
 import { Pressable, View } from "react-native";
 import Heading from "components/UI/Heading";
 import Icon from "components/Icon";
+import Close from "assets/Icons/Close";
 
 type CommentsSheetProps = {
 	commentSheetRef: React.RefObject<BottomSheetMethods>;
@@ -65,7 +66,7 @@ const CommentsSheet = ({ commentSheetRef, pubId }: CommentsSheetProps) => {
 						commentSheetRef?.current?.close();
 					}}
 				>
-					<Icon name="close" size={16} />
+					<Close height={20} width={20} />
 				</Pressable>
 			</View>
 			<BottomSheetScrollView>

@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
+import Mirror from "assets/Icons/Mirror";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import StyledText from "components/UI/StyledText";
@@ -23,7 +24,7 @@ const MirrorNotification = ({ notification }: MirrorNotificationProps) => {
 	const goToChannel = () => {
 		navigation.navigate("Channel", {
 			handle: profile?.handle,
-			name: profile?.name,
+			name: profile?.name!,
 		});
 	};
 	return (
@@ -48,7 +49,7 @@ const MirrorNotification = ({ notification }: MirrorNotificationProps) => {
 					alignItems: "center",
 				}}
 			>
-				<Icon name="mirror" color={"#6bd841"} />
+				<Mirror height={22} width={22} color={"#6bd841"} />
 			</View>
 			<View style={{ flex: 1 }}>
 				<View style={{ flexDirection: "row", alignItems: "center" }}>

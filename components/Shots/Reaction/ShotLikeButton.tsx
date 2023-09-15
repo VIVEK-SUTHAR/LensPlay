@@ -1,3 +1,4 @@
+import Like from "assets/Icons/Like";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { SHOT } from "constants/tracking";
@@ -53,7 +54,7 @@ function ShotLikeButton({ publication }: { publication: Post | Mirror }) {
 			borderColor={isLiked ? PRIMARY : "white"}
 			onPress={onLike}
 			bytes={true}
-			icon={<Icon name="like" size={28} color={isLiked ? PRIMARY : "white"} />}
+			icon={<Like height={24} width={24} color={isLiked ? PRIMARY : "white"} />}
 		/>
 	);
 }

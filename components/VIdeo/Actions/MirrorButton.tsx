@@ -1,4 +1,5 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Mirror from "assets/Icons/Mirror";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
@@ -55,7 +56,7 @@ const MirrorButton = ({ mirrorRef }: MirrorButtonProps) => {
 				color: isMirrored ? PRIMARY : "white",
 				marginLeft: 4,
 			}}
-			icon={<Icon name="mirror" size={20} color={isMirrored ? PRIMARY : "white"} />}
+			icon={<Mirror height={20} width={20} color={isMirrored ? PRIMARY : "white"} />}
 		/>
 	);
 };

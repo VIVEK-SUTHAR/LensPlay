@@ -1,3 +1,4 @@
+import ShareIcon from "assets/Icons/ShareIcon";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
@@ -33,7 +34,7 @@ const ShareButton = () => {
 			bg={dark_primary}
 			type={"filled"}
 			borderRadius={8}
-			icon={<Icon name="share" size={20} />}
+			icon={<ShareIcon height={20} width={20} />}
 			onPress={shareVideo}
 			textStyle={{ color: "white", marginHorizontal: 4 }}
 		/>

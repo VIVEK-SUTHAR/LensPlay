@@ -23,6 +23,9 @@ import getPlaceHolderImage from "utils/getPlaceHolder";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
 import ShotLikeButton from "./Reaction/ShotLikeButton";
+import ShareIcon from "assets/Icons/ShareIcon";
+import Collect from "assets/Icons/Collect";
+import Close from "assets/Icons/Close";
 
 function ShotReaction({ item, commentRef }: ShotsPublication) {
 	const [totalCollects, setTotalCollects] = useState<number>(item?.stats?.totalAmountOfCollects);
@@ -108,7 +111,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 							: handleSheet();
 					}}
 				>
-					<Icon name="collect" color={collected ? PRIMARY : "white"} size={28} />
+					<Collect color={collected ? PRIMARY : "white"} height={28} width={28} />
 					<Text style={{ color: collected ? PRIMARY : "white" }}>{totalCollects}</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
@@ -120,7 +123,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 					}}
 					onPress={shareVideo}
 				>
-					<Icon name="share" size={28} />
+					<ShareIcon height={28} width={28} />
 				</TouchableOpacity>
 			</View>
 			<Sheet
@@ -158,7 +161,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 								collectSheetRef?.current?.close();
 							}}
 						>
-							<Icon name="close" size={16} />
+							<Close height={20} width={20} />
 						</Pressable>
 					</View>
 					<View

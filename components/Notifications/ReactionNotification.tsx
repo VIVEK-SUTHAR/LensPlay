@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
+import Like from "assets/Icons/Like";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import StyledText from "components/UI/StyledText";
@@ -50,7 +51,7 @@ const ReactionNotification: React.FC<ReactionNotificationProps> = ({ notificatio
 					alignItems: "center",
 				}}
 			>
-				<Icon name="like" color={PRIMARY} />
+				<Like height={22} width={22} color={PRIMARY} />
 			</View>
 			<View style={{ flex: 1 }}>
 				<Pressable

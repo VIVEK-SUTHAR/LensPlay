@@ -1,4 +1,5 @@
 import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Collect from "assets/Icons/Collect";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { ToastType } from "customTypes/Store";
@@ -62,7 +63,7 @@ const CollectButton = ({ collectRef }: CollectVideoPrpos) => {
 			type={"filled"}
 			borderRadius={8}
 			onPress={handleCollect}
-			icon={<Icon name="collect" size={20} color={isCollected ? PRIMARY : "white"} />}
+			icon={<Collect height={20} width={20} color={isCollected ? PRIMARY : "white"} />}
 			textStyle={{
 				color: isCollected ? PRIMARY : "white",
 				marginHorizontal: 4,

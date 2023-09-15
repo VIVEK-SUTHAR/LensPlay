@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
+import Collect from "assets/Icons/Collect";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import StyledText from "components/UI/StyledText";
@@ -39,14 +40,14 @@ const CollectNotification: React.FC<CollectNotificationProps> = ({ notification 
 					alignItems: "center",
 				}}
 			>
-				<Icon name="collect" color="#E57C23" size={24} />
+				<Collect color="#E57C23" height={24} width={24} />
 			</View>
 			<View style={{ flex: 1 }}>
 				<Pressable
 					onPress={() => {
 						navigation.navigate("Channel", {
 							handle: notification?.wallet?.defaultProfile?.handle,
-							name: notification?.wallet?.defaultProfile?.name,
+							name: notification?.wallet?.defaultProfile?.name!,
 						});
 					}}
 					style={{

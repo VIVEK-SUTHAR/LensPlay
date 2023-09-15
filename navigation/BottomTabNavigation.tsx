@@ -1,7 +1,11 @@
 import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Record from "assets/Icons/Record";
+import Search from "assets/Icons/Search";
+import Setting from "assets/Icons/Setting";
 import Upload from "assets/Icons/Upload";
+import UploadFile from "assets/Icons/UploadFile";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
@@ -127,7 +131,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 									justifyContent: "center",
 								}}
 							>
-								<Icon name="search" size={24} />
+								<Search height={24} width={24} />
 							</Pressable>
 							<Pressable
 								onPress={() => {
@@ -140,7 +144,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 									justifyContent: "center",
 								}}
 							>
-								<Icon name="setting" size={24} />
+								<Setting height={24} width={24} />
 							</Pressable>
 						</View>
 					),
@@ -193,7 +197,6 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 							return (
 								<View
 									style={{
-										// padding: 5,
 										width: 45,
 										alignContent: "center",
 										justifyContent: "center",
@@ -468,7 +471,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 								borderRadius: 50,
 							}}
 						>
-							<Icon name="record" size={24} />
+							<Record height={24} width={24} />
 						</View>
 						<StyledText
 							title={"Record a video"}
@@ -521,7 +524,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 								borderRadius: 50,
 							}}
 						>
-							<Icon name="upload-file" size={24} />
+							<UploadFile height={24} width={24} />
 						</View>
 						<StyledText
 							title={"Select from gallery"}

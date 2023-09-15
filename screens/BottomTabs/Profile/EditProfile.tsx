@@ -28,6 +28,7 @@ import TrackAction from "utils/Track";
 import { SETTINGS } from "constants/tracking";
 import Logger from "utils/logger";
 import uploadProfileMetadata from "utils/uploadProfileMetadata";
+import Edit from "assets/Icons/Edit";
 
 const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 	const { currentProfile } = useProfile();
@@ -40,7 +41,6 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 	const [avatar, setAvatar] = useState<null | string>(null);
 	const [avatarBlob, setAvatarBlob] = useState<Blob>();
 
-	
 	//states for cover
 	const [cover, setCover] = useState<string>("");
 	const [coverBlob, setCoverBlob] = useState<Blob>();
@@ -165,23 +165,23 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 
 	const updateProfileAvatar = async () => {
 		const imageCID = await uploadImageToIPFS(avatarBlob);
-					await createSetProfileImageUriViaDispatcherMutation({
-						variables: {
-							request: {
-								profileId: currentProfile?.id,
-								url: `ipfs://${imageCID}`,
-							},
-						},
-						context: {
-							headers: {
-								"x-access-token": `Bearer ${accessToken}`,
-								"origin": LENSPLAY_SITE,
-							},
-						},
-					});
+		await createSetProfileImageUriViaDispatcherMutation({
+			variables: {
+				request: {
+					profileId: currentProfile?.id,
+					url: `ipfs://${imageCID}`,
+				},
+			},
+			context: {
+				headers: {
+					"x-access-token": `Bearer ${accessToken}`,
+					"origin": LENSPLAY_SITE,
+				},
+			},
+		});
 
-					TrackAction(SETTINGS.PROFILE.UPDATE_AVATAR);
-	}
+		TrackAction(SETTINGS.PROFILE.UPDATE_AVATAR);
+	};
 
 	const updateProfileMetadata = async () => {
 		//get the current cover and populate the local variable
@@ -191,7 +191,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 		if (coverBlob) {
 			coverURI = await uploadImageToIPFS(coverBlob);
 			coverURI = coverURI;
-			Logger.Success('updated cover');
+			Logger.Success("updated cover");
 		}
 
 		//upload the metadata to arweave and get it's txn id
@@ -216,7 +216,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 				},
 			},
 		});
-	}
+	};
 
 	const handleUpdate = async () => {
 		try {
@@ -236,17 +236,20 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 			} else {
 				//update avatar as well as metadata
 				if (avatarBlob && canUpload()) {
-					Logger.Warn('need to update both');
-					const [avatarResult, metadataResult] = await Promise.all([updateProfileAvatar(), updateProfileMetadata()]);		
+					Logger.Warn("need to update both");
+					const [avatarResult, metadataResult] = await Promise.all([
+						updateProfileAvatar(),
+						updateProfileMetadata(),
+					]);
 				}
 				//update avatar
-				else if(avatarBlob) {
-					Logger.Warn('need to update avatar');
+				else if (avatarBlob) {
+					Logger.Warn("need to update avatar");
 					await updateProfileAvatar();
 				}
 				//update metadata
 				else {
-					Logger.Warn('need to update metadata');
+					Logger.Warn("need to update metadata");
 					await updateProfileMetadata();
 				}
 
@@ -286,7 +289,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 							alignItems: "center",
 						}}
 					>
-						<Icon name="edit" />
+						<Edit height={24} width={24} />
 					</View>
 					<Image
 						source={{
@@ -320,7 +323,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 							alignItems: "center",
 						}}
 					>
-						<Icon name="edit" size={20} />
+						<Edit height={20} width={20} />
 					</View>
 					<Avatar
 						src={avatar || getRawurl(currentProfile?.picture)}

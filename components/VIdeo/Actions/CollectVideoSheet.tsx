@@ -1,5 +1,6 @@
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Close from "assets/Icons/Close";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
@@ -83,7 +84,7 @@ const CollectVideoSheet: React.FC<CollectVideoSheetProps> = ({ sheetRef: collect
 							collectRef?.current?.close();
 						}}
 					>
-						<Icon name="close" size={16} />
+						<Close height={20} width={20} />
 					</Pressable>
 				</View>
 				<View

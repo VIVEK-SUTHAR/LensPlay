@@ -1,3 +1,4 @@
+import Like from "assets/Icons/Like";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
@@ -63,7 +64,7 @@ function LikeButton() {
 			borderColor={isLiked ? PRIMARY : "white"}
 			onPress={onLike}
 			bytes={false}
-			icon={<Icon name="like" size={20} color={isLiked ? PRIMARY : "white"} />}
+			icon={<Like height={18} width={18} color={isLiked ? PRIMARY : "white"} />}
 		/>
 	);
 }

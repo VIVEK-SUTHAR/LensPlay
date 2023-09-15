@@ -6,7 +6,7 @@ import StyledText from "components/UI/StyledText";
 import { black } from "constants/Colors";
 import { Mirror, Post, Scalars } from "customTypes/generated";
 import { Image } from "expo-image";
-import React, { memo } from "react";
+import React, { ReactElement, memo } from "react";
 import { Dimensions, Pressable, TouchableOpacity, View } from "react-native";
 import { useActivePublication } from "store/Store";
 import getDifference from "utils/getDifference";
@@ -132,6 +132,6 @@ export type SheetProps = {
 
 export type actionListType = {
 	name: string;
-	icon: IconName;
+	icon: ReactElement;
 	onPress: (pubId: Scalars["InternalPublicationId"]) => void;
 };

@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
+import Report from "assets/Icons/Report";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
@@ -24,8 +25,8 @@ const ReportButton = () => {
 			bg={dark_primary}
 			type={"filled"}
 			borderRadius={8}
-			icon={<Icon name="report" size={20} />}
-			textStyle={{ color: "white", marginHorizontal: 4 }}
+			icon={<Report height={22} width={22} />}
+			textStyle={{ color: "white", marginHorizontal: 2 }}
 			onPress={handleReportPress}
 		/>
 	);

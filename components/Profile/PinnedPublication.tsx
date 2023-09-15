@@ -27,6 +27,8 @@ import getRawurl from "utils/getRawUrl";
 import TrackAction from "utils/Track";
 import uploadToArweave from "utils/uploadToArweave";
 import { v4 as uuidV4 } from "uuid";
+import Unpin from "assets/Icons/Unpin";
+import Pin from "assets/Icons/Pin";
 
 export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
 	const { currentProfile } = useProfile();
@@ -114,7 +116,7 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
 						alignItems: "center",
 					}}
 				>
-					<Icon name={"unpin"} color={"white"} size={16} />
+					<Unpin height={20} width={20} />
 					<StyledText
 						title={"Remove pin"}
 						style={{
@@ -193,7 +195,7 @@ export default function PinnedPublication({
 						alignItems: "center",
 					}}
 				>
-					<Icon name="pin" size={12} color={white[200]} />
+					<Pin height={12} width={12} color={white[200]}/>
 					<StyledText
 						title="Pinned video"
 						style={{
