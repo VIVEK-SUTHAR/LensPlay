@@ -1,6 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
 import Mention from "assets/Icons/Mention";
-import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import StyledText from "components/UI/StyledText";
 import { dark_primary } from "constants/Colors";
@@ -23,7 +22,7 @@ const MentionNotification = ({ notification }: MentionNotificationProps) => {
 	const goToChannel = () => {
 		navigation.navigate("Channel", {
 			handle: notification?.mentionPublication?.profile?.handle,
-			name: notification?.mentionPublication?.profile?.name,
+			name: notification?.mentionPublication?.profile?.name!,
 		});
 	};
 

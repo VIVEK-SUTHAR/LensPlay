@@ -1,7 +1,6 @@
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
 import Close from "assets/Icons/Close";
-import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";

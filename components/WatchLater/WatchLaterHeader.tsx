@@ -1,6 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
 import ArrowLeft from "assets/Icons/ArrowLeft";
-import Icon from "components/Icon";
 import Heading from "components/UI/Heading";
 import { black, white } from "constants/Colors";
 import React from "react";

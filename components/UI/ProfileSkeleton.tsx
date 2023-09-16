@@ -1,4 +1,3 @@
-import Icon from "components/Icon";
 import React from "react";
 import { Dimensions, Pressable, ScrollView, View } from "react-native";
 import Heading from "components/UI/Heading";

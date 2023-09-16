@@ -1,6 +1,5 @@
 import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import Collect from "assets/Icons/Collect";
-import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { ToastType } from "customTypes/Store";
 import React, { useCallback } from "react";

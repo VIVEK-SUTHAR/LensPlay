@@ -1,6 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
 import Report from "assets/Icons/Report";
-import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
 import React from "react";

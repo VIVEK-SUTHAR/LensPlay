@@ -2,7 +2,6 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useFocusEffect } from "@react-navigation/native";
 import ArrowDown from "assets/Icons/ArrowDown";
 import CommentSheet from "components/Comments/CommentSheet";
-import Icon from "components/Icon";
 import LPImage from "components/UI/LPImage";
 import StyledText from "components/UI/StyledText";
 import {

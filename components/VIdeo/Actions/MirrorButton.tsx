@@ -1,6 +1,5 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import Mirror from "assets/Icons/Mirror";
-import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
 import { ToastType } from "customTypes/Store";

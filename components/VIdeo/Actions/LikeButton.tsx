@@ -1,5 +1,4 @@
 import Like from "assets/Icons/Like";
-import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
 import { SHOT } from "constants/tracking";

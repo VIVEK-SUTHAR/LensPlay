@@ -1,5 +1,4 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
 import Switch from "components/UI/Switch";
 import { dark_primary, primary } from "constants/Colors";

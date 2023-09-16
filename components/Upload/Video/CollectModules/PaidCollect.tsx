@@ -4,8 +4,8 @@ import { CollectToggle } from "../CollectModule";
 import { Platform, Pressable, TextInput, View } from "react-native";
 import StyledText from "components/UI/StyledText";
 import { black, dark_primary, primary } from "constants/Colors";
-import Icon from "components/Icon";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import ArrowDown from "assets/Icons/ArrowDown";
 
 const PaidCollect = ({ tokenSheetRef }: { tokenSheetRef: React.RefObject<BottomSheetMethods> }) => {
 	const { collectModule, setCollectModule } = useUploadStore();
@@ -124,16 +124,10 @@ function CollectFee({ tokenSheetRef }: { tokenSheetRef: React.RefObject<BottomSh
 							color: primary,
 							fontSize: 12,
 							fontWeight: "600",
+							marginRight: 4,
 						}}
 					/>
-					<Icon
-						name="arrowDown"
-						color={primary}
-						size={14}
-						style={{
-							marginLeft: 4,
-						}}
-					/>
+					<ArrowDown color={primary} height={12} width={12} />
 				</Pressable>
 			</View>
 		</View>

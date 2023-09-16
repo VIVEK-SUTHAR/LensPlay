@@ -1,7 +1,6 @@
 import { useLazyQuery } from "@apollo/client";
 import { FlashList } from "@shopify/flash-list";
 import ArrowLeft from "assets/Icons/ArrowLeft";
-import Icon from "components/Icon";
 import ProfileCard from "components/ProfileCard";
 import { SEARCH } from "constants/tracking";
 import { Profile, SearchProfilesDocument, SearchRequestTypes } from "customTypes/generated";

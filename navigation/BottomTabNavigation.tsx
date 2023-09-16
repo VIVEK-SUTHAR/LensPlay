@@ -1,15 +1,20 @@
 import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import CompassFilled from "assets/Icons/CompassFilled";
+import CompassOutlined from "assets/Icons/CompassOulined";
 import HomeFilled from "assets/Icons/HomeFilled";
 import HomeOutlined from "assets/Icons/HomeOutlined";
+import NotificationsFilled from "assets/Icons/NotificationsFilled";
+import NotificationsOutlined from "assets/Icons/NotificationsOutlined";
 import Record from "assets/Icons/Record";
 import Search from "assets/Icons/Search";
 import Setting from "assets/Icons/Setting";
+import ShotsFilled from "assets/Icons/ShotsFilled";
+import ShotsOutlined from "assets/Icons/ShotsOutlined";
 import Upload from "assets/Icons/Upload";
 import UploadFile from "assets/Icons/UploadFile";
 import Sheet from "components/Bottom";
-import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
@@ -233,11 +238,11 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 										height: "100%",
 									}}
 								>
-									<Icon
-										name={focused ? "compass_filled" : "compass_outline"}
-										color={"white"}
-										size={24}
-									/>
+									{focused ? (
+										<CompassFilled color={"white"} height={26} width={26} />
+									) : (
+										<CompassOutlined color={"white"} height={32} width={32} />
+									)}
 								</View>
 							);
 						},
@@ -262,11 +267,11 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 										height: "100%",
 									}}
 								>
-									<Icon
-										name={focused ? "shots_filled" : "shots_outline"}
-										color={"white"}
-										size={24}
-									/>
+									{focused ? (
+										<ShotsFilled height={30} width={30} />
+									) : (
+										<ShotsOutlined height={30} width={30} />
+									)}
 								</View>
 							);
 						},
@@ -290,10 +295,11 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 										height: "100%",
 									}}
 								>
-									<Icon
-										name={focused ? "notification_filled" : "notification_outline"}
-										color={"white"}
-									/>
+									{focused ? (
+										<NotificationsFilled height={26} width={26} />
+									) : (
+										<NotificationsOutlined height={26} width={26} />
+									)}
 								</View>
 							);
 						},

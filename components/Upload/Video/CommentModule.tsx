@@ -5,7 +5,6 @@ import { black, dark_primary } from "constants/Colors";
 import { useThemeStore } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
 import Sheet from "components/Bottom";
-import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
 import ArrowForward from "assets/Icons/ArrowForward";
 import Done from "assets/Icons/Done";
@@ -188,7 +187,7 @@ function CommentModuleSheet({
 											alignItems: "center",
 										}}
 									>
-<Done height={18} width={18} />
+										<Done height={18} width={18} />
 									</View>
 								) : null}
 							</Pressable>

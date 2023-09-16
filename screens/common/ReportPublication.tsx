@@ -1,7 +1,7 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import ArrowForward from "assets/Icons/ArrowForward";
+import Done from "assets/Icons/Done";
 import Sheet from "components/Bottom";
-import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
 import TextArea from "components/UI/TextArea";
@@ -361,11 +361,7 @@ function ReportTypeSheet({
 											alignItems: "center",
 										}}
 									>
-										<Icon
-											name={"done"}
-											color={activeReason.reason === item.reason ? "black" : "white"}
-											size={18}
-										/>
+										<Done height={18} width={18} color={black[800]} />
 									</View>
 								) : (
 									<></>
@@ -450,11 +446,7 @@ function ReportSubReasonSheet({
 											alignItems: "center",
 										}}
 									>
-										<Icon
-											name={"done"}
-											color={activeSubReason === item.reason ? "black" : "white"}
-											size={18}
-										/>
+										<Done height={18} width={18} color={black[800]} />
 									</View>
 								) : (
 									<></>

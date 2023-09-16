@@ -1,6 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
 import Collect from "assets/Icons/Collect";
-import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import StyledText from "components/UI/StyledText";
 import { dark_primary } from "constants/Colors";

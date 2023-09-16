@@ -1,7 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import Clock from "assets/Icons/Clock";
 import RightArrow from "assets/Icons/RightArrow";
-import Icon from "components/Icon";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";

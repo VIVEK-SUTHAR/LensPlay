@@ -1,7 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 import Login from "assets/Icons/Login";
-import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";

@@ -1,5 +1,4 @@
 import ShareIcon from "assets/Icons/ShareIcon";
-import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
 import { PUBLICATION } from "constants/tracking";

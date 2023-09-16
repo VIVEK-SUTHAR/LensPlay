@@ -143,7 +143,7 @@ const PlaylistCard = React.memo(() => {
 						height: "30%",
 					}}
 				>
-					<More width={16} height={16} />
+					<More width={18} height={18} />
 				</TouchableOpacity>
 			</View>
 		</Pressable>

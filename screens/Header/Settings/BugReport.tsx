@@ -1,15 +1,14 @@
 import { WINDOW_WIDTH } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import ArrowDown from "assets/Icons/ArrowDown";
+import Close from "assets/Icons/Close";
 import Done from "assets/Icons/Done";
 import Sheet from "components/Bottom";
-import Icon from "components/Icon";
 import Button from "components/UI/Button";
-import Dropdown from "components/UI/Dropdown";
 import Input from "components/UI/Input";
 import StyledText from "components/UI/StyledText";
 import TextArea from "components/UI/TextArea";
-import { black, dark_primary } from "constants/Colors";
+import { black, dark_primary, white } from "constants/Colors";
 import type { RootStackScreenProps } from "customTypes/navigation";
 import { ToastType } from "customTypes/Store";
 import * as ImagePicker from "expo-image-picker";
@@ -180,13 +179,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
 								onPress={() => setimage(null)}
 								style={{ position: "absolute", zIndex: 1, right: 16, top: 14 }}
 							>
-								<Icon
-									name="close"
-									size={24}
-									style={{
-										color: "white",
-									}}
-								/>
+								<Close color={white[800]} height={24} width={24} />
 							</Pressable>
 							<Image source={{ uri: image }} style={styles.image} />
 						</View>

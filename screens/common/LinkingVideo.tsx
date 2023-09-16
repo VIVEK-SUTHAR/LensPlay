@@ -1,6 +1,5 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import CommentSheet from "components/Comments/CommentSheet";
-import Icon from "components/Icon";
 import LPImage from "components/UI/LPImage";
 import CollectVideoSheet from "components/VIdeo/Actions/CollectVideoSheet";
 import MetaDataSheet from "components/VIdeo/Actions/MetaDataSheet";

@@ -1,7 +1,5 @@
 import Done from "assets/Icons/Done";
 import Edit from "assets/Icons/Edit";
-import QR from "assets/Icons/QR";
-import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";

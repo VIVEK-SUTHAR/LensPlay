@@ -1,5 +1,4 @@
 import Dislike from "assets/Icons/Dislike";
-import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
 import { PUBLICATION } from "constants/tracking";

@@ -1,4 +1,3 @@
-import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
 import { primary, white } from "constants/Colors";
 import { ResizeMode, Video } from "expo-av";
@@ -74,8 +73,8 @@ function VideoPlayer({
 			icon={{
 				size: 48,
 				play: <Play height={48} width={48} color={white[800]} />,
-				pause: <Pause  height={48} width={48} color={white[800]} />,
-				replay: <Replay height={48} width={48} color={white[800]} />
+				pause: <Pause height={48} width={48} color={white[800]} />,
+				replay: <Replay height={48} width={48} color={white[800]} />,
 			}}
 			header={
 				<View

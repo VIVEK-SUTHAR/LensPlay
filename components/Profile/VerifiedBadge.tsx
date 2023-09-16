@@ -1,5 +1,4 @@
 import Verified from "assets/Icons/Verified";
-import Icon from "components/Icon";
 import { mainnetVerified } from "constants/Varified";
 import React, { memo } from "react";
 import { StyleSheet, View } from "react-native";

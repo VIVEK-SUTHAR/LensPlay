@@ -1,14 +1,16 @@
 import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
+import Pause from "assets/Icons/Pause";
+import Play from "assets/Icons/Play";
+import Replay from "assets/Icons/Replay";
 import Sheet from "components/Bottom";
 import CommentSheet from "components/Comments/CommentSheet";
-import Icon from "components/Icon";
 import ShotData, { DiscriptionSheet } from "components/Shots/ShotData";
 import ShotReaction from "components/Shots/ShotReaction";
 import VideoPlayer from "components/VideoPlayer";
 import Player from "components/VideoPlayer/Player";
-import { black } from "constants/Colors";
+import { black, white } from "constants/Colors";
 import { Mirror, Post } from "customTypes/generated";
 import { ResizeMode, Video } from "expo-av";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
@@ -124,9 +126,9 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 						timeVisible={false}
 						icon={{
 							size: 48,
-							play: <Icon name="play" size={48} />,
-							pause: <Icon name="pause" size={52} />,
-							replay: <Icon name="replay" size={48} />,
+							play: <Play height={48} width={48} color={white[800]} />,
+							pause: <Pause height={48} width={48} color={white[800]} />,
+							replay: <Replay height={48} width={48} color={white[800]} />,
 						}}
 						autoHidePlayer={true}
 					/>

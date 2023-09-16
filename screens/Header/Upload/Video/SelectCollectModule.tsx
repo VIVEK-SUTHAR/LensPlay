@@ -4,7 +4,6 @@ import Eth from "assets/Icons/Eth";
 import Matic from "assets/Icons/Matic";
 import Usdc from "assets/Icons/Usdc";
 import Sheet from "components/Bottom";
-import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
 import { CollectToggle } from "components/Upload/Video/CollectModule";
 import FollowerOnlyCollect from "components/Upload/Video/CollectModules/FollowerOnlyCollect";

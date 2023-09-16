@@ -1,5 +1,4 @@
 import QR from "assets/Icons/QR";
-import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
 import { dark_primary, white } from "constants/Colors";

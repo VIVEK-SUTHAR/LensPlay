@@ -1,6 +1,5 @@
 import React from "react";
 import { LENSPLAY_DISCORD, LENSPLAY_SITE, LENSPLAY_TWITTER } from "constants/index";
-import Icon from "components/Icon";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
 import StyledText from "components/UI/StyledText";
 import { dark_primary } from "constants/Colors";

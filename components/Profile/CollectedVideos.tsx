@@ -1,7 +1,6 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { FlashList } from "@shopify/flash-list";
 import Sheet from "components/Bottom";
-import Icon from "components/Icon";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
 import MyVideoCard, { type actionListType } from "components/common/MyVideoCard";

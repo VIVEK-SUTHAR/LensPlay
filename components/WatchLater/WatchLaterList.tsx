@@ -1,7 +1,6 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { FlashList } from "@shopify/flash-list";
 import Sheet from "components/Bottom";
-import Icon from "components/Icon";
 import { NoVideosFound } from "components/Profile/AllVideos";
 import Heading from "components/UI/Heading";
 import Ripple from "components/UI/Ripple";

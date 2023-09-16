@@ -1,5 +1,4 @@
 import Like from "assets/Icons/Like";
-import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { SHOT } from "constants/tracking";
 import { Mirror, Post } from "customTypes/generated";

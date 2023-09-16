@@ -113,7 +113,7 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 						height: "30%",
 					}}
 				>
-					<More height={16} width={16} />
+					<More height={18} width={18} />
 				</TouchableOpacity>
 			</View>
 		</Pressable>

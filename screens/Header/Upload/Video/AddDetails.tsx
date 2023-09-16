@@ -1,6 +1,5 @@
 import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import ArrowForward from "assets/Icons/ArrowForward";
-import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import CollectModule from "components/Upload/Video/CollectModule";

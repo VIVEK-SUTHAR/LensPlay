@@ -8,7 +8,6 @@ import Button from "components/UI/Button";
 import Input from "components/UI/Input";
 import StyledText from "components/UI/StyledText";
 import TextArea from "components/UI/TextArea";
-import Icon from "components/Icon";
 import getRawurl from "utils/getRawUrl";
 import getIPFSLink from "utils/getIPFSLink";
 import { useAuthStore, useProfile, useToast } from "store/Store";

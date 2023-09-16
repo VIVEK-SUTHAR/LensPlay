@@ -1,6 +1,5 @@
 import { FlashList } from "@shopify/flash-list";
 import ArrowForward from "assets/Icons/ArrowForward";
-import Icon from "components/Icon";
 import PleaseLogin from "components/PleaseLogin";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";

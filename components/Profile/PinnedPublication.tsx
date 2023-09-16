@@ -283,7 +283,7 @@ export default function PinnedPublication({
 									height: "30%",
 								}}
 							>
-								<More width={16} height={16} />
+								<More width={18} height={18} />
 							</TouchableOpacity>
 						) : null}
 					</View>

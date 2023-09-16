@@ -1,4 +1,7 @@
-import Icon from "components/Icon";
+import Info from "assets/Icons/Info";
+import Report from "assets/Icons/Report";
+import Success from "assets/Icons/Success";
+import { black, white } from "constants/Colors";
 import { ToastType } from "customTypes/Store";
 import Constants from "expo-constants";
 import React, { useEffect, useRef } from "react";
@@ -67,7 +70,14 @@ const Toast = () => {
 				},
 			]}
 		>
-			<Icon
+			{toastStore.type === ToastType.ERROR ? (
+				<Report color={white[800]} height={16} width={16} />
+			) : toastStore.type === ToastType.INFO ? (
+				<Info color={black[800]} height={16} width={16} />
+			) : (
+				<Success color={white[800]} height={16} width={16} />
+			)}
+			{/* <Icon
 				name={
 					toastStore.type === ToastType.ERROR
 						? "report"
@@ -78,7 +88,7 @@ const Toast = () => {
 				color={toastStore.type === ToastType.INFO ? "#000000" : "#FFFFFF"}
 				style={{ marginHorizontal: 2 }}
 				size={16}
-			/>
+			/> */}
 			<Text
 				style={{
 					fontSize: 16,

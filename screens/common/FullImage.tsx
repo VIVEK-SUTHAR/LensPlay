@@ -1,5 +1,4 @@
 import ArrowLeft from "assets/Icons/ArrowLeft";
-import Icon from "components/Icon";
 import { RootStackScreenProps } from "customTypes/navigation";
 import Constants from "expo-constants";
 import { Image } from "expo-image";
