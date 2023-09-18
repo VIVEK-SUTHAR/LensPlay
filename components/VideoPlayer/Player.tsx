@@ -1,4 +1,3 @@
-import { MaterialIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import SecondBackward from "assets/Icons/SecondBackward";
 import SecondForward from "assets/Icons/SecondForward";
@@ -26,6 +25,14 @@ import {
 	getMinutesSecondsFromMilliseconds,
 	styles,
 } from "./utils";
+import Volume from "assets/Icons/Volume";
+import VolumeOff from "assets/Icons/VolumeOff";
+import { white } from "constants/Colors";
+import FullScreen from "assets/Icons/FullScreen";
+import FullScreenOff from "assets/Icons/FullScreenOff";
+import Play from "assets/Icons/Play";
+import Pause from "assets/Icons/Pause";
+import Replay from "assets/Icons/Replay";
 
 const Player = (tempProps: Props) => {
 	const props = deepMerge(defaultProps, tempProps) as Props;
@@ -424,20 +431,26 @@ const Player = (tempProps: Props) => {
 											(playbackInstanceInfo.state === PlaybackStates.Playing &&
 												!props.icon.pause) ||
 											(playbackInstanceInfo.state === PlaybackStates.Paused &&
-												!props.icon.pause)) && (
-											<MaterialIcons
-												name={
-													playbackInstanceInfo.state === PlaybackStates.Playing
-														? "pause"
-														: playbackInstanceInfo.state === PlaybackStates.Paused
-														? "play-arrow"
-														: "replay"
-												}
-												style={props.icon.style}
-												size={props.icon.size}
-												color={props.icon.color}
-											/>
-										)}
+												!props.icon.pause)) &&
+											(playbackInstanceInfo.state === PlaybackStates.Playing ? (
+												<Pause
+													height={props.icon.size}
+													width={props.icon.size}
+													color={props.icon.color}
+												/>
+											) : playbackInstanceInfo.state === PlaybackStates.Paused ? (
+												<Play
+													height={props.icon.size}
+													width={props.icon.size}
+													color={props.icon.color}
+												/>
+											) : (
+												<Replay
+													height={props.icon.size}
+													width={props.icon.size}
+													color={props.icon.color}
+												/>
+											))}
 									</View>
 								</TouchableButton>
 								{/* <GestureDetector gesture={doubleTapOnForWard}> */}
@@ -510,7 +523,7 @@ const Player = (tempProps: Props) => {
 										marginVertical: -12,
 									},
 									android: {
-										marginBottom: props.fullscreen.inFullscreen ? -8 : -10,
+										marginBottom: props.fullscreen.inFullscreen ? 0 : -10,
 									},
 								}),
 							}}
@@ -557,6 +570,8 @@ const Player = (tempProps: Props) => {
 								flexDirection: "row",
 								alignItems: "center",
 								justifyContent: "space-between",
+								paddingHorizontal: 12,
+								paddingBottom: 4
 							}}
 						>
 							<View
@@ -588,14 +603,20 @@ const Player = (tempProps: Props) => {
 											{props.icon.mute}
 											{props.icon.exitMute}
 											{((!props.icon.mute && props.mute.isMute) ||
-												(!props.icon.exitMute && !props.mute.isMute)) && (
-												<MaterialIcons
-													name={props.mute.isMute ? "volume-up" : "volume-off"}
-													style={props.icon.style}
-													size={props.icon.size! / 2}
-													color={props.icon.color}
-												/>
-											)}
+												(!props.icon.exitMute && !props.mute.isMute)) &&
+												(props.mute.isMute ? (
+													<VolumeOff
+														height={props.icon.size! / 3}
+														width={props.icon.size! / 3}
+														color={white[800]}
+													/>
+												) : (
+													<Volume
+														height={props.icon.size! / 3}
+														width={props.icon.size! / 3}
+														color={white[800]}
+													/>
+												))}
 										</View>
 									</TouchableButton>
 								)}
@@ -611,14 +632,20 @@ const Player = (tempProps: Props) => {
 											{!props.fullscreen.inFullscreen && props.icon.fullscreen}
 											{props.fullscreen.inFullscreen && props.icon.exitFullscreen}
 											{((!props.icon.fullscreen && !props.fullscreen.inFullscreen) ||
-												(!props.icon.exitFullscreen && props.fullscreen.inFullscreen)) && (
-												<MaterialIcons
-													name={props.fullscreen.inFullscreen ? "fullscreen-exit" : "fullscreen"}
-													style={props.icon.style}
-													size={props.icon.size! / 2}
-													color={props.icon.color}
-												/>
-											)}
+												(!props.icon.exitFullscreen && props.fullscreen.inFullscreen)) &&
+												(props.fullscreen.inFullscreen ? (
+													<FullScreenOff
+														height={props.icon.size! / 3}
+														width={props.icon.size! / 3}
+														color={white[800]}
+													/>
+												) : (
+													<FullScreen
+														height={props.icon.size! / 3}
+														width={props.icon.size! / 3}
+														color={white[800]}
+													/>
+												))}
 										</View>
 									</TouchableButton>
 								)}

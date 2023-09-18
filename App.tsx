@@ -1,5 +1,4 @@
 import { ApolloProvider } from "@apollo/client";
-import { FontAwesome } from "@expo/vector-icons";
 import notifee, { AndroidStyle, EventType } from "@notifee/react-native";
 import messaging from "@react-native-firebase/messaging";
 import { WalletConnectModal } from "@walletconnect/modal-react-native";
@@ -52,7 +51,6 @@ if (Platform.OS === "android") {
 	}
 }
 
-
 console.log("App Running in DEV MODE", __DEV__);
 console.log("App BUndle Load Time", __BUNDLE_START_TIME__);
 export default function App() {
@@ -65,7 +63,6 @@ export default function App() {
 		OpenSans_Medium: require("./assets/fonts/OpenSans-Medium.ttf"),
 		OpenSans_SemiBold: require("./assets/fonts/OpenSans-SemiBold.ttf"),
 		OpenSans_Bold: require("./assets/fonts/OpenSans-Bold.ttf"),
-		...FontAwesome.font,
 	});
 
 	const onLayoutRootView = React.useCallback(async () => {

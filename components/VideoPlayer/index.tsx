@@ -62,13 +62,13 @@ function VideoPlayer({
 			}}
 			activityIndicator={{
 				size: "large",
-				color: primary,
+				color: white[800],
 			}}
 			slider={{
 				visible: isSliderVisible,
 				thumbTintColor: "white",
 				maximumTrackTintColor: "white",
-				minimumTrackTintColor: primary,
+				minimumTrackTintColor: white[800],
 			}}
 			icon={{
 				size: 48,
