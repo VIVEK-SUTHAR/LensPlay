@@ -11,13 +11,12 @@ import { LENSPLAY_SITE } from "constants/index";
 import { PROFILE } from "constants/tracking";
 import {
 	ProfileQuery,
-	useBroadcastMutation,
 	useCreateUnfollowTypedDataMutation,
-	useProxyActionMutation,
 	type CreateUnfollowTypedDataMutationResult,
-	type MediaSet,
 	type Profile,
 	type Scalars,
+	useFollowMutation,
+	useUnfollowMutation,
 } from "customTypes/generated";
 import React, { useState } from "react";
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
@@ -70,7 +69,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 
 	const navigateToFullImageAvatar = React.useCallback(() => {
 		navigation.navigate("FullImage", {
-			url: getIPFSLink(getRawurl(profile?.picture as MediaSet)),
+			url: getIPFSLink(getRawurl(profile?.metadata?.picture)),
 			source: "avatar",
 		});
 		void TrackAction(PROFILE.FULL_IMAGE);
@@ -79,7 +78,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 	const navigateToUserStats = React.useCallback(() => {
 		navigation.navigate("UserStats", {
 			profileId: profile?.id,
-			ethAddress: profile?.ownedBy,
+			ethAddress: profile?.ownedBy?.address,
 			activeTab: "subscriber",
 		});
 	}, []);
@@ -91,7 +90,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 		 * Below is for  Profile Picture
 		 */
 		const avatarImage = getImageProxyURL({
-			formattedLink: getIPFSLink(getRawurl(profile?.picture as MediaSet)),
+			formattedLink: getIPFSLink(getRawurl(profile?.metadata?.picture)),
 		});
 
 		getColors(avatarImage, {
@@ -158,13 +157,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 			>
 				<Cover
 					navigation={navigation}
-					url={getIPFSLink(getRawurl(profile?.coverPicture as MediaSet))}
+					url={getIPFSLink(getRawurl(profile?.metadata?.coverPicture))}
 				/>
 
 				<View style={styles.ProfileContainer}>
 					<Pressable onPress={navigateToFullImageAvatar}>
 						<Avatar
-							src={getRawurl(profile?.picture as MediaSet)}
+							src={getRawurl(profile?.metadata?.picture)}
 							height={90}
 							width={90}
 							borderRadius={100}
@@ -172,7 +171,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 					</Pressable>
 					<View style={styles.editButtonContainer}>
 						{isChannel ? (
-							<SubscribeButton channelId={profile?.id} isFollwebByMe={profile?.isFollowedByMe!} />
+							<SubscribeButton
+								channelId={profile?.id}
+								isFollwebByMe={profile?.operations?.isFollowedByMe?.value!}
+							/>
 						) : (
 							<EditChannelButton />
 						)}
@@ -189,7 +191,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 						<View>
 							<View style={{ flexDirection: "row", alignItems: "center" }}>
 								<Heading
-									title={profile?.name || formatHandle(profile?.handle)}
+									title={profile?.metadata?.displayName || formatHandle(profile?.handle)}
 									style={{
 										fontSize: 16,
 										marginTop: 8,
@@ -209,8 +211,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 							/>
 						</View>
 					</View>
-					{profile?.bio ? (
-						<StyledText title={extractURLs(profile?.bio)} style={styles.bioStyle} />
+					{profile?.metadata?.bio ? (
+						<StyledText title={extractURLs(profile?.metadata?.bio)} style={styles.bioStyle} />
 					) : null}
 					<View style={styles.subFlexContainer}>
 						<TouchableOpacity
@@ -222,7 +224,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 							onPress={navigateToUserStats}
 						>
 							<StyledText
-								title={formatInteraction(profile?.stats?.totalFollowing!)}
+								title={formatInteraction(profile?.stats?.following!)}
 								style={{
 									fontSize: 14,
 									fontWeight: "600",
@@ -249,7 +251,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 							onPress={navigateToUserStats}
 						>
 							<StyledText
-								title={formatInteraction(profile?.stats?.totalFollowers!)}
+								title={formatInteraction(profile?.stats?.followers!)}
 								style={{
 									fontSize: 14,
 									fontWeight: "600",
@@ -334,7 +336,7 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 	/**
 	 * Only Free Follow and Free Collect is supported via Dispatcher
 	 */
-	const [freeFollowViaDispatcher] = useProxyActionMutation({
+	const [freeFollow] = useFollowMutation({
 		onCompleted: (data) => {
 			Logger.Success("Subscribed Succesfullly", data);
 			toast.success("Subscribed succesfully!");
@@ -357,17 +359,17 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 	/**
 	 * Generate Typed Data to Unfollow The Channel
 	 */
-	const [getTypedData] = useCreateUnfollowTypedDataMutation({
-		onError() {
-			toast.error("Something went wrong");
-		},
-		context: {
-			headers: {
-				"x-access-token": `Bearer ${accessToken}`,
-				"origin": LENSPLAY_SITE,
-			},
-		},
-	});
+	// const [getTypedData] = useCreateUnfollowTypedDataMutation({
+	// 	onError() {
+	// 		toast.error("Something went wrong");
+	// 	},
+	// 	context: {
+	// 		headers: {
+	// 			"x-access-token": `Bearer ${accessToken}`,
+	// 			"origin": LENSPLAY_SITE,
+	// 		},
+	// 	},
+	// });
 
 	/**
 	 * Upon Succesfuuly signing the typed data from user, send the
@@ -375,7 +377,7 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 	 *
 	 */
 
-	const [sendUnFollowTxn] = useBroadcastMutation({
+	const [sendUnFollowTxn] = useUnfollowMutation({
 		onCompleted: () => {
 			toast.success("Unsubscribed succesfully!");
 			setIsFollowing(false);
@@ -402,38 +404,37 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 	}, [isFollowing]);
 
 	const subscribeToChannel = React.useCallback(() => {
-		void freeFollowViaDispatcher({
+		void freeFollow({
 			variables: {
 				request: {
-					follow: {
-						freeFollow: {
+					follow: [
+						{
 							profileId: channelId,
 						},
-					},
+					],
 				},
 			},
 		});
 	}, []);
 
 	const unSubscribeToChannel = React.useCallback(async () => {
-		const data = await getTypedData({
-			variables: {
-				request: {
-					profile: channelId,
-				},
-			},
-		});
-		const message = formatUnfollowTypedData(data as CreateUnfollowTypedDataMutationResult);
-		const msgParams = [address, JSON.stringify(message)];
-		const sig = await provider?.request({
-			method: "eth_signTypedData",
-			params: msgParams,
-		});
+		// const data = await getTypedData({
+		// 	variables: {
+		// 		request: {
+		// 			profile: channelId,
+		// 		},
+		// 	},
+		// });
+		// const message = formatUnfollowTypedData(data as CreateUnfollowTypedDataMutationResult);
+		// const msgParams = [address, JSON.stringify(message)];
+		// const sig = await provider?.request({
+		// 	method: "eth_signTypedData",
+		// 	params: msgParams,
+		// });
 		void sendUnFollowTxn({
 			variables: {
 				request: {
-					signature: sig,
-					id: data?.data?.createUnfollowTypedData?.id,
+					unfollow: [channelId],
 				},
 			},
 		});

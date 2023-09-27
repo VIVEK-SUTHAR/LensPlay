@@ -30,8 +30,8 @@ function ProfileCard({
 			activeOpacity={0.6}
 			onPress={() => {
 				navigation.navigate("Channel", {
-					handle:handle,
-					name: profileName,
+					handle: handle,
+					name: profileName!,
 				});
 			}}
 		>
