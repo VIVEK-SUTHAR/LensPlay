@@ -11,7 +11,7 @@ import { LENSPLAY_SITE, LENS_CLAIM_SITE } from "constants/index";
 import StorageKeys from "constants/Storage";
 import { AUTH } from "constants/tracking";
 import { ToastType } from "customTypes/Store";
-import { useAuthenticateMutation, useChallengeLazyQuery } from "customTypes/generated";
+import { useAuthMutation, useChallengeLazyQuery } from "customTypes/generated";
 import type { RootStackScreenProps } from "customTypes/navigation";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
@@ -46,7 +46,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 	const { setAccessToken, setRefreshToken } = useAuthStore();
 
 	const [getChallenge] = useChallengeLazyQuery();
-	const [getTokens] = useAuthenticateMutation();
+	const [getTokens] = useAuthMutation();
 
 	const scaleAnimation = useRef(new Animated.Value(0)).current;
 	const fadeInAnimation = useRef(new Animated.Value(0)).current;
@@ -64,20 +64,23 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 		}
 		try {
 			setIsloading(true);
+			Logger.Log("Yeh hai handle", currentProfile?.id);
 			const data = await getChallenge({
 				variables: {
 					request: {
-						address: address,
+						signedBy: address,
+						for: currentProfile?.id,
 					},
 				},
-				context: {
-					headers: {
-						origin: LENSPLAY_SITE,
-					},
-				},
+				// context: {
+				// 	headers: {
+				// 		origin: LENSPLAY_SITE,
+				// 	},
+				// },
 				fetchPolicy: "network-only",
 			});
 
+			Logger.Log("this is sign params", address, data?.data?.challenge);
 			const signature = await provider?.request({
 				method: "personal_sign",
 				params: [address, data?.data?.challenge?.text],
@@ -87,11 +90,12 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 				const response = await getTokens({
 					variables: {
 						request: {
-							address: address,
+							id: data?.data?.challenge?.id,
 							signature: signature,
 						},
 					},
 				});
+				Logger.Success("this is the token response", response);
 
 				setAccessToken(response?.data?.authenticate?.accessToken);
 				setRefreshToken(response?.data?.authenticate?.refreshToken);
@@ -163,44 +167,45 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="transparent" style="light" />
-			<View style={{
-				justifyContent: "flex-end",
-				alignItems: "center",
-				marginBottom: 32,
-				flex: 1,
-			}}>
 			<View
 				style={{
-					width: windowWidth,
-					height: "50%",
-					justifyContent: "center",
+					justifyContent: "flex-end",
 					alignItems: "center",
+					marginBottom: 32,
+					flex: 1,
 				}}
 			>
-				<Login />
-			</View>
-			<View
-				style={{
-					width: width,
-					paddingHorizontal: 16,
-					justifyContent: "center",
-					marginTop: 32,
-					
-				}}
-			>
-				<StyledText
-					title={
-						hasHandle
-							? "Hurry up, Your Lens frens are waiting!"
-							: "Oops! You don't have a lens profile"
-					}
+				<View
 					style={{
-						color: "white",
-						fontSize: 32,
-						fontWeight: "600",
+						width: windowWidth,
+						height: "50%",
+						justifyContent: "center",
+						alignItems: "center",
 					}}
-				/>
-			</View>
+				>
+					<Login />
+				</View>
+				<View
+					style={{
+						width: width,
+						paddingHorizontal: 16,
+						justifyContent: "center",
+						marginTop: 32,
+					}}
+				>
+					<StyledText
+						title={
+							hasHandle
+								? "Hurry up, Your Lens frens are waiting!"
+								: "Oops! You don't have a lens profile"
+						}
+						style={{
+							color: "white",
+							fontSize: 32,
+							fontWeight: "600",
+						}}
+					/>
+				</View>
 			</View>
 			<View
 				style={{
@@ -225,14 +230,14 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 									alignItems: "center",
 								}}
 							>
-								<Avatar src={getRawurl(currentProfile?.picture)} height={40} width={40} />
+								<Avatar src={getRawurl(currentProfile?.metadata?.picture)} height={40} width={40} />
 								<View
 									style={{
 										marginLeft: 8,
 									}}
 								>
 									<Heading
-										title={currentProfile?.name}
+										title={currentProfile?.metadata?.displayName}
 										style={{
 											color: "white",
 											fontSize: 16,

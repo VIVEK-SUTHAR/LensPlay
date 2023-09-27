@@ -1,5 +1,5 @@
 import type { Mirror, Post } from "customTypes/generated";
-import create from "zustand";
+import { create } from "zustand";
 
 interface WatchLaterStore {
 	isInWatchLater: boolean;

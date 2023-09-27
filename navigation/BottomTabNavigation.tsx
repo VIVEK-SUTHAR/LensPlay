@@ -8,7 +8,7 @@ import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black } from "constants/Colors";
-import { useRefreshTokensMutation } from "customTypes/generated";
+import { useRefreshMutation } from "customTypes/generated";
 import type { RootStackScreenProps, RootTabParamList } from "customTypes/navigation";
 import * as ImagePicker from "expo-image-picker";
 import * as Linking from "expo-linking";
@@ -39,14 +39,14 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 	const windowHeight = Dimensions.get("window").height;
 
 	let PROFILE_PIC_URI = "";
-	if (user?.currentProfile?.picture?.__typename === "MediaSet") {
-		PROFILE_PIC_URI = user?.currentProfile?.picture?.original?.url;
+	if (user?.currentProfile?.metadata?.picture?.__typename === "ImageSet") {
+		PROFILE_PIC_URI = user?.currentProfile?.metadata?.picture?.optimized?.uri;
 	}
-	if (user?.currentProfile?.picture?.__typename === "NftImage") {
-		PROFILE_PIC_URI = user?.currentProfile?.picture?.uri;
+	if (user?.currentProfile?.metadata?.picture?.__typename === "NftImage") {
+		PROFILE_PIC_URI = user?.currentProfile?.metadata?.picture?.image?.optimized?.uri;
 	}
 
-	const [getAccessFromRefresh, { data: newTokens, error, loading }] = useRefreshTokensMutation();
+	const [getAccessFromRefresh, { data: newTokens, error, loading }] = useRefreshMutation();
 
 	React.useEffect(() => {
 		updateTokens();

@@ -1,5 +1,5 @@
 import type { IGuestStore } from "customTypes/Store";
-import create from "zustand";
+import { create } from "zustand";
 
 export const useGuestStore = create<IGuestStore>((set) => ({
 	isGuest: false,

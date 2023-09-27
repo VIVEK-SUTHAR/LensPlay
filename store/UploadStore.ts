@@ -1,5 +1,5 @@
 import { IUploadStore } from "customTypes/Store";
-import create from "zustand";
+import { create } from "zustand";
 
 export const useUploadStore = create<IUploadStore>((set) => ({
 	videoURL: null,

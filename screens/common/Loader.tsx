@@ -3,7 +3,14 @@ import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 import Heading from "components/UI/Heading";
 import StorageKeys from "constants/Storage";
 import { APP_OPEN } from "constants/tracking";
-import { useRefreshTokensMutation, useVerifyTokensLazyQuery } from "customTypes/generated";
+import {
+	Profile,
+	useProfilesLazyQuery,
+	useProfilesManagedLazyQuery,
+	useProfilesQuery,
+	useRefreshMutation,
+	useVerifyLazyQuery,
+} from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
@@ -31,18 +38,31 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 	const { address: WalletAddres } = useWalletConnectModal();
 
 	const [verifyTokens, { data: isvalidTokens, error: verifyError, loading: verifyLoading }] =
-		useVerifyTokensLazyQuery();
+		useVerifyLazyQuery();
 
-	const [getAccessFromRefresh, { data: newTokens, error, loading }] = useRefreshTokensMutation();
+	const [getAccessFromRefresh, { data: newTokens, error, loading }] = useRefreshMutation();
+	const [getManagedProfiles] = useProfilesLazyQuery();
 
 	async function HandleDefaultProfile(adress: string | undefined) {
 		Logger.Warn("We are in Handle");
-		Logger.Warn("We are in Handle efault profile");
+		Logger.Warn("We are in Handle default profile");
 		Logger.Warn("Calling get default profile");
-		const userDefaultProfile = await getDefaultProfile(adress);
+		// const userDefaultProfile = await getDefaultProfile(adress);
+		const Profiles = await getManagedProfiles({
+			variables: {
+				request: {
+					where: {
+						ownedBy: [adress],
+					},
+				},
+			},
+		});
+		const userDefaultProfile = await Profiles?.data?.profiles?.items[0];
+
+		Logger.Success("Yeh hai user default profile", userDefaultProfile);
 		if (userDefaultProfile) {
 			setHasHandle(true);
-			setCurrentProfile(userDefaultProfile);
+			setCurrentProfile(userDefaultProfile as Profile);
 			Logger.Warn("Back to handle default profile with data", userDefaultProfile);
 		} else {
 			setHasHandle(false);
@@ -92,6 +112,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 						},
 					},
 				});
+				Logger.Log("This is validity", isValidAccesToken);
 
 				if (isValidAccesToken?.data?.verify) {
 					Logger.Success("Access token is valid,going to feed");

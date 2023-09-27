@@ -11,9 +11,9 @@ import { PUBLICATION } from "constants/tracking";
 import {
 	type Attribute,
 	type Post,
-	useCreateSetProfileMetadataViaDispatcherMutation,
-	usePublicationDetailsLazyQuery,
 	type Profile,
+	useSetProfileMetadataMutation,
+	usePublicationLazyQuery,
 } from "customTypes/generated";
 import { type ProfileMetaDataV1nput } from "customTypes/index";
 import { default as React, useEffect } from "react";
@@ -34,24 +34,21 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
 	const { setHasPinned } = usePinStore();
 	const toast = useToast();
 
-	const [createSetProfileMetadataViaDispatcherMutation] =
-		useCreateSetProfileMetadataViaDispatcherMutation({
-			onCompleted: () => {
-				setHasPinned(false);
-				toast.success("Video pinned successfully");
-				void TrackAction(PUBLICATION.PIN_PUBLICATION);
-			},
-			onError: () => {
-				toast.error("Some error occured please try again");
-			},
-		});
+	const [SetProfileMetadataMutation] = useSetProfileMetadataMutation({
+		onCompleted: () => {
+			setHasPinned(false);
+			toast.success("Video pinned successfully");
+			void TrackAction(PUBLICATION.PIN_PUBLICATION);
+		},
+		onError: () => {
+			toast.error("Some error occured please try again");
+		},
+	});
 
 	const RemovepinPublication = async () => {
-		let currentAttributes = currentProfile?.attributes;
+		let currentAttributes = currentProfile?.metadata?.attributes;
 		let attr = [...currentAttributes!];
-		const isAlreadyPinned = attr?.find(
-			(attr) => attr.traitType === "pinnedPublicationId" || attr.key === "pinnedPublicationId"
-		);
+		const isAlreadyPinned = attr?.find((attr) => attr.key === "pinnedPublicationId");
 
 		if (isAlreadyPinned) {
 			const index = attr?.indexOf(isAlreadyPinned);
@@ -61,19 +58,20 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
 		const newMetaData: ProfileMetaDataV1nput = {
 			version: "1.0.0",
 			metadata_id: uuidV4(),
-			name: currentProfile?.name || "",
-			bio: currentProfile?.bio || "",
-			cover_picture: getRawurl(currentProfile?.coverPicture),
+			name: currentProfile?.metadata?.displayName || "",
+			bio: currentProfile?.metadata?.bio || "",
+			cover_picture: getRawurl(currentProfile?.metadata?.coverPicture),
 			attributes: attr,
 		};
 
 		const hash = await uploadToArweave(newMetaData);
 
-		void createSetProfileMetadataViaDispatcherMutation({
+		void SetProfileMetadataMutation({
 			variables: {
 				request: {
-					metadata: `ar://${hash}`,
-					profileId: currentProfile?.id,
+					metadataURI: `ar://${hash}`,
+					// metadata: `ar://${hash}`,
+					// profileId: currentProfile?.id,
 				},
 			},
 			context: {
@@ -149,11 +147,10 @@ export default function PinnedPublication({
 	}, [pinStore.publicationId]);
 
 	const getPinnedPublication = () => {
-		const attributes = profile?.attributes;
+		const attributes = profile?.metadata?.attributes;
 
 		const pinnedPublication = attributes?.find(
-			(attr: Attribute) =>
-				attr.traitType === "pinnedPublicationId" || attr.key === "pinnedPublicationId"
+			(attr: Attribute) => attr.key === "pinnedPublicationId"
 		);
 		if (pinnedPublication) {
 			pinStore.setHasPinned(true);
@@ -161,17 +158,14 @@ export default function PinnedPublication({
 			void fetchPinnedPublication({
 				variables: {
 					request: {
-						publicationId: pinnedPublication.value,
-					},
-					reactionRequest: {
-						profileId: activeProfile?.currentProfile?.id,
+						forId: pinnedPublication.value,
 					},
 				},
 			});
 		}
 	};
 
-	const [fetchPinnedPublication, { data, loading, error }] = usePublicationDetailsLazyQuery({
+	const [fetchPinnedPublication, { data, loading, error }] = usePublicationLazyQuery({
 		context: {
 			headers: {
 				"x-access-token": `Bearer ${accessToken}`,

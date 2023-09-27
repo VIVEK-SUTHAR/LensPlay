@@ -1,7 +1,7 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { useWalletConnectModal } from '@walletconnect/modal-react-native';
+import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
@@ -27,11 +27,9 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 	const { handleGuest } = useGuestStore();
 	const { setCurrentProfile, setHasHandle } = useProfile();
 
-	async function HandleDefaultProfile(adress: Scalars["EthereumAddress"]) {
-
-		const userDefaultProfile = await getProfiles({
-			ownedBy: adress,
-		});
+	async function HandleDefaultProfile(adress: Scalars["EvmAddress"]) {
+		const userDefaultProfile = await getProfiles(adress);
+		Logger.Log("Boom Boom", userDefaultProfile);
 
 		if (userDefaultProfile) {
 			setHasHandle(true);

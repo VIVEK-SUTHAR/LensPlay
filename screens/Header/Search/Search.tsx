@@ -3,7 +3,12 @@ import { FlashList } from "@shopify/flash-list";
 import Icon from "components/Icon";
 import ProfileCard from "components/ProfileCard";
 import { SEARCH } from "constants/tracking";
-import { Profile, SearchProfilesDocument, SearchRequestTypes } from "customTypes/generated";
+import {
+	LimitType,
+	Profile,
+	SearchProfilesDocument,
+	useSearchProfilesLazyQuery,
+} from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import useDebounce from "hooks/useDebounce";
@@ -20,6 +25,7 @@ import {
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useThemeStore } from "store/Store";
 import getRawurl from "utils/getRawUrl";
+import Logger from "utils/logger";
 import TrackAction from "utils/Track";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
@@ -30,18 +36,18 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 	const debouncedValue = useDebounce<string>(keyword, 300);
 	const { isGuest } = useGuestStore();
 
-	const [searchChannels, { data: result, error, loading }] = useLazyQuery(SearchProfilesDocument);
+	const [searchChannels, { data: result, error, loading }] = useSearchProfilesLazyQuery();
 
 	const onDebounce = async () => {
 		if (keyword.trim().length > 0) {
+			Logger.Log("Yeh hai chize", keyword);
 			try {
 				await searchChannels({
 					variables: {
 						request: {
-							type: SearchRequestTypes.Profile,
 							query: keyword,
-							limit: 30,
-							sources: ["lenstube"],
+							limit: LimitType.TwentyFive,
+							// sources: ["lenstube"],
 						},
 					},
 					context: {
@@ -109,23 +115,25 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 		};
 	};
 
+	Logger.Success(result);
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="transparent" style="auto" />
 			<FlashList
 				removeClippedSubviews={true}
 				// ListEmptyComponent={!isfound ? <Recommended /> : null}
-				data={result?.search?.items}
+				data={result?.searchProfiles?.items}
 				keyExtractor={(_, index) => index.toString()}
 				estimatedItemSize={100}
 				renderItem={({ item }: { item: Profile }) => (
 					<ProfileCard
-						profileIcon={getRawurl(item?.picture)}
-						profileName={item?.name || item?.id}
+						profileIcon={getRawurl(item?.metadata?.picture)}
+						profileName={item?.metadata?.displayName || item?.id}
 						profileId={item?.id}
-						isFollowed={item?.isFollowedByMe || false}
+						isFollowed={item?.operations?.isFollowedByMe?.value || false}
 						handle={item?.handle}
-						owner={item?.ownedBy}
+						owner={item?.ownedBy?.address}
 					/>
 				)}
 				contentContainerStyle={{

@@ -12,11 +12,15 @@ import { SOURCES } from "constants/index";
 import { HOME } from "constants/tracking";
 import {
 	FeedEventItemType,
-	PublicationMainFocus,
+	// PublicationMainFocus,
 	useFeedQuery,
 	type FeedItem,
-	type FeedItemRoot,
-	useProfileBookMarksLazyQuery,
+	// type FeedItemRoot,
+	// useProfileBookMarksLazyQuery,
+	PublicationMetadataMainFocusType,
+	PublicationContentWarningType,
+	PrimaryPublication,
+	usePublicationBookmarksLazyQuery,
 } from "customTypes/generated";
 import type { RootTabScreenProps } from "customTypes/navigation";
 import * as ScreenOrientation from "expo-screen-orientation";
@@ -31,6 +35,7 @@ import {
 	ScrollView,
 	StyleSheet,
 	View,
+	useWindowDimensions,
 } from "react-native";
 import { getColors } from "react-native-image-colors";
 import { useGuestStore } from "store/GuestStore";
@@ -58,13 +63,15 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
 
 	const QueryRequest = {
-		profileId: currentProfile?.id,
-		limit: 10,
-		metadata: {
-			mainContentFocus: [PublicationMainFocus.Video],
+		where: {
+			for: currentProfile?.id,
+			feedEventItemTypes: [FeedEventItemType.Post],
+			metadata: {
+				mainContentFocus: [PublicationMetadataMainFocusType.Video],
+				publishedOn: SOURCES,
+			},
 		},
-		feedEventItemTypes: [FeedEventItemType.Post],
-		sources: SOURCES,
+		// limit: 10,
 	};
 
 	const {
@@ -76,9 +83,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	} = useFeedQuery({
 		variables: {
 			request: QueryRequest,
-			reactionRequest: {
-				profileId: currentProfile?.id,
-			},
 		},
 		fetchPolicy: "network-only",
 		context: {
@@ -123,8 +127,8 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	}, [pageInfo?.next]);
 
 	const renderItem = React.useCallback(({ item }: { item: FeedItem }) => {
-		if (!item.root.hidden) {
-			return <VideoCard publication={item?.root as FeedItemRoot} id={item?.root?.id} />;
+		if (!item.root.isHidden) {
+			return <VideoCard publication={item?.root as PrimaryPublication} id={item?.root?.id} />;
 		}
 		return null;
 	}, []);
@@ -147,8 +151,10 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 					>
 						<ActivityIndicator size={"small"} color={theme.PRIMARY} />
 					</View>
-				) : (
+				) : Feeddata?.feed?.items.length! > 0 ? (
 					<ErrorMessage message="No more Videos to load" withImage={false} />
+				) : (
+					<></>
 				)}
 			</>
 		);
@@ -164,6 +170,26 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 			progressBackgroundColor={"black"}
 		/>
 	);
+
+	const _Empty = () => {
+		return (
+			<SafeAreaView style={styles.container}>
+				<ScrollView
+					refreshControl={_RefreshControl}
+					contentContainerStyle={{
+						flex: 1,
+						alignItems: "center",
+						justifyContent: "center",
+						paddingVertical: 60,
+					}}
+				>
+					<NotFound navigation={navigation} />
+				</ScrollView>
+			</SafeAreaView>
+		);
+	};
+
+	const Empty = React.memo(_Empty);
 
 	//Bookmarks
 	async function handleCover(coverURL: string) {
@@ -193,12 +219,13 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 			});
 	}
 
-	const [getBookMarks, { data }] = useProfileBookMarksLazyQuery({
+	const [getBookMarks, { data }] = usePublicationBookmarksLazyQuery({
 		variables: {
-			req: {
-				profileId: currentProfile?.id,
-				metadata: {
-					mainContentFocus: [PublicationMainFocus.Video],
+			request: {
+				where: {
+					metadata: {
+						mainContentFocus: [PublicationMetadataMainFocusType.Video],
+					},
 				},
 			},
 		},
@@ -210,19 +237,22 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	});
 
 	React.useEffect(() => {
-		getBookMarks()
-			.then((res) => {
-				if (res) {
-					handleCover(
-						getIPFSLink(
-							getRawurl(res?.data?.publicationsProfileBookmarks?.items[0]?.metadata?.cover)
-						)
-					);
-				}
-			})
-			.catch((err) => {
-				Logger.Error("[Error while fetching Bookmarks....]", err);
-			});
+		getBookMarks().then((res) => {
+			Logger.Success("", res?.data?.publicationBookmarks?.items[0]);
+		});
+		// getBookMarks()
+		// 	.then((res) => {
+		// 		if (res) {
+		// 			handleCover(
+		// 				getIPFSLink(
+		// 					getRawurl(res?.data?.publicationBookmarks?.items[0]?.)
+		// 				)
+		// 			);
+		// 		}
+		// 	})
+		// 	.catch((err) => {
+		// 		Logger.Error("[Error while fetching Bookmarks....]", err);
+		// 	});
 	}, [sessionCount]);
 
 	if (isGuest) return <PleaseLogin />;
@@ -233,7 +263,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 				<ScrollView
 					refreshControl={_RefreshControl}
 					contentContainerStyle={{
-						flex: 1,
 						alignItems: "center",
 						justifyContent: "center",
 					}}
@@ -258,6 +287,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 						Logger.Warn(`Feed List Loading time ${elapsedTimeInMs} ms`);
 					}}
 					refreshControl={_RefreshControl}
+					ListEmptyComponent={Empty}
 					ListFooterComponent={<MoreLoader />}
 					onEndReachedThreshold={0.7}
 					onEndReached={onEndCallBack}
@@ -272,59 +302,57 @@ export default Feed;
 
 const NotFound = ({ navigation }: { navigation: any }) => {
 	return (
-		<SafeAreaView style={styles.container}>
+		<View
+			style={{
+				flex: 1,
+				justifyContent: "center",
+				alignItems: "center",
+			}}
+		>
+			<Image
+				style={{
+					height: 300,
+					width: 300,
+				}}
+				resizeMode="contain"
+				source={require("../../../assets/images/home.png")}
+			/>
 			<View
 				style={{
-					flex: 1,
-					justifyContent: "center",
 					alignItems: "center",
+					paddingHorizontal: 24,
 				}}
 			>
-				<Image
+				<Heading
+					title="Looks like you just landed,follow some profile to explore feed"
 					style={{
-						height: 300,
-						width: 300,
+						fontSize: 16,
+						color: white[200],
+						fontWeight: "600",
+						alignSelf: "flex-start",
+						textAlign: "center",
+						marginBottom: 24,
 					}}
-					resizeMode="contain"
-					source={require("../../../assets/images/home.png")}
 				/>
-				<View
-					style={{
-						alignItems: "center",
-						paddingHorizontal: 24,
+				<Button
+					title="Explore"
+					icon={<Icon name="arrowForward" size={16} color={black[500]} />}
+					iconPosition="right"
+					width={"auto"}
+					bg={white[800]}
+					px={24}
+					py={8}
+					textStyle={{
+						color: black[500],
+						fontSize: 16,
+						fontWeight: "600",
 					}}
-				>
-					<Heading
-						title="Looks like you just landed,follow some profile to explore feed"
-						style={{
-							fontSize: 16,
-							color: white[200],
-							fontWeight: "600",
-							alignSelf: "flex-start",
-							textAlign: "center",
-							marginBottom: 24,
-						}}
-					/>
-					<Button
-						title="Explore"
-						icon={<Icon name="arrowForward" size={16} color={black[500]} />}
-						iconPosition="right"
-						width={"auto"}
-						bg={white[800]}
-						px={24}
-						py={8}
-						textStyle={{
-							color: black[500],
-							fontSize: 16,
-							fontWeight: "600",
-						}}
-						onPress={() => {
-							navigation.navigate("Trending");
-						}}
-					/>
-				</View>
+					onPress={() => {
+						navigation.navigate("Trending");
+					}}
+				/>
 			</View>
-		</SafeAreaView>
+		</View>
 	);
 };
 

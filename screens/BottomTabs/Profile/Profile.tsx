@@ -35,7 +35,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 		variables: {
 			request: {
 				// profileId: profileId ? profileId : currentProfile?.id,
-				handle: currentProfile?.handle,
+				forHandle: currentProfile?.handle,
 			},
 		},
 		context: {
@@ -49,7 +49,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 		setRefreshing(true);
 		await refetch({
 			request: {
-				handle: currentProfile?.handle,
+				forHandle: currentProfile?.handle,
 			},
 		}).catch((err) => {
 			Logger.Error("Error in Refreshing error", err);
@@ -88,14 +88,14 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 						children={() => <AllVideos profileId={Profile?.profile?.id} />}
 					/>
 					{/* <Tab.Screen name="Playlist" children={() => <Playlist />} /> */}
-					<Tab.Screen
+					{/* <Tab.Screen
 						name="Mirror Videos"
 						children={() => <MirroredVideos channelId={Profile?.profile?.id} />}
 					/>
 					<Tab.Screen
 						name="Collected Videos"
-						children={() => <CollectedVideos ethAddress={Profile?.profile?.ownedBy} />}
-					/>
+						children={() => <CollectedVideos ethAddress={Profile?.profile?.ownedBy?.address} />}
+					/> */}
 				</Tabs>
 			</SafeAreaView>
 			<UnPinSheet sheetRef={sheetRef} />

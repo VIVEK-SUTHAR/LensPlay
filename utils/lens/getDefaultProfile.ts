@@ -6,7 +6,7 @@ import { Profile, Scalars } from "customTypes/generated";
 import Logger from "utils/logger";
 
 const getDefaultProfile = async (
-	ethAddress: Scalars["EthereumAddress"]
+	ethAddress: Scalars["EvmAddress"]
 ): Promise<Profile | undefined> => {
 	try {
 		Logger.Log("get default me call aagay ab lens me jayega ");
