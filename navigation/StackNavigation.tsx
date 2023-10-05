@@ -114,7 +114,7 @@ export default function StackNavigation() {
 				options={{
 					headerShown: false,
 					// presentation: "card",
-					animation: "default",
+					animation: "none",
 				}}
 			/>
 			<Stack.Screen
@@ -141,7 +141,7 @@ export default function StackNavigation() {
 				name="LinkingVideo"
 				component={LinkingVideo}
 				options={{
-					animation: "slide_from_right",
+					animation: "none",
 					headerShown: false,
 				}}
 			/>
@@ -189,7 +189,7 @@ export default function StackNavigation() {
 				name="Settings"
 				component={Settings}
 				options={{
-					animation: "slide_from_bottom",
+					animation: "none",
 					headerShown: true,
 					headerShadowVisible: false,
 					headerTintColor: theme.PRIMARY,

@@ -30,7 +30,7 @@ const MoreVideos = () => {
 					fontWeight: "600",
 					color: "white",
 					paddingHorizontal: 12,
-					marginBottom: 8
+					marginBottom: 8,
 				}}
 				numberOfLines={1}
 			/>
@@ -44,6 +44,11 @@ const MoreVideosList = React.memo(() => {
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
 	const { PRIMARY } = useThemeStore();
+
+	const renderItem = React.useCallback(({ item }: { item: Post }) => {
+		if (item.id === activePublication?.id) return null;
+		return <VideoCard publication={item} id={item.id} />;
+	}, []);
 
 	const QueryRequest: PublicationsQueryRequest = {
 		profileId: activePublication?.profile?.id,
@@ -114,11 +119,6 @@ const MoreVideosList = React.memo(() => {
 			},
 		}).catch((err) => {});
 	}, [pageInfo?.next]);
-
-	const renderItem = React.useCallback(({ item }: { item: Post }) => {
-		if (item.id === activePublication?.id) return null;
-		return <VideoCard publication={item} id={item.id} />;
-	}, []);
 
 	if (loading)
 		return (

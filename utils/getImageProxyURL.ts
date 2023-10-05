@@ -11,6 +11,9 @@ type ImageProxyOptions = {
 	options?: { height?: number; width?: number; blurAmount?: number };
 };
 function getImageProxyURL({ formattedLink, options }: ImageProxyOptions) {
+	if (DEV) {
+		return formattedLink;
+	}
 	const IMAGE_KIT_PREFIX = "https://ik.imagekit.io/4uh8nmwsx/";
 	const FORMATTED_LINK = formattedLink;
 	let imageOptions = {
@@ -20,7 +23,7 @@ function getImageProxyURL({ formattedLink, options }: ImageProxyOptions) {
 	};
 	const ImageOptionsString = `tr=w-${imageOptions.w},h-${imageOptions.h},bl-${imageOptions.bl},f-webp`;
 	const CDN_LINK = `${IMAGE_KIT_PREFIX}${FORMATTED_LINK}?${ImageOptionsString}`;
-	return DEV ? formattedLink : CDN_LINK;
+	return CDN_LINK;
 }
 
 export default getImageProxyURL;
