@@ -57,7 +57,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 				},
 			},
 		});
-		const userDefaultProfile = await Profiles?.data?.profiles?.items[0];
+		const userDefaultProfile = Profiles?.data?.profiles?.items[0];
 
 		Logger.Success("Yeh hai user default profile", userDefaultProfile);
 		if (userDefaultProfile) {
@@ -112,8 +112,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 						},
 					},
 				});
-				Logger.Log("This is validity", isValidAccesToken);
-
+				Logger.Log("This is validity", isValidAccesToken.data);
 				if (isValidAccesToken?.data?.verify) {
 					Logger.Success("Access token is valid,going to feed");
 					setAccessToken(accessToken);

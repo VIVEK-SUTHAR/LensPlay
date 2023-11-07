@@ -38,29 +38,29 @@ type UsetStatsProps = {
 const UserStats: React.FC<UsetStatsProps> = ({ profile }) => {
 	const stats: UserStatsCardProps[] = [
 		{
-			title: "TotalPosts",
-			count: profile?.stats?.totalPosts || 0,
+			title: "Posts",
+			count: profile?.stats.posts || 0,
 			icon: "image",
 			iconColor: "#F97B22",
 			iconSize: 24,
 		},
 		{
 			title: "TotalCollects",
-			count: profile?.stats?.totalCollects || 0,
+			count: profile?.stats?.countOpenActions || 0,
 			icon: "collect",
 			iconColor: "#D4ADFC",
 			iconSize: 28,
 		},
 		{
 			title: "TotalMirrors",
-			count: profile?.stats?.totalMirrors || 0,
+			count: profile?.stats?.mirrors || 0,
 			icon: "mirror",
 			iconColor: "#6bd841",
 			iconSize: 28,
 		},
 		{
 			title: "TotalPublications",
-			count: profile?.stats?.totalPublications || 0,
+			count: profile?.stats?.publications || 0,
 			icon: "images",
 			iconColor: "#FF55BB",
 			iconSize: 24,

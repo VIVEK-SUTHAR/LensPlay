@@ -35,7 +35,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 		variables: {
 			request: {
 				// profileId: profileId ? profileId : currentProfile?.id,
-				forHandle: currentProfile?.handle,
+				forHandle: currentProfile?.handle?.fullHandle,
 			},
 		},
 		context: {

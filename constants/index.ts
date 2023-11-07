@@ -58,7 +58,7 @@ export const LENSPLAY_TERMS =
 //MISC
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-export const SOURCES = ["lensplay", "lenstube", "orb", "buttrfly"];
+export const SOURCES = ["lensplay", "lenstube","lenstube-bytes","tape"];
 
 export const DEV = __DEV__;
 

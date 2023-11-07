@@ -8,7 +8,7 @@ import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
 import { AUTH, GUEST_MODE } from "constants/tracking";
-import { Scalars } from "customTypes/generated";
+import { Scalars, useProfilesLazyQuery } from "customTypes/generated";
 import React from "react";
 import { Pressable, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
@@ -26,18 +26,32 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 	const navigation = useNavigation();
 	const { handleGuest } = useGuestStore();
 	const { setCurrentProfile, setHasHandle } = useProfile();
+	const [getManagedProfiles] = useProfilesLazyQuery();
 
 	async function HandleDefaultProfile(adress: Scalars["EvmAddress"]) {
-		const userDefaultProfile = await getProfiles(adress);
-		Logger.Log("Boom Boom", userDefaultProfile);
-
-		if (userDefaultProfile) {
-			setHasHandle(true);
-			setCurrentProfile(userDefaultProfile);
-		} else {
-			setHasHandle(false);
-			setCurrentProfile(undefined);
-			navigation.navigate("LoginWithLens");
+		const userDefaultProfile=await getManagedProfiles({
+			variables:{
+				request:{
+					where:{
+						ownedBy:[address]
+					}
+				}
+			}
+		})
+		Logger.Log("Boom Boom",userDefaultProfile.data?.profiles);
+		try {
+			if (userDefaultProfile) {
+				setHasHandle(true);
+				setCurrentProfile(userDefaultProfile?.data?.profiles.items[0]);
+			} else {
+				setHasHandle(false);
+				setCurrentProfile(undefined);
+				navigation.navigate("LoginWithLens");
+			}
+			
+		} catch (error) {
+			console.log(error);
+			
 		}
 	}
 

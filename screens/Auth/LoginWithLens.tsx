@@ -11,7 +11,7 @@ import { LENSPLAY_SITE, LENS_CLAIM_SITE } from "constants/index";
 import StorageKeys from "constants/Storage";
 import { AUTH } from "constants/tracking";
 import { ToastType } from "customTypes/Store";
-import { useAuthMutation, useChallengeLazyQuery } from "customTypes/generated";
+import {  useAuthenticateMutation, useChallengeLazyQuery } from "customTypes/generated";
 import type { RootStackScreenProps } from "customTypes/navigation";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
@@ -43,10 +43,12 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 	const toast = useToast();
 
 	const { hasHandle, currentProfile } = useProfile();
+	console.log(currentProfile?.metadata?.picture);
+	
 	const { setAccessToken, setRefreshToken } = useAuthStore();
 
 	const [getChallenge] = useChallengeLazyQuery();
-	const [getTokens] = useAuthMutation();
+	const [getTokens] = useAuthenticateMutation();
 
 	const scaleAnimation = useRef(new Animated.Value(0)).current;
 	const fadeInAnimation = useRef(new Animated.Value(0)).current;
@@ -246,7 +248,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 									/>
 									{hasHandle ? (
 										<StyledText
-											title={formatHandle(currentProfile?.handle)}
+											title={formatHandle(currentProfile?.handle?.localName)}
 											style={{
 												color: white[200],
 												fontSize: 12,

@@ -10,13 +10,12 @@ import { black, white } from "constants/Colors";
 import { LENSPLAY_SITE } from "constants/index";
 import { PROFILE } from "constants/tracking";
 import {
-	ProfileQuery,
-	useCreateUnfollowTypedDataMutation,
-	type CreateUnfollowTypedDataMutationResult,
-	type Profile,
+	ProfileQuery, type Profile,
 	type Scalars,
 	useFollowMutation,
 	useUnfollowMutation,
+	HandleInfo,
+	ProfilePicture
 } from "customTypes/generated";
 import React, { useState } from "react";
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
@@ -32,7 +31,6 @@ import formatInteraction from "utils/formatInteraction";
 import getIPFSLink from "utils/getIPFSLink";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getRawurl from "utils/getRawUrl";
-import formatUnfollowTypedData from "utils/lens/formatUnfollowTypedData";
 import Logger from "utils/logger";
 import Cover from "./Cover";
 import PinnedPublication, { UnPinSheet } from "./PinnedPublication";
@@ -54,6 +52,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 	const theme = useThemeStore();
 	const navigation = useNavigation();
 	const profile = Profile?.profile;
+	
 
 	// const onRefresh = React.useCallback(async () => {
 	// 	setRefreshing(true);
@@ -69,7 +68,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 
 	const navigateToFullImageAvatar = React.useCallback(() => {
 		navigation.navigate("FullImage", {
-			url: getIPFSLink(getRawurl(profile?.metadata?.picture)),
+			url: getIPFSLink(getRawurl(profile?.metadata?.picture as ProfilePicture)),
 			source: "avatar",
 		});
 		void TrackAction(PROFILE.FULL_IMAGE);
@@ -90,7 +89,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 		 * Below is for  Profile Picture
 		 */
 		const avatarImage = getImageProxyURL({
-			formattedLink: getIPFSLink(getRawurl(profile?.metadata?.picture)),
+			formattedLink: getIPFSLink(getRawurl(profile?.metadata?.picture as ProfilePicture)),
 		});
 
 		getColors(avatarImage, {
@@ -140,7 +139,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 	// 			withButton={true}
 	// 		/>
 	// 	);
-	// if (profile) {
+	if (profile) {
+	const formattedHandle=formatHandle(profile?.handle as HandleInfo)
 	return (
 		<>
 			<ScrollView
@@ -191,7 +191,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 						<View>
 							<View style={{ flexDirection: "row", alignItems: "center" }}>
 								<Heading
-									title={profile?.metadata?.displayName || formatHandle(profile?.handle)}
+									title={profile?.metadata?.displayName || formattedHandle}
 									style={{
 										fontSize: 16,
 										marginTop: 8,
@@ -202,7 +202,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 								<VerifiedBadge profileId={profile?.id} />
 							</View>
 							<StyledText
-								title={formatHandle(profile?.handle)}
+								title={formattedHandle}
 								style={{
 									fontSize: 12,
 									fontWeight: "500",
@@ -296,7 +296,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 		</>
 	);
 };
-// };
+};
 
 type SubscribeButtonProps = {
 	isFollwebByMe: boolean;

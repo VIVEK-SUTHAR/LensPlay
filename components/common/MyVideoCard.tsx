@@ -4,7 +4,7 @@ import Icon, { IconName } from "components/Icon";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black } from "constants/Colors";
-import { Mirror, Post, Scalars } from "customTypes/generated";
+import { Mirror, Post, Scalars, VideoMetadataV3 } from "customTypes/generated";
 import { Image } from "expo-image";
 import React, { memo } from "react";
 import { Dimensions, Pressable, TouchableOpacity, View } from "react-native";
@@ -29,7 +29,7 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 	const memoizedPlaceHolder = React.useMemo(
 		()=>getPlaceHolderImage(),[]
 	)
-
+	const metadata=publication?.metadata as VideoMetadataV3;
 	return (
 		<Pressable
 			android_ripple={{
@@ -53,7 +53,7 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 					cachePolicy="memory-disk"
 					source={{
 						uri: getImageProxyURL({
-							formattedLink: getIPFSLink(getRawurl(publication?.metadata?.cover)),
+							formattedLink: getIPFSLink(getRawurl(metadata.asset.cover)),
 						}),
 					}}
 					style={{
@@ -78,7 +78,7 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 					}}
 				>
 					<Heading
-						title={publication?.metadata?.name}
+						title={metadata?.title ?? ""}
 						style={{ color: "white", fontSize: 16, fontWeight: "500" }}
 						numberOfLines={3}
 					/>
@@ -88,7 +88,7 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 						}}
 					>
 						<StyledText
-							title={publication?.metadata?.content || publication?.metadata?.description}
+							title={metadata.content ?? ""}
 							numberOfLines={1}
 							style={{ color: "gray", fontSize: 12 }}
 						/>
@@ -133,5 +133,5 @@ export type SheetProps = {
 export type actionListType = {
 	name: string;
 	icon: IconName;
-	onPress: (pubId: Scalars["InternalPublicationId"]) => void;
+	onPress: (pubId: Scalars["PublicationId"]) => void;
 };

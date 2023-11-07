@@ -42,12 +42,14 @@ function _SocialLinks({ profile }: { profile: Profile }) {
 		website: "",
 	});
 	const getLinks = React.useCallback(() => {
-		const twitter = profile?.attributes?.find(
-			(item) => item.key || item.traitType === "twitter"
-		)?.value;
-		const youtube = profile?.attributes?.find((item) => item.key === "youtube")?.value;
-		const insta = profile?.attributes?.find((item) => item.key === "instagram")?.value;
-		const website = profile?.attributes?.find((item) => item.key === "website")?.value;
+		console.log(profile.metadata);
+		
+		const attributes = profile.metadata?.attributes;
+		if (!attributes) return;
+		const twitter = attributes.find((item) => item.key==="twitter")?.value;
+		const youtube = attributes.find((item) => item.key === "youtube")?.value;
+		const insta = attributes.find((item) => item.key === "instagram")?.value;
+		const website = attributes.find((item) => item.key === "website")?.value;
 		setLinks({
 			instagram: insta,
 			website: website,

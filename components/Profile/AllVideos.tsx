@@ -13,7 +13,6 @@ import { black } from "constants/Colors";
 import { LENSPLAY_SITE, SOURCES } from "constants/index";
 import { PUBLICATION } from "constants/tracking";
 import {
-	Attribute,
 	LimitType,
 	MarketplaceMetadataAttributeDisplayType,
 	Mirror,
@@ -57,7 +56,6 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 	const QueryRequest: PublicationsRequest = {
 		limit: LimitType.Ten,
 		where: {
-			actedBy: currentProfile?.id,
 			from: [profileId],
 			metadata: {
 				mainContentFocus: [PublicationMetadataMainFocusType.Video],
@@ -77,7 +75,7 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 			},
 		},
 	});
-	const AllVideos = data?.publications?.items;
+	const AllVideos = data?.publications?.items as Post[];
 
 	const pageInfo = data?.publications?.pageInfo;
 

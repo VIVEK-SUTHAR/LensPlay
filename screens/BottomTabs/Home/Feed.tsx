@@ -18,9 +18,8 @@ import {
 	// type FeedItemRoot,
 	// useProfileBookMarksLazyQuery,
 	PublicationMetadataMainFocusType,
-	PublicationContentWarningType,
-	PrimaryPublication,
 	usePublicationBookmarksLazyQuery,
+	FeedRequest,
 } from "customTypes/generated";
 import type { RootTabScreenProps } from "customTypes/navigation";
 import * as ScreenOrientation from "expo-screen-orientation";
@@ -35,7 +34,6 @@ import {
 	ScrollView,
 	StyleSheet,
 	View,
-	useWindowDimensions,
 } from "react-native";
 import { getColors } from "react-native-image-colors";
 import { useGuestStore } from "store/GuestStore";
@@ -43,8 +41,6 @@ import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import useWatchLater from "store/WatchLaterStore";
 import TrackAction from "utils/Track";
 import getAndSaveNotificationToken from "utils/getAndSaveNotificationToken";
-import getIPFSLink from "utils/getIPFSLink";
-import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
@@ -62,16 +58,15 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 
 	ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
 
-	const QueryRequest = {
+	const QueryRequest: FeedRequest = {
 		where: {
-			for: currentProfile?.id,
 			feedEventItemTypes: [FeedEventItemType.Post],
+			for: currentProfile?.id,
 			metadata: {
-				mainContentFocus: [PublicationMetadataMainFocusType.Video],
 				publishedOn: SOURCES,
+				mainContentFocus: [PublicationMetadataMainFocusType.Video],
 			},
 		},
-		// limit: 10,
 	};
 
 	const {
@@ -84,7 +79,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 		variables: {
 			request: QueryRequest,
 		},
-		fetchPolicy: "network-only",
 		context: {
 			headers: {
 				"x-access-token": `Bearer ${accessToken}`,
@@ -114,6 +108,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 
 	const onEndCallBack = React.useCallback(() => {
 		if (!pageInfo?.next) {
+			Logger.Log("Making Paginato Call");
 			return;
 		}
 		fetchMore({
@@ -127,8 +122,10 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	}, [pageInfo?.next]);
 
 	const renderItem = React.useCallback(({ item }: { item: FeedItem }) => {
+		if (item.root.metadata.__typename !== "VideoMetadataV3") return;
+		const publication = item.root;
 		if (!item.root.isHidden) {
-			return <VideoCard publication={item?.root as PrimaryPublication} id={item?.root?.id} />;
+			return <VideoCard publication={publication} id={item?.root?.id} />;
 		}
 		return null;
 	}, []);
@@ -289,7 +286,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 					refreshControl={_RefreshControl}
 					ListEmptyComponent={Empty}
 					ListFooterComponent={<MoreLoader />}
-					onEndReachedThreshold={0.7}
+					onEndReachedThreshold={0.9}
 					onEndReached={onEndCallBack}
 					renderItem={renderItem}
 					showsVerticalScrollIndicator={false}
