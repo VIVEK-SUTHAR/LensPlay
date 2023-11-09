@@ -101,6 +101,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 				} else {
 					Logger.Error("Invalid Tokens,Gnerating new tokens");
 					try {
+						Logger.Log("In Try Block")
 						const newData = await getAccessFromRefresh({
 							variables: {
 								request: {
@@ -108,6 +109,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 								},
 							},
 						});
+						console.log(newData);
 						Logger.Error("Generated new tokens");
 						setAccessToken(newData?.data?.refresh?.accessToken);
 						setRefreshToken(newData?.data?.refresh?.refreshToken);
@@ -118,6 +120,8 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 						Logger.Error("Goint to Feed");
 						navigation.replace("Root");
 					} catch (error) {
+						console.log(error);
+						
 						if (error instanceof Error) {
 							if (error?.message?.includes("InvalidJwtToken")) {
 								Logger.Error("Error", error);

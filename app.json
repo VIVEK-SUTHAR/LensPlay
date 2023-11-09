@@ -1,13 +1,8 @@
 {
   "expo": {
     "name": "LensPlay",
-    "slug": "lensplay",
+    "slug": "test",
     "version": "1.0.3",
-    "orientation": "portrait",
-    "backgroundColor": "#000000",
-    "icon": "./assets/images/icon.png",
-    "scheme": "lensplay",
-    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/adaptive-icon.png",
       "resizeMode": "contain",
@@ -15,7 +10,7 @@
     },
     "updates": {
       "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f"
+      "url": "https://u.expo.dev/dc292891-6e08-49db-8e82-247dd43a39f7"
     },
     "runtimeVersion": {
       "policy": "sdkVersion"
@@ -91,16 +86,10 @@
     },
     "extra": {
       "eas": {
-        "projectId": "2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f"
+        "projectId": "dc292891-6e08-49db-8e82-247dd43a39f7"
       }
     },
     "plugins": [
-      [
-        "expo-community-flipper"
-      ],
-      [
-        "react-native-flipper-performance-plugin"
-      ],
       [
         "expo-image-picker",
         {
@@ -127,8 +116,6 @@
           }
         }
       ],
-      "expo-community-flipper",
-      "react-native-flipper-performance-plugin",
       "@react-native-firebase/app",
       "@react-native-firebase/perf",
       "@react-native-firebase/crashlytics"

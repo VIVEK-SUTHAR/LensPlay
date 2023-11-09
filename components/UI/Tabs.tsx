@@ -1,6 +1,7 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { black } from "constants/Colors";
 import React, { ReactNode } from "react";
+import { ActivityIndicator } from "react-native";
 
 export const Tab = createMaterialTopTabNavigator();
 
@@ -33,6 +34,8 @@ export default function Tabs({ children }: { children: ReactNode }) {
         tabBarIndicatorStyle: {
           display: "none",
         },
+        lazy:true,
+        lazyPlaceholder:()=><ActivityIndicator size={"small"} color={"hotpink"}/>
       }}
     >
       {children}

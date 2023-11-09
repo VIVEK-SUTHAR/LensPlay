@@ -98,7 +98,7 @@ const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publ
 	);
 };
 
-export default React.memo(VideoCard);
+export default VideoCard;
 
 const styles = StyleSheet.create({
 	videoCardContainer: {

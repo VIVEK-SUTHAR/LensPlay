@@ -1,3 +1,4 @@
+import "expo-dev-client";
 import { ApolloProvider } from "@apollo/client";
 import notifee, { AndroidStyle, EventType } from "@notifee/react-native";
 import messaging from "@react-native-firebase/messaging";
@@ -5,7 +6,6 @@ import { WalletConnectModal } from "@walletconnect/modal-react-native";
 import { client } from "apollo/client";
 import NetworkStatus from "components/NetworkStatus";
 import Toast from "components/Toast";
-import "expo-dev-client";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
