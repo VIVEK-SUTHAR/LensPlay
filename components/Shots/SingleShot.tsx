@@ -6,10 +6,9 @@ import CommentSheet from "components/Comments/CommentSheet";
 import Icon from "components/Icon";
 import ShotData, { DiscriptionSheet } from "components/Shots/ShotData";
 import ShotReaction from "components/Shots/ShotReaction";
-import VideoPlayer from "components/VideoPlayer";
 import Player from "components/VideoPlayer/Player";
 import { black } from "constants/Colors";
-import { Mirror, Post } from "customTypes/generated";
+import { Mirror, Post, PrimaryPublication, VideoMetadataV3 } from "customTypes/generated";
 import { ResizeMode, Video } from "expo-av";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Pressable, useWindowDimensions, View } from "react-native";
@@ -20,13 +19,14 @@ import createLivePeerAsset from "utils/video/createLivePeerAsset";
 import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 
 interface SingleByteProps {
-	item: Post | Mirror;
+	item: PrimaryPublication;
 	isActive: boolean;
 }
 
 function SingleShot({ item, isActive }: SingleByteProps) {
+	const metadata=item.metadata as VideoMetadataV3;
 	const [mute, setMute] = useState(false);
-	const [videoURL, setVideoURL] = useState(getIPFSLink(item?.metadata?.media[0]?.original?.url));
+	const [videoURL, setVideoURL] = useState(getIPFSLink(metadata?.asset?.video?.optimized?.uri));
 
 	const ref = React.useRef<Video>(null);
 	const commentSheetRef = React.useRef<BottomSheetMethods>(null);
@@ -57,19 +57,19 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 	}, [isFocused, isActive]);
 
 	useEffect(() => {
-		if (item?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")) {
-			Logger.Success("Got opti", item?.metadata?.media[0]?.optimized?.url);
-			setVideoURL(item?.metadata?.media[0]?.optimized?.url);
-			return;
-		} else {
-			setVideoURL(getIPFSLink(item?.metadata?.media[0].original.url));
-		}
-		checkIfLivePeerAsset(videoURL).then((res) => {
-			if (res) {
-			} else {
-				createLivePeerAsset(videoURL);
-			}
-		});
+		// if (item?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")) {
+		// 	Logger.Success("Got opti", item?.metadata?.media[0]?.optimized?.url);
+		// 	setVideoURL(item?.metadata?.media[0]?.optimized?.url);
+		// 	return;
+		// } else {
+		// 	setVideoURL(getIPFSLink(item?.metadata?.media[0].original.url));
+		// }
+		// checkIfLivePeerAsset(videoURL).then((res) => {
+		// 	if (res) {
+		// 	} else {
+		// 		createLivePeerAsset(videoURL);
+		// 	}
+		// });
 	}, [isActive]);
 
 	return (
@@ -105,7 +105,7 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 							resizeMode: ResizeMode.COVER,
 							isMuted: mute,
 							posterSource: {
-								uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
+								uri: getIPFSLink(getRawurl(metadata?.asset?.cover)),
 							},
 							isLooping: true,
 							posterStyle: {
@@ -133,9 +133,9 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 				</Pressable>
 			</View>
 			<ShotData item={item} descriptionRef={descriptionRef} />
-			<ShotReaction item={item} commentRef={commentSheetRef} />
-			<CommentSheet commentSheetRef={commentSheetRef} pubId={item?.id} />
-			<Sheet
+			{/* <ShotReaction item={item} commentRef={commentSheetRef} /> */}
+			{/* <CommentSheet commentSheetRef={commentSheetRef} pubId={item?.id} /> */}
+			{/* <Sheet
 				ref={descriptionRef}
 				index={-1}
 				enablePanDownToClose={true}
@@ -145,7 +145,7 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 				snapPoints={[440, 550]}
 			>
 				<DiscriptionSheet item={item} descriptionRef={descriptionRef} />
-			</Sheet>
+			</Sheet> */}
 		</>
 	);
 }
