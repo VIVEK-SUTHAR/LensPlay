@@ -9,17 +9,13 @@ import ErrorMessage from "components/common/ErrorMesasge";
 import Skeleton from "components/common/Skeleton";
 import { black, white } from "constants/Colors";
 import { SOURCES } from "constants/index";
-import { HOME } from "constants/tracking";
 import {
 	FeedEventItemType,
-	// PublicationMainFocus,
 	useFeedQuery,
 	type FeedItem,
-	// type FeedItemRoot,
-	// useProfileBookMarksLazyQuery,
 	PublicationMetadataMainFocusType,
 	usePublicationBookmarksLazyQuery,
-	FeedRequest,
+	type FeedRequest,
 } from "customTypes/generated";
 import type { RootTabScreenProps } from "customTypes/navigation";
 import * as ScreenOrientation from "expo-screen-orientation";
@@ -39,7 +35,6 @@ import { getColors } from "react-native-image-colors";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import useWatchLater from "store/WatchLaterStore";
-import TrackAction from "utils/Track";
 import getAndSaveNotificationToken from "utils/getAndSaveNotificationToken";
 import Logger from "utils/logger";
 
@@ -122,18 +117,12 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	}, [pageInfo?.next]);
 
 	const renderItem = React.useCallback(({ item }: { item: FeedItem }) => {
-		if (item.root.metadata.__typename !== "VideoMetadataV3") return;
-		const publication = item.root;
+		if (item.root.metadata.__typename !== "VideoMetadataV3") return null;
 		if (!item.root.isHidden) {
-			return <VideoCard publication={publication} id={item?.root?.id} />;
+			return <VideoCard publication={item.root} id={item?.root?.id} />;
 		}
 		return null;
 	}, []);
-
-	if (Feeddata) {
-		TrackAction(HOME.SWITCH_HOME_TAB);
-	}
-
 	const _MoreLoader = () => {
 		return (
 			<>
@@ -234,9 +223,9 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	});
 
 	React.useEffect(() => {
-		getBookMarks().then((res) => {
-			Logger.Success("", res?.data?.publicationBookmarks?.items[0]);
-		});
+		// getBookMarks().then((res) => {
+		// 	Logger.Success("", res?.data?.publicationBookmarks?.items[0]);
+		// });
 		// getBookMarks()
 		// 	.then((res) => {
 		// 		if (res) {
@@ -269,29 +258,34 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 			</SafeAreaView>
 		);
 	}
+	if (loading) {
+		return (
+			<SafeAreaView style={styles.container}>
+				<Skeleton number={10}>
+					<VideoCardSkeleton />
+				</Skeleton>
+			</SafeAreaView>
+		);
+	}
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor={"black"} />
-			{loading ? (
-				<Skeleton children={<VideoCardSkeleton />} number={10} />
-			) : (
-				<FlashList
-					data={Feeddata?.feed.items as FeedItem[]}
-					keyExtractor={keyExtractor}
-					estimatedItemSize={280}
-					removeClippedSubviews={true}
-					onLoad={({ elapsedTimeInMs }) => {
-						Logger.Warn(`Feed List Loading time ${elapsedTimeInMs} ms`);
-					}}
-					refreshControl={_RefreshControl}
-					ListEmptyComponent={Empty}
-					ListFooterComponent={<MoreLoader />}
-					onEndReachedThreshold={0.9}
-					onEndReached={onEndCallBack}
-					renderItem={renderItem}
-					showsVerticalScrollIndicator={false}
-				/>
-			)}
+			<FlashList
+				data={Feeddata?.feed.items as FeedItem[]}
+				keyExtractor={keyExtractor}
+				estimatedItemSize={280}
+				removeClippedSubviews={true}
+				onLoad={({ elapsedTimeInMs }) => {
+					Logger.Warn(`Feed List Loading time ${elapsedTimeInMs} ms`);
+				}}
+				refreshControl={_RefreshControl}
+				ListEmptyComponent={Empty}
+				ListFooterComponent={<MoreLoader />}
+				onEndReachedThreshold={0.9}
+				onEndReached={onEndCallBack}
+				renderItem={renderItem}
+				showsVerticalScrollIndicator={false}
+			/>
 		</SafeAreaView>
 	);
 };
