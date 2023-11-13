@@ -3,10 +3,14 @@ import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import StyledText from "components/UI/StyledText";
 import { dark_primary } from "constants/Colors";
-import type { NewCommentNotification } from "customTypes/generated";
+import type {
+	HandleInfo,
+	CommentNotification as NewCommentNotification,
+} from "customTypes/generated";
 import React, { memo } from "react";
 import { Pressable, View } from "react-native";
 import formatAddress from "utils/formatAddress";
+import formatHandle from "utils/formatHandle";
 import getDifference from "utils/getDifference";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
@@ -20,8 +24,8 @@ const CommentNotification: React.FC<CommentNotificationProps> = ({ notification 
 
 	const goToChannel = () => {
 		navigation.navigate("Channel", {
-			handle: notification?.profile?.handle,
-			name: notification?.profile?.name,
+			handle: formatHandle(notification?.comment?.by?.handle as HandleInfo),
+			name: notification?.comment?.by?.metadata?.displayName ?? "",
 		});
 	};
 
@@ -58,21 +62,18 @@ const CommentNotification: React.FC<CommentNotificationProps> = ({ notification 
 					}}
 				>
 					<Avatar
-						src={getIPFSLink(getRawurl(notification?.profile?.picture))}
+						src={getIPFSLink(getRawurl(notification?.comment?.by?.metadata?.picture))}
 						height={35}
 						width={35}
 					/>
 					<StyledText
-						title={getDifference(notification?.createdAt)}
+						title={getDifference(notification?.comment?.createdAt)}
 						style={{ fontSize: 12, color: "gray" }}
 					/>
 				</Pressable>
 				<View style={{ flexDirection: "row", alignItems: "center" }}>
 					<StyledText
-						title={
-							notification?.profile?.handle?.split(".")[0] ||
-							formatAddress(notification?.profile?.ownedBy)
-						}
+						title={formatHandle(notification?.comment?.by?.handle as HandleInfo)}
 						style={{ color: "white", fontWeight: "500" }}
 					/>
 					<StyledText
@@ -86,6 +87,11 @@ const CommentNotification: React.FC<CommentNotificationProps> = ({ notification 
 						style={{ color: "gray" }}
 					/>
 				</View>
+					<StyledText
+						title={notification?.comment?.metadata?.content ?? ""}
+						style={{ color: "gray" }}
+						numberOfLines={2}
+					/>
 			</View>
 		</Pressable>
 	);

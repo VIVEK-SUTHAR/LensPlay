@@ -3,11 +3,15 @@ import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import StyledText from "components/UI/StyledText";
 import { dark_primary } from "constants/Colors";
-import type { NewMentionNotification } from "customTypes/generated";
+import type {
+	HandleInfo,
+	MentionNotification as NewMentionNotification,
+} from "customTypes/generated";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
 import extractURLs from "utils/extractURL";
 import formatAddress from "utils/formatAddress";
+import formatHandle from "utils/formatHandle";
 import getDifference from "utils/getDifference";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
@@ -21,8 +25,8 @@ const MentionNotification = ({ notification }: MentionNotificationProps) => {
 
 	const goToChannel = () => {
 		navigation.navigate("Channel", {
-			handle: notification?.mentionPublication?.profile?.handle,
-			name: notification?.mentionPublication?.profile?.name,
+			handle: formatHandle(notification?.publication?.by?.handle as HandleInfo),
+			name: notification?.publication?.by?.metadata?.displayName ?? "",
 		});
 	};
 
@@ -60,29 +64,20 @@ const MentionNotification = ({ notification }: MentionNotificationProps) => {
 					}}
 				>
 					<Avatar
-						src={getIPFSLink(getRawurl(notification?.mentionPublication?.profile?.picture))}
+						src={getIPFSLink(getRawurl(notification?.publication?.by?.metadata?.picture))}
 						height={35}
 						width={35}
-					/>
-					<StyledText
-						title={getDifference(notification?.createdAt)}
-						style={{ fontSize: 12, color: "gray" }}
 					/>
 				</Pressable>
 				<Text style={{ color: "gray", fontSize: 14 }}>
 					<Text style={{ color: "white", fontWeight: "600" }}>
-						{notification?.mentionPublication?.profile?.handle?.split(".")[0] ||
-							formatAddress(notification?.mentionPublication?.profile?.ownedBy)}{" "}
+						{formatHandle(notification?.publication?.by?.handle as HandleInfo)}
 					</Text>
-					mentioned you in a{" "}
-					{notification?.mentionPublication?.__typename === "Post" ? "post" : "comment"}
+					mentioned you in a {notification?.publication?.__typename === "Post" ? "post" : "comment"}
 				</Text>
 				<View>
 					<Text numberOfLines={2} style={{ color: "grey", fontSize: 12 }}>
-						{extractURLs(
-							notification?.mentionPublication?.metadata?.description ||
-								notification?.mentionPublication?.metadata?.content
-						)}
+						{extractURLs(notification?.publication?.metadata?.content)}
 					</Text>
 				</View>
 			</View>

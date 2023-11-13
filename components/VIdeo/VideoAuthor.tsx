@@ -1,17 +1,14 @@
 import { useNavigation } from "@react-navigation/native";
 import { SubscribeButton } from "components/Profile/ProfileHeader";
 import Avatar from "components/UI/Avatar";
-import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import { LENSPLAY_SITE } from "constants/index";
-import { useProxyActionMutation } from "customTypes/generated";
-import React, { useCallback, useState } from "react";
+import useSubscribe from "hooks/useSuscribe";
+import React, { useState } from "react";
 import { Dimensions, TouchableOpacity } from "react-native";
 import { StyleSheet, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useActivePublication, useAuthStore, useToast } from "store/Store";
-import Logger from "utils/logger";
 
 type VideoCreatorProps = {
 	avatarLink: string;
@@ -39,12 +36,8 @@ const VideoCreator: React.FC<VideoCreatorProps> = React.memo((props) => {
 	const { accessToken } = useAuthStore();
 	const { isGuest } = useGuestStore();
 	const toast = useToast();
+	const {subscribeViaLensManager}=useSubscribe();
 
-	const [freeFollow] = useProxyActionMutation({
-		onError: (error) => {
-			Logger.Error("Failed to follow via videoauthor", error);
-		},
-	});
 	const navigation = useNavigation();
 	const { activePublication } = useActivePublication();
 	const goToChannel = React.useCallback(() => {

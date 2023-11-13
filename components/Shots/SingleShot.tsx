@@ -135,7 +135,7 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 			<ShotData item={item} descriptionRef={descriptionRef} />
 			{/* <ShotReaction item={item} commentRef={commentSheetRef} /> */}
 			{/* <CommentSheet commentSheetRef={commentSheetRef} pubId={item?.id} /> */}
-			{/* <Sheet
+			<Sheet
 				ref={descriptionRef}
 				index={-1}
 				enablePanDownToClose={true}
@@ -145,7 +145,7 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 				snapPoints={[440, 550]}
 			>
 				<DiscriptionSheet item={item} descriptionRef={descriptionRef} />
-			</Sheet> */}
+			</Sheet>
 		</>
 	);
 }

@@ -1,13 +1,11 @@
-import { useNavigation } from "@react-navigation/native";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import StyledText from "components/UI/StyledText";
 import { dark_primary } from "constants/Colors";
-import { NewCollectNotification } from "customTypes/generated";
+import { HandleInfo, ActedNotification as NewCollectNotification } from "customTypes/generated";
 import React from "react";
 import { Pressable, View } from "react-native";
-import formatAddress from "utils/formatAddress";
-import getDifference from "utils/getDifference";
+import formatHandle from "utils/formatHandle";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 
@@ -16,8 +14,6 @@ type CollectNotificationProps = {
 };
 
 const CollectNotification: React.FC<CollectNotificationProps> = ({ notification }) => {
-	const navigation = useNavigation();
-
 	return (
 		<Pressable
 			android_ripple={{
@@ -43,12 +39,6 @@ const CollectNotification: React.FC<CollectNotificationProps> = ({ notification 
 			</View>
 			<View style={{ flex: 1 }}>
 				<Pressable
-					onPress={() => {
-						navigation.navigate("Channel", {
-							handle: notification?.wallet?.defaultProfile?.handle,
-							name: notification?.wallet?.defaultProfile?.name,
-						});
-					}}
 					style={{
 						flexDirection: "row",
 						justifyContent: "space-between",
@@ -56,30 +46,20 @@ const CollectNotification: React.FC<CollectNotificationProps> = ({ notification 
 					}}
 				>
 					<Avatar
-						src={getIPFSLink(getRawurl(notification?.wallet?.defaultProfile?.picture))}
+						src={getIPFSLink(getRawurl(notification?.actions[0]?.by?.metadata?.picture))}
 						height={35}
 						width={35}
-					/>
-					<StyledText
-						title={getDifference(notification?.createdAt)}
-						style={{ fontSize: 12, color: "gray" }}
 					/>
 				</Pressable>
 				<View style={{ flexDirection: "row", alignItems: "center" }}>
 					<StyledText
-						title={
-							notification?.wallet?.defaultProfile?.handle?.split(".")[0] ||
-							formatAddress(notification?.wallet?.address)
-						}
+						title={formatHandle(notification?.actions[0].by?.handle as HandleInfo)}
 						style={{ color: "white", fontWeight: "500" }}
 					/>
 					<StyledText title={" collected your post"} style={{ color: "gray" }} />
 				</View>
 				<StyledText
-					title={
-						notification?.collectedPublication?.metadata?.content ||
-						notification?.collectedPublication?.metadata?.description
-					}
+					title={notification?.publication?.metadata?.content}
 					numberOfLines={2}
 					style={{ fontSize: 10, color: "gray" }}
 				/>

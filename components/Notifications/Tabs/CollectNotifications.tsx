@@ -11,10 +11,10 @@ import { NOTIFICATION } from "../../../constants/tracking";
 import { useGuestStore } from "../../../store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
 import {
-	NewCollectNotification,
+	ActedNotification as NewCollectNotification,
 	Notification,
 	NotificationRequest,
-	NotificationTypes,
+	NotificationType,
 	useNotificationsQuery,
 } from "../../../types/generated";
 import TrackAction from "../../../utils/Track";
@@ -31,15 +31,13 @@ function CollectNotifications() {
 	const { accessToken } = useAuthStore();
 	const { isGuest } = useGuestStore();
 
-	const LensNotificationTypes = [
-		NotificationTypes.CollectedComment,
-		NotificationTypes.CollectedPost,
-	];
+	const LensNotificationTypes = [NotificationType.Acted];
 
 	const QueryRequest: NotificationRequest = {
-		profileId: currentProfile?.id,
-		limit: 30,
-		notificationTypes: LensNotificationTypes,
+		where: {
+			highSignalFilter: false,
+			notificationTypes: LensNotificationTypes,
+		},
 	};
 
 	const { data, error, loading, refetch, fetchMore } = useNotificationsQuery({
@@ -56,7 +54,7 @@ function CollectNotifications() {
 		},
 	});
 
-	const notifications = data?.notifications?.items as Notification[];
+	const notifications = data?.notifications?.items as NewCollectNotification[];
 	const ITEM_HEIGHT = 35;
 
 	const getItemLayout = (_: any, index: number) => {
@@ -120,8 +118,7 @@ function CollectNotifications() {
 		/>
 	);
 
-	const keyExtractor = (item: { notificationId: any }, index: any) =>
-		`${item?.notificationId}-${index}`;
+	const keyExtractor = (item: NewCollectNotification) => `${item.id}`;
 
 	TrackAction(NOTIFICATION.NOTIFICATIONS);
 

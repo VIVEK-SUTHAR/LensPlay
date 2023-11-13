@@ -1,5 +1,5 @@
 import { Profile } from "customTypes/generated";
-import create from "zustand/react";
+import {create} from "zustand";
 
 interface IProfileStore {
     currentProfile: undefined | Profile
