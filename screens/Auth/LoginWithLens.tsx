@@ -7,19 +7,17 @@ import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
-import { LENSPLAY_SITE, LENS_CLAIM_SITE } from "constants/index";
+import { LENS_CLAIM_SITE } from "constants/index";
 import StorageKeys from "constants/Storage";
 import { AUTH } from "constants/tracking";
 import { ToastType } from "customTypes/Store";
-import {  useAuthenticateMutation, useChallengeLazyQuery } from "customTypes/generated";
+import { HandleInfo, useAuthenticateMutation, useChallengeLazyQuery } from "customTypes/generated";
 import type { RootStackScreenProps } from "customTypes/navigation";
-import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
 import {
 	Animated,
 	Dimensions,
-	Image,
 	Linking,
 	SafeAreaView,
 	StyleSheet,
@@ -43,8 +41,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 	const toast = useToast();
 
 	const { hasHandle, currentProfile } = useProfile();
-	console.log(currentProfile?.metadata?.picture);
-	
+
 	const { setAccessToken, setRefreshToken } = useAuthStore();
 
 	const [getChallenge] = useChallengeLazyQuery();
@@ -53,10 +50,6 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 	const scaleAnimation = useRef(new Animated.Value(0)).current;
 	const fadeInAnimation = useRef(new Animated.Value(0)).current;
 
-	const shortenAddress = (address: string): string => {
-		if (!address) return "0x...000";
-		return "0x.." + address.slice(address.length - 4, address.length);
-	};
 	const { address, provider, isConnected } = useWalletConnectModal();
 
 	const handleLoginWithLens = async () => {
@@ -248,7 +241,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 									/>
 									{hasHandle ? (
 										<StyledText
-											title={formatHandle(currentProfile?.handle?.localName)}
+											title={formatHandle(currentProfile?.handle as HandleInfo)}
 											style={{
 												color: white[200],
 												fontSize: 12,

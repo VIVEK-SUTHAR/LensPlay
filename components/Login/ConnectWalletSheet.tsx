@@ -29,29 +29,27 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 	const [getManagedProfiles] = useProfilesLazyQuery();
 
 	async function HandleDefaultProfile(adress: Scalars["EvmAddress"]) {
-		const userDefaultProfile=await getManagedProfiles({
-			variables:{
-				request:{
-					where:{
-						ownedBy:[address]
-					}
-				}
-			}
-		})
-		Logger.Log("Boom Boom",userDefaultProfile.data?.profiles);
+		const userDefaultProfile = await getManagedProfiles({
+			variables: {
+				request: {
+					where: {
+						ownedBy: [address],
+					},
+				},
+			},
+		});
+		Logger.Log("Boom Boom", userDefaultProfile.data?.profiles);
 		try {
 			if (userDefaultProfile) {
 				setHasHandle(true);
-				setCurrentProfile(userDefaultProfile?.data?.profiles.items[0]);
+				return userDefaultProfile.data?.profiles;
 			} else {
 				setHasHandle(false);
 				setCurrentProfile(undefined);
 				navigation.navigate("LoginWithLens");
 			}
-			
 		} catch (error) {
 			console.log(error);
-			
 		}
 	}
 
@@ -69,13 +67,16 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 			void TrackAction(AUTH.WALLET_LOGIN);
 			handleGuest(false);
 
-			await HandleDefaultProfile(address);
+			const profiles = await HandleDefaultProfile(address);
 			const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
 			if (isDeskTopLogin) {
 				await AsyncStorage.removeItem("@viaDeskTop");
 			}
 			setIsloading(false);
-			navigation.reset({ index: 0, routes: [{ name: "LoginWithLens" }] });
+			navigation.reset({
+				index: 0,
+				routes: [{ name: "Profiles", params: { profiles: profiles?.items } }],
+			});
 		}
 	};
 

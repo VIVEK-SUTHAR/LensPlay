@@ -30,6 +30,7 @@ import SelectCollectModule from "screens/Header/Upload/Video/SelectCollectModule
 import UploadVideo from "screens/Header/Upload/Video/UploadVideo";
 import { useThemeStore } from "store/Store";
 import BottomTabNavigator from "./BottomTabNavigation";
+import Profiles from "screens/Auth/Profiles";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
@@ -63,6 +64,14 @@ export default function StackNavigation() {
 				<Stack.Screen
 					name="LoginWithLens"
 					component={LoginWithLens}
+					options={{
+						animation: "default",
+						headerShown: false,
+					}}
+				/>
+				<Stack.Screen
+					name="Profiles"
+					component={Profiles}
 					options={{
 						animation: "default",
 						headerShown: false,
