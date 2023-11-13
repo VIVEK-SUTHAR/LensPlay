@@ -4,7 +4,7 @@ import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 // import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
-import ProfileQR, { ProfileSheet } from "components/settings/profileQR";
+import ProfileQR from "components/settings/profileQR";
 import Socials from "components/settings/Socials";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
@@ -18,7 +18,6 @@ import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import React, { FC, useRef } from "react";
 import {
-	LayoutAnimation,
 	Linking,
 	Pressable,
 	SafeAreaView,
@@ -41,21 +40,11 @@ type SettingsItemProps = {
 
 const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 	const { isConnected, address, provider } = useWalletConnectModal();
-	const [isReadyToRender, setIsReadyToRender] = React.useState(false);
-
-	React.useEffect(() => {
-		const delay = setTimeout(() => {
-			LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-			setIsReadyToRender(true);
-		}, 0);
-		return () => clearTimeout(delay);
-	}, []);
 
 	const { width } = useWindowDimensions();
 	// const Wallet = useWalletConnect();
 	const { isGuest } = useGuestStore();
 	const logoutref = useRef<BottomSheetMethods>(null);
-	const QRCodeRef = useRef<BottomSheetMethods>(null);
 	const { currentProfile, setCurrentProfile } = useProfile();
 
 	const SettingItemsList: SettingsItemProps[] = [
@@ -94,12 +83,12 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 		});
 	}, []);
 
-	if (!isReadyToRender) return <SafeAreaView style={styles.container} />;
+	// if (!isReadyToRender) return <SafeAreaView style={styles.container} />;
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="black" style="auto" />
 			<ScrollView style={styles.container}>
-				{!isGuest ? <ProfileQR QRCodeRef={QRCodeRef} /> : <></>}
+				{!isGuest ? <ProfileQR /> : <></>}
 				<View>
 					<Heading
 						title={"About"}
@@ -261,17 +250,6 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 						borderRadius={8}
 					/>
 				</View>
-			</Sheet>
-			<Sheet
-				ref={QRCodeRef}
-				index={-1}
-				enablePanDownToClose={true}
-				backgroundStyle={{
-					backgroundColor: "rgba(0,0,0,0.8)",
-				}}
-				snapPoints={[550]}
-			>
-				<ProfileSheet />
 			</Sheet>
 		</SafeAreaView>
 	);

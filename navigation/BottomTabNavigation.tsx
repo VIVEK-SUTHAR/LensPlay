@@ -11,9 +11,8 @@ import { black } from "constants/Colors";
 import { useRefreshMutation } from "customTypes/generated";
 import type { RootStackScreenProps, RootTabParamList } from "customTypes/navigation";
 import * as ImagePicker from "expo-image-picker";
-import * as Linking from "expo-linking";
 import React, { useRef } from "react";
-import { AppState, Dimensions, Pressable, View } from "react-native";
+import { Dimensions, Pressable, View } from "react-native";
 import Trending from "screens/BottomTabs/Explore/Trending";
 import Feed from "screens/BottomTabs/Home/Feed";
 import Notifications from "screens/BottomTabs/Notification/Notification";
@@ -131,7 +130,9 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 							</Pressable>
 							<Pressable
 								onPress={() => {
-									navigation.navigate("Settings");
+									requestAnimationFrame(() => {
+										navigation.navigate("Settings");
+									});
 								}}
 								style={{
 									paddingHorizontal: 8,

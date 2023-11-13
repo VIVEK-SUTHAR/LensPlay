@@ -105,6 +105,7 @@ export type RootStackParamList = {
 	Profiles: {
 		profiles: Profile[];
 	};
+	MyQR:undefined;
 };
 
 /**
