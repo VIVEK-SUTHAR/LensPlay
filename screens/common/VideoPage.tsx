@@ -21,6 +21,7 @@ import MoreVideos from "components/VIdeo/MoreVideos";
 import VideoPageSkeleton from "components/VIdeo/VideoPageSkeleton";
 import VideoPlayer from "components/VideoPlayer";
 import { black } from "constants/Colors";
+import { HandleInfo, VideoMetadataV3 } from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
@@ -37,6 +38,7 @@ import {
 } from "react-native";
 import { useActivePublication, useReactionStore } from "store/Store";
 import useVideoURLStore from "store/videoURL";
+import formatHandle from "utils/formatHandle";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
@@ -45,20 +47,21 @@ import createLivePeerAsset from "utils/video/createLivePeerAsset";
 import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
-	const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
+	// const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
 	const { activePublication } = useActivePublication();
 
-	React.useEffect(() => {
-		const delay = setTimeout(() => {
-			setIsReadyToRender(true);
-		}, 100);
-		return () => clearTimeout(delay);
-	}, [activePublication]);
+	// React.useEffect(() => {
+	// 	const delay = setTimeout(() => {
+	// 		setIsReadyToRender(true);
+	// 	}, 100);
+	// 	return () => clearTimeout(delay);
+	// }, [activePublication]);
 
 	const [isMute, setIsMute] = useState<boolean>(false);
 	const { videopageStats, setVideoPageStats, clearStats, setCollectStats, setMirrorStats } =
 		useReactionStore();
+	console.log(activePublication);
 
 	const handleBackButtonClick = React.useCallback(() => {
 		setStatusBarHidden(false, "fade");
@@ -84,24 +87,18 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 
 	useEffect(() => {
 		setVideoPageStats(
-			activePublication?.reaction === "UPVOTE",
+			activePublication?.operations?.hasReacted,
 			activePublication?.reaction === "DOWNVOTE",
-			activePublication?.stats?.totalUpvotes || 0
+			activePublication?.stats?.reactions || 0
 		);
 		setCollectStats(
-			activePublication?.hasCollectedByMe || false,
-			activePublication?.stats?.totalAmountOfCollects || 0
+			activePublication?.operations?.hasActed?.value || false,
+			activePublication?.stats?.countOpenActions || 0
 		);
-		if (activePublication?.__typename === "Mirror") {
-			setMirrorStats(
-				activePublication?.mirrorOf.mirrors?.length > 0,
-				activePublication?.stats?.totalAmountOfMirrors || 0
-			);
-		}
 		if (activePublication?.__typename === "Post") {
 			setMirrorStats(
-				activePublication?.mirrors?.length > 0,
-				activePublication?.stats?.totalAmountOfMirrors || 0
+				activePublication?.operations.hasMirrored,
+				activePublication?.stats?.mirrors || 0
 			);
 		}
 
@@ -118,15 +115,14 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 
 	const openCommentSheet = () => commentRef?.current?.snapToIndex(0);
 
-	const LENS_MEDIA_URL = activePublication?.metadata?.media[0]?.original?.url;
-	const { setVideoURI, uri } = useVideoURLStore();
+	const metadata = activePublication?.metadata as VideoMetadataV3;
 
+	const { setVideoURI, uri } = useVideoURLStore();
+	const LENS_MEDIA_URL = metadata?.asset?.video?.raw?.uri;
 	useFocusEffect(
 		React.useCallback(() => {
-			if (
-				activePublication?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")
-			) {
-				setVideoURI(activePublication?.metadata?.media[0]?.optimized?.url);
+			if (metadata.asset?.video?.optimized?.uri?.includes("https://lp-playback.com")) {
+				setVideoURI(metadata.asset?.video?.optimized?.uri);
 				return;
 			}
 			checkIfLivePeerAsset(LENS_MEDIA_URL).then((res) => {
@@ -144,48 +140,32 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		}, [activePublication])
 	);
 
-	if (!isReadyToRender) return <VideoPageSkeleton />;
+	// if (!isReadyToRender) return <VideoPageSkeleton />;
 
 	return (
 		<>
 			<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-				{uri.length > 0 ? (
-					<VideoPlayer
-						poster={getRawurl(activePublication?.metadata?.cover)}
-						title={activePublication?.metadata?.name || ""}
-						url={uri}
-						inFullscreen={inFullscreen}
-						isMute={isMute}
-						setInFullscreen={setInFullsreen}
-						setIsMute={setIsMute}
-					/>
-				) : (
-					<LPImage
-						source={{
-							uri: getImageProxyURL({
-								formattedLink: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
-							}),
-						}}
-						style={{
-							width: inFullscreen
-								? Dimensions.get("screen").height
-								: Dimensions.get("screen").width,
-							height: inFullscreen ? Dimensions.get("screen").width : 250,
-						}}
-					/>
-				)}
+				<VideoPlayer
+					poster={getIPFSLink(getRawurl(metadata?.asset?.cover))}
+					title={metadata?.title || ""}
+					url={uri}
+					inFullscreen={inFullscreen}
+					isMute={isMute}
+					setInFullscreen={setInFullsreen}
+					setIsMute={setIsMute}
+				/>
+
 				<ScrollView>
 					<View style={{ paddingHorizontal: 8, marginTop: 24, marginBottom: 16 }}>
-						<VideoMeta
-							title={activePublication?.metadata?.name}
-							description={activePublication?.metadata?.description}
-							descRef={descRef}
-						/>
+						<VideoMeta title={metadata?.title} description={metadata?.content} descRef={descRef} />
 						<VideoCreator
-							profileId={activePublication?.profile?.id}
-							avatarLink={getRawurl(activePublication?.profile?.picture)}
-							uploadedBy={activePublication?.profile?.name || activePublication?.profile?.handle}
-							alreadyFollowing={activePublication?.profile?.isFollowedByMe || false}
+							profileId={activePublication?.by?.id}
+							avatarLink={getRawurl(activePublication?.by?.metadata?.picture)}
+							uploadedBy={
+								activePublication?.by?.metadata?.displayName ||
+								formatHandle(activePublication?.by?.handle as HandleInfo)
+							}
+							alreadyFollowing={activePublication?.by?.operations?.isFollowedByMe?.value || false}
 						/>
 					</View>
 					<ScrollView
@@ -201,16 +181,16 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							id={activePublication?.id}
 							isalreadyLiked={videopageStats?.isLiked}
 						/>
-						<DisLikeButton
+						{/* <DisLikeButton
 							isalreadyDisLiked={videopageStats?.isDisliked}
 							id={activePublication?.id}
 						/>
 						<MirrorButton mirrorRef={mirrorRef} />
 						<CollectButton collectRef={collectRef} />
 						<ShareButton />
-						<ReportButton />
+						<ReportButton /> */}
 					</ScrollView>
-					<View
+					{/* <View
 						style={{
 							marginHorizontal: 8,
 						}}
@@ -230,14 +210,14 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							/>
 							<Icon name="arrowDown" color="white" size={16} />
 						</TouchableOpacity>
-					</View>
-					<MoreVideos />
+					</View> */}
+					{/* <MoreVideos /> */}
 				</ScrollView>
 			</SafeAreaView>
-			<CommentSheet commentSheetRef={commentRef} />
+			{/* <CommentSheet commentSheetRef={commentRef} />
 			<MetaDataSheet sheetRef={descRef} />
 			<CollectVideoSheet sheetRef={collectRef} />
-			<MirrorVideoSheet sheetRef={mirrorRef} />
+			<MirrorVideoSheet sheetRef={mirrorRef} /> */}
 		</>
 	);
 };

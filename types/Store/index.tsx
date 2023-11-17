@@ -1,5 +1,5 @@
 import { CollectModuleType } from "../../utils/getCollectModule";
-import { FeedItemRoot, Maybe, Mirror, Post, Profile } from "../generated";
+import { Maybe, PrimaryPublication, Profile } from "../generated";
 
 export interface IAuthStore {
 	accessToken: string;
@@ -18,8 +18,8 @@ export interface IThemeStore {
 }
 
 export interface IActivePublication {
-	activePublication: Post | Mirror | FeedItemRoot | null;
-	setActivePublication: (newPublication: Post | Mirror | FeedItemRoot) => void;
+	activePublication: PrimaryPublication;
+	setActivePublication: (newPublication: PrimaryPublication) => void;
 }
 
 export interface UserStore {
