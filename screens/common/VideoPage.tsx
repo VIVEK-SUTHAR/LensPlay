@@ -215,8 +215,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 				</ScrollView>
 			</SafeAreaView>
 			<CommentSheet commentSheetRef={commentRef} />
-			{/* <MetaDataSheet sheetRef={descRef} />
-			<CollectVideoSheet sheetRef={collectRef} />
+			<MetaDataSheet sheetRef={descRef} />
+			{/* <CollectVideoSheet sheetRef={collectRef} />
 			<MirrorVideoSheet sheetRef={mirrorRef} /> */}
 		</>
 	);

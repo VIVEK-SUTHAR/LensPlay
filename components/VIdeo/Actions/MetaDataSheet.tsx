@@ -7,12 +7,14 @@ import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
 import { STATIC_ASSET } from "constants/index";
 import React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Handle, Pressable, StyleSheet, View } from "react-native";
 import { useActivePublication } from "store/Store";
 import CommonStyles from "styles/index";
 import extractURLs from "utils/extractURL";
 import getRawurl from "utils/getRawUrl";
 import VideoCreator from "../VideoAuthor";
+import formatHandle from "utils/formatHandle";
+import { HandleInfo } from "customTypes/generated";
 
 type MetaDataSheetProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
@@ -59,7 +61,7 @@ const MetaDataSheet = ({ sheetRef: descRef }: MetaDataSheetProps) => {
 				<BottomSheetScrollView>
 					<View style={{ paddingHorizontal: 16 }}>
 						<StyledText
-							title={activePublication?.metadata?.name}
+							title={activePublication?.metadata?.title}
 							style={{
 								fontSize: 18,
 								fontWeight: "600",
@@ -71,21 +73,21 @@ const MetaDataSheet = ({ sheetRef: descRef }: MetaDataSheetProps) => {
 						<View style={styles.videoStatsContainer}>
 							<View style={styles.verticleCenter}>
 								<StyledText
-									title={activePublication?.stats?.totalUpvotes || 0}
+									title={activePublication?.stats?.reactions || 0}
 									style={styles.statsLabel}
 								/>
 								<StyledText title="Likes" style={{ color: "white" }} />
 							</View>
 							<View style={styles.verticleCenter}>
 								<StyledText
-									title={activePublication?.stats?.totalAmountOfCollects || 0}
+									title={activePublication?.stats?.countOpenActions || 0}
 									style={styles.statsLabel}
 								/>
 								<StyledText title="Collects" style={{ color: "white" }} />
 							</View>
 							<View style={styles.verticleCenter}>
 								<StyledText
-									title={activePublication?.stats?.totalAmountOfMirrors || 0}
+									title={activePublication?.stats?.mirrors || 0}
 									style={styles.statsLabel}
 								/>
 								<StyledText title="Mirrors" style={{ color: "white" }} />
@@ -93,7 +95,7 @@ const MetaDataSheet = ({ sheetRef: descRef }: MetaDataSheetProps) => {
 						</View>
 						<StyledText
 							title={
-								extractURLs(activePublication?.metadata?.description) ||
+								extractURLs(activePublication?.metadata?.content) ||
 								"No description provided by crator"
 							}
 							style={{
@@ -106,8 +108,8 @@ const MetaDataSheet = ({ sheetRef: descRef }: MetaDataSheetProps) => {
 						/>
 						<StyledText
 							title={`Posted via ${
-								activePublication?.appId?.charAt(0)?.toUpperCase() +
-									activePublication?.appId?.slice(1) || "LensPlay"
+								activePublication?.publishedOn?.id?.charAt(0)?.toUpperCase() +
+									activePublication?.publishedOn?.id?.slice(1) || "LensPlay"
 							}`}
 							style={{
 								color: "white",
@@ -126,13 +128,16 @@ const MetaDataSheet = ({ sheetRef: descRef }: MetaDataSheetProps) => {
 							}}
 						/>
 						<VideoCreator
-							alreadyFollowing={activePublication?.profile?.isFollowedByMe || false}
-							avatarLink={getRawurl(activePublication?.profile?.picture) || STATIC_ASSET}
-							profileId={activePublication?.profile?.id}
-							uploadedBy={activePublication?.profile?.name || activePublication?.profile?.handle}
+							alreadyFollowing={activePublication?.by?.operations?.isFollowedByMe?.value || false}
+							avatarLink={getRawurl(activePublication?.by?.metadata?.picture) || STATIC_ASSET}
+							profileId={activePublication?.by?.id}
+							uploadedBy={
+								activePublication?.by?.metadata?.displayName ||
+								formatHandle(activePublication?.by?.handle as HandleInfo)
+							}
 							showSubscribeButton={false}
 							showSubscribers={true}
-							subscribersCount={activePublication?.profile?.stats?.totalFollowers}
+							subscribersCount={activePublication?.by?.stats?.followers}
 						/>
 					</View>
 				</BottomSheetScrollView>
