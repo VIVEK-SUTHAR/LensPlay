@@ -26,9 +26,9 @@ type VideoCardProp = {
 const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publication }) => {
 	const { setActivePublication } = useActivePublication();
 	const navigation = useNavigation();
-	const metadata=publication.metadata as VideoMetadataV3;
-	const formattedHandle=formatHandle(publication.by.handle as HandleInfo)
-	
+	const metadata = publication.metadata as VideoMetadataV3;
+	const formattedHandle = formatHandle(publication.by.handle as HandleInfo);
+
 	const navigateToVideoPage = React.useCallback(() => {
 		Logger.Count("Start Navigation from VideoCard");
 		setActivePublication(publication);
@@ -37,7 +37,7 @@ const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publ
 
 	const navigateToUserChannel = React.useCallback(() => {
 		navigation.navigate("Channel", {
-			handle:formattedHandle,
+			handle: formattedHandle,
 			name: publication?.by.metadata?.displayName ?? "",
 		});
 	}, [publication]);

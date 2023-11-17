@@ -4,7 +4,7 @@ import { primary } from "constants/Colors";
 import { ResizeMode, Video } from "expo-av";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
-import React, { MutableRefObject, useRef } from "react";
+import React, { MutableRefObject, useRef, useState } from "react";
 import { Dimensions, Platform, View } from "react-native";
 import { useThemeStore } from "store/Store";
 import getIPFSLink from "utils/getIPFSLink";
@@ -16,19 +16,11 @@ interface VideoPlayerProps {
 	poster?: string;
 	inFullscreen?: boolean;
 	title: string;
-	isMute: boolean;
+	
 	isSliderVisible?: boolean;
 	loop?: boolean;
 	setInFullscreen?: React.Dispatch<React.SetStateAction<boolean>>;
-	setIsMute: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
-Dimensions.addEventListener("change", (data) => {
-	console.log("Screen Height", data.screen.height);
-	console.log("Screen Width", data.screen.width);
-	console.log("Window Width", data.window.height);
-	console.log("Height Width", data.window.width);
-});
 
 function VideoPlayer({
 	inFullscreen,
@@ -37,15 +29,13 @@ function VideoPlayer({
 	isSliderVisible = true,
 	loop = false,
 	url,
-	isMute,
 	setInFullscreen,
-	setIsMute,
 }: VideoPlayerProps) {
 	const videoRef = useRef<Video>();
 	const { PRIMARY } = useThemeStore();
 	Logger.Log("IN FULLSCREEN", inFullscreen);
 	const isAndroid = Platform.OS === "android";
-
+	const [isMute, setisMute] = useState(false)
 	return (
 		<Player
 			style={{
@@ -132,10 +122,10 @@ function VideoPlayer({
 				},
 			}}
 			mute={{
-				enterMute: () => setIsMute(!isMute),
-				exitMute: () => setIsMute(!isMute),
+				enterMute: () => setisMute(prev=>!prev),
+				exitMute: () => setisMute(prev=>!prev),
 				isMute,
-				visible: false,
+				visible: true,
 			}}
 		/>
 	);

@@ -1,26 +1,12 @@
-import { ApolloCache } from "@apollo/client";
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
 import { PUBLICATION, SHOT } from "constants/tracking";
-import {
-	ReactionTypes,
-	useAddReactionMutation,
-	useRemoveReactionMutation,
-} from "customTypes/generated";
-import { ToastType } from "customTypes/Store";
+import useLike from "hooks/reactions/useLike";
 import React, { useState } from "react";
 import { useGuestStore } from "store/GuestStore";
-import {
-	useActivePublication,
-	useAuthStore,
-	useProfile,
-	useReactionStore,
-	useThemeStore,
-	useToast,
-} from "store/Store";
+import { useActivePublication, useReactionStore, useThemeStore, useToast } from "store/Store";
 import formatInteraction from "utils/formatInteraction";
-import Logger from "utils/logger";
 import TrackAction from "utils/Track";
 
 type LikeButtonProps = {
@@ -33,71 +19,18 @@ type LikeButtonProps = {
 const LikeButton: React.FC<LikeButtonProps> = ({ like, isalreadyLiked, id, bytes = false }) => {
 	const [isLiked, setIsLiked] = useState(isalreadyLiked);
 	const [likeCount, setLikeCount] = useState(like);
-	const userStore = useProfile();
+
 	const toast = useToast();
 	const { PRIMARY } = useThemeStore();
 	const { isGuest } = useGuestStore();
 	const { setVideoPageStats } = useReactionStore();
-	const { accessToken } = useAuthStore();
+
 	const { activePublication } = useActivePublication();
-
-	const updateCache = (cache: ApolloCache<any>, type: ReactionTypes.Upvote | null) => {
-		try {
-			cache.modify({
-				id: cache.identify(activePublication as any),
-				fields: {
-					reaction() {
-						if (type) {
-							return ReactionTypes.Upvote;
-						} else {
-							return null;
-						}
-					},
-					stats: (stats) => ({
-						...stats,
-						totalUpvotes:
-							type === ReactionTypes.Upvote ? stats.totalUpvotes + 1 : stats.totalUpvotes - 1,
-					}),
-				},
-			});
-		} catch (error) {
-			Logger.Error("error", error);
-		}
-	};
-
-	const [addReaction] = useAddReactionMutation({
-		onCompleted: () => {},
-		onError: (error) => {
-			if (bytes) {
-				setLikeCount(likeCount - 1);
-				setIsLiked(false);
-			} else {
-				setVideoPageStats(false, false, like - 1);
-			}
-			Logger.Error("Failed to add Like In Like Button", error);
-			toast.show("Something went wrong!", ToastType.ERROR, true);
-		},
-		update: (cache) => updateCache(cache, ReactionTypes.Upvote),
-	});
-
-	const [removeReaction] = useRemoveReactionMutation({
-		onCompleted: () => {},
-		onError: (error) => {
-			if (bytes) {
-				setLikeCount(likeCount + 1);
-				setIsLiked(true);
-			} else {
-				setVideoPageStats(true, false, like + 1);
-			}
-			Logger.Error("Failed to remove Like In Like Button", error);
-			toast.show("Something went wrong!", ToastType.ERROR, true);
-		},
-		update: (cache) => updateCache(cache, null),
-	});
+	const { addLike, removeLike } = useLike();
 
 	const onLike = async () => {
 		if (isGuest) {
-			toast.show("Please Login", ToastType.ERROR, true);
+			toast.error("Please Login to like");
 			return;
 		}
 		if (!isalreadyLiked) {
@@ -107,20 +40,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ like, isalreadyLiked, id, bytes
 			} else {
 				setVideoPageStats(true, false, like + 1);
 			}
-			void addReaction({
-				variables: {
-					request: {
-						profileId: userStore.currentProfile?.id,
-						reaction: ReactionTypes.Upvote,
-						publicationId: id,
-					},
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-					},
-				},
-			});
+			addLike(activePublication);
 			void TrackAction(bytes ? SHOT.SHOTS_LIKE : PUBLICATION.LIKE);
 		} else {
 			if (bytes) {
@@ -129,20 +49,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ like, isalreadyLiked, id, bytes
 			} else {
 				setVideoPageStats(false, false, like - 1);
 			}
-			void removeReaction({
-				variables: {
-					request: {
-						profileId: userStore.currentProfile?.id,
-						reaction: ReactionTypes.Upvote,
-						publicationId: id,
-					},
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-					},
-				},
-			});
+			removeLike(activePublication);
 		}
 	};
 

@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import React from "react";
 import Sheet from "components/Bottom";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";

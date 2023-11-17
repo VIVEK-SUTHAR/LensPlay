@@ -2,17 +2,8 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useFocusEffect } from "@react-navigation/native";
 import CommentSheet from "components/Comments/CommentSheet";
 import Icon from "components/Icon";
-import LPImage from "components/UI/LPImage";
 import StyledText from "components/UI/StyledText";
-import {
-	CollectButton,
-	LikeButton,
-	ReportButton,
-	ShareButton,
-	VideoCreator,
-	VideoMeta,
-} from "components/VIdeo";
-import CollectVideoSheet from "components/VIdeo/Actions/CollectVideoSheet";
+import { LikeButton, ReportButton, ShareButton, VideoCreator, VideoMeta } from "components/VIdeo";
 import DisLikeButton from "components/VIdeo/Actions/DisLikeButton";
 import MetaDataSheet from "components/VIdeo/Actions/MetaDataSheet";
 import MirrorButton from "components/VIdeo/Actions/MirrorButton";
@@ -28,8 +19,6 @@ import { setStatusBarHidden } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
 import {
 	BackHandler,
-	Dimensions,
-	LayoutAnimation,
 	SafeAreaView,
 	ScrollView,
 	StyleSheet,
@@ -39,7 +28,6 @@ import {
 import { useActivePublication, useReactionStore } from "store/Store";
 import useVideoURLStore from "store/videoURL";
 import formatHandle from "utils/formatHandle";
-import getImageProxyURL from "utils/getImageProxyURL";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
@@ -47,22 +35,32 @@ import createLivePeerAsset from "utils/video/createLivePeerAsset";
 import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
-	// const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
+	const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
 	const { activePublication } = useActivePublication();
 
-	// React.useEffect(() => {
-	// 	const delay = setTimeout(() => {
-	// 		setIsReadyToRender(true);
-	// 	}, 100);
-	// 	return () => clearTimeout(delay);
-	// }, [activePublication]);
+	const handleBlur = React.useCallback(() => {
+		setVideoURI("");
+		clearStats();
+		setCollectStats(false, 0);
+		setMirrorStats(false, 0);
+	}, []);
 
-	const [isMute, setIsMute] = useState<boolean>(false);
+	React.useEffect(() => {
+		const blurSubscription = navigation.addListener("blur", handleBlur);
+		const delay = setTimeout(() => {
+			setIsReadyToRender(true);
+		}, 50);
+
+		//Clean-Up Listeners
+		return () => {
+			clearTimeout(delay);
+			blurSubscription();
+		};
+	}, [activePublication]);
+
 	const { videopageStats, setVideoPageStats, clearStats, setCollectStats, setMirrorStats } =
 		useReactionStore();
-	console.log(activePublication);
-
 	const handleBackButtonClick = React.useCallback(() => {
 		setStatusBarHidden(false, "fade");
 		setInFullsreen(!inFullscreen);
@@ -76,19 +74,10 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		return true;
 	}, [navigation]);
 
-	const handleBlur = React.useCallback(() => {
-		setVideoURI("");
-		clearStats();
-		setCollectStats(false, 0);
-		setMirrorStats(false, 0);
-	}, []);
-
-	navigation.addListener("blur", handleBlur);
-
 	useEffect(() => {
 		setVideoPageStats(
-			activePublication?.operations?.hasReacted,
-			activePublication?.reaction === "DOWNVOTE",
+			activePublication?.operations?.upvote,
+			activePublication?.operations.downvote,
 			activePublication?.stats?.reactions || 0
 		);
 		setCollectStats(
@@ -101,6 +90,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 				activePublication?.stats?.mirrors || 0
 			);
 		}
+		Logger.Success("ISLIKED", activePublication?.operations);
 
 		const handler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
 		return () => {
@@ -118,6 +108,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const metadata = activePublication?.metadata as VideoMetadataV3;
 
 	const { setVideoURI, uri } = useVideoURLStore();
+
 	const LENS_MEDIA_URL = metadata?.asset?.video?.raw?.uri;
 	useFocusEffect(
 		React.useCallback(() => {
@@ -140,7 +131,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		}, [activePublication])
 	);
 
-	// if (!isReadyToRender) return <VideoPageSkeleton />;
+	if (!isReadyToRender) return <VideoPageSkeleton />;
 
 	return (
 		<>
@@ -150,11 +141,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 					title={metadata?.title || ""}
 					url={uri}
 					inFullscreen={inFullscreen}
-					isMute={isMute}
 					setInFullscreen={setInFullsreen}
-					setIsMute={setIsMute}
 				/>
-
 				<ScrollView>
 					<View style={{ paddingHorizontal: 8, marginTop: 24, marginBottom: 16 }}>
 						<VideoMeta title={metadata?.title} description={metadata?.content} descRef={descRef} />
@@ -168,28 +156,28 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							alreadyFollowing={activePublication?.by?.operations?.isFollowedByMe?.value || false}
 						/>
 					</View>
-					{/* <ScrollView
+					<ScrollView
 						style={{
 							marginBottom: 16,
 							marginStart: 4,
 						}}
 						horizontal={true}
 						showsHorizontalScrollIndicator={false}
-					> */}
-					{/* <LikeButton
+					>
+						<LikeButton
 							like={videopageStats?.likeCount}
 							id={activePublication?.id}
 							isalreadyLiked={videopageStats?.isLiked}
-						/> */}
-					{/* <DisLikeButton
+						/>
+						<DisLikeButton
 							isalreadyDisLiked={videopageStats?.isDisliked}
 							id={activePublication?.id}
-						/> */}
+						/>
 						<MirrorButton mirrorRef={mirrorRef} />
-						{/* <CollectButton collectRef={collectRef} />
+						{/* <CollectButton collectRef={collectRef} /> */}
 						<ShareButton />
-						<ReportButton /> */}
-					{/* </ScrollView> */}
+						<ReportButton />
+					</ScrollView>
 					<View
 						style={{
 							marginHorizontal: 8,
