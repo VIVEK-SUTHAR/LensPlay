@@ -18,6 +18,7 @@ import Feed from "screens/BottomTabs/Home/Feed";
 import Notifications from "screens/BottomTabs/Notification/Notification";
 import ProfileScreen from "screens/BottomTabs/Profile/Profile";
 import Shots from "screens/BottomTabs/Shots/Shots";
+import Settings from "screens/Header/Settings/Settings";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
 import { useUploadStore } from "store/UploadStore";

@@ -53,6 +53,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 	const navigation = useNavigation();
 	const profile = Profile?.profile;
 	
+	
+	
+	
 
 	// const onRefresh = React.useCallback(async () => {
 	// 	setRefreshing(true);

@@ -23,12 +23,15 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
 	ActivityIndicator,
+	Alert,
 	Dimensions,
+	FlatList,
 	Image,
 	RefreshControl,
 	SafeAreaView,
 	ScrollView,
 	StyleSheet,
+	Text,
 	View,
 } from "react-native";
 import { getColors } from "react-native-image-colors";
@@ -37,6 +40,14 @@ import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import useWatchLater from "store/WatchLaterStore";
 import getAndSaveNotificationToken from "utils/getAndSaveNotificationToken";
 import Logger from "utils/logger";
+
+const getItemLayout = (_: any, index: number) => {
+	return {
+		length: 280,
+		offset: 280 * index,
+		index,
+	};
+};
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -122,6 +133,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 			return <VideoCard publication={item.root} id={item?.root?.id} />;
 		}
 		return null;
+		// return <Text style={{color:"white"}}>Helloo</Text>
 	}, []);
 	const _MoreLoader = () => {
 		return (
@@ -267,6 +279,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 			</SafeAreaView>
 		);
 	}
+	
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor={"black"} />
@@ -274,14 +287,15 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 				data={Feeddata?.feed.items as FeedItem[]}
 				keyExtractor={keyExtractor}
 				estimatedItemSize={280}
+				// getItemLayout={getItemLayout}
 				removeClippedSubviews={true}
-				onLoad={({ elapsedTimeInMs }) => {
-					Logger.Warn(`Feed List Loading time ${elapsedTimeInMs} ms`);
-				}}
+				// onLoad={({ elapsedTimeInMs }) => {
+				// 	Logger.Warn(`Feed List Loading time ${elapsedTimeInMs} ms`);
+				// }}
 				refreshControl={_RefreshControl}
 				ListEmptyComponent={Empty}
 				ListFooterComponent={<MoreLoader />}
-				onEndReachedThreshold={0.9}
+				onEndReachedThreshold={0.2}
 				onEndReached={onEndCallBack}
 				renderItem={renderItem}
 				showsVerticalScrollIndicator={false}

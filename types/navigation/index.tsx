@@ -131,6 +131,7 @@ export type RootTabParamList = {
 	Create: undefined;
 	Notifications: undefined;
 	Account: undefined;
+	Settings:undefined
 };
 
 export type UploadTabParamsList = {

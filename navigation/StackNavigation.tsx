@@ -31,7 +31,7 @@ import UploadVideo from "screens/Header/Upload/Video/UploadVideo";
 import { useThemeStore } from "store/Store";
 import BottomTabNavigator from "./BottomTabNavigation";
 import Profiles from "screens/Auth/Profiles";
-import MyQR from "screens/Header/Settings/MyQR"
+import MyQR from "screens/Header/Settings/MyQR";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
@@ -198,6 +198,7 @@ export default function StackNavigation() {
 			<Stack.Screen
 				name="Settings"
 				component={Settings}
+			
 				options={{
 					animation: "default",
 					headerShown: true,
@@ -208,6 +209,8 @@ export default function StackNavigation() {
 						fontSize: 16,
 						fontWeight: "600",
 					},
+					freezeOnBlur:true
+					
 				}}
 			/>
 			<Stack.Screen

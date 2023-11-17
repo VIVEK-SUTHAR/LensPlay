@@ -30,7 +30,7 @@ const Avatar: React.FC<AvatarProps> = ({
 }) => {
 	const resolvedSrc =
 		getIPFSLink(src) === STATIC_COVER
-			? `https://xsgames.co/randomusers/assets/avatars/pixel/${Math.floor(53 * Math.random())}.jpg`
+			? `https://xsgames.co/randomusers/assets/avatars/pixel/${Math.floor(100 * Math.random())}.jpg`
 			: getIPFSLink(src);
 
 	return (

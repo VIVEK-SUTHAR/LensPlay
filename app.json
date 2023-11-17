@@ -1,7 +1,7 @@
 {
 	"expo": {
 		"name": "LensPlay",
-		"slug": "lensplay",
+		"slug": "test",
 		"version": "1.0.2",
 		"orientation": "portrait",
 		"backgroundColor": "#000000",
@@ -76,7 +76,7 @@
 		},
 		"extra": {
 			"eas": {
-				"projectId": "ab0b7a55-2257-4fb4-8851-a907ffbdf237"
+				"projectId": "dc292891-6e08-49db-8e82-247dd43a39f7"
 			}
 		},
 		"plugins": [

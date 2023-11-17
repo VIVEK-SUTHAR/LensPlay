@@ -54,7 +54,7 @@ const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publ
 						placeholder={getPlaceHolderImage()}
 						contentFit="cover"
 						transition={500}
-						priority="high"
+						recyclingKey={coverImage}
 						source={{
 							uri: coverImage,
 						}}

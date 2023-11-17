@@ -1,5 +1,6 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 // import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Sheet from "components/Bottom";
@@ -16,12 +17,13 @@ import { AUTH } from "constants/tracking";
 import type { RootStackScreenProps } from "customTypes/navigation";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
-import React, { FC, useRef } from "react";
+import React, { FC, useRef, useState } from "react";
 import {
 	Linking,
 	Pressable,
 	SafeAreaView,
 	ScrollView,
+	SectionList,
 	StyleSheet,
 	useWindowDimensions,
 	View,
@@ -40,12 +42,14 @@ type SettingsItemProps = {
 
 const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 	const { isConnected, address, provider } = useWalletConnectModal();
-
+	
 	const { width } = useWindowDimensions();
 	// const Wallet = useWalletConnect();
 	const { isGuest } = useGuestStore();
 	const logoutref = useRef<BottomSheetMethods>(null);
 	const { currentProfile, setCurrentProfile } = useProfile();
+
+	
 
 	const SettingItemsList: SettingsItemProps[] = [
 		{
@@ -89,6 +93,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 			<StatusBar backgroundColor="black" style="auto" />
 			<ScrollView style={styles.container}>
 				{!isGuest ? <ProfileQR /> : <></>}
+				
 				<View>
 					<Heading
 						title={"About"}

@@ -34,8 +34,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	} = useProfileQuery({
 		variables: {
 			request: {
-				// profileId: profileId ? profileId : currentProfile?.id,
-				forHandle: currentProfile?.handle?.fullHandle,
+				forProfileId:"0x97fd"
 			},
 		},
 		context: {
@@ -44,6 +43,9 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 			},
 		},
 	});
+	console.log(Profile?.profile?.stats);
+	
+		
 
 	const onRefresh = React.useCallback(async () => {
 		setRefreshing(true);
