@@ -184,9 +184,9 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 					{/* <DisLikeButton
 							isalreadyDisLiked={videopageStats?.isDisliked}
 							id={activePublication?.id}
-						/>
+						/> */}
 						<MirrorButton mirrorRef={mirrorRef} />
-						<CollectButton collectRef={collectRef} />
+						{/* <CollectButton collectRef={collectRef} />
 						<ShareButton />
 						<ReportButton /> */}
 					{/* </ScrollView> */}
@@ -216,8 +216,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 			</SafeAreaView>
 			<CommentSheet commentSheetRef={commentRef} />
 			<MetaDataSheet sheetRef={descRef} />
-			{/* <CollectVideoSheet sheetRef={collectRef} />
-			<MirrorVideoSheet sheetRef={mirrorRef} /> */}
+			<MirrorVideoSheet sheetRef={mirrorRef} />
+			{/* <CollectVideoSheet sheetRef={collectRef} /> */}
 		</>
 	);
 };

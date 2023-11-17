@@ -21,15 +21,17 @@ import StyledText from "components/UI/StyledText";
 import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import { ToastType } from "customTypes/Store";
-import {
-	useCreateDataAvailabilityMirrorViaDispatcherMutation,
-	useCreateMirrorViaDispatcherMutation,
-} from "customTypes/generated";
 import Logger from "utils/logger";
 import { LENSPLAY_SITE } from "constants/index";
 import TrackAction from "utils/Track";
 import { PUBLICATION } from "constants/tracking";
 import { ApolloCache } from "@apollo/client";
+import {
+	HandleInfo,
+	useMirrorOnMomokaMutation,
+	useMirrorOnchainMutation,
+} from "customTypes/generated";
+import formatHandle from "utils/formatHandle";
 
 type MirrorVideoSheetProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
@@ -40,7 +42,10 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 	const { accessToken } = useAuthStore();
 	const { mirrorStats, setMirrorStats } = useReactionStore();
 
-	const isDAPublication = activePublication?.isDataAvailability;
+	const isDAPublication = Boolean(activePublication?.momoka?.proof);
+
+	Logger.Success("is DA Publication", isDAPublication, activePublication?.momoka);
+
 	const toast = useToast();
 	const theme = useThemeStore();
 	const { currentProfile } = useProfile();
@@ -53,7 +58,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 					mirrors: (mirrors) => [...mirrors, currentProfile?.id],
 					stats: (stats) => ({
 						...stats,
-						totalAmountOfMirrors: stats.totalAmountOfMirrors + 1,
+						totalAmountOfMirrors: stats.mirrors + 1,
 					}),
 				},
 			});
@@ -62,7 +67,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 		}
 	};
 
-	const [createOnChainMirror] = useCreateMirrorViaDispatcherMutation({
+	const [createOnChainMirror] = useMirrorOnchainMutation({
 		onCompleted: (data) => {
 			Logger.Success("Mirrored", data);
 		},
@@ -73,7 +78,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 		update: (cache) => updateCache(cache),
 	});
 
-	const [createDataAvaibalityMirror] = useCreateDataAvailabilityMirrorViaDispatcherMutation({
+	const [createDataAvaibalityMirror] = useMirrorOnMomokaMutation({
 		onCompleted: (data) => {
 			Logger.Success("DA Mirrored", data);
 		},
@@ -90,7 +95,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 			mirrorRef.current?.close();
 			return;
 		}
-		if (!activePublication?.profile?.dispatcher?.canUseRelay) {
+		if (!activePublication?.by?.sponsor) {
 			toast.show("Dispatcher is disabled", ToastType.ERROR, true);
 			mirrorRef.current?.close();
 			return;
@@ -102,8 +107,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 			createDataAvaibalityMirror({
 				variables: {
 					request: {
-						from: currentProfile?.id,
-						mirror: activePublication?.id,
+						mirrorOn: activePublication?.id,
 					},
 				},
 				context: {
@@ -122,8 +126,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 			await createOnChainMirror({
 				variables: {
 					request: {
-						profileId: currentProfile?.id,
-						publicationId: activePublication?.id,
+						mirrorOn: activePublication?.id,
 					},
 				},
 				context: {
@@ -201,7 +204,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 					>
 						<LPImage
 							source={{
-								uri: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
+								uri: getIPFSLink(getRawurl(activePublication?.metadata?.asset?.cover)),
 							}}
 							style={{
 								height: 200,
@@ -210,7 +213,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 							}}
 						/>
 						<StyledText
-							title={activePublication?.metadata?.name}
+							title={activePublication?.metadata?.title}
 							style={{
 								fontSize: 20,
 								color: white[800],
@@ -240,7 +243,11 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 								marginTop: 8,
 							}}
 						>
-							<Avatar src={getRawurl(activePublication?.profile?.picture)} height={40} width={40} />
+							<Avatar
+								src={getRawurl(activePublication?.by?.metadata?.picture)}
+								height={40}
+								width={40}
+							/>
 							<View
 								style={{
 									marginHorizontal: 8,
@@ -248,7 +255,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 								}}
 							>
 								<Heading
-									title={activePublication?.profile?.name}
+									title={activePublication?.by?.metadata?.displayName}
 									numberOfLines={1}
 									style={{
 										color: "white",
@@ -257,7 +264,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 									}}
 								/>
 								<StyledText
-									title={activePublication?.profile?.handle}
+									title={formatHandle(activePublication?.by?.handle as HandleInfo)}
 									style={{
 										color: "gray",
 										fontSize: 12,
