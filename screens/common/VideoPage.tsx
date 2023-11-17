@@ -1,4 +1,4 @@
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { type BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useFocusEffect } from "@react-navigation/native";
 import CommentSheet from "components/Comments/CommentSheet";
 import Icon from "components/Icon";
@@ -12,11 +12,11 @@ import MoreVideos from "components/VIdeo/MoreVideos";
 import VideoPageSkeleton from "components/VIdeo/VideoPageSkeleton";
 import VideoPlayer from "components/VideoPlayer";
 import { black } from "constants/Colors";
-import { HandleInfo, VideoMetadataV3 } from "customTypes/generated";
-import { RootStackScreenProps } from "customTypes/navigation";
+import type { HandleInfo, VideoMetadataV3 } from "customTypes/generated";
+import type { RootStackScreenProps } from "customTypes/navigation";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import {
 	BackHandler,
 	SafeAreaView,
@@ -36,7 +36,7 @@ import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
-	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
+	const [inFullscreen, setInFullsreen] = React.useState<boolean>(false);
 	const { activePublication } = useActivePublication();
 
 	const handleBlur = React.useCallback(() => {
@@ -74,7 +74,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		return true;
 	}, [navigation]);
 
-	useEffect(() => {
+	React.useEffect(() => {
 		setVideoPageStats(
 			activePublication?.operations?.upvote,
 			activePublication?.operations.downvote,
@@ -98,10 +98,10 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		};
 	}, []);
 
-	const collectRef = useRef<BottomSheetMethods>(null);
-	const mirrorRef = useRef<BottomSheetMethods>(null);
-	const descRef = useRef<BottomSheetMethods>(null);
-	const commentRef = useRef<BottomSheetMethods>(null);
+	const collectRef = React.useRef<BottomSheetMethods>(null);
+	const mirrorRef = React.useRef<BottomSheetMethods>(null);
+	const descRef = React.useRef<BottomSheetMethods>(null);
+	const commentRef = React.useRef<BottomSheetMethods>(null);
 
 	const openCommentSheet = () => commentRef?.current?.snapToIndex(0);
 
@@ -135,7 +135,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 
 	return (
 		<>
-			<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+			<SafeAreaView style={styles.container}>
 				<VideoPlayer
 					poster={getIPFSLink(getRawurl(metadata?.asset?.cover))}
 					title={metadata?.title || ""}
@@ -144,7 +144,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 					setInFullscreen={setInFullsreen}
 				/>
 				<ScrollView>
-					<View style={{ paddingHorizontal: 8, marginTop: 24, marginBottom: 16 }}>
+					<View style={styles.videoMetadataContainer}>
 						<VideoMeta title={metadata?.title} description={metadata?.content} descRef={descRef} />
 						<VideoCreator
 							profileId={activePublication?.by?.id}
@@ -157,10 +157,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 						/>
 					</View>
 					<ScrollView
-						style={{
-							marginBottom: 16,
-							marginStart: 4,
-						}}
+						style={styles.videoActionsContainer}
 						horizontal={true}
 						showsHorizontalScrollIndicator={false}
 					>
@@ -178,11 +175,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 						<ShareButton />
 						<ReportButton />
 					</ScrollView>
-					<View
-						style={{
-							marginHorizontal: 8,
-						}}
-					>
+					<View style={styles.commentsTitleContainer}>
 						<TouchableOpacity
 							style={styles.commentsContainer}
 							onPress={openCommentSheet}
@@ -213,6 +206,22 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 export default VideoPage;
 
 const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: "black",
+	},
+	videoMetadataContainer: {
+		paddingHorizontal: 8,
+		marginTop: 24,
+		marginBottom: 16,
+	},
+	videoActionsContainer: {
+		marginBottom: 16,
+		marginStart: 4,
+	},
+	commentsTitleContainer: {
+		marginHorizontal: 8,
+	},
 	commentsContainer: {
 		backgroundColor: black[600],
 		padding: 12,
