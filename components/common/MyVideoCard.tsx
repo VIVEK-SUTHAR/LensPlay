@@ -4,7 +4,7 @@ import Icon, { IconName } from "components/Icon";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black } from "constants/Colors";
-import { Mirror, Post, Scalars, VideoMetadataV3 } from "customTypes/generated";
+import { Mirror, Post, PrimaryPublication, Scalars, VideoMetadataV3 } from "customTypes/generated";
 import { Image } from "expo-image";
 import React, { memo } from "react";
 import { Dimensions, Pressable, TouchableOpacity, View } from "react-native";
@@ -16,7 +16,7 @@ import getPlaceHolderImage from "utils/getPlaceHolder";
 import getRawurl from "utils/getRawUrl";
 
 type MyVideoCardProps = {
-	publication: Mirror | Post;
+	publication: PrimaryPublication;
 	id: string;
 	sheetRef?: React.RefObject<BottomSheetMethods>;
 	setPublication: (publication: Mirror | Post) => void;

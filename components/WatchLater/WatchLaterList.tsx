@@ -11,9 +11,11 @@ import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton
 import Skeleton from "components/common/Skeleton";
 import { black, white } from "constants/Colors";
 import {
-	PublicationMainFocus,
-	useProfileBookMarksLazyQuery,
-	useProfileBookMarksQuery,
+	HandleInfo,
+	LimitType,
+	PrimaryPublication,
+	PublicationMetadataMainFocusType,
+	usePublicationBookmarksQuery,
 	type Mirror,
 	type Post,
 	type Scalars,
@@ -21,24 +23,21 @@ import {
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import useAddWatchLater from "hooks/useAddToWatchLater";
-import React, { useEffect } from "react";
-import { Dimensions, FlatList, Share, View } from "react-native";
+import React from "react";
+import { Dimensions, FlatList, LayoutAnimation, Share, View } from "react-native";
+import { getColors } from "react-native-image-colors";
+import Animated from "react-native-reanimated";
 import { useAuthStore, useProfile } from "store/Store";
 import useWatchLater from "store/WatchLaterStore";
 import CommonStyles from "styles/index";
 import formatHandle from "utils/formatHandle";
-import { getColors } from "react-native-image-colors";
-import Logger from "utils/logger";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
-import { LayoutAnimation } from "react-native";
-import WatchLaterHeader from "./WatchLaterHeader";
-import Animated from "react-native-reanimated";
+import Logger from "utils/logger";
 
 const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 const WatchLaterList = ({ scrollHandler }: { scrollHandler: any }) => {
 	const [publication, setPublication] = React.useState<Post | Mirror | null>(null);
-	const { currentProfile } = useProfile();
 	const WatchLaterSheetRef = React.useRef<BottomSheetMethods>(null);
 	const { accessToken } = useAuthStore();
 	const { sessionCount, setColor, setCover } = useWatchLater();
@@ -74,13 +73,18 @@ const WatchLaterList = ({ scrollHandler }: { scrollHandler: any }) => {
 			});
 	}
 
-	const { data, loading, refetch } = useProfileBookMarksQuery({
+	const { data, loading, refetch } = usePublicationBookmarksQuery({
 		variables: {
-			req: {
-				profileId: currentProfile?.id,
-				metadata: {
-					mainContentFocus: [PublicationMainFocus.Video],
+			request: {
+				where: {
+					metadata: {
+						mainContentFocus: [
+							PublicationMetadataMainFocusType.Video,
+							PublicationMetadataMainFocusType.ShortVideo,
+						],
+					},
 				},
+				limit: LimitType.Ten,
 			},
 		},
 		context: {
@@ -89,13 +93,11 @@ const WatchLaterList = ({ scrollHandler }: { scrollHandler: any }) => {
 			},
 		},
 		fetchPolicy: "cache-only",
-		// notifyOnNetworkStatusChange: false
-		// pollInterval: 3400,
 	});
 
 	React.useEffect(() => {
 		if (!loading) {
-			LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+			LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
 		}
 	}, [loading]);
 
@@ -103,7 +105,8 @@ const WatchLaterList = ({ scrollHandler }: { scrollHandler: any }) => {
 		refetch().then((res) => {
 			if (res) {
 				handleCover(
-					getIPFSLink(getRawurl(res?.data?.publicationsProfileBookmarks?.items[0]?.metadata?.cover))
+					//@ts-expect-error
+					getIPFSLink(getRawurl(res?.data?.publicationBookmarks?.items[0]?.metadata?.asset?.cover))
 				);
 			}
 		});
@@ -112,6 +115,16 @@ const WatchLaterList = ({ scrollHandler }: { scrollHandler: any }) => {
 	if (loading) {
 		return <WatchLaterSkeleton />;
 	}
+	const renderItem=({ item }: { item: PrimaryPublication }) => (
+		<View style={{ padding: 8 }}>
+			<MyVideoCard
+				publication={item}
+				id={item.id}
+				sheetRef={WatchLaterSheetRef}
+				setPublication={handlePublication}
+			/>
+		</View>
+	)
 
 	return (
 		<View
@@ -121,7 +134,7 @@ const WatchLaterList = ({ scrollHandler }: { scrollHandler: any }) => {
 			}}
 		>
 			<AnimatedFlashList
-				data={data?.publicationsProfileBookmarks?.items as Post[] | Mirror[]}
+				data={data?.publicationBookmarks?.items as PrimaryPublication[]}
 				ListHeaderComponent={WatchLaterCover}
 				ListEmptyComponent={NoVideosFound}
 				removeClippedSubviews={true}
@@ -129,16 +142,7 @@ const WatchLaterList = ({ scrollHandler }: { scrollHandler: any }) => {
 				estimatedItemSize={110}
 				onEndReachedThreshold={0.7}
 				showsVerticalScrollIndicator={false}
-				renderItem={({ item }: { item: Post | Mirror }) => (
-					<View style={{ padding: 8 }}>
-						<MyVideoCard
-							publication={item}
-							id={item.id}
-							sheetRef={WatchLaterSheetRef}
-							setPublication={handlePublication}
-						/>
-					</View>
-				)}
+				renderItem={renderItem}
 			/>
 			<WatchLaterSheet sheetRef={WatchLaterSheetRef} publication={publication} />
 		</View>
@@ -165,7 +169,7 @@ export const WatchLaterSheet = ({
 		{
 			name: "Share",
 			icon: "share",
-			onPress: (publication: Scalars["InternalPublicationId"]) => {
+			onPress: (publication: Scalars["PublicationId"]) => {
 				Logger.Success("chal dikha ", publication?.id);
 				Share.share({
 					message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${publication?.id}`,
@@ -186,9 +190,6 @@ export const WatchLaterSheet = ({
 			detached={true}
 			backgroundStyle={{
 				backgroundColor: black[600],
-			}}
-			animationConfigs={{
-				damping: 15,
 			}}
 		>
 			<FlatList
@@ -266,7 +267,10 @@ const WatchLaterCover = () => {
 					}}
 				/>
 				<StyledText
-					title={currentProfile?.name || formatHandle(currentProfile?.handle)}
+					title={
+						currentProfile?.metadata?.displayName ||
+						formatHandle(currentProfile?.handle as HandleInfo)
+					}
 					style={{
 						color: white[200],
 						fontWeight: "600",

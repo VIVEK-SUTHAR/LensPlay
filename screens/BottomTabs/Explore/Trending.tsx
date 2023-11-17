@@ -101,7 +101,7 @@ export default function Trending() {
 
 	const abortRequest = () => {
 		abortController.current.abort();
-		Logger.Success("Request Aborted")
+		Logger.Success("Request Aborted");
 		abortController.current = new AbortController();
 	};
 
@@ -183,7 +183,7 @@ export default function Trending() {
 
 	const MoreLoader = React.memo(_MoreLoader);
 
-	const RenderItem = ({ item }) => {
+	const RenderItem = ({ item }: { item: PrimaryPublication }) => {
 		if (!item.isHidden) {
 			return <VideoCard key={`${item.id}-${item.createdAt}`} publication={item} id={item.id} />;
 		}

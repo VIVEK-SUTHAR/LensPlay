@@ -5,6 +5,7 @@ import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import VideoCardSkeleton from "components/UI/VideoCardSkeleton";
 import VideoCard from "components/VideoCard";
+import CategoriesChip from "components/common/CategoriesChip";
 import ErrorMessage from "components/common/ErrorMesasge";
 import Skeleton from "components/common/Skeleton";
 import { black, white } from "constants/Colors";
@@ -14,7 +15,6 @@ import {
 	useFeedQuery,
 	type FeedItem,
 	PublicationMetadataMainFocusType,
-	usePublicationBookmarksLazyQuery,
 	type FeedRequest,
 } from "customTypes/generated";
 import type { RootTabScreenProps } from "customTypes/navigation";
@@ -23,31 +23,18 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
 	ActivityIndicator,
-	Alert,
 	Dimensions,
-	FlatList,
 	Image,
 	RefreshControl,
 	SafeAreaView,
 	ScrollView,
 	StyleSheet,
-	Text,
 	View,
 } from "react-native";
-import { getColors } from "react-native-image-colors";
 import { useGuestStore } from "store/GuestStore";
-import { useAuthStore, useProfile, useThemeStore } from "store/Store";
-import useWatchLater from "store/WatchLaterStore";
+import { useActiveVideoFilters, useAuthStore, useProfile, useThemeStore } from "store/Store";
 import getAndSaveNotificationToken from "utils/getAndSaveNotificationToken";
 import Logger from "utils/logger";
-
-const getItemLayout = (_: any, index: number) => {
-	return {
-		length: 280,
-		offset: 280 * index,
-		index,
-	};
-};
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -56,8 +43,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	const { isGuest } = useGuestStore();
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
-	const { setCover, setColor, sessionCount } = useWatchLater();
-
+	const { activeFilter } = useActiveVideoFilters();
 	React.useEffect(() => {
 		getAndSaveNotificationToken(currentProfile?.id);
 	}, []);
@@ -71,6 +57,10 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 			metadata: {
 				publishedOn: SOURCES,
 				mainContentFocus: [PublicationMetadataMainFocusType.Video],
+				tags: {
+					//@ts-expect-error
+					all: activeFilter === "all" ? undefined : activeFilter,
+				},
 			},
 		},
 	};
@@ -133,7 +123,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 			return <VideoCard publication={item.root} id={item?.root?.id} />;
 		}
 		return null;
-		// return <Text style={{color:"white"}}>Helloo</Text>
 	}, []);
 	const _MoreLoader = () => {
 		return (
@@ -151,9 +140,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 					</View>
 				) : Feeddata?.feed?.items.length! > 0 ? (
 					<ErrorMessage message="No more Videos to load" withImage={false} />
-				) : (
-					<></>
-				)}
+				) : null}
 			</>
 		);
 	};
@@ -189,70 +176,6 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 
 	const Empty = React.memo(_Empty);
 
-	//Bookmarks
-	async function handleCover(coverURL: string) {
-		setCover(coverURL);
-		getColors(coverURL, {
-			fallback: "#000000",
-			cache: true,
-			key: coverURL,
-			quality: "lowest",
-			pixelSpacing: 500,
-		})
-			.then((colors) => {
-				switch (colors.platform) {
-					case "android":
-						setColor(colors?.average);
-						break;
-					case "ios":
-						setColor(colors?.detail);
-						break;
-					default:
-						setColor("#7A52B5");
-				}
-			})
-			.catch((error) => {
-				setColor("#7A52B5");
-				Logger.Error("Failed to fetch image for geting dominient color", error);
-			});
-	}
-
-	const [getBookMarks, { data }] = usePublicationBookmarksLazyQuery({
-		variables: {
-			request: {
-				where: {
-					metadata: {
-						mainContentFocus: [PublicationMetadataMainFocusType.Video],
-					},
-				},
-			},
-		},
-		context: {
-			headers: {
-				"x-access-token": `Bearer ${accessToken}`,
-			},
-		},
-	});
-
-	React.useEffect(() => {
-		// getBookMarks().then((res) => {
-		// 	Logger.Success("", res?.data?.publicationBookmarks?.items[0]);
-		// });
-		// getBookMarks()
-		// 	.then((res) => {
-		// 		if (res) {
-		// 			handleCover(
-		// 				getIPFSLink(
-		// 					getRawurl(res?.data?.publicationBookmarks?.items[0]?.)
-		// 				)
-		// 			);
-		// 		}
-		// 	})
-		// 	.catch((err) => {
-		// 		Logger.Error("[Error while fetching Bookmarks....]", err);
-		// 	});
-	}, [sessionCount]);
-
 	if (isGuest) return <PleaseLogin />;
 	if (error) {
 		Logger.Error("e", error);
@@ -273,25 +196,23 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	if (loading) {
 		return (
 			<SafeAreaView style={styles.container}>
+				<StatusBar backgroundColor={"black"} />
 				<Skeleton number={10}>
 					<VideoCardSkeleton />
 				</Skeleton>
 			</SafeAreaView>
 		);
 	}
-	
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor={"black"} />
+			<CategoriesChip />
 			<FlashList
 				data={Feeddata?.feed.items as FeedItem[]}
 				keyExtractor={keyExtractor}
 				estimatedItemSize={280}
-				// getItemLayout={getItemLayout}
 				removeClippedSubviews={true}
-				// onLoad={({ elapsedTimeInMs }) => {
-				// 	Logger.Warn(`Feed List Loading time ${elapsedTimeInMs} ms`);
-				// }}
 				refreshControl={_RefreshControl}
 				ListEmptyComponent={Empty}
 				ListFooterComponent={<MoreLoader />}

@@ -1,5 +1,6 @@
-import type { FeedItemRoot, Mirror, Post } from "customTypes/generated";
+import type { FeedItem, Mirror, Post, PrimaryPublication } from "customTypes/generated";
 import {
+	ActiveVideoFilterStore,
 	DisLikeObject,
 	IActivePublication,
 	IAuthStore,
@@ -157,13 +158,18 @@ export const useOptimisticStore = create<OptimisticStore>((set) => ({
 
 export const useActivePublication = create<IActivePublication>((set) => ({
 	activePublication: null,
-	setActivePublication: (newPublication: Post | Mirror | FeedItemRoot) => {
+	setActivePublication: (newPublication: PrimaryPublication) => {
 		set({
 			activePublication: newPublication,
 		});
 	},
 }));
 
-const useStore = create((set) => ({}));
-
-export default useStore;
+export const useActiveVideoFilters = create<ActiveVideoFilterStore>((set) => ({
+	activeFilter: "all",
+	setActiveFilters: (newFilter: string) => {
+		set({
+			activeFilter: newFilter,
+		});
+	},
+}));

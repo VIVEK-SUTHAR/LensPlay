@@ -18,7 +18,7 @@ export interface IThemeStore {
 }
 
 export interface IActivePublication {
-	activePublication: PrimaryPublication;
+	activePublication: PrimaryPublication | null;
 	setActivePublication: (newPublication: PrimaryPublication) => void;
 }
 
@@ -159,4 +159,9 @@ export interface IUploadStore {
 export interface INetWorkStore {
 	isOffline: boolean;
 	setIsOffline: (newState: boolean) => void;
+}
+
+export type ActiveVideoFilterStore={
+	activeFilter:string;
+	setActiveFilters:(newFilter:string)=>void,
 }
