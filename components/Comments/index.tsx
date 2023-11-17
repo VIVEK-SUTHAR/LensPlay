@@ -5,10 +5,11 @@ import CommentSkeleton from "components/UI/CommentSkeleton";
 import Heading from "components/UI/Heading";
 import { SOURCES } from "constants/index";
 import {
+	CommentRankingFilterType,
+	HandleInfo,
 	Comment as IComment,
-	PublicationMainFocus,
-	PublicationsQueryRequest,
-	useCommentsQuery,
+	PublicationsRequest,
+	usePublicationsQuery,
 } from "customTypes/generated";
 import React from "react";
 import { ActivityIndicator, Dimensions, LayoutAnimation, SafeAreaView, View } from "react-native";
@@ -16,7 +17,7 @@ import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import formatHandle from "utils/formatHandle";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
-import CommentInput from "./CommentInput";
+// import CommentInput from "./CommentInput";
 
 interface CommentProps {
 	publicationId: string;
@@ -30,19 +31,15 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 	const { accessToken } = useAuthStore();
 	const theme = useThemeStore();
 
-	const QueryRequest: PublicationsQueryRequest = {
-		commentsOf: publicationId,
-		metadata: {
-			mainContentFocus: [
-				PublicationMainFocus.Video,
-				PublicationMainFocus.Article,
-				PublicationMainFocus.Embed,
-				PublicationMainFocus.Link,
-				PublicationMainFocus.TextOnly,
-			],
+	const QueryRequest: PublicationsRequest = {
+		where: {
+			commentOn: {
+				id: publicationId,
+				ranking: {
+					filter: CommentRankingFilterType.All,
+				},
+			},
 		},
-		limit: 5,
-		sources: SOURCES,
 	};
 
 	const {
@@ -50,12 +47,9 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 		error,
 		loading,
 		fetchMore,
-	} = useCommentsQuery({
+	} = usePublicationsQuery({
 		variables: {
 			request: QueryRequest,
-			reactionRequest: {
-				profileId: currentProfile?.id,
-			},
 		},
 		initialFetchPolicy: "network-only",
 		refetchWritePolicy: "merge",
@@ -93,19 +87,19 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 	const renderItem = ({ item }: { item: IComment }) => {
 		return (
 			<CommentCard
-				username={item?.profile?.handle}
-				avatar={getRawurl(item?.profile?.picture)}
-				commentText={item?.metadata?.content || item?.metadata?.description}
+				username={formatHandle(item?.by?.handle as HandleInfo)}
+				avatar={getRawurl(item?.by?.metadata?.picture)}
+				commentText={item?.metadata?.content ?? ""}
 				commentTime={item?.createdAt}
-				id={item?.profile?.id}
-				isFollowdByMe={item?.profile?.isFollowedByMe}
-				name={item?.profile?.name || formatHandle(item?.profile?.handle)}
+				id={item?.by?.id}
+				isFollowdByMe={item?.by?.operations?.isFollowedByMe?.value}
+				name={item?.by?.metadata?.displayName || formatHandle(item?.by?.handle as HandleInfo)}
 				stats={item?.stats}
 				commentId={item?.id}
-				isAlreadyLiked={item?.reaction === "UPVOTE"}
-				isMirrored={item?.mirrors?.length > 0}
-				isDA={item?.isDataAvailability}
-				address={item?.profile?.ownedBy}
+				isAlreadyLiked={item?.operations?.hasReacted}
+				isMirrored={item?.operations?.hasMirrored}
+				isDA={item?.momoka?.proof ? true : false}
+				address={item?.by?.ownedBy?.address}
 			/>
 		);
 	};
@@ -137,7 +131,7 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 	if (commentData) {
 		const allComments = commentData?.publications?.items as IComment[];
 		return (
-			<View style={{ flex: 1,minHeight:4 }}>
+			<View style={{ flex: 1, minHeight: 4 }}>
 				<FlashList
 					data={allComments as IComment[]}
 					keyExtractor={keyExtractor}

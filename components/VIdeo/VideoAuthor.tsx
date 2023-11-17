@@ -3,12 +3,12 @@ import { SubscribeButton } from "components/Profile/ProfileHeader";
 import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import useSubscribe from "hooks/useSuscribe";
+import { HandleInfo } from "customTypes/generated";
 import React, { useState } from "react";
 import { Dimensions, TouchableOpacity } from "react-native";
 import { StyleSheet, View } from "react-native";
-import { useGuestStore } from "store/GuestStore";
-import { useActivePublication, useAuthStore, useToast } from "store/Store";
+import { useActivePublication } from "store/Store";
+import formatHandle from "utils/formatHandle";
 
 type VideoCreatorProps = {
 	avatarLink: string;
@@ -33,17 +33,12 @@ const VideoCreator: React.FC<VideoCreatorProps> = React.memo((props) => {
 
 	const [following, setFollowing] = useState<boolean>(alreadyFollowing);
 
-	const { accessToken } = useAuthStore();
-	const { isGuest } = useGuestStore();
-	const toast = useToast();
-	const {subscribeViaLensManager}=useSubscribe();
-
 	const navigation = useNavigation();
 	const { activePublication } = useActivePublication();
 	const goToChannel = React.useCallback(() => {
 		navigation.navigate("Channel", {
-			handle: activePublication?.profile?.handle,
-			name: activePublication?.profile?.name,
+			handle: formatHandle(activePublication?.by?.handle as HandleInfo),
+			name: activePublication?.by?.metadata?.displayName ?? "",
 		});
 	}, []);
 	return (
@@ -59,7 +54,7 @@ const VideoCreator: React.FC<VideoCreatorProps> = React.memo((props) => {
 						title={
 							showSubscribers
 								? `${subscribersCount} Subscribers`
-								: `@${activePublication?.profile?.handle}`
+								: `@${formatHandle(activePublication?.by?.handle as HandleInfo)}`
 						}
 						style={styles.subtext}
 					/>

@@ -6,11 +6,13 @@ import VideoCardSkeleton from "components/UI/VideoCardSkeleton";
 import VideoCard from "components/VideoCard";
 import { SOURCES } from "constants/index";
 import {
+	HandleInfo,
+	LimitType,
 	Post,
-	PublicationMainFocus,
-	PublicationsQueryRequest,
-	PublicationTypes,
-	useProfilePostsQuery,
+	PublicationMetadataMainFocusType,
+	PublicationsRequest,
+	usePublicationQuery,
+	usePublicationsQuery,
 } from "customTypes/generated";
 import React from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
@@ -20,7 +22,8 @@ import formatHandle from "utils/formatHandle";
 const MoreVideos = () => {
 	const { activePublication } = useActivePublication();
 	const title =
-		activePublication?.profile?.name || formatHandle(activePublication?.profile?.handle);
+		activePublication?.by?.metadata?.displayName ||
+		formatHandle(activePublication?.by?.handle as HandleInfo);
 	return (
 		<View style={styles.moreVideosHeader}>
 			<StyledText
@@ -43,26 +46,25 @@ const MoreVideosList = React.memo(() => {
 	const { accessToken } = useAuthStore();
 	const { PRIMARY } = useThemeStore();
 
-	const QueryRequest: PublicationsQueryRequest = {
-		profileId: activePublication?.profile?.id,
-		publicationTypes: [PublicationTypes.Post],
-		metadata: {
-			mainContentFocus: [PublicationMainFocus.Video],
+	const QueryRequest: PublicationsRequest = {
+		where: {
+			from: activePublication?.by?.id,
+			metadata: {
+				mainContentFocus: [
+					PublicationMetadataMainFocusType.Video,
+					PublicationMetadataMainFocusType.ShortVideo,
+				],
+			},
 		},
-		sources: SOURCES,
-		limit: 5,
+		limit: LimitType.Ten,
 	};
 
-	const { data, loading, fetchMore } = useProfilePostsQuery({
+	const { data, loading, fetchMore } = usePublicationsQuery({
 		variables: {
 			request: QueryRequest,
-			reactionRequest: {
-				profileId: currentProfile?.id,
-			},
-			channelId: currentProfile?.id,
 		},
 		initialFetchPolicy: "no-cache",
-		fetchPolicy:"no-cache",
+		fetchPolicy: "no-cache",
 		context: {
 			headers: {
 				"x-access-token": `Bearer ${accessToken}`,
@@ -137,6 +139,9 @@ const MoreVideosList = React.memo(() => {
 				estimatedItemSize={110}
 				showsVerticalScrollIndicator={false}
 				renderItem={renderItem}
+				onEndReachedThreshold={0.2}
+				onEndReached={onEndCallBack}
+				ListFooterComponent={MoreLoader}
 			/>
 		</View>
 	);

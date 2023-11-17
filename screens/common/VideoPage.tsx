@@ -168,20 +168,20 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							alreadyFollowing={activePublication?.by?.operations?.isFollowedByMe?.value || false}
 						/>
 					</View>
-					<ScrollView
+					{/* <ScrollView
 						style={{
 							marginBottom: 16,
 							marginStart: 4,
 						}}
 						horizontal={true}
 						showsHorizontalScrollIndicator={false}
-					>
-						<LikeButton
+					> */}
+					{/* <LikeButton
 							like={videopageStats?.likeCount}
 							id={activePublication?.id}
 							isalreadyLiked={videopageStats?.isLiked}
-						/>
-						{/* <DisLikeButton
+						/> */}
+					{/* <DisLikeButton
 							isalreadyDisLiked={videopageStats?.isDisliked}
 							id={activePublication?.id}
 						/>
@@ -189,8 +189,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 						<CollectButton collectRef={collectRef} />
 						<ShareButton />
 						<ReportButton /> */}
-					</ScrollView>
-					{/* <View
+					{/* </ScrollView> */}
+					<View
 						style={{
 							marginHorizontal: 8,
 						}}
@@ -210,12 +210,12 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							/>
 							<Icon name="arrowDown" color="white" size={16} />
 						</TouchableOpacity>
-					</View> */}
-					{/* <MoreVideos /> */}
+					</View>
+					<MoreVideos />
 				</ScrollView>
 			</SafeAreaView>
-			{/* <CommentSheet commentSheetRef={commentRef} />
-			<MetaDataSheet sheetRef={descRef} />
+			<CommentSheet commentSheetRef={commentRef} />
+			{/* <MetaDataSheet sheetRef={descRef} />
 			<CollectVideoSheet sheetRef={collectRef} />
 			<MirrorVideoSheet sheetRef={mirrorRef} /> */}
 		</>

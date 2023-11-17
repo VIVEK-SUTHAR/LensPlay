@@ -8,11 +8,11 @@ import { black, primary } from "constants/Colors";
 import { LENSPLAY_SITE } from "constants/index";
 import { PUBLICATION } from "constants/tracking";
 import {
+	PublicationReactionType,
 	PublicationStats,
-	ReactionTypes,
 	useAddReactionMutation,
-	useCreateDataAvailabilityMirrorViaDispatcherMutation,
-	useCreateMirrorViaDispatcherMutation,
+	useMirrorOnchainMutation,
+	useMirrorOnMomokaMutation,
 	useRemoveReactionMutation,
 } from "customTypes/generated";
 import { ToastType } from "customTypes/Store";
@@ -59,8 +59,8 @@ const CommentCard: React.FC<CommentCardProps> = ({
 	address,
 }) => {
 	const [Liked, setLiked] = useState<boolean>(isAlreadyLiked);
-	const [likes, setLikes] = useState<number>(stats?.totalUpvotes);
-	const [mirrorCount, setMirrorCount] = useState<number>(stats?.totalAmountOfMirrors);
+	const [likes, setLikes] = useState<number>(stats?.reactions);
+	const [mirrorCount, setMirrorCount] = useState<number>(stats?.mirrors);
 	const [isMirror, setIsMirror] = useState<boolean>(isMirrored);
 	const { accessToken } = useAuthStore();
 	const navigation = useNavigation();
@@ -78,11 +78,11 @@ const CommentCard: React.FC<CommentCardProps> = ({
 		},
 	});
 
-	const [createOnChainMirror] = useCreateMirrorViaDispatcherMutation();
+	const [createOnChainMirror] = useMirrorOnchainMutation();
 
 	const { PRIMARY } = useThemeStore();
 
-	const [createDataAvaibalityMirror] = useCreateDataAvailabilityMirrorViaDispatcherMutation({
+	const [createDataAvaibalityMirror] = useMirrorOnMomokaMutation({
 		onCompleted: (data) => {
 			Logger.Success("DA Mirrored", data);
 		},
@@ -108,9 +108,8 @@ const CommentCard: React.FC<CommentCardProps> = ({
 			addReaction({
 				variables: {
 					request: {
-						profileId: userStore.currentProfile?.id,
-						reaction: ReactionTypes.Upvote,
-						publicationId: commentId,
+						for: commentId,
+						reaction: PublicationReactionType.Upvote,
 					},
 				},
 				context: {
@@ -124,9 +123,8 @@ const CommentCard: React.FC<CommentCardProps> = ({
 			removeReaction({
 				variables: {
 					request: {
-						profileId: userStore.currentProfile?.id,
-						reaction: ReactionTypes.Upvote,
-						publicationId: commentId,
+						for: commentId,
+						reaction: PublicationReactionType.Downvote,
 					},
 				},
 				context: {
@@ -152,8 +150,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
 				createDataAvaibalityMirror({
 					variables: {
 						request: {
-							from: userStore?.currentProfile?.id,
-							mirror: commentId,
+							mirrorOn: commentId,
 						},
 					},
 					context: {
@@ -168,8 +165,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
 			await createOnChainMirror({
 				variables: {
 					request: {
-						profileId: userStore?.currentProfile?.id,
-						publicationId: commentId,
+						mirrorOn: commentId,
 					},
 				},
 				context: {

@@ -14,7 +14,7 @@ import Icon from "components/Icon";
 
 type CommentsSheetProps = {
 	commentSheetRef: React.RefObject<BottomSheetMethods>;
-	pubId?: Scalars["InternalPublicationId"];
+	pubId?: Scalars["PublicationId"];
 };
 
 const CommentsSheet = ({ commentSheetRef, pubId }: CommentsSheetProps) => {

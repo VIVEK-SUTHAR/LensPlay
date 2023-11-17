@@ -3,13 +3,10 @@ import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import { black } from "constants/Colors";
 import { LENSPLAY_SITE } from "constants/index";
-import {
-	useCreateCommentViaDispatcherMutation,
-	useCreateDataAvailabilityCommentViaDispatcherMutation,
-} from "customTypes/generated";
 import { ToastType } from "customTypes/Store";
+import { useCommentOnMomokaMutation, useCommentOnchainMutation } from "customTypes/generated";
 import React, { useState } from "react";
-import { Pressable, TextInput, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import {
 	useActivePublication,
@@ -38,7 +35,7 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 	const { isGuest } = useGuestStore();
 	const { activePublication } = useActivePublication();
 
-	const [createComment] = useCreateCommentViaDispatcherMutation({
+	const [createComment] = useCommentOnchainMutation({
 		onCompleted: (data) => {
 			Logger.Success("Done", data);
 		},
@@ -48,7 +45,7 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 		},
 	});
 
-	const [createDataAvaibalityComment] = useCreateDataAvailabilityCommentViaDispatcherMutation({
+	const [createDataAvaibalityComment] = useCommentOnMomokaMutation({
 		onCompleted: (data) => {
 			Logger.Success("DA Comment published", data);
 		},
@@ -67,7 +64,7 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 			return;
 		}
 
-		const isDAPublication = activePublication?.isDataAvailability;
+		const isDAPublication = Boolean(activePublication?.momoka?.proof);
 
 		if (isDAPublication) {
 			toast.success("Comment submitted!");
@@ -79,7 +76,6 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 					request: {
 						commentOn: publicationId,
 						contentURI: contenturi,
-						from: currentProfile?.id,
 					},
 				},
 				context: {
@@ -99,11 +95,10 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 			await createComment({
 				variables: {
 					request: {
-						profileId: currentProfile?.id,
-						publicationId: publicationId,
+						commentOn: publicationId,
 						contentURI: contenturi,
-						collectModule: {
-							revertCollectModule: true,
+						referenceModule: {
+							followerOnlyReferenceModule: false,
 						},
 					},
 				},
@@ -144,7 +139,11 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 						alignItems: "center",
 					}}
 				>
-					<Avatar src={getIPFSLink(getRawurl(currentProfile?.picture))} height={28} width={28} />
+					<Avatar
+						src={getIPFSLink(getRawurl(currentProfile?.metadata?.picture))}
+						height={28}
+						width={28}
+					/>
 				</View>
 				<BottomSheetTextInput
 					placeholder="What's in your mind"
