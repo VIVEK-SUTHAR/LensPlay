@@ -43,10 +43,6 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 			},
 		},
 	});
-	console.log(Profile?.profile?.stats);
-	
-		
-
 	const onRefresh = React.useCallback(async () => {
 		setRefreshing(true);
 		await refetch({
@@ -90,11 +86,11 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 						children={() => <AllVideos profileId={Profile?.profile?.id} />}
 					/>
 					{/* <Tab.Screen name="Playlist" children={() => <Playlist />} /> */}
-					{/* <Tab.Screen
+					<Tab.Screen
 						name="Mirror Videos"
 						children={() => <MirroredVideos channelId={Profile?.profile?.id} />}
 					/>
-					<Tab.Screen
+					{/* <Tab.Screen
 						name="Collected Videos"
 						children={() => <CollectedVideos ethAddress={Profile?.profile?.ownedBy?.address} />}
 					/> */}

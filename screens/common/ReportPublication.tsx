@@ -111,7 +111,7 @@ const ReportPublication = ({ navigation, route }: RootStackScreenProps<"ReportPu
 			createReport({
 				variables: {
 					request: {
-						publicationId: route.params.publicationId,
+						for: route.params.publicationId,
 						reason: {
 							[getReasonType(activeReason.reason)]: {
 								reason: activeReason.reason,

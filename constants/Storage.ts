@@ -3,7 +3,7 @@ enum StorageKeys {
 	UserAddress = "@userAddress",
 	ProfileId = "@profileId",
 	NotificationToken = "@FCMToken",
-	
+	PreferredThemeColor="@PreferredThemeColor"
 }
 
 export default StorageKeys;

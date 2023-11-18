@@ -5,8 +5,6 @@ import { APP_OPEN } from "constants/tracking";
 import {
 	Profile,
 	useProfilesLazyQuery,
-	useProfilesManagedLazyQuery,
-	useProfilesQuery,
 	useRefreshMutation,
 	useVerifyLazyQuery,
 } from "customTypes/generated";
@@ -21,8 +19,7 @@ import Animated, {
 	withSpring,
 	withTiming,
 } from "react-native-reanimated";
-import { useAuthStore, useProfile } from "store/Store";
-import getDefaultProfile from "utils/lens/getDefaultProfile";
+import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
 import TrackAction from "utils/Track";
@@ -31,16 +28,16 @@ import { useAccount } from "wagmi";
 export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 	const { setCurrentProfile, setHasHandle } = useProfile();
 	const { setAccessToken, setRefreshToken } = useAuthStore();
+	const { setPrimaryColor } = useThemeStore();
 	const whiteBox = useSharedValue(1);
 	const blackBox = useSharedValue(1);
 	const image = useSharedValue(0);
 	const textOpacity = useSharedValue(0);
 	const { address } = useAccount();
 
-	const [verifyTokens, { data: isvalidTokens, error: verifyError, loading: verifyLoading }] =
-		useVerifyLazyQuery();
+	const [verifyTokens] = useVerifyLazyQuery();
 
-	const [getAccessFromRefresh, { data: newTokens, error, loading }] = useRefreshMutation();
+	const [getAccessFromRefresh] = useRefreshMutation();
 	const [getManagedProfiles] = useProfilesLazyQuery();
 
 	async function HandleDefaultProfile(adress: string | undefined) {
@@ -162,6 +159,14 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 		blackBox.value = withDelay(100, withTiming(10, { duration: 500 }));
 		image.value = withDelay(1000, withSpring(1, { mass: 1 }));
 		textOpacity.value = withDelay(1500, withTiming(1, { duration: 1000 }));
+		AsyncStorage.getItem(StorageKeys.PreferredThemeColor)
+			.then((color) => {
+				if (color) {
+					Logger.Success("COLOR", color);
+					setPrimaryColor(color);
+				}
+			})
+			.catch((err) => Logger.Error(err));
 		setTimeout(() => {
 			getLocalStorage();
 		}, 2000);

@@ -5,6 +5,8 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { black } from "constants/Colors";
 import Heading from "components/UI/Heading";
 import { useThemeStore } from "store/Store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import StorageKeys from "constants/Storage";
 
 type Props = {
 	apperenceSheetRef: React.RefObject<BottomSheetMethods>;
@@ -55,7 +57,11 @@ const ApperenceSheet = ({ apperenceSheetRef }: Props) => {
 				renderItem={({ item }) => {
 					return (
 						<TouchableOpacity
-							onPress={() => setPrimaryColor(item)}
+							onPress={() => {
+								AsyncStorage.setItem(StorageKeys.PreferredThemeColor, item);
+								setPrimaryColor(item);
+								apperenceSheetRef.current?.close()
+							}}
 							style={{
 								height: 56,
 								width: 56,

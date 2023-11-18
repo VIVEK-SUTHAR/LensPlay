@@ -1,6 +1,5 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "@react-navigation/native";
 // import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
@@ -17,19 +16,17 @@ import { AUTH } from "constants/tracking";
 import type { RootStackScreenProps } from "customTypes/navigation";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
-import React, { FC, useRef, useState } from "react";
+import React, { FC, useRef } from "react";
 import {
 	Linking,
 	Pressable,
 	SafeAreaView,
-	ScrollView,
-	SectionList,
-	StyleSheet,
+	ScrollView, StyleSheet,
 	useWindowDimensions,
-	View,
+	View
 } from "react-native";
 import { useGuestStore } from "store/GuestStore";
-import { useProfile, useThemeStore } from "store/Store";
+import { useProfile } from "store/Store";
 import TrackAction from "utils/Track";
 import { useAccount } from "wagmi";
 
@@ -73,8 +70,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 	const { isGuest } = useGuestStore();
 	const logoutref = useRef<BottomSheetMethods>(null);
 	const apperenceSheetRef = useRef<BottomSheetMethods>(null);
-	const { currentProfile, setCurrentProfile } = useProfile();
-	const { setPrimaryColor } = useThemeStore();
+	const { setCurrentProfile } = useProfile();
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			headerRight: () => {
@@ -263,7 +259,6 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 							const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
 							await AsyncStorage.removeItem("@user_tokens");
 							await AsyncStorage.removeItem(StorageKeys.UserAddress);
-							setCurrentProfile(undefined);
 							if (isDeskTopLogin) {
 								await AsyncStorage.removeItem("@viaDeskTop");
 								navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] });
@@ -272,6 +267,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 								await connector?.disconnect();
 								navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] });
 							}
+							setCurrentProfile(undefined);
 							TrackAction(AUTH.LOGOUT);
 						}}
 						my={16}

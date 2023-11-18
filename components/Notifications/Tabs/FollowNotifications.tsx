@@ -9,13 +9,11 @@ import {
 } from "react-native";
 import { NOTIFICATION } from "../../../constants/tracking";
 import { useGuestStore } from "../../../store/GuestStore";
-import { useAuthStore, useProfile, useThemeStore } from "../../../store/Store";
+import { useAuthStore, useThemeStore } from "../../../store/Store";
 import {
-	FollowNotification as NewFollowerNotification,
-	Notification,
-	NotificationRequest,
+	FollowNotification as NewFollowerNotification, NotificationRequest,
 	NotificationType,
-	useNotificationsQuery,
+	useNotificationsQuery
 } from "../../../types/generated";
 import TrackAction from "../../../utils/Track";
 import PleaseLogin from "../../PleaseLogin";
@@ -27,7 +25,6 @@ import Skleton from "../Skleton";
 function FollowNotifications() {
 	const [refreshing, setRefreshing] = useState<boolean>(false);
 	const theme = useThemeStore();
-	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
 	const { isGuest } = useGuestStore();
 
@@ -152,7 +149,7 @@ function FollowNotifications() {
 				getItemLayout={getItemLayout}
 				ListFooterComponent={<MoreLoader />}
 				onEndReached={onEndCallBack}
-				onEndReachedThreshold={0.8}
+				onEndReachedThreshold={0.2}
 				refreshControl={_RefreshControl}
 				renderItem={renderItem}
 			/>

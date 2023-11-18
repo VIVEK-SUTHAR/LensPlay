@@ -126,7 +126,7 @@ export default memo(MyVideoCard);
 
 export type SheetProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
-	publication: Post | Mirror | null;
+	publication: PrimaryPublication;
 	profileId: Scalars["ProfileId"];
 };
 

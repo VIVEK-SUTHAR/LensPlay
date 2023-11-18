@@ -8,22 +8,22 @@ import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black } from "constants/Colors";
+import dimensions from "constants/Layout";
 import { useRefreshMutation } from "customTypes/generated";
 import type { RootStackScreenProps, RootTabParamList } from "customTypes/navigation";
 import * as ImagePicker from "expo-image-picker";
 import React, { useRef } from "react";
-import { Dimensions, Pressable, View } from "react-native";
+import { Pressable, View } from "react-native";
 import Trending from "screens/BottomTabs/Explore/Trending";
 import Feed from "screens/BottomTabs/Home/Feed";
 import Notifications from "screens/BottomTabs/Notification/Notification";
 import ProfileScreen from "screens/BottomTabs/Profile/Profile";
 import Shots from "screens/BottomTabs/Shots/Shots";
-import Settings from "screens/Header/Settings/Settings";
-import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useProfile, useThemeStore, useToast } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
 import canUploadedToIpfs from "utils/canUploadToIPFS";
 import getIPFSLink from "utils/getIPFSLink";
+import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
 import getFileSize from "utils/video/getFileSize";
@@ -31,28 +31,18 @@ import getFileSize from "utils/video/getFileSize";
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 export default function BottomTabNavigator({ navigation }: RootStackScreenProps<"Root">) {
-	const { isGuest } = useGuestStore();
 	const theme = useThemeStore();
-	const user = useProfile();
+	const { currentProfile: { metadata: { picture } = {} } = {} } = useProfile();
 	const { setAccessToken, setRefreshToken } = useAuthStore();
 	const [status, requestPermission] = ImagePicker.useCameraPermissions();
-	const windowHeight = Dimensions.get("window").height;
-
-	let PROFILE_PIC_URI = "";
-	if (user?.currentProfile?.metadata?.picture?.__typename === "ImageSet") {
-		PROFILE_PIC_URI = user?.currentProfile?.metadata?.picture?.optimized?.uri;
-	}
-	if (user?.currentProfile?.metadata?.picture?.__typename === "NftImage") {
-		PROFILE_PIC_URI = user?.currentProfile?.metadata?.picture?.image?.optimized?.uri;
-	}
-
-	const [getAccessFromRefresh, { data: newTokens, error, loading }] = useRefreshMutation();
+	const [getAccessFromRefresh] = useRefreshMutation();
 
 	React.useEffect(() => {
 		updateTokens();
-		setInterval(() => {
+		const tokenInterval = setInterval(() => {
 			updateTokens();
 		}, 60000);
+		return clearInterval(tokenInterval);
 	}, []);
 
 	const updateTokens = async () => {
@@ -179,7 +169,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 						alignItems: "center",
 						justifyContent: "space-between",
 						borderTopColor: "transparent",
-						minHeight: windowHeight / 14,
+						minHeight: dimensions.window.height / 14,
 						paddingHorizontal: 5,
 						paddingVertical: 10,
 					},
@@ -312,7 +302,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 										borderWidth: focused ? 1 : 0,
 									}}
 								>
-									<Avatar src={getIPFSLink(PROFILE_PIC_URI)} height={28} width={28} />
+									<Avatar src={getIPFSLink(getRawurl(picture))} height={28} width={28} />
 								</View>
 							);
 						},
