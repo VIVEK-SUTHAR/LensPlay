@@ -6,13 +6,10 @@ import {
 	ExplorePublicationType,
 	ExplorePublicationsOrderByType,
 	LimitType,
-	Mirror,
-	Post,
 	PrimaryPublication,
 	PublicationMetadataMainFocusType,
 	useExplorePublicationsQuery,
 } from "customTypes/generated";
-import { ShotsPublication } from "customTypes/index";
 import { RootTabScreenProps } from "customTypes/navigation";
 import React, { useCallback, useState } from "react";
 import {
@@ -26,19 +23,16 @@ import {
 } from "react-native";
 import SwiperFlatList from "react-native-swiper-flatlist";
 import { useGuestStore } from "store/GuestStore";
-import { useAuthStore, useProfile, useThemeStore } from "store/Store";
+import { useAuthStore, useThemeStore } from "store/Store";
 
-type ShotPublication = Post | Mirror;
 const isAndroid = Platform.OS === "android";
 
 const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 	const [currentIndex, setCurrentIndex] = useState<number>(0);
-	const { currentProfile } = useProfile();
-	const { isGuest, profileId } = useGuestStore();
+	const { isGuest } = useGuestStore();
 	const { accessToken } = useAuthStore();
 	const { PRIMARY } = useThemeStore();
 	const { height } = useWindowDimensions();
-
 
 	const QueryRequest: ExplorePublicationRequest = {
 		orderBy: ExplorePublicationsOrderByType.Latest,
@@ -51,14 +45,12 @@ const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 			},
 			publicationTypes: [ExplorePublicationType.Post],
 		},
-		limit:LimitType.Ten
+		limit: LimitType.Ten,
 	};
 
 	const {
 		data: shotsData,
-		error,
 		loading,
-		refetch,
 		fetchMore,
 	} = useExplorePublicationsQuery({
 		variables: {
@@ -74,7 +66,7 @@ const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 	const pageInfo = shotsData?.explorePublications.pageInfo;
 
 	const renderItem = useCallback(
-		({ item, index }: { item: Post | Mirror; index: number }) => {
+		({ item, index }: { item: PrimaryPublication; index: number }) => {
 			if (!item.isHidden) {
 				return (
 					<View style={{ height: isAndroid ? height : "auto" }}>
@@ -130,7 +122,7 @@ const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 	const ListFooter = React.memo(() => {
 		return <ActivityIndicator style={{ paddingVertical: 12 }} size="small" color={PRIMARY} />;
 	});
-	const keyExtractor = (item:PrimaryPublication) => item.id
+	const keyExtractor = (item: PrimaryPublication) => item.id;
 
 	if (loading) return <ShotSkeleton />;
 
@@ -156,6 +148,7 @@ const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 				onChangeIndex={handleChangeIndexValue}
 				data={shotsData?.explorePublications?.items}
 				renderItem={renderItem}
+				ListFooterComponent={ListFooter}
 				initialNumToRender={3}
 				maxToRenderPerBatch={3}
 				windowSize={3}

@@ -1,7 +1,6 @@
 import StyledText from "components/UI/StyledText";
-import { VIDEO_CATEGORIES } from "constants/Categories";
 import React from "react";
-import { Pressable, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { useActiveVideoFilters, useThemeStore } from "store/Store";
 
 type Props = {
@@ -15,21 +14,17 @@ function Chip({ title, value }: Props) {
 	const theme = useThemeStore();
 	const { activeFilter, setActiveFilters } = useActiveVideoFilters();
 	const updateCategory = () => {
-		setActiveFilters(value);
+		if (activeFilter === value) setActiveFilters("all");
+		else {
+			setActiveFilters(value);
+		}
 	};
 	return (
 		<TouchableOpacity
-			style={{
-				marginHorizontal: 4,
-				backgroundColor: `${activeFilter === value ? theme.PRIMARY : theme.DARK_PRIMARY}`,
-				width: "auto",
-				maxHeight: 34,
-				paddingHorizontal: 12,
-				paddingVertical: 6,
-				justifyContent: "center",
-				alignItems: "center",
-				borderRadius: 8,
-			}}
+			style={[
+				styles.chipContainer,
+				{ backgroundColor: `${activeFilter === value ? theme.PRIMARY : theme.DARK_PRIMARY}` },
+			]}
 			onPress={updateCategory}
 		>
 			<StyledText
@@ -45,3 +40,16 @@ function Chip({ title, value }: Props) {
 }
 
 export default Chip;
+
+const styles = StyleSheet.create({
+	chipContainer: {
+		width: "auto",
+		maxHeight: 34,
+		paddingHorizontal: 12,
+		paddingVertical: 6,
+		justifyContent: "center",
+		alignItems: "center",
+		borderRadius: 8,
+		marginHorizontal: 4,
+	},
+});

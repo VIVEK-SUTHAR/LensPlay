@@ -4,6 +4,7 @@ import { useFocusEffect } from "@react-navigation/native";
 // import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
+import ApperenceSheet from "components/settings/ApperenceSheet";
 import ProfileQR from "components/settings/profileQR";
 import Socials from "components/settings/Socials";
 import Button from "components/UI/Button";
@@ -28,7 +29,7 @@ import {
 	View,
 } from "react-native";
 import { useGuestStore } from "store/GuestStore";
-import { useProfile } from "store/Store";
+import { useProfile, useThemeStore } from "store/Store";
 import TrackAction from "utils/Track";
 import { useAccount } from "wagmi";
 
@@ -81,8 +82,9 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 	// const Wallet = useWalletConnect();
 	const { isGuest } = useGuestStore();
 	const logoutref = useRef<BottomSheetMethods>(null);
+	const apperenceSheetRef=useRef<BottomSheetMethods>(null);
 	const { currentProfile, setCurrentProfile } = useProfile();
-
+	const { setPrimaryColor } = useThemeStore();
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			headerRight: () => {
@@ -100,14 +102,14 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="black" style="auto" />
 			<ScrollView style={styles.container}>
-				{!isGuest ? <ProfileQR /> : <></>}
+				{!isGuest ? <ProfileQR /> : null}
 				<View
 					style={{
 						marginTop: 24,
 					}}
 				>
 					<Heading
-						title={"Account"}
+						title={"General"}
 						style={{
 							color: "white",
 							fontSize: 16,
@@ -125,6 +127,11 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 							icon={<Icon name="bug" size={24} />}
 							label={"Manage Your Profile"}
 							onPress={() => navigation.push("ProfileManager")}
+						/>
+						<SettingsItem
+							icon={<Icon name="edit" size={24} />}
+							label={"Appereance"}
+							onPress={() => apperenceSheetRef.current?.snapToIndex(0)}
 						/>
 					</View>
 				</View>
@@ -290,6 +297,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 					/>
 				</View>
 			</Sheet>
+			<ApperenceSheet apperenceSheetRef={apperenceSheetRef}/>
 		</SafeAreaView>
 	);
 };

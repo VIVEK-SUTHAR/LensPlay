@@ -27,8 +27,7 @@ import Logger from "utils/logger";
 import TrackAction from "utils/Track";
 
 function ShotReaction({ item, commentRef }: ShotsPublication) {
-	const [totalCollects, setTotalCollects] = useState<number>(item?.stats?.totalAmountOfCollects);
-	const [collected, setCollected] = useState<boolean>(item?.hasCollectedByMe);
+	const [totalCollects, setTotalCollects] = useState<number>(item?.stats?.countOpenActions);
 	const collectSheetRef = useRef<BottomSheetMethods>(null);
 	const bottomTabBarHeight = useBottomTabBarHeight();
 	const navigation = useNavigation();
@@ -37,23 +36,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 	const toast = useToast();
 	const { isGuest } = useGuestStore();
 
-	const [createProxyAction] = useProxyActionMutation({
-		onCompleted: (data) => {
-			toast.show("Collect Submitted", ToastType.SUCCESS, true);
-			setCollected(true);
-			setTotalCollects((prev) => prev + 1);
-			TrackAction(SHOT.SHOTS_COLLECT);
-		},
-		onError: (error) => {
-			if (error.message == "Can only collect if the publication has a `FreeCollectModule` set") {
-				toast.show("You can't collect this video", ToastType.ERROR, true);
-			} else {
-				Logger.Log(error.message);
-				toast.show("Something went wrong", ToastType.ERROR, true);
-			}
-			collectSheetRef?.current?.close();
-		},
-	});
+	
 
 	const collectPublication = React.useCallback(async () => {
 		try {
@@ -61,27 +44,11 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 				toast.show("Please Login", ToastType.ERROR, true);
 				return;
 			}
-			if (item?.hasCollectedByMe) {
+			if (item?.operations?.hasActed) {
 				toast.show("You have already collected the video", ToastType.ERROR, true);
 				return;
 			}
-			await createProxyAction({
-				variables: {
-					request: {
-						collect: {
-							freeCollect: {
-								publicationId: item?.id,
-							},
-						},
-					},
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-						"origin": LENSPLAY_SITE,
-					},
-				},
-			});
+			
 		} catch (error) {
 			if (error instanceof Error) {
 				Logger.Log(error.message);
@@ -94,7 +61,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 	const shareVideo = React.useCallback(async () => {
 		try {
 			const result = await Share.share({
-				message: `Let's watch ${item?.metadata?.name} on LensPlay, here's link, https://lensplay.xyz/watch/${item?.id}
+				message: `Let's watch ${item?.metadata?.title} on LensPlay, here's link, https://lensplay.xyz/watch/${item?.id}
         `,
 			});
 			TrackAction(PUBLICATION.SHARE);
@@ -117,9 +84,9 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 				}}
 			>
 				<LikeButton
-					like={item?.stats?.totalUpvotes}
+					like={item?.stats?.reactions}
 					id={item?.id}
-					isalreadyLiked={item?.reaction === "UPVOTE"}
+					isalreadyLiked={item?.operations?.upvote}
 					bytes={true}
 				/>
 				<TouchableOpacity
@@ -134,9 +101,9 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 					}}
 				>
 					<Icon name="comment" size={32} />
-					<Text style={{ color: "white" }}>{item?.stats?.totalAmountOfComments}</Text>
+					<Text style={{ color: "white" }}>{item?.stats?.comments}</Text>
 				</TouchableOpacity>
-				<TouchableOpacity
+				{/* <TouchableOpacity
 					style={{
 						padding: 10,
 						justifyContent: "center",
@@ -150,7 +117,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 				>
 					<Icon name="collect" color={collected ? PRIMARY : "white"} size={28} />
 					<Text style={{ color: collected ? PRIMARY : "white" }}>{totalCollects}</Text>
-				</TouchableOpacity>
+				</TouchableOpacity> */}
 				<TouchableOpacity
 					style={{
 						padding: 10,
@@ -221,7 +188,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 						>
 							<Image
 								source={{
-									uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
+									uri: getIPFSLink(getRawurl(item?.metadata?.asset?.cover)),
 								}}
 								placeholder={getPlaceHolderImage()}
 								transition={500}
@@ -234,7 +201,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 								contentFit="cover"
 							/>
 							<StyledText
-								title={item?.metadata?.name}
+								title={item?.metadata?.title}
 								style={{
 									fontSize: 20,
 									color: white[800],
@@ -281,7 +248,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 									marginTop: 8,
 								}}
 							>
-								<Avatar src={getRawurl(item?.profile?.picture)} height={40} width={40} />
+								<Avatar src={getRawurl(item?.by?.metadata?.picture)} height={40} width={40} />
 							</View>
 						</View>
 						<View

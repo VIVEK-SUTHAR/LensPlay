@@ -35,7 +35,7 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 		}, 0);
 		return () => clearTimeout(delay);
 	}, []);
-
+	Logger.Warn("Channel Handle ",route.params.handle)
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			title: route.params.name || formatHandle(route?.params?.handle),

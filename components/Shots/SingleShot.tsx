@@ -8,25 +8,25 @@ import ShotData, { DiscriptionSheet } from "components/Shots/ShotData";
 import ShotReaction from "components/Shots/ShotReaction";
 import Player from "components/VideoPlayer/Player";
 import { black } from "constants/Colors";
-import { Mirror, Post, PrimaryPublication, VideoMetadataV3 } from "customTypes/generated";
+import { PrimaryPublication, VideoMetadataV3 } from "customTypes/generated";
 import { ResizeMode, Video } from "expo-av";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Pressable, useWindowDimensions, View } from "react-native";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
-import createLivePeerAsset from "utils/video/createLivePeerAsset";
-import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 
-interface SingleByteProps {
+interface SingleShotProps {
 	item: PrimaryPublication;
 	isActive: boolean;
 }
 
-function SingleShot({ item, isActive }: SingleByteProps) {
-	const metadata=item.metadata as VideoMetadataV3;
+function SingleShot({ item, isActive }: SingleShotProps) {
+	const metadata = item.metadata as VideoMetadataV3;
 	const [mute, setMute] = useState(false);
-	const [videoURL, setVideoURL] = useState(getIPFSLink(metadata?.asset?.video?.optimized?.uri));
+	const [videoURL, setVideoURL] = useState(
+		getIPFSLink(metadata?.asset?.video?.optimized?.uri || metadata?.asset?.video?.raw?.uri)
+	);
 
 	const ref = React.useRef<Video>(null);
 	const commentSheetRef = React.useRef<BottomSheetMethods>(null);
@@ -102,7 +102,7 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 								// console.log(error);
 							},
 							shouldPlay: isActive,
-							resizeMode: ResizeMode.COVER,
+							resizeMode: ResizeMode.CONTAIN,
 							isMuted: mute,
 							posterSource: {
 								uri: getIPFSLink(getRawurl(metadata?.asset?.cover)),
@@ -133,8 +133,8 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 				</Pressable>
 			</View>
 			<ShotData item={item} descriptionRef={descriptionRef} />
-			{/* <ShotReaction item={item} commentRef={commentSheetRef} /> */}
-			{/* <CommentSheet commentSheetRef={commentSheetRef} pubId={item?.id} /> */}
+			<ShotReaction item={item} commentRef={commentSheetRef} />
+			<CommentSheet commentSheetRef={commentSheetRef} pubId={item?.id} />
 			<Sheet
 				ref={descriptionRef}
 				index={-1}
