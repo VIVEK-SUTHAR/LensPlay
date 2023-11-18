@@ -28,10 +28,12 @@ import { PUBLICATION } from "constants/tracking";
 import { ApolloCache } from "@apollo/client";
 import {
 	HandleInfo,
+	Post,
 	useMirrorOnMomokaMutation,
 	useMirrorOnchainMutation,
 } from "customTypes/generated";
 import formatHandle from "utils/formatHandle";
+import useMirror from "hooks/reactions/useMIrror";
 
 type MirrorVideoSheetProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
@@ -41,6 +43,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 	const { activePublication } = useActivePublication();
 	const { accessToken } = useAuthStore();
 	const { mirrorStats, setMirrorStats } = useReactionStore();
+	const { mirrorPublication } = useMirror();
 
 	const isDAPublication = Boolean(activePublication?.momoka?.proof);
 
@@ -50,44 +53,44 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 	const theme = useThemeStore();
 	const { currentProfile } = useProfile();
 
-	const updateCache = (cache: ApolloCache<any>) => {
-		try {
-			cache.modify({
-				id: cache.identify(activePublication as any),
-				fields: {
-					mirrors: (mirrors) => [...mirrors, currentProfile?.id],
-					stats: (stats) => ({
-						...stats,
-						totalAmountOfMirrors: stats.mirrors + 1,
-					}),
-				},
-			});
-		} catch (error) {
-			Logger.Error("error", error);
-		}
-	};
+	// const updateCache = (cache: ApolloCache<any>) => {
+	// 	try {
+	// 		cache.modify({
+	// 			id: cache.identify(activePublication as any),
+	// 			fields: {
+	// 				mirrors: (mirrors) => [...mirrors, currentProfile?.id],
+	// 				stats: (stats) => ({
+	// 					...stats,
+	// 					totalAmountOfMirrors: stats.mirrors + 1,
+	// 				}),
+	// 			},
+	// 		});
+	// 	} catch (error) {
+	// 		Logger.Error("error", error);
+	// 	}
+	// };
 
-	const [createOnChainMirror] = useMirrorOnchainMutation({
-		onCompleted: (data) => {
-			Logger.Success("Mirrored", data);
-		},
-		onError: (err) => {
-			Logger.Error("Error in Mirror", err);
-			toast.show(err.message, ToastType.ERROR, true);
-		},
-		update: (cache) => updateCache(cache),
-	});
+	// const [createOnChainMirror] = useMirrorOnchainMutation({
+	// 	onCompleted: (data) => {
+	// 		Logger.Success("Mirrored", data);
+	// 	},
+	// 	onError: (err) => {
+	// 		Logger.Error("Error in Mirror", err);
+	// 		toast.show(err.message, ToastType.ERROR, true);
+	// 	},
+	// 	update: (cache) => updateCache(cache),
+	// });
 
-	const [createDataAvaibalityMirror] = useMirrorOnMomokaMutation({
-		onCompleted: (data) => {
-			Logger.Success("DA Mirrored", data);
-		},
-		onError: (err) => {
-			Logger.Error("Error in DA Mirror", err);
-			toast.show(err.message, ToastType.ERROR, true);
-		},
-		update: (cache) => updateCache(cache),
-	});
+	// const [createDataAvaibalityMirror] = useMirrorOnMomokaMutation({
+	// 	onCompleted: (data) => {
+	// 		Logger.Success("DA Mirrored", data);
+	// 	},
+	// 	onError: (err) => {
+	// 		Logger.Error("Error in DA Mirror", err);
+	// 		toast.show(err.message, ToastType.ERROR, true);
+	// 	},
+	// 	update: (cache) => updateCache(cache),
+	// });
 
 	const onMirror = async () => {
 		if (mirrorStats?.isMirrored) {
@@ -100,42 +103,43 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 			mirrorRef.current?.close();
 			return;
 		}
-		if (isDAPublication) {
-			toast.success("Mirror submitted");
-			setMirrorStats(true, mirrorStats.mirrorCount + 1);
-			mirrorRef.current?.close();
-			createDataAvaibalityMirror({
-				variables: {
-					request: {
-						mirrorOn: activePublication?.id,
-					},
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-						"origin": LENSPLAY_SITE,
-					},
-				},
-			});
-			return;
-		}
+		// if (isDAPublication) {
+		// 	toast.success("Mirror submitted");
+		// 	setMirrorStats(true, mirrorStats.mirrorCount + 1);
+		// 	mirrorRef.current?.close();
+		// 	createDataAvaibalityMirror({
+		// 		variables: {
+		// 			request: {
+		// 				mirrorOn: activePublication?.id,
+		// 			},
+		// 		},
+		// 		context: {
+		// 			headers: {
+		// 				"x-access-token": `Bearer ${accessToken}`,
+		// 				"origin": LENSPLAY_SITE,
+		// 			},
+		// 		},
+		// 	});
+		// 	return;
+		// }
 		try {
 			toast.success("Mirror submitted!");
 			setMirrorStats(true, mirrorStats.mirrorCount + 1);
 			mirrorRef.current?.close();
-			await createOnChainMirror({
-				variables: {
-					request: {
-						mirrorOn: activePublication?.id,
-					},
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-						"origin": LENSPLAY_SITE,
-					},
-				},
-			});
+			// await createOnChainMirror({
+			// 	variables: {
+			// 		request: {
+			// 			mirrorOn: activePublication?.id,
+			// 		},
+			// 	},
+			// 	context: {
+			// 		headers: {
+			// 			"x-access-token": `Bearer ${accessToken}`,
+			// 			"origin": LENSPLAY_SITE,
+			// 		},
+			// 	},
+			// });
+			await mirrorPublication(activePublication as Post);
 			TrackAction(PUBLICATION.MIRROR);
 		} catch (error) {
 			if (error instanceof Error) {
