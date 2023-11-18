@@ -51,29 +51,37 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 
 	
 
-	const SettingItemsList: SettingsItemProps[] = [
-		{
-			icon: <Icon name="policy" size={24} />,
-			label: "Terms and Conditions",
-			onPress: () => {
-				Linking.openURL(LENSPLAY_TERMS);
-			},
+const SettingItemsList: SettingsItemProps[] = [
+	{
+		icon: <Icon name="policy" size={24} />,
+		label: "Terms and Conditions",
+		onPress: () => {
+			Linking.openURL(LENSPLAY_TERMS);
 		},
-		{
-			icon: <Icon name="terms" size={24} />,
-			label: "Privacy Policy",
-			onPress: () => {
-				Linking.openURL(LENSPLAY_PRIVACY);
-			},
+	},
+	{
+		icon: <Icon name="terms" size={24} />,
+		label: "Privacy Policy",
+		onPress: () => {
+			Linking.openURL(LENSPLAY_PRIVACY);
 		},
-		{
-			icon: <Icon name="mail" size={24} />,
-			label: "Contact Us",
-			onPress: () => {
-				Linking.openURL(`mailto:lensplay.ac@gmail.com`);
-			},
+	},
+	{
+		icon: <Icon name="mail" size={24} />,
+		label: "Contact Us",
+		onPress: () => {
+			Linking.openURL(`mailto:lensplay.ac@gmail.com`);
 		},
-	];
+	},
+];
+const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
+	// const { isConnected, address, provider } = useWalletConnectModal();
+
+	const { width } = useWindowDimensions();
+	// const Wallet = useWalletConnect();
+	const { isGuest } = useGuestStore();
+	const logoutref = useRef<BottomSheetMethods>(null);
+	const { currentProfile, setCurrentProfile } = useProfile();
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
@@ -93,7 +101,33 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 			<StatusBar backgroundColor="black" style="auto" />
 			<ScrollView style={styles.container}>
 				{!isGuest ? <ProfileQR /> : <></>}
-				
+				<View
+					style={{
+						marginTop: 24,
+					}}
+				>
+					<Heading
+						title={"Account"}
+						style={{
+							color: "white",
+							fontSize: 16,
+							fontWeight: "600",
+						}}
+					/>
+					<View
+						style={{
+							backgroundColor: dark_primary,
+							marginTop: 16,
+							borderRadius: 12,
+						}}
+					>
+						<SettingsItem
+							icon={<Icon name="bug" size={24} />}
+							label={"Manage Your Profile"}
+							onPress={() => navigation.push("ProfileManager")}
+						/>
+					</View>
+				</View>
 				<View>
 					<Heading
 						title={"About"}
@@ -325,4 +359,4 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		margin: 16,
 	},
-});
+})};

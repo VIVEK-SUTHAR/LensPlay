@@ -1,14 +1,8 @@
-import { useLazyQuery } from "@apollo/client";
 import { FlashList } from "@shopify/flash-list";
 import Icon from "components/Icon";
 import ProfileCard from "components/ProfileCard";
 import { SEARCH } from "constants/tracking";
-import {
-	LimitType,
-	Profile,
-	SearchProfilesDocument,
-	useSearchProfilesLazyQuery,
-} from "customTypes/generated";
+import { HandleInfo, LimitType, Profile, useSearchProfilesLazyQuery } from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import useDebounce from "hooks/useDebounce";
@@ -24,6 +18,7 @@ import {
 } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useThemeStore } from "store/Store";
+import formatHandle from "utils/formatHandle";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
 import TrackAction from "utils/Track";
@@ -115,8 +110,6 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 		};
 	};
 
-	Logger.Success(result);
-
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="transparent" style="auto" />
@@ -132,7 +125,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 						profileName={item?.metadata?.displayName || item?.id}
 						profileId={item?.id}
 						isFollowed={item?.operations?.isFollowedByMe?.value || false}
-						handle={item?.handle}
+						handle={formatHandle(item?.handle as HandleInfo)}
 						owner={item?.ownedBy?.address}
 					/>
 				)}

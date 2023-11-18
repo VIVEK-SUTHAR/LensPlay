@@ -61,7 +61,7 @@ const UserStats = ({ navigation, route }: RootStackScreenProps<"UserStats">) => 
 				/>
 				<Tab.Screen
 					name="Subscriptions"
-					children={() => <SubscriptionsList ethAddress={route?.params?.ethAddress} />}
+					children={() => <SubscriptionsList profileId={route.params.profileId} />}
 					options={{
 						tabBarLabel: "Subscriptions",
 					}}
@@ -87,7 +87,7 @@ const Suscribers = ({ profileId }: { profileId: Scalars["ProfileId"] }) => {
 	const { PRIMARY } = useThemeStore();
 
 	const request: FollowersRequest = {
-		of: currentProfile?.id,
+		of: profileId,
 		limit: LimitType.TwentyFive,
 	};
 
@@ -182,13 +182,13 @@ const Suscribers = ({ profileId }: { profileId: Scalars["ProfileId"] }) => {
 
 const SuscriberList = React.memo(Suscribers);
 
-const Subscriptions = ({ ethAddress }: { ethAddress: Scalars["EvmAddress"] }) => {
+const Subscriptions = ({ profileId }: { profileId: Scalars["ProfileId"] }) => {
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
 	const { PRIMARY } = useThemeStore();
 
 	const request: FollowingRequest = {
-		for: currentProfile?.id,
+		for: profileId,
 		limit: LimitType.TwentyFive,
 	};
 

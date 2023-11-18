@@ -52,10 +52,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 	const theme = useThemeStore();
 	const navigation = useNavigation();
 	const profile = Profile?.profile;
-	
-	
-	
-	
 
 	// const onRefresh = React.useCallback(async () => {
 	// 	setRefreshing(true);

@@ -32,6 +32,7 @@ import { useThemeStore } from "store/Store";
 import BottomTabNavigator from "./BottomTabNavigation";
 import Profiles from "screens/Auth/Profiles";
 import MyQR from "screens/Header/Settings/MyQR";
+import ProfileManager from "screens/Header/Settings/ProfileManager";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
@@ -198,7 +199,6 @@ export default function StackNavigation() {
 			<Stack.Screen
 				name="Settings"
 				component={Settings}
-			
 				options={{
 					animation: "default",
 					headerShown: true,
@@ -394,6 +394,14 @@ export default function StackNavigation() {
 				component={MyQR}
 				options={{
 					animation: "default",
+					headerTintColor: theme.PRIMARY,
+				}}
+			/>
+			<Stack.Screen
+				name="ProfileManager"
+				component={ProfileManager}
+				options={{
+					animation: "slide_from_right",
 					headerTintColor: theme.PRIMARY,
 				}}
 			/>
