@@ -1,30 +1,30 @@
 import { useNavigation } from "@react-navigation/native";
 import Sheet from "components/Bottom";
-import { type SheetProps } from "components/common/MyVideoCard";
 import Icon from "components/Icon";
 import Heading from "components/UI/Heading";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
-import { LENSPLAY_SITE } from "constants/index";
+import { type SheetProps } from "components/common/MyVideoCard";
 import { black, white } from "constants/Colors";
+import { LENSPLAY_SITE } from "constants/index";
 import { PUBLICATION } from "constants/tracking";
 import {
-	type Attribute,
+	usePublicationLazyQuery,
+	useSetProfileMetadataMutation,
+	type MetadataAttribute,
 	type Post,
 	type Profile,
-	useSetProfileMetadataMutation,
-	usePublicationLazyQuery,
 } from "customTypes/generated";
 import { type ProfileMetaDataV1nput } from "customTypes/index";
 import { default as React, useEffect } from "react";
 import { Dimensions, Image, Pressable, TouchableOpacity, View } from "react-native";
-import usePinStore from "store/pinStore";
 import { useActivePublication, useAuthStore, useProfile, useToast } from "store/Store";
+import usePinStore from "store/pinStore";
 import CommonStyles from "styles/index";
+import TrackAction from "utils/Track";
 import getDifference from "utils/getDifference";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
-import TrackAction from "utils/Track";
 import uploadToArweave from "utils/uploadToArweave";
 import { v4 as uuidV4 } from "uuid";
 
@@ -150,7 +150,7 @@ export default function PinnedPublication({
 		const attributes = profile?.metadata?.attributes;
 
 		const pinnedPublication = attributes?.find(
-			(attr: Attribute) => attr.key === "pinnedPublicationId"
+			(attr: MetadataAttribute) => attr.key === "pinnedPublicationId"
 		);
 		if (pinnedPublication) {
 			pinStore.setHasPinned(true);
@@ -211,7 +211,7 @@ export default function PinnedPublication({
 					<View>
 						<Image
 							source={{
-								uri: getIPFSLink(getRawurl(data?.publication?.metadata?.cover)),
+								uri: getIPFSLink(getRawurl(data?.publication?.metadata?.asset?.cover)),
 							}}
 							style={{
 								width: 160,
@@ -235,7 +235,7 @@ export default function PinnedPublication({
 							}}
 						>
 							<Heading
-								title={data?.publication?.metadata?.name}
+								title={data?.publication?.metadata?.title}
 								style={{ color: "white", fontSize: 16, fontWeight: "500" }}
 								numberOfLines={2}
 							/>
@@ -246,7 +246,7 @@ export default function PinnedPublication({
 							>
 								<StyledText
 									title={
-										data?.publication?.metadata?.content || data?.publication?.metadata?.description
+										data?.publication?.metadata?.content
 									}
 									numberOfLines={1}
 									style={{ color: "gray", fontSize: 12 }}

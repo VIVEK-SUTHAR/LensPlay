@@ -3,11 +3,10 @@ import { useFocusEffect } from "@react-navigation/native";
 import CommentSheet from "components/Comments/CommentSheet";
 import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
-import { LikeButton, ReportButton, ShareButton, VideoCreator, VideoMeta } from "components/VIdeo";
-import DisLikeButton from "components/VIdeo/Actions/DisLikeButton";
+import { VideoCreator, VideoMeta } from "components/VIdeo";
 import MetaDataSheet from "components/VIdeo/Actions/MetaDataSheet";
-import MirrorButton from "components/VIdeo/Actions/MirrorButton";
 import MirrorVideoSheet from "components/VIdeo/Actions/MirrorVideoSheet";
+import VideoActions from "components/VIdeo/Actions/VideoActions";
 import MoreVideos from "components/VIdeo/MoreVideos";
 import VideoPageSkeleton from "components/VIdeo/VideoPageSkeleton";
 import VideoPlayer from "components/VideoPlayer";
@@ -47,20 +46,21 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	}, []);
 
 	React.useEffect(() => {
-		const blurSubscription = navigation.addListener("blur", handleBlur);
 		const delay = setTimeout(() => {
 			setIsReadyToRender(true);
 		}, 50);
+		const blurSubscription = navigation.addListener("blur", handleBlur);
+		const handler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
 
 		//Clean-Up Listeners
 		return () => {
 			clearTimeout(delay);
 			blurSubscription();
+			handler.remove();
 		};
 	}, [activePublication]);
 
-	const { videopageStats, setVideoPageStats, clearStats, setCollectStats, setMirrorStats } =
-		useReactionStore();
+	const { clearStats, setCollectStats, setMirrorStats } = useReactionStore();
 	const handleBackButtonClick = React.useCallback(() => {
 		setStatusBarHidden(false, "fade");
 		setInFullsreen(!inFullscreen);
@@ -73,30 +73,6 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		}
 		return true;
 	}, [navigation]);
-
-	React.useEffect(() => {
-		setVideoPageStats(
-			activePublication?.operations?.upvote,
-			activePublication?.operations.downvote,
-			activePublication?.stats?.reactions || 0
-		);
-		setCollectStats(
-			activePublication?.operations?.hasActed?.value || false,
-			activePublication?.stats?.countOpenActions || 0
-		);
-		if (activePublication?.__typename === "Post") {
-			setMirrorStats(
-				activePublication?.operations.hasMirrored,
-				activePublication?.stats?.mirrors || 0
-			);
-		}
-		Logger.Success("ISLIKED", activePublication?.operations);
-
-		const handler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
-		return () => {
-			handler.remove();
-		};
-	}, []);
 
 	const collectRef = React.useRef<BottomSheetMethods>(null);
 	const mirrorRef = React.useRef<BottomSheetMethods>(null);
@@ -156,25 +132,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							alreadyFollowing={activePublication?.by?.operations?.isFollowedByMe?.value || false}
 						/>
 					</View>
-					<ScrollView
-						style={styles.videoActionsContainer}
-						horizontal={true}
-						showsHorizontalScrollIndicator={false}
-					>
-						<LikeButton
-							like={videopageStats?.likeCount}
-							id={activePublication?.id}
-							isalreadyLiked={videopageStats?.isLiked}
-						/>
-						<DisLikeButton
-							isalreadyDisLiked={videopageStats?.isDisliked}
-							id={activePublication?.id}
-						/>
-						<MirrorButton mirrorRef={mirrorRef} />
-						{/* <CollectButton collectRef={collectRef} /> */}
-						<ShareButton />
-						<ReportButton />
-					</ScrollView>
+					<VideoActions mirrorRef={mirrorRef} />
 					<View style={styles.commentsTitleContainer}>
 						<TouchableOpacity
 							style={styles.commentsContainer}
@@ -215,10 +173,7 @@ const styles = StyleSheet.create({
 		marginTop: 24,
 		marginBottom: 16,
 	},
-	videoActionsContainer: {
-		marginBottom: 16,
-		marginStart: 4,
-	},
+
 	commentsTitleContainer: {
 		marginHorizontal: 8,
 	},
