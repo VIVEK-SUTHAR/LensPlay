@@ -21,7 +21,7 @@ module.exports = function (api) {
 					},
 				},
 			],
-			["transform-remove-console"],
+			// ["transform-remove-console"],
 			'react-native-reanimated/plugin',
 		],
 	};

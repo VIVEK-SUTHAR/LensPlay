@@ -1,10 +1,10 @@
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { BottomSheetProps } from "@gorhom/bottom-sheet";
 import React from "react";
-import { Attribute, InputMaybe, Mirror, Post, Scalars } from "./generated";
+import { InputMaybe, Scalars } from "./generated";
+import * as generated from "./generated";
 
 export type IconProps = { width: number; height: number; filled?: boolean };
-import * as generated from "./generated"
 export { generated }
 export interface QRdata {
   bounds: Bounds;
@@ -41,10 +41,10 @@ export type ProfileMetaDataV1nput = {
   name: InputMaybe<Scalars["String"]>;
   bio: InputMaybe<Scalars["String"]>;
   cover_picture: InputMaybe<Scalars["String"]>;
-  attributes: InputMaybe<Attribute[]> | undefined;
+  attributes: InputMaybe<generated.MetadataAttribute[]> | undefined;
 };
 
 export type ShotsPublication = {
-  item: Post | Mirror,
+  item: generated.PrimaryPublication,
   commentRef:React.RefObject<BottomSheetMethods>
 };

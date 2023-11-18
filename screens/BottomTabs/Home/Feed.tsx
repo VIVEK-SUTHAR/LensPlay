@@ -38,7 +38,6 @@ import Logger from "utils/logger";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 	const [refreshing, setRefreshing] = useState<boolean>(false);
-
 	const theme = useThemeStore();
 	const { isGuest } = useGuestStore();
 	const { currentProfile } = useProfile();
@@ -197,6 +196,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 		return (
 			<SafeAreaView style={styles.container}>
 				<StatusBar backgroundColor={"black"} />
+			<CategoriesChip />
 				<Skeleton number={10}>
 					<VideoCardSkeleton />
 				</Skeleton>
