@@ -2,7 +2,6 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import formatHandle from "utils/formatHandle";
 import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
@@ -60,7 +59,7 @@ function ProfileCard({
 						/>
 					)}
 					<StyledText
-						title={formatHandle(handle)}
+						title={handle}
 						style={{
 							color: profileName ? "gray" : "white",
 							fontSize: profileName ? 12 : 16,
