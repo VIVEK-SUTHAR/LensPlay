@@ -8,7 +8,7 @@ import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
 import { AUTH, GUEST_MODE } from "constants/tracking";
-import { Scalars, useProfilesLazyQuery } from "customTypes/generated";
+import { Scalars, useProfilesLazyQuery, useProfilesManagedLazyQuery } from "customTypes/generated";
 import React from "react";
 import { Pressable, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
@@ -27,23 +27,21 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 	const navigation = useNavigation();
 	const { handleGuest } = useGuestStore();
 	const { setCurrentProfile, setHasHandle } = useProfile();
-	const [getManagedProfiles] = useProfilesLazyQuery();
+	const [getManagedProfiles] = useProfilesManagedLazyQuery();
 
 	async function HandleDefaultProfile(adress: Scalars["EvmAddress"]) {
 		const userDefaultProfile = await getManagedProfiles({
 			variables: {
 				request: {
-					where: {
-						ownedBy: [address],
-					},
+					for: adress,
 				},
 			},
 		});
-		Logger.Log("Boom Boom", userDefaultProfile.data?.profiles);
+		Logger.Log("Boom Booms", userDefaultProfile.data?.profilesManaged);
 		try {
 			if (userDefaultProfile) {
 				setHasHandle(true);
-				return userDefaultProfile.data?.profiles;
+				return userDefaultProfile.data?.profilesManaged;
 			} else {
 				setHasHandle(false);
 				setCurrentProfile(undefined);
@@ -55,9 +53,8 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 	}
 
 	const { open, close } = useWeb3Modal();
-	const { address, isConnected, isDisconnected } = useAccount()
-	const { open:isOpen, selectedNetworkId } = useWeb3ModalState()
-
+	const { address, isConnected, isDisconnected } = useAccount();
+	const { open: isOpen, selectedNetworkId } = useWeb3ModalState();
 
 	const handleConnectWallet = async () => {
 		if (isConnected && address) {

@@ -41,17 +41,6 @@ type SettingsItemProps = {
 	onPress: () => void;
 };
 
-const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
-	
-	const { width } = useWindowDimensions();
-	// const Wallet = useWalletConnect();
-	const {connector}=useAccount();
-	const { isGuest } = useGuestStore();
-	const logoutref = useRef<BottomSheetMethods>(null);
-	const { currentProfile, setCurrentProfile } = useProfile();
-
-	
-
 const SettingItemsList: SettingsItemProps[] = [
 	{
 		icon: <Icon name="policy" size={24} />,
@@ -79,10 +68,11 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 	// const { isConnected, address, provider } = useWalletConnectModal();
 
 	const { width } = useWindowDimensions();
+	const { connector } = useAccount();
 	// const Wallet = useWalletConnect();
 	const { isGuest } = useGuestStore();
 	const logoutref = useRef<BottomSheetMethods>(null);
-	const apperenceSheetRef=useRef<BottomSheetMethods>(null);
+	const apperenceSheetRef = useRef<BottomSheetMethods>(null);
 	const { currentProfile, setCurrentProfile } = useProfile();
 	const { setPrimaryColor } = useThemeStore();
 	React.useLayoutEffect(() => {
@@ -297,7 +287,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 					/>
 				</View>
 			</Sheet>
-			<ApperenceSheet apperenceSheetRef={apperenceSheetRef}/>
+			<ApperenceSheet apperenceSheetRef={apperenceSheetRef} />
 		</SafeAreaView>
 	);
 };
@@ -367,4 +357,4 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		margin: 16,
 	},
-})};
+});
