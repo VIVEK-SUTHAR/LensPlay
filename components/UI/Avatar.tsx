@@ -11,8 +11,8 @@ type AvatarProps = {
 	borderColor?: string;
 	borderWidth?: number;
 	opacity?: number;
-	mx?:number;
-	my?:number;
+	mx?: number;
+	my?: number;
 };
 
 const STATIC_COVER =
@@ -26,7 +26,7 @@ const Avatar: React.FC<AvatarProps> = ({
 	borderColor = "transparent",
 	borderWidth = 0,
 	opacity = 1,
-	mx=0
+	mx = 0,
 }) => {
 	const resolvedSrc =
 		getIPFSLink(src) === STATIC_COVER
@@ -38,7 +38,6 @@ const Avatar: React.FC<AvatarProps> = ({
 			placeholder={getPlaceHolderImage(true)}
 			placeholderContentFit="cover"
 			transition={500}
-			priority="high"
 			source={{
 				uri: resolvedSrc,
 			}}
@@ -51,9 +50,8 @@ const Avatar: React.FC<AvatarProps> = ({
 				borderColor,
 				borderWidth,
 				zIndex: 9,
-				marginHorizontal:mx
+				marginHorizontal: mx,
 			}}
-
 		/>
 	);
 };
