@@ -1,6 +1,6 @@
 import { type BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
-import { useWalletConnectModal } from "@walletconnect/modal-react-native";
+// import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
@@ -334,7 +334,6 @@ const _SubscribeButton: React.FC<SubscribeButtonProps> = ({ channelId, isFollweb
 	const toast = useToast();
 	const { accessToken } = useAuthStore();
 	// const wallet = useWalletConnect();
-	const { address, provider, isConnected } = useWalletConnectModal();
 
 	/**
 	 * Only Free Follow and Free Collect is supported via Dispatcher

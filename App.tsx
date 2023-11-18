@@ -19,12 +19,16 @@ import Logger from "utils/logger";
 import { APP_NAME, DESCRIPTION, LENSPLAY_SITE } from "./constants";
 import "./expo-crypto-shim.ts";
 import Navigation from "./navigation";
+import "@walletconnect/react-native-compat";
+import { WagmiConfig } from "wagmi";
+import { mainnet, polygon, arbitrum } from "viem/chains";
+import { createWeb3Modal, defaultWagmiConfig, Web3Modal } from "@web3modal/wagmi-react-native";
 
 SplashScreen.preventAutoHideAsync();
 
 const projectId = "6097f40a8f4f91e37e66cf3a5ca1fba2";
 
-const providerMetadata = {
+const metadata = {
 	name: APP_NAME,
 	description: DESCRIPTION,
 	url: LENSPLAY_SITE,
@@ -46,12 +50,21 @@ const sessionParams = {
 	},
 };
 
+const chains = [mainnet, polygon, arbitrum];
+
+const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
+
+createWeb3Modal({
+	projectId,
+	chains,
+	wagmiConfig,
+});
+
 if (Platform.OS === "android") {
 	if (UIManager.setLayoutAnimationEnabledExperimental) {
 		UIManager.setLayoutAnimationEnabledExperimental(true);
 	}
 }
-
 
 console.log("App Running in DEV MODE", __DEV__);
 console.log("App BUndle Load Time", __BUNDLE_START_TIME__);
@@ -120,7 +133,7 @@ export default function App() {
 						},
 					},
 					data: {
-						pubId: remoteMessage?.data?.pubId,
+						pubId: remoteMessage?.data?.pubId!,
 					},
 				});
 			} else {
@@ -143,20 +156,17 @@ export default function App() {
 
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
-			<SafeAreaProvider>
-				<Toast />
-				<NetworkStatus />
-				<ApolloProvider client={client}>
-					<StatusBar style="dark" />
-					<Navigation />
-				</ApolloProvider>
-			</SafeAreaProvider>
-			<WalletConnectModal
-				projectId={projectId}
-				providerMetadata={providerMetadata}
-				themeMode="dark"
-				sessionParams={sessionParams}
-			/>
+			<WagmiConfig config={wagmiConfig}>
+				<Web3Modal />
+				<SafeAreaProvider>
+					<Toast />
+					<NetworkStatus />
+					<ApolloProvider client={client}>
+						<StatusBar style="dark" />
+						<Navigation />
+					</ApolloProvider>
+				</SafeAreaProvider>
+			</WagmiConfig>
 		</GestureHandlerRootView>
 	);
 }

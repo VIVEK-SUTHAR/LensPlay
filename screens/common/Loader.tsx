@@ -1,5 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 import Heading from "components/UI/Heading";
 import StorageKeys from "constants/Storage";
 import { APP_OPEN } from "constants/tracking";
@@ -27,6 +26,7 @@ import getDefaultProfile from "utils/lens/getDefaultProfile";
 import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
 import TrackAction from "utils/Track";
+import { useAccount } from "wagmi";
 
 export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 	const { setCurrentProfile, setHasHandle } = useProfile();
@@ -35,7 +35,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 	const blackBox = useSharedValue(1);
 	const image = useSharedValue(0);
 	const textOpacity = useSharedValue(0);
-	const { address: WalletAddres } = useWalletConnectModal();
+	const { address } = useAccount();
 
 	const [verifyTokens, { data: isvalidTokens, error: verifyError, loading: verifyLoading }] =
 		useVerifyLazyQuery();
@@ -90,8 +90,8 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 				profileId = await HandleDefaultProfile(address);
 			} else {
 				Logger.Success("Got address via wallet");
-				Logger.Log("a", WalletAddres);
-				profileId = await HandleDefaultProfile(WalletAddres);
+				Logger.Log("a", address);
+				profileId = await HandleDefaultProfile(address);
 			}
 
 			if (userTokens) {

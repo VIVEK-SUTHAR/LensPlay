@@ -1,7 +1,6 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 // import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import Sheet from "components/Bottom";
 import Icon from "components/Icon";
@@ -31,6 +30,7 @@ import {
 import { useGuestStore } from "store/GuestStore";
 import { useProfile } from "store/Store";
 import TrackAction from "utils/Track";
+import { useAccount } from "wagmi";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
@@ -41,10 +41,10 @@ type SettingsItemProps = {
 };
 
 const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
-	const { isConnected, address, provider } = useWalletConnectModal();
 	
 	const { width } = useWindowDimensions();
 	// const Wallet = useWalletConnect();
+	const {connector}=useAccount();
 	const { isGuest } = useGuestStore();
 	const logoutref = useRef<BottomSheetMethods>(null);
 	const { currentProfile, setCurrentProfile } = useProfile();
@@ -238,7 +238,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 								navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] });
 								return;
 							} else {
-								await provider?.disconnect();
+								await connector?.disconnect();
 								navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] });
 							}
 							TrackAction(AUTH.LOGOUT);

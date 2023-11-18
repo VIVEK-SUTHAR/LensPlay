@@ -1,13 +1,13 @@
-import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 import cache from "apollo/cache";
 import { Profile, useBroadcastOnchainMutation, useCreateFollowTypedDataMutation, useFollowMutation } from "customTypes/generated";
 import useProfileStore from "store/profileStore";
 import getSignature from "utils/getSignature";
 import Logger from "utils/logger";
+import { useSignTypedData } from "wagmi";
 
 export default function useSubscribe() {
   const { currentProfile } = useProfileStore();
-  const { provider, address } = useWalletConnectModal();
+  const { signTypedDataAsync, error } = useSignTypedData();
 
   const updateCache = (channel: Profile) => {
     try {
@@ -44,7 +44,11 @@ export default function useSubscribe() {
 
   const subscribeViaLensManager = async (profile: Profile) => {
     const { data } = await follow({
-      variables: { request: { follow: [profile?.id] } },
+      variables: {
+        request: {
+          follow: [profile?.id],
+        },
+      },
     });
     return data;
   };
@@ -63,11 +67,11 @@ export default function useSubscribe() {
       const message = getSignature(
         data?.data?.createFollowTypedData?.typedData
       );
+
       Logger.Success("Formatted Typed Data", message);
-      const sign = await provider?.request({
-        method: "eth_signTypedData",
-        params: [address, JSON.stringify(message)],
-      });
+      const sign = await signTypedDataAsync(message);
+
+      if (error) return null;
 
       const id = data?.data?.createFollowTypedData?.id;
 

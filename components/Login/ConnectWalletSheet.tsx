@@ -1,7 +1,7 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { useWalletConnectModal } from "@walletconnect/modal-react-native";
+import { useWeb3Modal, useWeb3ModalState } from "@web3modal/wagmi-react-native";
 
 import Icon from "components/Icon";
 import Button from "components/UI/Button";
@@ -16,6 +16,7 @@ import { useProfile } from "store/Store";
 import TrackAction from "utils/Track";
 import getProfiles from "utils/lens/getProfiles";
 import Logger from "utils/logger";
+import { useAccount } from "wagmi";
 
 type ConnectWalletSheetProps = {
 	loginRef: React.RefObject<BottomSheetMethods>;
@@ -53,7 +54,10 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 		}
 	}
 
-	const { open, isConnected, address, isOpen, close } = useWalletConnectModal();
+	const { open, close } = useWeb3Modal();
+	const { address, isConnected, isDisconnected } = useAccount()
+	const { open:isOpen, selectedNetworkId } = useWeb3ModalState()
+
 
 	const handleConnectWallet = async () => {
 		if (isConnected && address) {
