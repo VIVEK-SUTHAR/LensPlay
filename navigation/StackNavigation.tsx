@@ -210,7 +210,6 @@ export default function StackNavigation() {
 						fontWeight: "600",
 					},
 					freezeOnBlur:true
-					
 				}}
 			/>
 			<Stack.Screen
