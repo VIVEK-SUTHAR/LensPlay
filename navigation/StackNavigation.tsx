@@ -33,6 +33,8 @@ import BottomTabNavigator from "./BottomTabNavigation";
 import Profiles from "screens/Auth/Profiles";
 import MyQR from "screens/Header/Settings/MyQR";
 import ProfileManager from "screens/Header/Settings/ProfileManager";
+import { DEV } from "constants/index";
+import DebugScreen from "screens/Debug";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
@@ -209,7 +211,7 @@ export default function StackNavigation() {
 						fontSize: 16,
 						fontWeight: "600",
 					},
-					freezeOnBlur:true
+					freezeOnBlur: true,
 				}}
 			/>
 			<Stack.Screen
@@ -404,6 +406,16 @@ export default function StackNavigation() {
 					headerTintColor: theme.PRIMARY,
 				}}
 			/>
+			{DEV ? (
+				<Stack.Screen
+					name="DebugScreen"
+					component={DebugScreen}
+					options={{
+						animation: "slide_from_right",
+						headerTintColor: theme.PRIMARY,
+					}}
+				/>
+			) : null}
 		</Stack.Navigator>
 	);
 }

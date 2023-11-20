@@ -199,6 +199,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 					options={{
 						freezeOnBlur: true,
 						tabBarLabel: "",
+						unmountOnBlur:true,
 						headerShown: false,
 						tabBarIcon: ({ focused }) => {
 							return (

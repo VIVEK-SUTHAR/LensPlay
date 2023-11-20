@@ -177,6 +177,19 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 					</View>
 				</View>
 				<View
+						style={{
+							backgroundColor: dark_primary,
+							marginTop: 16,
+							borderRadius: 12,
+						}}
+					>
+						<SettingsItem
+							icon={<Icon name="setting" size={24} />}
+							label={"Debug Details"}
+							onPress={() => navigation.push("DebugScreen")}
+						/>
+					</View>
+				<View
 					style={{
 						marginVertical: 48,
 					}}

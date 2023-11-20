@@ -107,6 +107,7 @@ export type RootStackParamList = {
 	};
 	MyQR:undefined;
 	ProfileManager:undefined;
+	DebugScreen:undefined;
 };
 
 /**
