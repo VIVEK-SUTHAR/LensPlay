@@ -9,7 +9,7 @@ const isHermes = String(!!global.HermesInternal);
 //@ts-expect-error
 const uiManager = global?.nativeFabricUIManager ? "Fabric" : "Paper";
 const isNewArchitectureEnabled = String(uiManager === "Fabric");
-
+const appBundleLoadTime=String(__BUNDLE_START_TIME__)
 const sections = [
 	{
 		title: "App Architecture",
@@ -61,6 +61,7 @@ const DebugScreen: FC = () => {
 				keyExtractor={(item, index) => item.label + index}
 				renderItem={renderItem}
 				renderSectionHeader={renderSectionHeader}
+				ListHeaderComponent={<ListHeader />}
 			/>
 		</SafeAreaView>
 	);
@@ -70,6 +71,15 @@ type ItemProps = {
 	label: string;
 	value: string;
 };
+
+const ListHeader = () => {
+	return (
+		<View>
+			<Item label="App Bundle Load Time" value={appBundleLoadTime} />
+		</View>
+	);
+};
+console.log(__BUNDLE_START_TIME__);
 
 const Item: FC<ItemProps> = ({ label, value }: ItemProps) => (
 	<Pressable

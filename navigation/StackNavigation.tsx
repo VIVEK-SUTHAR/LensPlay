@@ -411,7 +411,7 @@ export default function StackNavigation() {
 					name="DebugScreen"
 					component={DebugScreen}
 					options={{
-						animation: "slide_from_right",
+						animation: "default",
 						headerTintColor: theme.PRIMARY,
 					}}
 				/>

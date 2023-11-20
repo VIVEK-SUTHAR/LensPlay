@@ -1,34 +1,20 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { useWalletConnect } from "@walletconnect/react-native-dapp";
-import Sheet from "components/Bottom";
 import Icon from "components/Icon";
 import ApperenceSheet from "components/settings/ApperenceSheet";
 import ProfileQR from "components/settings/profileQR";
 import Socials from "components/settings/Socials";
+import LogOutSheet from "components/Sheets/LogOutSheet";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import { black, dark_primary, white } from "constants/Colors";
-import { LENSPLAY_PRIVACY, LENSPLAY_TERMS } from "constants/index";
-import StorageKeys from "constants/Storage";
-import { AUTH } from "constants/tracking";
+import { dark_primary } from "constants/Colors";
+import { DEV, LENSPLAY_PRIVACY, LENSPLAY_TERMS } from "constants/index";
 import type { RootStackScreenProps } from "customTypes/navigation";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import React, { FC, useRef } from "react";
-import {
-	Linking,
-	Pressable,
-	SafeAreaView,
-	ScrollView, StyleSheet,
-	useWindowDimensions,
-	View
-} from "react-native";
+import { Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
-import { useProfile } from "store/Store";
-import TrackAction from "utils/Track";
-import { useAccount } from "wagmi";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
@@ -62,15 +48,9 @@ const SettingItemsList: SettingsItemProps[] = [
 	},
 ];
 const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
-	// const { isConnected, address, provider } = useWalletConnectModal();
-
-	const { width } = useWindowDimensions();
-	const { connector } = useAccount();
-	// const Wallet = useWalletConnect();
 	const { isGuest } = useGuestStore();
 	const logoutref = useRef<BottomSheetMethods>(null);
 	const apperenceSheetRef = useRef<BottomSheetMethods>(null);
-	const { setCurrentProfile } = useProfile();
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			headerRight: () => {
@@ -83,7 +63,6 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 		});
 	}, []);
 
-	// if (!isReadyToRender) return <SafeAreaView style={styles.container} />;
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="black" style="auto" />
@@ -110,12 +89,12 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 						}}
 					>
 						<SettingsItem
-							icon={<Icon name="bug" size={24} />}
+							icon={<Icon name="edit" size={24} />}
 							label={"Manage Your Profile"}
 							onPress={() => navigation.push("ProfileManager")}
 						/>
 						<SettingsItem
-							icon={<Icon name="edit" size={24} />}
+							icon={<Icon name="star" size={24} />}
 							label={"Appereance"}
 							onPress={() => apperenceSheetRef.current?.snapToIndex(0)}
 						/>
@@ -176,19 +155,36 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 						/>
 					</View>
 				</View>
-				<View
+				{DEV ? (
+					<View
 						style={{
-							backgroundColor: dark_primary,
-							marginTop: 16,
-							borderRadius: 12,
+							marginTop: 24,
 						}}
 					>
-						<SettingsItem
-							icon={<Icon name="setting" size={24} />}
-							label={"Debug Details"}
-							onPress={() => navigation.push("DebugScreen")}
+						<Heading
+							title={"Developer Only"}
+							style={{
+								color: "white",
+								fontSize: 16,
+								fontWeight: "600",
+							}}
 						/>
+						<View
+							style={{
+								backgroundColor: dark_primary,
+								marginTop: 16,
+								borderRadius: 12,
+							}}
+						>
+							<SettingsItem
+								icon={<Icon name="setting" size={24} />}
+								label={"Debug Details"}
+								onPress={() => navigation.push("DebugScreen")}
+							/>
+						</View>
 					</View>
+				) : null}
+
 				<View
 					style={{
 						marginVertical: 48,
@@ -223,79 +219,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 					/>
 				</View>
 			</ScrollView>
-			<Sheet
-				ref={logoutref}
-				index={-1}
-				snapPoints={[230]}
-				bottomInset={32}
-				enablePanDownToClose
-				backgroundStyle={{
-					backgroundColor: black[600],
-				}}
-				detached={true}
-				style={{
-					marginHorizontal: 16,
-				}}
-			>
-				<View
-					style={{
-						justifyContent: "space-between",
-						paddingHorizontal: 16,
-						paddingTop: 8,
-						paddingBottom: 16,
-						height: "100%",
-					}}
-				>
-					<View>
-						<Heading
-							title="Are you sure?"
-							style={{
-								color: "white",
-								fontSize: width / 16,
-								marginVertical: 4,
-								textAlign: "left",
-								fontWeight: "600",
-							}}
-						/>
-						<StyledText
-							title="By doing this,next time when you open LensPlay, you need to connect your wallet again."
-							style={{
-								color: "gray",
-								fontSize: width / 24,
-								marginVertical: 4,
-								fontWeight: "500",
-							}}
-						/>
-					</View>
-					<Button
-						onPress={async () => {
-							const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
-							await AsyncStorage.removeItem("@user_tokens");
-							await AsyncStorage.removeItem(StorageKeys.UserAddress);
-							if (isDeskTopLogin) {
-								await AsyncStorage.removeItem("@viaDeskTop");
-								navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] });
-								return;
-							} else {
-								await connector?.disconnect();
-								navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] });
-							}
-							setCurrentProfile(undefined);
-							TrackAction(AUTH.LOGOUT);
-						}}
-						my={16}
-						title="Confirm"
-						bg={white[800]}
-						textStyle={{
-							fontWeight: "600",
-							fontSize: 16,
-							color: "black",
-						}}
-						py={12}
-						borderRadius={8}
-					/>
-				</View>
-			</Sheet>
+			<LogOutSheet logoutref={logoutref} />
 			<ApperenceSheet apperenceSheetRef={apperenceSheetRef} />
 		</SafeAreaView>
 	);
