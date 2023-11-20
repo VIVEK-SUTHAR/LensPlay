@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 import React from "react";
 import { Profile, useProfileManagersQuery } from "customTypes/generated";
 import { useProfile } from "store/Store";
@@ -14,9 +14,12 @@ import formatAddress from "utils/formatAddress";
 import Button from "components/UI/Button";
 import dimensions from "constants/Layout";
 import Signless from "./SignLess";
+import { type BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import AddProfileManager from "components/Sheets/AddProfileManager";
 
 const ProfileManagers = () => {
 	const { currentProfile } = useProfile();
+	const addManagerSheetRef = React.useRef<BottomSheetMethods>(null);
 	const { data, loading, error, fetchMore } = useProfileManagersQuery({
 		variables: {
 			request: {
@@ -72,6 +75,15 @@ const ProfileManagers = () => {
 					renderItem={({ item }) => <ProfileManagerCard manager={item} />}
 				/>
 			</View>
+			<View style={{ alignSelf: "center" }}>
+				<Button
+					title={"Add Manager"}
+					width={dimensions.window.width / 3}
+					textStyle={{ textAlign: "center" }}
+					onPress={()=>{addManagerSheetRef.current?.snapToIndex(0)}}
+				/>
+			</View>
+			<AddProfileManager addManagerSheetRef={addManagerSheetRef} />
 		</SafeAreaView>
 	);
 };
