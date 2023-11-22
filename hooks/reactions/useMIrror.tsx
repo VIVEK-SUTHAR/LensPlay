@@ -15,20 +15,25 @@ import useProfileStore from "store/profileStore";
 import Logger from "utils/logger";
 import getSignature from "utils/getSignature";
 import { useSignTypedData } from "wagmi";
+import { LENSPLAY_SITE } from "constants/index";
+import { useAuthStore } from "store/Store";
 
 export default function useMirror() {
 	const { currentProfile } = useProfileStore();
 	const { signTypedDataAsync, error } = useSignTypedData();
+	const { accessToken } = useAuthStore();
 
 	const updateCache = (publication: Post | Mirror) => {
 		try {
 			cache.modify({
 				id: cache.identify(publication as any),
 				fields: {
-					mirrors: (mirrors) => [...mirrors, currentProfile?.id],
+					operations: (existingValue) => {
+						return { ...existingValue, hasMirrored: true };
+					},
 					stats: (stats) => ({
 						...stats,
-						totalAmountOfMirrors: stats.totalAmountOfMirrors + 1,
+						mirrors: stats.totalAmountOfMirrors + 1,
 					}),
 				},
 			});
@@ -45,26 +50,41 @@ export default function useMirror() {
 		const message = getSignature(typedData);
 
 		const signature = await signTypedDataAsync(message);
-		console.log("this is signature");
+		if (error) {
+			Logger.Error("", error);
+			return null;
+		}
+		Logger.Log("this is signature", signature);
 
-		if (error) return null;
-
-		if (currentProfile?.sponsor) {
-			if (isMomokaPublication) {
-				return await broadcastOnMomoka({
-					variables: { request: { id, signature } },
-				});
-			}
-
-			const { data } = await broadcastOnchain({
+		// if (currentProfile?.sponsor) {
+		if (isMomokaPublication) {
+			return await broadcastOnMomoka({
 				variables: { request: { id, signature } },
+				context: {
+					headers: {
+						"x-access-token": `Bearer ${accessToken}`,
+						"origin": LENSPLAY_SITE,
+					},
+				},
 			});
 		}
+
+		const { data } = await broadcastOnchain({
+			variables: { request: { id, signature } },
+			context: {
+				headers: {
+					"x-access-token": `Bearer ${accessToken}`,
+					"origin": LENSPLAY_SITE,
+				},
+			},
+		});
+		// }
 	};
 
 	const [createOnchainMirrorTypedData] = useCreateOnchainMirrorTypedDataMutation({
-		onCompleted: async ({ createOnchainMirrorTypedData }) =>
-			await typedDataGenerator(createOnchainMirrorTypedData),
+		onCompleted: async ({ createOnchainMirrorTypedData }) => {
+			await typedDataGenerator(createOnchainMirrorTypedData);
+		},
 	});
 
 	// Momoka typed data generation
@@ -113,6 +133,12 @@ export default function useMirror() {
 							mirrorOn: publication?.id,
 						},
 					},
+					context: {
+						headers: {
+							"x-access-token": `Bearer ${accessToken}`,
+							"origin": LENSPLAY_SITE,
+						},
+					},
 				});
 			}
 
@@ -122,10 +148,18 @@ export default function useMirror() {
 				});
 			}
 
+			console.log("typed saadi che");
+
 			return await createOnchainMirrorTypedData({
 				variables: {
 					request: {
 						mirrorOn: publication?.id,
+					},
+				},
+				context: {
+					headers: {
+						"x-access-token": `Bearer ${accessToken}`,
+						"origin": LENSPLAY_SITE,
 					},
 				},
 			});

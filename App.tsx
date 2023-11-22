@@ -35,7 +35,7 @@ const metadata = {
 		universal: "YOUR_APP_UNIVERSAL_LINK.com",
 	},
 };
-const chains = [mainnet, polygon];
+const chains = [polygon, mainnet];
 
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 

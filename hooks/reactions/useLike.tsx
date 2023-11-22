@@ -20,7 +20,7 @@ export default function useLike() {
 				id: cache.identify(publication as any),
 				fields: {
 					operations: (existingValue) => {
-						return { ...existingValue, upvote: value,downvote:!value };
+						return { ...existingValue, upvote: value, downvote: !value };
 					},
 					stats: (existingValue) => {
 						return { ...existingValue, reactions: existingValue + 1 };
@@ -46,9 +46,9 @@ export default function useLike() {
 					"x-access-token": `Bearer ${accessToken}`,
 				},
 			},
-            onCompleted:(data, clientOptions) =>{
-                Logger.Log("Liked Publication",data)
-            },
+			onCompleted: (data, clientOptions) => {
+				Logger.Log("Liked Publication", data);
+			},
 		});
 	};
 
