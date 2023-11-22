@@ -71,7 +71,7 @@ const UserStats = ({ navigation, route }: RootStackScreenProps<"UserStats">) => 
 	);
 };
 
-const ITEM_HEIGHT = 78;
+const ITEM_HEIGHT = 64;
 
 const getItemLayout = (_: any, index: number) => {
 	return {

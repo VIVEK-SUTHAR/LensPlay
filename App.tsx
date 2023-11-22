@@ -17,7 +17,7 @@ import "./expo-crypto-shim.ts";
 import Navigation from "./navigation";
 import "@walletconnect/react-native-compat";
 import { WagmiConfig } from "wagmi";
-import { mainnet, polygon, arbitrum } from "viem/chains";
+import { polygon } from "viem/chains";
 import { createWeb3Modal, defaultWagmiConfig, Web3Modal } from "@web3modal/wagmi-react-native";
 import usePushNotifications from "hooks/usePushNotifications";
 
@@ -35,7 +35,7 @@ const metadata = {
 		universal: "YOUR_APP_UNIVERSAL_LINK.com",
 	},
 };
-const chains = [polygon, mainnet];
+const chains = [polygon];
 
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 

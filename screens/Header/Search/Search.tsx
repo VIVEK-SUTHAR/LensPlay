@@ -1,6 +1,7 @@
 import { FlashList } from "@shopify/flash-list";
 import Icon from "components/Icon";
 import ProfileCard from "components/ProfileCard";
+import Recommended from "components/Search/Recommended";
 import { SEARCH } from "constants/tracking";
 import { HandleInfo, LimitType, Profile, useSearchProfilesLazyQuery } from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
@@ -100,39 +101,32 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 		});
 	}, []);
 
-	const ITEM_HEIGHT = 78;
-
-	const getItemLayout = (_: any, index: number) => {
-		return {
-			length: ITEM_HEIGHT,
-			offset: ITEM_HEIGHT * index,
-			index,
-		};
-	};
-
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="transparent" style="auto" />
-			<FlashList
-				removeClippedSubviews={true}
-				// ListEmptyComponent={!isfound ? <Recommended /> : null}
-				data={result?.searchProfiles?.items}
-				keyExtractor={(_, index) => index.toString()}
-				estimatedItemSize={100}
-				renderItem={({ item }: { item: Profile }) => (
-					<ProfileCard
-						profileIcon={getRawurl(item?.metadata?.picture)}
-						profileName={item?.metadata?.displayName || item?.id}
-						profileId={item?.id}
-						isFollowed={item?.operations?.isFollowedByMe?.value || false}
-						handle={formatHandle(item?.handle as HandleInfo)}
-						owner={item?.ownedBy?.address}
-					/>
-				)}
-				contentContainerStyle={{
-					paddingHorizontal: 8,
-				}}
-			/>
+			{keyword?.length ? (
+				<FlashList
+					removeClippedSubviews={true}
+					data={result?.searchProfiles?.items}
+					keyExtractor={(_, index) => index.toString()}
+					estimatedItemSize={100}
+					renderItem={({ item }: { item: Profile }) => (
+						<ProfileCard
+							profileIcon={getRawurl(item?.metadata?.picture)}
+							profileName={item?.metadata?.displayName || item?.id}
+							profileId={item?.id}
+							isFollowed={item?.operations?.isFollowedByMe?.value || false}
+							handle={formatHandle(item?.handle as HandleInfo)}
+							owner={item?.ownedBy?.address}
+						/>
+					)}
+					contentContainerStyle={{
+						paddingHorizontal: 8,
+					}}
+				/>
+			) : (
+				<Recommended />
+			)}
 		</SafeAreaView>
 	);
 };

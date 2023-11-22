@@ -26,10 +26,8 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 	const navigation = useNavigation();
 	const { setActivePublication } = useActivePublication();
 
-	const memoizedPlaceHolder = React.useMemo(
-		()=>getPlaceHolderImage(),[]
-	)
-	const metadata=publication?.metadata as VideoMetadataV3;
+	const memoizedPlaceHolder = React.useMemo(() => getPlaceHolderImage(), []);
+	const metadata = publication?.metadata as VideoMetadataV3;
 	return (
 		<Pressable
 			android_ripple={{
@@ -50,10 +48,11 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 					placeholder={memoizedPlaceHolder}
 					contentFit="cover"
 					transition={500}
-					cachePolicy="memory-disk"
+					recyclingKey={getIPFSLink(getRawurl(metadata?.asset?.cover))}
 					source={{
 						uri: getImageProxyURL({
-							formattedLink: getIPFSLink(getRawurl(metadata.asset.cover)),
+							formattedLink: getIPFSLink(getRawurl(metadata?.asset?.cover)),
+							options: { height: 100, width: 160 },
 						}),
 					}}
 					style={{

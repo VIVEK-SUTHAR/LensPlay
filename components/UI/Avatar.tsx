@@ -1,6 +1,7 @@
 import { Image } from "expo-image";
 import React from "react";
 import getIPFSLink from "utils/getIPFSLink";
+import getImageProxyURL from "utils/getImageProxyURL";
 import getPlaceHolderImage from "utils/getPlaceHolder";
 
 type AvatarProps = {
@@ -31,7 +32,14 @@ const Avatar: React.FC<AvatarProps> = ({
 	const resolvedSrc =
 		getIPFSLink(src) === STATIC_COVER
 			? `https://xsgames.co/randomusers/assets/avatars/pixel/${Math.floor(100 * Math.random())}.jpg`
-			: getIPFSLink(src);
+			: getImageProxyURL({
+					formattedLink: getIPFSLink(src),
+					options:{
+						height:36,
+						format:"png",
+						width:36
+					}
+			  });
 
 	return (
 		<Image

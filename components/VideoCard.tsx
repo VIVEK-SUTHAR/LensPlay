@@ -43,7 +43,8 @@ const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publ
 	}, [publication]);
 
 	const coverImage = getImageProxyURL({
-		formattedLink: getIPFSLink(getRawurl(metadata.asset.cover)),
+		formattedLink: getIPFSLink(getRawurl(metadata?.asset?.cover)),
+		options: { height: 200, width: 340 },
 	});
 
 	return (

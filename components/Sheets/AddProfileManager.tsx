@@ -1,13 +1,16 @@
 import { BottomSheetScrollView, BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import Sheet from "components/Bottom";
+import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black, dark_primary, white } from "constants/Colors";
 import useProfileManager from "hooks/useProfileManager";
 import React from "react";
-import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useThemeStore, useToast } from "store/Store";
+import Logger from "utils/logger";
+import { useWalletClient } from "wagmi";
 
 type Props = {
 	addManagerSheetRef: React.RefObject<BottomSheetMethods>;
@@ -17,9 +20,10 @@ const AddProfileManager = ({ addManagerSheetRef }: Props) => {
 	const [address, setAddress] = React.useState<string | null>(null);
 	const [isAdding, setIsAdding] = React.useState(false);
 
+	const {data}=useWalletClient();
 	const { PRIMARY } = useThemeStore();
 	const { error } = useToast();
-	const { addManager } = useProfileManager();
+	const { addManager, signProfileManagerMessage, broadcastProfileManagerTx } = useProfileManager();
 
 	const addAddress = async () => {
 		setIsAdding(true);
@@ -28,9 +32,20 @@ const AddProfileManager = ({ addManagerSheetRef }: Props) => {
 				error("Please enter valid address");
 				return;
 			}
-			console.log("hhhh");
-			await addManager(address);
+
+			const typedData = await addManager(address);
+			if (typedData) {
+	
+
+				const res = await signProfileManagerMessage(typedData);
+				if (res?.id && res.sign) {
+					console.log(res);
+					return;
+					const txn = await broadcastProfileManagerTx(res.id, res.sign);
+				}
+			}
 		} catch (er) {
+			Logger.Error("E",er)
 			error("Something wet wrong");
 		} finally {
 			setIsAdding(false);
@@ -40,7 +55,7 @@ const AddProfileManager = ({ addManagerSheetRef }: Props) => {
 		<Sheet
 			ref={addManagerSheetRef}
 			index={-1}
-			snapPoints={["75%"]}
+			snapPoints={["80%"]}
 			android_keyboardInputMode="adjustResize"
 			enableDynamicSizing={true}
 			enablePanDownToClose
@@ -59,26 +74,6 @@ const AddProfileManager = ({ addManagerSheetRef }: Props) => {
 								color: white[700],
 							}}
 						/>
-
-						{isAdding ? (
-							<ActivityIndicator size={"small"} color={PRIMARY} />
-						) : (
-							<TouchableOpacity activeOpacity={0.8} onPress={addAddress}>
-								<StyledText
-									title="Add"
-									style={{
-										fontSize: 18,
-										fontWeight: "600",
-										color:
-											!address?.length || (!address.startsWith("0x") && address.length !== 42)
-												? "red"
-												: address.startsWith("0x") && address.length === 42
-												? "white"
-												: "gray",
-									}}
-								/>
-							</TouchableOpacity>
-						)}
 					</View>
 					<StyledText
 						title="You can add a EOA that can post on your behalf."
@@ -95,6 +90,23 @@ const AddProfileManager = ({ addManagerSheetRef }: Props) => {
 						style={[styles.inputStyle, { borderColor: PRIMARY }]}
 						onChange={(e) => {
 							setAddress(e.nativeEvent.text);
+						}}
+					/>
+					<Button
+						title={"Add"}
+						isLoading={isAdding}
+						width={"auto"}
+						onPress={addAddress}
+						py={12}
+						textStyle={{
+							fontSize: 18,
+							textAlign: "center",
+							color:
+								!address?.length || (!address.startsWith("0x") && address.length !== 42)
+									? "red"
+									: address.startsWith("0x") && address.length === 42
+									? "white"
+									: "gray",
 						}}
 					/>
 				</View>

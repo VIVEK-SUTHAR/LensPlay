@@ -6,7 +6,6 @@
  */
 
 import { ARWEAVE_GATEWAY, IPFS_GATEWAY, STATIC_ASSET } from "constants/index";
-import getImageProxyURL from "./getImageProxyURL";
 
 const getIPFSLink = (url: string | undefined): string => {
 	if (!url) return STATIC_ASSET;
@@ -19,8 +18,7 @@ const getIPFSLink = (url: string | undefined): string => {
 		? `${ARWEAVE_GATEWAY}/${url?.split("ar://")[1]}`
 		: url;
 	// console.log(getImageProxyURL({formattedLink:LINK,options:{height:200,width:340}}));
-	
-	return getImageProxyURL({formattedLink:LINK,options:{height:200,width:340}});
-	
+
+	return LINK;
 };
 export default getIPFSLink;

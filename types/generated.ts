@@ -1372,7 +1372,7 @@ export type ExploreProfilesRequest = {
 
 export type ExploreProfilesWhere = {
   /** Array of custom filters for exploring profiles */
-  customFilters?: InputMaybe<Array<CustomFiltersType>>;
+  customFilters?: Array<CustomFiltersType>;
   /** Filter profiles created since the specified timestamp */
   since?: InputMaybe<Scalars['UnixTimestamp']>;
 };
@@ -1611,7 +1611,7 @@ export type GetProfileMetadataArgs = {
   /** The app id to query the profile's metadata */
   appId?: InputMaybe<Scalars['AppId']>;
   /** If true, will fallback to global profile metadata, if there is no metadata set for that specific app id */
-  useFallback?: InputMaybe<Scalars['Boolean']>;
+  useFallback?: Scalars['Boolean'];
 };
 
 export type HandleInfo = {
@@ -1703,11 +1703,11 @@ export type ImageSetTransformedArgs = {
 
 export type ImageTransform = {
   /** Set the transformed image's height */
-  height?: InputMaybe<Scalars['ImageSizeTransform']>;
+  height?: Scalars['ImageSizeTransform'];
   /** Set if you want to keep the image's original aspect ratio. True by default. If explicitly set to false, the image will stretch based on the width and height values. */
-  keepAspectRatio?: InputMaybe<Scalars['Boolean']>;
+  keepAspectRatio?: Scalars['Boolean'];
   /** Set the transformed image's width */
-  width?: InputMaybe<Scalars['ImageSizeTransform']>;
+  width?: Scalars['ImageSizeTransform'];
 };
 
 export type InternalAddCuratedTagRequest = {
@@ -2369,7 +2369,7 @@ export type MultirecipientFeeCollectModuleInput = {
   endsAt?: InputMaybe<Scalars['DateTime']>;
   followerOnly: Scalars['Boolean'];
   recipients: Array<RecipientDataInput>;
-  referralFee?: InputMaybe<Scalars['Float']>;
+  referralFee?: Scalars['Float'];
 };
 
 export type MultirecipientFeeCollectOpenActionSettings = {
@@ -3410,13 +3410,13 @@ export type PoapEvent = {
   eventUrl?: Maybe<Scalars['URL']>;
   expiryDate?: Maybe<Scalars['DateTime']>;
   fancyId?: Maybe<Scalars['String']>;
-  fromAdmin?: Maybe<Scalars['Boolean']>;
+  fromAdmin: Scalars['Boolean'];
   id: Scalars['PoapEventId'];
   imageUrl?: Maybe<Scalars['URL']>;
   name?: Maybe<Scalars['String']>;
-  privateEvent?: Maybe<Scalars['Boolean']>;
+  privateEvent: Scalars['Boolean'];
   startDate?: Maybe<Scalars['DateTime']>;
-  virtualEvent?: Maybe<Scalars['Boolean']>;
+  virtualEvent: Scalars['Boolean'];
   year?: Maybe<Scalars['Int']>;
 };
 
@@ -3466,7 +3466,7 @@ export type PopularNftCollectionsRequest = {
   /** Include only verified collections */
   onlyVerified?: InputMaybe<Scalars['Boolean']>;
   /** The ordering of Nft collection owners. Defaults to Total Lens Profile owners */
-  orderBy?: InputMaybe<PopularNftCollectionsOrder>;
+  orderBy?: PopularNftCollectionsOrder;
 };
 
 export type Post = {
@@ -3748,12 +3748,12 @@ export type ProfileReactionResult = {
 export type ProfileRecommendationsRequest = {
   cursor?: InputMaybe<Scalars['Cursor']>;
   /** Disable machine learning recommendations (default: false) */
-  disableML?: InputMaybe<Scalars['Boolean']>;
+  disableML?: Scalars['Boolean'];
   /** Filter based on a specific profile ID */
   for: Scalars['ProfileId'];
   limit?: InputMaybe<LimitType>;
   /** Shuffle the recommendations (default: false) */
-  shuffle?: InputMaybe<Scalars['Boolean']>;
+  shuffle?: Scalars['Boolean'];
 };
 
 export type ProfileRequest = {
@@ -4048,8 +4048,8 @@ export type PublicationOperations = {
   hasBookmarked: Scalars['Boolean'];
   hasMirrored: Scalars['Boolean'];
   hasQuoted: Scalars['Boolean'];
-  upvote:Scalars['Boolean'];
-  downvote:Scalars['Boolean'];
+  upvote: Scalars['Boolean'];
+  downvote: Scalars['Boolean'];
   hasReported: Scalars['Boolean'];
   id: Scalars['PublicationId'];
   isNotInterested: Scalars['Boolean'];
@@ -4887,7 +4887,7 @@ export type SimpleCollectOpenActionModuleInput = {
   endsAt?: InputMaybe<Scalars['DateTime']>;
   followerOnly: Scalars['Boolean'];
   recipient?: InputMaybe<Scalars['EvmAddress']>;
-  referralFee?: InputMaybe<Scalars['Float']>;
+  referralFee?: Scalars['Float'];
 };
 
 export type SimpleCollectOpenActionSettings = {
@@ -4999,7 +4999,7 @@ export type SupportedModule = KnownSupportedModule | UnknownSupportedModule;
 
 export type SupportedModulesRequest = {
   cursor?: InputMaybe<Scalars['Cursor']>;
-  includeUnknown?: InputMaybe<Scalars['Boolean']>;
+  includeUnknown?: Scalars['Boolean'];
   limit?: InputMaybe<LimitType>;
 };
 
@@ -5927,6 +5927,13 @@ export type ProfileManagersQueryVariables = Exact<{
 
 
 export type ProfileManagersQuery = { __typename?: 'Query', profileManagers: { __typename?: 'PaginatedProfileManagersResult', items: Array<{ __typename?: 'ProfilesManagedResult', address: any, isLensManager: boolean }>, pageInfo: { __typename?: 'PaginatedResultInfo', next?: any | null } } };
+
+export type ProfileRecommendationsQueryVariables = Exact<{
+  request: ProfileRecommendationsRequest;
+}>;
+
+
+export type ProfileRecommendationsQuery = { __typename?: 'Query', profileRecommendations: { __typename?: 'PaginatedProfileResult', items: Array<{ __typename?: 'Profile', id: any, signless: boolean, sponsor: boolean, createdAt: any, interests: Array<string>, ownedBy: { __typename?: 'NetworkAddress', address: any, chainId: any }, stats: { __typename?: 'ProfileStats', id: any, followers: number, following: number, comments: number, posts: number, mirrors: number, quotes: number, publications: number, reactions: number, reacted: number, countOpenActions: number }, operations: { __typename?: 'ProfileOperations', id: any, canBlock: boolean, canUnblock: boolean, canFollow: TriStateValue, canUnfollow: boolean, isBlockedByMe: { __typename?: 'OptimisticStatusResult', value: boolean }, isFollowedByMe: { __typename?: 'OptimisticStatusResult', value: boolean }, isFollowingMe: { __typename?: 'OptimisticStatusResult', value: boolean } }, guardian?: { __typename?: 'ProfileGuardianResult', protected: boolean, cooldownEndsOn?: any | null } | null, invitedBy?: { __typename?: 'Profile', id: any } | null, onchainIdentity: { __typename?: 'ProfileOnchainIdentity', proofOfHumanity: boolean, ens?: { __typename?: 'EnsOnchainIdentity', name?: any | null } | null, sybilDotOrg: { __typename?: 'SybilDotOrgIdentity', verified: boolean, source?: { __typename?: 'SybilDotOrgIdentitySource', twitter: { __typename?: 'SybilDotOrgTwitterIdentity', handle?: string | null } } | null }, worldcoin: { __typename?: 'WorldcoinIdentity', isHuman: boolean } }, followNftAddress?: { __typename?: 'NetworkAddress', address: any, chainId: any } | null, metadata?: { __typename?: 'ProfileMetadata', displayName?: string | null, bio?: any | null, rawURI: any, appId?: any | null, picture?: { __typename?: 'ImageSet', raw: { __typename?: 'Image', uri: any }, optimized?: { __typename?: 'Image', uri: any } | null } | { __typename?: 'NftImage', image: { __typename?: 'ImageSet', raw: { __typename?: 'Image', uri: any } } } | null, coverPicture?: { __typename?: 'ImageSet', raw: { __typename?: 'Image', uri: any }, optimized?: { __typename?: 'Image', uri: any } | null } | null, attributes?: Array<{ __typename?: 'MetadataAttribute', type: MetadataAttributeType, key: string, value: string }> | null } | null, followModule?: { __typename?: 'FeeFollowModuleSettings', recipient: any, amount: { __typename?: 'Amount', value: string, rate?: { __typename?: 'FiatAmount', value: string, asset: { __typename?: 'Fiat', name: string, symbol: string, decimals: number } } | null, asset: { __typename?: 'Erc20', name: string, symbol: string, decimals: number, contract: { __typename?: 'NetworkAddress', address: any, chainId: any } } } } | { __typename?: 'RevertFollowModuleSettings', type: FollowModuleType } | { __typename?: 'UnknownFollowModuleSettings', type: FollowModuleType } | null, handle?: { __typename?: 'HandleInfo', id: any, fullHandle: any, localName: string, ownedBy: any } | null }>, pageInfo: { __typename?: 'PaginatedResultInfo', next?: any | null } } };
 
 export type ProfilesQueryVariables = Exact<{
   request: ProfilesRequest;
@@ -9925,6 +9932,46 @@ export function useProfileManagersLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type ProfileManagersQueryHookResult = ReturnType<typeof useProfileManagersQuery>;
 export type ProfileManagersLazyQueryHookResult = ReturnType<typeof useProfileManagersLazyQuery>;
 export type ProfileManagersQueryResult = Apollo.QueryResult<ProfileManagersQuery, ProfileManagersQueryVariables>;
+export const ProfileRecommendationsDocument = gql`
+    query ProfileRecommendations($request: ProfileRecommendationsRequest!) {
+  profileRecommendations(request: $request) {
+    items {
+      ...ProfileFields
+    }
+    pageInfo {
+      next
+    }
+  }
+}
+    ${ProfileFieldsFragmentDoc}`;
+
+/**
+ * __useProfileRecommendationsQuery__
+ *
+ * To run a query within a React component, call `useProfileRecommendationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProfileRecommendationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProfileRecommendationsQuery({
+ *   variables: {
+ *      request: // value for 'request'
+ *   },
+ * });
+ */
+export function useProfileRecommendationsQuery(baseOptions: Apollo.QueryHookOptions<ProfileRecommendationsQuery, ProfileRecommendationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProfileRecommendationsQuery, ProfileRecommendationsQueryVariables>(ProfileRecommendationsDocument, options);
+      }
+export function useProfileRecommendationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProfileRecommendationsQuery, ProfileRecommendationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProfileRecommendationsQuery, ProfileRecommendationsQueryVariables>(ProfileRecommendationsDocument, options);
+        }
+export type ProfileRecommendationsQueryHookResult = ReturnType<typeof useProfileRecommendationsQuery>;
+export type ProfileRecommendationsLazyQueryHookResult = ReturnType<typeof useProfileRecommendationsLazyQuery>;
+export type ProfileRecommendationsQueryResult = Apollo.QueryResult<ProfileRecommendationsQuery, ProfileRecommendationsQueryVariables>;
 export const ProfilesDocument = gql`
     query Profiles($request: ProfilesRequest!) {
   profiles(request: $request) {
