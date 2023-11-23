@@ -10,12 +10,13 @@ import { black, white } from "constants/Colors";
 import { LENSPLAY_SITE } from "constants/index";
 import { PROFILE } from "constants/tracking";
 import {
-	ProfileQuery, type Profile,
+	ProfileQuery,
+	type Profile,
 	type Scalars,
 	useFollowMutation,
 	useUnfollowMutation,
 	HandleInfo,
-	ProfilePicture
+	ProfilePicture,
 } from "customTypes/generated";
 import React, { useState } from "react";
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
@@ -139,143 +140,143 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 	// 		/>
 	// 	);
 	if (profile) {
-	const formattedHandle=formatHandle(profile?.handle as HandleInfo)
-	return (
-		<>
-			<ScrollView
-				style={CommonStyles.screenContainer}
-				refreshControl={
-					<RefreshControl
-						refreshing={refreshing}
-						onRefresh={onRefresh}
-						colors={[theme.PRIMARY]}
-						progressBackgroundColor={black[400]}
-					/>
-				}
-				showsVerticalScrollIndicator={false}
-			>
-				<Cover
-					navigation={navigation}
-					url={getIPFSLink(getRawurl(profile?.metadata?.coverPicture))}
-				/>
-
-				<View style={styles.ProfileContainer}>
-					<Pressable onPress={navigateToFullImageAvatar}>
-						<Avatar
-							src={getRawurl(profile?.metadata?.picture)}
-							height={90}
-							width={90}
-							borderRadius={100}
+		const formattedHandle = formatHandle(profile?.handle as HandleInfo);
+		return (
+			<>
+				<ScrollView
+					style={CommonStyles.screenContainer}
+					refreshControl={
+						<RefreshControl
+							refreshing={refreshing}
+							onRefresh={onRefresh}
+							colors={[theme.PRIMARY]}
+							progressBackgroundColor={black[400]}
 						/>
-					</Pressable>
-					<View style={styles.editButtonContainer}>
-						{isChannel ? (
-							<SubscribeButton
-								channelId={profile?.id}
-								isFollwebByMe={profile?.operations?.isFollowedByMe?.value!}
+					}
+					showsVerticalScrollIndicator={false}
+				>
+					<Cover
+						navigation={navigation}
+						url={getIPFSLink(getRawurl(profile?.metadata?.coverPicture))}
+					/>
+
+					<View style={styles.ProfileContainer}>
+						<Pressable onPress={navigateToFullImageAvatar}>
+							<Avatar
+								src={getRawurl(profile?.metadata?.picture)}
+								height={90}
+								width={90}
+								borderRadius={100}
 							/>
-						) : (
-							<EditChannelButton />
-						)}
+						</Pressable>
+						<View style={styles.editButtonContainer}>
+							{isChannel ? (
+								<SubscribeButton
+									channelId={profile?.id}
+									isFollwebByMe={profile?.operations?.isFollowedByMe?.value!}
+								/>
+							) : (
+								<EditChannelButton />
+							)}
+						</View>
 					</View>
-				</View>
-				<View style={CommonStyles.mx_16}>
-					<View
-						style={{
-							flexDirection: "row",
-							justifyContent: "space-between",
-							alignItems: "center",
-						}}
-					>
-						<View>
-							<View style={{ flexDirection: "row", alignItems: "center" }}>
-								<Heading
-									title={profile?.metadata?.displayName || formattedHandle}
+					<View style={CommonStyles.mx_16}>
+						<View
+							style={{
+								flexDirection: "row",
+								justifyContent: "space-between",
+								alignItems: "center",
+							}}
+						>
+							<View>
+								<View style={{ flexDirection: "row", alignItems: "center" }}>
+									<Heading
+										title={profile?.metadata?.displayName || formattedHandle}
+										style={{
+											fontSize: 16,
+											marginTop: 8,
+											fontWeight: "bold",
+											color: "white",
+										}}
+									/>
+									<VerifiedBadge profileId={profile?.id} />
+								</View>
+								<StyledText
+									title={formattedHandle}
 									style={{
-										fontSize: 16,
-										marginTop: 8,
-										fontWeight: "bold",
+										fontSize: 12,
+										fontWeight: "500",
+										color: "gray",
+									}}
+								/>
+							</View>
+						</View>
+						{profile?.metadata?.bio ? (
+							<StyledText title={extractURLs(profile?.metadata?.bio)} style={styles.bioStyle} />
+						) : null}
+						<View style={styles.subFlexContainer}>
+							<TouchableOpacity
+								activeOpacity={0.5}
+								style={{
+									flexDirection: "row",
+									alignItems: "center",
+								}}
+								onPress={navigateToUserStats}
+							>
+								<StyledText
+									title={formatInteraction(profile?.stats?.following!)}
+									style={{
+										fontSize: 14,
+										fontWeight: "600",
 										color: "white",
 									}}
 								/>
-								<VerifiedBadge profileId={profile?.id} />
-							</View>
-							<StyledText
-								title={formattedHandle}
+								<StyledText
+									title={"subscription"}
+									style={{
+										fontSize: 14,
+										fontWeight: "500",
+										color: "gray",
+										marginLeft: 4,
+									}}
+								/>
+							</TouchableOpacity>
+							<TouchableOpacity
+								activeOpacity={0.5}
 								style={{
-									fontSize: 12,
-									fontWeight: "500",
-									color: "gray",
+									flexDirection: "row",
+									alignItems: "center",
+									marginLeft: 8,
 								}}
-							/>
+								onPress={navigateToUserStats}
+							>
+								<StyledText
+									title={formatInteraction(profile?.stats?.followers!)}
+									style={{
+										fontSize: 14,
+										fontWeight: "600",
+										color: "white",
+									}}
+								/>
+								<StyledText
+									title={"subscribers"}
+									style={{
+										fontSize: 14,
+										fontWeight: "500",
+										color: "gray",
+										marginLeft: 4,
+									}}
+								/>
+							</TouchableOpacity>
 						</View>
-					</View>
-					{profile?.metadata?.bio ? (
-						<StyledText title={extractURLs(profile?.metadata?.bio)} style={styles.bioStyle} />
-					) : null}
-					<View style={styles.subFlexContainer}>
-						<TouchableOpacity
-							activeOpacity={0.5}
-							style={{
-								flexDirection: "row",
-								alignItems: "center",
-							}}
-							onPress={navigateToUserStats}
-						>
-							<StyledText
-								title={formatInteraction(profile?.stats?.following!)}
-								style={{
-									fontSize: 14,
-									fontWeight: "600",
-									color: "white",
-								}}
-							/>
-							<StyledText
-								title={"subscription"}
-								style={{
-									fontSize: 14,
-									fontWeight: "500",
-									color: "gray",
-									marginLeft: 4,
-								}}
-							/>
-						</TouchableOpacity>
-						<TouchableOpacity
-							activeOpacity={0.5}
-							style={{
-								flexDirection: "row",
-								alignItems: "center",
-								marginLeft: 8,
-							}}
-							onPress={navigateToUserStats}
-						>
-							<StyledText
-								title={formatInteraction(profile?.stats?.followers!)}
-								style={{
-									fontSize: 14,
-									fontWeight: "600",
-									color: "white",
-								}}
-							/>
-							<StyledText
-								title={"subscribers"}
-								style={{
-									fontSize: 14,
-									fontWeight: "500",
-									color: "gray",
-									marginLeft: 4,
-								}}
-							/>
-						</TouchableOpacity>
-					</View>
-					<SocialLinks profile={profile as Profile} />
-					<PinnedPublication
-						sheetRef={sheetRef as any}
-						profile={profile as Profile}
-						isChannel={isChannel}
-					/>
-					<UserStats profile={profile as Profile} />
-					{/* <Pressable
+						<SocialLinks profile={profile as Profile} />
+						<PinnedPublication
+							sheetRef={sheetRef as any}
+							profile={profile as Profile}
+							isChannel={isChannel}
+						/>
+						<UserStats profile={profile as Profile} />
+						{/* <Pressable
 						style={{
 							flexDirection: "row",
 							alignItems: "center",
@@ -287,14 +288,14 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ Profile, onRefresh }) => 
 						<Icon name="follow" />
 						<StyledText title={"Subscribers Growth"} style={styles.itemText} />
 					</Pressable> */}
-					{!isChannel ? <ProfileLists /> : null}
-				</View>
-			</ScrollView>
+						{!isChannel ? <ProfileLists /> : null}
+					</View>
+				</ScrollView>
 
-			{!isChannel ? <UnPinSheet sheetRef={sheetRef} /> : null}
-		</>
-	);
-};
+				{!isChannel ? <UnPinSheet sheetRef={sheetRef} /> : null}
+			</>
+		);
+	}
 };
 
 type SubscribeButtonProps = {
