@@ -134,7 +134,6 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 					attribute.value = socialLinks.youtube || attribute.value;
 				}
 				if (attribute.type == "STRING") {
-					Logger.Error("hai toh ahsi");
 					attribute.type = MetadataAttributeType.STRING as any;
 				}
 			}
@@ -354,7 +353,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 					<Input
 						label="Twitter"
 						value={socialLinks.twitter}
-						placeHolder={initialSocialLinks.twitter || "@username"}
+						placeHolder={"@username"}
 						onChange={(e) => {
 							setSocialLinks({
 								...socialLinks,
@@ -364,7 +363,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 					/>
 					<Input
 						label="Instagram"
-						placeHolder={initialSocialLinks.instagram || "@username"}
+						placeHolder={"@username"}
 						value={socialLinks.instagram}
 						onChange={(e) => {
 							setSocialLinks({
@@ -375,7 +374,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 					/>
 					<Input
 						label="Youtube"
-						placeHolder={initialSocialLinks.youtube || "Youtube Link"}
+						placeHolder={"Youtube Link"}
 						value={socialLinks.youtube}
 						onChange={(e) => {
 							setSocialLinks({
@@ -387,7 +386,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 					<Input
 						label="Website"
 						value={socialLinks.website}
-						placeHolder={initialSocialLinks.website || "https://your-site.com"}
+						placeHolder={"https://your-site.com"}
 						onChange={(e) => {
 							setSocialLinks({
 								...socialLinks,
