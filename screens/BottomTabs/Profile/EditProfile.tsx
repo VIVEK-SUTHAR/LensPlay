@@ -17,20 +17,18 @@ import { ToastType } from "customTypes/Store";
 import Avatar from "components/UI/Avatar";
 import { dark_primary } from "constants/Colors";
 import getImageBlobFromUri from "utils/getImageBlobFromUri";
-import {
-	HandleInfo,
-	Profile,
-	// useCreateSetProfileImageUriViaDispatcherMutation,
-	// useCreateSetProfileMetadataViaDispatcherMutation,
-	useSetProfileMetadataMutation,
-} from "customTypes/generated";
+import { HandleInfo, useSetProfileMetadataMutation } from "customTypes/generated";
 import uploadImageToIPFS from "utils/uploadImageToIPFS";
-import { LENSPLAY_SITE } from "constants/index";
+import { APP_ID, LENSPLAY_SITE } from "constants/index";
 import TrackAction from "utils/Track";
 import { SETTINGS } from "constants/tracking";
 import Logger from "utils/logger";
 import uploadProfileMetadata from "utils/uploadProfileMetadata";
-import { MetadataAttributeType, ProfileSchemaId, profile } from "@lens-protocol/metadata";
+import {
+	ProfileSchemaId,
+	profile as profileMetadata,
+	MetadataAttributeType,
+} from "@lens-protocol/metadata";
 
 const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 	const { currentProfile } = useProfile();
@@ -62,13 +60,6 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 		website: "",
 	});
 
-	const [initialSocialLinks, setInitialSocialLinks] = useState({
-		twitter: "",
-		instagram: "",
-		youtube: "",
-		website: "",
-	});
-
 	//handle selection of avatar
 	async function selectAvatar() {
 		setAvatar(null);
@@ -91,59 +82,63 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 
 	const constructAttributes = () => {
 		try {
-			let newAttributes = currentProfile?.metadata?.attributes! || [];
-			Logger.Success("", newAttributes);
+			let attr = currentProfile?.metadata?.attributes! || [];
+			let newAttributes = [...attr];
 			const twitter = newAttributes.find((item) => item.key === "twitter")?.value;
 			const website = newAttributes.find((item) => item.key === "website")?.value;
 			const instagram = newAttributes.find((item) => item.key === "instagram")?.value;
 			const youtube = newAttributes.find((item) => item.key === "youtube")?.value;
 			if (!twitter && socialLinks.twitter) {
 				newAttributes.push({
-					type: MetadataAttributeType.STRING,
+					type: MetadataAttributeType.STRING as any,
 					key: "twitter",
 					value: socialLinks.twitter,
 				});
 			}
 			if (!website && socialLinks.website) {
 				newAttributes.push({
-					type: MetadataAttributeType.STRING,
+					type: MetadataAttributeType.STRING as any,
 					key: "website",
 					value: socialLinks.website,
 				});
 			}
 			if (!instagram && socialLinks.instagram) {
 				newAttributes.push({
-					type: MetadataAttributeType.STRING,
+					type: MetadataAttributeType.STRING as any,
 					key: "instagram",
 					value: socialLinks.instagram,
 				});
 			}
 			if (!youtube && socialLinks.youtube) {
 				newAttributes.push({
-					type: MetadataAttributeType.STRING,
+					type: MetadataAttributeType.STRING as any,
 					key: "youtube",
 					value: socialLinks.youtube,
 				});
 			}
 			for (const attribute of newAttributes!) {
 				if (attribute.key === "twitter") {
-					attribute.type = MetadataAttributeType.STRING;
+					attribute.type = MetadataAttributeType.STRING as any;
 					attribute.value = socialLinks.twitter || attribute.value;
 				}
 				if (attribute.key === "website") {
-					attribute.type = MetadataAttributeType.STRING;
+					attribute.type = MetadataAttributeType.STRING as any;
 					attribute.value = socialLinks.website || attribute.value;
 				}
 				if (attribute.key === "instagram") {
-					attribute.type = MetadataAttributeType.STRING;
+					attribute.type = MetadataAttributeType.STRING as any;
 					attribute.value = socialLinks.instagram || attribute.value;
 				}
 				if (attribute.key === "youtube") {
-					attribute.type = MetadataAttributeType.STRING;
+					attribute.type = MetadataAttributeType.STRING as any;
 					attribute.value = socialLinks.youtube || attribute.value;
 				}
-				return newAttributes;
+				if (attribute.type == "STRING") {
+					Logger.Error("hai toh ahsi");
+					attribute.type = MetadataAttributeType.STRING as any;
+				}
 			}
+			return newAttributes;
 		} catch (error) {
 			Logger.Error("erorr", error);
 		}
@@ -168,29 +163,6 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 		}
 	}
 
-	// useEffect(() => {
-	// 	if (currentProfile) {
-	// 		getSocialLinks(currentProfile);
-	// 	}
-	// }, []);
-
-	// //function that fetches current social links from profile
-	// const getSocialLinks = useCallback((profile: Profile | null) => {
-	// 	const attributes = profile?.metadata?.attributes ?? [];
-
-	// 	const website = attributes.find((item) => item.key === "website")?.value;
-	// 	const twitter = attributes.find((item) => item.key === "twitter")?.value;
-	// 	const instagram = attributes.find((item) => item.key === "instagram")?.value;
-	// 	const youtube = attributes.find((item) => item.key === "youtube")?.value;
-
-	// 	setInitialSocialLinks({
-	// 		instagram: instagram || "",
-	// 		website: website || "",
-	// 		youtube: youtube || "",
-	// 		twitter: twitter || "",
-	// 	});
-	// }, []);
-
 	const [createSetProfileMetadataViaDispatcherMutation] = useSetProfileMetadataMutation({
 		onCompleted: (data) => {
 			Logger.Success("metadata updated", data);
@@ -200,42 +172,6 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 			Logger.Error("Error while updating metadata", error);
 		},
 	});
-
-	const updateProfileMetadata = async () => {
-		//get the current cover and populate the local variable
-		let coverURI = getRawurl(currentProfile?.metadata?.coverPicture);
-
-		//if the cover has been updated then upload it to ipfs and update the local variable
-		if (coverBlob) {
-			coverURI = await uploadImageToIPFS(coverBlob);
-			coverURI = coverURI;
-			Logger.Success("updated cover");
-		}
-
-		//upload the metadata to arweave and get it's txn id
-		// const metadata = await uploadProfileMetadata(
-		// 	currentProfile,
-		// 	userData,
-		// 	socialLinks,
-		// 	coverBlob ? `ipfs://${coverURI}` : coverURI
-		// );
-		// Logger.Log("This metadata id", metadata.id);
-
-		// await createSetProfileMetadataViaDispatcherMutation({
-		// 	variables: {
-		// 		request: {
-		// 			metadataURI: `https://arweave.net/${metadata.id}`,
-		// 			// profileId: currentProfile?.id,
-		// 		},
-		// 	},
-		// 	context: {
-		// 		headers: {
-		// 			"x-access-token": `Bearer ${accessToken}`,
-		// 			"origin": LENSPLAY_SITE,
-		// 		},
-		// 	},
-		// });
-	};
 
 	const handleUpdate = async () => {
 		try {
@@ -267,8 +203,15 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 					Logger.Log("this is ipfs", cover);
 				}
 				const newAttributes = constructAttributes();
-				Logger.Log("this are latest attributes", newAttributes);
-				const metadata = profile({
+				Logger.Log(
+					"this are latest attributes",
+					newAttributes,
+					cover,
+					avatar,
+					getRawurl(currentProfile?.metadata?.picture),
+					currentProfile?.metadata?.picture
+				);
+				const metadata = profileMetadata({
 					name: userData.name
 						? userData.name
 						: currentProfile?.metadata?.displayName!
@@ -279,65 +222,27 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 						: currentProfile?.metadata?.bio
 						? currentProfile?.metadata?.bio
 						: "",
-					appId: "Lensplay",
 					picture: avatar ? avatar : getRawurl(currentProfile?.metadata?.picture),
 					coverPicture: cover ? cover : getRawurl(currentProfile?.metadata?.coverPicture),
-
 					attributes: newAttributes,
 				});
-				// const metadata = {
-				// 	$schema: ProfileSchemaId.LATEST,
-				// 	lens: {
-				// 		id: "1f4ff001-903c-46ed-afe3-502218c601a4",
-				// 		name: "Sahil",
-				// 		bio: "Right",
-				// 		coverPicture:
-				// 			"https://ipfs.io/ipfs/bafkreianrvzc464duphjgwmw2lb2hbqieonctq7ytqgueyebpfzbem32mm",
-				// 		attributes: [
-				// 			{ type: "STRING", key: "twitter", value: "@somewhatsahil" },
-				// 			{ type: "STRING", key: "website", value: "https://sahilkakwani.tech" },
-				// 			{ type: "STRING", key: "instagram", value: "@sahilkakwani9" },
-				// 		],
-				// 		appId: "Lensplay",
-				// 	},
-				// };
-				Logger.Log("this is final metadata", metadata);
 
-				// const response = await uploadProfileMetadata(metadata);
-				// Logger.Log("This metadata id", response.id);
+				const response = await uploadProfileMetadata(metadata);
 
-				// await createSetProfileMetadataViaDispatcherMutation({
-				// 	variables: {
-				// 		request: {
-				// 			metadataURI: `https://arweave.net/${response.id}`,
-				// 			// profileId: currentProfile?.id,
-				// 		},
-				// 	},
-				// 	context: {
-				// 		headers: {
-				// 			"x-access-token": `Bearer ${accessToken}`,
-				// 			"origin": LENSPLAY_SITE,
-				// 		},
-				// 	},
-				// });
-
-				//update avatar as well as metadata
-
-				// if (avatarBlob && canUpload()) {
-				// 	Logger.Warn('need to update both');
-				// 	const [avatarResult, metadataResult] = await Promise.all([updateProfileAvatar(), updateProfileMetadata()]);
-				// }
-				//update avatar
-				// else if(avatarBlob) {
-				// 	Logger.Warn('need to update avatar');
-				// 	await updateProfileAvatar();
-				// }
-
-				//update metadata
-				// else {
-				// 	Logger.Warn('need to update metadata');
-				// 	await updateProfileMetadata();
-				// }
+				await createSetProfileMetadataViaDispatcherMutation({
+					variables: {
+						request: {
+							metadataURI: `ar://${response.id}`,
+							// profileId: currentProfile?.id,
+						},
+					},
+					context: {
+						headers: {
+							"x-access-token": `Bearer ${accessToken}`,
+							"origin": LENSPLAY_SITE,
+						},
+					},
+				});
 
 				toast.show("Channel updated successfully", ToastType.SUCCESS, true);
 			}
