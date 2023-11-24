@@ -9,7 +9,7 @@ import StyledText from "components/UI/StyledText";
 import Button from "components/UI/Button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import StorageKeys from "constants/Storage";
-import { useAccount } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
 import { useNavigation } from "@react-navigation/native";
 import { useProfile } from "store/Store";
 import TrackAction from "utils/Track";
@@ -19,7 +19,7 @@ type Props = {
 };
 
 const LogOutSheet = ({ logoutref }: Props) => {
-	const { connector } = useAccount();
+	const { disconnect } = useDisconnect();
 	const navigation = useNavigation();
 	const { setCurrentProfile } = useProfile();
 	return (
@@ -69,7 +69,8 @@ const LogOutSheet = ({ logoutref }: Props) => {
 							navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] });
 							return;
 						} else {
-							await connector?.disconnect();
+							// await connector?.disconnect();
+							disconnect();
 							navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] });
 						}
 						setCurrentProfile(undefined);
