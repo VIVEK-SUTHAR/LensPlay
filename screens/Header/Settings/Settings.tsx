@@ -88,11 +88,11 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 							borderRadius: 12,
 						}}
 					>
-						<SettingsItem
+						{/* <SettingsItem
 							icon={<Icon name="edit" size={24} />}
 							label={"Manage Your Profile"}
 							onPress={() => navigation.push("ProfileManager")}
-						/>
+						/> */}
 						<SettingsItem
 							icon={<Icon name="star" size={24} />}
 							label={"Appereance"}
@@ -100,7 +100,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 						/>
 					</View>
 				</View>
-				<View>
+				<View style={{marginTop:24}}>
 					<Heading
 						title={"About"}
 						style={{

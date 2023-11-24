@@ -35,9 +35,9 @@ const Avatar: React.FC<AvatarProps> = ({
 			: getImageProxyURL({
 					formattedLink: getIPFSLink(src),
 					options:{
-						height:36,
+						height:120,
 						format:"png",
-						width:36
+						width:120
 					}
 			  });
 

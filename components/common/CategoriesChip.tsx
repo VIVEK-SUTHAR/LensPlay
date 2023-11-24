@@ -23,6 +23,7 @@ const CategoriesChip = () => {
 				getItemLayout={getItemLayout}
 				renderItem={renderItem}
 				removeClippedSubviews={true}
+				showsHorizontalScrollIndicator={false}
 				keyExtractor={(item, index) => `${item.tag}-${index}`}
 			/>
 		</View>
