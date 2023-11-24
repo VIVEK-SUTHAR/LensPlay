@@ -125,7 +125,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 		// }
 		try {
 			toast.success("Mirror submitted!");
-			// setMirrorStats(true, mirrorStats.mirrorCount + 1);
+			setMirrorStats(true, mirrorStats.mirrorCount + 1);
 			mirrorRef.current?.close();
 			// await createOnChainMirror({
 			// 	variables: {
