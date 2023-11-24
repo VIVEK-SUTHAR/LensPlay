@@ -6,6 +6,7 @@
 		"dev": "expo start --dev-client --clear",
 		"prod": "expo start --dev-client --clear --no-dev --minify",
 		"android": "expo run:android",
+		"release-build":"node build.mjs",
 		"ios": "expo run:ios",
 		"web": "expo start --web",
 		"eject": "expo eject",
