@@ -3,6 +3,8 @@ import {
 	Mirror,
 	Post,
 	PrimaryPublication,
+	useBroadcastOnMomokaMutation,
+	useBroadcastOnchainMutation,
 	useCreateMomokaMirrorTypedDataMutation,
 	useCreateOnchainMirrorTypedDataMutation,
 	useMirrorOnMomokaMutation,
@@ -12,6 +14,7 @@ import Logger from "utils/logger";
 import { useSignTypedData } from "wagmi";
 import { useAuthStore, useProfile } from "store/Store";
 import getSignature from "utils/getSignature";
+import { LENSPLAY_SITE } from "constants/index";
 
 /**
  *
@@ -28,7 +31,12 @@ export default function useMirror() {
 	const { currentProfile } = useProfile();
 	const { signTypedDataAsync, error } = useSignTypedData();
 	const { accessToken } = useAuthStore();
-
+	const context = {
+		headers: {
+			"x-access-token": `Bearer ${accessToken}`,
+			"origin": LENSPLAY_SITE,
+		},
+	};
 	const updateCache = (publication: Post | Mirror) => {
 		try {
 			cache.modify({
@@ -53,6 +61,10 @@ export default function useMirror() {
 	const [getMomokaMirrorTypedData] = useCreateMomokaMirrorTypedDataMutation();
 	const [getOnChainMirrorTypedData] = useCreateOnchainMirrorTypedDataMutation();
 
+	//Broadcast Calls
+	const [broadcastOnChain] = useBroadcastOnchainMutation();
+	const [broadcastOnMomoka] = useBroadcastOnMomokaMutation();
+
 	const getTypedData = async (publicationId: string, isMomoka = false) => {
 		try {
 			if (isMomoka) {
@@ -62,6 +74,7 @@ export default function useMirror() {
 							mirrorOn: publicationId,
 						},
 					},
+					context: context,
 				});
 				return momokaTypedData?.createMomokaMirrorTypedData;
 			} else {
@@ -71,6 +84,7 @@ export default function useMirror() {
 							mirrorOn: publicationId,
 						},
 					},
+					context: context,
 				});
 				return onChainTypedData?.createOnchainMirrorTypedData;
 			}
@@ -93,6 +107,7 @@ export default function useMirror() {
 						mirrorOn: publication?.id,
 					},
 				},
+				context: context,
 			});
 		}
 		//Lens Manager Disabled and Momoka Publication: Typed data,BroadCast on Momoka
@@ -110,6 +125,7 @@ export default function useMirror() {
 						mirrorOn: publication?.id,
 					},
 				},
+				context: context,
 			});
 		}
 		// Lens Manager Disabled and On Chain Publication
