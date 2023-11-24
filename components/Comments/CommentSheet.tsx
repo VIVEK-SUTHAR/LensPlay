@@ -34,6 +34,7 @@ const CommentsSheet = ({ commentSheetRef, pubId }: CommentsSheetProps) => {
 			ref={commentSheetRef}
 			snapPoints={["75%", "95%"]}
 			android_keyboardInputMode="adjustResize"
+			enableDynamicSizing={true}
 			index={-1}
 			enablePanDownToClose={true}
 			backgroundStyle={{

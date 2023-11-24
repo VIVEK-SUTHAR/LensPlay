@@ -52,6 +52,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 	const toast = useToast();
 	const theme = useThemeStore();
 	const { currentProfile } = useProfile();
+	Logger.Log("IS SIGNLESS",currentProfile?.signless)
 
 	// const updateCache = (cache: ApolloCache<any>) => {
 	// 	try {
@@ -124,7 +125,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 		// }
 		try {
 			toast.success("Mirror submitted!");
-			setMirrorStats(true, mirrorStats.mirrorCount + 1);
+			// setMirrorStats(true, mirrorStats.mirrorCount + 1);
 			mirrorRef.current?.close();
 			// await createOnChainMirror({
 			// 	variables: {
@@ -139,7 +140,8 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 			// 		},
 			// 	},
 			// });
-			await mirrorPublication(activePublication as Post);
+
+			await mirrorPublication(activePublication);
 			TrackAction(PUBLICATION.MIRROR);
 		} catch (error) {
 			if (error instanceof Error) {

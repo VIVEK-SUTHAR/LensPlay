@@ -1,25 +1,31 @@
 import cache from "apollo/cache";
 import {
 	Mirror,
-	MomokaMirrorRequest,
-	OnchainMirrorRequest,
 	Post,
-	useBroadcastOnMomokaMutation,
-	useBroadcastOnchainMutation,
+	PrimaryPublication,
 	useCreateMomokaMirrorTypedDataMutation,
 	useCreateOnchainMirrorTypedDataMutation,
 	useMirrorOnMomokaMutation,
 	useMirrorOnchainMutation,
 } from "customTypes/generated";
-import useProfileStore from "store/profileStore";
 import Logger from "utils/logger";
-import getSignature from "utils/getSignature";
 import { useSignTypedData } from "wagmi";
-import { LENSPLAY_SITE } from "constants/index";
-import { useAuthStore } from "store/Store";
+import { useAuthStore, useProfile } from "store/Store";
+import getSignature from "utils/getSignature";
+
+/**
+ *
+ * Cases Possible for Mirror Publication
+ *
+ * Lens Manager Enabled and Momoka Publication: Send Momoka Mutation : ✅
+ * Lens Manager Disabled and Momoka Publication: typed data approach,then broadcast on Momoka
+ * Lens Manager Enabled and On Chain Publication: Send OnChain Mutation ✅
+ * Lens Manager Disabled and On Chain Publication: Typed Data and Broadcast approach, Broadcast On Chain
+ *
+ */
 
 export default function useMirror() {
-	const { currentProfile } = useProfileStore();
+	const { currentProfile } = useProfile();
 	const { signTypedDataAsync, error } = useSignTypedData();
 	const { accessToken } = useAuthStore();
 
@@ -42,129 +48,72 @@ export default function useMirror() {
 		}
 	};
 
-	const [broadcastOnMomoka] = useBroadcastOnMomokaMutation();
-	const [broadcastOnchain] = useBroadcastOnchainMutation();
+	const [onChainMirrorSignLess] = useMirrorOnchainMutation();
+	const [momokaMirrorSignLess] = useMirrorOnMomokaMutation();
+	const [getMomokaMirrorTypedData] = useCreateMomokaMirrorTypedDataMutation();
+	const [getOnChainMirrorTypedData] = useCreateOnchainMirrorTypedDataMutation();
 
-	const typedDataGenerator = async (generatedData: any, isMomokaPublication = false) => {
-		const { id, typedData } = generatedData;
-		const message = getSignature(typedData);
-
-		const signature = await signTypedDataAsync(message);
-		if (error) {
-			Logger.Error("", error);
-			return null;
-		}
-		Logger.Log("this is signature", signature);
-
-		// if (currentProfile?.sponsor) {
-		if (isMomokaPublication) {
-			return await broadcastOnMomoka({
-				variables: { request: { id, signature } },
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-						"origin": LENSPLAY_SITE,
-					},
-				},
-			});
-		}
-
-		const { data } = await broadcastOnchain({
-			variables: { request: { id, signature } },
-			context: {
-				headers: {
-					"x-access-token": `Bearer ${accessToken}`,
-					"origin": LENSPLAY_SITE,
-				},
-			},
-		});
-		// }
-	};
-
-	const [createOnchainMirrorTypedData] = useCreateOnchainMirrorTypedDataMutation({
-		onCompleted: async ({ createOnchainMirrorTypedData }) => {
-			await typedDataGenerator(createOnchainMirrorTypedData);
-		},
-	});
-
-	// Momoka typed data generation
-	const [createMomokaMirrorTypedData] = useCreateMomokaMirrorTypedDataMutation({
-		onCompleted: async ({ createMomokaMirrorTypedData }) =>
-			await typedDataGenerator(createMomokaMirrorTypedData, true),
-	});
-
-	// Onchain mutations
-	const [mirrorOnchain] = useMirrorOnchainMutation();
-
-	// Momoka mutations
-	const [mirrorOnMomoka] = useMirrorOnMomokaMutation();
-
-	const createOnMomka = async (request: MomokaMirrorRequest) => {
-		const { data } = await mirrorOnMomoka({ variables: { request } });
-		if (data?.mirrorOnMomoka?.__typename === "LensProfileManagerRelayError") {
-			return await createMomokaMirrorTypedData({ variables: { request } });
-		}
-	};
-
-	const createOnChain = async (request: OnchainMirrorRequest) => {
-		const { data } = await mirrorOnchain({ variables: { request } });
-		if (data?.mirrorOnchain.__typename === "LensProfileManagerRelayError") {
-			return await createOnchainMirrorTypedData({
-				variables: {
-					request,
-				},
-			});
-		}
-	};
-
-	const mirrorPublication = async (publication: Post | Mirror) => {
+	const getTypedData = async (publicationId: string, isMomoka = false) => {
 		try {
-			updateCache(publication);
-			if (publication.momoka?.proof) {
-				if (currentProfile?.signless) {
-					return await createOnMomka({
-						mirrorOn: publication?.id,
-					});
-				}
-
-				return await createMomokaMirrorTypedData({
+			if (isMomoka) {
+				const { data: momokaTypedData } = await getMomokaMirrorTypedData({
 					variables: {
 						request: {
-							mirrorOn: publication?.id,
-						},
-					},
-					context: {
-						headers: {
-							"x-access-token": `Bearer ${accessToken}`,
-							"origin": LENSPLAY_SITE,
+							mirrorOn: publicationId,
 						},
 					},
 				});
-			}
-
-			if (currentProfile?.signless) {
-				return await createOnChain({
-					mirrorOn: publication?.id,
+				return momokaTypedData?.createMomokaMirrorTypedData;
+			} else {
+				const { data: onChainTypedData } = await getOnChainMirrorTypedData({
+					variables: {
+						request: {
+							mirrorOn: publicationId,
+						},
+					},
 				});
+				return onChainTypedData?.createOnchainMirrorTypedData;
 			}
+		} catch (error) {}
+	};
 
-			console.log("typed saadi che");
+	const mirrorPublication = async (publication: PrimaryPublication) => {
+		const isLensManagerEnabled = currentProfile?.signless;
+		const isMomokaPublication = Boolean(publication?.momoka?.proof);
+		Logger.Warn("Is Momoka Publication", isMomokaPublication);
+		Logger.Warn("Is Lens Manager Added", isLensManagerEnabled);
 
-			return await createOnchainMirrorTypedData({
+		//Lens Manager Enabled and Momoka Publication: SignLess
+		if (isMomokaPublication && isLensManagerEnabled) {
+			Logger.Log("Sending On Momoka Mirror Signless");
+			return;
+			const { data } = await momokaMirrorSignLess({
 				variables: {
 					request: {
 						mirrorOn: publication?.id,
 					},
 				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-						"origin": LENSPLAY_SITE,
+			});
+		}
+		//Lens Manager Disabled and Momoka Publication: Typed data,BroadCast on Momoka
+		if (!isLensManagerEnabled && isMomokaPublication) {
+			const typedData = await getTypedData(publication?.id, isMomokaPublication);
+			const formattedTypedData = getSignature(typedData?.typedData!);
+		}
+		//Lens Manager Enabled and On Chain Publication: SignLess
+		if (isLensManagerEnabled && !isMomokaPublication) {
+			Logger.Log("Sending On Chain Mirror Signless Approach");
+			return;
+			onChainMirrorSignLess({
+				variables: {
+					request: {
+						mirrorOn: publication?.id,
 					},
 				},
 			});
-		} catch (error) {
-			Logger.Error("Error in mirroring publication", error);
+		}
+		// Lens Manager Disabled and On Chain Publication
+		if (!isLensManagerEnabled && !isMomokaPublication) {
 		}
 	};
 
