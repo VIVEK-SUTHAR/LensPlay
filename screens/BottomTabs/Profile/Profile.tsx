@@ -34,7 +34,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	} = useProfileQuery({
 		variables: {
 			request: {
-				forProfileId:"0x97fd"
+				forProfileId: currentProfile?.id,
 			},
 		},
 		context: {
@@ -45,15 +45,16 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	});
 	const onRefresh = React.useCallback(async () => {
 		setRefreshing(true);
+
 		await refetch({
 			request: {
-				forHandle: currentProfile?.handle,
+				forProfileId: currentProfile?.id,
 			},
 		}).catch((err) => {
 			Logger.Error("Error in Refreshing error", err);
 		});
 		setRefreshing(false);
-		Logger.Warn("hellloo", Profile?.profile?.id);
+		Logger.Warn("hellloo", Profile?.profile?.metadata?.bio);
 	}, []);
 
 	if (isGuest) return <PleaseLogin />;

@@ -3,6 +3,7 @@ import { dark_primary } from "constants/Colors";
 import { Maybe, Profile } from "customTypes/generated";
 import React, { useEffect, useState } from "react";
 import { Linking, Pressable, View } from "react-native";
+import Logger from "utils/logger";
 
 type socialLinksProps = {
 	instagram: Maybe<string> | undefined;
@@ -34,7 +35,7 @@ function getLink(key: string, value: Maybe<string> | undefined) {
 			break;
 	}
 }
-function _SocialLinks({ profile }: { profile: Profile }) {
+function SocialLinks({ profile }: { profile: Profile }) {
 	const [links, setLinks] = useState<socialLinksProps>({
 		twitter: "",
 		instagram: "",
@@ -43,10 +44,10 @@ function _SocialLinks({ profile }: { profile: Profile }) {
 	});
 	const getLinks = React.useCallback(() => {
 		console.log(profile.metadata);
-		
+
 		const attributes = profile.metadata?.attributes;
 		if (!attributes) return;
-		const twitter = attributes.find((item) => item.key==="twitter")?.value;
+		const twitter = attributes.find((item) => item.key === "twitter")?.value;
 		const youtube = attributes.find((item) => item.key === "youtube")?.value;
 		const insta = attributes.find((item) => item.key === "instagram")?.value;
 		const website = attributes.find((item) => item.key === "website")?.value;
@@ -118,5 +119,4 @@ function _SocialLinks({ profile }: { profile: Profile }) {
 		</View>
 	);
 }
-const SocialLinks = React.memo(_SocialLinks);
 export default SocialLinks;
