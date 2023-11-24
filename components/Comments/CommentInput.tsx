@@ -1,8 +1,9 @@
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
+import { textOnly } from "@lens-protocol/metadata/";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import { black } from "constants/Colors";
-import { LENSPLAY_SITE } from "constants/index";
+import { APP_ID, LENSPLAY_SITE } from "constants/index";
 import { ToastType } from "customTypes/Store";
 import { useCommentOnMomokaMutation, useCommentOnchainMutation } from "customTypes/generated";
 import React, { useState } from "react";
@@ -19,6 +20,7 @@ import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
 import uploadMetaDataToArweave from "utils/uploadMetaToArweave";
+import uploadProfileMetadata from "utils/uploadProfileMetadata";
 
 type CommentInputProps = {
 	publicationId: string;
@@ -70,12 +72,21 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 			toast.success("Comment submitted!");
 			setCommentText("");
 			setIsFocused(false);
-			const contenturi = await uploadMetaDataToArweave(commentText, currentProfile?.handle);
+			const commentMetadata = textOnly({
+				content: commentText,
+				appId: APP_ID,
+				marketplace: {
+					description: commentText,
+					name: commentText,
+					external_url: `https://www.lensplay.xyz/${currentProfile?.handle}`,
+				},
+			});
+			const contenturi = await uploadProfileMetadata(commentMetadata as any);
 			createDataAvaibalityComment({
 				variables: {
 					request: {
 						commentOn: publicationId,
-						contentURI: contenturi,
+						contentURI: `ar://${contenturi.id}`,
 					},
 				},
 				context: {
@@ -91,12 +102,21 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 			toast.success("Comment submitted!");
 			setCommentText("");
 			setIsFocused(false);
-			const contenturi = await uploadMetaDataToArweave(commentText, currentProfile?.handle);
+			const commentMetadata = textOnly({
+				content: commentText,
+				appId: APP_ID,
+				marketplace: {
+					description: commentText,
+					name: commentText,
+					external_url: `https://www.lensplay.xyz/${currentProfile?.handle}`,
+				},
+			});
+			const contenturi = await uploadProfileMetadata(commentMetadata as any);
 			await createComment({
 				variables: {
 					request: {
 						commentOn: publicationId,
-						contentURI: contenturi,
+						contentURI: `ar://${contenturi.id}`,
 						referenceModule: {
 							followerOnlyReferenceModule: false,
 						},

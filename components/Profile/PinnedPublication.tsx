@@ -70,8 +70,6 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
 			variables: {
 				request: {
 					metadataURI: `ar://${hash}`,
-					// metadata: `ar://${hash}`,
-					// profileId: currentProfile?.id,
 				},
 			},
 			context: {
@@ -245,9 +243,7 @@ export default function PinnedPublication({
 								}}
 							>
 								<StyledText
-									title={
-										data?.publication?.metadata?.content
-									}
+									title={data?.publication?.metadata?.content}
 									numberOfLines={1}
 									style={{ color: "gray", fontSize: 12 }}
 								/>

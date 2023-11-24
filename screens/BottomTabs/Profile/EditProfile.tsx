@@ -223,7 +223,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 						: "",
 					picture: avatar ? avatar : getRawurl(currentProfile?.metadata?.picture),
 					coverPicture: cover ? cover : getRawurl(currentProfile?.metadata?.coverPicture),
-					attributes: newAttributes,
+					attributes: newAttributes as any,
 				});
 
 				const response = await uploadProfileMetadata(metadata);
