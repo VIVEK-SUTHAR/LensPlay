@@ -44,7 +44,7 @@ const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publ
 
 	const coverImage = getImageProxyURL({
 		formattedLink: getIPFSLink(getRawurl(metadata?.asset?.cover)),
-		options: { height: 200, width: 340 },
+		options: { height: undefined, width: undefined,format:"webp" },
 	});
 
 	return (
@@ -54,6 +54,7 @@ const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publ
 					<Image
 						placeholder={getPlaceHolderImage()}
 						contentFit="cover"
+						placeholderContentFit="cover"
 						transition={500}
 						recyclingKey={`${coverImage}-${publication.id}`}
 						source={{
