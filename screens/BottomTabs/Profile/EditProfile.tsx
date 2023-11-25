@@ -28,32 +28,31 @@ import {
 	ProfileSchemaId,
 	profile as profileMetadata,
 	MetadataAttributeType,
+	MetadataAttribute,
 } from "@lens-protocol/metadata";
 
 const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
-	const { currentProfile } = useProfile();
+	const { currentProfile, setCurrentProfile } = useProfile();
 	const windowHeight = Dimensions.get("window").height;
 	const toast = useToast();
 	const [isUpdating, setIsUpdating] = useState<boolean>(false);
 	const { accessToken } = useAuthStore();
-
-	//states for avatar
-	const [avatar, setAvatar] = useState<null | string>(null);
-	const [avatarBlob, setAvatarBlob] = useState<Blob>();
-
-	//states for cover
-	const [cover, setCover] = useState<string>("");
-	const [coverBlob, setCoverBlob] = useState<Blob>();
-
-	//state for name, bio
+	type SocialLinks = {
+		twitter: string;
+		instagram: string;
+		youtube: string;
+		website: string;
+	};
 
 	const [userData, setUserData] = useState({
 		name: "",
 		bio: "",
+		avatar: "",
+		cover: "",
 	});
 
 	//states for social links
-	const [socialLinks, setSocialLinks] = useState({
+	const [socialLinks, setSocialLinks] = useState<SocialLinks>({
 		twitter: "",
 		instagram: "",
 		youtube: "",
@@ -62,7 +61,6 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 
 	//handle selection of avatar
 	async function selectAvatar() {
-		setAvatar(null);
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			allowsEditing: true,
@@ -70,77 +68,53 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 			base64: true,
 		});
 		if (result.canceled) {
-			// toast.show("No image selected", ToastType.ERROR, true);
 			return;
 		}
 		if (!result.canceled) {
-			setAvatar(result.assets[0].uri);
-			const imgblob = await getImageBlobFromUri(result.assets[0].uri);
-			setAvatarBlob(imgblob);
+			setUserData({ ...userData, avatar: result.assets[0].uri });
+			return;
 		}
 	}
 
 	const constructAttributes = () => {
 		try {
-			let attr = currentProfile?.metadata?.attributes! || [];
-			let newAttributes = [...attr];
-			const twitter = newAttributes.find((item) => item.key === "twitter")?.value;
-			const website = newAttributes.find((item) => item.key === "website")?.value;
-			const instagram = newAttributes.find((item) => item.key === "instagram")?.value;
-			const youtube = newAttributes.find((item) => item.key === "youtube")?.value;
-			if (!twitter && socialLinks.twitter) {
-				newAttributes.push({
-					type: MetadataAttributeType.STRING as any,
-					key: "twitter",
-					value: socialLinks.twitter,
-				});
-			}
-			if (!website && socialLinks.website) {
-				newAttributes.push({
-					type: MetadataAttributeType.STRING as any,
-					key: "website",
-					value: socialLinks.website,
-				});
-			}
-			if (!instagram && socialLinks.instagram) {
-				newAttributes.push({
-					type: MetadataAttributeType.STRING as any,
-					key: "instagram",
-					value: socialLinks.instagram,
-				});
-			}
-			if (!youtube && socialLinks.youtube) {
-				newAttributes.push({
-					type: MetadataAttributeType.STRING as any,
-					key: "youtube",
-					value: socialLinks.youtube,
-				});
-			}
-			for (const attribute of newAttributes!) {
-				if (attribute.key === "twitter") {
-					attribute.type = MetadataAttributeType.STRING as any;
-					attribute.value = socialLinks.twitter || attribute.value;
+			const socialLinksKeys = ["twitter", "website", "instagram", "youtube"];
+			const newAttributes = (currentProfile?.metadata?.attributes || []).map((attribute) => ({
+				...attribute,
+				type: attribute.type === "STRING" ? MetadataAttributeType.STRING : attribute.type,
+			}));
+
+			socialLinksKeys.forEach((key) => {
+				const existingAttribute = newAttributes.find((item) => item.key === key);
+				const socialLinkValue = socialLinks[key];
+				if (!existingAttribute && socialLinkValue) {
+					newAttributes.push({
+						type: MetadataAttributeType.STRING as any,
+						key: key,
+						value: socialLinkValue,
+					});
+				} else if (existingAttribute && socialLinkValue) {
+					existingAttribute.type = MetadataAttributeType.STRING as any;
+					existingAttribute.value = socialLinkValue;
 				}
-				if (attribute.key === "website") {
-					attribute.type = MetadataAttributeType.STRING as any;
-					attribute.value = socialLinks.website || attribute.value;
-				}
-				if (attribute.key === "instagram") {
-					attribute.type = MetadataAttributeType.STRING as any;
-					attribute.value = socialLinks.instagram || attribute.value;
-				}
-				if (attribute.key === "youtube") {
-					attribute.type = MetadataAttributeType.STRING as any;
-					attribute.value = socialLinks.youtube || attribute.value;
-				}
-				if (attribute.type == "STRING") {
-					attribute.type = MetadataAttributeType.STRING as any;
-				}
-			}
+			});
+
 			return newAttributes;
 		} catch (error) {
-			Logger.Error("erorr", error);
+			Logger.Error("error", error);
 		}
+	};
+
+	const updateStore = async () => {
+		setCurrentProfile({
+			...currentProfile,
+			metadata: {
+				...currentProfile!.metadata,
+				displayName: userData.name || currentProfile?.metadata?.displayName,
+				bio: userData.bio || currentProfile?.metadata?.bio,
+				attributes: constructAttributes(),
+			},
+		});
 	};
 
 	//handle selection of cover
@@ -156,9 +130,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 			return;
 		}
 		if (!coverresult.canceled) {
-			setCover(coverresult.assets[0].uri);
-			const imgblob = await getImageBlobFromUri(coverresult.assets[0].uri);
-			setCoverBlob(imgblob);
+			setUserData({ ...userData, cover: coverresult.assets[0].uri });
 		}
 	}
 
@@ -183,33 +155,27 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 				!socialLinks.twitter &&
 				!socialLinks.website &&
 				!socialLinks.youtube &&
-				!cover &&
-				!avatar
+				!userData.cover &&
+				!userData.avatar
 			) {
 				toast.show("Please select data", ToastType.ERROR, true);
 			} else {
 				let avatar;
 				let cover;
-				if (avatarBlob) {
+				if (userData.avatar) {
 					Logger.Log("User has changed avatar");
-					const rawAvatar = await uploadImageToIPFS(avatarBlob);
+					const avatarBlob = await getImageBlobFromUri(userData.avatar);
+					const rawAvatar: string = await uploadImageToIPFS(avatarBlob);
 					avatar = `ipfs://${rawAvatar}`;
 				}
-				if (coverBlob) {
+				if (userData.cover) {
 					Logger.Log("User has changed cover");
+					const coverBlob = await getImageBlobFromUri(userData.cover);
 					const rawCover = await uploadImageToIPFS(coverBlob);
 					cover = `ipfs://${rawCover}`;
 					Logger.Log("this is ipfs", cover);
 				}
 				const newAttributes = constructAttributes();
-				Logger.Log(
-					"this are latest attributes",
-					newAttributes,
-					cover,
-					avatar,
-					getRawurl(currentProfile?.metadata?.picture),
-					currentProfile?.metadata?.picture
-				);
 				const metadata = profileMetadata({
 					name: userData.name
 						? userData.name
@@ -242,6 +208,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 						},
 					},
 				});
+				updateStore();
 
 				toast.show("Channel updated successfully", ToastType.SUCCESS, true);
 			}
@@ -283,7 +250,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 					</View>
 					<Image
 						source={{
-							uri: cover || getIPFSLink(getRawurl(currentProfile?.metadata?.coverPicture)),
+							uri: userData.cover || getIPFSLink(getRawurl(currentProfile?.metadata?.coverPicture)),
 						}}
 						style={{
 							opacity: 0.5,
@@ -316,7 +283,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 						<Icon name="edit" size={20} />
 					</View>
 					<Avatar
-						src={avatar || getRawurl(currentProfile?.metadata?.picture)}
+						src={userData.avatar || getRawurl(currentProfile?.metadata?.picture)}
 						height={"100%"}
 						width={"100%"}
 						opacity={0.9}
@@ -332,8 +299,8 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 						}
 						onChange={(e) => {
 							setUserData({
+								...userData,
 								name: e.nativeEvent.text,
-								bio: userData.bio,
 							});
 						}}
 					/>
@@ -344,7 +311,7 @@ const EditProfile = ({ navigation }: RootStackScreenProps<"EditProfile">) => {
 						rows={6}
 						onChange={(e) => {
 							setUserData({
-								name: userData.name,
+								...userData,
 								bio: e.nativeEvent.text,
 							});
 						}}
