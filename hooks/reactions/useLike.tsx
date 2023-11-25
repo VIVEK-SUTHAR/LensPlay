@@ -49,6 +49,9 @@ export default function useLike() {
 			onCompleted: (data, clientOptions) => {
 				Logger.Log("Liked Publication", data);
 			},
+			onError: (error) => {
+				Logger.Log('Yeh error hai', error);
+			}
 		});
 	};
 
@@ -66,6 +69,9 @@ export default function useLike() {
 					"x-access-token": `Bearer ${accessToken}`,
 				},
 			},
+			onError: (error) => {
+				Logger.Log('Yeh error hai', error);
+			}
 		});
 	};
 

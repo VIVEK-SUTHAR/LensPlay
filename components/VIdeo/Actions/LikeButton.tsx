@@ -2,11 +2,13 @@ import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
 import { PUBLICATION, SHOT } from "constants/tracking";
+import { PrimaryPublication } from "customTypes/generated";
 import useLike from "hooks/reactions/useLike";
 import React, { useState } from "react";
 import { useGuestStore } from "store/GuestStore";
 import { useActivePublication, useReactionStore, useThemeStore, useToast } from "store/Store";
 import formatInteraction from "utils/formatInteraction";
+import Logger from "utils/logger";
 import TrackAction from "utils/Track";
 
 type LikeButtonProps = {
@@ -14,9 +16,16 @@ type LikeButtonProps = {
 	like: number;
 	isalreadyLiked: boolean;
 	bytes?: boolean;
+	shotPublication?: PrimaryPublication;
 };
 
-const LikeButton: React.FC<LikeButtonProps> = ({ like, isalreadyLiked, id, bytes = false }) => {
+const LikeButton: React.FC<LikeButtonProps> = ({
+	like,
+	isalreadyLiked,
+	id,
+	bytes = false,
+	shotPublication,
+}) => {
 	const [isLiked, setIsLiked] = useState(isalreadyLiked);
 	const [likeCount, setLikeCount] = useState(like);
 
@@ -35,21 +44,24 @@ const LikeButton: React.FC<LikeButtonProps> = ({ like, isalreadyLiked, id, bytes
 		}
 		if (!isalreadyLiked) {
 			if (bytes) {
+				Logger.Log("This is bytes and this is not already liked", isalreadyLiked);
 				setLikeCount(likeCount + 1);
 				setIsLiked(true);
 			} else {
 				setVideoPageStats(true, false, like + 1);
 			}
-			addLike(activePublication);
+			addLike(bytes ? shotPublication! : activePublication!);
 			void TrackAction(bytes ? SHOT.SHOTS_LIKE : PUBLICATION.LIKE);
 		} else {
 			if (bytes) {
+				Logger.Log("This is bytes and this is already liked", isalreadyLiked);
+
 				setLikeCount(likeCount - 1);
 				setIsLiked(false);
 			} else {
 				setVideoPageStats(false, false, like - 1);
 			}
-			removeLike(activePublication);
+			removeLike(activePublication!);
 		}
 	};
 

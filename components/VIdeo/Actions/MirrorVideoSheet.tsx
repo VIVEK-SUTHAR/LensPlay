@@ -52,46 +52,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 	const toast = useToast();
 	const theme = useThemeStore();
 	const { currentProfile } = useProfile();
-	Logger.Log("IS SIGNLESS",currentProfile?.signless)
-
-	// const updateCache = (cache: ApolloCache<any>) => {
-	// 	try {
-	// 		cache.modify({
-	// 			id: cache.identify(activePublication as any),
-	// 			fields: {
-	// 				mirrors: (mirrors) => [...mirrors, currentProfile?.id],
-	// 				stats: (stats) => ({
-	// 					...stats,
-	// 					totalAmountOfMirrors: stats.mirrors + 1,
-	// 				}),
-	// 			},
-	// 		});
-	// 	} catch (error) {
-	// 		Logger.Error("error", error);
-	// 	}
-	// };
-
-	// const [createOnChainMirror] = useMirrorOnchainMutation({
-	// 	onCompleted: (data) => {
-	// 		Logger.Success("Mirrored", data);
-	// 	},
-	// 	onError: (err) => {
-	// 		Logger.Error("Error in Mirror", err);
-	// 		toast.show(err.message, ToastType.ERROR, true);
-	// 	},
-	// 	update: (cache) => updateCache(cache),
-	// });
-
-	// const [createDataAvaibalityMirror] = useMirrorOnMomokaMutation({
-	// 	onCompleted: (data) => {
-	// 		Logger.Success("DA Mirrored", data);
-	// 	},
-	// 	onError: (err) => {
-	// 		Logger.Error("Error in DA Mirror", err);
-	// 		toast.show(err.message, ToastType.ERROR, true);
-	// 	},
-	// 	update: (cache) => updateCache(cache),
-	// });
+	Logger.Log("IS SIGNLESS", currentProfile?.signless);
 
 	const onMirror = async () => {
 		if (mirrorStats?.isMirrored) {
@@ -104,42 +65,11 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 			mirrorRef.current?.close();
 			return;
 		}
-		// if (isDAPublication) {
-		// 	toast.success("Mirror submitted");
-		// 	setMirrorStats(true, mirrorStats.mirrorCount + 1);
-		// 	mirrorRef.current?.close();
-		// 	createDataAvaibalityMirror({
-		// 		variables: {
-		// 			request: {
-		// 				mirrorOn: activePublication?.id,
-		// 			},
-		// 		},
-		// 		context: {
-		// 			headers: {
-		// 				"x-access-token": `Bearer ${accessToken}`,
-		// 				"origin": LENSPLAY_SITE,
-		// 			},
-		// 		},
-		// 	});
-		// 	return;
-		// }
+
 		try {
 			toast.success("Mirror submitted!");
 			setMirrorStats(true, mirrorStats.mirrorCount + 1);
 			mirrorRef.current?.close();
-			// await createOnChainMirror({
-			// 	variables: {
-			// 		request: {
-			// 			mirrorOn: activePublication?.id,
-			// 		},
-			// 	},
-			// 	context: {
-			// 		headers: {
-			// 			"x-access-token": `Bearer ${accessToken}`,
-			// 			"origin": LENSPLAY_SITE,
-			// 		},
-			// 	},
-			// });
 
 			await mirrorPublication(activePublication);
 			TrackAction(PUBLICATION.MIRROR);

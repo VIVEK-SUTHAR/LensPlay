@@ -36,8 +36,6 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 	const toast = useToast();
 	const { isGuest } = useGuestStore();
 
-	
-
 	const collectPublication = React.useCallback(async () => {
 		try {
 			if (isGuest) {
@@ -48,7 +46,6 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 				toast.show("You have already collected the video", ToastType.ERROR, true);
 				return;
 			}
-			
 		} catch (error) {
 			if (error instanceof Error) {
 				Logger.Log(error.message);
@@ -88,6 +85,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 					id={item?.id}
 					isalreadyLiked={item?.operations?.upvote}
 					bytes={true}
+					shotPublication={item}
 				/>
 				<TouchableOpacity
 					style={{
