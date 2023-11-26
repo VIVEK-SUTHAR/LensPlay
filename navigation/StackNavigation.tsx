@@ -154,7 +154,7 @@ export default function StackNavigation() {
 				name="LinkingVideo"
 				component={LinkingVideo}
 				options={{
-					animation: "slide_from_right",
+					animation: "none",
 					headerShown: false,
 				}}
 			/>
