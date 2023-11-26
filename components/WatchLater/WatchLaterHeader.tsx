@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import ArrowLeft from "assets/Icons/ArrowLeft";
+import Icon from "components/Icon";
 import Heading from "components/UI/Heading";
 import { black, white } from "constants/Colors";
 import React from "react";
@@ -14,16 +14,16 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function WatchLaterHeader({
 	playlistTitle,
-	scrollY,
+    scrollY
 }: {
 	playlistTitle: string;
-	scrollY: SharedValue<number>;
+    scrollY: SharedValue<number>;
 }) {
 	const navigation = useNavigation();
 	const StatusBar = useSafeAreaInsets();
 	const posterSize = Dimensions.get("screen").height / 3;
 	const headerTop = 44 - 16;
-	const inset = useSafeAreaInsets();
+    const inset = useSafeAreaInsets();
 	const opacityAnim = useAnimatedStyle(() => {
 		return {
 			opacity: interpolate(
@@ -65,10 +65,10 @@ export default function WatchLaterHeader({
 		<Animated.View
 			style={[
 				{
-					position: "absolute",
+                    position: "absolute",
 					width: "100%",
 					flexDirection: "row",
-					paddingVertical: 16,
+                    paddingVertical: 16,
 					justifyContent: "flex-start",
 					alignItems: "center",
 					backgroundColor: black[800],
@@ -89,7 +89,7 @@ export default function WatchLaterHeader({
 					navigation.goBack();
 				}}
 			>
-				<ArrowLeft width={16} height={16} />
+				<Icon name="arrowLeft" size={24} />
 			</Pressable>
 			<Heading
 				style={{

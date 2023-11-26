@@ -1,9 +1,9 @@
-import { useLazyQuery } from "@apollo/client";
 import { FlashList } from "@shopify/flash-list";
-import ArrowLeft from "assets/Icons/ArrowLeft";
+import Icon from "components/Icon";
 import ProfileCard from "components/ProfileCard";
+import Recommended from "components/Search/Recommended";
 import { SEARCH } from "constants/tracking";
-import { Profile, SearchProfilesDocument, SearchRequestTypes } from "customTypes/generated";
+import { HandleInfo, LimitType, Profile, useSearchProfilesLazyQuery } from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import useDebounce from "hooks/useDebounce";
@@ -19,7 +19,9 @@ import {
 } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useThemeStore } from "store/Store";
+import formatHandle from "utils/formatHandle";
 import getRawurl from "utils/getRawUrl";
+import Logger from "utils/logger";
 import TrackAction from "utils/Track";
 
 const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
@@ -30,18 +32,18 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 	const debouncedValue = useDebounce<string>(keyword, 300);
 	const { isGuest } = useGuestStore();
 
-	const [searchChannels, { data: result, error, loading }] = useLazyQuery(SearchProfilesDocument);
+	const [searchChannels, { data: result, error, loading }] = useSearchProfilesLazyQuery();
 
 	const onDebounce = async () => {
 		if (keyword.trim().length > 0) {
+			Logger.Log("Yeh hai chize", keyword);
 			try {
 				await searchChannels({
 					variables: {
 						request: {
-							type: SearchRequestTypes.Profile,
 							query: keyword,
-							limit: 30,
-							sources: ["lenstube"],
+							limit: LimitType.TwentyFive,
+							// sources: ["lenstube"],
 						},
 					},
 					context: {
@@ -79,7 +81,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 								paddingHorizontal: 4,
 							}}
 						>
-							<ArrowLeft width={16} height={16} />
+							<Icon name="arrowLeft" size={20} />
 						</Pressable>
 						<TextInput
 							ref={inputRef}
@@ -99,39 +101,32 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 		});
 	}, []);
 
-	const ITEM_HEIGHT = 78;
-
-	const getItemLayout = (_: any, index: number) => {
-		return {
-			length: ITEM_HEIGHT,
-			offset: ITEM_HEIGHT * index,
-			index,
-		};
-	};
-
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="transparent" style="auto" />
-			<FlashList
-				removeClippedSubviews={true}
-				// ListEmptyComponent={!isfound ? <Recommended /> : null}
-				data={result?.search?.items}
-				keyExtractor={(_, index) => index.toString()}
-				estimatedItemSize={100}
-				renderItem={({ item }: { item: Profile }) => (
-					<ProfileCard
-						profileIcon={getRawurl(item?.picture)}
-						profileName={item?.name || item?.id}
-						profileId={item?.id}
-						isFollowed={item?.isFollowedByMe || false}
-						handle={item?.handle}
-						owner={item?.ownedBy}
-					/>
-				)}
-				contentContainerStyle={{
-					paddingHorizontal: 8,
-				}}
-			/>
+			{keyword?.length ? (
+				<FlashList
+					removeClippedSubviews={true}
+					data={result?.searchProfiles?.items}
+					keyExtractor={(_, index) => index.toString()}
+					estimatedItemSize={100}
+					renderItem={({ item }: { item: Profile }) => (
+						<ProfileCard
+							profileIcon={getRawurl(item?.metadata?.picture)}
+							profileName={item?.metadata?.displayName || item?.id}
+							profileId={item?.id}
+							isFollowed={item?.operations?.isFollowedByMe?.value || false}
+							handle={formatHandle(item?.handle as HandleInfo)}
+							owner={item?.ownedBy?.address}
+						/>
+					)}
+					contentContainerStyle={{
+						paddingHorizontal: 8,
+					}}
+				/>
+			) : (
+				<Recommended />
+			)}
 		</SafeAreaView>
 	);
 };

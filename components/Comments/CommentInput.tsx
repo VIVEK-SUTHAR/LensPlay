@@ -1,15 +1,13 @@
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import Send from "assets/Icons/Send";
+import { textOnly } from "@lens-protocol/metadata/";
+import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import { black } from "constants/Colors";
-import { LENSPLAY_SITE } from "constants/index";
-import {
-	useCreateCommentViaDispatcherMutation,
-	useCreateDataAvailabilityCommentViaDispatcherMutation,
-} from "customTypes/generated";
+import { APP_ID, LENSPLAY_SITE } from "constants/index";
 import { ToastType } from "customTypes/Store";
+import { useCommentOnMomokaMutation, useCommentOnchainMutation } from "customTypes/generated";
 import React, { useState } from "react";
-import { Pressable, TextInput, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import {
 	useActivePublication,
@@ -22,6 +20,7 @@ import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
 import uploadMetaDataToArweave from "utils/uploadMetaToArweave";
+import uploadProfileMetadata from "utils/uploadProfileMetadata";
 
 type CommentInputProps = {
 	publicationId: string;
@@ -38,7 +37,7 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 	const { isGuest } = useGuestStore();
 	const { activePublication } = useActivePublication();
 
-	const [createComment] = useCreateCommentViaDispatcherMutation({
+	const [createComment] = useCommentOnchainMutation({
 		onCompleted: (data) => {
 			Logger.Success("Done", data);
 		},
@@ -48,7 +47,7 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 		},
 	});
 
-	const [createDataAvaibalityComment] = useCreateDataAvailabilityCommentViaDispatcherMutation({
+	const [createDataAvaibalityComment] = useCommentOnMomokaMutation({
 		onCompleted: (data) => {
 			Logger.Success("DA Comment published", data);
 		},
@@ -67,19 +66,27 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 			return;
 		}
 
-		const isDAPublication = activePublication?.isDataAvailability;
+		const isDAPublication = Boolean(activePublication?.momoka?.proof);
 
 		if (isDAPublication) {
 			toast.success("Comment submitted!");
 			setCommentText("");
 			setIsFocused(false);
-			const contenturi = await uploadMetaDataToArweave(commentText, currentProfile?.handle);
+			const commentMetadata = textOnly({
+				content: commentText,
+				appId: APP_ID,
+				marketplace: {
+					description: commentText,
+					name: commentText,
+					external_url: `https://www.lensplay.xyz/${currentProfile?.handle}`,
+				},
+			});
+			const contenturi = await uploadProfileMetadata(commentMetadata as any);
 			createDataAvaibalityComment({
 				variables: {
 					request: {
 						commentOn: publicationId,
-						contentURI: contenturi,
-						from: currentProfile?.id,
+						contentURI: `ar://${contenturi.id}`,
 					},
 				},
 				context: {
@@ -95,15 +102,23 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 			toast.success("Comment submitted!");
 			setCommentText("");
 			setIsFocused(false);
-			const contenturi = await uploadMetaDataToArweave(commentText, currentProfile?.handle);
+			const commentMetadata = textOnly({
+				content: commentText,
+				appId: APP_ID,
+				marketplace: {
+					description: commentText,
+					name: commentText,
+					external_url: `https://www.lensplay.xyz/${currentProfile?.handle}`,
+				},
+			});
+			const contenturi = await uploadProfileMetadata(commentMetadata as any);
 			await createComment({
 				variables: {
 					request: {
-						profileId: currentProfile?.id,
-						publicationId: publicationId,
-						contentURI: contenturi,
-						collectModule: {
-							revertCollectModule: true,
+						commentOn: publicationId,
+						contentURI: `ar://${contenturi.id}`,
+						referenceModule: {
+							followerOnlyReferenceModule: false,
 						},
 					},
 				},
@@ -144,7 +159,11 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 						alignItems: "center",
 					}}
 				>
-					<Avatar src={getIPFSLink(getRawurl(currentProfile?.picture))} height={28} width={28} />
+					<Avatar
+						src={getIPFSLink(getRawurl(currentProfile?.metadata?.picture))}
+						height={28}
+						width={28}
+					/>
 				</View>
 				<BottomSheetTextInput
 					placeholder="What's in your mind"
@@ -184,7 +203,7 @@ const CommentInput = ({ publicationId }: CommentInputProps) => {
 					}}
 					onPressIn={publishComment}
 				>
-					<Send color={commentText.length === 0 ? "gray" : PRIMARY} height={24} width={24} />
+					<Icon name="send" color={commentText.length === 0 ? "gray" : PRIMARY} size={24} />
 				</Pressable>
 			</View>
 		</View>

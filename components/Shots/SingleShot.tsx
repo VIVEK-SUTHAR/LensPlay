@@ -1,34 +1,32 @@
 import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import Pause from "assets/Icons/Pause";
-import Play from "assets/Icons/Play";
-import Replay from "assets/Icons/Replay";
 import Sheet from "components/Bottom";
 import CommentSheet from "components/Comments/CommentSheet";
+import Icon from "components/Icon";
 import ShotData, { DiscriptionSheet } from "components/Shots/ShotData";
 import ShotReaction from "components/Shots/ShotReaction";
-import VideoPlayer from "components/VideoPlayer";
 import Player from "components/VideoPlayer/Player";
-import { black, white } from "constants/Colors";
-import { Mirror, Post } from "customTypes/generated";
+import { black } from "constants/Colors";
+import { PrimaryPublication, VideoMetadataV3 } from "customTypes/generated";
 import { ResizeMode, Video } from "expo-av";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Pressable, useWindowDimensions, View } from "react-native";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
-import createLivePeerAsset from "utils/video/createLivePeerAsset";
-import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 
-interface SingleByteProps {
-	item: Post | Mirror;
+interface SingleShotProps {
+	item: PrimaryPublication;
 	isActive: boolean;
 }
 
-function SingleShot({ item, isActive }: SingleByteProps) {
+function SingleShot({ item, isActive }: SingleShotProps) {
+	const metadata = item.metadata as VideoMetadataV3;
 	const [mute, setMute] = useState(false);
-	const [videoURL, setVideoURL] = useState(getIPFSLink(item?.metadata?.media[0]?.original?.url));
+	const [videoURL, setVideoURL] = useState(
+		getIPFSLink(metadata?.asset?.video?.optimized?.uri || metadata?.asset?.video?.raw?.uri)
+	);
 
 	const ref = React.useRef<Video>(null);
 	const commentSheetRef = React.useRef<BottomSheetMethods>(null);
@@ -59,19 +57,19 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 	}, [isFocused, isActive]);
 
 	useEffect(() => {
-		if (item?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")) {
-			Logger.Success("Got opti", item?.metadata?.media[0]?.optimized?.url);
-			setVideoURL(item?.metadata?.media[0]?.optimized?.url);
-			return;
-		} else {
-			setVideoURL(getIPFSLink(item?.metadata?.media[0].original.url));
-		}
-		checkIfLivePeerAsset(videoURL).then((res) => {
-			if (res) {
-			} else {
-				createLivePeerAsset(videoURL);
-			}
-		});
+		// if (item?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")) {
+		// 	Logger.Success("Got opti", item?.metadata?.media[0]?.optimized?.url);
+		// 	setVideoURL(item?.metadata?.media[0]?.optimized?.url);
+		// 	return;
+		// } else {
+		// 	setVideoURL(getIPFSLink(item?.metadata?.media[0].original.url));
+		// }
+		// checkIfLivePeerAsset(videoURL).then((res) => {
+		// 	if (res) {
+		// 	} else {
+		// 		createLivePeerAsset(videoURL);
+		// 	}
+		// });
 	}, [isActive]);
 
 	return (
@@ -104,10 +102,10 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 								// console.log(error);
 							},
 							shouldPlay: isActive,
-							resizeMode: ResizeMode.COVER,
+							resizeMode: ResizeMode.CONTAIN,
 							isMuted: mute,
 							posterSource: {
-								uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
+								uri: getIPFSLink(getRawurl(metadata?.asset?.cover)),
 							},
 							isLooping: true,
 							posterStyle: {
@@ -126,9 +124,9 @@ function SingleShot({ item, isActive }: SingleByteProps) {
 						timeVisible={false}
 						icon={{
 							size: 48,
-							play: <Play height={48} width={48} color={white[800]} />,
-							pause: <Pause height={48} width={48} color={white[800]} />,
-							replay: <Replay height={48} width={48} color={white[800]} />,
+							play: <Icon name="play" size={48} />,
+							pause: <Icon name="pause" size={52} />,
+							replay: <Icon name="replay" size={48} />,
 						}}
 						autoHidePlayer={true}
 					/>

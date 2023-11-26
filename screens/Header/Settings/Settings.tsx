@@ -1,39 +1,20 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useWalletConnectModal } from "@walletconnect/modal-react-native";
-import Bug from "assets/Icons/Bug";
-import QR from "assets/Icons/QR";
-import Privacy from "assets/Icons/Privacy";
-import Terms from "assets/Icons/Terms";
-import Sheet from "components/Bottom";
-import ProfileQR, { ProfileSheet } from "components/settings/profileQR";
+import Icon from "components/Icon";
+import ApperenceSheet from "components/settings/ApperenceSheet";
+import ProfileQR from "components/settings/profileQR";
 import Socials from "components/settings/Socials";
+import LogOutSheet from "components/Sheets/LogOutSheet";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import { black, dark_primary, white } from "constants/Colors";
-import { LENSPLAY_PRIVACY, LENSPLAY_TERMS } from "constants/index";
-import StorageKeys from "constants/Storage";
-import { AUTH } from "constants/tracking";
+import { dark_primary } from "constants/Colors";
+import { DEV, LENSPLAY_PRIVACY, LENSPLAY_TERMS } from "constants/index";
 import type { RootStackScreenProps } from "customTypes/navigation";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import React, { FC, useRef } from "react";
-import {
-	LayoutAnimation,
-	Linking,
-	Pressable,
-	SafeAreaView,
-	ScrollView,
-	StyleSheet,
-	useWindowDimensions,
-	View,
-} from "react-native";
+import { Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
-import { useProfile } from "store/Store";
-import TrackAction from "utils/Track";
-import RightArrow from "assets/Icons/RightArrow";
-import Mail from "assets/Icons/Mail";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
@@ -43,68 +24,83 @@ type SettingsItemProps = {
 	onPress: () => void;
 };
 
+const SettingItemsList: SettingsItemProps[] = [
+	{
+		icon: <Icon name="policy" size={24} />,
+		label: "Terms and Conditions",
+		onPress: () => {
+			Linking.openURL(LENSPLAY_TERMS);
+		},
+	},
+	{
+		icon: <Icon name="terms" size={24} />,
+		label: "Privacy Policy",
+		onPress: () => {
+			Linking.openURL(LENSPLAY_PRIVACY);
+		},
+	},
+	{
+		icon: <Icon name="mail" size={24} />,
+		label: "Contact Us",
+		onPress: () => {
+			Linking.openURL(`mailto:lensplay.ac@gmail.com`);
+		},
+	},
+];
 const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
-	const { isConnected, address, provider } = useWalletConnectModal();
-	const [isReadyToRender, setIsReadyToRender] = React.useState(false);
-
-	React.useEffect(() => {
-		const delay = setTimeout(() => {
-			LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-			setIsReadyToRender(true);
-		}, 0);
-		return () => clearTimeout(delay);
-	}, []);
-
-	const { width } = useWindowDimensions();
-	// const Wallet = useWalletConnect();
 	const { isGuest } = useGuestStore();
 	const logoutref = useRef<BottomSheetMethods>(null);
-	const QRCodeRef = useRef<BottomSheetMethods>(null);
-	const { currentProfile, setCurrentProfile } = useProfile();
-
-	const SettingItemsList: SettingsItemProps[] = [
-		{
-			icon: <Terms height={24} width={24} />,
-			label: "Terms and Conditions",
-			onPress: () => {
-				Linking.openURL(LENSPLAY_TERMS);
-			},
-		},
-		{
-			icon: <Privacy height={26} width={26} />,
-			label: "Privacy Policy",
-			onPress: () => {
-				Linking.openURL(LENSPLAY_PRIVACY);
-			},
-		},
-		{
-			icon: <Mail height={24} width={24} />,
-			label: "Contact Us",
-			onPress: () => {
-				Linking.openURL(`mailto:lensplay.ac@gmail.com`);
-			},
-		},
-	];
-
+	const apperenceSheetRef = useRef<BottomSheetMethods>(null);
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			headerRight: () => {
 				return (
 					<Pressable onPress={() => navigation.push("ProfileScanner")}>
-						<QR width={20} height={20} />
+						<Icon name="qr" size={20} />
 					</Pressable>
 				);
 			},
 		});
 	}, []);
 
-	if (!isReadyToRender) return <SafeAreaView style={styles.container} />;
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor="black" style="auto" />
 			<ScrollView style={styles.container}>
-				{!isGuest ? <ProfileQR QRCodeRef={QRCodeRef} /> : <></>}
-				<View>
+				{!isGuest ? <ProfileQR /> : null}
+				<View
+					style={{
+						marginTop: 24,
+					}}
+				>
+					<Heading
+						title={"General"}
+						style={{
+							color: "white",
+							fontSize: 16,
+							fontWeight: "600",
+						}}
+					/>
+					<View
+						style={{
+							backgroundColor: dark_primary,
+							marginTop: 16,
+							borderRadius: 12,
+						}}
+					>
+						{/* <SettingsItem
+							icon={<Icon name="edit" size={24} />}
+							label={"Manage Your Profile"}
+							onPress={() => navigation.push("ProfileManager")}
+						/> */}
+						<SettingsItem
+							icon={<Icon name="star" size={24} />}
+							label={"Appereance"}
+							onPress={() => apperenceSheetRef.current?.snapToIndex(0)}
+						/>
+					</View>
+				</View>
+				<View style={{marginTop:24}}>
 					<Heading
 						title={"About"}
 						style={{
@@ -153,12 +149,42 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 						}}
 					>
 						<SettingsItem
-							icon={<Bug height={16} width={16} />}
+							icon={<Icon name="bug" size={24} />}
 							label={"Report a bug"}
 							onPress={() => navigation.push("BugReport")}
 						/>
 					</View>
 				</View>
+				{DEV ? (
+					<View
+						style={{
+							marginTop: 24,
+						}}
+					>
+						<Heading
+							title={"Developer Only"}
+							style={{
+								color: "white",
+								fontSize: 16,
+								fontWeight: "600",
+							}}
+						/>
+						<View
+							style={{
+								backgroundColor: dark_primary,
+								marginTop: 16,
+								borderRadius: 12,
+							}}
+						>
+							<SettingsItem
+								icon={<Icon name="setting" size={24} />}
+								label={"Debug Details"}
+								onPress={() => navigation.push("DebugScreen")}
+							/>
+						</View>
+					</View>
+				) : null}
+
 				<View
 					style={{
 						marginVertical: 48,
@@ -193,90 +219,8 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 					/>
 				</View>
 			</ScrollView>
-			<Sheet
-				ref={logoutref}
-				index={-1}
-				snapPoints={[230]}
-				bottomInset={32}
-				enablePanDownToClose
-				backgroundStyle={{
-					backgroundColor: black[600],
-				}}
-				detached={true}
-				style={{
-					marginHorizontal: 16,
-				}}
-			>
-				<View
-					style={{
-						justifyContent: "space-between",
-						paddingHorizontal: 16,
-						paddingTop: 8,
-						paddingBottom: 16,
-						height: "100%",
-					}}
-				>
-					<View>
-						<Heading
-							title="Are you sure?"
-							style={{
-								color: "white",
-								fontSize: width / 16,
-								marginVertical: 4,
-								textAlign: "left",
-								fontWeight: "600",
-							}}
-						/>
-						<StyledText
-							title="By doing this,next time when you open LensPlay, you need to connect your wallet again."
-							style={{
-								color: "gray",
-								fontSize: width / 24,
-								marginVertical: 4,
-								fontWeight: "500",
-							}}
-						/>
-					</View>
-					<Button
-						onPress={async () => {
-							const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
-							await AsyncStorage.removeItem("@user_tokens");
-							await AsyncStorage.removeItem(StorageKeys.UserAddress);
-							setCurrentProfile(undefined);
-							if (isDeskTopLogin) {
-								await AsyncStorage.removeItem("@viaDeskTop");
-								navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] });
-								return;
-							} else {
-								await provider?.disconnect();
-								navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] });
-							}
-							TrackAction(AUTH.LOGOUT);
-						}}
-						my={16}
-						title="Confirm"
-						bg={white[800]}
-						textStyle={{
-							fontWeight: "600",
-							fontSize: 16,
-							color: "black",
-						}}
-						py={12}
-						borderRadius={8}
-					/>
-				</View>
-			</Sheet>
-			<Sheet
-				ref={QRCodeRef}
-				index={-1}
-				enablePanDownToClose={true}
-				backgroundStyle={{
-					backgroundColor: "rgba(0,0,0,0.8)",
-				}}
-				snapPoints={[550]}
-			>
-				<ProfileSheet />
-			</Sheet>
+			<LogOutSheet logoutref={logoutref} />
+			<ApperenceSheet apperenceSheetRef={apperenceSheetRef} />
 		</SafeAreaView>
 	);
 };
@@ -301,7 +245,7 @@ const Item: FC<SettingsItemProps> = (item: SettingsItemProps) => {
 				{item.icon}
 				<StyledText title={item.label} style={styles.itemText} />
 			</View>
-			<RightArrow height={30} width={30} />
+			<Icon name="rightArrow" size={16} />
 		</Pressable>
 	);
 };

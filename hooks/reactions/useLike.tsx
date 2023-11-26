@@ -1,43 +1,30 @@
-import { ApolloCache } from "@apollo/client";
 import cache from "apollo/cache";
 import {
-	FeedItemRoot,
-	Mirror,
-	Post,
-	ReactionTypes,
+	type PrimaryPublication,
+	PublicationReactionType,
 	useAddReactionMutation,
 	useRemoveReactionMutation,
 } from "customTypes/generated";
-import { useAuthStore, useProfile } from "store/Store";
+import { useAuthStore } from "store/Store";
 import Logger from "utils/logger";
 
 export default function useLike() {
-	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
 
 	const [addReaction] = useAddReactionMutation();
 	const [removeReaction] = useRemoveReactionMutation();
 
-	const updateCache = (
-		type: ReactionTypes.Upvote | null,
-		publication: Post | Mirror | FeedItemRoot
-	) => {
+	const updateCache = (value: boolean, publication: PrimaryPublication) => {
 		try {
 			cache.modify({
 				id: cache.identify(publication as any),
 				fields: {
-					reaction() {
-						if (type) {
-							return ReactionTypes.Upvote;
-						} else {
-							return null;
-						}
+					operations: (existingValue) => {
+						return { ...existingValue, upvote: value, downvote: !value };
 					},
-					stats: (stats) => ({
-						...stats,
-						totalUpvotes:
-							type === ReactionTypes.Upvote ? stats.totalUpvotes + 1 : stats.totalUpvotes - 1,
-					}),
+					stats: (existingValue) => {
+						return { ...existingValue, reactions: existingValue + 1 };
+					},
 				},
 			});
 		} catch (error) {
@@ -45,14 +32,13 @@ export default function useLike() {
 		}
 	};
 
-	const addLike = async (publication: Post | Mirror | FeedItemRoot) => {
-		updateCache(ReactionTypes.Upvote, publication);
+	const addLike = async (publication: PrimaryPublication) => {
+		updateCache(true, publication);
 		void addReaction({
 			variables: {
 				request: {
-					profileId: currentProfile?.id,
-					reaction: ReactionTypes.Upvote,
-					publicationId: publication?.id,
+					for: publication?.id,
+					reaction: PublicationReactionType.Upvote,
 				},
 			},
 			context: {
@@ -60,17 +46,22 @@ export default function useLike() {
 					"x-access-token": `Bearer ${accessToken}`,
 				},
 			},
+			onCompleted: (data, clientOptions) => {
+				Logger.Log("Liked Publication", data);
+			},
+			onError: (error) => {
+				Logger.Log('Yeh error hai', error);
+			}
 		});
 	};
 
-	const removeLike = async (publication: Post | Mirror | FeedItemRoot) => {
-		updateCache(null, publication);
+	const removeLike = async (publication: PrimaryPublication) => {
+		updateCache(false, publication);
 		void removeReaction({
 			variables: {
 				request: {
-					profileId: currentProfile?.id,
-					reaction: ReactionTypes.Upvote,
-					publicationId: publication?.id,
+					for: publication?.id,
+					reaction: PublicationReactionType.Upvote,
 				},
 			},
 			context: {
@@ -78,6 +69,9 @@ export default function useLike() {
 					"x-access-token": `Bearer ${accessToken}`,
 				},
 			},
+			onError: (error) => {
+				Logger.Log('Yeh error hai', error);
+			}
 		});
 	};
 

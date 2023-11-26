@@ -2,12 +2,12 @@ import { useNavigation } from "@react-navigation/native";
 import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import { FeedItemRoot, Mirror, Post } from "customTypes/generated";
+import { HandleInfo, PrimaryPublication, VideoMetadataV3 } from "customTypes/generated";
 import { Image } from "expo-image";
 import * as React from "react";
 import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import { useActivePublication } from "store/Store";
-import formatTime from "utils/formatTime";
+import formatHandle from "utils/formatHandle";
 import getDifference from "utils/getDifference";
 import getImageProxyURL from "utils/getImageProxyURL";
 import getIPFSLink from "utils/getIPFSLink";
@@ -17,7 +17,7 @@ import getVideoDuration from "utils/getVideoDuration";
 import Logger from "utils/logger";
 
 type VideoCardProp = {
-	publication: FeedItemRoot | Mirror | Post;
+	publication: PrimaryPublication;
 	id: string;
 	height?: number | string;
 	width?: number | string;
@@ -25,24 +25,26 @@ type VideoCardProp = {
 
 const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publication }) => {
 	const { setActivePublication } = useActivePublication();
-
 	const navigation = useNavigation();
+	const metadata = publication.metadata as VideoMetadataV3;
+	const formattedHandle = formatHandle(publication.by.handle as HandleInfo);
 
 	const navigateToVideoPage = React.useCallback(() => {
 		Logger.Count("Start Navigation from VideoCard");
-		navigation.navigate("VideoPage");
 		setActivePublication(publication);
+		navigation.navigate("VideoPage");
 	}, [publication]);
 
 	const navigateToUserChannel = React.useCallback(() => {
 		navigation.navigate("Channel", {
-			handle: publication?.profile?.handle,
-			name: publication?.profile?.name ?? "",
+			handle: formattedHandle,
+			name: publication?.by.metadata?.displayName ?? "",
 		});
 	}, [publication]);
 
 	const coverImage = getImageProxyURL({
-		formattedLink: getIPFSLink(getRawurl(publication?.metadata?.cover)),
+		formattedLink: getIPFSLink(getRawurl(metadata?.asset?.cover)),
+		options: { height: undefined, width: undefined,format:"webp" },
 	});
 
 	return (
@@ -52,41 +54,42 @@ const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publ
 					<Image
 						placeholder={getPlaceHolderImage()}
 						contentFit="cover"
+						placeholderContentFit="cover"
 						transition={500}
-						priority="high"
+						recyclingKey={`${coverImage}-${publication.id}`}
 						source={{
 							uri: coverImage,
 						}}
 						onError={(e) => {
 							Logger.Error(
-								`Failed to Load Video Cover of ${publication?.profile?.handle}`,
+								`Failed to Load Video Cover of ${publication?.by.handle?.fullHandle}`,
 								e.error
 							);
 						}}
 						style={styles.coverImage}
 					/>
 				</TouchableWithoutFeedback>
-				{getVideoDuration(publication?.metadata) && (
+				{getVideoDuration(metadata.asset.duration) && (
 					<View style={styles.videoDurationBox}>
 						<StyledText
-							title={formatTime(getVideoDuration(publication.metadata))}
+							title={getVideoDuration(metadata.asset.duration)}
 							style={{ color: "white", fontSize: 12 }}
-						></StyledText>
+						/>
 					</View>
 				)}
 			</View>
 			<TouchableWithoutFeedback onPress={navigateToUserChannel}>
 				<View style={styles.videoTitleContainer}>
-					<Avatar src={getRawurl(publication?.profile?.picture)} height={40} width={40} />
+					<Avatar src={getRawurl(publication?.by.metadata?.picture)} height={40} width={40} />
 					<View style={styles.videoTitle}>
 						<Heading
-							title={publication?.metadata?.name}
+							title={metadata.title}
 							style={{ fontSize: 16, fontWeight: "600", color: "white" }}
 							numberOfLines={1}
 						/>
 						<StyledText
 							title={`By ${
-								publication?.profile?.name || publication?.profile?.handle
+								publication?.by?.metadata?.displayName || formattedHandle
 							} ${getDifference(publication?.createdAt)}`}
 							style={{ fontSize: 12, color: "gray" }}
 							numberOfLines={1}

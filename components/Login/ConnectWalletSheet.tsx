@@ -1,20 +1,22 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { useWalletConnectModal } from "@walletconnect/modal-react-native";
-import Desktop from "assets/Icons/Desktop";
-import Wallet from "assets/Icons/Wallet";
+import { useWeb3Modal, useWeb3ModalState } from "@web3modal/wagmi-react-native";
+
+import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
 import { AUTH, GUEST_MODE } from "constants/tracking";
-import { Profile, Scalars, useAllProfilesLazyQuery } from "customTypes/generated";
+import { Scalars, useProfilesLazyQuery, useProfilesManagedLazyQuery } from "customTypes/generated";
 import React from "react";
 import { Pressable, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useProfile } from "store/Store";
 import TrackAction from "utils/Track";
+import getProfiles from "utils/lens/getProfiles";
 import Logger from "utils/logger";
+import { useAccount } from "wagmi";
 
 type ConnectWalletSheetProps = {
 	loginRef: React.RefObject<BottomSheetMethods>;
@@ -25,29 +27,34 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 	const navigation = useNavigation();
 	const { handleGuest } = useGuestStore();
 	const { setCurrentProfile, setHasHandle } = useProfile();
+	const [getManagedProfiles] = useProfilesManagedLazyQuery();
 
-	const [getProfile, { data, loading, error }] = useAllProfilesLazyQuery();
-
-	async function HandleDefaultProfile(address: Scalars["EthereumAddress"]) {
-		const userProfiles = await getProfile({
+	async function HandleDefaultProfile(adress: Scalars["EvmAddress"]) {
+		const userDefaultProfile = await getManagedProfiles({
 			variables: {
 				request: {
-					ownedBy: address,
+					for: adress,
 				},
 			},
 		});
-
-		if (userProfiles) {
-			setHasHandle(true);
-			setCurrentProfile(userProfiles?.data?.profiles?.items[0] as Profile);
-		} else {
-			setHasHandle(false);
-			setCurrentProfile(undefined);
-			navigation.navigate("LoginWithLens");
+		Logger.Log("Boom Booms", userDefaultProfile.data?.profilesManaged);
+		try {
+			if (userDefaultProfile) {
+				setHasHandle(true);
+				return userDefaultProfile.data?.profilesManaged;
+			} else {
+				setHasHandle(false);
+				setCurrentProfile(undefined);
+				navigation.navigate("LoginWithLens");
+			}
+		} catch (error) {
+			console.log(error);
 		}
 	}
 
-	const { open, isConnected, address, isOpen, close } = useWalletConnectModal();
+	const { open, close } = useWeb3Modal();
+	const { address, isConnected, isDisconnected } = useAccount();
+	const { open: isOpen, selectedNetworkId } = useWeb3ModalState();
 
 	const handleConnectWallet = async () => {
 		if (isConnected && address) {
@@ -61,13 +68,16 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 			void TrackAction(AUTH.WALLET_LOGIN);
 			handleGuest(false);
 
-			await HandleDefaultProfile(address);
+			const profiles = await HandleDefaultProfile(address);
 			const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
 			if (isDeskTopLogin) {
 				await AsyncStorage.removeItem("@viaDeskTop");
 			}
 			setIsloading(false);
-			navigation.reset({ index: 0, routes: [{ name: "LoginWithLens" }] });
+			navigation.reset({
+				index: 0,
+				routes: [{ name: "Profiles", params: { profiles: profiles?.items } }],
+			});
 		}
 	};
 
@@ -116,7 +126,7 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 						color: black[700],
 					}}
 					py={16}
-					icon={<Wallet color={black[700]} height={20} width={20} />}
+					icon={<Icon name="wallet" color={black[700]} size={20} />}
 				/>
 				{/* <Web3Button /> */}
 				<View
@@ -167,7 +177,7 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 						color: white[600],
 					}}
 					py={16}
-					icon={<Desktop color={white[600]} height={20} width={20} />}
+					icon={<Icon name="desktop" color={white[600]} size={20} />}
 				/>
 				<Pressable
 					style={{

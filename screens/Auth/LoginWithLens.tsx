@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 import Login from "assets/Icons/Login";
+import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
@@ -10,15 +10,13 @@ import { LENSPLAY_SITE, LENS_CLAIM_SITE } from "constants/index";
 import StorageKeys from "constants/Storage";
 import { AUTH } from "constants/tracking";
 import { ToastType } from "customTypes/Store";
-import { useAuthenticateMutation, useChallengeLazyQuery } from "customTypes/generated";
+import { HandleInfo, useAuthenticateMutation, useChallengeLazyQuery } from "customTypes/generated";
 import type { RootStackScreenProps } from "customTypes/navigation";
-import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
 import {
 	Animated,
 	Dimensions,
-	Image,
 	Linking,
 	SafeAreaView,
 	StyleSheet,
@@ -31,7 +29,8 @@ import formatHandle from "utils/formatHandle";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
-import ArrowForward from "assets/Icons/ArrowForward";
+import { useWeb3Modal } from "@web3modal/wagmi-react-native";
+import { useAccount, useSignMessage } from "wagmi";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -43,6 +42,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 	const toast = useToast();
 
 	const { hasHandle, currentProfile } = useProfile();
+
 	const { setAccessToken, setRefreshToken } = useAuthStore();
 
 	const [getChallenge] = useChallengeLazyQuery();
@@ -51,12 +51,11 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 	const scaleAnimation = useRef(new Animated.Value(0)).current;
 	const fadeInAnimation = useRef(new Animated.Value(0)).current;
 
-	const shortenAddress = (address: string): string => {
-		if (!address) return "0x...000";
-		return "0x.." + address.slice(address.length - 4, address.length);
-	};
-	const { address, provider, isConnected } = useWalletConnectModal();
+	// const { address, provider, isConnected } = useWalletConnectModal();
 
+	// const { setAccessToken, setRefreshToken } = useAuthStore();
+	const { address,connector } = useAccount();
+	const { signMessageAsync, error } = useSignMessage();
 	const handleLoginWithLens = async () => {
 		if (!hasHandle) {
 			void Linking.openURL(LENS_CLAIM_SITE);
@@ -64,10 +63,12 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 		}
 		try {
 			setIsloading(true);
+			Logger.Log("Yeh hai handle", currentProfile?.id);
 			const data = await getChallenge({
 				variables: {
 					request: {
-						address: address,
+						signedBy: address,
+						for: currentProfile?.id,
 					},
 				},
 				context: {
@@ -78,37 +79,40 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 				fetchPolicy: "network-only",
 			});
 
-			const signature = await provider?.request({
-				method: "personal_sign",
-				params: [address, data?.data?.challenge?.text],
-			});
-
-			if (signature) {
-				const response = await getTokens({
-					variables: {
-						request: {
-							address: address,
-							signature: signature,
-						},
-					},
+			Logger.Log("this is sign params", address, data?.data?.challenge);
+			if (data?.data?.challenge?.text) {
+				const sign = await signMessageAsync({
+					message: data?.data?.challenge?.text,
 				});
+				if (error) return;
+				if (sign) {
+					const response = await getTokens({
+						variables: {
+							request: {
+								id: data?.data?.challenge?.id,
+								signature: sign,
+							},
+						},
+					});
+					Logger.Success("this is the token response", response);
 
-				setAccessToken(response?.data?.authenticate?.accessToken);
-				setRefreshToken(response?.data?.authenticate?.refreshToken);
-				await storeTokens(
-					response?.data?.authenticate?.accessToken,
-					response?.data?.authenticate?.refreshToken,
-					false
-				);
-				if (hasHandle) {
-					if (address) {
-						AsyncStorage.setItem(StorageKeys.UserAddress, address);
+					setAccessToken(response?.data?.authenticate?.accessToken);
+					setRefreshToken(response?.data?.authenticate?.refreshToken);
+					await storeTokens(
+						response?.data?.authenticate?.accessToken,
+						response?.data?.authenticate?.refreshToken,
+						false
+					);
+					if (hasHandle) {
+						if (address) {
+							AsyncStorage.setItem(StorageKeys.UserAddress, address);
+						}
+						navigation.reset({ index: 0, routes: [{ name: "Root" }] });
 					}
-					navigation.reset({ index: 0, routes: [{ name: "Root" }] });
+					void TrackAction(AUTH.SIWL);
+				} else {
+					toast.show("Something went wrong", ToastType.ERROR, true);
 				}
-				void TrackAction(AUTH.SIWL);
-			} else {
-				toast.show("Something went wrong", ToastType.ERROR, true);
 			}
 		} catch (error) {
 			if (error instanceof Error) {
@@ -125,7 +129,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 	const handleDisconnect = async () => {
 		try {
 			if (address) {
-				await provider?.disconnect();
+				await connector?.disconnect();
 			}
 			navigation.replace("LetsGetIn");
 		} catch (error) {
@@ -226,14 +230,14 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 									alignItems: "center",
 								}}
 							>
-								<Avatar src={getRawurl(currentProfile?.picture)} height={40} width={40} />
+								<Avatar src={getRawurl(currentProfile?.metadata?.picture)} height={40} width={40} />
 								<View
 									style={{
 										marginLeft: 8,
 									}}
 								>
 									<Heading
-										title={currentProfile?.name}
+										title={currentProfile?.metadata?.displayName}
 										style={{
 											color: "white",
 											fontSize: 16,
@@ -242,7 +246,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 									/>
 									{hasHandle ? (
 										<StyledText
-											title={formatHandle(currentProfile?.handle)}
+											title={formatHandle(currentProfile?.handle as HandleInfo)}
 											style={{
 												color: white[200],
 												fontSize: 12,
@@ -284,7 +288,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 							textStyle={{ fontSize: 20, fontWeight: "600", color: black[800] }}
 							bg={white[700]}
 							py={16}
-							icon={<ArrowForward height={16} width={16} />}
+							icon={<Icon name="arrowForward" color={black[700]} size={16} />}
 							iconPosition="right"
 							onPress={async () => {
 								if (isDesktop) {

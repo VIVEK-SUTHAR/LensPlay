@@ -8,45 +8,41 @@
  */
 
 export type UserData = {
-    name: string,
-    bio: string
-}
+	name: string;
+	bio: string;
+};
 
 export type SocialLinks = {
-    twitter: string,
-    instagram: string,
-    youtube: string,
-    website: string
-}
+	twitter: string;
+	instagram: string;
+	youtube: string;
+	website: string;
+};
 
+import { ProfileMetadata } from "@lens-protocol/metadata/*";
 import { Profile } from "../types/generated";
+import Logger from "./logger";
 
-async function uploadProfileMetadata(oldProfileData: Profile | undefined, newProfileData: UserData, socialLinks: SocialLinks, coverUri: string) {
+async function uploadProfileMetadata(metadata: ProfileMetadata) {
 	try {
 		const headersList = {
-            "Content-Type": "application/json",
-            Authorization: "Bearer ENGINEERCANTAKEOVERWORLD",
-          };
+			"Content-Type": "application/json",
+			"Authorization": "Bearer ENGINEERCANTAKEOVERWORLD",
+		};
 
-          const bodyContent = JSON.stringify({
-            oldProfileData: oldProfileData,
-            newProfileData: newProfileData,
-            socialLinks: socialLinks,
-            coverImage: coverUri,
-          });
-      
+		const bodyContent = JSON.stringify({
+			metadata,
+		});
 
-          const response = await fetch(
-            "https://lensplay-api.vercel.app/api/upload/profileMetadata",
-            {
-              method: "POST",
-              body: bodyContent,
-              headers: headersList,
-            }
-          );
+		const response = await fetch("https://lensplay-api.vercel.app/api/upload/metadatav2", {
+			method: "POST",
+			body: bodyContent,
+			headers: headersList,
+		});
 
 		if (response.ok) {
 			const jsondata = await response.json();
+			Logger.Log("this is metadat uri", jsondata);
 			return jsondata;
 		}
 	} catch (err) {

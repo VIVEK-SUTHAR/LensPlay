@@ -30,6 +30,11 @@ import SelectCollectModule from "screens/Header/Upload/Video/SelectCollectModule
 import UploadVideo from "screens/Header/Upload/Video/UploadVideo";
 import { useThemeStore } from "store/Store";
 import BottomTabNavigator from "./BottomTabNavigation";
+import Profiles from "screens/Auth/Profiles";
+import MyQR from "screens/Header/Settings/MyQR";
+import ProfileManager from "screens/Header/Settings/ProfileManager";
+import { DEV } from "constants/index";
+import DebugScreen from "screens/Debug";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function StackNavigation() {
@@ -63,6 +68,14 @@ export default function StackNavigation() {
 				<Stack.Screen
 					name="LoginWithLens"
 					component={LoginWithLens}
+					options={{
+						animation: "default",
+						headerShown: false,
+					}}
+				/>
+				<Stack.Screen
+					name="Profiles"
+					component={Profiles}
 					options={{
 						animation: "default",
 						headerShown: false,
@@ -113,8 +126,8 @@ export default function StackNavigation() {
 				component={VideoPage}
 				options={{
 					headerShown: false,
-					// presentation: "card",
-					animation: "none",
+					presentation: "card",
+					animation: "default",
 				}}
 			/>
 			<Stack.Screen
@@ -189,7 +202,7 @@ export default function StackNavigation() {
 				name="Settings"
 				component={Settings}
 				options={{
-					animation: "none",
+					animation: "default",
 					headerShown: true,
 					headerShadowVisible: false,
 					headerTintColor: theme.PRIMARY,
@@ -198,6 +211,7 @@ export default function StackNavigation() {
 						fontSize: 16,
 						fontWeight: "600",
 					},
+					freezeOnBlur: true,
 				}}
 			/>
 			<Stack.Screen
@@ -376,6 +390,32 @@ export default function StackNavigation() {
 					headerTintColor: theme.PRIMARY,
 				}}
 			/>
+			<Stack.Screen
+				name="MyQR"
+				component={MyQR}
+				options={{
+					animation: "default",
+					headerTintColor: theme.PRIMARY,
+				}}
+			/>
+			<Stack.Screen
+				name="ProfileManager"
+				component={ProfileManager}
+				options={{
+					animation: "slide_from_right",
+					headerTintColor: theme.PRIMARY,
+				}}
+			/>
+			{DEV ? (
+				<Stack.Screen
+					name="DebugScreen"
+					component={DebugScreen}
+					options={{
+						animation: "default",
+						headerTintColor: theme.PRIMARY,
+					}}
+				/>
+			) : null}
 		</Stack.Navigator>
 	);
 }

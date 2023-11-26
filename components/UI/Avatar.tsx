@@ -1,6 +1,7 @@
 import { Image } from "expo-image";
 import React from "react";
 import getIPFSLink from "utils/getIPFSLink";
+import getImageProxyURL from "utils/getImageProxyURL";
 import getPlaceHolderImage from "utils/getPlaceHolder";
 
 type AvatarProps = {
@@ -11,6 +12,8 @@ type AvatarProps = {
 	borderColor?: string;
 	borderWidth?: number;
 	opacity?: number;
+	mx?: number;
+	my?: number;
 };
 
 const STATIC_COVER =
@@ -24,18 +27,25 @@ const Avatar: React.FC<AvatarProps> = ({
 	borderColor = "transparent",
 	borderWidth = 0,
 	opacity = 1,
+	mx = 0,
 }) => {
 	const resolvedSrc =
 		getIPFSLink(src) === STATIC_COVER
-			? `https://xsgames.co/randomusers/assets/avatars/pixel/${Math.floor(53 * Math.random())}.jpg`
-			: getIPFSLink(src);
+			? `https://xsgames.co/randomusers/assets/avatars/pixel/${Math.floor(100 * Math.random())}.jpg`
+			: getImageProxyURL({
+					formattedLink: getIPFSLink(src),
+					options:{
+						height:120,
+						format:"png",
+						width:120
+					}
+			  });
 
 	return (
 		<Image
 			placeholder={getPlaceHolderImage(true)}
 			placeholderContentFit="cover"
 			transition={500}
-			priority="high"
 			source={{
 				uri: resolvedSrc,
 			}}
@@ -48,6 +58,7 @@ const Avatar: React.FC<AvatarProps> = ({
 				borderColor,
 				borderWidth,
 				zIndex: 9,
+				marginHorizontal: mx,
 			}}
 		/>
 	);

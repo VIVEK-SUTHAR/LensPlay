@@ -8,24 +8,26 @@ import {
 	View,
 } from "react-native";
 
+import ProfileCard from "components/ProfileCard";
+import ProfileCardSkeleton from "components/UI/ProfileCardSkeleton";
+import Tabs, { Tab } from "components/UI/Tabs";
 import ErrorMessage from "components/common/ErrorMesasge";
+import Skeleton from "components/common/Skeleton";
+import {
+	FollowersRequest,
+	FollowingRequest,
+	HandleInfo,
+	LimitType,
+	Profile,
+	Scalars,
+	useFollowersQuery,
+	useFollowingQuery,
+} from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import formatHandle from "utils/formatHandle";
-import Tabs, { Tab } from "components/UI/Tabs";
-import {
-	Follower,
-	FollowersRequest,
-	Following,
-	FollowingRequest,
-	Scalars,
-	useAllFollowersQuery,
-	useAllFollowingQuery,
-} from "customTypes/generated";
-import ProfileCard from "components/ProfileCard";
 import getRawurl from "utils/getRawUrl";
-import Skeleton from "components/common/Skeleton";
-import ProfileCardSkeleton from "components/UI/ProfileCardSkeleton";
+import getIPFSLink from "utils/getIPFSLink";
 
 const UserStats = ({ navigation, route }: RootStackScreenProps<"UserStats">) => {
 	const { currentProfile } = useProfile();
@@ -36,7 +38,9 @@ const UserStats = ({ navigation, route }: RootStackScreenProps<"UserStats">) => 
 		if (isFromChannel) {
 			return "Stats";
 		} else {
-			return currentProfile?.name || formatHandle(currentProfile?.handle);
+			return (
+				currentProfile?.metadata?.displayName || formatHandle(currentProfile?.handle as HandleInfo)
+			);
 		}
 	}, [navigation]);
 
@@ -57,7 +61,7 @@ const UserStats = ({ navigation, route }: RootStackScreenProps<"UserStats">) => 
 				/>
 				<Tab.Screen
 					name="Subscriptions"
-					children={() => <SubscriptionsList ethAddress={route?.params?.ethAddress} />}
+					children={() => <SubscriptionsList profileId={route.params.profileId} />}
 					options={{
 						tabBarLabel: "Subscriptions",
 					}}
@@ -67,7 +71,7 @@ const UserStats = ({ navigation, route }: RootStackScreenProps<"UserStats">) => 
 	);
 };
 
-const ITEM_HEIGHT = 78;
+const ITEM_HEIGHT = 64;
 
 const getItemLayout = (_: any, index: number) => {
 	return {
@@ -83,11 +87,11 @@ const Suscribers = ({ profileId }: { profileId: Scalars["ProfileId"] }) => {
 	const { PRIMARY } = useThemeStore();
 
 	const request: FollowersRequest = {
-		profileId: profileId ? profileId : currentProfile?.id,
-		limit: 30,
+		of: profileId,
+		limit: LimitType.TwentyFive,
 	};
 
-	const { data, error, loading, fetchMore } = useAllFollowersQuery({
+	const { data, error, loading, fetchMore } = useFollowersQuery({
 		variables: {
 			request,
 		},
@@ -98,12 +102,11 @@ const Suscribers = ({ profileId }: { profileId: Scalars["ProfileId"] }) => {
 		},
 	});
 
-	const subscribers = data?.followers?.items as Follower[];
+	const subscribers = data?.followers?.items as Profile[];
 
 	const pageInfo = data?.followers?.pageInfo;
 
-	const keyExtractor = (item: Follower) =>
-		item?.wallet?.defaultProfile?.id || item?.wallet?.address;
+	const keyExtractor = (item: Profile) => item?.id;
 
 	const onEndCallBack = React.useCallback(() => {
 		if (!pageInfo?.next) {
@@ -138,16 +141,16 @@ const Suscribers = ({ profileId }: { profileId: Scalars["ProfileId"] }) => {
 
 	const MoreLoader = React.memo(_MoreLoader);
 
-	const renderItem = React.useCallback(({ item }: { item: Follower }) => {
+	const renderItem = React.useCallback(({ item }: { item: Profile }) => {
 		return (
 			<ProfileCard
-				key={item?.wallet?.address}
-				profileIcon={getRawurl(item?.wallet?.defaultProfile?.picture)}
-				profileName={item?.wallet?.defaultProfile?.name}
-				handle={item?.wallet?.defaultProfile?.handle}
-				profileId={item?.wallet?.defaultProfile?.id}
-				owner={item?.wallet?.address}
-				isFollowed={false}
+				key={item?.handle?.ownedBy}
+				profileIcon={getIPFSLink(getRawurl(item?.metadata?.picture))}
+				profileName={item?.metadata?.displayName ?? ""}
+				handle={formatHandle(item.handle as HandleInfo)}
+				profileId={item?.id}
+				owner={item?.handle?.ownedBy}
+				isFollowed={item?.operations?.isFollowedByMe?.value}
 			/>
 		);
 	}, []);
@@ -179,17 +182,17 @@ const Suscribers = ({ profileId }: { profileId: Scalars["ProfileId"] }) => {
 
 const SuscriberList = React.memo(Suscribers);
 
-const Subscriptions = ({ ethAddress }: { ethAddress: Scalars["EthereumAddress"] }) => {
+const Subscriptions = ({ profileId }: { profileId: Scalars["ProfileId"] }) => {
 	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
 	const { PRIMARY } = useThemeStore();
 
 	const request: FollowingRequest = {
-		address: ethAddress ? ethAddress : currentProfile?.ownedBy,
-		limit: 30,
+		for: profileId,
+		limit: LimitType.TwentyFive,
 	};
 
-	const { data, error, loading, fetchMore } = useAllFollowingQuery({
+	const { data, error, loading, fetchMore } = useFollowingQuery({
 		variables: {
 			request,
 		},
@@ -200,11 +203,11 @@ const Subscriptions = ({ ethAddress }: { ethAddress: Scalars["EthereumAddress"] 
 		},
 	});
 
-	const subscriptions = data?.following?.items as Following[];
+	const subscriptions = data?.following?.items as Profile[];
 
 	const pageInfo = data?.following?.pageInfo;
 
-	const keyExtractor = (item: Following) => item?.profile?.id || item?.profile?.ownedBy;
+	const keyExtractor = (item: Profile) => item?.id;
 
 	const onEndCallBack = React.useCallback(() => {
 		if (!pageInfo?.next) {
@@ -239,16 +242,16 @@ const Subscriptions = ({ ethAddress }: { ethAddress: Scalars["EthereumAddress"] 
 
 	const MoreLoader = React.memo(_MoreLoader);
 
-	const renderItem = ({ item }: { item: Following }) => {
+	const renderItem = ({ item }: { item: Profile }) => {
 		return (
 			<ProfileCard
-				key={item?.profile?.id}
-				profileIcon={getRawurl(item?.profile?.picture)}
-				profileName={item?.profile?.name}
-				handle={item?.profile?.handle}
-				profileId={item?.profile?.id}
-				owner={item?.profile?.ownedBy}
-				isFollowed={false}
+				key={item?.handle?.ownedBy}
+				profileIcon={getRawurl(item?.metadata?.picture)}
+				profileName={item?.metadata?.displayName ?? ""}
+				handle={formatHandle(item.handle as HandleInfo)}
+				profileId={item?.id}
+				owner={item?.handle?.ownedBy}
+				isFollowed={item?.operations?.isFollowedByMe?.value}
 			/>
 		);
 	};

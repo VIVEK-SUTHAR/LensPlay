@@ -2,6 +2,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import WatchLaterHeader from "components/WatchLater/WatchLaterHeader";
 import WatchLaterList from "components/WatchLater/WatchLaterList";
 import { RootStackScreenProps } from "customTypes/navigation";
+import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,6 +20,7 @@ const WatchLater: React.FC<RootStackScreenProps<"WatchLater">> = ({ navigation }
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+			<StatusBar backgroundColor={color ?? "transparent"} style="auto"/>
 			<WatchLaterHeader
 				playlistTitle={"Watch Later"}
 				scrollY={scrollY}

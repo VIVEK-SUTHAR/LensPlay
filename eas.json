@@ -1,6 +1,5 @@
 {
 	"build": {
-		// "cli": { "appVersionSource": "remote" },
 		"development-simulator": {
 			"developmentClient": true,
 			"distribution": "internal",
@@ -14,14 +13,20 @@
 			"channel": "dev"
 		},
 		"preview": {
-			"distribution": "internal"
-		},
+			"android": {
+			  "buildType": "apk"
+			}
+		  },
+		  "preview2": {
+			"android": {
+			  "gradleCommand": ":app:assembleRelease"
+			}
+		  },
 		"alpha": {
 			"channel": "alpha"
 		},
 		"beta": {
-			"channel": "beta",
-			"autoIncrement": true
+			"channel": "beta"
 		},
 		"prod": {
 			"channel": "prod"

@@ -1,14 +1,14 @@
-import { useNavigation } from "@react-navigation/native";
-import Follow from "assets/Icons/Follow";
+import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import StyledText from "components/UI/StyledText";
 import { dark_primary } from "constants/Colors";
-import type { NewFollowerNotification } from "customTypes/generated";
+import type {
+	HandleInfo,
+	FollowNotification as NewFollowerNotification,
+} from "customTypes/generated";
 import React from "react";
 import { Pressable, View } from "react-native";
-import formatAddress from "utils/formatAddress";
 import formatHandle from "utils/formatHandle";
-import getDifference from "utils/getDifference";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 type FollowNotificationProps = {
@@ -16,15 +16,6 @@ type FollowNotificationProps = {
 };
 
 const FollowNotification: React.FC<FollowNotificationProps> = ({ notification }) => {
-	const navigation = useNavigation();
-
-	const goToChannel = () => {
-		navigation.navigate("Channel", {
-			name: notification?.wallet?.defaultProfile?.name!,
-			handle: notification?.wallet?.defaultProfile?.handle,
-		});
-	};
-
 	return (
 		<Pressable
 			android_ripple={{
@@ -46,11 +37,10 @@ const FollowNotification: React.FC<FollowNotificationProps> = ({ notification })
 					alignItems: "center",
 				}}
 			>
-				<Follow height={28} width={28} color="#EA8FEA" />
+				<Icon name="follow" size={30} color="#EA8FEA" />
 			</View>
 			<View style={{ flex: 1 }}>
 				<Pressable
-					onPress={goToChannel}
 					style={{
 						flexDirection: "row",
 						justifyContent: "space-between",
@@ -58,23 +48,22 @@ const FollowNotification: React.FC<FollowNotificationProps> = ({ notification })
 					}}
 				>
 					<Avatar
-						src={getIPFSLink(getRawurl(notification?.wallet?.defaultProfile?.picture))}
-						height={35}
-						width={35}
-					/>
-					<StyledText
-						title={getDifference(notification?.createdAt)}
-						style={{ fontSize: 12, color: "gray" }}
+						src={getIPFSLink(getRawurl(notification?.followers[0]?.metadata?.picture))}
+						height={36}
+						width={36}
 					/>
 				</Pressable>
 				<View style={{ flexDirection: "row", alignItems: "center" }}>
 					<StyledText
-						title={
-							formatHandle(notification?.wallet?.defaultProfile?.handle) ||
-							formatAddress(notification?.wallet?.defaultProfile?.id)
-						}
+						title={formatHandle(notification?.followers[0].handle as HandleInfo) ?? ""}
 						style={{ color: "white", fontWeight: "500" }}
 					/>
+					{notification.followers?.length > 1 && (
+						<StyledText
+							title={` and ${notification?.followers?.length - 1} more`}
+							style={{ color: "gray" }}
+						/>
+					)}
 					<StyledText title={" followed you"} style={{ color: "gray" }} />
 				</View>
 			</View>

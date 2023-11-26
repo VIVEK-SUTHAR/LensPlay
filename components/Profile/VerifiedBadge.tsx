@@ -1,4 +1,4 @@
-import Verified from "assets/Icons/Verified";
+import Icon from "components/Icon";
 import { mainnetVerified } from "constants/Varified";
 import React, { memo } from "react";
 import { StyleSheet, View } from "react-native";
@@ -12,7 +12,7 @@ const VerifiedBadge: React.FC<VerifiedBadgeProps> = ({ profileId }) => {
 	const theme = useThemeStore();
 	return mainnetVerified.includes(profileId) ? (
 		<View style={styles.verifiedContainer}>
-			<Verified height={18} width={18} color={theme.PRIMARY} />
+			<Icon name="verified" size={18} color={theme.PRIMARY} />
 		</View>
 	) : null;
 };

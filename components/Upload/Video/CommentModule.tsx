@@ -5,9 +5,8 @@ import { black, dark_primary } from "constants/Colors";
 import { useThemeStore } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
 import Sheet from "components/Bottom";
+import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
-import ArrowForward from "assets/Icons/ArrowForward";
-import Done from "assets/Icons/Done";
 
 type CommentModuleSheetProps = {
 	referenceModuleRef: React.RefObject<BottomSheetMethods>;
@@ -83,7 +82,7 @@ export default function CommentModule({
 						maxWidth: "65%",
 					}}
 				/>
-				<ArrowForward height={16} width={16} />
+				<Icon name="arrowForward" size={16} />
 			</View>
 		</Pressable>
 	);
@@ -187,7 +186,11 @@ function CommentModuleSheet({
 											alignItems: "center",
 										}}
 									>
-										<Done height={18} width={18} />
+										<Icon
+											name={"done"}
+											color={ "black"}
+											size={18}
+										/>
 									</View>
 								) : null}
 							</Pressable>

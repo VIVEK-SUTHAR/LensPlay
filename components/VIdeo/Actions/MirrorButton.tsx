@@ -1,12 +1,11 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import Mirror from "assets/Icons/Mirror";
+import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
 import { ToastType } from "customTypes/Store";
 import React from "react";
 import { useGuestStore } from "store/GuestStore";
-import { useMirrorStore } from "store/ReactionStore";
-import { useActivePublication, useThemeStore, useToast } from "store/Store";
+import { useReactionStore, useThemeStore, useToast } from "store/Store";
 
 type MirrorButtonProps = {
 	mirrorRef: React.RefObject<BottomSheetMethods>;
@@ -16,26 +15,11 @@ const MirrorButton = ({ mirrorRef }: MirrorButtonProps) => {
 	const Toast = useToast();
 	const { PRIMARY } = useThemeStore();
 	const { isGuest } = useGuestStore();
-	const { isMirrored, mirrorCount, setIsMirrored, setMirrorCount } = useMirrorStore();
-	const { activePublication } = useActivePublication();
-
-	React.useEffect(() => {
-		if (activePublication?.__typename === "Post") {
-			if (activePublication?.mirrors.length > 0) {
-				setIsMirrored(true);
-			}
-		}
-		if (activePublication?.__typename === "Mirror") {
-			if (activePublication?.mirrorOf.mirrors.length > 0) {
-				setIsMirrored(true);
-			}
-		}
-		setMirrorCount(activePublication?.stats?.totalAmountOfMirrors!);
-	}, []);
+	const { mirrorStats } = useReactionStore();
 
 	return (
 		<Button
-			title={mirrorCount}
+			title={mirrorStats.mirrorCount?.toString()}
 			onPress={() => {
 				if (isGuest) {
 					Toast.show("Please Login", ToastType.ERROR, true);
@@ -52,10 +36,10 @@ const MirrorButton = ({ mirrorRef }: MirrorButtonProps) => {
 			textStyle={{
 				fontSize: 14,
 				fontWeight: "500",
-				color: isMirrored ? PRIMARY : "white",
+				color: mirrorStats.isMirrored ? PRIMARY : "white",
 				marginLeft: 4,
 			}}
-			icon={<Mirror height={20} width={20} color={isMirrored ? PRIMARY : "white"} />}
+			icon={<Icon name="mirror" size={20} color={mirrorStats.isMirrored ? PRIMARY : "white"} />}
 		/>
 	);
 };

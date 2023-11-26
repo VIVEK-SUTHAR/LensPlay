@@ -1,56 +1,68 @@
 import { useNavigation } from "@react-navigation/native";
-import SubscribeButton from "components/Profile/SubscribeButton";
+import { SubscribeButton } from "components/Profile/ProfileHeader";
 import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import { Profile } from "customTypes/generated";
-import React, { useCallback, useState } from "react";
+import { HandleInfo } from "customTypes/generated";
+import React, { useState } from "react";
 import { Dimensions, TouchableOpacity } from "react-native";
 import { StyleSheet, View } from "react-native";
-import getRawurl from "utils/getRawUrl";
+import { useActivePublication } from "store/Store";
+import formatHandle from "utils/formatHandle";
 
 type VideoCreatorProps = {
+	avatarLink: string;
+	uploadedBy: string;
+	profileId: string;
+	alreadyFollowing: boolean;
 	showSubscribeButton?: boolean;
 	showSubscribers?: boolean;
 	subscribersCount?: number;
-	profile: Profile | undefined;
 };
 
 const VideoCreator: React.FC<VideoCreatorProps> = React.memo((props) => {
 	const {
-		profile,
+		profileId,
+		uploadedBy,
+		avatarLink,
+		alreadyFollowing,
 		showSubscribers = false,
 		subscribersCount = 0,
 		showSubscribeButton = true,
 	} = props;
 
+	const [following, setFollowing] = useState<boolean>(alreadyFollowing);
+
 	const navigation = useNavigation();
+	const { activePublication } = useActivePublication();
 	const goToChannel = React.useCallback(() => {
 		navigation.navigate("Channel", {
-			handle: profile?.handle,
-			name: profile?.name!,
+			handle: formatHandle(activePublication?.by?.handle as HandleInfo),
+			name: activePublication?.by?.metadata?.displayName ?? "",
 		});
 	}, []);
 	return (
 		<View style={styles.container}>
 			<View style={styles.contentContainer}>
 				<TouchableOpacity onPress={goToChannel} activeOpacity={0.5}>
-					<Avatar src={getRawurl(profile?.picture)} width={40} height={40} />
+					<Avatar src={avatarLink} width={40} height={40} />
 				</TouchableOpacity>
 				<View style={styles.textContainer}>
-					<Heading
-						title={profile?.name || profile?.handle}
-						style={styles.heading}
-						numberOfLines={1}
-					/>
+					<Heading title={uploadedBy} style={styles.heading} numberOfLines={1} />
 					<StyledText
 						numberOfLines={1}
-						title={showSubscribers ? `${subscribersCount} Subscribers` : `@${profile?.handle}`}
+						title={
+							showSubscribers
+								? `${subscribersCount} Subscribers`
+								: `@${formatHandle(activePublication?.by?.handle as HandleInfo)}`
+						}
 						style={styles.subtext}
 					/>
 				</View>
 			</View>
-			{showSubscribeButton ? <SubscribeButton profile={profile} /> : null}
+			{showSubscribeButton ? (
+				<SubscribeButton channelId={profileId} isFollwebByMe={following} />
+			) : null}
 		</View>
 	);
 });

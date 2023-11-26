@@ -1,71 +1,97 @@
-import Like from "assets/Icons/Like";
+import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
-import { SHOT } from "constants/tracking";
-import { ToastType } from "customTypes/Store";
+import { PUBLICATION, SHOT } from "constants/tracking";
+import { PrimaryPublication } from "customTypes/generated";
 import useLike from "hooks/reactions/useLike";
-import React from "react";
+import React, { useState } from "react";
 import { useGuestStore } from "store/GuestStore";
-import { useLikeStore } from "store/ReactionStore";
-import { useActivePublication, useThemeStore, useToast } from "store/Store";
+import { useActivePublication, useReactionStore, useThemeStore, useToast } from "store/Store";
 import formatInteraction from "utils/formatInteraction";
+import Logger from "utils/logger";
 import TrackAction from "utils/Track";
 
-function LikeButton() {
-	const { activePublication } = useActivePublication();
-	const { isLiked, likeCount, isDisLiked, setLikeCount, setIsLiked, setIsDisLiked } =
-		useLikeStore();
+type LikeButtonProps = {
+	id: string;
+	like: number;
+	isalreadyLiked: boolean;
+	bytes?: boolean;
+	shotPublication?: PrimaryPublication;
+};
+
+const LikeButton: React.FC<LikeButtonProps> = ({
+	like,
+	isalreadyLiked,
+	id,
+	bytes = false,
+	shotPublication,
+}) => {
+	const [isLiked, setIsLiked] = useState(isalreadyLiked);
+	const [likeCount, setLikeCount] = useState(like);
+
 	const toast = useToast();
 	const { PRIMARY } = useThemeStore();
 	const { isGuest } = useGuestStore();
+	const { setVideoPageStats } = useReactionStore();
+
+	const { activePublication } = useActivePublication();
 	const { addLike, removeLike } = useLike();
 
 	const onLike = async () => {
 		if (isGuest) {
-			toast.show("Please Login", ToastType.ERROR, true);
+			toast.error("Please Login to like");
 			return;
 		}
-		if (!isLiked) {
-			if (isDisLiked) {
-				setIsDisLiked(false);
+		if (!isalreadyLiked) {
+			if (bytes) {
+				Logger.Log("This is bytes and this is not already liked", isalreadyLiked);
+				setLikeCount(likeCount + 1);
+				setIsLiked(true);
+			} else {
+				setVideoPageStats(true, false, like + 1);
 			}
-			setLikeCount(likeCount + 1);
-			setIsLiked(true);
-			await addLike(activePublication!);
-			void TrackAction(SHOT.SHOTS_LIKE);
+			addLike(bytes ? shotPublication! : activePublication!);
+			void TrackAction(bytes ? SHOT.SHOTS_LIKE : PUBLICATION.LIKE);
 		} else {
-			setLikeCount(likeCount - 1);
-			setIsLiked(false);
-			await removeLike(activePublication!);
+			if (bytes) {
+				Logger.Log("This is bytes and this is already liked", isalreadyLiked);
+
+				setLikeCount(likeCount - 1);
+				setIsLiked(false);
+			} else {
+				setVideoPageStats(false, false, like - 1);
+			}
+			removeLike(activePublication!);
 		}
 	};
 
-	React.useEffect(() => {
-		setIsLiked(activePublication?.reaction === "UPVOTE");
-		setLikeCount(activePublication?.stats?.totalUpvotes!);
-	}, []);
-
 	return (
 		<Button
-			title={formatInteraction(likeCount)}
+			title={formatInteraction(!bytes ? like : likeCount) || "0"}
 			mx={4}
 			px={16}
 			width={"auto"}
-			bg={dark_primary}
+			bg={bytes ? "transparent" : dark_primary}
 			type={"filled"}
 			borderRadius={8}
 			textStyle={{
 				fontSize: 14,
 				fontWeight: "500",
-				color: isLiked ? PRIMARY : "white",
+				color: (bytes ? isLiked : isalreadyLiked) ? PRIMARY : "white",
 				marginLeft: 4,
 			}}
-			borderColor={isLiked ? PRIMARY : "white"}
+			borderColor={(bytes ? isLiked : isalreadyLiked) ? PRIMARY : "white"}
 			onPress={onLike}
-			bytes={false}
-			icon={<Like height={18} width={18} color={isLiked ? PRIMARY : "white"} />}
+			bytes={bytes}
+			icon={
+				<Icon
+					name="like"
+					size={bytes ? 28 : 20}
+					color={(bytes ? isLiked : isalreadyLiked) ? PRIMARY : "white"}
+				/>
+			}
 		/>
 	);
-}
+};
 
 export default React.memo(LikeButton);

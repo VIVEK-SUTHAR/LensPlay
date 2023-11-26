@@ -35,7 +35,7 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 		}, 0);
 		return () => clearTimeout(delay);
 	}, []);
-
+	Logger.Warn("Channel Handle ",route.params.handle)
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			title: route.params.name || formatHandle(route?.params?.handle),
@@ -50,7 +50,7 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 	} = useProfileQuery({
 		variables: {
 			request: {
-				handle:
+				forHandle:
 					route?.params?.handle === "lensprotocol.lens" ? "lensprotocol" : route?.params?.handle,
 			},
 		},
@@ -66,7 +66,7 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 		setRefreshing(true);
 		await refetch({
 			request: {
-				handle: route?.params?.handle,
+				forHandle: route?.params?.handle,
 			},
 		}).catch((err) => {
 			Logger.Error("Error in Refreshing error", err);
@@ -106,14 +106,14 @@ const ProfileScreen: React.FC<RootStackScreenProps<"Channel">> = ({ navigation, 
 						name="All Videos"
 						children={() => <AllVideos profileId={Profile?.profile?.id} />}
 					/>
-					<Tab.Screen
+					{/* <Tab.Screen
 						name="Mirror Videos"
 						children={() => <MirroredVideos channelId={Profile?.profile?.id} />}
 					/>
 					<Tab.Screen
 						name="Collected Videos"
 						children={() => <CollectedVideos ethAddress={Profile?.profile?.ownedBy} />}
-					/>
+					/> */}
 				</Tabs>
 			</SafeAreaView>
 			<UnPinSheet sheetRef={sheetRef} />

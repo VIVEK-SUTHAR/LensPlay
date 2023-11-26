@@ -4,6 +4,7 @@ import Eth from "assets/Icons/Eth";
 import Matic from "assets/Icons/Matic";
 import Usdc from "assets/Icons/Usdc";
 import Sheet from "components/Bottom";
+import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
 import { CollectToggle } from "components/Upload/Video/CollectModule";
 import FollowerOnlyCollect from "components/Upload/Video/CollectModules/FollowerOnlyCollect";
@@ -17,7 +18,6 @@ import { useThemeStore } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
 import LimitedFeeCollect from "components/Upload/Video/CollectModules/LimitedFeeCollect";
 import PaidCollect from "components/Upload/Video/CollectModules/PaidCollect";
-import QR from "assets/Icons/QR";
 
 const TokenList: TokenListItem[] = [
 	{
@@ -184,7 +184,7 @@ function TokenSheet({ TokenList, activeToken, tokenSheetRef }: TokenSheetProps) 
 											alignItems: "center",
 										}}
 									>
-										<QR height={18} width={18} />
+										<Icon name={"done"} color={"black"} size={18} />
 									</View>
 								) : null}
 							</Pressable>

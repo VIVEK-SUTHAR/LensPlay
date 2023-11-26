@@ -1,137 +1,116 @@
 {
-  "expo": {
-    "name": "LensPlay",
-    "slug": "lensplay",
-    "version": "1.0.3",
-    "orientation": "portrait",
-    "backgroundColor": "#000000",
-    "icon": "./assets/images/icon.png",
-    "scheme": "lensplay",
-    "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/adaptive-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#000000"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f"
-    },
-    "runtimeVersion": {
-      "policy": "sdkVersion"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": false,
-      "requireFullScreen": true,
-      "bundleIdentifier": "com.lensplayxyz.lensplay",
-      "buildNumber": "6.0.0",
-      "icon": "./assets/images/icon.png",
-      "backgroundColor": "#000000",
-      "googleServicesFile": "./GoogleService-Info.plist",
-      "associatedDomains": [
-        "applinks:lensplay.xyz"
-      ]
-    },
-    "jsEngine": "hermes",
-    "android": {
-      "package": "com.lensplayxyz.lensplay",
-      "googleServicesFile": "./google-services.json",
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#000000"
-      },
-      "versionCode": 11,
-      "intentFilters": [
-        {
-          "action": "VIEW",
-          "data": [
-            {
-              "scheme": "lensplay"
-            }
-          ],
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
-        },
-        {
-          "action": "VIEW",
-          "autoVerify": true,
-          "data": [
-            {
-              "scheme": "https",
-              "host": "www.lensplay.xyz",
-              "pathPrefix": "/watch/"
-            }
-          ],
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
-        },
-        {
-          "action": "VIEW",
-          "autoVerify": true,
-          "data": [
-            {
-              "scheme": "https",
-              "host": "www.lensplay.xyz",
-              "pathPrefix": "/channel/"
-            }
-          ],
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
-        }
-      ]
-    },
-    "extra": {
-      "eas": {
-        "projectId": "2a7e6b8e-3f77-43ee-adeb-2d04c2c03a3f"
-      }
-    },
-    "plugins": [
-      [
-        "expo-community-flipper"
-      ],
-      [
-        "react-native-flipper-performance-plugin"
-      ],
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "The app accesses your gallery to let you share them with your friends on Lens"
-        }
-      ],
-      [
-        "expo-camera",
-        {
-          "cameraPermission": "Allow LensPlay to access your camera."
-        }
-      ],
-      [
-        "expo-screen-orientation",
-        {
-          "initialOrientation": "DEFAULT"
-        }
-      ],
-      [
-        "expo-build-properties",
-        {
-          "ios": {
-            "useFrameworks": "static"
-          }
-        }
-      ],
-      "expo-community-flipper",
-      "react-native-flipper-performance-plugin",
-      "@react-native-firebase/app",
-      "@react-native-firebase/perf",
-      "@react-native-firebase/crashlytics"
-    ]
-  }
+	"expo": {
+		"name": "LensPlay",
+		"slug": "test",
+		"version": "1.0.2",
+		"orientation": "portrait",
+		"backgroundColor": "#000000",
+		"icon": "./assets/images/icon.png",
+		"scheme": "lensplay",
+		"userInterfaceStyle": "automatic",
+		"splash": {
+			"image": "./assets/images/adaptive-icon.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#000000"
+		},
+		"updates": {
+			"fallbackToCacheTimeout": 0,
+			"url": "https://u.expo.dev/ab0b7a55-2257-4fb4-8851-a907ffbdf237"
+		},
+		"runtimeVersion": {
+			"policy": "sdkVersion"
+		},
+		"assetBundlePatterns": ["**/*"],
+		"ios": {
+			"supportsTablet": false,
+			"requireFullScreen": true,
+			"bundleIdentifier": "com.lensplayxyz.lensplay",
+			"icon": "./assets/images/icon.png",
+			"backgroundColor": "#000000",
+			"buildNumber": "6.0.0",
+			"googleServicesFile": "./GoogleService-Info.plist",
+			"associatedDomains": ["applinks:lensplay.xyz"]
+		},
+		"jsEngine": "hermes",
+		"android": {
+			"package": "com.lensplayxyz.lensplay",
+			"googleServicesFile": "./google-services.json",
+			"versionCode":11,
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/images/adaptive-icon.png",
+				"backgroundColor": "#000000"
+			},
+			"intentFilters": [
+				{
+					"action": "VIEW",
+					"data": [
+						{
+							"scheme": "lensplay"
+						}
+					],
+					"category": ["BROWSABLE", "DEFAULT"]
+				},
+				{
+					"action": "VIEW",
+					"autoVerify": true,
+					"data": [
+						{
+							"scheme": "https",
+							"host": "www.lensplay.xyz",
+							"pathPrefix": "/watch/"
+						}
+					],
+					"category": ["BROWSABLE", "DEFAULT"]
+				},
+				{
+					"action": "VIEW",
+					"autoVerify": true,
+					"data": [
+						{
+							"scheme": "https",
+							"host": "www.lensplay.xyz",
+							"pathPrefix": "/channel/"
+						}
+					],
+					"category": ["BROWSABLE", "DEFAULT"]
+				}
+			]
+		},
+		"extra": {
+			"eas": {
+				"projectId": "dc292891-6e08-49db-8e82-247dd43a39f7"
+			}
+		},
+		"plugins": [
+			[
+				"expo-image-picker",
+				{
+					"photosPermission": "The app accesses your gallery to let you share them with your friends on Lens"
+				}
+			],
+			[
+				"expo-camera",
+				{
+					"cameraPermission": "Allow LensPlay to access your camera."
+				}
+			],
+			[
+				"expo-screen-orientation",
+				{
+					"initialOrientation": "DEFAULT"
+				}
+			],
+			[
+				"expo-build-properties",
+				{
+					"ios": {
+						"useFrameworks": "static"
+					}
+				}
+			],
+			"@react-native-firebase/app",
+			"@react-native-firebase/perf",
+			"@react-native-firebase/crashlytics"
+		]
+	}
 }

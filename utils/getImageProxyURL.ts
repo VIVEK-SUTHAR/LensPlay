@@ -8,20 +8,25 @@ import { DEV } from "constants/index";
 
 type ImageProxyOptions = {
 	formattedLink: string;
-	options?: { height?: number; width?: number; blurAmount?: number };
+	options?: { height?: number; width?: number; format?: "webp" | "png" };
 };
+export enum LPImageFormat {
+	"Webp" = "f-webp",
+	"Png" = "f-png",
+}
+const IMAGE_KIT_PREFIX = "https://ik.imagekit.io/4uh8nmwsx/";
+
 function getImageProxyURL({ formattedLink, options }: ImageProxyOptions) {
-	if (DEV) {
-		return formattedLink;
-	}
-	const IMAGE_KIT_PREFIX = "https://ik.imagekit.io/4uh8nmwsx/";
-	const FORMATTED_LINK = formattedLink;
 	let imageOptions = {
 		w: options?.width,
 		h: options?.height,
-		bl: options?.blurAmount,
+		format: options?.format === "png" ? "f-png" : "f-webp",
 	};
-	const ImageOptionsString = `tr=w-${imageOptions.w},h-${imageOptions.h},bl-${imageOptions.bl},f-webp`;
+	if (formattedLink.includes("lens/media-snapshot/")) {
+		return `${formattedLink}?tr=w-${imageOptions.w},h-${imageOptions.h},f-webp`;
+	}
+	const FORMATTED_LINK = formattedLink;
+	const ImageOptionsString = `tr=w-${imageOptions.w},h-${imageOptions.h},${options?.format}`;
 	const CDN_LINK = `${IMAGE_KIT_PREFIX}${FORMATTED_LINK}?${ImageOptionsString}`;
 	return CDN_LINK;
 }

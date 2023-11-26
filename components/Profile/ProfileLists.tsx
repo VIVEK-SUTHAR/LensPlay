@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import Clock from "assets/Icons/Clock";
-import RightArrow from "assets/Icons/RightArrow";
+import Icon from "components/Icon";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
@@ -25,7 +25,7 @@ export default function ProfileLists() {
 		// 	},
 		// },
 		{
-			icon: <Clock height={16} width={16} />,
+			icon: <Icon name="clock" size={16}  />,
 			label: "Watch Later",
 			onPress: () => {
 				navigation.navigate("WatchLater");
@@ -87,7 +87,7 @@ const Item: FC<ProfileListItemProps> = (item: ProfileListItemProps) => {
 				{item.icon}
 				<StyledText title={item.label} style={styles.itemText} />
 			</View>
-			<RightArrow height={30} width={30} />
+			<Icon name="rightArrow" size={16} />
 		</Pressable>
 	);
 };

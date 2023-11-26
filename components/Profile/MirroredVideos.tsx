@@ -5,6 +5,7 @@ import ErrorMesasge from "components/common/ErrorMesasge";
 import MyVideoCard, { actionListType, SheetProps } from "components/common/MyVideoCard";
 import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
 import Skeleton from "components/common/Skeleton";
+import Icon from "components/Icon";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
 import DeleteVideo from "components/VIdeo/DeleteVideo";
@@ -13,11 +14,12 @@ import { SOURCES } from "constants/index";
 import {
 	Mirror,
 	Post,
-	PublicationMainFocus,
-	PublicationsQueryRequest,
-	PublicationTypes,
+	PrimaryPublication,
+	PublicationMetadataMainFocusType,
+	PublicationsRequest,
+	PublicationType,
 	Scalars,
-	useProfileMirrorsQuery,
+	usePublicationsQuery,
 } from "customTypes/generated";
 import useAddWatchLater from "hooks/useAddToWatchLater";
 import React from "react";
@@ -25,15 +27,13 @@ import { ActivityIndicator, FlatList, RefreshControl, Share, View } from "react-
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import CommonStyles from "styles/index";
 import { NoVideosFound } from "./AllVideos";
-import ShareIcon from "assets/Icons/ShareIcon";
-import Delete from "assets/Icons/Delete";
-import Clock from "assets/Icons/Clock";
+import Logger from "utils/logger";
 
 type MirroredVideosProps = {
 	channelId?: string;
 };
 
-const keyExtractor = (item: Mirror) => item.id;
+const keyExtractor = (item: PrimaryPublication) => item.id;
 
 const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 	const { accessToken } = useAuthStore();
@@ -46,29 +46,32 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 	const handlePublication = React.useCallback((publication: Post | Mirror) => {
 		setPublication(publication);
 	}, []);
-	const QueryRequest: PublicationsQueryRequest = {
-		profileId: channelId ? channelId : currentProfile?.id,
-		publicationTypes: [PublicationTypes.Mirror],
-		metadata: {
-			mainContentFocus: [PublicationMainFocus.Video],
+	const QueryRequest: PublicationsRequest = {
+		where: {
+			publicationTypes: [PublicationType.Mirror],
+			from: channelId ? channelId : currentProfile?.id,
+			metadata: {
+				mainContentFocus: [
+					PublicationMetadataMainFocusType.Video,
+					PublicationMetadataMainFocusType.ShortVideo,
+				],
+				publishedOn: [SOURCES],
+			},
 		},
-		sources: SOURCES,
-		limit: 10,
 	};
 
-	const { data, error, loading, refetch, fetchMore } = useProfileMirrorsQuery({
+	const { data, error, loading, refetch, fetchMore } = usePublicationsQuery({
 		variables: {
 			request: QueryRequest,
-			reactionRequest: {
-				profileId: currentProfile?.id,
-			},
-			channelId: currentProfile?.id,
 		},
 		context: {
 			headers: {
 				"x-access-token": `Bearer ${accessToken}`,
 			},
 		},
+		onError:(e)=>{
+			Logger.Error("Errr in Mirror Videos",e)
+		}
 	});
 
 	const AllMirrorVideos = data?.publications?.items;
@@ -78,15 +81,7 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 		setRefreshing(true);
 		try {
 			refetch({
-				request: {
-					profileId: channelId ? channelId : currentProfile?.id,
-					publicationTypes: [PublicationTypes.Mirror],
-					metadata: {
-						mainContentFocus: [PublicationMainFocus.Video],
-					},
-					sources: SOURCES,
-					limit: 10,
-				},
+				request: QueryRequest,
 			})
 				.then(() => {
 					setRefreshing(false);
@@ -170,7 +165,7 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 			}}
 		>
 			<FlashList
-				data={AllMirrorVideos as Mirror[]}
+				data={AllMirrorVideos as PrimaryPublication[]}
 				keyExtractor={keyExtractor}
 				ListEmptyComponent={NoVideosFound}
 				removeClippedSubviews={true}
@@ -180,7 +175,7 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 				onEndReachedThreshold={0.7}
 				onEndReached={onEndCallBack}
 				showsVerticalScrollIndicator={false}
-				renderItem={({ item }) => (
+				renderItem={({ item }: { item: PrimaryPublication }) => (
 					<MyVideoCard
 						publication={item}
 						id={item.id}
@@ -207,8 +202,8 @@ export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetPr
 	const actionList: actionListType[] = [
 		{
 			name: "Share",
-			icon: <ShareIcon height={20} width={20} />,
-			onPress: (pubid: Scalars["InternalPublicationId"]) => {
+			icon: "share",
+			onPress: (pubid: Scalars["PublicationId"]) => {
 				void Share.share({
 					message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${pubid}`,
 					title: "Watch video on LensPlay",
@@ -217,8 +212,8 @@ export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetPr
 		},
 		{
 			name: "Delete",
-			icon: <Delete height={20} width={20} />,
-			onPress: (pubid: Scalars["InternalPublicationId"]) => {
+			icon: "delete",
+			onPress: (pubid: Scalars["PublicationId"]) => {
 				sheetRef.current?.close();
 				deleteRef.current?.snapToIndex(0);
 			},
@@ -228,8 +223,8 @@ export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetPr
 	const channelActionList: actionListType[] = [
 		{
 			name: "Share",
-			icon: <ShareIcon height={20} width={20} />,
-			onPress: (pubid: Scalars["InternalPublicationId"]) => {
+			icon: "share",
+			onPress: (pubid: Scalars["PublicationId"]) => {
 				Share.share({
 					message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${pubid}`,
 					title: "Watch video on LensPlay",
@@ -237,14 +232,12 @@ export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetPr
 			},
 		},
 		{
-			name: publication?.bookmarked ? "Remove from watch later" : "Add to watch later",
-			icon: publication?.bookmarked ? (
-				<Delete height={20} width={20} />
-			) : (
-				<Clock height={20} width={20} />
-			),
+			name: publication?.operations?.hasBookmarked
+				? "Remove from watch later"
+				: "Add to watch later",
+			icon: publication?.operations?.hasBookmarked ? "delete" : "clock",
 			onPress: (publication) => {
-				if (publication?.bookmarked) {
+				if (publication?.operations?.hasBookmarked) {
 					remove(publication);
 				} else {
 					add(publication);
@@ -287,7 +280,7 @@ export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetPr
 										alignItems: "center",
 									}}
 								>
-									{item?.icon}
+									<Icon name={item.icon} color={"white"} />
 									<StyledText
 										title={item.name}
 										style={{

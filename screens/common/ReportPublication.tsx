@@ -1,7 +1,6 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import ArrowForward from "assets/Icons/ArrowForward";
-import Done from "assets/Icons/Done";
 import Sheet from "components/Bottom";
+import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
 import TextArea from "components/UI/TextArea";
@@ -62,6 +61,7 @@ const ReportPublication = ({ navigation, route }: RootStackScreenProps<"ReportPu
 	const [activeReason, setActiveReason] = useState<RESONTYPEDATA>(reportData[0]);
 	const [activeSubReason, setActiveSubReason] = useState<string>(activeReason.subReason[0].reason);
 	const [addiText, setAddiText] = useState<string>("");
+	const theme = useThemeStore();
 	const toast = useToast();
 	const { accessToken } = useAuthStore();
 	const { isGuest } = useGuestStore();
@@ -111,7 +111,7 @@ const ReportPublication = ({ navigation, route }: RootStackScreenProps<"ReportPu
 			createReport({
 				variables: {
 					request: {
-						publicationId: route.params.publicationId,
+						for: route.params.publicationId,
 						reason: {
 							[getReasonType(activeReason.reason)]: {
 								reason: activeReason.reason,
@@ -186,7 +186,7 @@ const ReportPublication = ({ navigation, route }: RootStackScreenProps<"ReportPu
 								maxWidth: "75%",
 							}}
 						/>
-						<ArrowForward height={16} width={16} />
+						<Icon name="arrowForward" size={16} />
 					</View>
 				</Pressable>
 				<StyledText
@@ -230,7 +230,7 @@ const ReportPublication = ({ navigation, route }: RootStackScreenProps<"ReportPu
 								maxWidth: "75%",
 							}}
 						/>
-						<ArrowForward height={16} width={16} />
+						<Icon name="arrowForward" size={16} />
 					</View>
 				</Pressable>
 				<View style={styles.inputContainer}>
@@ -361,7 +361,11 @@ function ReportTypeSheet({
 											alignItems: "center",
 										}}
 									>
-										<Done height={18} width={18} color={black[800]} />
+										<Icon
+											name={"done"}
+											color={activeReason.reason === item.reason ? "black" : "white"}
+											size={18}
+										/>
 									</View>
 								) : (
 									<></>
@@ -446,7 +450,11 @@ function ReportSubReasonSheet({
 											alignItems: "center",
 										}}
 									>
-										<Done height={18} width={18} color={black[800]} />
+										<Icon
+											name={"done"}
+											color={activeSubReason === item.reason ? "black" : "white"}
+											size={18}
+										/>
 									</View>
 								) : (
 									<></>

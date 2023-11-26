@@ -1,11 +1,9 @@
-import Instagram from "assets/Icons/Instagram";
-import Link from "assets/Icons/Link";
-import Twitter from "assets/Icons/Twitter";
-import Youtube from "assets/Icons/Youtube";
+import Icon, { IconProps } from "components/Icon";
 import { dark_primary } from "constants/Colors";
 import { Maybe, Profile } from "customTypes/generated";
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Linking, Pressable, View } from "react-native";
+import Logger from "utils/logger";
 
 type socialLinksProps = {
 	instagram: Maybe<string> | undefined;
@@ -15,8 +13,9 @@ type socialLinksProps = {
 };
 
 type linksData = {
-	icon: ReactElement;
+	icon: IconProps["name"];
 	link: Maybe<string> | undefined;
+	color: string;
 };
 
 function getLink(key: string, value: Maybe<string> | undefined) {
@@ -36,7 +35,7 @@ function getLink(key: string, value: Maybe<string> | undefined) {
 			break;
 	}
 }
-function _SocialLinks({ profile }: { profile: Profile }) {
+function SocialLinks({ profile }: { profile: Profile }) {
 	const [links, setLinks] = useState<socialLinksProps>({
 		twitter: "",
 		instagram: "",
@@ -44,12 +43,14 @@ function _SocialLinks({ profile }: { profile: Profile }) {
 		website: "",
 	});
 	const getLinks = React.useCallback(() => {
-		const twitter = profile?.attributes?.find(
-			(item) => item.key || item.traitType === "twitter"
-		)?.value;
-		const youtube = profile?.attributes?.find((item) => item.key === "youtube")?.value;
-		const insta = profile?.attributes?.find((item) => item.key === "instagram")?.value;
-		const website = profile?.attributes?.find((item) => item.key === "website")?.value;
+		console.log(profile.metadata);
+
+		const attributes = profile.metadata?.attributes;
+		if (!attributes) return;
+		const twitter = attributes.find((item) => item.key === "twitter")?.value;
+		const youtube = attributes.find((item) => item.key === "youtube")?.value;
+		const insta = attributes.find((item) => item.key === "instagram")?.value;
+		const website = attributes.find((item) => item.key === "website")?.value;
 		setLinks({
 			instagram: insta,
 			website: website,
@@ -64,20 +65,24 @@ function _SocialLinks({ profile }: { profile: Profile }) {
 
 	const linksData: linksData[] = [
 		{
-			icon: <Twitter height={16} width={16} color={"#1DA1F2"} />,
+			icon: "twitter",
 			link: getLink("twitter", links.twitter),
+			color: "#1DA1F2",
 		},
 		{
-			icon: <Instagram height={16} width={16} color={"#1DA1F2"} />,
+			icon: "instagram",
 			link: getLink("instagram", links.instagram),
+			color: "#1DA1F2",
 		},
 		{
-			icon: <Youtube height={16} width={16} color={"#1DA1F2"} />,
+			icon: "youtube",
 			link: getLink("youtube", links.youtube),
+			color: "#1DA1F2",
 		},
 		{
-			icon: <Link height={16} width={16} color={"#1DA1F2"} />,
+			icon: "link",
 			link: links.website,
+			color: "#1DA1F2",
 		},
 	];
 	return (
@@ -91,6 +96,7 @@ function _SocialLinks({ profile }: { profile: Profile }) {
 			{linksData.map((link) =>
 				link.link ? (
 					<Pressable
+						key={link.icon}
 						style={{
 							flexDirection: "row",
 							alignItems: "center",
@@ -106,12 +112,11 @@ function _SocialLinks({ profile }: { profile: Profile }) {
 							}
 						}}
 					>
-						{link.icon}
+						<Icon name={link.icon} color={link.color} size={16} />
 					</Pressable>
 				) : null
 			)}
 		</View>
 	);
 }
-const SocialLinks = React.memo(_SocialLinks);
 export default SocialLinks;

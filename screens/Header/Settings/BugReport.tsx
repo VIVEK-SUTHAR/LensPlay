@@ -1,31 +1,18 @@
 import { WINDOW_WIDTH } from "@gorhom/bottom-sheet";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import ArrowDown from "assets/Icons/ArrowDown";
-import Close from "assets/Icons/Close";
-import Done from "assets/Icons/Done";
-import Sheet from "components/Bottom";
+import Icon from "components/Icon";
 import Button from "components/UI/Button";
+import Dropdown from "components/UI/Dropdown";
 import Input from "components/UI/Input";
 import StyledText from "components/UI/StyledText";
 import TextArea from "components/UI/TextArea";
-import { black, dark_primary, white } from "constants/Colors";
+import { dark_primary } from "constants/Colors";
 import type { RootStackScreenProps } from "customTypes/navigation";
 import { ToastType } from "customTypes/Store";
 import * as ImagePicker from "expo-image-picker";
 import { StatusBar } from "expo-status-bar";
-import React, { SetStateAction, useEffect, useState } from "react";
-import {
-	FlatList,
-	Image,
-	KeyboardAvoidingView,
-	Pressable,
-	ScrollView,
-	StyleSheet,
-	Text,
-	View,
-} from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { useProfile, useThemeStore, useToast } from "store/Store";
+import React, { useEffect, useState } from "react";
+import { Image, KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { useProfile, useToast } from "store/Store";
 import getImageBlobFromUri from "utils/getImageBlobFromUri";
 import uploadImageToIPFS from "utils/uploadImageToIPFS";
 
@@ -33,18 +20,10 @@ export type BugCategory = {
 	reason: string;
 };
 
-type BugSheetProps = {
-	data: BugCategory[];
-	bugSheetRef: React.RefObject<BottomSheetMethods>;
-	activeReason: string;
-	setActiveReason: React.Dispatch<SetStateAction<string>>;
-};
-
 const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
 	const toast = useToast();
 
 	const { currentProfile } = useProfile();
-	const bugSheetRef = React.useRef<BottomSheetMethods>(null);
 
 	const [isUpdating, setIsUpdating] = useState<boolean>(false);
 	const [BugData, setBugData] = useState({
@@ -68,14 +47,14 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
 			setimage(coverresult?.assets[0].uri);
 		}
 	}
-	const [activeReason, setActiveReason] = React.useState("");
+	const [selectData, setselectData] = useState<BugCategory>({ reason: "" });
 
 	useEffect(() => {
 		setBugData({
 			...BugData,
-			bugType: activeReason,
+			bugType: selectData?.reason,
 		});
-	}, [activeReason]);
+	}, [selectData]);
 
 	const reportData: BugCategory[] = [
 		{
@@ -120,7 +99,7 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
 						imgLink: "",
 						username: currentProfile?.handle,
 					});
-					setActiveReason("");
+					setselectData({ reason: "Bug Category" });
 					if (image) {
 						setimage(null);
 					}
@@ -139,39 +118,17 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
 				showsVerticalScrollIndicator={false}
 				style={{ width: WINDOW_WIDTH, paddingHorizontal: 12, marginTop: 4 }}
 			>
-				<View>
+				<View
+					style={{
+						width: "100%",
+					}}
+				>
 					<StyledText
-						title={"Bug Category"}
-						style={{
-							color: "white",
-							fontSize: 18,
-							alignSelf: "flex-start",
-							marginVertical: 12,
-							fontWeight: "700",
-						}}
+						title="Tell us where you found bug,we'll be happy to fix it"
+						style={{ color: "white", textAlign: "center" }}
 					/>
-					<TouchableOpacity
-						style={{
-							marginVertical: 4,
-							flexDirection: "row",
-							alignItems: "center",
-							backgroundColor: "#1d1d1d",
-							height: 50,
-							borderRadius: 8,
-							paddingHorizontal: 16,
-							justifyContent: "space-between",
-						}}
-						onPress={() => {
-							bugSheetRef?.current?.snapToIndex(0);
-						}}
-					>
-						<StyledText
-							style={{ fontSize: 14, fontWeight: "600", color: "white" }}
-							title={activeReason || "Bug Category"}
-						/>
-						<ArrowDown color="white" height={16} width={16} />
-					</TouchableOpacity>
 				</View>
+				<Dropdown label="Bug Category" data={reportData} onSelect={setselectData} width={"100%"} />
 				<View style={{}}>
 					{image && (
 						<View>
@@ -179,7 +136,13 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
 								onPress={() => setimage(null)}
 								style={{ position: "absolute", zIndex: 1, right: 16, top: 14 }}
 							>
-								<Close color={white[800]} height={24} width={24} />
+								<Icon
+									name="close"
+									size={24}
+									style={{
+										color: "white",
+									}}
+								/>
 							</Pressable>
 							<Image source={{ uri: image }} style={styles.image} />
 						</View>
@@ -243,97 +206,9 @@ const BugReport = ({ navigation }: RootStackScreenProps<"BugReport">) => {
 					onPress={sendReportData}
 				/>
 			</ScrollView>
-			<BugSheet
-				bugSheetRef={bugSheetRef}
-				activeReason={activeReason}
-				setActiveReason={setActiveReason}
-				data={reportData}
-			/>
 		</KeyboardAvoidingView>
 	);
 };
-
-function BugSheet({ data, bugSheetRef, activeReason, setActiveReason }: BugSheetProps) {
-	const theme = useThemeStore();
-	return (
-		<Sheet
-			ref={bugSheetRef}
-			snapPoints={[280]}
-			style={{
-				height: "auto",
-			}}
-			enablePanDownToClose={true}
-			backgroundStyle={{
-				backgroundColor: black[600],
-			}}
-		>
-			<View style={{ padding: 16 }}>
-				<StyledText
-					title={"Select bug category"}
-					style={{
-						color: "white",
-						fontSize: 18,
-						fontWeight: "500",
-						marginVertical: 4,
-					}}
-				/>
-				<FlatList
-					data={data}
-					renderItem={({ item, index }) => {
-						return (
-							<Pressable
-								style={{
-									flexDirection: "row",
-									alignItems: "center",
-									justifyContent: "space-between",
-								}}
-								onPress={() => {
-									setActiveReason(item?.reason);
-									bugSheetRef.current?.close();
-								}}
-							>
-								<View
-									style={{
-										flexDirection: "row",
-										justifyContent: "flex-start",
-										alignItems: "center",
-										gap: 16,
-									}}
-								>
-									<StyledText
-										title={item.reason}
-										style={{
-											color: "rgba(255,255,255,0.8)",
-											fontSize: 18,
-											fontWeight: "400",
-											marginVertical: 16,
-										}}
-									/>
-								</View>
-								{activeReason === item.reason ? (
-									<View
-										style={{
-											height: "auto",
-											width: "auto",
-											backgroundColor: theme.PRIMARY,
-											borderRadius: 50,
-											padding: 4,
-											marginVertical: 16,
-											justifyContent: "center",
-											alignItems: "center",
-										}}
-									>
-										<Done width={18} height={18} />
-									</View>
-								) : null}
-							</Pressable>
-						);
-					}}
-				/>
-			</View>
-		</Sheet>
-	);
-}
 
 export default BugReport;
 

@@ -1,7 +1,6 @@
 import type { BgColorStore } from "customTypes/Store";
 import { create } from "zustand";
 
-
 export const useBgColorStore = create<BgColorStore>((set) => ({
 	isAvatar: "AVATAR",
 	avatar: null,

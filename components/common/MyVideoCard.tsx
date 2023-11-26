@@ -1,12 +1,12 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useNavigation } from "@react-navigation/native";
-import More from "assets/Icons/More";
+import Icon, { IconName } from "components/Icon";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black } from "constants/Colors";
-import { Mirror, Post, Scalars } from "customTypes/generated";
+import { Mirror, Post, PrimaryPublication, Scalars, VideoMetadataV3 } from "customTypes/generated";
 import { Image } from "expo-image";
-import React, { ReactElement, memo } from "react";
+import React, { memo } from "react";
 import { Dimensions, Pressable, TouchableOpacity, View } from "react-native";
 import { useActivePublication } from "store/Store";
 import getDifference from "utils/getDifference";
@@ -16,7 +16,7 @@ import getPlaceHolderImage from "utils/getPlaceHolder";
 import getRawurl from "utils/getRawUrl";
 
 type MyVideoCardProps = {
-	publication: Mirror | Post;
+	publication: PrimaryPublication;
 	id: string;
 	sheetRef?: React.RefObject<BottomSheetMethods>;
 	setPublication: (publication: Mirror | Post) => void;
@@ -27,7 +27,7 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 	const { setActivePublication } = useActivePublication();
 
 	const memoizedPlaceHolder = React.useMemo(() => getPlaceHolderImage(), []);
-
+	const metadata = publication?.metadata as VideoMetadataV3;
 	return (
 		<Pressable
 			android_ripple={{
@@ -48,10 +48,11 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 					placeholder={memoizedPlaceHolder}
 					contentFit="cover"
 					transition={500}
-					cachePolicy="memory-disk"
+					recyclingKey={getIPFSLink(getRawurl(metadata?.asset?.cover))}
 					source={{
 						uri: getImageProxyURL({
-							formattedLink: getIPFSLink(getRawurl(publication?.metadata?.cover)),
+							formattedLink: getIPFSLink(getRawurl(metadata?.asset?.cover)),
+							options: { height: 100, width: 160 },
 						}),
 					}}
 					style={{
@@ -76,7 +77,7 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 					}}
 				>
 					<Heading
-						title={publication?.metadata?.name}
+						title={metadata?.title ?? ""}
 						style={{ color: "white", fontSize: 16, fontWeight: "500" }}
 						numberOfLines={3}
 					/>
@@ -86,7 +87,7 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 						}}
 					>
 						<StyledText
-							title={publication?.metadata?.content || publication?.metadata?.description}
+							title={metadata.content ?? ""}
 							numberOfLines={1}
 							style={{ color: "gray", fontSize: 12 }}
 						/>
@@ -113,7 +114,7 @@ function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardP
 						height: "30%",
 					}}
 				>
-					<More height={18} width={18} />
+					<Icon name="more" size={16} />
 				</TouchableOpacity>
 			</View>
 		</Pressable>
@@ -124,12 +125,12 @@ export default memo(MyVideoCard);
 
 export type SheetProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
-	publication: Post | Mirror | null;
+	publication: PrimaryPublication;
 	profileId: Scalars["ProfileId"];
 };
 
 export type actionListType = {
 	name: string;
-	icon: ReactElement;
-	onPress: (pubId: Scalars["InternalPublicationId"]) => void;
+	icon: IconName;
+	onPress: (pubId: Scalars["PublicationId"]) => void;
 };

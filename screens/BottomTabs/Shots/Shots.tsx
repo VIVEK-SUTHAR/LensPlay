@@ -3,14 +3,13 @@ import ShotSkeleton from "components/Shots/ShotSkeleton";
 import SingleShot from "components/Shots/SingleShot";
 import {
 	ExplorePublicationRequest,
-	Mirror,
-	Post,
-	PublicationMainFocus,
-	PublicationSortCriteria,
-	PublicationTypes,
-	useExploreQuery,
+	ExplorePublicationType,
+	ExplorePublicationsOrderByType,
+	LimitType,
+	PrimaryPublication,
+	PublicationMetadataMainFocusType,
+	useExplorePublicationsQuery,
 } from "customTypes/generated";
-import { ShotsPublication } from "customTypes/index";
 import { RootTabScreenProps } from "customTypes/navigation";
 import React, { useCallback, useState } from "react";
 import {
@@ -24,43 +23,38 @@ import {
 } from "react-native";
 import SwiperFlatList from "react-native-swiper-flatlist";
 import { useGuestStore } from "store/GuestStore";
-import { useAuthStore, useProfile, useThemeStore } from "store/Store";
+import { useAuthStore, useThemeStore } from "store/Store";
 
-type ShotPublication = Post | Mirror;
+const isAndroid = Platform.OS === "android";
 
 const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 	const [currentIndex, setCurrentIndex] = useState<number>(0);
-	const { currentProfile } = useProfile();
-	const { isGuest, profileId } = useGuestStore();
+	const { isGuest } = useGuestStore();
 	const { accessToken } = useAuthStore();
 	const { PRIMARY } = useThemeStore();
 	const { height } = useWindowDimensions();
 
-	const isAndroid = Platform.OS === "android";
-
 	const QueryRequest: ExplorePublicationRequest = {
-		sortCriteria: PublicationSortCriteria.Latest,
-		publicationTypes: [PublicationTypes.Post],
-		metadata: {
-			mainContentFocus: [PublicationMainFocus.Video],
+		orderBy: ExplorePublicationsOrderByType.Latest,
+		where: {
+			metadata: {
+				mainContentFocus: [
+					PublicationMetadataMainFocusType.Video,
+					PublicationMetadataMainFocusType.ShortVideo,
+				],
+			},
+			publicationTypes: [ExplorePublicationType.Post],
 		},
-		sources: ["lensplay", "lenstube-bytes"],
-		limit: 3,
+		limit: LimitType.Ten,
 	};
 
 	const {
 		data: shotsData,
-		error,
 		loading,
-		refetch,
 		fetchMore,
-	} = useExploreQuery({
+	} = useExplorePublicationsQuery({
 		variables: {
 			request: QueryRequest,
-			reactionRequest: {
-				profileId: isGuest ? "" : currentProfile?.id,
-			},
-			channelId: currentProfile?.id,
 		},
 		context: {
 			headers: {
@@ -69,13 +63,11 @@ const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 		},
 	});
 
-	const data = shotsData?.explorePublications?.items as ShotPublication[];
-
 	const pageInfo = shotsData?.explorePublications.pageInfo;
 
 	const renderItem = useCallback(
-		({ item, index }: { item: Post | Mirror; index: number }) => {
-			if (!item.hidden) {
+		({ item, index }: { item: PrimaryPublication; index: number }) => {
+			if (!item.isHidden) {
 				return (
 					<View style={{ height: isAndroid ? height : "auto" }}>
 						<SingleShot item={item} isActive={currentIndex === index} />
@@ -130,7 +122,7 @@ const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 	const ListFooter = React.memo(() => {
 		return <ActivityIndicator style={{ paddingVertical: 12 }} size="small" color={PRIMARY} />;
 	});
-	const keyExtractor = (item: ShotsPublication) => item?.item?.id.toString();
+	const keyExtractor = (item: PrimaryPublication) => item.id;
 
 	if (loading) return <ShotSkeleton />;
 
@@ -154,8 +146,9 @@ const Shots: React.FC<RootTabScreenProps<"Shots">> = () => {
 				vertical={true}
 				keyExtractor={keyExtractor}
 				onChangeIndex={handleChangeIndexValue}
-				data={data}
+				data={shotsData?.explorePublications?.items}
 				renderItem={renderItem}
+				ListFooterComponent={ListFooter}
 				initialNumToRender={3}
 				maxToRenderPerBatch={3}
 				windowSize={3}

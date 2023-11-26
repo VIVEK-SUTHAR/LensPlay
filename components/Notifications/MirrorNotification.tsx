@@ -1,31 +1,27 @@
-import { useNavigation } from "@react-navigation/native";
-import Mirror from "assets/Icons/Mirror";
-import Avatar from "components/UI/Avatar";
+import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
 import { dark_primary } from "constants/Colors";
-import type { NewMirrorNotification } from "customTypes/generated";
+import type {
+	HandleInfo,
+	MirrorNotification as NewMirrorNotification,
+} from "customTypes/generated";
 import React from "react";
 import { Pressable, View } from "react-native";
 import extractURLs from "utils/extractURL";
-import formatAddress from "utils/formatAddress";
-import getDifference from "utils/getDifference";
+import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
+import AvatarGroup from "./AvatarGroup";
+import formatHandle from "utils/formatHandle";
 
 type MirrorNotificationProps = {
 	notification: NewMirrorNotification;
 };
 
 const MirrorNotification = ({ notification }: MirrorNotificationProps) => {
-	const navigation = useNavigation();
+	const profileUrls = notification?.mirrors.map((item) =>
+		getIPFSLink(getRawurl(item?.profile?.metadata?.picture))
+	);
 
-	const profile = notification?.profile;
-
-	const goToChannel = () => {
-		navigation.navigate("Channel", {
-			handle: profile?.handle,
-			name: profile?.name!,
-		});
-	};
 	return (
 		<Pressable
 			android_ripple={{
@@ -48,43 +44,45 @@ const MirrorNotification = ({ notification }: MirrorNotificationProps) => {
 					alignItems: "center",
 				}}
 			>
-				<Mirror height={22} width={22} color={"#6bd841"} />
+				<Icon name="mirror" color={"#6bd841"} />
 			</View>
 			<View style={{ flex: 1 }}>
 				<View style={{ flexDirection: "row", alignItems: "center" }}>
 					<View>
-						<Pressable onPress={goToChannel}>
-							<Avatar src={getRawurl(notification?.profile?.picture)} height={35} width={35} />
+						<Pressable>
+							<AvatarGroup avatarUrls={profileUrls} />
 						</Pressable>
-						<View style={{ flexDirection: "row", alignItems: "center" }}>
+						<View style={{ flexDirection: "row", alignItems: "center",maxWidth:"95%" }}>
 							<StyledText
-								title={
-									notification?.profile?.handle?.split(".")[0] ||
-									formatAddress(notification?.profile?.ownedBy)
-								}
+								title={formatHandle(notification?.mirrors[0].profile?.handle as HandleInfo)}
 								style={{ color: "white", fontWeight: "500" }}
 							/>
+							{notification?.mirrors?.length > 1 && (
+								<StyledText
+									title={` and ${notification?.mirrors?.length - 1} more`}
+									style={{ color: "gray" }}
+								/>
+							)}
 							<StyledText
 								title={` mirrored your ${
 									notification?.publication?.__typename == "Post"
 										? "post"
 										: notification?.publication?.__typename == "Comment"
 										? "comment"
+										: notification.publication.__typename === "Quote"
+										? "quote"
 										: "mirrored post"
 								}`}
 								style={{ color: "gray" }}
 							/>
-							<StyledText
-								title={getDifference(notification?.createdAt)}
+							{/* <StyledText
+								title={getDifference(notification?.mirrors[0]?.mirroredAt)}
 								style={{ fontSize: 10, color: "gray" }}
-							/>
+							/> */}
 						</View>
 						<View>
 							<StyledText
-								title={extractURLs(
-									notification?.publication?.metadata?.content ||
-										notification?.publication?.metadata?.description
-								)}
+								title={extractURLs(notification?.publication?.metadata?.content ?? "")}
 								numberOfLines={2}
 								style={{ color: "grey", fontSize: 12 }}
 							/>

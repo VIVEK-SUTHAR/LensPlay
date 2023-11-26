@@ -1,46 +1,45 @@
-import Dislike from "assets/Icons/Dislike";
+import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import { dark_primary } from "constants/Colors";
 import { PUBLICATION } from "constants/tracking";
-import { ToastType } from "customTypes/Store";
 import useDisLike from "hooks/reactions/useDisLike";
 import React from "react";
 import { useGuestStore } from "store/GuestStore";
-import { useLikeStore } from "store/ReactionStore";
-import { useActivePublication, useThemeStore, useToast } from "store/Store";
+import { useActivePublication, useReactionStore, useThemeStore, useToast } from "store/Store";
 import TrackAction from "utils/Track";
 
-function DisLikeButton() {
-	const { activePublication } = useActivePublication();
-	const { isLiked, likeCount, isDisLiked, setLikeCount, setIsLiked, setIsDisLiked } =
-		useLikeStore();
+type DisLikeButtonProps = {
+	id: string;
+	isalreadyDisLiked: boolean;
+};
+
+const DisLikeButton: React.FC<DisLikeButtonProps> = ({ isalreadyDisLiked, id }) => {
 	const { isGuest } = useGuestStore();
 	const { PRIMARY } = useThemeStore();
+	const { videopageStats, setVideoPageStats } = useReactionStore();
 	const toast = useToast();
+	const { activePublication } = useActivePublication();
+
 	const { addDisLike, removeDisLike } = useDisLike();
 
 	const onDislike = async () => {
 		if (isGuest) {
-			toast.show("Please Login", ToastType.ERROR, true);
+			toast.error("Please Login");
 			return;
 		}
-		if (!isDisLiked) {
-			if (isLiked) {
-				setLikeCount(likeCount - 1);
-				setIsLiked(false);
-			}
-			setIsDisLiked(true);
-			addDisLike(activePublication!);
+		if (!isalreadyDisLiked) {
+			setVideoPageStats(
+				false,
+				true,
+				videopageStats.isLiked ? videopageStats.likeCount - 1 : videopageStats.likeCount
+			);
+			void addDisLike(activePublication);
 			void TrackAction(PUBLICATION.DISLIKE);
 		} else {
-			setIsDisLiked(false);
-			removeDisLike(activePublication!);
+			setVideoPageStats(false, false, videopageStats.likeCount);
+			void removeDisLike(activePublication);
 		}
 	};
-
-	React.useEffect(() => {
-		setIsDisLiked(activePublication?.reaction === "DOWNVOTE");
-	}, []);
 
 	return (
 		<Button
@@ -57,10 +56,10 @@ function DisLikeButton() {
 				fontWeight: "500",
 				color: "white",
 			}}
-			borderColor={isDisLiked ? PRIMARY : "white"}
-			icon={<Dislike height={18} width={18} color={isDisLiked ? PRIMARY : "white"} />}
+			borderColor={isalreadyDisLiked ? PRIMARY : "white"}
+			icon={<Icon name="dislike" size={20} color={isalreadyDisLiked ? PRIMARY : "white"} />}
 		/>
 	);
-}
+};
 
 export default React.memo(DisLikeButton);

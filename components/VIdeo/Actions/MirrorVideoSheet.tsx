@@ -1,24 +1,39 @@
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import Close from "assets/Icons/Close";
-import Sheet from "components/Bottom";
-import Avatar from "components/UI/Avatar";
-import Button from "components/UI/Button";
-import Heading from "components/UI/Heading";
-import LPImage from "components/UI/LPImage";
-import StyledText from "components/UI/StyledText";
-import { black, white } from "constants/Colors";
-import { PUBLICATION } from "constants/tracking";
-import { ToastType } from "customTypes/Store";
-import useMirror from "hooks/reactions/useMirror";
-import React from "react";
 import { Pressable, View } from "react-native";
-import { useMirrorStore } from "store/ReactionStore";
-import { useActivePublication, useThemeStore, useToast } from "store/Store";
-import TrackAction from "utils/Track";
+import React from "react";
+import Sheet from "components/Bottom";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { black, white } from "constants/Colors";
+import {
+	useActivePublication,
+	useAuthStore,
+	useProfile,
+	useReactionStore,
+	useThemeStore,
+	useToast,
+} from "store/Store";
+import Heading from "components/UI/Heading";
+import Icon from "components/Icon";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import LPImage from "components/UI/LPImage";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
+import StyledText from "components/UI/StyledText";
+import Avatar from "components/UI/Avatar";
+import Button from "components/UI/Button";
+import { ToastType } from "customTypes/Store";
 import Logger from "utils/logger";
+import { LENSPLAY_SITE } from "constants/index";
+import TrackAction from "utils/Track";
+import { PUBLICATION } from "constants/tracking";
+import { ApolloCache } from "@apollo/client";
+import {
+	HandleInfo,
+	Post,
+	useMirrorOnMomokaMutation,
+	useMirrorOnchainMutation,
+} from "customTypes/generated";
+import formatHandle from "utils/formatHandle";
+import useMirror from "hooks/reactions/useMIrror";
 
 type MirrorVideoSheetProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
@@ -26,31 +41,45 @@ type MirrorVideoSheetProps = {
 
 const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef }) => {
 	const { activePublication } = useActivePublication();
+	const { accessToken } = useAuthStore();
+	const { mirrorStats, setMirrorStats } = useReactionStore();
+	const { mirrorPublication } = useMirror();
+
+	const isDAPublication = Boolean(activePublication?.momoka?.proof);
+
+	Logger.Success("is DA Publication", isDAPublication, activePublication?.momoka);
+
 	const toast = useToast();
 	const theme = useThemeStore();
-	const { mirrorPublication } = useMirror();
-	const { isMirrored, mirrorCount, setIsMirrored, setMirrorCount } = useMirrorStore();
+	const { currentProfile } = useProfile();
+	Logger.Log("IS SIGNLESS", currentProfile?.signless);
 
-	const handleMirror = async () => {
-		if (isMirrored) return;
-		if (!activePublication?.profile?.dispatcher?.canUseRelay) {
+	const onMirror = async () => {
+		if (mirrorStats?.isMirrored) {
+			toast.show("Already mirrored", ToastType.ERROR, true);
+			mirrorRef.current?.close();
+			return;
+		}
+		if (!activePublication?.by?.sponsor) {
 			toast.show("Dispatcher is disabled", ToastType.ERROR, true);
 			mirrorRef.current?.close();
 			return;
 		}
+
 		try {
-			setIsMirrored(true);
-			setMirrorCount(mirrorCount + 1);
+			toast.success("Mirror submitted!");
+			setMirrorStats(true, mirrorStats.mirrorCount + 1);
 			mirrorRef.current?.close();
+
 			await mirrorPublication(activePublication);
 			TrackAction(PUBLICATION.MIRROR);
 		} catch (error) {
-			Logger.Error("", error);
-		} finally {
-			mirrorRef?.current?.close();
+			if (error instanceof Error) {
+				toast.show(error.message, ToastType.ERROR, true);
+				mirrorRef?.current?.close();
+			}
 		}
 	};
-
 	return (
 		<Sheet
 			ref={mirrorRef}
@@ -88,7 +117,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 							mirrorRef?.current?.close();
 						}}
 					>
-						<Close height={20} width={20} />
+						<Icon name="close" size={16} />
 					</Pressable>
 				</View>
 				<View
@@ -111,7 +140,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 					>
 						<LPImage
 							source={{
-								uri: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
+								uri: getIPFSLink(getRawurl(activePublication?.metadata?.asset?.cover)),
 							}}
 							style={{
 								height: 200,
@@ -120,7 +149,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 							}}
 						/>
 						<StyledText
-							title={activePublication?.metadata?.name}
+							title={activePublication?.metadata?.title}
 							style={{
 								fontSize: 20,
 								color: white[800],
@@ -150,7 +179,11 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 								marginTop: 8,
 							}}
 						>
-							<Avatar src={getRawurl(activePublication?.profile?.picture)} height={40} width={40} />
+							<Avatar
+								src={getRawurl(activePublication?.by?.metadata?.picture)}
+								height={40}
+								width={40}
+							/>
 							<View
 								style={{
 									marginHorizontal: 8,
@@ -158,7 +191,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 								}}
 							>
 								<Heading
-									title={activePublication?.profile?.name}
+									title={activePublication?.by?.metadata?.displayName}
 									numberOfLines={1}
 									style={{
 										color: "white",
@@ -167,7 +200,7 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 									}}
 								/>
 								<StyledText
-									title={activePublication?.profile?.handle}
+									title={formatHandle(activePublication?.by?.handle as HandleInfo)}
 									style={{
 										color: "gray",
 										fontSize: 12,
@@ -183,15 +216,17 @@ const MirrorVideoSheet: React.FC<MirrorVideoSheetProps> = ({ sheetRef: mirrorRef
 						}}
 					>
 						<Button
-							title={isMirrored ? "Mirrored" : `Mirror Video`}
+							title={mirrorStats?.isMirrored ? "Video already mirrored" : `Mirror Video`}
 							py={12}
 							textStyle={{
 								fontSize: 20,
 								fontWeight: "600",
 								textAlign: "center",
 							}}
-							bg={isMirrored ? "#c0c0c0" : theme.PRIMARY}
-							onPress={handleMirror}
+							bg={mirrorStats?.isMirrored ? "#c0c0c0" : theme.PRIMARY}
+							onPress={() => {
+								onMirror();
+							}}
 						/>
 					</View>
 				</BottomSheetScrollView>

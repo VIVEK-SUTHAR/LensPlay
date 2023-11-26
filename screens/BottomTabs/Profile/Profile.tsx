@@ -34,7 +34,7 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 	} = useProfileQuery({
 		variables: {
 			request: {
-				handle: currentProfile?.handle,
+				forProfileId: currentProfile?.id,
 			},
 		},
 		context: {
@@ -43,18 +43,18 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 			},
 		},
 	});
-
 	const onRefresh = React.useCallback(async () => {
 		setRefreshing(true);
+
 		await refetch({
 			request: {
-				handle: currentProfile?.handle,
+				forProfileId: currentProfile?.id,
 			},
 		}).catch((err) => {
 			Logger.Error("Error in Refreshing error", err);
 		});
 		setRefreshing(false);
-		Logger.Warn("hellloo", Profile?.profile?.id);
+		Logger.Warn("hellloo", Profile?.profile?.metadata?.bio);
 	}, []);
 
 	if (isGuest) return <PleaseLogin />;
@@ -91,10 +91,10 @@ const ProfileScreen = ({ navigation }: RootTabScreenProps<"Account">) => {
 						name="Mirror Videos"
 						children={() => <MirroredVideos channelId={Profile?.profile?.id} />}
 					/>
-					<Tab.Screen
+					{/* <Tab.Screen
 						name="Collected Videos"
-						children={() => <CollectedVideos ethAddress={Profile?.profile?.ownedBy} />}
-					/>
+						children={() => <CollectedVideos ethAddress={Profile?.profile?.ownedBy?.address} />}
+					/> */}
 				</Tabs>
 			</SafeAreaView>
 			<UnPinSheet sheetRef={sheetRef} />

@@ -17,6 +17,8 @@ const getIPFSLink = (url: string | undefined): string => {
 		: url?.includes("ar://")
 		? `${ARWEAVE_GATEWAY}/${url?.split("ar://")[1]}`
 		: url;
+	// console.log(getImageProxyURL({formattedLink:LINK,options:{height:200,width:340}}));
+
 	return LINK;
 };
 export default getIPFSLink;

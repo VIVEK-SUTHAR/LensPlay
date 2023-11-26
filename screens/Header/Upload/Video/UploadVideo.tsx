@@ -1,5 +1,4 @@
-import Done from "assets/Icons/Done";
-import Edit from "assets/Icons/Edit";
+import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
@@ -155,7 +154,7 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 											borderRadius: 4,
 										}}
 									>
-										<Done width={48} height={48} />
+										<Icon name="done" />
 									</View>
 								) : null}
 							</Pressable>
@@ -213,7 +212,7 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 												alignItems: "center",
 											}}
 										>
-											<Done width={48} height={48} />
+											<Icon name="done" />
 										</View>
 									) : null}
 								</>
@@ -225,7 +224,7 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 									alignItems: "center",
 								}}
 							>
-								<Edit height={22} width={22} />
+								<Icon name="edit" />
 								<StyledText
 									title={"Select cover"}
 									style={{

@@ -1,32 +1,32 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { FlashList } from "@shopify/flash-list";
 import Sheet from "components/Bottom";
+import MyVideoCard, { type actionListType } from "components/common/MyVideoCard";
+import Icon from "components/Icon";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
-import MyVideoCard, { type actionListType } from "components/common/MyVideoCard";
-import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
-import Skeleton from "components/common/Skeleton";
 import { black } from "constants/Colors";
 import { SOURCES } from "constants/index";
 import {
-	PublicationMainFocus,
-	PublicationTypes,
-	useProfileCollectsQuery,
 	type Mirror,
 	type Post,
+	PublicationMainFocus,
 	type PublicationsQueryRequest,
+	PublicationTypes,
 	type Scalars,
+	useProfileCollectsQuery,
 } from "customTypes/generated";
-import useAddWatchLater from "hooks/useAddToWatchLater";
 import React from "react";
 import { ActivityIndicator, FlatList, Share, View } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import CommonStyles from "styles/index";
 import { NoVideosFound } from "./AllVideos";
-import ShareIcon from "assets/Icons/ShareIcon";
-import Delete from "assets/Icons/Delete";
-import Clock from "assets/Icons/Clock";
+import Skeleton from "components/common/Skeleton";
+import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
+import useAddWatchLater from "hooks/useAddToWatchLater";
+import useWatchLater from "store/WatchLaterStore";
+import Logger from "utils/logger";
 
 type CollectedVideosProps = {
 	ethAddress?: string;
@@ -64,7 +64,6 @@ const CollectedVideos: React.FC<CollectedVideosProps> = ({ ethAddress }) => {
 			reactionRequest: {
 				profileId: currentProfile?.id,
 			},
-			channelId: currentProfile?.id,
 		},
 		context: {
 			headers: {
@@ -199,7 +198,7 @@ export const CollectedVideoSheet = ({
 	const actionList: actionListType[] = [
 		{
 			name: "Share",
-			icon: <ShareIcon height={20} width={20} />,
+			icon: "share",
 			onPress: (pubid: Scalars["InternalPublicationId"]) => {
 				Share.share({
 					message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${pubid}`,
@@ -209,11 +208,7 @@ export const CollectedVideoSheet = ({
 		},
 		{
 			name: publication?.bookmarked ? "Remove from watch later" : "Add to watch later",
-			icon: publication?.bookmarked ? (
-				<Delete height={20} width={20} />
-			) : (
-				<Clock height={20} width={20} />
-			),
+			icon: publication?.bookmarked ? "delete" : "clock",
 			onPress: (publication) => {
 				if (publication?.bookmarked) {
 					remove(publication);
@@ -257,7 +252,7 @@ export const CollectedVideoSheet = ({
 									alignItems: "center",
 								}}
 							>
-								{item?.icon}
+								<Icon name={item.icon} color={"white"} />
 								<StyledText
 									title={item.name}
 									style={{

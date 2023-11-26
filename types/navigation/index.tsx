@@ -1,7 +1,7 @@
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import type { CompositeScreenProps, NavigatorScreenParams } from "@react-navigation/native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { Mirror, Post } from "../generated";
+import type { Mirror, Post, Profile } from "../generated";
 /**
  
  LENS-PLAY NAVIGATION STRUCTURE
@@ -102,6 +102,12 @@ export type RootStackParamList = {
 	WatchLater: undefined;
 	UploadIndicator: undefined;
 	FollowAnalytics: undefined;
+	Profiles: {
+		profiles: Profile[];
+	};
+	MyQR:undefined;
+	ProfileManager:undefined;
+	DebugScreen:undefined;
 };
 
 /**
@@ -127,6 +133,7 @@ export type RootTabParamList = {
 	Create: undefined;
 	Notifications: undefined;
 	Account: undefined;
+	Settings:undefined
 };
 
 export type UploadTabParamsList = {

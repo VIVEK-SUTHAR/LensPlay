@@ -1,42 +1,32 @@
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { type BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useFocusEffect } from "@react-navigation/native";
-import ArrowDown from "assets/Icons/ArrowDown";
 import CommentSheet from "components/Comments/CommentSheet";
-import LPImage from "components/UI/LPImage";
+import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
-import {
-	CollectButton,
-	LikeButton,
-	ReportButton,
-	ShareButton,
-	VideoCreator,
-	VideoMeta,
-} from "components/VIdeo";
-import CollectVideoSheet from "components/VIdeo/Actions/CollectVideoSheet";
-import DisLikeButton from "components/VIdeo/Actions/DisLikeButton";
+import { VideoCreator, VideoMeta } from "components/VIdeo";
 import MetaDataSheet from "components/VIdeo/Actions/MetaDataSheet";
-import MirrorButton from "components/VIdeo/Actions/MirrorButton";
 import MirrorVideoSheet from "components/VIdeo/Actions/MirrorVideoSheet";
+import VideoActions from "components/VIdeo/Actions/VideoActions";
 import MoreVideos from "components/VIdeo/MoreVideos";
 import VideoPageSkeleton from "components/VIdeo/VideoPageSkeleton";
 import VideoPlayer from "components/VideoPlayer";
 import { black } from "constants/Colors";
-import { RootStackScreenProps } from "customTypes/navigation";
+import type { HandleInfo, VideoMetadataV3 } from "customTypes/generated";
+import type { RootStackScreenProps } from "customTypes/navigation";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import {
 	BackHandler,
-	Dimensions,
 	SafeAreaView,
 	ScrollView,
 	StyleSheet,
 	TouchableOpacity,
 	View,
 } from "react-native";
-import { useActivePublication } from "store/Store";
+import { useActivePublication, useReactionStore } from "store/Store";
 import useVideoURLStore from "store/videoURL";
-import getImageProxyURL from "utils/getImageProxyURL";
+import formatHandle from "utils/formatHandle";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
@@ -45,56 +35,61 @@ import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
-	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
+	const [inFullscreen, setInFullsreen] = React.useState<boolean>(false);
 	const { activePublication } = useActivePublication();
-	const [isMute, setIsMute] = useState<boolean>(false);
+
+	const handleBlur = React.useCallback(() => {
+		setVideoURI("");
+		clearStats();
+		setCollectStats(false, 0);
+		setMirrorStats(false, 0);
+	}, []);
 
 	React.useEffect(() => {
 		const delay = setTimeout(() => {
 			setIsReadyToRender(true);
-		}, 100);
-		return () => clearTimeout(delay);
+		}, 50);
+		const blurSubscription = navigation.addListener("blur", handleBlur);
+		const handler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+
+		//Clean-Up Listeners
+		return () => {
+			clearTimeout(delay);
+			blurSubscription();
+			handler.remove();
+		};
 	}, [activePublication]);
 
+	const { clearStats, setCollectStats, setMirrorStats } = useReactionStore();
 	const handleBackButtonClick = React.useCallback(() => {
 		setStatusBarHidden(false, "fade");
 		setInFullsreen(!inFullscreen);
 		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
 		if (!inFullscreen) {
 			navigation.goBack();
+			clearStats();
+			setCollectStats(false, 0);
+			setMirrorStats(false, 0);
 		}
 		return true;
 	}, [navigation]);
 
-	const handleBlur = React.useCallback(() => {
-		setVideoURI("");
-	}, []);
-
-	navigation.addListener("blur", handleBlur);
-
-	useEffect(() => {
-		const handler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
-		return () => {
-			handler.remove();
-		};
-	}, []);
-
-	const collectRef = useRef<BottomSheetMethods>(null);
-	const mirrorRef = useRef<BottomSheetMethods>(null);
-	const descRef = useRef<BottomSheetMethods>(null);
-	const commentRef = useRef<BottomSheetMethods>(null);
+	const collectRef = React.useRef<BottomSheetMethods>(null);
+	const mirrorRef = React.useRef<BottomSheetMethods>(null);
+	const descRef = React.useRef<BottomSheetMethods>(null);
+	const commentRef = React.useRef<BottomSheetMethods>(null);
 
 	const openCommentSheet = () => commentRef?.current?.snapToIndex(0);
 
-	const LENS_MEDIA_URL = activePublication?.metadata?.media[0]?.original?.url;
+	const metadata = activePublication?.metadata as VideoMetadataV3;
+
 	const { setVideoURI, uri } = useVideoURLStore();
 
+	const LENS_MEDIA_URL = metadata?.asset?.video?.raw?.uri;
 	useFocusEffect(
 		React.useCallback(() => {
-			if (
-				activePublication?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")
-			) {
-				setVideoURI(activePublication?.metadata?.media[0]?.optimized?.url);
+			if (metadata.asset?.video?.optimized?.uri?.includes("https://lp-playback.com")) {
+				setVideoURI(metadata.asset?.video?.optimized?.uri);
 				return;
 			}
 			checkIfLivePeerAsset(LENS_MEDIA_URL).then((res) => {
@@ -116,61 +111,29 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 
 	return (
 		<>
-			<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-				{uri.length > 0 ? (
-					<VideoPlayer
-						poster={getRawurl(activePublication?.metadata?.cover)}
-						title={activePublication?.metadata?.name || ""}
-						url={uri}
-						inFullscreen={inFullscreen}
-						isMute={isMute}
-						setInFullscreen={setInFullsreen}
-						setIsMute={setIsMute}
-					/>
-				) : (
-					<LPImage
-						source={{
-							uri: getImageProxyURL({
-								formattedLink: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
-							}),
-						}}
-						style={{
-							width: inFullscreen
-								? Dimensions.get("screen").height
-								: Dimensions.get("screen").width,
-							height: inFullscreen ? Dimensions.get("screen").width : 250,
-						}}
-					/>
-				)}
+			<SafeAreaView style={styles.container}>
+				<VideoPlayer
+					poster={getIPFSLink(getRawurl(metadata?.asset?.cover))}
+					title={metadata?.title || ""}
+					url={uri}
+					inFullscreen={inFullscreen}
+					setInFullscreen={setInFullsreen}
+				/>
 				<ScrollView>
-					<View style={{ paddingHorizontal: 8, marginTop: 24, marginBottom: 16 }}>
-						<VideoMeta
-							title={activePublication?.metadata?.name}
-							description={activePublication?.metadata?.description}
-							descRef={descRef}
+					<View style={styles.videoMetadataContainer}>
+						<VideoMeta title={metadata?.title} description={metadata?.content} descRef={descRef} />
+						<VideoCreator
+							profileId={activePublication?.by?.id}
+							avatarLink={getRawurl(activePublication?.by?.metadata?.picture)}
+							uploadedBy={
+								activePublication?.by?.metadata?.displayName ||
+								formatHandle(activePublication?.by?.handle as HandleInfo)
+							}
+							alreadyFollowing={activePublication?.by?.operations?.isFollowedByMe?.value || false}
 						/>
-						<VideoCreator profile={activePublication?.profile} />
 					</View>
-					<ScrollView
-						style={{
-							marginBottom: 16,
-							marginStart: 4,
-						}}
-						horizontal={true}
-						showsHorizontalScrollIndicator={false}
-					>
-						<LikeButton />
-						<DisLikeButton />
-						<MirrorButton mirrorRef={mirrorRef} />
-						<CollectButton collectRef={collectRef} />
-						<ShareButton />
-						<ReportButton />
-					</ScrollView>
-					<View
-						style={{
-							marginHorizontal: 8,
-						}}
-					>
+					<VideoActions mirrorRef={mirrorRef} />
+					<View style={styles.commentsTitleContainer}>
 						<TouchableOpacity
 							style={styles.commentsContainer}
 							onPress={openCommentSheet}
@@ -184,7 +147,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 									color: "white",
 								}}
 							/>
-							<ArrowDown color="white" height={16} width={16} />
+							<Icon name="arrowDown" color="white" size={16} />
 						</TouchableOpacity>
 					</View>
 					<MoreVideos />
@@ -192,8 +155,8 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 			</SafeAreaView>
 			<CommentSheet commentSheetRef={commentRef} />
 			<MetaDataSheet sheetRef={descRef} />
-			<CollectVideoSheet sheetRef={collectRef} />
 			<MirrorVideoSheet sheetRef={mirrorRef} />
+			{/* <CollectVideoSheet sheetRef={collectRef} /> */}
 		</>
 	);
 };
@@ -201,6 +164,19 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 export default VideoPage;
 
 const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: "black",
+	},
+	videoMetadataContainer: {
+		paddingHorizontal: 8,
+		marginTop: 24,
+		marginBottom: 16,
+	},
+
+	commentsTitleContainer: {
+		marginHorizontal: 8,
+	},
 	commentsContainer: {
 		backgroundColor: black[600],
 		padding: 12,

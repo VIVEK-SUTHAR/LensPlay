@@ -1,36 +1,26 @@
+import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
-import { primary, white } from "constants/Colors";
+import { primary } from "constants/Colors";
 import { ResizeMode, Video } from "expo-av";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
-import React, { MutableRefObject, useRef } from "react";
+import React, { MutableRefObject, useRef, useState } from "react";
 import { Dimensions, Platform, View } from "react-native";
 import { useThemeStore } from "store/Store";
 import getIPFSLink from "utils/getIPFSLink";
 import Logger from "utils/logger";
 import Player from "./Player";
-import Play from "assets/Icons/Play";
-import Pause from "assets/Icons/Pause";
-import Replay from "assets/Icons/Replay";
 
 interface VideoPlayerProps {
 	url: string;
 	poster?: string;
 	inFullscreen?: boolean;
 	title: string;
-	isMute: boolean;
+	
 	isSliderVisible?: boolean;
 	loop?: boolean;
 	setInFullscreen?: React.Dispatch<React.SetStateAction<boolean>>;
-	setIsMute: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
-Dimensions.addEventListener("change", (data) => {
-	console.log("Screen Height", data.screen.height);
-	console.log("Screen Width", data.screen.width);
-	console.log("Window Width", data.window.height);
-	console.log("Height Width", data.window.width);
-});
 
 function VideoPlayer({
 	inFullscreen,
@@ -39,15 +29,13 @@ function VideoPlayer({
 	isSliderVisible = true,
 	loop = false,
 	url,
-	isMute,
 	setInFullscreen,
-	setIsMute,
 }: VideoPlayerProps) {
 	const videoRef = useRef<Video>();
 	const { PRIMARY } = useThemeStore();
 	Logger.Log("IN FULLSCREEN", inFullscreen);
 	const isAndroid = Platform.OS === "android";
-
+	const [isMute, setisMute] = useState(false)
 	return (
 		<Player
 			style={{
@@ -62,19 +50,19 @@ function VideoPlayer({
 			}}
 			activityIndicator={{
 				size: "large",
-				color: white[800],
+				color: primary,
 			}}
 			slider={{
 				visible: isSliderVisible,
 				thumbTintColor: "white",
 				maximumTrackTintColor: "white",
-				minimumTrackTintColor: white[800],
+				minimumTrackTintColor: primary,
 			}}
 			icon={{
 				size: 48,
-				play: <Play height={48} width={48} color={white[800]} />,
-				pause: <Pause height={48} width={48} color={white[800]} />,
-				replay: <Replay height={48} width={48} color={white[800]} />,
+				play: <Icon name="play" size={48} color={PRIMARY} />,
+				pause: <Icon name="pause" size={52} color={PRIMARY} />,
+				replay: <Icon name="replay" color={PRIMARY} size={48} />,
 			}}
 			header={
 				<View
@@ -134,10 +122,10 @@ function VideoPlayer({
 				},
 			}}
 			mute={{
-				enterMute: () => setIsMute(!isMute),
-				exitMute: () => setIsMute(!isMute),
+				enterMute: () => setisMute(prev=>!prev),
+				exitMute: () => setisMute(prev=>!prev),
 				isMute,
-				visible: false,
+				visible: true,
 			}}
 		/>
 	);

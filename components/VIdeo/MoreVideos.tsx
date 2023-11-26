@@ -6,11 +6,13 @@ import VideoCardSkeleton from "components/UI/VideoCardSkeleton";
 import VideoCard from "components/VideoCard";
 import { SOURCES } from "constants/index";
 import {
+	HandleInfo,
+	LimitType,
 	Post,
-	PublicationMainFocus,
-	PublicationsQueryRequest,
-	PublicationTypes,
-	useProfilePostsQuery,
+	PublicationMetadataMainFocusType,
+	PublicationsRequest,
+	usePublicationQuery,
+	usePublicationsQuery,
 } from "customTypes/generated";
 import React from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
@@ -20,17 +22,16 @@ import formatHandle from "utils/formatHandle";
 const MoreVideos = () => {
 	const { activePublication } = useActivePublication();
 	const title =
-		activePublication?.profile?.name || formatHandle(activePublication?.profile?.handle);
+		activePublication?.by?.metadata?.displayName ||
+		formatHandle(activePublication?.by?.handle as HandleInfo);
 	return (
 		<View style={styles.moreVideosHeader}>
 			<StyledText
 				title={`More Videos by ${title}`}
 				style={{
-					fontSize: 16,
-					fontWeight: "600",
+					fontSize: 20,
+					fontWeight: "700",
 					color: "white",
-					paddingHorizontal: 12,
-					marginBottom: 8,
 				}}
 				numberOfLines={1}
 			/>
@@ -45,28 +46,22 @@ const MoreVideosList = React.memo(() => {
 	const { accessToken } = useAuthStore();
 	const { PRIMARY } = useThemeStore();
 
-	const renderItem = React.useCallback(({ item }: { item: Post }) => {
-		if (item.id === activePublication?.id) return null;
-		return <VideoCard publication={item} id={item.id} />;
-	}, []);
-
-	const QueryRequest: PublicationsQueryRequest = {
-		profileId: activePublication?.profile?.id,
-		publicationTypes: [PublicationTypes.Post],
-		metadata: {
-			mainContentFocus: [PublicationMainFocus.Video],
+	const QueryRequest: PublicationsRequest = {
+		where: {
+			from: activePublication?.by?.id,
+			metadata: {
+				mainContentFocus: [
+					PublicationMetadataMainFocusType.Video,
+					PublicationMetadataMainFocusType.ShortVideo,
+				],
+			},
 		},
-		sources: SOURCES,
-		limit: 5,
+		limit: LimitType.Ten,
 	};
 
-	const { data, loading, fetchMore } = useProfilePostsQuery({
+	const { data, loading, fetchMore } = usePublicationsQuery({
 		variables: {
 			request: QueryRequest,
-			reactionRequest: {
-				profileId: currentProfile?.id,
-			},
-			channelId: currentProfile?.id,
 		},
 		initialFetchPolicy: "no-cache",
 		fetchPolicy: "no-cache",
@@ -120,6 +115,11 @@ const MoreVideosList = React.memo(() => {
 		}).catch((err) => {});
 	}, [pageInfo?.next]);
 
+	const renderItem = React.useCallback(({ item }: { item: Post }) => {
+		if (item.id === activePublication?.id) return null;
+		return <VideoCard publication={item} id={item.id} />;
+	}, []);
+
 	if (loading)
 		return (
 			<View style={{ paddingHorizontal: 8, backgroundColor: "black" }}>
@@ -139,6 +139,9 @@ const MoreVideosList = React.memo(() => {
 				estimatedItemSize={110}
 				showsVerticalScrollIndicator={false}
 				renderItem={renderItem}
+				onEndReachedThreshold={0.2}
+				onEndReached={onEndCallBack}
+				ListFooterComponent={MoreLoader}
 			/>
 		</View>
 	);
@@ -148,6 +151,7 @@ export default React.memo(MoreVideos);
 
 const styles = StyleSheet.create({
 	moreVideosHeader: {
-		marginVertical: 16,
+		paddingHorizontal: 12,
+		marginVertical: 8,
 	},
 });

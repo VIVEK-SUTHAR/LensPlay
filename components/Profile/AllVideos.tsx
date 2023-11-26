@@ -1,13 +1,10 @@
 import type { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { FlashList } from "@shopify/flash-list";
-import Clock from "assets/Icons/Clock";
-import Delete from "assets/Icons/Delete";
-import Pin from "assets/Icons/Pin";
-import ShareIcon from "assets/Icons/ShareIcon";
 import Sheet from "components/Bottom";
 import MyVideoCard, { actionListType, SheetProps } from "components/common/MyVideoCard";
 import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
 import Skeleton from "components/common/Skeleton";
+import Icon from "components/Icon";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
 import DeleteVideo from "components/VIdeo/DeleteVideo";
@@ -16,17 +13,16 @@ import { black } from "constants/Colors";
 import { LENSPLAY_SITE, SOURCES } from "constants/index";
 import { PUBLICATION } from "constants/tracking";
 import {
-	Attribute,
+	LimitType,
+	MarketplaceMetadataAttributeDisplayType,
 	Mirror,
 	Post,
-	Publication,
-	PublicationMainFocus,
-	PublicationMetadataDisplayTypes,
-	PublicationsQueryRequest,
-	PublicationTypes,
+	PublicationMetadataMainFocusType,
+	PublicationsRequest,
+	PublicationType,
 	Scalars,
-	useCreateSetProfileMetadataViaDispatcherMutation,
-	useProfilePostsQuery,
+	usePublicationsQuery,
+	useSetProfileMetadataMutation,
 } from "customTypes/generated";
 import type { ProfileMetaDataV1nput } from "customTypes/index";
 import useAddWatchLater from "hooks/useAddToWatchLater";
@@ -57,23 +53,21 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 		setPublication(publication);
 	}, []);
 
-	const QueryRequest: PublicationsQueryRequest = {
-		profileId: profileId ? profileId : currentProfile?.id,
-		publicationTypes: [PublicationTypes.Post],
-		metadata: {
-			mainContentFocus: [PublicationMainFocus.Video],
+	const QueryRequest: PublicationsRequest = {
+		limit: LimitType.Ten,
+		where: {
+			from: [profileId],
+			metadata: {
+				mainContentFocus: [PublicationMetadataMainFocusType.Video],
+				publishedOn: SOURCES,
+			},
+			publicationTypes: [PublicationType.Post],
 		},
-		sources: SOURCES,
-		limit: 10,
 	};
 
-	const { data, error, loading, refetch, fetchMore } = useProfilePostsQuery({
+	const { data, error, loading, refetch, fetchMore } = usePublicationsQuery({
 		variables: {
 			request: QueryRequest,
-			reactionRequest: {
-				profileId: currentProfile?.id,
-			},
-			channelId: currentProfile?.id,
 		},
 		context: {
 			headers: {
@@ -81,7 +75,7 @@ const AllVideos: React.FC<AllVideosProps> = ({ ethAddress, profileId }) => {
 			},
 		},
 	});
-	const AllVideos = data?.publications?.items;
+	const AllVideos = data?.publications?.items as Post[];
 
 	const pageInfo = data?.publications?.pageInfo;
 
@@ -201,27 +195,24 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 	// const PlaylistSheetRef = React.useRef<BottomSheetMethods>(null);
 
 	const pinStore = usePinStore();
-	const [createSetProfileMetadataViaDispatcherMutation] =
-		useCreateSetProfileMetadataViaDispatcherMutation({
-			onCompleted: () => {
-				toast.success("Video pinned successfully !");
-				void TrackAction(PUBLICATION.PIN_PUBLICATION);
-			},
-			onError: () => {
-				toast.error("Some error occured please try again");
-			},
-		});
+	const [SetProfileMetadataMutation] = useSetProfileMetadataMutation({
+		onCompleted: () => {
+			toast.success("Video pinned successfully");
+			void TrackAction(PUBLICATION.PIN_PUBLICATION);
+		},
+		onError: () => {
+			toast.error("Some error occured please try again");
+		},
+	});
 
 	const pinPublication = async () => {
-		const attr = currentProfile?.attributes;
+		const attr = currentProfile?.metadata?.attributes;
 		let attrs;
-		const isAlreadyPinned = attr?.find(
-			(attr) => attr.traitType === "pinnedPublicationId" || attr.key === "pinnedPublicationId"
-		);
+		const isAlreadyPinned = attr?.find((attr) => attr.key === "pinnedPublicationId");
 		if (!isAlreadyPinned) {
 			const newAttribute = {
 				__typename: "Attribute",
-				displayType: PublicationMetadataDisplayTypes.String,
+				displayType: MarketplaceMetadataAttributeDisplayType.String,
 				traitType: "pinnedPublicationId",
 				key: "pinnedPublicationId",
 				value: publication?.id,
@@ -235,19 +226,18 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 		const newMetaData: ProfileMetaDataV1nput = {
 			version: "1.0.0",
 			metadata_id: uuidV4(),
-			name: currentProfile?.name || "",
-			bio: currentProfile?.bio || "",
-			cover_picture: getRawurl(currentProfile?.coverPicture),
+			name: currentProfile?.metadata?.displayName || "",
+			bio: currentProfile?.metadata?.bio || "",
+			cover_picture: getRawurl(currentProfile?.metadata?.coverPicture),
 			attributes: isAlreadyPinned ? attr : (attrs as Attribute[]),
 		};
 		pinStore.setHasPinned(true);
 		pinStore.setPinnedPubId(publication?.id);
 		const hash = await uploadToArweave(newMetaData);
-		createSetProfileMetadataViaDispatcherMutation({
+		SetProfileMetadataMutation({
 			variables: {
 				request: {
-					metadata: `ar://${hash}`,
-					profileId: currentProfile?.id,
+					metadataURI: `ar://${hash}`,
 				},
 			},
 			context: {
@@ -262,8 +252,8 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 	const actionList: actionListType[] = [
 		{
 			name: "Pin this video to your channel",
-			icon: <Pin height={20} width={20} />,
-			onPress: (pubid: Scalars["InternalPublicationId"]) => {
+			icon: "pin",
+			onPress: (pubid: Scalars["PublicationId"]) => {
 				pinPublication();
 			},
 		},
@@ -276,8 +266,8 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 		// },
 		{
 			name: "Share",
-			icon: <ShareIcon height={20} width={20} />,
-			onPress: (pubid: Scalars["InternalPublicationId"]) => {
+			icon: "share",
+			onPress: (pubid: Scalars["PublicationId"]) => {
 				Share.share({
 					message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${pubid}`,
 					title: "Watch video on LensPlay",
@@ -286,8 +276,8 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 		},
 		{
 			name: "Delete",
-			icon: <Delete height={20} width={20} />,
-			onPress: (pubid: Scalars["InternalPublicationId"]) => {
+			icon: "delete",
+			onPress: (pubid: Scalars["PublicationId"]) => {
 				sheetRef.current?.close();
 				deleteRef.current?.snapToIndex(0);
 			},
@@ -297,8 +287,8 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 	const channelActionList: actionListType[] = [
 		{
 			name: "Share",
-			icon: <ShareIcon height={20} width={20} />,
-			onPress: (pubid: Scalars["InternalPublicationId"]) => {
+			icon: "share",
+			onPress: (pubid: Scalars["PublicationId"]) => {
 				Share.share({
 					message: `Let's watch this amazing video on LensPlay, Here's link, https://lensplay.xyz/watch/${pubid}`,
 					title: "Watch video on LensPlay",
@@ -306,12 +296,18 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 			},
 		},
 		{
-			name: publication?.bookmarked ? "Remove from watch later" : "Add to watch later",
-			icon: publication?.bookmarked ? (
-				<Delete height={20} width={20} />
-			) : (
-				<Clock height={20} width={20} />
-			),
+			name:
+				publication?.__typename === "Post"
+					? publication?.operations?.hasBookmarked
+						? "Remove from watch later"
+						: "Add to watch later"
+					: "clock",
+			icon:
+				publication?.__typename === "Post"
+					? publication?.operations?.hasBookmarked
+						? "delete"
+						: "clock"
+					: "clock",
 			onPress: (publication) => {
 				if (publication?.bookmarked) {
 					remove(publication);
@@ -358,7 +354,7 @@ export const AllVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) 
 										alignItems: "center",
 									}}
 								>
-									{item?.icon}
+									<Icon name={item.icon} color={"white"} />
 									<StyledText
 										title={item.name}
 										style={{

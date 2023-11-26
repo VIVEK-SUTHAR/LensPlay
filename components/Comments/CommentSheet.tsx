@@ -10,11 +10,11 @@ import { BottomSheetFooter, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetDefaultFooterProps } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetFooter/types";
 import { Pressable, View } from "react-native";
 import Heading from "components/UI/Heading";
-import Close from "assets/Icons/Close";
+import Icon from "components/Icon";
 
 type CommentsSheetProps = {
 	commentSheetRef: React.RefObject<BottomSheetMethods>;
-	pubId?: Scalars["InternalPublicationId"];
+	pubId?: Scalars["PublicationId"];
 };
 
 const CommentsSheet = ({ commentSheetRef, pubId }: CommentsSheetProps) => {
@@ -34,6 +34,7 @@ const CommentsSheet = ({ commentSheetRef, pubId }: CommentsSheetProps) => {
 			ref={commentSheetRef}
 			snapPoints={["75%", "95%"]}
 			android_keyboardInputMode="adjustResize"
+			enableDynamicSizing={true}
 			index={-1}
 			enablePanDownToClose={true}
 			backgroundStyle={{
@@ -65,7 +66,7 @@ const CommentsSheet = ({ commentSheetRef, pubId }: CommentsSheetProps) => {
 						commentSheetRef?.current?.close();
 					}}
 				>
-					<Close height={20} width={20} />
+					<Icon name="close" size={16} />
 				</Pressable>
 			</View>
 			<BottomSheetScrollView>

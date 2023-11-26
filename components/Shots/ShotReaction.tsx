@@ -1,56 +1,51 @@
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useNavigation } from "@react-navigation/native";
 import Sheet from "components/Bottom";
+import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
+import { LikeButton } from "components/VIdeo";
 import { black, primary, white } from "constants/Colors";
-import { PUBLICATION } from "constants/tracking";
-import { ToastType } from "customTypes/Store";
+import { LENSPLAY_SITE } from "constants/index";
+import { PUBLICATION, SHOT } from "constants/tracking";
+import { useProxyActionMutation } from "customTypes/generated";
 import { ShotsPublication } from "customTypes/index";
+import { ToastType } from "customTypes/Store";
 import { Image } from "expo-image";
-import useCollect from "hooks/reactions/useCollect";
 import React, { useRef, useState } from "react";
 import { Pressable, Share, Text, TouchableOpacity, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
-import { useThemeStore, useToast } from "store/Store";
-import TrackAction from "utils/Track";
+import { useAuthStore, useThemeStore, useToast } from "store/Store";
 import getIPFSLink from "utils/getIPFSLink";
 import getPlaceHolderImage from "utils/getPlaceHolder";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
-import ShotLikeButton from "./Reaction/ShotLikeButton";
-import ShareIcon from "assets/Icons/ShareIcon";
-import Collect from "assets/Icons/Collect";
-import Close from "assets/Icons/Close";
-import CommentIcon from "assets/Icons/Comment";
-import Info from "assets/Icons/Info";
+import TrackAction from "utils/Track";
 
 function ShotReaction({ item, commentRef }: ShotsPublication) {
-	const [totalCollects, setTotalCollects] = useState<number>(item?.stats?.totalAmountOfCollects);
-	const [collected, setCollected] = useState<boolean>(item?.hasCollectedByMe);
+	const [totalCollects, setTotalCollects] = useState<number>(item?.stats?.countOpenActions);
 	const collectSheetRef = useRef<BottomSheetMethods>(null);
 	const bottomTabBarHeight = useBottomTabBarHeight();
+	const navigation = useNavigation();
 	const { PRIMARY } = useThemeStore();
+	const { accessToken } = useAuthStore();
 	const toast = useToast();
 	const { isGuest } = useGuestStore();
-	const { collectPublication } = useCollect();
 
-	const handleCollect = React.useCallback(async () => {
+	const collectPublication = React.useCallback(async () => {
 		try {
 			if (isGuest) {
 				toast.show("Please Login", ToastType.ERROR, true);
 				return;
 			}
-			if (collected) {
+			if (item?.operations?.hasActed) {
 				toast.show("You have already collected the video", ToastType.ERROR, true);
 				return;
 			}
-			setCollected(true);
-			setTotalCollects(totalCollects + 1);
-			await collectPublication(item);
 		} catch (error) {
 			if (error instanceof Error) {
 				Logger.Log(error.message);
@@ -63,7 +58,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 	const shareVideo = React.useCallback(async () => {
 		try {
 			const result = await Share.share({
-				message: `Let's watch ${item?.metadata?.name} on LensPlay, here's link, https://lensplay.xyz/watch/${item?.id}
+				message: `Let's watch ${item?.metadata?.title} on LensPlay, here's link, https://lensplay.xyz/watch/${item?.id}
         `,
 			});
 			TrackAction(PUBLICATION.SHARE);
@@ -85,7 +80,13 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 					alignItems: "center",
 				}}
 			>
-				<ShotLikeButton publication={item} />
+				<LikeButton
+					like={item?.stats?.reactions}
+					id={item?.id}
+					isalreadyLiked={item?.operations?.upvote}
+					bytes={true}
+					shotPublication={item}
+				/>
 				<TouchableOpacity
 					style={{
 						padding: 10,
@@ -97,10 +98,10 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 						commentRef?.current?.snapToIndex(0);
 					}}
 				>
-					<CommentIcon width={32} height={32} />
-					<Text style={{ color: "white" }}>{item?.stats?.totalAmountOfComments}</Text>
+					<Icon name="comment" size={32} />
+					<Text style={{ color: "white" }}>{item?.stats?.comments}</Text>
 				</TouchableOpacity>
-				<TouchableOpacity
+				{/* <TouchableOpacity
 					style={{
 						padding: 10,
 						justifyContent: "center",
@@ -112,9 +113,9 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 							: handleSheet();
 					}}
 				>
-					<Collect color={collected ? PRIMARY : "white"} height={28} width={28} />
+					<Icon name="collect" color={collected ? PRIMARY : "white"} size={28} />
 					<Text style={{ color: collected ? PRIMARY : "white" }}>{totalCollects}</Text>
-				</TouchableOpacity>
+				</TouchableOpacity> */}
 				<TouchableOpacity
 					style={{
 						padding: 10,
@@ -124,7 +125,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 					}}
 					onPress={shareVideo}
 				>
-					<ShareIcon height={28} width={28} />
+					<Icon name="share" size={28} />
 				</TouchableOpacity>
 			</View>
 			<Sheet
@@ -162,7 +163,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 								collectSheetRef?.current?.close();
 							}}
 						>
-							<Close height={20} width={20} />
+							<Icon name="close" size={16} />
 						</Pressable>
 					</View>
 					<View
@@ -185,7 +186,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 						>
 							<Image
 								source={{
-									uri: getIPFSLink(getRawurl(item?.metadata?.cover)),
+									uri: getIPFSLink(getRawurl(item?.metadata?.asset?.cover)),
 								}}
 								placeholder={getPlaceHolderImage()}
 								transition={500}
@@ -198,7 +199,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 								contentFit="cover"
 							/>
 							<StyledText
-								title={item?.metadata?.name}
+								title={item?.metadata?.title}
 								style={{
 									fontSize: 20,
 									color: white[800],
@@ -215,7 +216,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 								alignItems: "center",
 							}}
 						>
-							<Info color={black[100]} height={20} width={20} />
+							<Icon name="info" color={black[100]} size={16} />
 							<StyledText
 								title={"This video is free to collect"}
 								style={{
@@ -245,7 +246,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 									marginTop: 8,
 								}}
 							>
-								<Avatar src={getRawurl(item?.profile?.picture)} height={40} width={40} />
+								<Avatar src={getRawurl(item?.by?.metadata?.picture)} height={40} width={40} />
 							</View>
 						</View>
 						<View
@@ -262,7 +263,7 @@ function ShotReaction({ item, commentRef }: ShotsPublication) {
 									textAlign: "center",
 								}}
 								bg={primary}
-								onPress={handleCollect}
+								onPress={collectPublication}
 							/>
 						</View>
 					</BottomSheetScrollView>

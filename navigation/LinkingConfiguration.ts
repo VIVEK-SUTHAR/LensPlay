@@ -1,7 +1,7 @@
 import { LinkingOptions } from "@react-navigation/native";
 import * as Linking from "expo-linking";
 
-import { RootStackParamList } from "customTypes/navigation/types";
+import { RootStackParamList } from "customTypes/navigation";
 
 const linkingConfig: LinkingOptions<RootStackParamList> = {
 	prefixes: [

@@ -1,10 +1,10 @@
+import Icon from "components/Icon";
 import React from "react";
 import { Dimensions, Pressable, ScrollView, View } from "react-native";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import VideoCardSkeleton from "components/UI/VideoCardSkeleton";
 import { white } from "constants/Colors";
-import Pin from "assets/Icons/Pin";
 
 const ProfileSkeleton = () => {
 	return (
@@ -151,7 +151,7 @@ const ProfileSkeleton = () => {
 							marginTop: 4,
 						}}
 					>
-						<Pin height={12} width={12} color={white[200]} />
+						<Icon name="pin" size={12} color={white[200]} />
 						<StyledText
 							title="Pinned video"
 							style={{

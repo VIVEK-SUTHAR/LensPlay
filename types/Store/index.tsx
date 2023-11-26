@@ -1,5 +1,5 @@
 import { CollectModuleType } from "../../utils/getCollectModule";
-import { FeedItemRoot, Maybe, Mirror, Post, Profile } from "../generated";
+import { Maybe, PrimaryPublication, Profile } from "../generated";
 
 export interface IAuthStore {
 	accessToken: string;
@@ -18,8 +18,8 @@ export interface IThemeStore {
 }
 
 export interface IActivePublication {
-	activePublication: Post | Mirror | FeedItemRoot | null;
-	setActivePublication: (newPublication: Post | Mirror | FeedItemRoot) => void;
+	activePublication: PrimaryPublication | null;
+	setActivePublication: (newPublication: PrimaryPublication) => void;
 }
 
 export interface UserStore {
@@ -45,6 +45,19 @@ export enum ToastType {
 	SUCCESS = "SUCCESS",
 	ERROR = "ERROR",
 	INFO = "INFO",
+}
+export interface IReactionStore {
+	reaction: boolean;
+	videopageStats: videoPageStatsObject;
+	collectStats: collectStatsObject;
+	mirrorStats: mirrorStatsObject;
+	setReaction: (reaction: boolean) => void;
+	setVideoPageStats: (isLiked: boolean, isDisliked: boolean, likeCount: number) => void;
+	setCollectStats: (isCollected: boolean, collectCount: number) => void;
+	setMirrorStats: (isMirrored: boolean, mirrorCount: number) => void;
+	clearStats: () => void;
+	likedComments: DisLikeObject[];
+	addToLikedComments: (commentId: string) => void;
 }
 
 export interface ICommentStore {
@@ -146,4 +159,9 @@ export interface IUploadStore {
 export interface INetWorkStore {
 	isOffline: boolean;
 	setIsOffline: (newState: boolean) => void;
+}
+
+export type ActiveVideoFilterStore={
+	activeFilter:string;
+	setActiveFilters:(newFilter:string)=>void,
 }

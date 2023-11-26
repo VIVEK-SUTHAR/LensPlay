@@ -1,37 +1,36 @@
-import { ApolloCache } from "@apollo/client";
 import cache from "apollo/cache";
 import {
-	FeedItemRoot,
-	Mirror,
-	Post,
-	ReactionTypes,
+	type PrimaryPublication,
+	PublicationReactionType,
 	useAddReactionMutation,
 	useRemoveReactionMutation,
 } from "customTypes/generated";
-import { useAuthStore, useProfile } from "store/Store";
+import { useAuthStore } from "store/Store";
+
 import Logger from "utils/logger";
 
 export default function useDisLike() {
-	const { currentProfile } = useProfile();
 	const { accessToken } = useAuthStore();
 
 	const [addReaction] = useAddReactionMutation();
 	const [removeReaction] = useRemoveReactionMutation();
 
 	const updateCache = (
-		type: ReactionTypes.Downvote | null,
-		publication: Post | Mirror | FeedItemRoot
+		type: PublicationReactionType.Downvote | null,
+		publication: PrimaryPublication
 	) => {
 		try {
 			cache.modify({
 				id: cache.identify(publication as any),
 				fields: {
-					reaction() {
+					operations: (existingValue) => {
 						if (type) {
-							return ReactionTypes.Downvote;
-						} else {
-							return null;
+							return { ...existingValue, downvote: true };
 						}
+						return { ...existingValue, downvote: false };
+					},
+					stats: (existingValue) => {
+						return { ...existingValue, reactions: existingValue + 1 };
 					},
 				},
 			});
@@ -40,14 +39,13 @@ export default function useDisLike() {
 		}
 	};
 
-	const addDisLike = async (publication: Post | Mirror | FeedItemRoot) => {
-		updateCache(ReactionTypes.Downvote, publication);
+	const addDisLike = async (publication: PrimaryPublication) => {
+		updateCache(PublicationReactionType.Downvote, publication);
 		void addReaction({
 			variables: {
 				request: {
-					profileId: currentProfile?.id,
-					reaction: ReactionTypes.Downvote,
-					publicationId: publication?.id,
+					for: publication?.id,
+					reaction: PublicationReactionType.Downvote,
 				},
 			},
 			context: {
@@ -58,14 +56,13 @@ export default function useDisLike() {
 		});
 	};
 
-	const removeDisLike = async (publication: Post | Mirror | FeedItemRoot) => {
+	const removeDisLike = async (publication: PrimaryPublication) => {
 		updateCache(null, publication);
 		void removeReaction({
 			variables: {
 				request: {
-					profileId: currentProfile?.id,
-					reaction: ReactionTypes.Downvote,
-					publicationId: publication?.id,
+					for: publication?.id,
+					reaction: PublicationReactionType.Upvote,
 				},
 			},
 			context: {

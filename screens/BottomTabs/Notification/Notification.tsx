@@ -9,60 +9,61 @@ import Tabs, { Tab } from "components/UI/Tabs";
 import { RootTabScreenProps } from "customTypes/navigation";
 import TrackAction from "utils/Track";
 import { NOTIFICATION } from "constants/tracking";
+import QuoteNotification from "components/Notifications/Tabs/QuoteNotification";
 
 type NotificationTabsType = {
-  name: string;
-  component: React.ReactNode;
+	name: string;
+	component: React.ReactNode;
 };
 
 const NotificationTabs: NotificationTabsType[] = [
-  {
-    name: "All",
-    component: <AllNotifications />,
-  },
-  {
-    name: "Collect",
-    component: <CollectNotifications />,
-  },
-  {
-    name: "Comment",
-    component: <CommentNotifications />,
-  },
-  {
-    name: "Follow",
-    component: <FollowNotifications />,
-  },
-  {
-    name: "Mention",
-    component: <MentionNotifications />,
-  },
+	{
+		name: "All",
+		component: <AllNotifications />,
+	},
+	{
+		name: "Collect",
+		component: <CollectNotifications />,
+	},
+	{
+		name: "Comment",
+		component: <CommentNotifications />,
+	},
+	{
+		name: "Follow",
+		component: <FollowNotifications />,
+	},
+	{
+		name: "Mention",
+		component: <MentionNotifications />,
+	},
 ];
 
 const Notifications = ({ navigation }: RootTabScreenProps<"Notifications">) => {
-  TrackAction(NOTIFICATION.NOTIFICATIONS);
-  return (
-    <SafeAreaView style={styles.container}>
-      <Tabs>
-        {NotificationTabs.map((tab, index) => (
-          <Tab.Screen
-            name={tab.name}
-            key={index}
-            listeners={{
-              focus: () => {},
-            }}
-            children={() => <>{tab.component}</>}
-          />
-        ))}
-      </Tabs>
-    </SafeAreaView>
-  );
+	TrackAction(NOTIFICATION.NOTIFICATIONS);
+	return (
+		<SafeAreaView style={styles.container}>
+			<Tabs>
+				{NotificationTabs.map((tab, index) => (
+					<Tab.Screen
+						name={tab.name}
+						key={index}
+						listeners={{
+							focus: () => {},
+						}}
+						children={() => <>{tab.component}</>}
+					/>
+				))}
+			</Tabs>
+		</SafeAreaView>
+	);
 };
 
 export default Notifications;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "black",
-  },
+	container: {
+		flex: 1,
+		backgroundColor: "black",
+	},
 });

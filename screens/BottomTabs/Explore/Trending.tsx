@@ -3,78 +3,80 @@ import { useEffect, useState } from "react";
 import {
 	ActivityIndicator,
 	Dimensions,
-	FlatList,
 	Pressable,
 	RefreshControl,
 	SafeAreaView,
 	ScrollView,
+	StyleSheet,
 	View,
 } from "react-native";
 import ErrorMessage from "../../../components/common/ErrorMesasge";
+import { FlashList } from "@shopify/flash-list";
 import StyledText from "components/UI/StyledText";
 import VideoCardSkeleton from "components/UI/VideoCardSkeleton";
 import VideoCard from "components/VideoCard";
 import Skeleton from "components/common/Skeleton";
 import { dark_primary } from "constants/Colors";
-import { EXPLORE } from "constants/tracking";
 import {
-	Mirror,
-	Post,
-	PublicationMainFocus,
-	PublicationSortCriteria,
-	PublicationTypes,
-	useExploreQuery,
+	type ExplorePublicationRequest,
+	ExplorePublicationType,
+	ExplorePublicationsOrderByType,
+	LimitType,
+	type PrimaryPublication,
+	PublicationMetadataMainFocusType,
+	useExplorePublicationsQuery,
 } from "customTypes/generated";
-import { RootTabScreenProps } from "customTypes/navigation";
 import { useGuestStore } from "store/GuestStore";
-import { useAuthStore, useProfile, useThemeStore } from "store/Store";
-import TrackAction from "utils/Track";
+import { useAuthStore, useThemeStore } from "store/Store";
+import Logger from "utils/logger";
 
-type Explore = Post | Mirror;
+type ExloreCategories = {
+	name: ExplorePublicationsOrderByType;
+	active: boolean;
+};
+const tags: ExloreCategories[] = [
+	{
+		name: ExplorePublicationsOrderByType.Latest,
+		active: true,
+	},
+	{
+		name: ExplorePublicationsOrderByType.TopCommented,
+		active: false,
+	},
+	{
+		name: ExplorePublicationsOrderByType.TopCollectedOpenAction,
+		active: false,
+	},
+	{
+		name: ExplorePublicationsOrderByType.TopMirrored,
+		active: false,
+	},
+	{
+		name: ExplorePublicationsOrderByType.LensCurated,
+		active: false,
+	},
+];
 
-export default function Trending({ navigation }: RootTabScreenProps<"Trending">) {
-	const tags = [
-		{
-			name: PublicationSortCriteria.Latest,
-			active: true,
-		},
-		{
-			name: PublicationSortCriteria.TopCommented,
-			active: false,
-		},
-		{
-			name: PublicationSortCriteria.TopCollected,
-			active: false,
-		},
-		{
-			name: PublicationSortCriteria.TopMirrored,
-			active: false,
-		},
-		{
-			name: PublicationSortCriteria.CuratedProfiles,
-			active: false,
-		},
-	];
-
-	const [currentTag, setCurrentTag] = useState<{
-		name: PublicationSortCriteria;
-		active: boolean;
-	}>(tags[0]);
+export default function Trending() {
+	const [currentTag, setCurrentTag] = useState<ExloreCategories>(tags[0]);
 	const theme = useThemeStore();
 	const { accessToken } = useAuthStore();
-	const { currentProfile } = useProfile();
-	const { isGuest, profileId } = useGuestStore();
+	const { isGuest } = useGuestStore();
 	const [refreshing, setRefreshing] = useState<boolean>(false);
 
-	const QueryRequest = {
-		sortCriteria: currentTag.name,
-		noRandomize: true,
-		publicationTypes: [PublicationTypes.Post],
-		metadata: {
-			mainContentFocus: [PublicationMainFocus.Video],
+	const abortController = React.useRef(new AbortController());
+	const QueryRequest: ExplorePublicationRequest = {
+		orderBy: currentTag.name,
+		limit: LimitType.Ten,
+		where: {
+			metadata: {
+				mainContentFocus: [
+					PublicationMetadataMainFocusType.Video,
+					PublicationMetadataMainFocusType.ShortVideo,
+				],
+			},
+			publicationTypes: [ExplorePublicationType.Post],
 		},
-		sources: ["lensplay", "lenstube"],
-		limit: 10,
 	};
 
 	const {
@@ -83,28 +85,37 @@ export default function Trending({ navigation }: RootTabScreenProps<"Trending">)
 		loading,
 		refetch,
 		fetchMore,
-	} = useExploreQuery({
+	} = useExplorePublicationsQuery({
 		variables: {
 			request: QueryRequest,
-			reactionRequest: {
-				profileId: isGuest ? "" : currentProfile?.id,
-			},
-			channelId: isGuest ? "" : currentProfile?.id,
 		},
 		context: {
 			headers: {
 				"x-access-token": `${!isGuest ? `Bearer ${accessToken}` : ""}`,
 			},
+			fetchOptions: {
+				signal: abortController.current.signal,
+			},
 		},
 	});
+
+	const abortRequest = () => {
+		abortController.current.abort();
+		Logger.Success("Request Aborted");
+		abortController.current = new AbortController();
+	};
+
+	useEffect(() => {
+		return () => {
+			abortRequest();
+		};
+	}, []);
 
 	useEffect(() => {
 		refetch({
 			request: QueryRequest,
 		});
 	}, [currentTag]);
-
-	if (error) return <ErrorMessage message={"Looks like something went wrong"} />;
 
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
@@ -133,22 +144,10 @@ export default function Trending({ navigation }: RootTabScreenProps<"Trending">)
 
 	const pageInfo = ExploreData?.explorePublications?.pageInfo;
 
-	const keyExtractor = (item: Explore) => item.id.toString();
-
-	const ITEM_HEIGHT = 280;
-
-	const getItemLayout = (_: any, index: number) => {
-		return {
-			length: ITEM_HEIGHT,
-			offset: ITEM_HEIGHT * index,
-			index,
-		};
-	};
-	TrackAction(EXPLORE.SWITCH_EXPLORE_FEED_TAB);
+	const keyExtractor = (item: PrimaryPublication) => item.id;
 
 	const onEndCallBack = () => {
 		if (!pageInfo?.next) {
-			// console.log("sab khatam ho gaya");
 			return;
 		}
 		fetchMore({
@@ -184,19 +183,25 @@ export default function Trending({ navigation }: RootTabScreenProps<"Trending">)
 
 	const MoreLoader = React.memo(_MoreLoader);
 
-	const RenderItem = ({ item }: { item: Explore }) => {
-		if (!item.hidden) {
-			return (
-				<VideoCard
-					key={`${item.id}-${item.createdAt}`}
-					publication={item as Explore}
-					id={item.id}
-				/>
-			);
+	const RenderItem = ({ item }: { item: PrimaryPublication }) => {
+		if (!item.isHidden) {
+			return <VideoCard key={`${item.id}-${item.createdAt}`} publication={item} id={item.id} />;
 		}
 		return null;
 	};
 
+	if (error) {
+		Logger.Error("Apolo Error", error);
+		return <ErrorMessage message={"Looks like something went wrong"} />;
+	}
+	if (loading)
+		return (
+			<SafeAreaView style={styles.container}>
+				<Skeleton number={10}>
+					<VideoCardSkeleton />
+				</Skeleton>
+			</SafeAreaView>
+		);
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
 			<ScrollView
@@ -243,23 +248,25 @@ export default function Trending({ navigation }: RootTabScreenProps<"Trending">)
 					);
 				})}
 			</ScrollView>
-			{loading ? (
-				<Skeleton children={<VideoCardSkeleton />} number={10} />
-			) : (
-				<FlatList
-					data={ExploreData?.explorePublications.items as Explore[]}
-					keyExtractor={keyExtractor}
-					getItemLayout={getItemLayout}
-					initialNumToRender={3}
-					maxToRenderPerBatch={5}
-					ListFooterComponent={<MoreLoader />}
-					onEndReached={onEndCallBack}
-					onEndReachedThreshold={0.5}
-					refreshControl={Refresh}
-					renderItem={RenderItem}
-					showsVerticalScrollIndicator={false}
-				/>
-			)}
+			<FlashList
+				data={ExploreData?.explorePublications.items as PrimaryPublication[]}
+				keyExtractor={keyExtractor}
+				estimatedItemSize={280}
+				ListFooterComponent={<MoreLoader />}
+				onEndReached={onEndCallBack}
+				onEndReachedThreshold={0.5}
+				refreshControl={Refresh}
+				renderItem={RenderItem}
+				showsVerticalScrollIndicator={false}
+				removeClippedSubviews={true}
+			/>
 		</SafeAreaView>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: "black",
+	},
+});

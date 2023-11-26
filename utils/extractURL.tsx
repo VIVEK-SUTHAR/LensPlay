@@ -4,6 +4,7 @@ import { primary } from "constants/Colors";
 import { IS_MAINNET, MENTION_REGEX, URL_REGEX } from "constants/index";
 import React from "react";
 import { Linking } from "react-native";
+import { useThemeStore } from "store/Store";
 
 /**
  * @param txt Simple text that may contain URLs
@@ -39,13 +40,14 @@ function getDisplayLink(markDownLink: string) {
 
 function extractURLs(txt: string | undefined) {
 	const navigation = useNavigation();
+	const { PRIMARY } = useThemeStore();
 	const renderText = (txt: string | undefined) =>
 		txt?.split(" ").map((part, index) =>
 			URL_REGEX.test(part) ? (
 				<StyledText
 					title={getDisplayLink(part)}
 					key={index}
-					style={{ color: primary, fontWeight: "600" }}
+					style={{ color: PRIMARY, fontWeight: "600" }}
 					onPress={async () => {
 						checkIsLensTubeLink(part)
 							? navigation.navigate("LinkingVideo", {
@@ -60,18 +62,19 @@ function extractURLs(txt: string | undefined) {
 		);
 	const checkIsLens = (string: string) => {
 		var handle = string.split("@")[1];
-		if (!(string.includes(".lens"))) {
+		if (!string.includes(".lens")) {
 			handle = handle + ".lens";
 		}
-		
+
 		if (MENTION_REGEX.test(string)) {
 			return (
 				<StyledText
 					title={string}
 					key={string}
-					style={{ color: primary }}
+					style={{ color: PRIMARY }}
 					onPress={() => {
-						navigation.navigate("Channel", { handle: handle.toLowerCase() });
+						if (!handle) return;
+						navigation.navigate("Channel", { handle: handle.slice(0, -5) });
 					}}
 				/>
 			);

@@ -1,34 +1,32 @@
 import { useNavigation } from "@react-navigation/native";
 import Sheet from "components/Bottom";
-import { type SheetProps } from "components/common/MyVideoCard";
+import Icon from "components/Icon";
 import Heading from "components/UI/Heading";
 import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
-import { LENSPLAY_SITE } from "constants/index";
+import { type SheetProps } from "components/common/MyVideoCard";
 import { black, white } from "constants/Colors";
+import { LENSPLAY_SITE } from "constants/index";
 import { PUBLICATION } from "constants/tracking";
 import {
-	type Attribute,
+	usePublicationLazyQuery,
+	useSetProfileMetadataMutation,
+	type MetadataAttribute,
 	type Post,
-	useCreateSetProfileMetadataViaDispatcherMutation,
-	usePublicationDetailsLazyQuery,
 	type Profile,
 } from "customTypes/generated";
 import { type ProfileMetaDataV1nput } from "customTypes/index";
 import { default as React, useEffect } from "react";
 import { Dimensions, Image, Pressable, TouchableOpacity, View } from "react-native";
-import usePinStore from "store/pinStore";
 import { useActivePublication, useAuthStore, useProfile, useToast } from "store/Store";
+import usePinStore from "store/pinStore";
 import CommonStyles from "styles/index";
+import TrackAction from "utils/Track";
 import getDifference from "utils/getDifference";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
-import TrackAction from "utils/Track";
 import uploadToArweave from "utils/uploadToArweave";
 import { v4 as uuidV4 } from "uuid";
-import Unpin from "assets/Icons/Unpin";
-import Pin from "assets/Icons/Pin";
-import More from "assets/Icons/More";
 
 export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
 	const { currentProfile } = useProfile();
@@ -36,24 +34,21 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
 	const { setHasPinned } = usePinStore();
 	const toast = useToast();
 
-	const [createSetProfileMetadataViaDispatcherMutation] =
-		useCreateSetProfileMetadataViaDispatcherMutation({
-			onCompleted: () => {
-				setHasPinned(false);
-				toast.success("Video pinned successfully");
-				void TrackAction(PUBLICATION.PIN_PUBLICATION);
-			},
-			onError: () => {
-				toast.error("Some error occured please try again");
-			},
-		});
+	const [SetProfileMetadataMutation] = useSetProfileMetadataMutation({
+		onCompleted: () => {
+			setHasPinned(false);
+			toast.success("Video pinned successfully");
+			void TrackAction(PUBLICATION.PIN_PUBLICATION);
+		},
+		onError: () => {
+			toast.error("Some error occured please try again");
+		},
+	});
 
 	const RemovepinPublication = async () => {
-		let currentAttributes = currentProfile?.attributes;
+		let currentAttributes = currentProfile?.metadata?.attributes;
 		let attr = [...currentAttributes!];
-		const isAlreadyPinned = attr?.find(
-			(attr) => attr.traitType === "pinnedPublicationId" || attr.key === "pinnedPublicationId"
-		);
+		const isAlreadyPinned = attr?.find((attr) => attr.key === "pinnedPublicationId");
 
 		if (isAlreadyPinned) {
 			const index = attr?.indexOf(isAlreadyPinned);
@@ -63,19 +58,18 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
 		const newMetaData: ProfileMetaDataV1nput = {
 			version: "1.0.0",
 			metadata_id: uuidV4(),
-			name: currentProfile?.name || "",
-			bio: currentProfile?.bio || "",
-			cover_picture: getRawurl(currentProfile?.coverPicture),
+			name: currentProfile?.metadata?.displayName || "",
+			bio: currentProfile?.metadata?.bio || "",
+			cover_picture: getRawurl(currentProfile?.metadata?.coverPicture),
 			attributes: attr,
 		};
 
 		const hash = await uploadToArweave(newMetaData);
 
-		void createSetProfileMetadataViaDispatcherMutation({
+		void SetProfileMetadataMutation({
 			variables: {
 				request: {
-					metadata: `ar://${hash}`,
-					profileId: currentProfile?.id,
+					metadataURI: `ar://${hash}`,
 				},
 			},
 			context: {
@@ -116,7 +110,7 @@ export function UnPinSheet({ sheetRef }: Pick<SheetProps, "sheetRef">) {
 						alignItems: "center",
 					}}
 				>
-					<Unpin height={20} width={20} />
+					<Icon name={"unpin"} color={"white"} size={16} />
 					<StyledText
 						title={"Remove pin"}
 						style={{
@@ -151,11 +145,10 @@ export default function PinnedPublication({
 	}, [pinStore.publicationId]);
 
 	const getPinnedPublication = () => {
-		const attributes = profile?.attributes;
+		const attributes = profile?.metadata?.attributes;
 
 		const pinnedPublication = attributes?.find(
-			(attr: Attribute) =>
-				attr.traitType === "pinnedPublicationId" || attr.key === "pinnedPublicationId"
+			(attr: MetadataAttribute) => attr.key === "pinnedPublicationId"
 		);
 		if (pinnedPublication) {
 			pinStore.setHasPinned(true);
@@ -163,17 +156,14 @@ export default function PinnedPublication({
 			void fetchPinnedPublication({
 				variables: {
 					request: {
-						publicationId: pinnedPublication.value,
-					},
-					reactionRequest: {
-						profileId: activeProfile?.currentProfile?.id,
+						forId: pinnedPublication.value,
 					},
 				},
 			});
 		}
 	};
 
-	const [fetchPinnedPublication, { data, loading, error }] = usePublicationDetailsLazyQuery({
+	const [fetchPinnedPublication, { data, loading, error }] = usePublicationLazyQuery({
 		context: {
 			headers: {
 				"x-access-token": `Bearer ${accessToken}`,
@@ -195,7 +185,7 @@ export default function PinnedPublication({
 						alignItems: "center",
 					}}
 				>
-					<Pin height={12} width={12} color={white[200]}/>
+					<Icon name="pin" size={12} color={white[200]} />
 					<StyledText
 						title="Pinned video"
 						style={{
@@ -219,7 +209,7 @@ export default function PinnedPublication({
 					<View>
 						<Image
 							source={{
-								uri: getIPFSLink(getRawurl(data?.publication?.metadata?.cover)),
+								uri: getIPFSLink(getRawurl(data?.publication?.metadata?.asset?.cover)),
 							}}
 							style={{
 								width: 160,
@@ -243,7 +233,7 @@ export default function PinnedPublication({
 							}}
 						>
 							<Heading
-								title={data?.publication?.metadata?.name}
+								title={data?.publication?.metadata?.title}
 								style={{ color: "white", fontSize: 16, fontWeight: "500" }}
 								numberOfLines={2}
 							/>
@@ -253,9 +243,7 @@ export default function PinnedPublication({
 								}}
 							>
 								<StyledText
-									title={
-										data?.publication?.metadata?.content || data?.publication?.metadata?.description
-									}
+									title={data?.publication?.metadata?.content}
 									numberOfLines={1}
 									style={{ color: "gray", fontSize: 12 }}
 								/>
@@ -283,7 +271,7 @@ export default function PinnedPublication({
 									height: "30%",
 								}}
 							>
-								<More width={18} height={18} />
+								<Icon name="more" size={16} />
 							</TouchableOpacity>
 						) : null}
 					</View>

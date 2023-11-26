@@ -1,9 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useWalletConnectModal } from "@walletconnect/modal-react-native";
 import Heading from "components/UI/Heading";
 import StorageKeys from "constants/Storage";
 import { APP_OPEN } from "constants/tracking";
-import { useRefreshTokensMutation, useVerifyTokensLazyQuery } from "customTypes/generated";
+import {
+	Profile,
+	useProfilesLazyQuery,
+	useRefreshMutation,
+	useVerifyLazyQuery,
+} from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
@@ -15,34 +19,47 @@ import Animated, {
 	withSpring,
 	withTiming,
 } from "react-native-reanimated";
-import { useAuthStore, useProfile } from "store/Store";
-import getDefaultProfile from "utils/lens/getDefaultProfile";
+import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
 import TrackAction from "utils/Track";
+import { useAccount } from "wagmi";
 
 export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 	const { setCurrentProfile, setHasHandle } = useProfile();
 	const { setAccessToken, setRefreshToken } = useAuthStore();
+	const { setPrimaryColor } = useThemeStore();
 	const whiteBox = useSharedValue(1);
 	const blackBox = useSharedValue(1);
 	const image = useSharedValue(0);
 	const textOpacity = useSharedValue(0);
-	const { address: WalletAddres } = useWalletConnectModal();
+	const { address } = useAccount();
 
-	const [verifyTokens, { data: isvalidTokens, error: verifyError, loading: verifyLoading }] =
-		useVerifyTokensLazyQuery();
+	const [verifyTokens] = useVerifyLazyQuery();
 
-	const [getAccessFromRefresh, { data: newTokens, error, loading }] = useRefreshTokensMutation();
+	const [getAccessFromRefresh] = useRefreshMutation();
+	const [getManagedProfiles] = useProfilesLazyQuery();
 
 	async function HandleDefaultProfile(adress: string | undefined) {
 		Logger.Warn("We are in Handle");
-		Logger.Warn("We are in Handle efault profile");
+		Logger.Warn("We are in Handle default profile");
 		Logger.Warn("Calling get default profile");
-		const userDefaultProfile = await getDefaultProfile(adress);
+		// const userDefaultProfile = await getDefaultProfile(adress);
+		const Profiles = await getManagedProfiles({
+			variables: {
+				request: {
+					where: {
+						ownedBy: [adress],
+					},
+				},
+			},
+		});
+		const userDefaultProfile = Profiles?.data?.profiles?.items[0];
+
+		Logger.Success("Yeh hai user default profile", userDefaultProfile);
 		if (userDefaultProfile) {
 			setHasHandle(true);
-			setCurrentProfile(userDefaultProfile);
+			setCurrentProfile(userDefaultProfile as Profile);
 			Logger.Warn("Back to handle default profile with data", userDefaultProfile);
 		} else {
 			setHasHandle(false);
@@ -70,8 +87,8 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 				profileId = await HandleDefaultProfile(address);
 			} else {
 				Logger.Success("Got address via wallet");
-				Logger.Log("a", WalletAddres);
-				profileId = await HandleDefaultProfile(WalletAddres);
+				Logger.Log("a", address);
+				profileId = await HandleDefaultProfile(address);
 			}
 
 			if (userTokens) {
@@ -92,7 +109,7 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 						},
 					},
 				});
-
+				Logger.Log("This is validity", isValidAccesToken.data);
 				if (isValidAccesToken?.data?.verify) {
 					Logger.Success("Access token is valid,going to feed");
 					setAccessToken(accessToken);
@@ -142,6 +159,14 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 		blackBox.value = withDelay(100, withTiming(10, { duration: 500 }));
 		image.value = withDelay(1000, withSpring(1, { mass: 1 }));
 		textOpacity.value = withDelay(1500, withTiming(1, { duration: 1000 }));
+		AsyncStorage.getItem(StorageKeys.PreferredThemeColor)
+			.then((color) => {
+				if (color) {
+					Logger.Success("COLOR", color);
+					setPrimaryColor(color);
+				}
+			})
+			.catch((err) => Logger.Error(err));
 		setTimeout(() => {
 			getLocalStorage();
 		}, 2000);
