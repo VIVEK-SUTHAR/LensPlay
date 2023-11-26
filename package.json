@@ -121,6 +121,7 @@
 	},
 	"private": true,
 	"resolutions": {
-		"react-native-svg": "13.4.0"
+		"react-native-svg": "13.4.0",
+		"@expo/config-plugins":"~6.0.0"
 	}
 }
