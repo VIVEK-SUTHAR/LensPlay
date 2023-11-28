@@ -39,8 +39,8 @@ const LensPlayProductionConfig = {
 };
 const LensPlayDevelopmentConfig = {
 	Slug: "test",
-	EasProjectID: "dc292891-6e08-49db-8e82-247dd43a39f7",
-	updatesUrl: `https://u.expo.dev/dc292891-6e08-49db-8e82-247dd43a39f7`,
+	EasProjectID: "6446c9f4-b532-4ccb-b5ae-c0f59df178c5",
+	updatesUrl: `https://u.expo.dev/6446c9f4-b532-4ccb-b5ae-c0f59df178c5`,
 };
 
 const APP_JSON_PATH = "./app.json";
@@ -132,10 +132,26 @@ function updateAppJsononEnvironment(isProductionBuild) {
 	} catch (error) {}
 }
 
+function isLoggedInAsLensPlay() {
+	try {
+		const stdout = execSync("npx expo whoami");
+		const outputString = stdout.toString("utf-8");
+		if (outputString == "lensplay") return true;
+		else return false;
+	} catch (error) {
+		return false;
+	}
+}
+
 function main() {
 	try {
 		let isProductionBuild = yargs.argv.prod ?? false;
 		console.log("IS Release Build", isProductionBuild);
+		if(isProductionBuild && !isLoggedInAsLensPlay()){
+			console.error("You are trying build for Production,")
+			console.error("But you are not logged in as LensPlay")
+			return
+		}
 		updateAppJsononEnvironment(isProductionBuild);
 		if (!yargs.argv.ios && !yargs.argv.android) {
 			console.log("No Platform Specified...", LogLevel.WARNING);

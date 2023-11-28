@@ -1,7 +1,6 @@
 {
 	"name": "lens-play",
 	"version": "1.0.0",
-	"main": "index.ts",
 	"scripts": {
 		"start": "expo start",
 		"dev": "expo start --dev-client --clear",
@@ -34,7 +33,7 @@
 		"@react-navigation/material-top-tabs": "^6.6.3",
 		"@react-navigation/native": "^6.1.7",
 		"@react-navigation/native-stack": "^6.9.13",
-		"@shopify/flash-list": "1.4.0",
+		"@shopify/flash-list": "1.5.0",
 		"@walletconnect/modal-react-native": "^1.0.0-rc.11",
 		"@web3modal/wagmi-react-native": "^1.0.0-beta.3",
 		"crypto-js": "^4.1.1",
@@ -66,7 +65,7 @@
 		"node-libs-react-native": "^1.2.1",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
-		"react-native": "0.71.14",
+		"react-native": "0.71.8",
 		"react-native-avoid-softinput": "^4.0.1",
 		"react-native-gesture-handler": "~2.9.0",
 		"react-native-get-random-values": "~1.9.0",
