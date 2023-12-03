@@ -56,7 +56,7 @@ const Recommended: FC = () => {
 				key={item?.handle?.ownedBy}
 				profileIcon={getIPFSLink(getRawurl(item?.metadata?.picture))}
 				profileName={item?.metadata?.displayName ?? ""}
-				handle={formatHandle(item.handle as HandleInfo)}
+				handle={item.handle?.fullHandle}
 				profileId={item?.id}
 				owner={item?.handle?.ownedBy}
 				isFollowed={item?.operations?.isFollowedByMe?.value}

@@ -116,7 +116,7 @@ const Search = ({ navigation }: RootStackScreenProps<"Search">) => {
 							profileName={item?.metadata?.displayName || item?.id}
 							profileId={item?.id}
 							isFollowed={item?.operations?.isFollowedByMe?.value || false}
-							handle={formatHandle(item?.handle as HandleInfo)}
+							handle={item?.handle?.fullHandle}
 							owner={item?.ownedBy?.address}
 						/>
 					)}

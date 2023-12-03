@@ -9,6 +9,7 @@ import { Dimensions, TouchableOpacity } from "react-native";
 import { StyleSheet, View } from "react-native";
 import { useActivePublication } from "store/Store";
 import formatHandle from "utils/formatHandle";
+import Logger from "utils/logger";
 
 type VideoCreatorProps = {
 	avatarLink: string;

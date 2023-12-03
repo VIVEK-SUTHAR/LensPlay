@@ -24,7 +24,7 @@ const CommentNotification: React.FC<CommentNotificationProps> = ({ notification 
 
 	const goToChannel = () => {
 		navigation.navigate("Channel", {
-			handle: formatHandle(notification?.comment?.by?.handle as HandleInfo),
+			handle: notification?.comment?.by?.handle?.fullHandle,
 			name: notification?.comment?.by?.metadata?.displayName ?? "",
 		});
 	};
@@ -87,11 +87,11 @@ const CommentNotification: React.FC<CommentNotificationProps> = ({ notification 
 						style={{ color: "gray" }}
 					/>
 				</View>
-					<StyledText
-						title={notification?.comment?.metadata?.content ?? ""}
-						style={{ color: "gray" }}
-						numberOfLines={2}
-					/>
+				<StyledText
+					title={notification?.comment?.metadata?.content ?? ""}
+					style={{ color: "gray" }}
+					numberOfLines={2}
+				/>
 			</View>
 		</Pressable>
 	);

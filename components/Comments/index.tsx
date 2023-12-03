@@ -87,7 +87,7 @@ const Comment: React.FC<CommentProps> = ({ publicationId, shots = false }) => {
 	const renderItem = ({ item }: { item: IComment }) => {
 		return (
 			<CommentCard
-				username={formatHandle(item?.by?.handle as HandleInfo)}
+				username={item?.by?.handle?.fullHandle}
 				avatar={getRawurl(item?.by?.metadata?.picture)}
 				commentText={item?.metadata?.content ?? ""}
 				commentTime={item?.createdAt}

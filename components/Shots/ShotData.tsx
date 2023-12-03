@@ -24,7 +24,7 @@ function ShotData({ item, descriptionRef }: { item: PrimaryPublication; descript
 
 	const goToChannel = React.useCallback(() => {
 		navigation.navigate("Channel", {
-			handle:formatHandle(item.by.handle as HandleInfo),
+			handle: item.by.handle?.fullHandle,
 			name: item?.by?.metadata?.displayName ?? "",
 		});
 	}, []);
@@ -93,7 +93,13 @@ function ShotData({ item, descriptionRef }: { item: PrimaryPublication; descript
 
 export default React.memo(ShotData);
 
-function DiscriptionSheet({ item, descriptionRef }: { item: PrimaryPublication; descriptionRef: any }) {
+function DiscriptionSheet({
+	item,
+	descriptionRef,
+}: {
+	item: PrimaryPublication;
+	descriptionRef: any;
+}) {
 	return (
 		<View
 			style={{
@@ -160,17 +166,11 @@ function DiscriptionSheet({ item, descriptionRef }: { item: PrimaryPublication; 
 							<StyledText title="Likes" style={{ color: "white" }} />
 						</View>
 						<View style={styles.verticleCenter}>
-							<StyledText
-								title={item?.stats?.countOpenActions || 0}
-								style={styles.statsLabel}
-							/>
+							<StyledText title={item?.stats?.countOpenActions || 0} style={styles.statsLabel} />
 							<StyledText title="Collects" style={{ color: "white" }} />
 						</View>
 						<View style={styles.verticleCenter}>
-							<StyledText
-								title={item?.stats?.mirrors || 0}
-								style={styles.statsLabel}
-							/>
+							<StyledText title={item?.stats?.mirrors || 0} style={styles.statsLabel} />
 							<StyledText title="Mirrors" style={{ color: "white" }} />
 						</View>
 					</View>
@@ -186,7 +186,8 @@ function DiscriptionSheet({ item, descriptionRef }: { item: PrimaryPublication; 
 					/>
 					<StyledText
 						title={`Posted via ${
-							item?.metadata?.appId?.charAt(0)?.toUpperCase() + item?.metadata?.appId?.slice(1) || "LensPlay"
+							item?.metadata?.appId?.charAt(0)?.toUpperCase() + item?.metadata?.appId?.slice(1) ||
+							"LensPlay"
 						}`}
 						style={{
 							color: "white",
@@ -214,7 +215,9 @@ function DiscriptionSheet({ item, descriptionRef }: { item: PrimaryPublication; 
 							alreadyFollowing={item?.by?.operations?.isFollowedByMe?.value || false}
 							avatarLink={getRawurl(item?.by?.metadata?.picture) || STATIC_ASSET}
 							profileId={item?.by?.id}
-							uploadedBy={item?.by?.metadata?.displayName || formatHandle(item?.by?.handle as HandleInfo)}
+							uploadedBy={
+								item?.by?.metadata?.displayName || formatHandle(item?.by?.handle as HandleInfo)
+							}
 							showSubscribeButton={false}
 							showSubscribers={true}
 							subscribersCount={item?.by?.stats?.followers}

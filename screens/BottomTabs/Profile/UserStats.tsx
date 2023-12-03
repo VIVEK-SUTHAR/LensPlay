@@ -147,7 +147,7 @@ const Suscribers = ({ profileId }: { profileId: Scalars["ProfileId"] }) => {
 				key={item?.handle?.ownedBy}
 				profileIcon={getIPFSLink(getRawurl(item?.metadata?.picture))}
 				profileName={item?.metadata?.displayName ?? ""}
-				handle={formatHandle(item.handle as HandleInfo)}
+				handle={item?.handle?.fullHandle}
 				profileId={item?.id}
 				owner={item?.handle?.ownedBy}
 				isFollowed={item?.operations?.isFollowedByMe?.value}
@@ -248,7 +248,7 @@ const Subscriptions = ({ profileId }: { profileId: Scalars["ProfileId"] }) => {
 				key={item?.handle?.ownedBy}
 				profileIcon={getRawurl(item?.metadata?.picture)}
 				profileName={item?.metadata?.displayName ?? ""}
-				handle={formatHandle(item.handle as HandleInfo)}
+				handle={item.handle?.fullHandle}
 				profileId={item?.id}
 				owner={item?.handle?.ownedBy}
 				isFollowed={item?.operations?.isFollowedByMe?.value}

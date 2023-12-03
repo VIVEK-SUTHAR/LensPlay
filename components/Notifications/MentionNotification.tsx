@@ -25,7 +25,7 @@ const MentionNotification = ({ notification }: MentionNotificationProps) => {
 
 	const goToChannel = () => {
 		navigation.navigate("Channel", {
-			handle: formatHandle(notification?.publication?.by?.handle as HandleInfo),
+			handle: notification?.publication?.by?.handle?.fullHandle,
 			name: notification?.publication?.by?.metadata?.displayName ?? "",
 		});
 	};

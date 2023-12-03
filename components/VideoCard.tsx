@@ -37,14 +37,14 @@ const VideoCard: React.FC<VideoCardProp> = ({ width = "auto", height = 200, publ
 
 	const navigateToUserChannel = React.useCallback(() => {
 		navigation.navigate("Channel", {
-			handle: formattedHandle,
+			handle: publication?.by?.handle?.fullHandle,
 			name: publication?.by.metadata?.displayName ?? "",
 		});
 	}, [publication]);
 
 	const coverImage = getImageProxyURL({
 		formattedLink: getIPFSLink(getRawurl(metadata?.asset?.cover)),
-		options: { height: undefined, width: undefined,format:"webp" },
+		options: { height: undefined, width: undefined, format: "webp" },
 	});
 
 	return (
