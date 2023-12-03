@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import {
 	ActivityIndicator,
 	Dimensions,
+	FlatList,
 	Pressable,
 	RefreshControl,
 	SafeAreaView,
 	ScrollView,
 	StyleSheet,
+	TouchableOpacity,
 	View,
 } from "react-native";
 import ErrorMessage from "../../../components/common/ErrorMesasge";
@@ -16,7 +18,7 @@ import StyledText from "components/UI/StyledText";
 import VideoCardSkeleton from "components/UI/VideoCardSkeleton";
 import VideoCard from "components/VideoCard";
 import Skeleton from "components/common/Skeleton";
-import { dark_primary } from "constants/Colors";
+import { black, dark_primary } from "constants/Colors";
 import {
 	type ExplorePublicationRequest,
 	ExplorePublicationType,
@@ -29,6 +31,7 @@ import {
 import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useThemeStore } from "store/Store";
 import Logger from "utils/logger";
+import Chip from "components/common/Chip";
 
 type ExloreCategories = {
 	name: ExplorePublicationsOrderByType;
@@ -105,11 +108,11 @@ export default function Trending() {
 		abortController.current = new AbortController();
 	};
 
-	useEffect(() => {
-		return () => {
-			abortRequest();
-		};
-	}, []);
+	// useEffect(() => {
+	// 	return () => {
+	// 		abortRequest();
+	// 	};
+	// }, []);
 
 	useEffect(() => {
 		refetch({
@@ -190,6 +193,27 @@ export default function Trending() {
 		return null;
 	};
 
+	const renderChips = ({ item, index }: { item: ExloreCategories; index: number }) => {
+		const updateCategory = () => {
+			setCurrentTag(tags[index]);
+		};
+
+		return (
+			<TouchableOpacity onPress={updateCategory}>
+				<Chip key={index} title={item.name} isActive={currentTag.name === item.name} />
+			</TouchableOpacity>
+		);
+	};
+
+	const CHIPS_HEIGHT = 34; //😜
+	const chipsItemLayout = (_: any, index: number) => {
+		return {
+			length: CHIPS_HEIGHT,
+			offset: CHIPS_HEIGHT * index,
+			index,
+		};
+	};
+
 	if (error) {
 		Logger.Error("Apolo Error", error);
 		return <ErrorMessage message={"Looks like something went wrong"} />;
@@ -197,6 +221,21 @@ export default function Trending() {
 	if (loading)
 		return (
 			<SafeAreaView style={styles.container}>
+				<View
+					style={{
+						paddingVertical: 8,
+						backgroundColor: black[800],
+					}}
+				>
+					<FlatList
+						data={tags}
+						horizontal={true}
+						getItemLayout={chipsItemLayout}
+						renderItem={renderChips}
+						removeClippedSubviews={true}
+						showsHorizontalScrollIndicator={false}
+					/>
+				</View>
 				<Skeleton number={10}>
 					<VideoCardSkeleton />
 				</Skeleton>
@@ -204,50 +243,21 @@ export default function Trending() {
 		);
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-			<ScrollView
+			<View
 				style={{
-					height: 60,
 					paddingVertical: 8,
-					maxHeight: 60,
-					marginLeft: 10,
+					backgroundColor: black[800],
 				}}
-				horizontal={true}
-				showsHorizontalScrollIndicator={false}
 			>
-				{tags.map((item, index) => {
-					return (
-						<Pressable
-							android_ripple={{
-								color: "transparent",
-							}}
-							onTouchEndCapture={() => {
-								setCurrentTag(tags[index]);
-							}}
-							key={index}
-							style={{
-								marginHorizontal: 4,
-								backgroundColor: `${currentTag.name === item.name ? theme.PRIMARY : dark_primary}`,
-								width: "auto",
-								maxHeight: 34,
-								paddingHorizontal: 12,
-								paddingVertical: 6,
-								justifyContent: "center",
-								alignItems: "center",
-								borderRadius: 8,
-							}}
-						>
-							<StyledText
-								title={item.name.replace(/_/g, " ")}
-								style={{
-									fontSize: 12,
-									fontWeight: "600",
-									color: `${currentTag.name === item.name ? "black" : "white"}`,
-								}}
-							/>
-						</Pressable>
-					);
-				})}
-			</ScrollView>
+				<FlatList
+					data={tags}
+					horizontal={true}
+					getItemLayout={chipsItemLayout}
+					renderItem={renderChips}
+					removeClippedSubviews={true}
+					showsHorizontalScrollIndicator={false}
+				/>
+			</View>
 			<FlashList
 				data={ExploreData?.explorePublications.items as PrimaryPublication[]}
 				keyExtractor={keyExtractor}

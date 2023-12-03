@@ -1,6 +1,6 @@
 import Icon from "components/Icon";
 import StyledText from "components/UI/StyledText";
-import { primary } from "constants/Colors";
+import { primary, white } from "constants/Colors";
 import { ResizeMode, Video } from "expo-av";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
@@ -16,7 +16,7 @@ interface VideoPlayerProps {
 	poster?: string;
 	inFullscreen?: boolean;
 	title: string;
-	
+
 	isSliderVisible?: boolean;
 	loop?: boolean;
 	setInFullscreen?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,7 +35,7 @@ function VideoPlayer({
 	const { PRIMARY } = useThemeStore();
 	Logger.Log("IN FULLSCREEN", inFullscreen);
 	const isAndroid = Platform.OS === "android";
-	const [isMute, setisMute] = useState(false)
+	const [isMute, setisMute] = useState(false);
 	return (
 		<Player
 			style={{
@@ -60,9 +60,9 @@ function VideoPlayer({
 			}}
 			icon={{
 				size: 48,
-				play: <Icon name="play" size={48} color={PRIMARY} />,
-				pause: <Icon name="pause" size={52} color={PRIMARY} />,
-				replay: <Icon name="replay" color={PRIMARY} size={48} />,
+				play: <Icon name="play" size={48} color={white[800]} />,
+				pause: <Icon name="pause" size={52} color={white[800]} />,
+				replay: <Icon name="replay" color={white[800]} size={48} />,
 			}}
 			header={
 				<View
@@ -122,8 +122,8 @@ function VideoPlayer({
 				},
 			}}
 			mute={{
-				enterMute: () => setisMute(prev=>!prev),
-				exitMute: () => setisMute(prev=>!prev),
+				enterMute: () => setisMute((prev) => !prev),
+				exitMute: () => setisMute((prev) => !prev),
 				isMute,
 				visible: true,
 			}}
