@@ -3,7 +3,8 @@ import Avatar from "components/UI/Avatar";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
-import { HandleInfo, Profile } from "customTypes/generated";
+import { HandleInfo, HandleLinkedTo, MetadataAttribute, Profile } from "customTypes/generated";
+import { ScrollView } from "react-native";
 import { RootStackScreenProps } from "customTypes/navigation";
 import React from "react";
 import {
@@ -18,20 +19,23 @@ import { useProfile } from "store/Store";
 import formatHandle from "utils/formatHandle";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
+import Icon from "components/Icon";
+import { StatusBar } from "expo-status-bar";
 
-function ProfileCard({ profile }: { profile: Profile }) {
+function ProfileCard({ profile }: { profile: Profile | undefined }) {
 	const { width } = useWindowDimensions();
 	const { setCurrentProfile } = useProfile();
 	const navigation = useNavigation();
 	return (
 		<TouchableOpacity
 			style={{
-				width: "48%",
-				padding: 16,
+				width: "100%",
+				// flex: 1,
+				paddingVertical: 16,
 				justifyContent: "center",
 				alignItems: "center",
-				borderWidth: 1,
-				borderRadius: 8,
+				// borderBottomWidth: 1,
+				// borderRadius: 8,
 				borderColor: black[200],
 			}}
 			activeOpacity={0.4}
@@ -44,23 +48,45 @@ function ProfileCard({ profile }: { profile: Profile }) {
 				style={{
 					width: "100%",
 					alignItems: "center",
+					flexDirection: "row",
 				}}
 			>
 				<Avatar
 					src={getIPFSLink(getRawurl(profile?.metadata?.picture))}
-					height={width / 4}
-					width={width / 4}
+					height={width / 8}
+					width={width / 8}
 				/>
+				<View
+					style={{
+						justifyContent: "space-between",
+						alignItems: "center",
+						flexDirection: "row",
+						flex: 1,
+					}}
+				>
+					<View style={{ marginHorizontal: 8 }}>
+						<StyledText
+							title={profile?.metadata?.displayName}
+							style={{
+								fontSize: 16,
+								fontWeight: "500",
+								alignItems: "center",
+								color: white[700],
+							}}
+						/>
+						<StyledText
+							title={formatHandle(profile?.handle as HandleInfo)}
+							style={{
+								fontSize: 12,
+								fontWeight: "500",
+								alignItems: "center",
+								color: white[500],
+							}}
+						/>
+					</View>
+					<Icon name="rightArrow" color="white" size={16} />
+				</View>
 			</View>
-			<StyledText
-				title={formatHandle(profile?.handle as HandleInfo)}
-				style={{
-					fontSize: 24,
-					fontWeight: "500",
-					marginTop: 16,
-					color: white[700],
-				}}
-			/>
 		</TouchableOpacity>
 	);
 }
@@ -70,35 +96,37 @@ export default function Profiles({ navigation, route }: RootStackScreenProps<"Pr
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<View
-				style={{
-					padding: 16,
-					justifyContent: "center",
-				}}
-			>
+			<StatusBar/>
 				<Heading
 					title={"Choose acount to login"}
 					style={{
 						fontSize: 24,
 						fontWeight: "500",
-						marginTop: 16,
 						color: white[700],
+						marginTop:44,
+						marginBottom:32,
+						textAlign:"center"
 					}}
 				/>
-			</View>
 			<FlatList
 				style={{
-					padding: 16,
+					paddingHorizontal: 16,
+					// flex: 1,
 				}}
-				numColumns={2}
-				columnWrapperStyle={{
-					flex: 1,
-					justifyContent: "space-between",
-					rowGap: 16,
+				ItemSeparatorComponent={()=>{
+					return (
+						<View style={{backgroundColor:black[200],height:1}} >
+
+						</View>
+					)
 				}}
 				data={profiles}
 				renderItem={(item) => {
-					return <ProfileCard profile={item.item} />;
+					return (
+						<View>
+							<ProfileCard profile={item.item} />
+						</View>
+					);
 				}}
 			/>
 		</SafeAreaView>
@@ -109,5 +137,6 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: "#161616",
+		padding:16
 	},
 });

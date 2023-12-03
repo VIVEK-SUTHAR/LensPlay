@@ -546,7 +546,7 @@ const Player = (tempProps: Props) => {
 								)}
 							</View>
 							<View>
-								{props.mute.visible && (
+								{/* {props.mute.visible && (
 									<TouchableButton
 										onPress={() =>
 											props.mute.isMute ? props.mute.exitMute?.() : props.mute.enterMute?.()
@@ -566,7 +566,7 @@ const Player = (tempProps: Props) => {
 											)}
 										</View>
 									</TouchableButton>
-								)}
+								)} */}
 								{props.fullscreen.visible && (
 									<TouchableButton
 										onPress={() =>

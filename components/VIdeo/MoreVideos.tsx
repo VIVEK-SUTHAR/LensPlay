@@ -29,9 +29,11 @@ const MoreVideos = () => {
 			<StyledText
 				title={`More Videos by ${title}`}
 				style={{
-					fontSize: 20,
-					fontWeight: "700",
+					fontSize: 16,
+					fontWeight: "600",
 					color: "white",
+					paddingHorizontal:12,
+					paddingTop:8,
 				}}
 				numberOfLines={1}
 			/>
@@ -151,7 +153,6 @@ export default React.memo(MoreVideos);
 
 const styles = StyleSheet.create({
 	moreVideosHeader: {
-		paddingHorizontal: 12,
 		marginVertical: 8,
 	},
 });

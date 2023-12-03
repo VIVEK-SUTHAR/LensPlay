@@ -37,7 +37,7 @@ const VideoCreator: React.FC<VideoCreatorProps> = React.memo((props) => {
 	const { activePublication } = useActivePublication();
 	const goToChannel = React.useCallback(() => {
 		navigation.navigate("Channel", {
-			handle: formatHandle(activePublication?.by?.handle as HandleInfo),
+			handle: activePublication?.by?.handle?.fullHandle,
 			name: activePublication?.by?.metadata?.displayName ?? "",
 		});
 	}, []);
@@ -54,7 +54,7 @@ const VideoCreator: React.FC<VideoCreatorProps> = React.memo((props) => {
 						title={
 							showSubscribers
 								? `${subscribersCount} Subscribers`
-								: `@${formatHandle(activePublication?.by?.handle as HandleInfo)}`
+								: `${formatHandle(activePublication?.by?.handle as HandleInfo)}`
 						}
 						style={styles.subtext}
 					/>
