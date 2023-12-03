@@ -1,7 +1,9 @@
 import { VIDEO_CATEGORIES } from "constants/Categories";
 import React from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import Chip from "./Chip";
+import { useActiveVideoFilters } from "store/Store";
+import { black } from "constants/Colors";
 
 const ITEM_HEIGHT = 34; //😜
 const getItemLayout = (_: any, index: number) => {
@@ -11,10 +13,25 @@ const getItemLayout = (_: any, index: number) => {
 		index,
 	};
 };
-const renderItem = ({ item, index }: { item: { name: string; tag: string }; index: number }) => {
-	return <Chip key={`${item.tag}-${index}`} title={item.name} value={item.tag} />;
-};
+
 const CategoriesChip = () => {
+	const { activeFilter, setActiveFilters } = useActiveVideoFilters();
+
+	const renderItem = ({ item, index }: { item: { name: string; tag: string }; index: number }) => {
+		const updateCategory = () => {
+			if (activeFilter === item.tag) setActiveFilters("all");
+			else {
+				setActiveFilters(item.tag);
+			}
+		};
+
+		return (
+			<TouchableOpacity onPress={updateCategory}>
+				<Chip key={`${item.tag}-${index}`} title={item.name} isActive={activeFilter === item.tag} />
+			</TouchableOpacity>
+		);
+	};
+
 	return (
 		<View style={styles.categoriesListContainer}>
 			<FlatList
@@ -34,9 +51,7 @@ export default React.memo(CategoriesChip);
 
 const styles = StyleSheet.create({
 	categoriesListContainer: {
-		height: 60,
+		backgroundColor: black[800],
 		paddingVertical: 8,
-		maxHeight: 60,
-		marginLeft: 10,
 	},
 });
