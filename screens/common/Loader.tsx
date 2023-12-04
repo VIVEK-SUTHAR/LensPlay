@@ -135,20 +135,14 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 						Logger.Error("Goint to Feed");
 						navigation.replace("Root");
 					} catch (error) {
-						if (error instanceof Error) {
-							if (error?.message?.includes("InvalidJwtToken")) {
-								Logger.Error("Error", error);
-								navigation.replace("LetsGetIn");
-							}
-						}
+						Logger.Error("Error", error);
+						navigation.replace("LetsGetIn");
 					}
 				}
 			}
 		} catch (error) {
-			if (error instanceof Error) {
-				console.log(error);
-				throw new Error("[Error]:Error in accessing local storage");
-			}
+			console.log(error);
+			throw new Error("[Error]:Error in accessing local storage");
 		}
 	};
 

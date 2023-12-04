@@ -74,7 +74,15 @@ function extractURLs(txt: string | undefined) {
 					style={{ color: PRIMARY }}
 					onPress={() => {
 						if (!handle) return;
-						navigation.navigate("Channel", { handle: handle.slice(0, -5) });
+						console.log(string);
+						if (string.endsWith(".lens")) {
+							const removedLens = string.slice(1, -5);
+
+							navigation.navigate("Channel", { handle: `lens/${removedLens}` });
+							return;
+						}
+
+						navigation.navigate("Channel", { handle: `lens/${string.slice(1)}` });
 					}}
 				/>
 			);

@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execSync, spawn, spawnSync } from "child_process";
 import fs from "fs";
 import yargs from "yargs";
 const LogLevel = {
@@ -110,9 +110,33 @@ function submitEASBuildForAndroid() {
 	} catch (error) {}
 }
 function logEASBuildMessage() {
-	console.log("EAS Builds are only available fro android via automated script");
+	console.log("EAS Builds are only available for android via automated script");
 	console.log("For iOS build Please run the below command");
 	console.log("eas build --profile beta --platform android");
+}
+
+function submitEASBuildForiOS() {
+	try {
+		const easBuildCommand = `eas build --profile development --platform ios`;
+
+		const process = spawnSync(easBuildCommand, { shell: true, input: "yes\n", stdio: "inherit" });
+
+		process.stdout.on("data", (data) => {
+			console.log(data);
+		});
+
+		process.stderr.on("data", (data) => {
+			console.error(`stderr: ${data}`);
+		});
+
+		process.on("close", (code) => {
+			if (code === 0) {
+				console.log("EAS Build for iOS submitted successfully!", LogLevel.SUCCESS);
+			} else {
+				console.error(`EAS Build for iOS failed with code ${code}`, LogLevel.ERROR);
+			}
+		});
+	} catch (error) {}
 }
 
 function updateAppJsononEnvironment(isProductionBuild) {
@@ -146,13 +170,13 @@ function isLoggedInAsLensPlay() {
 function main() {
 	try {
 		let isProductionBuild = yargs.argv.prod ?? false;
-		console.log("IS Release Build", isProductionBuild);
-		if(isProductionBuild && !isLoggedInAsLensPlay()){
-			console.error("You are trying build for Production,")
-			console.error("But you are not logged in as LensPlay")
-			return
-		}
 		updateAppJsononEnvironment(isProductionBuild);
+		console.log("Is Release Build", isProductionBuild);
+		if (isProductionBuild && !isLoggedInAsLensPlay()) {
+			console.error("You are trying build for Production,");
+			console.error("But you are not logged in as LensPlay");
+			return;
+		}
 		if (!yargs.argv.ios && !yargs.argv.android) {
 			console.log("No Platform Specified...", LogLevel.WARNING);
 			console.log("Building for Android and iOS");
@@ -161,7 +185,7 @@ function main() {
 				updateVersionCode();
 				commitToGit();
 			}
-			logEASBuildMessage();
+			submitEASBuildForiOS();
 			submitEASBuildForAndroid();
 		}
 		if (yargs.argv.ios) {
@@ -170,7 +194,7 @@ function main() {
 				updateReleaseConfigForiOS();
 				commitToGit();
 			}
-			logEASBuildMessage();
+			submitEASBuildForiOS();
 		}
 		if (yargs.argv.android) {
 			console.log("Platform : Android Syncing config and starting...");

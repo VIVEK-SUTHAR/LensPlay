@@ -31,7 +31,7 @@ const MetaDataSheet = ({ sheetRef: descRef }: MetaDataSheetProps) => {
 				backgroundColor: black[600],
 			}}
 			handleStyle={CommonStyles.px_8}
-			snapPoints={[550, 740]}
+			snapPoints={[600, 740]}
 		>
 			<View style={styles.flex1}>
 				<View style={styles.sheetTitle}>
