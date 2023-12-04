@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "LensPlay",
-    "slug": "test",
+    "slug": "lensplay",
     "version": "1.0.2",
     "orientation": "portrait",
     "backgroundColor": "#000000",
@@ -15,7 +15,7 @@
     },
     "updates": {
       "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/dc292891-6e08-49db-8e82-247dd43a39f7"
+      "url": "https://u.expo.dev/3b494bf0-e3fd-4a2c-b484-931ab7394de1"
     },
     "runtimeVersion": {
       "policy": "sdkVersion"
@@ -39,7 +39,7 @@
     "android": {
       "package": "com.lensplayxyz.lensplay",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 11,
+      "versionCode": 12,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#000000"
@@ -91,7 +91,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "dc292891-6e08-49db-8e82-247dd43a39f7"
+        "projectId": "3b494bf0-e3fd-4a2c-b484-931ab7394de1"
       }
     },
     "plugins": [

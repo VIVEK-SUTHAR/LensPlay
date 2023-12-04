@@ -160,7 +160,7 @@ function isLoggedInAsLensPlay() {
 	try {
 		const stdout = execSync("npx expo whoami");
 		const outputString = stdout.toString("utf-8");
-		if (outputString == "lensplay") return true;
+		if (outputString.trim() === "lensplay") return true;
 		else return false;
 	} catch (error) {
 		return false;
