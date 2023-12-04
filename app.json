@@ -29,7 +29,7 @@
       "bundleIdentifier": "com.lensplayxyz.lensplay",
       "icon": "./assets/images/icon.png",
       "backgroundColor": "#000000",
-      "buildNumber": "6.0.0",
+      "buildNumber": "7.0.0",
       "googleServicesFile": "./GoogleService-Info.plist",
       "associatedDomains": [
         "applinks:lensplay.xyz"

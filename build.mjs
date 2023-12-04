@@ -117,7 +117,7 @@ function logEASBuildMessage() {
 
 function submitEASBuildForiOS() {
 	try {
-		const easBuildCommand = `eas build --profile development --platform ios`;
+		const easBuildCommand = `eas build --profile beta --platform ios`;
 
 		const process = spawnSync(easBuildCommand, { shell: true, input: "yes\n", stdio: "inherit" });
 
