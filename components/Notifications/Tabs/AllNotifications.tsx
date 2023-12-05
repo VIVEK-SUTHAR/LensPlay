@@ -147,7 +147,7 @@ function AllNotifications() {
 				getItemLayout={getItemLayout}
 				ListFooterComponent={<MoreLoader />}
 				onEndReached={onEndCallBack}
-				onEndReachedThreshold={0.5}
+				onEndReachedThreshold={0.1}
 				refreshControl={_RefreshControl}
 				renderItem={({ item }) => <NotificationCard notification={item} />}
 			/>

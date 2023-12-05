@@ -97,7 +97,7 @@ export default function BottomTabNavigator({ navigation }: RootStackScreenProps<
 									justifyContent: "center",
 								}}
 							>
-								<Upload height={24} width={24} />
+								{/* <Upload height={24} width={24} /> */}
 							</Pressable>
 							<Pressable
 								onPress={() => {

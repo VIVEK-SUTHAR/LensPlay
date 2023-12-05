@@ -1,29 +1,12 @@
-import { SafeAreaView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { SafeAreaView, StyleSheet, View, useWindowDimensions } from "react-native";
 import React from "react";
 import { useProfile } from "store/Store";
 import QRCodeStyled from "react-native-qrcode-styled";
 import formatHandle from "utils/formatHandle";
 import { HandleInfo } from "customTypes/generated";
 import { black } from "constants/Colors";
-import Tabs, { Tab } from "components/UI/Tabs";
-import ProfileScanner from "./ProfileScanner";
 
 const MyQrTabs = () => {
-	return (
-		<Tabs>
-			<Tab.Screen
-				name="MyQRCode"
-				component={MyQR}
-				options={{
-					title: "Your QR",
-				}}
-			/>
-			<Tab.Screen name="Scan QR" component={ProfileScanner} />
-		</Tabs>
-	);
-};
-
-const MyQR = () => {
 	const { width, height } = useWindowDimensions();
 	const { currentProfile } = useProfile();
 

@@ -4,21 +4,18 @@ import {
 	ActivityIndicator,
 	Dimensions,
 	FlatList,
-	Pressable,
 	RefreshControl,
 	SafeAreaView,
-	ScrollView,
 	StyleSheet,
 	TouchableOpacity,
 	View,
 } from "react-native";
 import ErrorMessage from "../../../components/common/ErrorMesasge";
 import { FlashList } from "@shopify/flash-list";
-import StyledText from "components/UI/StyledText";
 import VideoCardSkeleton from "components/UI/VideoCardSkeleton";
 import VideoCard from "components/VideoCard";
 import Skeleton from "components/common/Skeleton";
-import { black, dark_primary } from "constants/Colors";
+import { black } from "constants/Colors";
 import {
 	type ExplorePublicationRequest,
 	ExplorePublicationType,
@@ -32,30 +29,48 @@ import { useGuestStore } from "store/GuestStore";
 import { useAuthStore, useThemeStore } from "store/Store";
 import Logger from "utils/logger";
 import Chip from "components/common/Chip";
+function convertToCamelCase(inputString: any) {
+	const words = inputString.split("_");
 
+	// Capitalize the first letter of each word
+	const camelCaseWords = words.map((word) => {
+		return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+	});
+
+	// Join the words back together with spaces
+	const camelCaseString = camelCaseWords.join(" ");
+
+	return camelCaseString;
+}
 type ExloreCategories = {
-	name: ExplorePublicationsOrderByType;
+	name: string;
+	value: ExplorePublicationsOrderByType;
 	active: boolean;
 };
 const tags: ExloreCategories[] = [
 	{
-		name: ExplorePublicationsOrderByType.Latest,
+		name: convertToCamelCase(ExplorePublicationsOrderByType.Latest),
+		value: ExplorePublicationsOrderByType.Latest,
 		active: true,
 	},
 	{
-		name: ExplorePublicationsOrderByType.TopCommented,
+		name: convertToCamelCase(ExplorePublicationsOrderByType.TopCommented),
+		value: ExplorePublicationsOrderByType.TopCommented,
 		active: false,
 	},
 	{
-		name: ExplorePublicationsOrderByType.TopCollectedOpenAction,
+		name: convertToCamelCase(ExplorePublicationsOrderByType.TopCollectedOpenAction),
+		value: ExplorePublicationsOrderByType.TopCollectedOpenAction,
 		active: false,
 	},
 	{
-		name: ExplorePublicationsOrderByType.TopMirrored,
+		name: convertToCamelCase(ExplorePublicationsOrderByType.TopMirrored),
+		value: ExplorePublicationsOrderByType.TopMirrored,
 		active: false,
 	},
 	{
-		name: ExplorePublicationsOrderByType.LensCurated,
+		name: convertToCamelCase(ExplorePublicationsOrderByType.LensCurated),
+		value: ExplorePublicationsOrderByType.LensCurated,
 		active: false,
 	},
 ];
@@ -69,7 +84,7 @@ export default function Trending() {
 
 	const abortController = React.useRef(new AbortController());
 	const QueryRequest: ExplorePublicationRequest = {
-		orderBy: currentTag.name,
+		orderBy: currentTag.value,
 		limit: LimitType.Ten,
 		where: {
 			metadata: {

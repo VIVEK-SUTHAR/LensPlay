@@ -12,7 +12,7 @@ const AvatarGroup = (props: Props) => {
 		<View style={styles.row}>
 			{props.avatarUrls.map((item, index) => {
 				if (index == 0) return <Avatar src={item} height={36} width={36} />;
-				if (index == 5) return;
+				if (index > 5) return;
 				return <Avatar src={item} height={36} width={36} mx={-4} />;
 			})}
 		</View>
