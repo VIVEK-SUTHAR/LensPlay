@@ -86,9 +86,10 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const { setVideoURI, uri } = useVideoURLStore();
 
 	const LENS_MEDIA_URL = metadata?.asset?.video?.raw?.uri;
+
 	useFocusEffect(
 		React.useCallback(() => {
-			if (metadata.asset?.video?.optimized?.uri?.includes("https://lp-playback.com")) {
+			if (metadata.asset?.video?.optimized?.uri) {
 				setVideoURI(metadata.asset?.video?.optimized?.uri);
 				return;
 			}

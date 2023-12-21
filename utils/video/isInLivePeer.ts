@@ -16,6 +16,6 @@ async function checkIfLivePeerAsset(ipfsOrArweaveHash: string) {
 			//   console.log(jsonData[0].playbackUrl);
 			return jsonData[0].playbackUrl;
 		}
-	} catch (error) {}
+	} catch (error) { }
 }
 export default checkIfLivePeerAsset;
