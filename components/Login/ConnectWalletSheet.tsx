@@ -8,13 +8,12 @@ import Button from "components/UI/Button";
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
 import { AUTH, GUEST_MODE } from "constants/tracking";
-import { Scalars, useProfilesLazyQuery, useProfilesManagedLazyQuery } from "customTypes/generated";
+import { Scalars, useProfilesManagedLazyQuery } from "customTypes/generated";
 import React from "react";
 import { Pressable, View } from "react-native";
 import { useGuestStore } from "store/GuestStore";
 import { useProfile } from "store/Store";
 import TrackAction from "utils/Track";
-import getProfiles from "utils/lens/getProfiles";
 import Logger from "utils/logger";
 import { useAccount } from "wagmi";
 
@@ -28,33 +27,35 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 	const { handleGuest } = useGuestStore();
 	const { setCurrentProfile, setHasHandle } = useProfile();
 	const [getManagedProfiles] = useProfilesManagedLazyQuery();
+	const { open, close } = useWeb3Modal();
+	const { address, isConnected } = useAccount();
+	const { open: isOpen } = useWeb3ModalState();
 
-	async function HandleDefaultProfile(adress: Scalars["EvmAddress"]) {
-		const userDefaultProfile = await getManagedProfiles({
-			variables: {
-				request: {
-					for: adress,
-				},
-			},
-		});
-		Logger.Log("Boom Booms", userDefaultProfile.data?.profilesManaged);
+	async function HandleDefaultProfile(address: Scalars["EvmAddress"]) {
 		try {
-			if (userDefaultProfile) {
+			const userDefaultProfile = await getManagedProfiles({
+				variables: {
+					request: {
+						for: address,
+					},
+				},
+			});
+			Logger.Log("Boom Booms", userDefaultProfile.data?.profilesManaged?.items);
+			if (
+				userDefaultProfile?.data?.profilesManaged?.items?.length &&
+				userDefaultProfile?.data?.profilesManaged?.items?.length > 0
+			) {
 				setHasHandle(true);
 				return userDefaultProfile.data?.profilesManaged;
 			} else {
 				setHasHandle(false);
 				setCurrentProfile(undefined);
-				navigation.navigate("LoginWithLens");
+				return null;
 			}
 		} catch (error) {
 			console.log(error);
 		}
 	}
-
-	const { open, close } = useWeb3Modal();
-	const { address, isConnected, isDisconnected } = useAccount();
-	const { open: isOpen, selectedNetworkId } = useWeb3ModalState();
 
 	const handleConnectWallet = async () => {
 		if (isConnected && address) {
@@ -69,6 +70,7 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 			handleGuest(false);
 
 			const profiles = await HandleDefaultProfile(address);
+			if (!profiles) return;
 			const isDeskTopLogin = await AsyncStorage.getItem("@viaDeskTop");
 			if (isDeskTopLogin) {
 				await AsyncStorage.removeItem("@viaDeskTop");
@@ -128,7 +130,6 @@ export default function ConnectWalletSheet({ loginRef, setIsloading }: ConnectWa
 					py={16}
 					icon={<Icon name="wallet" color={black[700]} size={20} />}
 				/>
-				{/* <Web3Button /> */}
 				<View
 					style={{
 						flexDirection: "row",
