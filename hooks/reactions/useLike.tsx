@@ -23,7 +23,7 @@ export default function useLike() {
 						return { ...existingValue, upvote: value, downvote: !value };
 					},
 					stats: (existingValue) => {
-						return { ...existingValue, reactions: existingValue + 1 };
+						return { ...existingValue, reactions: value ? existingValue + 1 : existingValue };
 					},
 				},
 			});
@@ -50,8 +50,8 @@ export default function useLike() {
 				Logger.Log("Liked Publication", data);
 			},
 			onError: (error) => {
-				Logger.Log('Yeh error hai', error);
-			}
+				Logger.Log("Yeh error hai", error);
+			},
 		});
 	};
 
@@ -70,8 +70,8 @@ export default function useLike() {
 				},
 			},
 			onError: (error) => {
-				Logger.Log('Yeh error hai', error);
-			}
+				Logger.Log("Yeh error hai", error);
+			},
 		});
 	};
 

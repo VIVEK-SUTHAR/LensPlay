@@ -42,10 +42,11 @@ const LikeButton: React.FC<LikeButtonProps> = ({
 			toast.error("Please Login to like");
 			return;
 		}
-		if (!isalreadyLiked) {
+		if (!isLiked) {
 			if (bytes) {
 				Logger.Log("This is bytes and this is not already liked", isalreadyLiked);
 				setLikeCount(likeCount + 1);
+				// setIsAlreadyLiked!(true);
 				setIsLiked(true);
 			} else {
 				setVideoPageStats(true, false, like + 1);
@@ -61,7 +62,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
 			} else {
 				setVideoPageStats(false, false, like - 1);
 			}
-			removeLike(activePublication!);
+			removeLike(bytes ? shotPublication! : activePublication!);
 		}
 	};
 
