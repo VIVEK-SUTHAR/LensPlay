@@ -1,9 +1,9 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import Slider from "@react-native-community/slider";
 import SecondBackward from "assets/Icons/SecondBackward";
 import SecondForward from "assets/Icons/SecondForward";
 import { AVPlaybackStatus, Audio, Video } from "expo-av";
 import React, { useEffect, useRef, useState } from "react";
+import { Slider } from "react-native-awesome-slider";
 import {
 	ActivityIndicator,
 	Animated,
@@ -15,7 +15,7 @@ import {
 	View,
 } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { runOnJS } from "react-native-reanimated";
+import { runOnJS, useSharedValue } from "react-native-reanimated";
 import { ControlStates, ErrorSeverity, PlaybackStates, Props } from "../../types/Videoplayer/index";
 import { defaultProps } from "./props";
 import {
@@ -295,6 +295,14 @@ const Player = (tempProps: Props) => {
 			runOnJS(fastBackward)();
 		});
 
+	const progress = useSharedValue(
+		playbackInstanceInfo.duration
+			? playbackInstanceInfo.position / playbackInstanceInfo.duration
+			: 0
+	);
+	const min = useSharedValue(0);
+	const max = useSharedValue(playbackInstanceInfo.duration);
+
 	return (
 		<View
 			style={{
@@ -485,15 +493,10 @@ const Player = (tempProps: Props) => {
 						>
 							{props.slider.visible && (
 								<Slider
-									{...sliderProps}
 									style={[styles.slider, props.slider.style]}
-									// tapToSeek={true}
-									// thumbImage={require("../../assets/images/thumb.png")}
-									value={
-										playbackInstanceInfo.duration
-											? playbackInstanceInfo.position / playbackInstanceInfo.duration
-											: 0
-									}
+									progress={progress}
+									minimumValue={min}
+									maximumValue={max}
 									onSlidingStart={() => {
 										if (playbackInstanceInfo.state === PlaybackStates.Playing) {
 											togglePlay();

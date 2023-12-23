@@ -67,6 +67,7 @@
 		"react-dom": "18.2.0",
 		"react-native": "0.71.8",
 		"react-native-avoid-softinput": "^4.0.1",
+		"react-native-awesome-slider": "^2.4.6",
 		"react-native-gesture-handler": "~2.9.0",
 		"react-native-get-random-values": "~1.9.0",
 		"react-native-image-colors": "^2.3.0",
@@ -120,6 +121,6 @@
 	},
 	"private": true,
 	"resolutions": {
-		"@expo/config-plugins":"~6.0.0"
+		"@expo/config-plugins": "~6.0.0"
 	}
 }
