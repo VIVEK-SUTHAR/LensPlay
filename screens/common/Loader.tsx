@@ -60,7 +60,10 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 		if (userDefaultProfile) {
 			setHasHandle(true);
 			setCurrentProfile(userDefaultProfile as Profile);
-			Logger.Warn("Back to handle default profile with data", userDefaultProfile);
+			Logger.Warn(
+				"Back to handle default profile with data",
+				userDefaultProfile
+			);
 		} else {
 			setHasHandle(false);
 		}
@@ -92,7 +95,10 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 			}
 
 			if (userTokens) {
-				Logger.Warn("UserTokens from Local Storage", JSON.stringify(userTokens));
+				Logger.Warn(
+					"UserTokens from Local Storage",
+					JSON.stringify(userTokens)
+				);
 				Logger.Success("Got Tokens and Data ");
 				const accessToken = JSON.parse(userTokens).accessToken;
 				const refreshToken = JSON.parse(userTokens).refreshToken;
@@ -268,7 +274,10 @@ export default function Loader({ navigation }: RootStackScreenProps<"Loader">) {
 					TextAnimationStyle,
 				]}
 			>
-				<Heading title={"LensPlay"} style={{ color: "white", fontSize: 40, fontWeight: "600" }} />
+				<Heading
+					title={"LensPlay"}
+					style={{ color: "white", fontSize: 40, fontWeight: "600" }}
+				/>
 			</Animated.View>
 		</View>
 	);

@@ -1,22 +1,31 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import Slider from "@react-native-community/slider";
 import SecondBackward from "assets/Icons/SecondBackward";
 import SecondForward from "assets/Icons/SecondForward";
 import { AVPlaybackStatus, Audio, Video } from "expo-av";
+import { Image } from "expo-image";
 import React, { useEffect, useRef, useState } from "react";
 import {
 	ActivityIndicator,
 	Animated,
 	Dimensions,
-	Platform,
 	StyleSheet,
 	Text,
 	TouchableWithoutFeedback,
 	View,
 } from "react-native";
+import { Slider } from "react-native-awesome-slider";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { runOnJS } from "react-native-reanimated";
-import { ControlStates, ErrorSeverity, PlaybackStates, Props } from "../../types/Videoplayer/index";
+import {
+	runOnJS,
+	useDerivedValue,
+	useSharedValue,
+} from "react-native-reanimated";
+import {
+	ControlStates,
+	ErrorSeverity,
+	PlaybackStates,
+	Props,
+} from "../../types/Videoplayer/index";
 import { defaultProps } from "./props";
 import {
 	ErrorMessage,
@@ -25,6 +34,8 @@ import {
 	getMinutesSecondsFromMilliseconds,
 	styles,
 } from "./utils";
+
+const hitSlop = { left: 28, bottom: 28, right: 28, top: 28 };
 
 const Player = (tempProps: Props) => {
 	const props = deepMerge(defaultProps, tempProps) as Props;
@@ -35,17 +46,32 @@ const Player = (tempProps: Props) => {
 	const header = props.header;
 
 	const [errorMessage, setErrorMessage] = useState("");
-	const controlsOpacity = useRef(new Animated.Value(props.defaultControlsVisible ? 1 : 0)).current;
+	const controlsOpacity = useRef(
+		new Animated.Value(props.defaultControlsVisible ? 1 : 0)
+	).current;
 	const [controlsState, setControlsState] = useState(
 		props.defaultControlsVisible ? ControlStates.Visible : ControlStates.Hidden
 	);
 	const [playbackInstanceInfo, setPlaybackInstanceInfo] = useState({
 		position: 0,
 		duration: 0,
-		state: props.videoProps.source ? PlaybackStates.Loading : PlaybackStates.Error,
+		state: props.videoProps.source
+			? PlaybackStates.Loading
+			: PlaybackStates.Error,
 	});
+	const progress = useDerivedValue(() => {
+		if (playbackInstanceInfo.duration === 0) {
+			return 0;
+		}
+		return (
+			(playbackInstanceInfo.position / playbackInstanceInfo.duration) * 100
+		);
+	}, [playbackInstanceInfo.position, playbackInstanceInfo.duration]);
+	const min = useSharedValue(0);
+	const max = useSharedValue(100);
+	const isScrubbing = useSharedValue(false);
 
-	// We need to extract ref, because of misstypes in <Slider />
+	// We need to extract ref, because of misstypes in <r />
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { ref: sliderRef, ...sliderProps } = props.slider;
 	const screenRatio = props.style.width! / props.style.height!;
@@ -77,9 +103,15 @@ const Player = (tempProps: Props) => {
 					"Check https://docs.expo.io/versions/latest/sdk/video/#usage"
 			);
 			setErrorMessage("`Source` is a required in `videoProps`");
-			setPlaybackInstanceInfo({ ...playbackInstanceInfo, state: PlaybackStates.Error });
+			setPlaybackInstanceInfo({
+				...playbackInstanceInfo,
+				state: PlaybackStates.Error,
+			});
 		} else {
-			setPlaybackInstanceInfo({ ...playbackInstanceInfo, state: PlaybackStates.Playing });
+			setPlaybackInstanceInfo({
+				...playbackInstanceInfo,
+				state: PlaybackStates.Playing,
+			});
 		}
 	}, [props.videoProps.source]);
 
@@ -160,7 +192,9 @@ const Player = (tempProps: Props) => {
 			});
 			if (
 				(status.didJustFinish && controlsState === ControlStates.Hidden) ||
-				(status.isBuffering && controlsState === ControlStates.Hidden && initialShow)
+				(status.isBuffering &&
+					controlsState === ControlStates.Hidden &&
+					initialShow)
 			) {
 				animationToggle();
 				initialShow = false;
@@ -169,7 +203,11 @@ const Player = (tempProps: Props) => {
 			if (status.isLoaded === false && status.error) {
 				const errorMsg = `Encountered a fatal error during playback: ${status.error}`;
 				setErrorMessage(errorMsg);
-				props.errorCallback({ type: ErrorSeverity.Fatal, message: errorMsg, obj: {} });
+				props.errorCallback({
+					type: ErrorSeverity.Fatal,
+					message: errorMsg,
+					obj: {},
+				});
 			}
 		}
 	};
@@ -182,7 +220,9 @@ const Player = (tempProps: Props) => {
 		if (playbackInstance !== null) {
 			await playbackInstance.setStatusAsync({
 				shouldPlay,
-				...(playbackInstanceInfo.state === PlaybackStates.Ended && { positionMillis: 0 }),
+				...(playbackInstanceInfo.state === PlaybackStates.Ended && {
+					positionMillis: 0,
+				}),
 			});
 			setPlaybackInstanceInfo({
 				...playbackInstanceInfo,
@@ -221,7 +261,9 @@ const Player = (tempProps: Props) => {
 					justifyContent: "center",
 				}}
 			>
-				{props.icon.loading || <ActivityIndicator {...props.activityIndicator} />}
+				{props.icon.loading || (
+					<ActivityIndicator {...props.activityIndicator} />
+				)}
 			</View>
 		);
 	}
@@ -331,7 +373,9 @@ const Player = (tempProps: Props) => {
 				]}
 			>
 				<Animated.View
-					pointerEvents={controlsState === ControlStates.Visible ? "auto" : "none"}
+					pointerEvents={
+						controlsState === ControlStates.Visible ? "auto" : "none"
+					}
 					style={[
 						styles.topInfoWrapper,
 						{
@@ -358,7 +402,11 @@ const Player = (tempProps: Props) => {
 								opacity: 0.5,
 							}}
 						/>
-						<View pointerEvents={controlsState === ControlStates.Visible ? "auto" : "none"}>
+						<View
+							pointerEvents={
+								controlsState === ControlStates.Visible ? "auto" : "none"
+							}
+						>
 							<View
 								style={[
 									styles.iconWrapper,
@@ -400,11 +448,17 @@ const Player = (tempProps: Props) => {
 								<TouchableButton onPress={togglePlay}>
 									<View>
 										{playbackInstanceInfo.state === PlaybackStates.Buffering &&
-											(props.icon.loading || <ActivityIndicator {...props.activityIndicator} />)}
-										{playbackInstanceInfo.state === PlaybackStates.Playing && props.icon.pause}
-										{playbackInstanceInfo.state === PlaybackStates.Paused && props.icon.play}
-										{playbackInstanceInfo.state === PlaybackStates.Ended && props.icon.replay}
-										{((playbackInstanceInfo.state === PlaybackStates.Ended && !props.icon.replay) ||
+											(props.icon.loading || (
+												<ActivityIndicator {...props.activityIndicator} />
+											))}
+										{playbackInstanceInfo.state === PlaybackStates.Playing &&
+											props.icon.pause}
+										{playbackInstanceInfo.state === PlaybackStates.Paused &&
+											props.icon.play}
+										{playbackInstanceInfo.state === PlaybackStates.Ended &&
+											props.icon.replay}
+										{((playbackInstanceInfo.state === PlaybackStates.Ended &&
+											!props.icon.replay) ||
 											(playbackInstanceInfo.state === PlaybackStates.Playing &&
 												!props.icon.pause) ||
 											(playbackInstanceInfo.state === PlaybackStates.Paused &&
@@ -413,7 +467,8 @@ const Player = (tempProps: Props) => {
 												name={
 													playbackInstanceInfo.state === PlaybackStates.Playing
 														? "pause"
-														: playbackInstanceInfo.state === PlaybackStates.Paused
+														: playbackInstanceInfo.state ===
+														  PlaybackStates.Paused
 														? "play-arrow"
 														: "replay"
 												}
@@ -456,7 +511,9 @@ const Player = (tempProps: Props) => {
 				</TouchableWithoutFeedback>
 
 				<Animated.View
-					pointerEvents={controlsState === ControlStates.Visible ? "auto" : "none"}
+					pointerEvents={
+						controlsState === ControlStates.Visible ? "auto" : "none"
+					}
 					style={[
 						styles.bottomInfoWrapper,
 						{
@@ -467,33 +524,19 @@ const Player = (tempProps: Props) => {
 					<View
 						style={{
 							flex: 1,
-							flexDirection: props.fullscreen.inFullscreen ? "column" : "column-reverse",
+							flexDirection: props.fullscreen.inFullscreen
+								? "column"
+								: "column-reverse",
 						}}
 					>
-						<View
-							style={{
-								...Platform.select({
-									ios: {
-										marginBottom: props.fullscreen.inFullscreen ? -8 : -20,
-										marginVertical: -12,
-									},
-									android: {
-										marginBottom: props.fullscreen.inFullscreen ? -8 : -10,
-									},
-								}),
-							}}
-						>
+						<View hitSlop={hitSlop}>
 							{props.slider.visible && (
 								<Slider
-									{...sliderProps}
+									isScrubbing={isScrubbing}
 									style={[styles.slider, props.slider.style]}
-									// tapToSeek={true}
-									// thumbImage={require("../../assets/images/thumb.png")}
-									value={
-										playbackInstanceInfo.duration
-											? playbackInstanceInfo.position / playbackInstanceInfo.duration
-											: 0
-									}
+									progress={progress}
+									minimumValue={min}
+									maximumValue={max}
 									onSlidingStart={() => {
 										if (playbackInstanceInfo.state === PlaybackStates.Playing) {
 											togglePlay();
@@ -503,8 +546,52 @@ const Player = (tempProps: Props) => {
 											});
 										}
 									}}
-									onSlidingComplete={async (e) => {
-										const position = e * playbackInstanceInfo.duration;
+									markStyle={{ backgroundColor: "red" }}
+									theme={{
+										minimumTrackTintColor: "red",
+									}}
+									renderBubble={() => {
+										return (
+											<View
+												style={{
+													height: 40,
+													width: 70,
+													borderRadius: 4,
+													transform: [{ translateY: -10 }],
+												}}
+											>
+												<Image
+													source={require("../../assets/images/error.png")}
+													style={{
+														resizeMode: "contain",
+														height: "100%",
+														width: "100%",
+													}}
+												/>
+											</View>
+										);
+									}}
+									renderThumb={() => (
+										<View
+											style={{
+												height: 12,
+												width: 12,
+												backgroundColor: "red",
+												borderRadius: 50,
+											}}
+										/>
+									)}
+									containerStyle={{
+										height: 2,
+										backgroundColor: "rgba(255,255,255,0.4)",
+									}}
+									onSlidingComplete={async (currentPosition) => {
+										console.log(currentPosition, "currentPosition");
+
+										const position =
+											(currentPosition / 100) * playbackInstanceInfo.duration;
+										console.log(position, "position");
+
 										if (playbackInstance) {
 											await playbackInstance.setStatusAsync({
 												positionMillis: position,
@@ -535,13 +622,18 @@ const Player = (tempProps: Props) => {
 							>
 								{props.timeVisible && (
 									<Text style={[props.textStyle, styles.timeLeft]}>
-										{getMinutesSecondsFromMilliseconds(playbackInstanceInfo.position)} /
+										{getMinutesSecondsFromMilliseconds(
+											playbackInstanceInfo.position
+										)}{" "}
+										/
 									</Text>
 								)}
 								{props.timeVisible && (
 									<Text style={[props.textStyle, styles.timeRight]}>
 										{" "}
-										{getMinutesSecondsFromMilliseconds(playbackInstanceInfo.duration)}
+										{getMinutesSecondsFromMilliseconds(
+											playbackInstanceInfo.duration
+										)}
 									</Text>
 								)}
 							</View>
@@ -577,11 +669,18 @@ const Player = (tempProps: Props) => {
 									>
 										<View>
 											{!props.fullscreen.inFullscreen && props.icon.fullscreen}
-											{props.fullscreen.inFullscreen && props.icon.exitFullscreen}
-											{((!props.icon.fullscreen && !props.fullscreen.inFullscreen) ||
-												(!props.icon.exitFullscreen && props.fullscreen.inFullscreen)) && (
+											{props.fullscreen.inFullscreen &&
+												props.icon.exitFullscreen}
+											{((!props.icon.fullscreen &&
+												!props.fullscreen.inFullscreen) ||
+												(!props.icon.exitFullscreen &&
+													props.fullscreen.inFullscreen)) && (
 												<MaterialIcons
-													name={props.fullscreen.inFullscreen ? "fullscreen-exit" : "fullscreen"}
+													name={
+														props.fullscreen.inFullscreen
+															? "fullscreen-exit"
+															: "fullscreen"
+													}
 													style={props.icon.style}
 													size={props.icon.size! / 2}
 													color={props.icon.color}

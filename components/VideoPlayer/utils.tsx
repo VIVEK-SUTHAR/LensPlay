@@ -92,5 +92,5 @@ export const styles = StyleSheet.create({
 	},
 	timeLeft: { backgroundColor: "transparent", marginLeft: 5 },
 	timeRight: { backgroundColor: "transparent", marginRight: 5 },
-	slider: { flex: 1, transform: [{ scaleY: Platform.OS === "android" ? 1 : 0.5 }] },
+	slider: { flex: 1 },
 });

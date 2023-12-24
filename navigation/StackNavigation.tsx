@@ -7,7 +7,7 @@ import LoginWithLens from "screens/Auth/LoginWithLens";
 import QRLogin from "screens/Auth/QRLogin";
 import Scanner from "screens/Auth/Scanner";
 import EditProfile from "screens/BottomTabs/Profile/EditProfile";
-import FollowAnalytics from "screens/BottomTabs/Profile/FollowerAnalytics";
+// import FollowAnalytics from "screens/BottomTabs/Profile/FollowerAnalytics";
 import UserStats from "screens/BottomTabs/Profile/UserStats";
 import WatchLater from "screens/BottomTabs/Profile/WatchLater";
 import ShotsComment from "screens/BottomTabs/Shots/ShotsComment";
@@ -382,14 +382,14 @@ export default function StackNavigation() {
 					headerTintColor: theme.PRIMARY,
 				}}
 			/>
-			<Stack.Screen
+			{/* <Stack.Screen
 				name="FollowAnalytics"
 				component={FollowAnalytics}
 				options={{
 					animation: "none",
 					headerTintColor: theme.PRIMARY,
 				}}
-			/>
+			/> */}
 			<Stack.Screen
 				name="MyQR"
 				component={MyQR}

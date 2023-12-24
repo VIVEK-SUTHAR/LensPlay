@@ -4,7 +4,7 @@
 	"compilerOptions": {
 		"jsx": "react",
 		"target": "ES6",
-		"lib": ["es5", "dom"],
+		"lib": ["ES7"],
 		"strict": true,
 		"paths": {
 			"apollo/*": ["./apollo/*"],

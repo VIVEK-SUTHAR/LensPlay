@@ -119,8 +119,9 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 					url={uri}
 					inFullscreen={inFullscreen}
 					setInFullscreen={setInFullsreen}
-				/>
-				<ScrollView>
+					/>
+					
+				<ScrollView >
 					<View style={styles.videoMetadataContainer}>
 						<VideoMeta title={metadata?.title} description={metadata?.content} descRef={descRef} />
 						<VideoCreator

@@ -95,7 +95,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 						/> */}
 						<SettingsItem
 							icon={<Icon name="star" size={24} />}
-							label={"Appereance"}
+							label={"Appearance"}
 							onPress={() => apperenceSheetRef.current?.snapToIndex(0)}
 						/>
 					</View>
