@@ -113,14 +113,17 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	return (
 		<>
 			<SafeAreaView style={styles.container}>
+				
+		
 				<VideoPlayer
 					poster={getIPFSLink(getRawurl(metadata?.asset?.cover))}
 					title={metadata?.title || ""}
 					url={uri}
 					inFullscreen={inFullscreen}
 					setInFullscreen={setInFullsreen}
-				/>
-				<ScrollView>
+					/>
+					
+				<ScrollView >
 					<View style={styles.videoMetadataContainer}>
 						<VideoMeta title={metadata?.title} description={metadata?.content} descRef={descRef} />
 						<VideoCreator
