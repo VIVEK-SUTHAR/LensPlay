@@ -1,0 +1,39 @@
+{
+	"project_info": {
+		"project_number": "965084931176",
+		"project_id": "lensplay-470f9",
+		"storage_bucket": "lensplay-470f9.appspot.com"
+	},
+	"client": [
+		{
+			"client_info": {
+				"mobilesdk_app_id": "1:965084931176:android:f3bcfea4ecc8d221b6c7dd",
+				"android_client_info": {
+					"package_name": "com.lensplayxyz.lensplay"
+				}
+			},
+			"oauth_client": [
+				{
+					"client_id": "965084931176-r06hcehscd43k36nglq22lcq14mp78ir.apps.googleusercontent.com",
+					"client_type": 3
+				}
+			],
+			"api_key": [
+				{
+					"current_key": "AIzaSyA_oU8wr1ZBCtZ2vfknB8sBZB8j0RsuVAY"
+				}
+			],
+			"services": {
+				"appinvite_service": {
+					"other_platform_oauth_client": [
+						{
+							"client_id": "965084931176-r06hcehscd43k36nglq22lcq14mp78ir.apps.googleusercontent.com",
+							"client_type": 3
+						}
+					]
+				}
+			}
+		}
+	],
+	"configuration_version": "1"
+}
