@@ -45,12 +45,10 @@ const Player = (tempProps: Props) => {
 		state: props.videoProps.source ? PlaybackStates.Loading : PlaybackStates.Error,
 	});
 	const progress = useSharedValue(
-		playbackInstanceInfo.duration
-			? playbackInstanceInfo.position / playbackInstanceInfo.duration
-			: 0
+		34
 	);
 	const min = useSharedValue(0);
-	const max = useSharedValue(playbackInstanceInfo.duration);
+	const max = useSharedValue(100);
 
 	// We need to extract ref, because of misstypes in <Slider />
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -507,6 +505,17 @@ const Player = (tempProps: Props) => {
 											});
 										}
 									}}
+									markStyle={{backgroundColor:"red"}}
+									theme={{
+					
+										minimumTrackTintColor: "red",
+									}}
+									
+									renderThumb={() => (
+										<View style={{height:12,width:12,backgroundColor:"red",borderRadius:50}}/>)
+										
+									}
+									containerStyle={{ height: 2,backgroundColor:"rgba(255,255,255,0.4)" }}
 									onSlidingComplete={async (e) => {
 										const position = e * playbackInstanceInfo.duration;
 										if (playbackInstance) {
