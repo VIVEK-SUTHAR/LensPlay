@@ -109,8 +109,9 @@ export default function BottomTabNavigator({
           headerTitle: "",
           headerRight: () => (
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {HeaderIcons.map((icon) => (
+              {HeaderIcons.map((icon,index) => (
                 <Pressable
+                key={`${icon.name}-${index}`}
                   onPress={icon.onPress}
                   style={styles.headerIconContainer}
                 >
@@ -126,6 +127,7 @@ export default function BottomTabNavigator({
       >
         {BottomTabs.map((tab) => (
           <BottomTab.Screen
+          key={`${tab.name}-tab`}
             name={tab.name}
             component={tab.component}
             options={{
