@@ -5,7 +5,9 @@ import Navigation from "./navigation";
 import "@walletconnect/react-native-compat";
 import usePushNotifications from "hooks/usePushNotifications";
 import Provider from "./providers";
+import { startProfiling } from 'react-native-release-profiler'
 
+// startProfiling()
 if (Platform.OS === "android") {
 	if (UIManager.setLayoutAnimationEnabledExperimental) {
 		UIManager.setLayoutAnimationEnabledExperimental(true);

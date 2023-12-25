@@ -17,7 +17,8 @@
 				"buildType": "apk"
 			}
 		},
-		"preview2": {
+		"profile-app": {
+			"channel": "profile",
 			"android": {
 				"gradleCommand": ":app:assembleRelease"
 			}

@@ -1,4 +1,5 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import Profiler from "components/Debug/Profiler";
 import Icon from "components/Icon";
 import ApperenceSheet from "components/settings/ApperenceSheet";
 import ProfileQR from "components/settings/profileQR";
@@ -182,9 +183,10 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 								onPress={() => navigation.push("DebugScreen")}
 							/>
 						</View>
+						
 					</View>
 				) : null}
-
+				<Profiler/>
 				<View
 					style={{
 						marginVertical: 48,
@@ -250,7 +252,7 @@ const Item: FC<SettingsItemProps> = (item: SettingsItemProps) => {
 	);
 };
 
-const SettingsItem = React.memo(Item);
+export const SettingsItem = React.memo(Item);
 
 const styles = StyleSheet.create({
 	container: {
