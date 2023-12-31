@@ -62,6 +62,9 @@ export const SOURCES = ["lensplay", "lenstube","lenstube-bytes","tape"];
 
 export const DEV = __DEV__;
 
+
+export const NOTIFICATIONS_TOPICS_PUBLICATION=["reaction","comment","collect","mirror"]
+export const NOTIFICATIONS_TOPICS_APP=["updates","general"];
 export {
 	LENS_API_ENDPOINT,
 	IPFS_GATEWAY,
@@ -77,5 +80,5 @@ export {
 	APP_NAME,
 	DESCRIPTION,
 	ARWEAVE_GATEWAY,
-	MENTION_REGEX,
+	MENTION_REGEX
 };

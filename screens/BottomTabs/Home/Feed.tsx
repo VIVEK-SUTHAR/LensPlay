@@ -20,6 +20,7 @@ import {
 import type { RootTabScreenProps } from "customTypes/navigation";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { StatusBar } from "expo-status-bar";
+import usePushNotifications from "hooks/usePushNotifications";
 import React, { useState } from "react";
 import {
 	ActivityIndicator,
@@ -32,11 +33,17 @@ import {
 	View,
 } from "react-native";
 import { useGuestStore } from "store/GuestStore";
-import { useActiveVideoFilters, useAuthStore, useProfile, useThemeStore } from "store/Store";
+import {
+	useActiveVideoFilters,
+	useAuthStore,
+	useProfile,
+	useThemeStore,
+} from "store/Store";
 import getAndSaveNotificationToken from "utils/getAndSaveNotificationToken";
 import Logger from "utils/logger";
 
 const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
+	usePushNotifications();
 	const [refreshing, setRefreshing] = useState<boolean>(false);
 	const theme = useThemeStore();
 	const { isGuest } = useGuestStore();
@@ -196,7 +203,7 @@ const Feed = ({ navigation }: RootTabScreenProps<"Home">) => {
 		return (
 			<SafeAreaView style={styles.container}>
 				<StatusBar backgroundColor={"black"} />
-			<CategoriesChip />
+				<CategoriesChip />
 				<Skeleton number={10}>
 					<VideoCardSkeleton />
 				</Skeleton>
