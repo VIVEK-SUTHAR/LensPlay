@@ -4,7 +4,13 @@ import Icon, { IconName } from "components/Icon";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black } from "constants/Colors";
-import { Mirror, Post, PrimaryPublication, Scalars, VideoMetadataV3 } from "customTypes/generated";
+import {
+	Mirror,
+	Post,
+	PrimaryPublication,
+	Scalars,
+	VideoMetadataV3,
+} from "customTypes/generated";
 import { Image } from "expo-image";
 import React, { memo } from "react";
 import { Dimensions, Pressable, TouchableOpacity, View } from "react-native";
@@ -22,7 +28,12 @@ type MyVideoCardProps = {
 	setPublication: (publication: Mirror | Post) => void;
 };
 
-function MyVideoCard({ publication, id, sheetRef, setPublication }: MyVideoCardProps) {
+function MyVideoCard({
+	publication,
+	id,
+	sheetRef,
+	setPublication,
+}: MyVideoCardProps) {
 	const navigation = useNavigation();
 	const { setActivePublication } = useActivePublication();
 

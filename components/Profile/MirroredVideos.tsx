@@ -2,7 +2,10 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { FlashList } from "@shopify/flash-list";
 import Sheet from "components/Bottom";
 import ErrorMesasge from "components/common/ErrorMesasge";
-import MyVideoCard, { actionListType, SheetProps } from "components/common/MyVideoCard";
+import MyVideoCard, {
+	actionListType,
+	SheetProps,
+} from "components/common/MyVideoCard";
 import ProfileVideoCardSkeleton from "components/common/ProfileVideoCardSkeleton";
 import Skeleton from "components/common/Skeleton";
 import Icon from "components/Icon";
@@ -10,7 +13,7 @@ import Ripple from "components/UI/Ripple";
 import StyledText from "components/UI/StyledText";
 import DeleteVideo from "components/VIdeo/DeleteVideo";
 import { black } from "constants/Colors";
-import { SOURCES } from "constants/index";
+import { LENSPLAY_SITE, SOURCES } from "constants/index";
 import {
 	Mirror,
 	Post,
@@ -23,7 +26,13 @@ import {
 } from "customTypes/generated";
 import useAddWatchLater from "hooks/useAddToWatchLater";
 import React from "react";
-import { ActivityIndicator, FlatList, RefreshControl, Share, View } from "react-native";
+import {
+	ActivityIndicator,
+	FlatList,
+	RefreshControl,
+	Share,
+	View,
+} from "react-native";
 import { useAuthStore, useProfile, useThemeStore } from "store/Store";
 import CommonStyles from "styles/index";
 import { NoVideosFound } from "./AllVideos";
@@ -40,12 +49,15 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 	const { PRIMARY } = useThemeStore();
 	const { currentProfile } = useProfile();
 	const MirroredVideoSheetRef = React.useRef<BottomSheetMethods>(null);
-	const [publication, setPublication] = React.useState<Post | Mirror | null>(null);
+	const [publication, setPublication] = React.useState<Post | Mirror | null>(
+		null
+	);
 	const [refreshing, setRefreshing] = React.useState<boolean>(false);
 
 	const handlePublication = React.useCallback((publication: Post | Mirror) => {
 		setPublication(publication);
 	}, []);
+
 	const QueryRequest: PublicationsRequest = {
 		where: {
 			publicationTypes: [PublicationType.Mirror],
@@ -67,11 +79,15 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 		context: {
 			headers: {
 				"x-access-token": `Bearer ${accessToken}`,
+				origin: LENSPLAY_SITE,
 			},
 		},
-		onError:(e)=>{
-			Logger.Error("Errr in Mirror Videos",e)
-		}
+		onCompleted: (data) => {
+			Logger.Success("publications", data?.publications?.items);
+		},
+		onError: (e) => {
+			Logger.Error("Errr in Mirror Videos", e.message);
+		},
 	});
 
 	const AllMirrorVideos = data?.publications?.items;
@@ -193,7 +209,11 @@ const MirroredVideos: React.FC<MirroredVideosProps> = ({ channelId }) => {
 	);
 };
 
-export const MirroredVideoSheet = ({ sheetRef, publication, profileId }: SheetProps) => {
+export const MirroredVideoSheet = ({
+	sheetRef,
+	publication,
+	profileId,
+}: SheetProps) => {
 	const { currentProfile } = useProfile();
 	const { add, remove } = useAddWatchLater();
 	const deleteRef = React.useRef<BottomSheetMethods>(null);

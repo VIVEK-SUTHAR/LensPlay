@@ -13,7 +13,9 @@ export default function Signless() {
 	const { currentProfile, setCurrentProfile } = useProfileStore();
 	const [isLoading, setIsLoading] = React.useState<boolean>(false);
 	const { handleSignless } = useSignless();
-	const [isSignless, setIsSignless] = React.useState<boolean>(currentProfile?.signless || false);
+	const [isSignless, setIsSignless] = React.useState<boolean>(
+		currentProfile?.signless || false
+	);
 
 	async function ToggleSignless() {
 		try {
@@ -49,10 +51,8 @@ export default function Signless() {
 					color: white[700],
 				}}
 			/>
-
 			<StyledText
-				title="You can enable Lens manager to interact with Hey without signing any of
-      your transactions."
+				title="You can enable Lens manager to interact with Hey without signing any of your transactions."
 				style={{
 					fontSize: 16,
 					fontWeight: "500",
@@ -60,7 +60,6 @@ export default function Signless() {
 					marginTop: 4,
 				}}
 			/>
-
 			<View
 				style={{
 					flexDirection: "row",
@@ -84,7 +83,8 @@ export default function Signless() {
 				{isLoading ? (
 					<ActivityIndicator size={"small"} />
 				) : (
-					<Switch handleOnPress={ToggleSignless} value={isSignless} />
+					// <Switch handleOnPress={ToggleSignless} value={isSignless} />
+					<></>
 				)}
 			</View>
 		</View>

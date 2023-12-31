@@ -29,61 +29,76 @@ const ProfileManagers = () => {
 	});
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<Signless />
-			<View style={{ marginVertical: 16 }}>
-				<Heading
-					title="Profile Managers"
-					style={{
-						fontSize: 20,
-						fontWeight: "600",
-						color: white[700],
-					}}
-				/>
-				<StyledText
-					title="Accounts with control over your profile can act on your behalf."
-					style={{
-						fontSize: 16,
-						fontWeight: "500",
-						color: white[200],
-						marginTop: 4,
-					}}
-				/>
-				<FlatList
-					style={{
-						marginVertical: 16,
-					}}
-					ListEmptyComponent={() => {
-						return (
-							<Heading
-								title=" No profile managers found"
-								style={{
-									color: white[200],
-									fontSize: 16,
-									marginVertical: 64,
-									textAlign: "center",
-									fontWeight: "600",
-								}}
-							/>
-						);
-					}}
-					data={data?.profileManagers?.items}
-					contentContainerStyle={{
-						marginVertical: 16,
-						gap: 8,
-					}}
-					renderItem={({ item }) => <ProfileManagerCard manager={item} />}
-				/>
+		<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+			<View style={styles.container}>
+				<Signless />
+				<View style={{ marginVertical: 16 }}>
+					<Heading
+						title="Profile Managers"
+						style={{
+							fontSize: 20,
+							fontWeight: "600",
+							color: white[700],
+						}}
+					/>
+					<StyledText
+						title="Accounts with control over your profile can act on your behalf."
+						style={{
+							fontSize: 16,
+							fontWeight: "500",
+							color: white[200],
+							marginTop: 4,
+						}}
+					/>
+					<FlatList
+						style={{
+							marginVertical: 16,
+						}}
+						ListEmptyComponent={() => {
+							return (
+								<Heading
+									title=" No profile managers found"
+									style={{
+										color: white[200],
+										fontSize: 16,
+										marginVertical: 64,
+										textAlign: "center",
+										fontWeight: "600",
+									}}
+								/>
+							);
+						}}
+						data={data?.profileManagers?.items}
+						contentContainerStyle={{
+							marginVertical: 16,
+							gap: 8,
+						}}
+						renderItem={({ item }) => <ProfileManagerCard manager={item} />}
+					/>
+				</View>
+				<AddProfileManager addManagerSheetRef={addManagerSheetRef} />
 			</View>
-			<View style={{ alignSelf: "center" }}>
+			<View
+				style={{
+					position: "absolute",
+					bottom: 32,
+					padding: 16,
+					width: "100%",
+					justifyContent: "center",
+					alignItems: "center",
+				}}
+			>
 				<Button
 					title={"Add Manager"}
-					width={dimensions.window.width / 3}
-					textStyle={{ textAlign: "center" }}
-					onPress={()=>{addManagerSheetRef.current?.snapToIndex(0)}}
+					width={"100%"}
+					textStyle={{ textAlign: "center", fontSize: 16, fontWeight: "600" }}
+					onPress={() => {
+						addManagerSheetRef.current?.snapToIndex(0);
+					}}
+					py={16}
+					bg={white[700]}
 				/>
 			</View>
-			<AddProfileManager addManagerSheetRef={addManagerSheetRef} />
 		</SafeAreaView>
 	);
 };
@@ -94,7 +109,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: "black",
-		paddingHorizontal: 4,
+		padding: 16,
 	},
 });
 type manager = {
@@ -163,7 +178,9 @@ function ProfileManagerCard({ manager }: { manager: manager }) {
 						}}
 					>
 						<StyledText
-							title={manager?.isLensManager ? "Managed by Lens" : "Managed by you"}
+							title={
+								manager?.isLensManager ? "Managed by Lens" : "Managed by you"
+							}
 							style={{
 								color: white[600],
 								fontSize: 12,
@@ -176,9 +193,11 @@ function ProfileManagerCard({ manager }: { manager: manager }) {
 			</View>
 			<Button
 				title={"Remove"}
-				textStyle={{ textAlign: "center" }}
+				textStyle={{ textAlign: "center", fontSize: 16 }}
 				onPress={() => {}}
-				width={dimensions.window.width / 4}
+				width={dimensions.window.width / 3}
+				bg={white[700]}
+				py={12}
 			/>
 		</View>
 	);

@@ -41,10 +41,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
-	const [inFullscreen, setInFullsreen] = React.useState<boolean>(false);
 	const { activePublication } = useActivePublication();
 	const { top } = useSafeAreaInsets();
 	const theme = useThemeStore();
+
 	const handleBlur = React.useCallback(() => {
 		setVideoURI("");
 		clearStats();
@@ -56,6 +56,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		const delay = setTimeout(() => {
 			setIsReadyToRender(true);
 		}, 50);
+
 		const blurSubscription = navigation.addListener("blur", handleBlur);
 		const handler = BackHandler.addEventListener(
 			"hardwareBackPress",
@@ -71,16 +72,11 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	}, [activePublication]);
 
 	const { clearStats, setCollectStats, setMirrorStats } = useReactionStore();
+
 	const handleBackButtonClick = React.useCallback(() => {
-		setStatusBarHidden(false, "fade");
-		setInFullsreen(!inFullscreen);
-		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
-		if (!inFullscreen) {
-			navigation.goBack();
-			clearStats();
-			setCollectStats(false, 0);
-			setMirrorStats(false, 0);
-		}
+		clearStats();
+		setCollectStats(false, 0);
+		setMirrorStats(false, 0);
 		return true;
 	}, [navigation]);
 
