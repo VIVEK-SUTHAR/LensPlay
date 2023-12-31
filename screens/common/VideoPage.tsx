@@ -9,7 +9,6 @@ import MirrorVideoSheet from "components/VIdeo/Actions/MirrorVideoSheet";
 import VideoActions from "components/VIdeo/Actions/VideoActions";
 import MoreVideos from "components/VIdeo/MoreVideos";
 import VideoPageSkeleton from "components/VIdeo/VideoPageSkeleton";
-import VideoPlayer from "components/VideoPlayer";
 import { black } from "constants/Colors";
 import type { HandleInfo, VideoMetadataV3 } from "customTypes/generated";
 import type { RootStackScreenProps } from "customTypes/navigation";
@@ -20,11 +19,16 @@ import {
 	BackHandler,
 	SafeAreaView,
 	ScrollView,
+	StatusBar,
 	StyleSheet,
 	TouchableOpacity,
 	View,
 } from "react-native";
-import { useActivePublication, useReactionStore } from "store/Store";
+import {
+	useActivePublication,
+	useReactionStore,
+	useThemeStore,
+} from "store/Store";
 import useVideoURLStore from "store/videoURL";
 import formatHandle from "utils/formatHandle";
 import getIPFSLink from "utils/getIPFSLink";
@@ -32,12 +36,15 @@ import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
 import createLivePeerAsset from "utils/video/createLivePeerAsset";
 import checkIfLivePeerAsset from "utils/video/isInLivePeer";
+import VideoPlayer from "../../packages/VideoPlayer";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
 	const [inFullscreen, setInFullsreen] = React.useState<boolean>(false);
 	const { activePublication } = useActivePublication();
-
+	const { top } = useSafeAreaInsets();
+	const theme = useThemeStore();
 	const handleBlur = React.useCallback(() => {
 		setVideoURI("");
 		clearStats();
@@ -50,7 +57,10 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 			setIsReadyToRender(true);
 		}, 50);
 		const blurSubscription = navigation.addListener("blur", handleBlur);
-		const handler = BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+		const handler = BackHandler.addEventListener(
+			"hardwareBackPress",
+			handleBackButtonClick
+		);
 
 		//Clean-Up Listeners
 		return () => {
@@ -112,18 +122,27 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 
 	return (
 		<>
-			<SafeAreaView style={styles.container}>
-				<VideoPlayer
-					poster={getIPFSLink(getRawurl(metadata?.asset?.cover))}
-					title={metadata?.title || ""}
-					url={uri}
-					inFullscreen={inFullscreen}
-					setInFullscreen={setInFullsreen}
+			<SafeAreaView style={[styles.container, { paddingTop: top }]}>
+				<View style={{ justifyContent: "center", alignItems: "center" }}>
+					<VideoPlayer
+						source={{
+							uri: uri,
+						}}
+						poster={{
+							uri: getIPFSLink(getRawurl(metadata?.asset?.cover)),
+						}}
+						sliderTheme={{
+							minimumTrackTintColor: theme.PRIMARY,
+						}}
 					/>
-					
-				<ScrollView >
+				</View>
+				<ScrollView style={{ backgroundColor: "black" }}>
 					<View style={styles.videoMetadataContainer}>
-						<VideoMeta title={metadata?.title} description={metadata?.content} descRef={descRef} />
+						<VideoMeta
+							title={metadata?.title}
+							description={metadata?.content}
+							descRef={descRef}
+						/>
 						<VideoCreator
 							profileId={activePublication?.by?.id}
 							avatarLink={getRawurl(activePublication?.by?.metadata?.picture)}
@@ -131,7 +150,10 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 								activePublication?.by?.metadata?.displayName ||
 								formatHandle(activePublication?.by?.handle as HandleInfo)
 							}
-							alreadyFollowing={activePublication?.by?.operations?.isFollowedByMe?.value || false}
+							alreadyFollowing={
+								activePublication?.by?.operations?.isFollowedByMe?.value ||
+								false
+							}
 						/>
 					</View>
 					<VideoActions mirrorRef={mirrorRef} />
