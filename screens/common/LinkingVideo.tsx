@@ -6,13 +6,20 @@ import CollectVideoSheet from "components/VIdeo/Actions/CollectVideoSheet";
 import MetaDataSheet from "components/VIdeo/Actions/MetaDataSheet";
 import MirrorVideoSheet from "components/VIdeo/Actions/MirrorVideoSheet";
 import MoreVideos from "components/VIdeo/MoreVideos";
-import VideoPlayer from "components/VideoPlayer";
 import { black } from "constants/Colors";
 import { Post, usePublicationDetailsLazyQuery } from "customTypes/generated";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { setStatusBarHidden } from "expo-status-bar";
+import VideoPlayer from "../../packages/VideoPlayer";
 import React, { useEffect, useRef, useState } from "react";
-import { BackHandler, Dimensions, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import {
+	BackHandler,
+	Dimensions,
+	SafeAreaView,
+	ScrollView,
+	StyleSheet,
+	View,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import useVideoURLStore from "store/videoURL";
 import getImageProxyURL from "utils/getImageProxyURL";
@@ -35,12 +42,20 @@ import getIPFSLink from "../../utils/getIPFSLink";
 import getRawurl from "../../utils/getRawUrl";
 import { RootStackScreenProps } from "customTypes/navigation";
 
-const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo">) => {
+const LinkingVideo = ({
+	navigation,
+	route,
+}: RootStackScreenProps<"LinkingVideo">) => {
 	const [inFullscreen, setInFullsreen] = useState<boolean>(false);
 	const [isMute, setIsMute] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
-	const { videopageStats, setVideoPageStats, clearStats, setCollectStats, setMirrorStats } =
-		useReactionStore();
+	const {
+		videopageStats,
+		setVideoPageStats,
+		clearStats,
+		setCollectStats,
+		setMirrorStats,
+	} = useReactionStore();
 	const { activePublication, setActivePublication } = useActivePublication();
 
 	function handleBackButtonClick() {
@@ -96,9 +111,13 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 				);
 			}
 			if (
-				activePublication?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")
+				activePublication?.metadata?.media[0]?.optimized?.url?.includes(
+					"https://lp-playback.com"
+				)
 			) {
-				setVideoURI(feed?.data?.publication?.metadata?.media[0]?.optimized?.url);
+				setVideoURI(
+					feed?.data?.publication?.metadata?.media[0]?.optimized?.url
+				);
 				return;
 			}
 			setVideoURI(feed?.data?.publication?.metadata?.media[0]?.original?.url);
@@ -136,8 +155,12 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 						paddingHorizontal: 5,
 					}}
 				>
-					<View style={{ height: 15, width: 150, backgroundColor: "gray" }}></View>
-					<View style={{ height: 15, width: 35, backgroundColor: "gray" }}></View>
+					<View
+						style={{ height: 15, width: 150, backgroundColor: "gray" }}
+					></View>
+					<View
+						style={{ height: 15, width: 35, backgroundColor: "gray" }}
+					></View>
 				</View>
 				<View
 					style={{
@@ -158,7 +181,9 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 							}}
 						/>
 						<View style={{ marginHorizontal: 8 }}>
-							<View style={{ height: 8, width: 100, backgroundColor: "gray" }}></View>
+							<View
+								style={{ height: 8, width: 100, backgroundColor: "gray" }}
+							></View>
 							<View
 								style={{
 									height: 8,
@@ -193,19 +218,23 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 			<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
 				{uri?.length > 0 ? (
 					<VideoPlayer
-						poster={getRawurl(activePublication?.metadata?.cover)}
-						title={activePublication?.metadata?.name || ""}
-						url={uri}
-						inFullscreen={inFullscreen}
-						isMute={isMute}
-						setInFullscreen={setInFullsreen}
-						setIsMute={setIsMute}
+						source={{
+							uri: uri,
+						}}
+						poster={{
+							uri: getIPFSLink(getRawurl(metadata?.asset?.cover)),
+						}}
+						sliderTheme={{
+							minimumTrackTintColor: theme.PRIMARY,
+						}}
 					/>
 				) : (
 					<LPImage
 						source={{
 							uri: getImageProxyURL({
-								formattedLink: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
+								formattedLink: getIPFSLink(
+									getRawurl(activePublication?.metadata?.cover)
+								),
 							}),
 						}}
 						style={{
@@ -226,8 +255,13 @@ const LinkingVideo = ({ navigation, route }: RootStackScreenProps<"LinkingVideo"
 						<VideoCreator
 							profileId={activePublication?.profile?.id}
 							avatarLink={getRawurl(activePublication?.profile?.picture)}
-							uploadedBy={activePublication?.profile?.name || activePublication?.profile?.handle}
-							alreadyFollowing={activePublication?.profile?.isFollowedByMe || false}
+							uploadedBy={
+								activePublication?.profile?.name ||
+								activePublication?.profile?.handle
+							}
+							alreadyFollowing={
+								activePublication?.profile?.isFollowedByMe || false
+							}
 						/>
 					</View>
 					<ScrollView
