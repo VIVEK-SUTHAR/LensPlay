@@ -14,7 +14,6 @@ import type { HandleInfo, VideoMetadataV3 } from "customTypes/generated";
 import type { RootStackScreenProps } from "customTypes/navigation";
 import React from "react";
 import {
-	BackHandler,
 	SafeAreaView,
 	ScrollView,
 	StyleSheet,
@@ -55,27 +54,15 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		}, 50);
 
 		const blurSubscription = navigation.addListener("blur", handleBlur);
-		const handler = BackHandler.addEventListener(
-			"hardwareBackPress",
-			handleBackButtonClick
-		);
 
 		//Clean-Up Listeners
 		return () => {
 			clearTimeout(delay);
 			blurSubscription();
-			handler.remove();
 		};
 	}, [activePublication]);
 
 	const { clearStats, setCollectStats, setMirrorStats } = useReactionStore();
-
-	const handleBackButtonClick = React.useCallback(() => {
-		clearStats();
-		setCollectStats(false, 0);
-		setMirrorStats(false, 0);
-		return true;
-	}, [navigation]);
 
 	const collectRef = React.useRef<BottomSheetMethods>(null);
 	const mirrorRef = React.useRef<BottomSheetMethods>(null);
