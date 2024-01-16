@@ -51,7 +51,7 @@ export default function Signless() {
 				}}
 			/>
 			<StyledText
-				title="You can enable Lens manager to interact with Hey without signing any of your transactions."
+				title="You can enable Lens manager to interact with LensPlay without signing any of your transactions."
 				style={{
 					fontSize: 16,
 					fontWeight: "500",
@@ -83,7 +83,6 @@ export default function Signless() {
 					<ActivityIndicator size={"small"} />
 				) : (
 					<Switch handleOnPress={ToggleSignless} value={isSignless} />
-					
 				)}
 			</View>
 		</View>
