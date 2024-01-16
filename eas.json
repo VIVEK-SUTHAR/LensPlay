@@ -31,5 +31,13 @@
 		"prod": {
 			"channel": "prod"
 		}
+	},
+	"submit": {
+		"production": {
+			"ios": {
+				"appleId": "lensplay.ac@gmail.com",
+				"appleTeamId": "YQN789HJYN"
+			}
+		}
 	}
 }
