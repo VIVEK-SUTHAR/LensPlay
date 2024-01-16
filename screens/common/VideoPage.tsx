@@ -12,18 +12,15 @@ import VideoPageSkeleton from "components/VIdeo/VideoPageSkeleton";
 import { black } from "constants/Colors";
 import type { HandleInfo, VideoMetadataV3 } from "customTypes/generated";
 import type { RootStackScreenProps } from "customTypes/navigation";
-import * as ScreenOrientation from "expo-screen-orientation";
-import { setStatusBarHidden } from "expo-status-bar";
 import React from "react";
 import {
-	BackHandler,
 	SafeAreaView,
 	ScrollView,
-	StatusBar,
 	StyleSheet,
 	TouchableOpacity,
-	View,
+	View
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
 	useActivePublication,
 	useReactionStore,
@@ -37,7 +34,6 @@ import Logger from "utils/logger";
 import createLivePeerAsset from "utils/video/createLivePeerAsset";
 import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 import VideoPlayer from "../../packages/VideoPlayer";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
@@ -58,27 +54,15 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		}, 50);
 
 		const blurSubscription = navigation.addListener("blur", handleBlur);
-		const handler = BackHandler.addEventListener(
-			"hardwareBackPress",
-			handleBackButtonClick
-		);
 
 		//Clean-Up Listeners
 		return () => {
 			clearTimeout(delay);
 			blurSubscription();
-			handler.remove();
 		};
 	}, [activePublication]);
 
 	const { clearStats, setCollectStats, setMirrorStats } = useReactionStore();
-
-	const handleBackButtonClick = React.useCallback(() => {
-		clearStats();
-		setCollectStats(false, 0);
-		setMirrorStats(false, 0);
-		return true;
-	}, [navigation]);
 
 	const collectRef = React.useRef<BottomSheetMethods>(null);
 	const mirrorRef = React.useRef<BottomSheetMethods>(null);

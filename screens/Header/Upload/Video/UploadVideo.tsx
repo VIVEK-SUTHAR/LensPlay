@@ -2,23 +2,28 @@ import Icon from "components/Icon";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
-import Player from "components/VideoPlayer/Player";
 import type { RootStackScreenProps } from "customTypes/navigation";
-import { ResizeMode, Video } from "expo-av";
+import { Video } from "expo-av";
 import * as ImagePicker from "expo-image-picker";
 import React, { useEffect, useRef, useState } from "react";
 import { Dimensions, Image, Pressable, SafeAreaView, View } from "react-native";
+import { useThemeStore } from "store/Store";
 import { useUploadStore } from "store/UploadStore";
 import generateThumbnail from "utils/generateThumbnails";
 import Logger from "utils/logger";
+import VideoPlayer from "../../../../packages/VideoPlayer";
 
-export default function UploadVideo({ navigation, route }: RootStackScreenProps<"UploadVideo">) {
+export default function UploadVideo({
+	navigation,
+	route,
+}: RootStackScreenProps<"UploadVideo">) {
 	const [coverPic, setCoverPic] = useState<string | null>(null);
 	const [thumbnails, setThumbnails] = useState<string[]>([]);
 	const [selectedCover, setSelectedCover] = useState<number>(0);
-	const videoRef = useRef<Video>();
+	const videoRef = useRef<Video>(null);
 	const windowHeight = Dimensions.get("window").height;
 	const { setURLs } = useUploadStore();
+	const { PRIMARY } = useThemeStore();
 
 	const ThumbnailSkeleton = () => {
 		return (
@@ -38,7 +43,10 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 
 	async function getThumbnails() {
 		try {
-			const data = await generateThumbnail(route.params.localUrl, route.params.duration);
+			const data = await generateThumbnail(
+				route.params.localUrl,
+				route.params.duration
+			);
 			if (data) {
 				setThumbnails(data);
 			}
@@ -76,34 +84,14 @@ export default function UploadVideo({ navigation, route }: RootStackScreenProps<
 				backgroundColor: "black",
 			}}
 		>
-			<Pressable
-				style={{
-					height: windowHeight / 4,
-					width: "100%",
+			<VideoPlayer
+				source={{
+					uri: route?.params?.localUrl,
 				}}
-			>
-				<Player
-					videoProps={{
-						source: {
-							uri: route?.params?.localUrl,
-						},
-						shouldPlay: true,
-						resizeMode: ResizeMode.CONTAIN,
-						volume: 0.5,
-						ref: videoRef as React.MutableRefObject<Video>,
-					}}
-					style={{
-						height: windowHeight / 4,
-					}}
-					slider={{
-						visible: false,
-					}}
-					timeVisible={false}
-					fullscreen={{
-						visible: false,
-					}}
-				/>
-			</Pressable>
+				sliderTheme={{
+					minimumTrackTintColor: PRIMARY,
+				}}
+			/>
 			<View
 				style={{
 					padding: 8,

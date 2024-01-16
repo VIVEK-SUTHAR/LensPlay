@@ -1,17 +1,18 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
-import React from "react";
-import Heading from "components/UI/Heading";
-import { black, white } from "constants/Colors";
-import StyledText from "components/UI/StyledText";
-import { FlatList } from "react-native-gesture-handler";
-import { HandleInfo, Profile, useProfilesManagedQuery } from "customTypes/generated";
-import { useProfile } from "store/Store";
 import Avatar from "components/UI/Avatar";
+import Heading from "components/UI/Heading";
+import StyledText from "components/UI/StyledText";
+import { white } from "constants/Colors";
+import { Profile, useProfilesManagedQuery } from "customTypes/generated";
+import React from "react";
+import { View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
+import { useProfile } from "store/Store";
+import formatAddress from "utils/formatAddress";
+import formatHandle from "utils/formatHandle";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
-import formatHandle from "utils/formatHandle";
 
-const ProfilesManaged = () => {
+export default function ProfilesManaged() {
 	const { currentProfile } = useProfile();
 	const { data, error, loading } = useProfilesManagedQuery({
 		variables: {
@@ -23,69 +24,54 @@ const ProfilesManaged = () => {
 	});
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<View style={{ marginVertical: 16 }}>
-				<Heading
-					title="Profiles Managed By You"
-					style={{
-						fontSize: 20,
-						fontWeight: "600",
-						color: white[700],
-					}}
-				/>
-				<StyledText
-					title="You are managing below profiles"
-					style={{
-						fontSize: 16,
-						fontWeight: "500",
-						color: white[200],
-						marginTop: 4,
-					}}
-				/>
-				<FlatList
-					style={{
-						marginVertical: 16,
-					}}
-					ListEmptyComponent={() => {
-						return (
-							<Heading
-								title=" No profile managers found"
-								style={{
-									color: white[200],
-									fontSize: 16,
-									marginVertical: 64,
-									textAlign: "center",
-									fontWeight: "600",
-								}}
-							/>
-						);
-					}}
-					data={data?.profilesManaged?.items}
-					contentContainerStyle={{
-						marginVertical: 16,
-						gap: 8,
-					}}
-					renderItem={({ item }) => <MyManagedProfile profile={item as Profile} />}
-				/>
-			</View>
-		</SafeAreaView>
+		<View style={{ marginVertical: 16 }}>
+			<Heading
+				title="Profiles Managed by you"
+				style={{
+					fontSize: 20,
+					fontWeight: "600",
+					color: white[700],
+				}}
+			/>
+			<StyledText
+				title="Profiles under your oversight and management."
+				style={{
+					fontSize: 16,
+					fontWeight: "500",
+					color: white[200],
+					marginTop: 4,
+				}}
+			/>
+			<FlatList
+				style={{
+					marginVertical: 16,
+				}}
+				ListEmptyComponent={() => {
+					return (
+						<Heading
+							title=" No profile managers found"
+							style={{
+								color: white[200],
+								fontSize: 16,
+								marginVertical: 64,
+								textAlign: "center",
+								fontWeight: "600",
+							}}
+						/>
+					);
+				}}
+				data={data?.profilesManaged?.items}
+				contentContainerStyle={{
+					marginVertical: 16,
+					gap: 16,
+				}}
+				renderItem={({ item }) => <ProfileCard profile={item as Profile} />}
+			/>
+		</View>
 	);
-};
+}
 
-export default ProfilesManaged;
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "black",
-		paddingHorizontal: 8,
-	},
-});
-
-type MyManagedProfileProps = {
-	profile: Profile;
-};
-const MyManagedProfile = ({ profile }: MyManagedProfileProps) => {
+function ProfileCard({ profile }: { profile: Profile }) {
 	return (
 		<View
 			style={{
@@ -98,40 +84,44 @@ const MyManagedProfile = ({ profile }: MyManagedProfileProps) => {
 				style={{
 					flexDirection: "row",
 					alignItems: "center",
-					gap: 12,
+					gap: 8,
 				}}
 			>
-				<Avatar src={getIPFSLink(getRawurl(profile?.metadata?.picture))} height={40} width={40} />
+				<Avatar
+					src={getIPFSLink(getRawurl(profile?.metadata?.picture))}
+					height={40}
+					width={40}
+				/>
 				<View>
 					<Heading
-						title={profile?.metadata?.displayName || formatHandle(profile?.handle as HandleInfo)}
+						title={
+							profile?.metadata?.displayName ||
+							formatAddress(profile?.ownedBy as unknown as string)
+						}
 						style={{
 							color: white[600],
 							fontSize: 16,
-							fontWeight: "500",
+							fontWeight: "600",
 						}}
 					/>
-					<View
+					<StyledText
+						title={formatHandle(profile?.handle!)}
 						style={{
-							paddingVertical: 2,
-							paddingHorizontal: 4,
-							backgroundColor: black[400],
-							borderRadius: 4,
-							width: 100,
+							color: white[200],
+							fontSize: 12,
+							textAlign: "center",
 						}}
-					>
-						<StyledText
-							title={"Managed by you"}
-							style={{
-								color: white[600],
-								fontSize: 12,
-								textAlign: "center",
-								fontWeight: "400",
-							}}
-						/>
-					</View>
+					/>
 				</View>
 			</View>
+			{/* <Button
+				title={"Remove"}
+				textStyle={{ textAlign: "center", fontSize: 16 }}
+				onPress={() => {}}
+				width={dimensions.window.width / 3}
+				bg={white[700]}
+				py={12}
+			/> */}
 		</View>
 	);
-};
+}

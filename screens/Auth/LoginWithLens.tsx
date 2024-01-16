@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useWeb3Modal, useWeb3ModalState } from "@web3modal/wagmi-react-native";
 import Login from "assets/Icons/Login";
 import Icon from "components/Icon";
 import Avatar from "components/UI/Avatar";
@@ -6,11 +7,15 @@ import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
-import { LENSPLAY_SITE, LENS_CLAIM_SITE } from "constants/index";
 import StorageKeys from "constants/Storage";
+import { LENSPLAY_SITE, LENS_CLAIM_SITE } from "constants/index";
 import { AUTH } from "constants/tracking";
 import { ToastType } from "customTypes/Store";
-import { HandleInfo, useAuthenticateMutation, useChallengeLazyQuery } from "customTypes/generated";
+import {
+	HandleInfo,
+	useAuthenticateMutation,
+	useChallengeLazyQuery,
+} from "customTypes/generated";
 import type { RootStackScreenProps } from "customTypes/navigation";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
@@ -29,7 +34,6 @@ import formatHandle from "utils/formatHandle";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
-import { useWeb3Modal } from "@web3modal/wagmi-react-native";
 import { useAccount, useSignMessage } from "wagmi";
 
 const windowWidth = Dimensions.get("window").width;
@@ -42,6 +46,7 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 	const toast = useToast();
 
 	const { hasHandle, currentProfile } = useProfile();
+	const { open } = useWeb3Modal();
 
 	const { setAccessToken, setRefreshToken } = useAuthStore();
 
@@ -50,12 +55,9 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 
 	const scaleAnimation = useRef(new Animated.Value(0)).current;
 	const fadeInAnimation = useRef(new Animated.Value(0)).current;
-
-	// const { address, provider, isConnected } = useWalletConnectModal();
-
-	// const { setAccessToken, setRefreshToken } = useAuthStore();
-	const { address,connector } = useAccount();
+	const { address, isConnected } = useAccount();
 	const { signMessageAsync, error } = useSignMessage();
+
 	const handleLoginWithLens = async () => {
 		if (!hasHandle) {
 			void Linking.openURL(LENS_CLAIM_SITE);
@@ -129,9 +131,8 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 	const handleDisconnect = async () => {
 		try {
 			if (address) {
-				await connector?.disconnect();
+				await open();
 			}
-			navigation.replace("LetsGetIn");
 		} catch (error) {
 			if (error instanceof Error) {
 				Logger.Error("Error in disconnect", error);
@@ -163,6 +164,12 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 		}).start();
 		handleDesktop();
 	}, []);
+
+	useEffect(() => {
+		if (!isConnected) {
+			navigation.replace("LetsGetIn");
+		}
+	}, [isConnected]);
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -230,7 +237,11 @@ function LoginWithLens({ navigation }: RootStackScreenProps<"LoginWithLens">) {
 									alignItems: "center",
 								}}
 							>
-								<Avatar src={getRawurl(currentProfile?.metadata?.picture)} height={40} width={40} />
+								<Avatar
+									src={getRawurl(currentProfile?.metadata?.picture)}
+									height={40}
+									width={40}
+								/>
 								<View
 									style={{
 										marginLeft: 8,

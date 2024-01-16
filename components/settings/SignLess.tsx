@@ -6,17 +6,16 @@ import { Profile } from "customTypes/generated";
 import useSignless from "hooks/useSIgnLess";
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
-import useProfileStore from "store/profileStore";
+import { useProfile } from "store/Store";
 import Logger from "utils/logger";
 
 export default function Signless() {
-	const { currentProfile, setCurrentProfile } = useProfileStore();
+	const { currentProfile, setCurrentProfile } = useProfile();
 	const [isLoading, setIsLoading] = React.useState<boolean>(false);
 	const { handleSignless } = useSignless();
 	const [isSignless, setIsSignless] = React.useState<boolean>(
 		currentProfile?.signless || false
 	);
-
 	async function ToggleSignless() {
 		try {
 			setIsLoading(true);
@@ -52,7 +51,7 @@ export default function Signless() {
 				}}
 			/>
 			<StyledText
-				title="You can enable Lens manager to interact with Hey without signing any of your transactions."
+				title="You can enable Lens manager to interact with LensPlay without signing any of your transactions."
 				style={{
 					fontSize: 16,
 					fontWeight: "500",
@@ -83,8 +82,7 @@ export default function Signless() {
 				{isLoading ? (
 					<ActivityIndicator size={"small"} />
 				) : (
-					// <Switch handleOnPress={ToggleSignless} value={isSignless} />
-					<></>
+					<Switch handleOnPress={ToggleSignless} value={isSignless} />
 				)}
 			</View>
 		</View>

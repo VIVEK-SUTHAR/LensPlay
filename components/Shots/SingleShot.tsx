@@ -3,15 +3,14 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import Sheet from "components/Bottom";
 import CommentSheet from "components/Comments/CommentSheet";
-import Icon from "components/Icon";
 import ShotData, { DiscriptionSheet } from "components/Shots/ShotData";
 import ShotReaction from "components/Shots/ShotReaction";
-import Player from "components/VideoPlayer/Player";
 import { black } from "constants/Colors";
 import { PrimaryPublication, VideoMetadataV3 } from "customTypes/generated";
-import { ResizeMode, Video } from "expo-av";
-import React, { MutableRefObject, useEffect, useRef, useState } from "react";
-import { Pressable, useWindowDimensions, View } from "react-native";
+import { AVPlaybackStatus, Audio, ResizeMode, Video } from "expo-av";
+import React, { useEffect, useRef, useState } from "react";
+import { View, useWindowDimensions } from "react-native";
+import { useSharedValue } from "react-native-reanimated";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
@@ -23,10 +22,13 @@ interface SingleShotProps {
 
 function SingleShot({ item, isActive }: SingleShotProps) {
 	const metadata = item.metadata as VideoMetadataV3;
-	const [mute, setMute] = useState(false);
 	const [videoURL, setVideoURL] = useState(
-		getIPFSLink(metadata?.asset?.video?.optimized?.uri || metadata?.asset?.video?.raw?.uri)
+		getIPFSLink(
+			metadata?.asset?.video?.optimized?.uri || metadata?.asset?.video?.raw?.uri
+		)
 	);
+	const duration = useSharedValue(0);
+	const progress = useSharedValue(0);
 
 	const ref = React.useRef<Video>(null);
 	const commentSheetRef = React.useRef<BottomSheetMethods>(null);
@@ -56,21 +58,48 @@ function SingleShot({ item, isActive }: SingleShotProps) {
 		}
 	}, [isFocused, isActive]);
 
-	useEffect(() => {
-		// if (item?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")) {
-		// 	Logger.Success("Got opti", item?.metadata?.media[0]?.optimized?.url);
-		// 	setVideoURL(item?.metadata?.media[0]?.optimized?.url);
-		// 	return;
-		// } else {
-		// 	setVideoURL(getIPFSLink(item?.metadata?.media[0].original.url));
-		// }
-		// checkIfLivePeerAsset(videoURL).then((res) => {
-		// 	if (res) {
-		// 	} else {
-		// 		createLivePeerAsset(videoURL);
-		// 	}
-		// });
-	}, [isActive]);
+	const setAudio = async () => {
+		try {
+			await Audio.setAudioModeAsync({
+				playsInSilentModeIOS: true,
+			});
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
+	const onLoad = (data: AVPlaybackStatus) => {
+		if (data.isLoaded) {
+			const seconds = (data?.durationMillis || 0) / 1000;
+			duration.value = seconds;
+			setAudio();
+		}
+	};
+
+	const onPlaybackStatusUpdate = (e: AVPlaybackStatus) => {
+		try {
+			if (!e.isLoaded) return;
+			progress.value = e.positionMillis / 1000;
+		} catch (error) {
+			Logger.Error("error", error);
+		}
+	};
+
+	// useEffect(() => {
+	// if (item?.metadata?.media[0]?.optimized?.url?.includes("https://lp-playback.com")) {
+	// 	Logger.Success("Got opti", item?.metadata?.media[0]?.optimized?.url);
+	// 	setVideoURL(item?.metadata?.media[0]?.optimized?.url);
+	// 	return;
+	// } else {
+	// 	setVideoURL(getIPFSLink(item?.metadata?.media[0].original.url));
+	// }
+	// checkIfLivePeerAsset(videoURL).then((res) => {
+	// 	if (res) {
+	// 	} else {
+	// 		createLivePeerAsset(videoURL);
+	// 	}
+	// });
+	// }, [isActive]);
 
 	return (
 		<>
@@ -83,54 +112,29 @@ function SingleShot({ item, isActive }: SingleShotProps) {
 					alignItems: "center",
 				}}
 			>
-				<Pressable
-					onPress={() => setMute(!mute)}
+				<Video
+					ref={ref}
+					resizeMode={ResizeMode.COVER}
 					style={{
-						flex: 1,
-						backgroundColor: "cyan",
+						width: "100%",
+						height: "100%",
 					}}
-				>
-					<Player
-						defaultControlsVisible={false}
-						videoProps={{
-							ref: ref as MutableRefObject<Video>,
-							source: {
-								uri: videoURL,
-							},
-							onError(error) {
-								Logger.Error("Video Player Error", error);
-								// console.log(error);
-							},
-							shouldPlay: isActive,
-							resizeMode: ResizeMode.CONTAIN,
-							isMuted: mute,
-							posterSource: {
-								uri: getIPFSLink(getRawurl(metadata?.asset?.cover)),
-							},
-							isLooping: true,
-							posterStyle: {
-								resizeMode: ResizeMode.COVER,
-							},
-						}}
-						slider={{
-							visible: false,
-						}}
-						fullscreen={{
-							visible: false,
-						}}
-						mute={{
-							visible: false,
-						}}
-						timeVisible={false}
-						icon={{
-							size: 48,
-							play: <Icon name="play" size={48} />,
-							pause: <Icon name="pause" size={52} />,
-							replay: <Icon name="replay" size={48} />,
-						}}
-						autoHidePlayer={true}
-					/>
-				</Pressable>
+					usePoster={true}
+					source={{
+						uri: videoURL,
+					}}
+					onLoad={onLoad}
+					onPlaybackStatusUpdate={onPlaybackStatusUpdate}
+					progressUpdateIntervalMillis={1000}
+					posterSource={{
+						uri: getIPFSLink(getRawurl(metadata?.asset?.cover)),
+					}}
+					posterStyle={{
+						height: "100%",
+						width: "100%",
+						resizeMode: "cover",
+					}}
+				/>
 			</View>
 			<ShotData item={item} descriptionRef={descriptionRef} />
 			<ShotReaction item={item} commentRef={commentSheetRef} />

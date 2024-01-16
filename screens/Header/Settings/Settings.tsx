@@ -88,11 +88,11 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 							borderRadius: 12,
 						}}
 					>
-						{/* <SettingsItem
+						<SettingsItem
 							icon={<Icon name="edit" size={24} />}
 							label={"Manage Your Profile"}
 							onPress={() => navigation.push("ProfileManager")}
-						/> */}
+						/>
 						<SettingsItem
 							icon={<Icon name="star" size={24} />}
 							label={"Appearance"}

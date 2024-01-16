@@ -62,6 +62,10 @@ const AddProfileManager = ({ addManagerSheetRef }: Props) => {
 			backgroundStyle={{
 				backgroundColor: black[600],
 			}}
+			style={{
+				
+				zIndex: 100,
+			}}
 		>
 			<BottomSheetScrollView>
 				<View style={styles.p_16}>
