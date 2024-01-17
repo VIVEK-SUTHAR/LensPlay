@@ -4,14 +4,24 @@ import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { AUTH } from "constants/tracking";
 import { ToastType } from "customTypes/Store";
-import { useAuthenticateMutation } from "customTypes/generated";
+import {
+	Profile,
+	useAuthenticateMutation,
+	useProfileLazyQuery
+} from "customTypes/generated";
 import { RootStackScreenProps } from "customTypes/navigation";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { Camera } from "expo-camera";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
+import {
+	ActivityIndicator,
+	Dimensions,
+	SafeAreaView,
+	StyleSheet,
+	View,
+} from "react-native";
 import Animated, {
 	interpolate,
 	useAnimatedStyle,
@@ -22,12 +32,12 @@ import Animated, {
 import { useAuthStore, useProfile, useToast } from "store/Store";
 import TrackAction from "utils/Track";
 import decryptData from "utils/decryptData";
-import getDefaultProfile from "utils/lens/getDefaultProfile";
-import Logger from "utils/logger";
 import storeTokens from "utils/storeTokens";
 import StorageKeys from "constants/Storage";
 
-export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">) {
+export default function Scanner({
+	navigation,
+}: RootStackScreenProps<"Scanner">) {
 	const [permission, requestPermission] = Camera.useCameraPermissions();
 	const [hasData, setHasData] = useState<boolean>(false);
 	const { setAccessToken, setRefreshToken } = useAuthStore();
@@ -37,9 +47,11 @@ export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">)
 	const windowWidth = Dimensions.get("window").width;
 	const scale = useSharedValue(0);
 	const { currentProfile } = useProfile();
-
-	const [getTokens, { data: tokens, error: tokensError, loading: tokenLoading }] =
-		useAuthenticateMutation();
+	const [getProfile] = useProfileLazyQuery();
+	const [
+		getTokens,
+		{ data: tokens, error: tokensError, loading: tokenLoading },
+	] = useAuthenticateMutation();
 
 	const scaleStyle = useAnimatedStyle(() => {
 		return {
@@ -93,18 +105,28 @@ export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">)
 		);
 	}
 
-	async function HandleDefaultProfile(adress: string): Promise<boolean> {
-		console.log('address from qr in default profile');
-		
-		const userDefaultProfile = await getDefaultProfile(adress);
-		
+	async function saveProfile(profileId: string): Promise<boolean> {
+		console.log("address from qr in default profile");
 
-		if (userDefaultProfile) {
-			setCurrentProfile(userDefaultProfile);
+		const { data, error, loading } = await getProfile({
+			variables: {
+				request: {
+					forProfileId: profileId,
+				},
+			},
+		});
+		console.log(data, "data from qr in default profile");
+		if (error) {
+			console.log(error, "error from qr in default profile");
+			return false;
+		}
+		
+		if (data?.profile) {
+			console.log("address from qr in default profile", data.profile);
+			
+			setCurrentProfile(data.profile as Profile);
 			return true;
 		} else {
-			setHasHandle(false);
-
 			return false;
 		}
 	}
@@ -112,8 +134,7 @@ export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">)
 	function isValidQR(data: any) {
 		try {
 			const parsedData = JSON.parse(data);
-
-			if (parsedData?.signature && parsedData?.address) {
+			if (parsedData?.signature && parsedData?.challengeId) {
 				return true;
 			} else {
 				return false;
@@ -135,33 +156,28 @@ export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">)
 		if (isValidData) {
 			const signature = JSON.parse(data.data).signature;
 			const address = JSON.parse(data.data).address;
-			console.log(address, 'address from qr');
-			
-
+			const challengeId = JSON.parse(data.data).challengeId;
+			const pid = JSON.parse(data.data).pid;
+			console.log("Signature", signature);
+			console.log("Address", address);
+			console.log("ChallengeId", challengeId);
+			console.log("pid", pid);
+		
 			await AsyncStorage.setItem(StorageKeys.UserAddress, address);
-
 			try {
 				setHasData(true);
 				const decryptedSignature = await decryptData(signature);
-
-				const result = await HandleDefaultProfile(address);
-
-				if (!result) {
-					console.log('result nhi hai');
-					
-					navigation.replace("LoginWithLens");
-					return;
-				}
-				console.log('here');
-
+				console.log("here");
+				const isProfileSaved = await saveProfile(pid);
+				console.log(isProfileSaved, "isProfileSaved");
+				
 				await AsyncStorage.setItem("@viaDeskTop", "true");
-
-				if (result) {
+				if (isProfileSaved) {
 					setHasHandle(true);
 					const tokens = await getTokens({
 						variables: {
 							request: {
-								address: address,
+								id: challengeId,
 								signature: decryptedSignature,
 							},
 						},
@@ -186,7 +202,7 @@ export default function Scanner({ navigation }: RootStackScreenProps<"Scanner">)
 				}
 			} catch (error) {
 				if (error instanceof Error) {
-					// console.log("[Error]:Error in Scanner", error);
+					console.log("[Error]:Error in Scanner", error);
 					// throw new Error("[Error]:Error in Scanner", {
 					//   cause: error,
 					// });
