@@ -1,18 +1,17 @@
+import { LENSPLAY_SITE } from "constants/index";
 import {
 	ChangeProfileManagerActionType,
 	CreateChangeProfileManagersBroadcastItemResult,
 	useBroadcastOnchainMutation,
 	useCreateChangeProfileManagersTypedDataMutation,
 } from "customTypes/generated";
-import useProfileStore from "store/profileStore";
-import Logger from "utils/logger";
+import { useAuthStore, useProfile } from "store/Store";
 import getSignature from "utils/getSignature";
-import { useAccount, useSignTypedData } from "wagmi";
-import { useAuthStore } from "store/Store";
-import { LENSPLAY_SITE } from "constants/index";
+import Logger from "utils/logger";
+import { useSignTypedData } from "wagmi";
 
 export default function useProfileManager() {
-	const { currentProfile } = useProfileStore();
+	const { currentProfile } = useProfile();
 	const { signTypedDataAsync, error } = useSignTypedData();
 	const { accessToken } = useAuthStore();
 	const [broadcast] = useBroadcastOnchainMutation();
