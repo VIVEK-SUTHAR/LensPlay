@@ -17,17 +17,11 @@ export default function useProfileManager() {
 	const { accessToken } = useAuthStore();
 	const [broadcast] = useBroadcastOnchainMutation();
 
-	const [handleLensManager] = useCreateChangeProfileManagersTypedDataMutation({
-		onError: (error, clientOptions) => {
-			Logger.Success("me yaha", error, clientOptions);
-		},
-	});
+	const [handleLensManager] = useCreateChangeProfileManagersTypedDataMutation();
 
 	async function broadcastProfileManagerTx(id: string, signature: string) {
 		try {
-			if (!currentProfile?.sponsor) return "Nikal";
-
-			console.log("Broadcasting Txns..");
+			if (!currentProfile?.sponsor) return;
 
 			const { data } = await broadcast({
 				variables: {
@@ -37,20 +31,21 @@ export default function useProfileManager() {
 					},
 				},
 			});
-			Logger.Success("Data", data);
+
 			return data;
 		} catch (error) {
 			Logger.Error("useProfileManager, handleLensManager()", error);
 		}
 	}
 
-	async function signProfileManagerMessage(data: CreateChangeProfileManagersBroadcastItemResult) {
+	async function signProfileManagerMessage(
+		data: CreateChangeProfileManagersBroadcastItemResult
+	) {
 		try {
 			Logger.Success("Lens API:Typed Data", data.typedData);
 
 			const message = getSignature(data?.typedData);
 
-			Logger.Success("Formatted Typed Data", message);
 			const sign = await signTypedDataAsync(message);
 
 			if (error) return null;
@@ -64,48 +59,68 @@ export default function useProfileManager() {
 				};
 			}
 			return null;
-		} catch (error) {}
+		} catch (error) {
+			Logger.Error("useProfileManager, signProfileManagerMessage()", error);
+		}
 	}
 
 	const addManager = async (address: string) => {
-		console.log("In Add manager", address);
-
-		const data = await handleLensManager({
-			variables: {
-				request: {
-					changeManagers: [
-						{
-							address,
-							action: ChangeProfileManagerActionType.Add,
-						},
-					],
+		try {
+			const data = await handleLensManager({
+				variables: {
+					request: {
+						changeManagers: [
+							{
+								address,
+								action: ChangeProfileManagerActionType.Add,
+							},
+						],
+					},
 				},
-			},
-			context: {
-				headers: {
-					"x-access-token": `Bearer ${accessToken}`,
-					"origin": LENSPLAY_SITE,
+				context: {
+					headers: {
+						"x-access-token": `Bearer ${accessToken}`,
+						origin: LENSPLAY_SITE,
+					},
 				},
-			},
-		});
+			});
 
-		return data.data?.createChangeProfileManagersTypedData;
+			return data.data?.createChangeProfileManagersTypedData;
+		} catch (error) {
+			Logger.Error("useProfileManager, addManager()", error);
+		}
 	};
 
 	const removeManager = async (address: string) => {
-		return await handleLensManager({
-			variables: {
-				request: {
-					changeManagers: [
-						{
-							address,
-							action: ChangeProfileManagerActionType.Remove,
-						},
-					],
+		try {
+			const data = await handleLensManager({
+				variables: {
+					request: {
+						changeManagers: [
+							{
+								address,
+								action: ChangeProfileManagerActionType.Remove,
+							},
+						],
+					},
 				},
-			},
-		});
+				context: {
+					headers: {
+						"x-access-token": `Bearer ${accessToken}`,
+						origin: LENSPLAY_SITE,
+					},
+				},
+			});
+			return data.data?.createChangeProfileManagersTypedData;
+		} catch (error) {
+			Logger.Error("useProfileManager, removeManager()", error);
+		}
 	};
 
-	return { addManager, removeManager, broadcastProfileManagerTx, signProfileManagerMessage };
+	return {
+		addManager,
+		removeManager,
+		broadcastProfileManagerTx,
+		signProfileManagerMessage,
+	};
 }

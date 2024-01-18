@@ -1,9 +1,9 @@
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { useWeb3Modal } from "@web3modal/wagmi-react-native";
 import Icon from "components/Icon";
 import ApperenceSheet from "components/settings/ApperenceSheet";
 import ProfileQR from "components/settings/profileQR";
 import Socials from "components/settings/Socials";
-import LogOutSheet from "components/Sheets/LogOutSheet";
 import Button from "components/UI/Button";
 import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
@@ -13,8 +13,16 @@ import type { RootStackScreenProps } from "customTypes/navigation";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import React, { FC, useRef } from "react";
-import { Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import {
+	Linking,
+	Pressable,
+	SafeAreaView,
+	ScrollView,
+	StyleSheet,
+	View,
+} from "react-native";
 import { useGuestStore } from "store/GuestStore";
+import { useAccount } from "wagmi";
 
 const RIPPLE_COLOR = "rgba(255,255,255,0.1)";
 
@@ -47,10 +55,13 @@ const SettingItemsList: SettingsItemProps[] = [
 		},
 	},
 ];
+
 const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 	const { isGuest } = useGuestStore();
-	const logoutref = useRef<BottomSheetMethods>(null);
+	const { open } = useWeb3Modal();
+	const { isConnected } = useAccount();
 	const apperenceSheetRef = useRef<BottomSheetMethods>(null);
+
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			headerRight: () => {
@@ -62,6 +73,15 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 			},
 		});
 	}, []);
+
+	React.useEffect(() => {
+		if (!isConnected) {
+			navigation.reset({
+				index: 0,
+				routes: [{ name: "LetsGetIn" }],
+			});
+		}
+	}, [isConnected]);
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -100,7 +120,7 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 						/>
 					</View>
 				</View>
-				<View style={{marginTop:24}}>
+				<View style={{ marginTop: 24 }}>
 					<Heading
 						title={"About"}
 						style={{
@@ -202,8 +222,11 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 						}}
 						onPress={() => {
 							isGuest
-								? navigation.reset({ index: 0, routes: [{ name: "LetsGetIn" }] })
-								: logoutref.current?.snapToIndex(0);
+								? navigation.reset({
+										index: 0,
+										routes: [{ name: "LetsGetIn" }],
+								  })
+								: open();
 						}}
 					/>
 				</View>
@@ -219,7 +242,6 @@ const Settings = ({ navigation }: RootStackScreenProps<"Settings">) => {
 					/>
 				</View>
 			</ScrollView>
-			<LogOutSheet logoutref={logoutref} />
 			<ApperenceSheet apperenceSheetRef={apperenceSheetRef} />
 		</SafeAreaView>
 	);

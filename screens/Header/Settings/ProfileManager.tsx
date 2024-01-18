@@ -1,4 +1,5 @@
 import { type BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import ProfileManagers from "components/settings/ProfileManagers";
 import ProfilesManaged from "components/settings/ProfilesManaged";
 import Signless from "components/settings/SignLess";
 import React from "react";
@@ -14,7 +15,8 @@ export default function ProfileManager() {
 			<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
 				<View style={styles.container}>
 					<Signless />
-					<ProfilesManaged />
+					{/* <ProfilesManaged /> */}
+					<ProfileManagers />
 				</View>
 				{/* <View
 					style={{

@@ -3,6 +3,7 @@ import Heading from "components/UI/Heading";
 import StyledText from "components/UI/StyledText";
 import { white } from "constants/Colors";
 import { Profile, useProfilesManagedQuery } from "customTypes/generated";
+import useProfileManager from "hooks/useProfileManager";
 import React from "react";
 import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -72,6 +73,22 @@ export default function ProfilesManaged() {
 }
 
 function ProfileCard({ profile }: { profile: Profile }) {
+	const {
+		removeManager,
+		signProfileManagerMessage,
+		broadcastProfileManagerTx,
+	} = useProfileManager();
+
+	async function handleRemoveProfile(address: string) {
+		const typedata = await removeManager(address);
+		if (typedata) {
+			const data = await signProfileManagerMessage(typedata);
+			if (data?.id && data?.sign) {
+				await broadcastProfileManagerTx(data.id, data.sign);
+			}
+		}
+	}
+
 	return (
 		<View
 			style={{
