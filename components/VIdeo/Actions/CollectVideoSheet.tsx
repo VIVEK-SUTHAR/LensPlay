@@ -9,12 +9,12 @@ import Heading from "components/UI/Heading";
 import LPImage from "components/UI/LPImage";
 import StyledText from "components/UI/StyledText";
 import { black, white } from "constants/Colors";
-import { LENSPLAY_SITE } from "constants/index";
-import { PUBLICATION } from "constants/tracking";
-import { ToastType } from "customTypes/Store";
-import { useProxyActionMutation } from "customTypes/generated";
+import { HandleInfo } from "customTypes/generated";
+import useCollectAction from "hooks/reactions/useCollectAction";
+import usePaidCollectAction from "hooks/reactions/usePaidCollectAction";
+import useApproveAllownce from "hooks/useApproveAllownce";
 import React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, View } from "react-native";
 import {
 	useActivePublication,
 	useAuthStore,
@@ -22,7 +22,7 @@ import {
 	useThemeStore,
 	useToast,
 } from "store/Store";
-import TrackAction from "utils/Track";
+import formatHandle from "utils/formatHandle";
 import getIPFSLink from "utils/getIPFSLink";
 import getRawurl from "utils/getRawUrl";
 import Logger from "utils/logger";
@@ -31,85 +31,21 @@ type CollectVideoSheetProps = {
 	sheetRef: React.RefObject<BottomSheetMethods>;
 };
 
-const CollectVideoSheet: React.FC<CollectVideoSheetProps> = ({ sheetRef: collectRef }) => {
+const CollectVideoSheet: React.FC<CollectVideoSheetProps> = ({
+	sheetRef: collectRef,
+}) => {
 	const { activePublication } = useActivePublication();
-	const { collectStats, setCollectStats } = useReactionStore();
+	const { collectStats } = useReactionStore();
 	const theme = useThemeStore();
-	const toast = useToast();
-	const { accessToken } = useAuthStore();
 
-	const updateCache = (cache: ApolloCache<any>) => {
-		try {
-			cache.modify({
-				id: cache.identify(activePublication as any),
-				fields: {
-					hasCollectedByMe() {
-						return true;
-					},
-					stats: (stats) => ({
-						...stats,
-						totalAmountOfCollects: stats.totalAmountOfCollects + 1,
-					}),
-				},
-			});
-		} catch (error) {
-			Logger.Error("error in updating cache", error);
-		}
-	};
-
-	const [createProcyAction] = useProxyActionMutation({
-		onCompleted: (data) => {
-			toast.show("Collect Submitted", ToastType.SUCCESS, true);
-			setCollectStats(true, collectStats?.collectCount + 1);
-			collectRef?.current?.close();
-			TrackAction(PUBLICATION.COLLECT_VIDEO);
-		},
-		onError: (error) => {
-			if (error.message == "Can only collect if the publication has a `FreeCollectModule` set") {
-				toast.show("You can't collect this video", ToastType.ERROR, true);
-			} else {
-				toast.show("Something went wrong", ToastType.ERROR, true);
-			}
-
-			collectRef?.current?.close();
-		},
-		update: (cache) => updateCache(cache),
-	});
-
+	const { collect } = useCollectAction();
+	const a = usePaidCollectAction();
+	const { approveAllowance } = useApproveAllownce();
 	const collectPublication = async () => {
 		try {
-			if (collectStats?.isCollected) {
-				toast.show("You have already collected the video", ToastType.ERROR, true);
-				return;
-			}
-			if (!activePublication?.profile?.dispatcher?.canUseRelay) {
-				toast.show("Dispatcher is disabled", ToastType.ERROR, true);
-				return;
-			}
-			await createProcyAction({
-				variables: {
-					request: {
-						collect: {
-							freeCollect: {
-								publicationId: activePublication?.id,
-							},
-						},
-					},
-				},
-				context: {
-					headers: {
-						"x-access-token": `Bearer ${accessToken}`,
-						"origin": LENSPLAY_SITE,
-					},
-				},
-			});
-		} catch (error) {
-			if (error instanceof Error) {
-				Logger.Error(error + "");
-			}
-		} finally {
-			collectRef?.current?.close();
-		}
+			await collect();
+			// collectRef?.current?.close();
+		} catch (error) {}
 	};
 
 	return (
@@ -172,7 +108,9 @@ const CollectVideoSheet: React.FC<CollectVideoSheetProps> = ({ sheetRef: collect
 					>
 						<LPImage
 							source={{
-								uri: getIPFSLink(getRawurl(activePublication?.metadata?.cover)),
+								uri: getIPFSLink(
+									getRawurl(activePublication?.metadata?.asset?.cover)
+								),
 							}}
 							style={{
 								height: 200,
@@ -182,7 +120,7 @@ const CollectVideoSheet: React.FC<CollectVideoSheetProps> = ({ sheetRef: collect
 						/>
 
 						<StyledText
-							title={activePublication?.metadata?.name}
+							title={activePublication?.metadata?.title}
 							style={{
 								fontSize: 20,
 								color: white[800],
@@ -212,7 +150,11 @@ const CollectVideoSheet: React.FC<CollectVideoSheetProps> = ({ sheetRef: collect
 								marginTop: 8,
 							}}
 						>
-							<Avatar src={getRawurl(activePublication?.profile?.picture)} height={40} width={40} />
+							<Avatar
+								src={getRawurl(activePublication?.by?.metadata?.picture)}
+								height={40}
+								width={40}
+							/>
 							<View
 								style={{
 									marginHorizontal: 8,
@@ -220,7 +162,7 @@ const CollectVideoSheet: React.FC<CollectVideoSheetProps> = ({ sheetRef: collect
 								}}
 							>
 								<Heading
-									title={activePublication?.profile?.name}
+									title={activePublication?.by?.metadata?.displayName}
 									numberOfLines={1}
 									style={{
 										color: "white",
@@ -229,7 +171,9 @@ const CollectVideoSheet: React.FC<CollectVideoSheetProps> = ({ sheetRef: collect
 									}}
 								/>
 								<StyledText
-									title={activePublication?.profile?.handle}
+									title={formatHandle(
+										activePublication?.by?.handle as HandleInfo
+									)}
 									style={{
 										color: "gray",
 										fontSize: 12,
@@ -244,19 +188,39 @@ const CollectVideoSheet: React.FC<CollectVideoSheetProps> = ({ sheetRef: collect
 							marginVertical: 24,
 						}}
 					>
-						<Button
-							title={collectStats?.isCollected ? "Video already collected" : `Collect Video`}
-							py={12}
-							textStyle={{
-								fontSize: 20,
-								fontWeight: "600",
-								textAlign: "center",
-							}}
-							bg={collectStats?.isCollected ? "#c0c0c0" : theme.PRIMARY}
-							onPress={() => {
-								collectPublication();
-							}}
-						/>
+						{a?.allowence && a.allowence > 0 ? (
+							<Button
+								title={
+									collectStats?.isCollected
+										? "Video already collected"
+										: `Collect Video`
+								}
+								py={12}
+								textStyle={{
+									fontSize: 20,
+									fontWeight: "600",
+									textAlign: "center",
+								}}
+								bg={collectStats?.isCollected ? "#c0c0c0" : theme.PRIMARY}
+								onPress={() => {
+									collectPublication();
+								}}
+							/>
+						) : (
+							<Button
+								title={`Approve Collect Module`}
+								py={12}
+								textStyle={{
+									fontSize: 20,
+									fontWeight: "600",
+									textAlign: "center",
+								}}
+								bg={collectStats?.isCollected ? "#c0c0c0" : theme.PRIMARY}
+								onPress={() => {
+									approveAllowance(activePublication!);
+								}}
+							/>
+						)}
 					</View>
 				</BottomSheetScrollView>
 			</View>
@@ -265,5 +229,3 @@ const CollectVideoSheet: React.FC<CollectVideoSheetProps> = ({ sheetRef: collect
 };
 
 export default CollectVideoSheet;
-
-const styles = StyleSheet.create({});

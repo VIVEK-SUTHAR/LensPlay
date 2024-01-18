@@ -34,6 +34,7 @@ import Logger from "utils/logger";
 import createLivePeerAsset from "utils/video/createLivePeerAsset";
 import checkIfLivePeerAsset from "utils/video/isInLivePeer";
 import VideoPlayer from "../../packages/VideoPlayer";
+import CollectVideoSheet from "components/VIdeo/Actions/CollectVideoSheet";
 
 const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 	const [isReadyToRender, setIsReadyToRender] = React.useState<boolean>(false);
@@ -98,6 +99,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 		}, [activePublication])
 	);
 
+	
 	if (!isReadyToRender) return <VideoPageSkeleton />;
 
 	return (
@@ -136,7 +138,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 							}
 						/>
 					</View>
-					<VideoActions mirrorRef={mirrorRef} />
+					<VideoActions mirrorRef={mirrorRef} collectRef={collectRef}/>
 					<View style={styles.commentsTitleContainer}>
 						<TouchableOpacity
 							style={styles.commentsContainer}
@@ -160,7 +162,7 @@ const VideoPage = ({ navigation }: RootStackScreenProps<"VideoPage">) => {
 			<CommentSheet commentSheetRef={commentRef} />
 			<MetaDataSheet sheetRef={descRef} />
 			<MirrorVideoSheet sheetRef={mirrorRef} />
-			{/* <CollectVideoSheet sheetRef={collectRef} /> */}
+			<CollectVideoSheet sheetRef={collectRef} />
 		</>
 	);
 };

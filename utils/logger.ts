@@ -13,7 +13,7 @@ export enum BgColors {
 }
 const Logger = {
 	Log: (message: string, ...args: unknown[]) => {
-		console.log("h")
+		
 		if (__DEV__) {
 			console.log(logMessage(message), ...args);
 		}

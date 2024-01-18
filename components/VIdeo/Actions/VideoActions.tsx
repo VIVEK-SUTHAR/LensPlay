@@ -7,12 +7,14 @@ import ShareButton from "./ShareButton";
 import ReportButton from "./ReportButton";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useActivePublication, useReactionStore } from "store/Store";
+import CollectButton from "./CollectButton";
 
 type VideoActionsProps = {
 	mirrorRef: React.RefObject<BottomSheetMethods>;
+	collectRef: React.RefObject<BottomSheetMethods>;
 };
 
-const VideoActions: FC<VideoActionsProps> = ({ mirrorRef }) => {
+const VideoActions: FC<VideoActionsProps> = ({ mirrorRef,collectRef }) => {
 	const { activePublication } = useActivePublication();
 	const { videopageStats, setVideoPageStats, setCollectStats, setMirrorStats } = useReactionStore();
 	React.useEffect(() => {
@@ -46,7 +48,7 @@ const VideoActions: FC<VideoActionsProps> = ({ mirrorRef }) => {
 			/>
 			<DisLikeButton isalreadyDisLiked={videopageStats?.isDisliked} id={activePublication?.id} />
 			<MirrorButton mirrorRef={mirrorRef} />
-			{/* <CollectButton collectRef={collectRef} /> */}
+			 <CollectButton collectRef={collectRef} /> 
 			<ShareButton />
 			<ReportButton />
 		</ScrollView>
